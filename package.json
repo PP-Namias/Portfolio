@@ -1,44 +1,38 @@
 {
-	"name": "portfolio-main",
-	"version": "0.2.0",
-	"scripts": {
-		"dev": "next dev",
-		"export": "next export",
-		"build": "next build",
-		"start": "next start",
-		"lint": "next lint"
-	},
-	"dependencies": {
-		"@eslint/plugin-kit": "^0.2.7",
-		"@floating-ui/react-dom": "^2.1.1",
-		"@mdx-js/loader": "^3.1.0",
-		"@next/mdx": "^15.2.4",
-		"classnames": "^2.5.1",
-		"cookie": "^1.0.1",
-		"gray-matter": "^4.0.3",
-		"next": "^14.2.26",
-		"next-intl": "^3.26.5",
-		"next-mdx-remote": "^5.0.0",
-		"postcss": "^8.5.3",
-		"postcss-preset-env": "^10.1.5",
-		"react": "^18.3.1",
-		"react-dom": "^18.3.1",
-		"react-icons": "^5.5.0",
-		"react-masonry-css": "^1.0.16",
-		"remark": "^15.0.1",
-		"remark-html": "^16.0.1",
-		"sass": "^1.86.3",
-		"sharp": "^0.33.4"
-	},
-	"devDependencies": {
-		"@csstools/postcss-global-data": "^3.0.0",
-		"@types/cookie": "^0.6.0",
-		"@types/node": "^22",
-		"@types/react": "^18",
-		"@types/react-dom": "^18",
-		"eslint": "^9.23.0",
-		"postcss-custom-media": "^11.0.5",
-		"postcss-flexbugs-fixes": "^5.0.2",
-		"typescript": "^5"
-	}
+  "name": "ppnamias-portfolio",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Professional portfolio website for PP Namias",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace=@ppnamias/web",
+    "build": "npm run build --workspace=@ppnamias/web",
+    "preview": "npm run preview --workspace=@ppnamias/web",
+    "lint": "npm run lint --workspace=@ppnamias/web",
+    "type-check": "npm run type-check --workspace=@ppnamias/web",
+    "clean": "rimraf apps/web/dist node_modules/.cache"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "rimraf": "^5.0.5",
+    "typescript": "^5.6.3"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/PPNamias/PP-Namias-Portfolio.git"
+  },
+  "author": "PP Namias",
+  "license": "MIT",
+  "dependencies": {
+    "ajv": "^8.17.1",
+    "lucide-react": "^0.525.0"
+  }
 }

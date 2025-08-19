@@ -1,0 +1,7 @@
+{
+  "scripts": {
+    "sanity:init": "echo 'Setting up Sanity CMS...' && echo 'Please follow the SANITY_SETUP.md guide to complete the setup'",
+    "sanity:studio": "echo 'To start Sanity Studio, run: cd studio && npm run dev'",
+    "blog:dev": "echo 'Blog functionality is ready! Start the dev server and visit /blog'"
+  }
+}
