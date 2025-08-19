@@ -6,7 +6,7 @@ import imageUrlBuilder from '@sanity/image-url';
 export const client = createClient({
   projectId: process.env.VITE_SANITY_PROJECT_ID || 'gerattrr',
   dataset: process.env.VITE_SANITY_DATASET || 'production',
-  useCdn: true, // Use CDN for better performance in production
+  useCdn: true, // Enable CDN to avoid CORS issues
   apiVersion: '2024-01-01',
   perspective: 'published', // Only fetch published documents
   stega: false, // Disable Stega for frontend
