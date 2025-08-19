@@ -4,11 +4,6 @@
   "installCommand": "npm install",
   "devCommand": "npm run dev --workspace=@ppnamias/web",
   "framework": null,
-  "functions": {
-    "apps/web/dist/**": {
-      "maxDuration": 30
-    }
-  },
   "rewrites": [
     {
       "source": "/(.*)",
