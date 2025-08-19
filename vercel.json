@@ -1,14 +1,37 @@
 {
-  "buildCommand": "npm run build",
-  "outputDirectory": "dist",
+  "buildCommand": "npm run build --workspace=@ppnamias/web",
+  "outputDirectory": "apps/web/dist",
   "installCommand": "npm install",
-  "devCommand": "npm run dev",
+  "devCommand": "npm run dev --workspace=@ppnamias/web",
   "framework": null,
-  "nodeVersion": "18.x",
+  "functions": {
+    "apps/web/dist/**": {
+      "maxDuration": 30
+    }
+  },
   "rewrites": [
     {
       "source": "/(.*)",
       "destination": "/index.html"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "X-XSS-Protection",
+          "value": "1; mode=block"
+        }
+      ]
     }
   ]
 }
