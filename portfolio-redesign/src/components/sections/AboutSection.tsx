@@ -19,9 +19,9 @@ export const AboutSection = () => {
         <h2 className="text-lg font-semibold text-primary">About</h2>
       </div>
 
-      <div className="space-y-6">
+      <div className="space-y-4">
         {/* Professional Summary */}
-        <div className="space-y-4">
+        <div className="space-y-3">
           {personalInfo.about.summary.map((paragraph, index) => (
             <p key={index} className="text-sm leading-relaxed text-secondary">
               {paragraph}
