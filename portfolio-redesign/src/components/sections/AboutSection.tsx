@@ -16,14 +16,14 @@ export const AboutSection = () => {
     >
       <div className="flex items-center mb-6">
         <User className="w-5 h-5 mr-3 text-accent" />
-        <h2 className="text-xl font-semibold text-primary">About</h2>
+        <h2 className="text-xl font-semibold text-text-primary">About</h2>
       </div>
 
       <div className="space-y-6">
         {/* Professional Summary */}
         <div className="space-y-4">
           {personalInfo.about.summary.map((paragraph, index) => (
-            <p key={index} className="text-sm leading-relaxed text-secondary">
+            <p key={index} className="text-sm leading-relaxed text-text-secondary">
               {paragraph}
             </p>
           ))}
@@ -35,14 +35,14 @@ export const AboutSection = () => {
             <div className="text-2xl font-bold text-accent mb-1">
               {personalInfo.about.yearsOfExperience}+
             </div>
-            <div className="text-xs text-tertiary">Years Experience</div>
+            <div className="text-xs text-text-secondary">Years Experience</div>
           </div>
           {personalInfo.about.developersBuiltCommunity && (
             <div className="text-center">
               <div className="text-2xl font-bold text-accent mb-1">
                 {(personalInfo.about.developersBuiltCommunity / 1000).toFixed(0)}K+
               </div>
-              <div className="text-xs text-tertiary">Community Built</div>
+              <div className="text-xs text-text-secondary">Community Built</div>
             </div>
           )}
         </div>
@@ -51,16 +51,16 @@ export const AboutSection = () => {
         <div className="bg-secondary/20 p-4 rounded-lg border border-border">
           <div className="flex items-center mb-2">
             <Target className="w-4 h-4 mr-2 text-accent" />
-            <span className="text-sm font-medium text-primary">Current Focus</span>
+            <span className="text-sm font-medium text-text-primary">Current Focus</span>
           </div>
-          <p className="text-sm text-secondary">
+          <p className="text-sm text-text-secondary">
             {personalInfo.about.currentFocus}
           </p>
         </div>
 
         {/* Specializations */}
         <div>
-          <h3 className="text-sm font-medium text-primary mb-3">Specializations</h3>
+          <h3 className="text-sm font-medium text-text-primary mb-3">Specializations</h3>
           <div className="flex flex-wrap gap-2">
             {personalInfo.about.specializations.map((spec, index) => (
               <motion.span
@@ -77,7 +77,7 @@ export const AboutSection = () => {
         {/* Personal Philosophy */}
         {personalInfo.about.personalPhilosophy && (
           <div className="border-l-4 border-accent pl-4">
-            <p className="text-sm italic text-secondary">
+            <p className="text-sm italic text-text-secondary">
               "{personalInfo.about.personalPhilosophy}"
             </p>
           </div>
