@@ -45,7 +45,7 @@ export const BeyondCodingSection = () => {
     >
       <div className="flex items-center mb-6">
         <Heart className="w-5 h-5 mr-3 text-accent" />
-        <h2 className="text-xl font-semibold text-primary">Beyond Coding</h2>
+        <h2 className="text-xl font-semibold text-text-primary">Beyond Coding</h2>
       </div>
 
       <div className="space-y-6">
@@ -53,10 +53,10 @@ export const BeyondCodingSection = () => {
         <div className="bg-secondary/20 p-4 rounded-lg border border-border">
           <div className="flex items-center mb-3">
             <Lightbulb className="w-4 h-4 mr-2 text-yellow-400" />
-            <span className="text-sm font-medium text-secondary">Philosophy</span>
+            <span className="text-sm font-medium text-text-secondary">Philosophy</span>
           </div>
-          <p className="text-primary font-medium italic">
-            "Building technology that makes a difference, one line of code at a time."
+          <p className="text-text-primary font-medium italic">
+            &ldquo;Building technology that makes a difference, one line of code at a time.&rdquo;
           </p>
         </div>
 
