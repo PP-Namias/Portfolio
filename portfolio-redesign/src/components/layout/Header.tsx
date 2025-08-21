@@ -91,7 +91,7 @@ export const Header = () => {
                 className="relative"
               >
                 <img
-                  src={personalInfo.profile.image?.url || "/public/profile.jpeg"}
+                  src={personalInfo.profile.avatar || "/profile.jpeg"}
                   alt={personalInfo.profile.name}
                   className="w-24 h-24 sm:w-32 sm:h-32 rounded-full object-cover border-4 border-accent/20"
                 />
