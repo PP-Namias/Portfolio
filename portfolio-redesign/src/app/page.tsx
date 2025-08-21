@@ -4,6 +4,10 @@ import { TwoColumnLayout } from '@/components/layout/TwoColumnLayout';
 import { AboutSection } from '@/components/sections/AboutSection';
 import { TechStackSection } from '@/components/sections/TechStackSection';
 import { ExperienceTimeline } from '@/components/sections/ExperienceTimeline';
+import { BeyondCodingSection } from '@/components/sections/BeyondCodingSection';
+import { EnhancedProjectsSection } from '@/components/sections/EnhancedProjectsSection';
+import { CertificationsSection } from '@/components/sections/CertificationsSection';
+import { RecentBlogPostsSection } from '@/components/sections/RecentBlogPostsSection';
 
 export default function Home() {
   return (
