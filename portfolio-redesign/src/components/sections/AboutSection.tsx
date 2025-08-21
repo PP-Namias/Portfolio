@@ -83,15 +83,6 @@ export const AboutSection = () => {
             ))}
           </div>
         </div>
-
-        {/* Personal Philosophy */}
-        {personalInfo.about.personalPhilosophy && (
-          <div className="border-l-4 border-accent pl-4">
-            <p className="text-sm italic text-text-secondary">
-              &ldquo;{personalInfo.about.personalPhilosophy}&rdquo;
-            </p>
-          </div>
-        )}
       </div>
     </motion.section>
   );
