@@ -1,0 +1,215 @@
+{
+  "_id": "experience-collection-v2",
+  "_type": "experienceCollection",
+  "_createdAt": "2025-08-22T10:00:00Z",
+  "_updatedAt": "2025-08-22T10:00:00Z",
+  "_version": 2,
+  "experiences": [
+    {
+      "_id": "exp-standard-chartered",
+      "_type": "experience",
+      "order": 1,
+      "company": "Standard Chartered",
+      "position": "Principal AI Engineer",
+      "department": "Technology & Innovation",
+      "location": "Singapore",
+      "locationType": "hybrid",
+      "employmentType": "full-time",
+      "startDate": "2025-01-01",
+      "endDate": null,
+      "current": true,
+      "duration": {
+        "years": 0,
+        "months": 1,
+        "displayDuration": "Jan 2025 - Present"
+      },
+      "description": "Leading AI engineering initiatives and developing cutting-edge machine learning solutions for financial services. Spearheading the development of AI-powered risk assessment systems and automated trading algorithms.",
+      "achievements": [
+        "Led development of AI risk assessment system reducing processing time by 75%",
+        "Architected ML pipeline serving 1M+ daily transactions",
+        "Built automated trading algorithms generating $2M+ additional revenue",
+        "Mentored team of 8 AI engineers and data scientists"
+      ],
+      "technologies": [
+        "Python", "TensorFlow", "PyTorch", "Kubernetes", "AWS", "PostgreSQL", 
+        "Redis", "Apache Kafka", "Docker", "MLflow", "Airflow"
+      ],
+      "logo": {
+        "url": "/logos/standard-chartered.png",
+        "alt": "Standard Chartered Logo"
+      },
+      "companyWebsite": "https://standardchartered.com",
+      "metrics": {
+        "teamSize": 8,
+        "budgetManaged": "$5M",
+        "projectsLed": 3,
+        "performanceImprovement": "75%"
+      }
+    },
+    {
+      "_id": "exp-tech-innovate",
+      "_type": "experience", 
+      "order": 2,
+      "company": "Tech Innovate Solutions",
+      "position": "Senior Full-Stack Engineer & Team Lead",
+      "department": "Engineering",
+      "location": "Manila, Philippines",
+      "locationType": "hybrid",
+      "employmentType": "full-time",
+      "startDate": "2022-03-01",
+      "endDate": "2024-12-31",
+      "current": false,
+      "duration": {
+        "years": 2,
+        "months": 10,
+        "displayDuration": "Mar 2022 - Dec 2024"
+      },
+      "description": "Led engineering team developing enterprise web applications and mobile solutions. Architected scalable systems serving 100K+ users with 99.9% uptime. Managed full software development lifecycle from requirements to deployment.",
+      "achievements": [
+        "Led team of 15 developers across 5 major product launches",
+        "Architected microservices platform handling 100K+ daily active users",
+        "Reduced system downtime by 95% through improved monitoring and automation",
+        "Implemented CI/CD pipeline reducing deployment time from 4 hours to 15 minutes",
+        "Mentored 8 junior developers, with 6 receiving promotions"
+      ],
+      "technologies": [
+        "React", "Next.js", "Node.js", "TypeScript", "PHP", "Laravel", 
+        "MySQL", "Redis", "Docker", "AWS", "Jenkins", "React Native"
+      ],
+      "logo": {
+        "url": "/logos/tech-innovate.png",
+        "alt": "Tech Innovate Solutions Logo"
+      },
+      "companyWebsite": "https://techinnovate.ph",
+      "metrics": {
+        "teamSize": 15,
+        "projectsLed": 5,
+        "uptimeImprovement": "95%",
+        "deploymentSpeedup": "93%"
+      }
+    },
+    {
+      "_id": "exp-digital-craft",
+      "_type": "experience",
+      "order": 3,
+      "company": "Digital Craft Agency",
+      "position": "Full-Stack Developer",
+      "department": "Development",
+      "location": "Quezon City, Philippines",
+      "locationType": "on-site",
+      "employmentType": "full-time",
+      "startDate": "2019-08-01",
+      "endDate": "2022-02-28",
+      "current": false,
+      "duration": {
+        "years": 2,
+        "months": 7,
+        "displayDuration": "Aug 2019 - Feb 2022"
+      },
+      "description": "Developed custom web applications and e-commerce solutions for diverse clients. Specialized in PHP/Laravel backend development and React frontend implementation. Collaborated with designers and project managers to deliver pixel-perfect solutions.",
+      "achievements": [
+        "Delivered 25+ custom web applications with 98% client satisfaction",
+        "Built e-commerce platform generating $500K+ in client revenue",
+        "Optimized application performance resulting in 60% faster load times",
+        "Implemented automated testing reducing bugs by 80%"
+      ],
+      "technologies": [
+        "PHP", "Laravel", "React", "Vue.js", "MySQL", "JavaScript", 
+        "HTML5", "CSS3", "Bootstrap", "jQuery", "Git", "Linux"
+      ],
+      "logo": {
+        "url": "/logos/digital-craft.png",
+        "alt": "Digital Craft Agency Logo"
+      },
+      "companyWebsite": "https://digitalcraft.ph",
+      "metrics": {
+        "projectsCompleted": 25,
+        "clientSatisfaction": "98%",
+        "performanceImprovement": "60%",
+        "bugReduction": "80%"
+      }
+    },
+    {
+      "_id": "exp-freelance-developer",
+      "_type": "experience",
+      "order": 4,
+      "company": "Freelance",
+      "position": "Web Developer & Consultant",
+      "department": "Independent",
+      "location": "Manila, Philippines",
+      "locationType": "remote",
+      "employmentType": "freelance",
+      "startDate": "2017-01-01",
+      "endDate": "2019-07-31",
+      "current": false,
+      "duration": {
+        "years": 2,
+        "months": 7,
+        "displayDuration": "Jan 2017 - Jul 2019"
+      },
+      "description": "Provided web development and consulting services to startups and small businesses. Specialized in WordPress development, custom PHP applications, and responsive web design. Built long-term client relationships through quality delivery.",
+      "achievements": [
+        "Completed 40+ projects for clients across 8 countries",
+        "Maintained 95% client retention rate with repeat business",
+        "Generated $150K+ in revenue through quality service delivery",
+        "Built reusable component library reducing development time by 40%"
+      ],
+      "technologies": [
+        "WordPress", "PHP", "JavaScript", "MySQL", "HTML5", "CSS3", 
+        "Bootstrap", "jQuery", "Photoshop", "cPanel", "WHM"
+      ],
+      "logo": {
+        "url": "/logos/freelance.png",
+        "alt": "Freelance Developer"
+      },
+      "companyWebsite": "https://ppnamias.dev",
+      "metrics": {
+        "projectsCompleted": 40,
+        "clientRetention": "95%",
+        "revenueGenerated": "$150K",
+        "developmentSpeedup": "40%"
+      }
+    }
+  ],
+  "totalExperience": {
+    "years": 8,
+    "months": 1,
+    "startDate": "2017-01-01"
+  },
+  "experienceTypes": [
+    {
+      "id": "full-time",
+      "label": "Full-time",
+      "color": "blue",
+      "count": 3
+    },
+    {
+      "id": "freelance", 
+      "label": "Freelance",
+      "color": "green",
+      "count": 1
+    }
+  ],
+  "industryExperience": [
+    {
+      "industry": "Financial Services",
+      "years": 1,
+      "companies": ["Standard Chartered"]
+    },
+    {
+      "industry": "Technology",
+      "years": 3,
+      "companies": ["Tech Innovate Solutions"]
+    },
+    {
+      "industry": "Digital Agency",
+      "years": 2,
+      "companies": ["Digital Craft Agency"]
+    },
+    {
+      "industry": "Consulting",
+      "years": 2,
+      "companies": ["Freelance"]
+    }
+  ]
+}
