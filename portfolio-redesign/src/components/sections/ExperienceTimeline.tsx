@@ -110,9 +110,9 @@ const ExperienceCard = ({ experience, index }: ExperienceCardProps) => {
               <Award className="w-4 h-4 text-accent" />
               Key Achievements & Impact
             </h4>
-            <ul className="space-y-3">
+            <div className="space-y-3">
               {experience.achievements.map((achievement, achievementIndex) => (
-                <motion.li 
+                <motion.div 
                   key={achievementIndex} 
                   initial={{ opacity: 0, x: -10 }}
                   whileInView={{ opacity: 1, x: 0 }}
@@ -122,9 +122,9 @@ const ExperienceCard = ({ experience, index }: ExperienceCardProps) => {
                 >
                   <div className="w-2 h-2 bg-gradient-to-r from-accent to-primary rounded-full mt-2 flex-shrink-0 group-hover/item:scale-125 transition-transform"></div>
                   <span className="leading-relaxed">{achievement}</span>
-                </motion.li>
+                </motion.div>
               ))}
-            </ul>
+            </div>
           </div>
 
           {/* Enhanced Metrics with Icons */}
