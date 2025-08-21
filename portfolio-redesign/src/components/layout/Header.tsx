@@ -170,45 +170,45 @@ export const Header = () => {
         initial={{ y: -100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.6, delay: 0.2 }}
-        className="fixed top-0 left-0 right-0 z-50 bg-primary/80 backdrop-blur-lg border-b border-border"
+        className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur border-b border-default"
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="container">
           <div className="flex justify-between items-center h-16">
             {/* Logo */}
             <motion.button
               whileHover={{ scale: 1.05 }}
               onClick={() => scrollToSection('#home')}
-              className="font-bold text-xl text-text-primary"
+              className="font-bold text-xl text-primary"
             >
               PP Namias
             </motion.button>
 
             {/* Desktop Navigation */}
-            <nav className="hidden md:flex space-x-8">
+            <nav className="hidden md:flex space-x-2">
               {navigation.map((item) => {
                 const Icon = item.icon;
                 return (
                   <button
                     key={item.name}
                     onClick={() => scrollToSection(item.href)}
-                    className={`flex items-center space-x-2 px-3 py-2 rounded-lg transition-all duration-200 ${
+                    className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-all duration-200 text-sm font-medium ${
                       activeSection === item.href.slice(1)
-                        ? 'text-accent bg-accent/10'
-                        : 'text-text-secondary hover:text-text-primary hover:bg-secondary/20'
+                        ? 'text-accent bg-accent-light'
+                        : 'text-secondary hover:text-primary hover:bg-surface'
                     }`}
                   >
                     <Icon className="w-4 h-4" />
-                    <span className="text-sm font-medium">{item.name}</span>
+                    <span>{item.name}</span>
                   </button>
                 );
               })}
             </nav>
 
             {/* Theme Toggle & Mobile Menu */}
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-3">
               <button
                 onClick={toggleTheme}
-                className="p-2 rounded-lg bg-secondary/20 hover:bg-secondary/30 transition-colors"
+                className="p-2 rounded-lg bg-surface hover:bg-border transition-colors"
                 aria-label="Toggle theme"
               >
                 {theme === 'dark' ? (
@@ -221,13 +221,13 @@ export const Header = () => {
               {/* Mobile menu button */}
               <button
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
-                className="md:hidden p-2 rounded-lg bg-secondary/20 hover:bg-secondary/30 transition-colors"
+                className="md:hidden p-2 rounded-lg bg-surface hover:bg-border transition-colors"
                 aria-label="Toggle menu"
               >
                 {isMenuOpen ? (
-                  <X className="w-5 h-5 text-text-primary" />
+                  <X className="w-5 h-5 text-primary" />
                 ) : (
-                  <Menu className="w-5 h-5 text-text-primary" />
+                  <Menu className="w-5 h-5 text-primary" />
                 )}
               </button>
             </div>
@@ -239,9 +239,9 @@ export const Header = () => {
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
-              className="md:hidden py-4 border-t border-border"
+              className="md:hidden py-4 border-t border-default"
             >
-              <div className="flex flex-col space-y-2">
+              <div className="flex flex-col space-y-1">
                 {navigation.map((item) => {
                   const Icon = item.icon;
                   return (
@@ -250,8 +250,8 @@ export const Header = () => {
                       onClick={() => scrollToSection(item.href)}
                       className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200 ${
                         activeSection === item.href.slice(1)
-                          ? 'text-accent bg-accent/10'
-                          : 'text-text-secondary hover:text-text-primary hover:bg-secondary/20'
+                          ? 'text-accent bg-accent-light'
+                          : 'text-secondary hover:text-primary hover:bg-surface'
                       }`}
                     >
                       <Icon className="w-5 h-5" />
