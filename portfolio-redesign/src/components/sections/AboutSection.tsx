@@ -16,7 +16,7 @@ export const AboutSection = () => {
     >
       <div className="flex items-center mb-6">
         <User className="w-5 h-5 mr-3 text-accent" />
-        <h2 className="text-xl font-semibold text-text-primary">About</h2>
+        <h2 className="text-xl font-semibold text-primary">About</h2>
       </div>
 
       <div className="space-y-6">
