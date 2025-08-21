@@ -170,45 +170,50 @@ export const Header = () => {
         initial={{ y: -100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.6, delay: 0.2 }}
-        className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur border-b border-default"
+        className="fixed top-0 left-0 right-0 z-50 bg-background/90 backdrop-blur-xl border-b border-default shadow-card"
       >
         <div className="container">
           <div className="flex justify-between items-center h-16">
             {/* Logo */}
             <motion.button
               whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
               onClick={() => scrollToSection('#home')}
-              className="font-bold text-xl text-primary"
+              className="font-bold text-xl text-primary hover:text-accent transition-colors duration-200"
             >
               PP Namias
             </motion.button>
 
             {/* Desktop Navigation */}
-            <nav className="hidden md:flex space-x-2">
+            <nav className="hidden md:flex space-x-1">
               {navigation.map((item) => {
                 const Icon = item.icon;
                 return (
-                  <button
+                  <motion.button
                     key={item.name}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
                     onClick={() => scrollToSection(item.href)}
-                    className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-all duration-200 text-sm font-medium ${
+                    className={`flex items-center space-x-2 px-4 py-2 rounded-2xl transition-all duration-300 text-sm font-medium ${
                       activeSection === item.href.slice(1)
-                        ? 'text-accent bg-accent-light'
-                        : 'text-secondary hover:text-primary hover:bg-surface'
+                        ? 'text-accent bg-accent-light shadow-sm'
+                        : 'text-secondary hover:text-primary hover:bg-surface hover:shadow-sm'
                     }`}
                   >
                     <Icon className="w-4 h-4" />
                     <span>{item.name}</span>
-                  </button>
+                  </motion.button>
                 );
               })}
             </nav>
 
             {/* Theme Toggle & Mobile Menu */}
             <div className="flex items-center space-x-3">
-              <button
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
                 onClick={toggleTheme}
-                className="p-2 rounded-lg bg-surface hover:bg-border transition-colors"
+                className="p-2 rounded-2xl bg-surface hover:bg-border transition-all duration-200 shadow-sm hover:shadow-card"
                 aria-label="Toggle theme"
               >
                 {theme === 'dark' ? (
@@ -216,12 +221,14 @@ export const Header = () => {
                 ) : (
                   <Moon className="w-5 h-5 text-accent" />
                 )}
-              </button>
+              </motion.button>
 
               {/* Mobile menu button */}
-              <button
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
-                className="md:hidden p-2 rounded-lg bg-surface hover:bg-border transition-colors"
+                className="md:hidden p-2 rounded-2xl bg-surface hover:bg-border transition-all duration-200 shadow-sm hover:shadow-card"
                 aria-label="Toggle menu"
               >
                 {isMenuOpen ? (
@@ -229,7 +236,7 @@ export const Header = () => {
                 ) : (
                   <Menu className="w-5 h-5 text-primary" />
                 )}
-              </button>
+              </motion.button>
             </div>
           </div>
 
@@ -239,24 +246,26 @@ export const Header = () => {
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
-              className="md:hidden py-4 border-t border-default"
+              className="md:hidden py-4 border-t border-default bg-surface/50 backdrop-blur-sm rounded-b-2xl mt-2 shadow-card"
             >
-              <div className="flex flex-col space-y-1">
+              <div className="flex flex-col space-y-1 px-2">
                 {navigation.map((item) => {
                   const Icon = item.icon;
                   return (
-                    <button
+                    <motion.button
                       key={item.name}
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
                       onClick={() => scrollToSection(item.href)}
-                      className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200 ${
+                      className={`flex items-center space-x-3 px-4 py-3 rounded-2xl transition-all duration-200 ${
                         activeSection === item.href.slice(1)
-                          ? 'text-accent bg-accent-light'
-                          : 'text-secondary hover:text-primary hover:bg-surface'
+                          ? 'text-accent bg-accent-light shadow-sm'
+                          : 'text-secondary hover:text-primary hover:bg-background hover:shadow-sm'
                       }`}
                     >
                       <Icon className="w-5 h-5" />
                       <span className="font-medium">{item.name}</span>
-                    </button>
+                    </motion.button>
                   );
                 })}
               </div>
