@@ -58,12 +58,12 @@ export const AboutSection = () => {
         </div>
 
         {/* Current Focus */}
-        <div className="bg-secondary/20 p-4 rounded-lg border border-border">
+        <div className="bg-surface p-4 rounded-lg border border-default">
           <div className="flex items-center mb-2">
             <Target className="w-4 h-4 mr-2 text-accent" />
-            <span className="text-sm font-medium text-text-primary">Current Focus</span>
+            <span className="text-sm font-medium text-primary">Current Focus</span>
           </div>
-          <p className="text-sm text-text-secondary">
+          <p className="text-sm text-secondary">
             {personalInfo.about.currentFocus}
           </p>
         </div>
