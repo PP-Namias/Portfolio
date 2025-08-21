@@ -1,0 +1,555 @@
+{
+  "_id": "blog-posts-collection",
+  "_type": "blogPostsCollection",
+  "_createdAt": "2025-08-21T10:00:00Z",
+  "_updatedAt": "2025-08-21T10:00:00Z",
+  "posts": [
+    {
+      "_id": "blog-ai-integration-nextjs",
+      "_type": "blogPost",
+      "_createdAt": "2024-11-20T10:00:00Z",
+      "_updatedAt": "2024-11-20T10:00:00Z",
+      "title": "Building AI-Powered Features in Next.js: A Complete Guide",
+      "slug": "ai-integration-nextjs-guide",
+      "excerpt": "Learn how to seamlessly integrate AI capabilities into your Next.js applications with practical examples and best practices for OpenAI API integration.",
+      "description": "A comprehensive guide covering AI integration patterns in Next.js, from basic OpenAI API calls to advanced streaming responses and real-time AI features.",
+      "content": "This is the full blog post content that would be stored as rich text or markdown...",
+      "publishedAt": "2024-11-20T10:00:00Z",
+      "status": "published",
+      "featured": true,
+      "readingTime": 8,
+      "wordCount": 2500,
+      "author": {
+        "_type": "reference",
+        "_ref": "author-pp-namias"
+      },
+      "categories": [
+        {
+          "_type": "reference",
+          "_ref": "category-ai-ml"
+        },
+        {
+          "_type": "reference",
+          "_ref": "category-nextjs"
+        },
+        {
+          "_type": "reference",
+          "_ref": "category-tutorial"
+        }
+      ],
+      "tags": [
+        "Next.js",
+        "OpenAI",
+        "AI Integration",
+        "React",
+        "TypeScript",
+        "API Routes",
+        "Streaming",
+        "Machine Learning"
+      ],
+      "featuredImage": {
+        "_type": "image",
+        "asset": {
+          "_type": "reference",
+          "_ref": "image-ai-nextjs-hero"
+        },
+        "alt": "AI Integration in Next.js",
+        "caption": "Building AI-powered features in Next.js applications"
+      },
+      "seo": {
+        "metaTitle": "AI Integration in Next.js: Complete Guide with OpenAI",
+        "metaDescription": "Learn to build AI-powered Next.js applications with OpenAI API. Complete guide with code examples, best practices, and real-world implementations.",
+        "keywords": ["Next.js AI", "OpenAI integration", "AI web development", "React AI components"],
+        "focusKeyword": "Next.js AI integration"
+      },
+      "socialMedia": {
+        "twitterCard": "summary_large_image",
+        "ogImage": {
+          "_type": "image",
+          "asset": {
+            "_type": "reference",
+            "_ref": "image-ai-nextjs-og"
+          }
+        }
+      },
+      "codeExamples": [
+        {
+          "title": "OpenAI API Route",
+          "language": "typescript",
+          "code": "// Code example would be stored here"
+        },
+        {
+          "title": "AI Chat Component",
+          "language": "tsx",
+          "code": "// React component code would be stored here"
+        }
+      ],
+      "relatedPosts": [
+        {
+          "_type": "reference",
+          "_ref": "blog-react-performance"
+        },
+        {
+          "_type": "reference", 
+          "_ref": "blog-typescript-best-practices"
+        }
+      ],
+      "engagementMetrics": {
+        "views": 12500,
+        "likes": 284,
+        "shares": 67,
+        "comments": 23,
+        "bookmarks": 156
+      },
+      "comments": [
+        {
+          "_key": "comment-1",
+          "author": "John Developer",
+          "email": "john@example.com",
+          "content": "Great tutorial! The streaming examples were particularly helpful.",
+          "createdAt": "2024-11-21T14:30:00Z",
+          "approved": true,
+          "replies": []
+        }
+      ]
+    },
+    {
+      "_id": "blog-react-performance",
+      "_type": "blogPost",
+      "_createdAt": "2024-10-15T10:00:00Z",
+      "_updatedAt": "2024-10-15T10:00:00Z",
+      "title": "React Performance Optimization: From 3s to 300ms",
+      "slug": "react-performance-optimization-guide",
+      "excerpt": "Discover proven techniques to dramatically improve React application performance with real-world examples and measurable results.",
+      "description": "A deep dive into React performance optimization strategies, covering code splitting, memoization, virtual scrolling, and advanced rendering patterns.",
+      "content": "Full blog post content...",
+      "publishedAt": "2024-10-15T10:00:00Z",
+      "status": "published", 
+      "featured": true,
+      "readingTime": 12,
+      "wordCount": 3200,
+      "author": {
+        "_type": "reference",
+        "_ref": "author-pp-namias"
+      },
+      "categories": [
+        {
+          "_type": "reference",
+          "_ref": "category-react"
+        },
+        {
+          "_type": "reference",
+          "_ref": "category-performance"
+        },
+        {
+          "_type": "reference",
+          "_ref": "category-tutorial"
+        }
+      ],
+      "tags": [
+        "React",
+        "Performance",
+        "Optimization",
+        "Code Splitting",
+        "Memoization",
+        "Virtual Scrolling",
+        "Bundle Analysis",
+        "Web Vitals"
+      ],
+      "featuredImage": {
+        "_type": "image",
+        "asset": {
+          "_type": "reference", 
+          "_ref": "image-react-performance-hero"
+        },
+        "alt": "React Performance Optimization",
+        "caption": "Optimizing React applications for better performance"
+      },
+      "seo": {
+        "metaTitle": "React Performance Optimization: Complete Guide 2024",
+        "metaDescription": "Learn advanced React performance optimization techniques. Reduce load times from 3s to 300ms with proven strategies and real examples.",
+        "keywords": ["React performance", "optimization", "code splitting", "memoization"],
+        "focusKeyword": "React performance optimization"
+      },
+      "engagementMetrics": {
+        "views": 18750,
+        "likes": 412,
+        "shares": 89,
+        "comments": 34,
+        "bookmarks": 267
+      }
+    },
+    {
+      "_id": "blog-typescript-best-practices",
+      "_type": "blogPost",
+      "_createdAt": "2024-09-22T10:00:00Z",
+      "_updatedAt": "2024-09-22T10:00:00Z",
+      "title": "TypeScript Best Practices for Large-Scale Applications",
+      "slug": "typescript-best-practices-enterprise",
+      "excerpt": "Essential TypeScript patterns and practices for building maintainable enterprise applications with strong type safety and developer experience.",
+      "description": "Comprehensive guide to TypeScript best practices, covering advanced types, project structure, configuration, and team collaboration strategies for enterprise projects.",
+      "content": "Full blog post content...",
+      "publishedAt": "2024-09-22T10:00:00Z",
+      "status": "published",
+      "featured": true,
+      "readingTime": 10,
+      "wordCount": 2800,
+      "author": {
+        "_type": "reference",
+        "_ref": "author-pp-namias"
+      },
+      "categories": [
+        {
+          "_type": "reference",
+          "_ref": "category-typescript"
+        },
+        {
+          "_type": "reference",
+          "_ref": "category-best-practices"
+        },
+        {
+          "_type": "reference",
+          "_ref": "category-enterprise"
+        }
+      ],
+      "tags": [
+        "TypeScript",
+        "Best Practices",
+        "Enterprise",
+        "Type Safety",
+        "Code Quality",
+        "Team Collaboration",
+        "Project Structure",
+        "Advanced Types"
+      ],
+      "featuredImage": {
+        "_type": "image",
+        "asset": {
+          "_type": "reference",
+          "_ref": "image-typescript-enterprise-hero"
+        },
+        "alt": "TypeScript Best Practices",
+        "caption": "TypeScript patterns for enterprise applications"
+      },
+      "seo": {
+        "metaTitle": "TypeScript Best Practices: Enterprise Guide 2024",
+        "metaDescription": "Master TypeScript best practices for large-scale applications. Advanced patterns, project structure, and team collaboration strategies.",
+        "keywords": ["TypeScript best practices", "enterprise TypeScript", "advanced types"],
+        "focusKeyword": "TypeScript best practices"
+      },
+      "engagementMetrics": {
+        "views": 15200,
+        "likes": 298,
+        "shares": 76,
+        "comments": 19,
+        "bookmarks": 203
+      }
+    },
+    {
+      "_id": "blog-mobile-app-architecture",
+      "_type": "blogPost",
+      "_createdAt": "2024-08-18T10:00:00Z",
+      "_updatedAt": "2024-08-18T10:00:00Z",
+      "title": "Building Scalable React Native Apps: Architecture Patterns",
+      "slug": "react-native-architecture-patterns",
+      "excerpt": "Learn proven architecture patterns for building scalable React Native applications that can grow with your business needs.",
+      "description": "Explore different architecture patterns for React Native apps, including state management, navigation, testing strategies, and performance considerations.",
+      "content": "Full blog post content...",
+      "publishedAt": "2024-08-18T10:00:00Z",
+      "status": "published",
+      "featured": false,
+      "readingTime": 15,
+      "wordCount": 4100,
+      "author": {
+        "_type": "reference",
+        "_ref": "author-pp-namias"
+      },
+      "categories": [
+        {
+          "_type": "reference",
+          "_ref": "category-react-native"
+        },
+        {
+          "_type": "reference",
+          "_ref": "category-architecture"
+        },
+        {
+          "_type": "reference",
+          "_ref": "category-mobile"
+        }
+      ],
+      "tags": [
+        "React Native",
+        "Mobile Architecture",
+        "Scalability",
+        "State Management",
+        "Navigation",
+        "Testing",
+        "Performance",
+        "Redux"
+      ],
+      "featuredImage": {
+        "_type": "image",
+        "asset": {
+          "_type": "reference",
+          "_ref": "image-react-native-architecture-hero"
+        },
+        "alt": "React Native Architecture",
+        "caption": "Scalable architecture patterns for React Native"
+      },
+      "seo": {
+        "metaTitle": "React Native Architecture Patterns: Scalable Mobile Apps",
+        "metaDescription": "Learn scalable React Native architecture patterns. State management, navigation, testing, and performance strategies for enterprise mobile apps.",
+        "keywords": ["React Native architecture", "mobile app architecture", "scalable apps"],
+        "focusKeyword": "React Native architecture"
+      },
+      "engagementMetrics": {
+        "views": 9850,
+        "likes": 187,
+        "shares": 43,
+        "comments": 12,
+        "bookmarks": 134
+      }
+    },
+    {
+      "_id": "blog-cloud-deployment-strategies",
+      "_type": "blogPost",
+      "_createdAt": "2024-07-25T10:00:00Z",
+      "_updatedAt": "2024-07-25T10:00:00Z",
+      "title": "Modern Cloud Deployment Strategies for Full-Stack Applications",
+      "slug": "cloud-deployment-strategies-fullstack",
+      "excerpt": "Compare AWS, GCP, and Azure deployment strategies for full-stack applications with CI/CD pipelines and infrastructure as code.",
+      "description": "Comprehensive comparison of cloud deployment strategies, covering containerization, serverless, CI/CD pipelines, and infrastructure as code across major cloud providers.",
+      "content": "Full blog post content...",
+      "publishedAt": "2024-07-25T10:00:00Z",
+      "status": "published",
+      "featured": false,
+      "readingTime": 14,
+      "wordCount": 3800,
+      "author": {
+        "_type": "reference",
+        "_ref": "author-pp-namias"
+      },
+      "categories": [
+        {
+          "_type": "reference",
+          "_ref": "category-cloud"
+        },
+        {
+          "_type": "reference",
+          "_ref": "category-devops"
+        },
+        {
+          "_type": "reference",
+          "_ref": "category-deployment"
+        }
+      ],
+      "tags": [
+        "Cloud Deployment",
+        "AWS",
+        "GCP",
+        "Azure",
+        "CI/CD",
+        "Docker",
+        "Kubernetes",
+        "Infrastructure as Code",
+        "Terraform"
+      ],
+      "featuredImage": {
+        "_type": "image",
+        "asset": {
+          "_type": "reference",
+          "_ref": "image-cloud-deployment-hero"
+        },
+        "alt": "Cloud Deployment Strategies",
+        "caption": "Modern cloud deployment patterns and strategies"
+      },
+      "seo": {
+        "metaTitle": "Cloud Deployment Strategies: AWS vs GCP vs Azure 2024",
+        "metaDescription": "Compare cloud deployment strategies for full-stack apps. AWS, GCP, Azure deployment patterns with CI/CD and infrastructure as code.",
+        "keywords": ["cloud deployment", "AWS deployment", "GCP deployment", "Azure deployment"],
+        "focusKeyword": "cloud deployment strategies"
+      },
+      "engagementMetrics": {
+        "views": 11200,
+        "likes": 223,
+        "shares": 58,
+        "comments": 16,
+        "bookmarks": 178
+      }
+    }
+  ],
+  "authors": [
+    {
+      "_id": "author-pp-namias",
+      "_type": "author",
+      "_createdAt": "2025-08-21T10:00:00Z",
+      "_updatedAt": "2025-08-21T10:00:00Z",
+      "name": "PP Namias",
+      "slug": "pp-namias",
+      "bio": "Full-Stack Developer & AI Integration Specialist with 8+ years of experience building scalable web and mobile applications. Passionate about modern development practices and emerging technologies.",
+      "avatar": {
+        "_type": "image",
+        "asset": {
+          "_type": "reference",
+          "_ref": "image-pp-namias-avatar"
+        },
+        "alt": "PP Namias Profile"
+      },
+      "socialLinks": {
+        "twitter": "https://twitter.com/ppnamias",
+        "linkedin": "https://linkedin.com/in/ppnamias",
+        "github": "https://github.com/ppnamias",
+        "website": "https://ppnamias.dev"
+      },
+      "expertise": [
+        "Full-Stack Development",
+        "AI Integration",
+        "React/Next.js",
+        "Mobile Development",
+        "Cloud Architecture"
+      ]
+    }
+  ],
+  "categories": [
+    {
+      "_id": "category-ai-ml",
+      "_type": "category",
+      "name": "AI & Machine Learning",
+      "slug": "ai-machine-learning",
+      "description": "Articles about AI integration, machine learning, and modern AI tools",
+      "color": "purple",
+      "icon": "Brain"
+    },
+    {
+      "_id": "category-nextjs",
+      "_type": "category",
+      "name": "Next.js",
+      "slug": "nextjs",
+      "description": "Next.js tutorials, tips, and best practices",
+      "color": "blue",
+      "icon": "Code"
+    },
+    {
+      "_id": "category-react",
+      "_type": "category",
+      "name": "React",
+      "slug": "react",
+      "description": "React development guides and advanced patterns",
+      "color": "cyan",
+      "icon": "Code"
+    },
+    {
+      "_id": "category-typescript",
+      "_type": "category",
+      "name": "TypeScript",
+      "slug": "typescript",
+      "description": "TypeScript best practices and advanced techniques",
+      "color": "blue",
+      "icon": "Code2"
+    },
+    {
+      "_id": "category-react-native",
+      "_type": "category",
+      "name": "React Native",
+      "slug": "react-native",
+      "description": "Mobile development with React Native",
+      "color": "green",
+      "icon": "Smartphone"
+    },
+    {
+      "_id": "category-cloud",
+      "_type": "category",
+      "name": "Cloud Computing",
+      "slug": "cloud",
+      "description": "Cloud platforms, deployment, and infrastructure",
+      "color": "orange",
+      "icon": "Cloud"
+    },
+    {
+      "_id": "category-performance",
+      "_type": "category",
+      "name": "Performance",
+      "slug": "performance",
+      "description": "Web and application performance optimization",
+      "color": "red",
+      "icon": "Zap"
+    },
+    {
+      "_id": "category-tutorial",
+      "_type": "category",
+      "name": "Tutorial",
+      "slug": "tutorial",
+      "description": "Step-by-step tutorials and guides",
+      "color": "yellow",
+      "icon": "BookOpen"
+    },
+    {
+      "_id": "category-best-practices",
+      "_type": "category",
+      "name": "Best Practices",
+      "slug": "best-practices",
+      "description": "Industry best practices and coding standards",
+      "color": "indigo",
+      "icon": "CheckCircle"
+    },
+    {
+      "_id": "category-enterprise",
+      "_type": "category",
+      "name": "Enterprise",
+      "slug": "enterprise",
+      "description": "Enterprise-scale development and architecture",
+      "color": "gray",
+      "icon": "Building"
+    },
+    {
+      "_id": "category-architecture",
+      "_type": "category",
+      "name": "Architecture",
+      "slug": "architecture",
+      "description": "Software architecture and design patterns",
+      "color": "purple",
+      "icon": "Layout"
+    },
+    {
+      "_id": "category-mobile",
+      "_type": "category",
+      "name": "Mobile Development",
+      "slug": "mobile",
+      "description": "Mobile app development and strategies",
+      "color": "green",
+      "icon": "Smartphone"
+    },
+    {
+      "_id": "category-devops",
+      "_type": "category",
+      "name": "DevOps",
+      "slug": "devops",
+      "description": "DevOps practices, CI/CD, and automation",
+      "color": "orange",
+      "icon": "Settings"
+    },
+    {
+      "_id": "category-deployment",
+      "_type": "category",
+      "name": "Deployment",
+      "slug": "deployment",
+      "description": "Application deployment strategies and tools",
+      "color": "blue",
+      "icon": "Upload"
+    }
+  ],
+  "postStats": {
+    "totalPosts": 5,
+    "publishedPosts": 5,
+    "draftPosts": 0,
+    "featuredPosts": 3,
+    "totalViews": 67500,
+    "totalLikes": 1404,
+    "totalShares": 333,
+    "totalComments": 104,
+    "totalBookmarks": 938,
+    "averageReadingTime": 11.8,
+    "averageWordCount": 3280
+  }
+}
