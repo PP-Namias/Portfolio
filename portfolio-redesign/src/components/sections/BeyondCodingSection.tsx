@@ -75,8 +75,8 @@ export const BeyondCodingSection = () => {
               >
                 <interest.icon className={`w-5 h-5 mt-0.5 ${interest.color}`} />
                 <div>
-                  <h4 className="font-medium text-primary">{interest.title}</h4>
-                  <p className="text-sm text-secondary mt-1">{interest.description}</p>
+                  <h4 className="font-medium text-text-primary">{interest.title}</h4>
+                  <p className="text-sm text-text-secondary mt-1">{interest.description}</p>
                 </div>
               </motion.div>
             ))}
