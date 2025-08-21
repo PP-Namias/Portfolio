@@ -24,7 +24,6 @@ export const useTheme = () => {
   useEffect(() => {
     // Check for saved theme preference or default to dark
     const savedTheme = localStorage.getItem('portfolio-theme') as Theme;
-    const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
     
     // Priority: saved theme > dark (default) > system preference
     const initialTheme = savedTheme || 'dark';
