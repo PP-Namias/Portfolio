@@ -10,8 +10,8 @@ export const ContactSection = () => {
     {
       icon: Mail,
       label: 'Email',
-      value: personalInfo.email,
-      href: `mailto:${personalInfo.email}`,
+      value: personalInfo.profile.email,
+      href: `mailto:${personalInfo.profile.email}`,
       primary: true
     },
     {
@@ -23,7 +23,7 @@ export const ContactSection = () => {
     {
       icon: MapPin,
       label: 'Location',
-      value: personalInfo.location,
+      value: personalInfo.profile.location,
       href: '#'
     }
   ];
@@ -40,7 +40,7 @@ export const ContactSection = () => {
       icon: Send,
       label: 'Send Email',
       description: 'Reach out directly',
-      href: `mailto:${personalInfo.email}`,
+      href: `mailto:${personalInfo.profile.email}`,
       className: 'btn-secondary'
     },
     {
