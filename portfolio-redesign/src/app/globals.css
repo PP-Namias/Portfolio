@@ -113,8 +113,8 @@
   
   /* Component spacing */
   --container-padding: 1.5rem;
-  --section-spacing: 3rem;
-  --card-padding: 1.25rem;
+  --section-spacing: 2.5rem;
+  --card-padding: 1rem;
 }
 
 @media (prefers-color-scheme: dark) {
