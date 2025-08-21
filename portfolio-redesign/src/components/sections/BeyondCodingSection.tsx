@@ -62,7 +62,7 @@ export const BeyondCodingSection = () => {
 
         {/* Interests */}
         <div>
-          <h3 className="text-lg font-medium text-primary mb-4">Interests & Passions</h3>
+          <h3 className="text-lg font-medium text-text-primary mb-4">Interests & Passions</h3>
           <div className="space-y-4">
             {interests.map((interest, index) => (
               <motion.div
