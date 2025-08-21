@@ -298,7 +298,7 @@ a:hover {
 .card {
   background-color: var(--color-card);
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-xl);
+  border-radius: var(--radius-2xl);
   padding: var(--card-padding);
   box-shadow: var(--shadow-card);
   transition: all 0.2s ease;
