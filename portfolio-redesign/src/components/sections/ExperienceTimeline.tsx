@@ -43,12 +43,12 @@ const ExperienceCard = ({ experience, index }: ExperienceCardProps) => {
           <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2">
             <div className="flex-1">
               <h3 className="text-lg font-semibold text-text-primary mb-1">
-                {experience.role}
+                {experience.position}
               </h3>
               <div className="flex items-center gap-2 mb-2">
                 <span className="font-medium text-text-secondary">{experience.company}</span>
-                <span className={`px-2 py-1 rounded-full text-xs font-medium border ${getTypeColor(experience.type)}`}>
-                  {experience.type.replace('-', ' ')}
+                <span className={`px-2 py-1 rounded-full text-xs font-medium border ${getTypeColor(experience.employmentType)}`}>
+                  {experience.employmentType.replace('-', ' ')}
                 </span>
               </div>
               <div className="flex items-center gap-4 text-xs text-text-secondary">
