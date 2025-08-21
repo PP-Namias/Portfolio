@@ -1,0 +1,138 @@
+{
+  "_id": "personal-info-v2",
+  "_type": "personalInfo",
+  "_createdAt": "2025-08-22T10:00:00Z",
+  "_updatedAt": "2025-08-22T10:00:00Z",
+  "_version": 2,
+  "profile": {
+    "name": "PP Namias",
+    "title": "Principal AI Engineer & Full-Stack Developer",
+    "tagline": "Building technology that makes a difference",
+    "location": "Manila, Philippines",
+    "email": "contact@ppnamias.dev",
+    "phone": "+63 123 456 7890",
+    "website": "https://ppnamias.dev",
+    "avatar": "/profile.jpeg",
+    "resumeUrl": "/resume.pdf",
+    "availability": {
+      "status": "available",
+      "message": "Open to new opportunities and consulting projects",
+      "lastUpdated": "2025-08-22"
+    }
+  },
+  "about": {
+    "summary": [
+      "Passionate AI Engineer and Full-Stack Developer with 8+ years of experience building scalable solutions that drive business impact.",
+      "Specialized in machine learning, enterprise applications, and modern web technologies. Led teams of 15+ developers across multiple high-impact projects.",
+      "Champion of clean code, user-centric design, and emerging technologies. Recently won DICT OpenGov HacKathon 2025 for innovative AI solutions."
+    ],
+    "specializations": [
+      "AI/ML Engineering & Research",
+      "Full-Stack Web Development",
+      "Enterprise Software Architecture",
+      "Team Leadership & Mentoring",
+      "DevOps & Cloud Infrastructure",
+      "Mobile App Development"
+    ],
+    "currentFocus": "Developing AI-powered fintech solutions and leading engineering teams at Standard Chartered",
+    "yearsOfExperience": 8,
+    "metrics": {
+      "projectsCompleted": 50,
+      "teamsLed": 6,
+      "certifications": 12,
+      "openSourceContributions": 25
+    }
+  },
+  "achievements": [
+    {
+      "id": "dict-hackathon-2025",
+      "title": "DICT OpenGov HacKathon 2025 Champion",
+      "description": "Won 1st place developing innovative AI governance solutions",
+      "color": "gold",
+      "icon": "Trophy",
+      "date": "2025-01-15",
+      "verified": true,
+      "link": "https://dict.gov.ph/news-and-updates/21070",
+      "category": "Competition"
+    },
+    {
+      "id": "php-expert-certification",
+      "title": "PHP Developer Expert Certification",
+      "description": "Advanced certification in PHP development and architecture",
+      "color": "blue",
+      "icon": "Award",
+      "date": "2024-11-20",
+      "verified": true,
+      "category": "Certification"
+    },
+    {
+      "id": "ai-leader",
+      "title": "AI Engineering Leader",
+      "description": "Leading AI initiatives at Standard Chartered Singapore",
+      "color": "purple",
+      "icon": "Brain",
+      "date": "2025-01-01",
+      "verified": true,
+      "category": "Professional"
+    },
+    {
+      "id": "team-leader",
+      "title": "Engineering Team Lead",
+      "description": "Successfully managed 15+ developers across multiple projects",
+      "color": "green",
+      "icon": "Users",
+      "date": "2024-06-01",
+      "verified": true,
+      "category": "Leadership"
+    }
+  ],
+  "socialLinks": [
+    {
+      "id": "github",
+      "name": "GitHub",
+      "url": "https://github.com/PP-Namias",
+      "icon": "Github",
+      "username": "@PP-Namias",
+      "primary": true
+    },
+    {
+      "id": "linkedin",
+      "name": "LinkedIn",
+      "url": "https://linkedin.com/in/pp-namias",
+      "icon": "Linkedin",
+      "username": "PP Namias",
+      "primary": true
+    },
+    {
+      "id": "twitter",
+      "name": "Twitter",
+      "url": "https://twitter.com/pp_namias",
+      "icon": "Twitter",
+      "username": "@pp_namias",
+      "primary": false
+    },
+    {
+      "id": "email",
+      "name": "Email",
+      "url": "mailto:contact@ppnamias.dev",
+      "icon": "Mail",
+      "username": "contact@ppnamias.dev",
+      "primary": true
+    },
+    {
+      "id": "website",
+      "name": "Website",
+      "url": "https://ppnamias.dev",
+      "icon": "Globe",
+      "username": "ppnamias.dev",
+      "primary": false
+    }
+  ],
+  "settings": {
+    "showAvailability": true,
+    "showMetrics": true,
+    "showAchievements": true,
+    "contactFormEnabled": true,
+    "resumeDownloadEnabled": true
+  }
+}
