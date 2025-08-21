@@ -78,21 +78,25 @@ const ExperienceCard = ({ experience, index }: ExperienceCardProps) => {
           </div>
 
           {/* Metrics */}
-          {experience.metrics && experience.metrics.length > 0 && (
+          {experience.metrics && Object.keys(experience.metrics).length > 0 && (
             <div className="bg-secondary/20 p-3 rounded-lg border border-border">
               <h4 className="text-sm font-medium text-text-primary mb-2 flex items-center gap-1">
                 <TrendingUp className="w-3 h-3" />
                 Impact Metrics
               </h4>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                {experience.metrics.map((metric, metricIndex) => (
-                  <div key={metricIndex} className="text-center">
-                    <div className="text-lg font-bold text-accent">
-                      {metric.value}
+                {Object.entries(experience.metrics).map(([key, value], metricIndex) => (
+                  value && (
+                    <div key={metricIndex} className="text-center">
+                      <div className="text-lg font-bold text-accent">
+                        {value}
+                      </div>
+                      <div className="text-xs text-text-secondary">
+                        {key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}
+                      </div>
                     </div>
-                    <div className="text-xs text-text-secondary">
-                      {metric.label}
-                    </div>
+                  )
+                ))}
                   </div>
                 ))}
               </div>
