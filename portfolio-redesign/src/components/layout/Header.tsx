@@ -94,16 +94,8 @@ export const Header = () => {
                   src={personalInfo.profile.avatar || "/profile.jpeg"}
                   alt={personalInfo.profile.name}
                   className="w-24 h-24 sm:w-32 sm:h-32 rounded-full object-cover shadow-card"
-                  style={{ borderRadius: 'var(--radius-full)' }}
                 />
-                <div 
-                  className="absolute -bottom-2 -right-2 w-8 h-8 bg-success rounded-full flex items-center justify-center shadow-sm"
-                  style={{ 
-                    backgroundColor: 'var(--color-success)',
-                    borderRadius: 'var(--radius-full)',
-                    border: '3px solid var(--color-background)'
-                  }}
-                >
+                <div className="absolute -bottom-2 -right-2 w-8 h-8 bg-success rounded-full flex items-center justify-center shadow-sm border-3 border-background">
                   <CheckCircle className="w-4 h-4 text-white" />
                 </div>
               </motion.div>
