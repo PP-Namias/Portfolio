@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { useState } from 'react';
 import { 
   Code, Monitor, Server, Database, Brain, Cloud, Smartphone, 
-  ChevronDown, ChevronRight
+  ChevronDown, ChevronRight, Wrench, Palette
 } from 'lucide-react';
 import { techStackData } from '@/data/techStack';
 
@@ -15,7 +15,9 @@ const iconMap = {
   Brain,
   Cloud,
   Smartphone,
-  Code
+  Code,
+  Wrench,
+  Palette
 };
 
 const getProficiencyColor = (proficiency: string) => {
