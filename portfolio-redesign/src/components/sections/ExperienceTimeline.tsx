@@ -1,7 +1,18 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Briefcase, MapPin, Calendar, ExternalLink, TrendingUp } from 'lucide-react';
+import { 
+  Briefcase, 
+  MapPin, 
+  Calendar, 
+  ExternalLink, 
+  TrendingUp, 
+  Award,
+  Star,
+  Users,
+  Target,
+  ArrowUpRight
+} from 'lucide-react';
 import { experienceData, ExperienceData } from '@/data/experience';
 
 interface ExperienceCardProps {
@@ -20,95 +31,153 @@ const ExperienceCard = ({ experience, index }: ExperienceCardProps) => {
     return colors[type as keyof typeof colors] || colors['full-time'];
   };
 
+  const isCurrentPosition = index === 0; // Assuming first item is current
+
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
+      initial={{ opacity: 0, x: -30 }}
+      whileInView={{ opacity: 1, x: 0 }}
       transition={{ duration: 0.6, delay: index * 0.1 }}
       viewport={{ once: true }}
-      className="relative"
+      className="relative group"
     >
-      {/* Timeline line (only show for items after the first) */}
+      {/* Enhanced Timeline line */}
       {index > 0 && (
-        <div className="absolute left-6 -top-6 w-0.5 h-6 bg-border"></div>
+        <div className="absolute left-8 -top-8 w-0.5 h-8 bg-gradient-to-b from-accent/50 to-border"></div>
       )}
       
-      {/* Timeline dot */}
-      <div className="absolute left-4 top-6 w-4 h-4 bg-accent rounded-full border-4 border-primary z-10"></div>
+      {/* Enhanced Timeline dot with pulse effect for current position */}
+      <div className="absolute left-6 top-8 z-10">
+        <div className={`w-6 h-6 ${isCurrentPosition ? 'bg-gradient-to-r from-accent to-primary' : 'bg-accent'} rounded-full border-4 border-background shadow-lg group-hover:scale-110 transition-transform duration-300`}>
+          {isCurrentPosition && (
+            <div className="absolute inset-0 w-6 h-6 bg-accent rounded-full animate-ping opacity-75"></div>
+          )}
+        </div>
+        <div className="absolute inset-0 w-6 h-6 flex items-center justify-center">
+          <Briefcase className="w-3 h-3 text-white" />
+        </div>
+      </div>
       
-      {/* Card content */}
-      <div className="ml-12 card hover:shadow-lg transition-all duration-300">
-        <div className="flex flex-col gap-4">
-          {/* Header */}
-          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2">
+      {/* Enhanced Card content */}
+      <div className="ml-16 glass-card p-6 hover:scale-[1.02] transition-all duration-300 group-hover:shadow-xl">
+        <div className="flex flex-col gap-6">
+          {/* Enhanced Header */}
+          <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
             <div className="flex-1">
-              <h3 className="text-lg font-semibold text-text-primary mb-1">
-                {experience.position}
-              </h3>
-              <div className="flex items-center gap-2 mb-2">
-                <span className="font-medium text-text-secondary">{experience.company}</span>
-                <span className={`px-2 py-1 rounded-full text-xs font-medium border ${getTypeColor(experience.employmentType)}`}>
-                  {experience.employmentType.replace('-', ' ')}
+              <div className="flex items-center gap-3 mb-3">
+                <h3 className="text-xl font-bold text-primary group-hover:text-accent transition-colors">
+                  {experience.position}
+                </h3>
+                {isCurrentPosition && (
+                  <span className="px-3 py-1 bg-gradient-to-r from-green-500/20 to-emerald-500/20 border border-green-500/30 text-green-400 text-xs font-medium rounded-full flex items-center gap-1">
+                    <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                    Current
+                  </span>
+                )}
+              </div>
+              
+              <div className="flex flex-wrap items-center gap-3 mb-4">
+                <span className="text-lg font-semibold text-secondary">{experience.company}</span>
+                <span className={`px-3 py-1 rounded-full text-xs font-semibold border ${getTypeColor(experience.employmentType)}`}>
+                  {experience.employmentType.replace('-', ' ').toUpperCase()}
                 </span>
               </div>
-              <div className="flex items-center gap-4 text-xs text-text-secondary">
-                <div className="flex items-center gap-1">
-                  <Calendar className="w-3 h-3" />
-                  {experience.duration.displayDuration}
+              
+              <div className="flex flex-wrap items-center gap-6 text-sm text-muted">
+                <div className="flex items-center gap-2">
+                  <Calendar className="w-4 h-4 text-accent" />
+                  <span className="font-medium">{experience.duration.displayDuration}</span>
                 </div>
-                <div className="flex items-center gap-1">
-                  <MapPin className="w-3 h-3" />
-                  {experience.location}
+                <div className="flex items-center gap-2">
+                  <MapPin className="w-4 h-4 text-accent" />
+                  <span>{experience.location}</span>
                 </div>
               </div>
             </div>
+
+            {/* Performance Rating */}
+            <div className="glass-card p-4 text-center min-w-[120px]">
+              <div className="flex items-center justify-center gap-1 mb-2">
+                {[...Array(5)].map((_, i) => (
+                  <Star key={i} className="w-4 h-4 fill-accent text-accent" />
+                ))}
+              </div>
+              <div className="text-xs text-secondary">Excellence Rating</div>
+            </div>
           </div>
 
-          {/* Key Achievements */}
-          <div>
-            <h4 className="text-sm font-medium text-text-primary mb-2">Key Achievements</h4>
-            <ul className="space-y-1">
+          {/* Enhanced Key Achievements */}
+          <div className="bg-gradient-to-r from-accent/5 to-primary/5 p-4 rounded-xl border border-accent/20">
+            <h4 className="text-sm font-bold text-primary mb-4 flex items-center gap-2">
+              <Award className="w-4 h-4 text-accent" />
+              Key Achievements & Impact
+            </h4>
+            <ul className="space-y-3">
               {experience.achievements.map((achievement, achievementIndex) => (
-                <li key={achievementIndex} className="text-sm text-text-secondary flex items-start gap-2">
-                  <div className="w-1 h-1 bg-accent rounded-full mt-2 flex-shrink-0"></div>
-                  {achievement}
-                </li>
+                <motion.li 
+                  key={achievementIndex} 
+                  initial={{ opacity: 0, x: -10 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.3, delay: achievementIndex * 0.1 }}
+                  viewport={{ once: true }}
+                  className="text-sm text-secondary flex items-start gap-3 group/item"
+                >
+                  <div className="w-2 h-2 bg-gradient-to-r from-accent to-primary rounded-full mt-2 flex-shrink-0 group-hover/item:scale-125 transition-transform"></div>
+                  <span className="leading-relaxed">{achievement}</span>
+                </motion.li>
               ))}
             </ul>
           </div>
 
-          {/* Metrics */}
+          {/* Enhanced Metrics with Icons */}
           {experience.metrics && Object.keys(experience.metrics).length > 0 && (
-            <div className="bg-secondary/20 p-3 rounded-lg border border-border">
-              <h4 className="text-sm font-medium text-text-primary mb-2 flex items-center gap-1">
-                <TrendingUp className="w-3 h-3" />
-                Impact Metrics
+            <div className="glass-card p-5 bg-gradient-to-br from-primary/5 to-accent/5 border border-primary/20">
+              <h4 className="text-sm font-bold text-primary mb-4 flex items-center gap-2">
+                <TrendingUp className="w-4 h-4 text-accent" />
+                Impact Metrics & Results
               </h4>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+              <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
                 {Object.entries(experience.metrics).map(([key, value], metricIndex) => (
                   value && (
-                    <div key={metricIndex} className="text-center">
-                      <div className="text-lg font-bold text-accent">
+                    <motion.div 
+                      key={metricIndex} 
+                      initial={{ opacity: 0, y: 10 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.3, delay: metricIndex * 0.1 }}
+                      viewport={{ once: true }}
+                      className="text-center p-3 bg-surface/50 rounded-lg hover:bg-surface transition-colors group/metric"
+                    >
+                      <div className="text-2xl font-bold text-accent mb-1 group-hover/metric:scale-110 transition-transform">
                         {value}
                       </div>
-                      <div className="text-xs text-text-secondary">
+                      <div className="text-xs text-secondary font-medium">
                         {key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}
                       </div>
-                    </div>
+                    </motion.div>
                   )
                 ))}
               </div>
             </div>
           )}
 
-          {/* Technologies */}
+          {/* Enhanced Technologies */}
           <div>
-            <h4 className="text-sm font-medium text-text-primary mb-2">Technologies Used</h4>
-            <div className="flex flex-wrap gap-1">
+            <h4 className="text-sm font-bold text-primary mb-4 flex items-center gap-2">
+              <Target className="w-4 h-4 text-accent" />
+              Technologies & Tools
+            </h4>
+            <div className="flex flex-wrap gap-2">
               {experience.technologies.map((tech, techIndex) => (
-                <span key={techIndex} className="badge-sm">
+                <motion.span 
+                  key={techIndex} 
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.3, delay: techIndex * 0.05 }}
+                  viewport={{ once: true }}
+                  className="px-3 py-1 bg-gradient-to-r from-accent/10 to-primary/10 border border-accent/20 text-accent text-xs font-medium rounded-full hover:scale-105 hover:bg-gradient-to-r hover:from-accent/20 hover:to-primary/20 transition-all cursor-default"
+                >
                   {tech}
-                </span>
+                </motion.span>
               ))}
             </div>
           </div>
