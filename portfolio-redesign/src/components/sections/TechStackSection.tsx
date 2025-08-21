@@ -83,7 +83,7 @@ const TechCategory = ({ name, data, isExpanded, onToggle }: TechCategoryProps) =
           animate={{ rotate: isExpanded ? 90 : 0 }}
           transition={{ duration: 0.2 }}
         >
-          <ChevronRight className="w-4 h-4 text-text-secondary group-hover:text-text-primary transition-colors" />
+          <ChevronRight className="w-4 h-4 text-muted group-hover:text-secondary transition-colors" />
         </motion.div>
       </button>
 
@@ -103,7 +103,7 @@ const TechCategory = ({ name, data, isExpanded, onToggle }: TechCategoryProps) =
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.2, delay: index * 0.05 }}
-              className="flex items-center justify-between p-3 bg-primary/50 rounded-lg border border-border"
+              className="flex items-center justify-between p-3 bg-surface rounded-lg border border-default"
             >
               <div className="flex-1">
                 <div className="font-medium text-text-primary text-sm">
