@@ -4,7 +4,7 @@ import React from 'react';
 import { Github, Linkedin, Mail, ExternalLink } from 'lucide-react';
 import { personalInfo } from '@/data/personal';
 
-export const Footer = () => {
+export const FooterCompact = () => {
   const socialLinks = [
     {
       name: 'LinkedIn',
