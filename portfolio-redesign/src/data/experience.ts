@@ -52,15 +52,19 @@ export interface ExperienceCollection {
   totalExperience: {
     years: number;
     months: number;
-    displayTotal: string;
+    startDate: string;
   };
-  experienceTypes: string[];
-  locations: string[];
-  skills: {
-    technical: string[];
-    management: string[];
-    domain: string[];
-  };
+  experienceTypes: Array<{
+    id: string;
+    label: string;
+    color: string;
+    count: number;
+  }>;
+  industryExperience: Array<{
+    industry: string;
+    years: number;
+    companies: string[];
+  }>;
 }
 
 // Export the data with proper typing
