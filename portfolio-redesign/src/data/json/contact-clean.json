@@ -1,0 +1,232 @@
+{
+  "_id": "contact-info-v2",
+  "_type": "contactInfo",
+  "_createdAt": "2025-08-22T10:00:00Z",
+  "_updatedAt": "2025-08-22T10:00:00Z",
+  "_version": 2,
+  "contactMethods": [
+    {
+      "id": "email-primary",
+      "type": "email",
+      "label": "Email",
+      "value": "contact@ppnamias.dev",
+      "href": "mailto:contact@ppnamias.dev",
+      "icon": "Mail",
+      "primary": true,
+      "description": "Best way to reach me for business inquiries",
+      "responseTime": "Usually responds within 24 hours",
+      "availability": "24/7"
+    },
+    {
+      "id": "phone-mobile",
+      "type": "phone",
+      "label": "Phone",
+      "value": "+63 123 456 7890",
+      "href": "tel:+631234567890",
+      "icon": "Phone",
+      "primary": false,
+      "description": "Available for urgent matters and calls",
+      "responseTime": "Business hours preferred",
+      "availability": "Mon-Fri 9AM-6PM PST"
+    },
+    {
+      "id": "location",
+      "type": "location",
+      "label": "Location",
+      "value": "Manila, Philippines",
+      "href": "https://maps.google.com/?q=Manila,Philippines",
+      "icon": "MapPin",
+      "primary": false,
+      "description": "Based in Manila, open to remote work globally",
+      "timezone": "Asia/Manila (UTC+8)",
+      "availability": "Remote work preferred"
+    },
+    {
+      "id": "calendar",
+      "type": "meeting",
+      "label": "Schedule a Meeting",
+      "value": "Book a call",
+      "href": "https://calendly.com/ppnamias",
+      "icon": "Calendar",
+      "primary": true,
+      "description": "Schedule a consultation or project discussion",
+      "responseTime": "Immediate booking confirmation",
+      "availability": "Multiple time slots available"
+    }
+  ],
+  "socialPlatforms": [
+    {
+      "id": "github",
+      "name": "GitHub",
+      "username": "@PP-Namias",
+      "url": "https://github.com/PP-Namias",
+      "icon": "Github",
+      "followers": "1.2K",
+      "description": "Open source projects and code repositories",
+      "primary": true,
+      "color": "#181717"
+    },
+    {
+      "id": "linkedin",
+      "name": "LinkedIn",
+      "username": "PP Namias",
+      "url": "https://linkedin.com/in/pp-namias",
+      "icon": "Linkedin",
+      "connections": "500+",
+      "description": "Professional network and career updates",
+      "primary": true,
+      "color": "#0077B5"
+    },
+    {
+      "id": "twitter",
+      "name": "Twitter",
+      "username": "@pp_namias",
+      "url": "https://twitter.com/pp_namias",
+      "icon": "Twitter",
+      "followers": "856",
+      "description": "Tech insights and industry thoughts",
+      "primary": false,
+      "color": "#1DA1F2"
+    },
+    {
+      "id": "website",
+      "name": "Personal Website",
+      "username": "ppnamias.dev",
+      "url": "https://ppnamias.dev",
+      "icon": "Globe",
+      "visitors": "5K+ monthly",
+      "description": "Portfolio, blog, and professional showcase",
+      "primary": false,
+      "color": "#3B82F6"
+    }
+  ],
+  "availability": {
+    "status": "available",
+    "message": "Open to new opportunities and consulting projects",
+    "lastUpdated": "2025-08-22T10:00:00Z",
+    "timezone": "Asia/Manila (UTC+8)",
+    "workingHours": {
+      "monday": { "start": "09:00", "end": "18:00", "available": true },
+      "tuesday": { "start": "09:00", "end": "18:00", "available": true },
+      "wednesday": { "start": "09:00", "end": "18:00", "available": true },
+      "thursday": { "start": "09:00", "end": "18:00", "available": true },
+      "friday": { "start": "09:00", "end": "18:00", "available": true },
+      "saturday": { "start": "10:00", "end": "16:00", "available": true },
+      "sunday": { "start": null, "end": null, "available": false }
+    },
+    "responseTime": {
+      "email": "Within 24 hours",
+      "phone": "Same day",
+      "meeting": "Within 48 hours"
+    }
+  },
+  "services": [
+    {
+      "id": "ai-ml-consulting",
+      "name": "AI/ML Consulting",
+      "description": "End-to-end AI solution development and machine learning consulting",
+      "duration": "Project-based",
+      "pricing": "Contact for quote",
+      "availability": "Available"
+    },
+    {
+      "id": "fullstack-development",
+      "name": "Full-Stack Development",
+      "description": "Modern web application development with React, Node.js, and cloud deployment",
+      "duration": "2-6 months",
+      "pricing": "Contact for quote",
+      "availability": "Available"
+    },
+    {
+      "id": "technical-mentoring",
+      "name": "Technical Mentoring",
+      "description": "One-on-one mentoring for developers and engineering teams",
+      "duration": "Ongoing",
+      "pricing": "$150/hour",
+      "availability": "Limited slots"
+    },
+    {
+      "id": "code-review",
+      "name": "Code Review & Architecture",
+      "description": "Code reviews, architecture assessments, and technical audits",
+      "duration": "1-2 weeks",
+      "pricing": "$100/hour",
+      "availability": "Available"
+    }
+  ],
+  "preferredContactMethods": [
+    {
+      "method": "email",
+      "reason": "Detailed project discussions and proposals",
+      "priority": 1
+    },
+    {
+      "method": "meeting",
+      "reason": "Initial consultations and requirement gathering",
+      "priority": 2
+    },
+    {
+      "method": "phone",
+      "reason": "Urgent matters and quick clarifications",
+      "priority": 3
+    }
+  ],
+  "contactForm": {
+    "enabled": true,
+    "endpoint": "/api/contact",
+    "method": "POST",
+    "fields": [
+      {
+        "name": "name",
+        "type": "text",
+        "label": "Full Name",
+        "required": true,
+        "placeholder": "Enter your full name"
+      },
+      {
+        "name": "email",
+        "type": "email",
+        "label": "Email Address",
+        "required": true,
+        "placeholder": "your.email@example.com"
+      },
+      {
+        "name": "company",
+        "type": "text",
+        "label": "Company/Organization",
+        "required": false,
+        "placeholder": "Your company name (optional)"
+      },
+      {
+        "name": "subject",
+        "type": "select",
+        "label": "Subject",
+        "required": true,
+        "options": [
+          { "value": "consulting", "label": "AI/ML Consulting" },
+          { "value": "development", "label": "Full-Stack Development" },
+          { "value": "mentoring", "label": "Technical Mentoring" },
+          { "value": "speaking", "label": "Speaking Opportunity" },
+          { "value": "collaboration", "label": "Collaboration" },
+          { "value": "other", "label": "Other" }
+        ]
+      },
+      {
+        "name": "message",
+        "type": "textarea",
+        "label": "Message",
+        "required": true,
+        "placeholder": "Tell me about your project or inquiry...",
+        "rows": 5
+      }
+    ],
+    "submitText": "Send Message",
+    "successMessage": "Thank you for your message! I'll get back to you within 24 hours.",
+    "errorMessage": "Sorry, there was an error sending your message. Please try again or contact me directly via email."
+  },
+  "autoResponder": {
+    "enabled": true,
+    "subject": "Thank you for contacting PP Namias",
+    "message": "Hi {name},\n\nThank you for reaching out! I've received your message about \"{subject}\" and will review it carefully.\n\nI typically respond to all inquiries within 24 hours. For urgent matters, feel free to call me directly at +63 123 456 7890.\n\nBest regards,\nPP Namias\nPrincipal AI Engineer & Full-Stack Developer"
+  }
+}
