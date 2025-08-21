@@ -142,7 +142,7 @@ export const ExperienceTimeline = () => {
       <div className="relative space-y-8">
         {experienceData.map((experience, index) => (
           <ExperienceCard
-            key={experience.id}
+            key={experience._id}
             experience={experience}
             index={index}
           />
