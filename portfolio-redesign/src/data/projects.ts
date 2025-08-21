@@ -23,7 +23,7 @@ export interface Project {
   technologies: string[];
   highlights: string[];
   metrics: {
-    [key: string]: string;
+    [key: string]: string | undefined;
   };
   images: Array<{
     url: string;
@@ -39,7 +39,7 @@ export interface Project {
   };
   tags: string[];
   techStack: {
-    [key: string]: string[];
+    [key: string]: string[] | undefined;
   };
 }
 
