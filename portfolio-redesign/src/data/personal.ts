@@ -1,36 +1,19 @@
-import personalData from './json/personal.json';
-
-// Type definitions for the personal data structure (Sanity CMS compatible)
+// Personal Information Interface
 export interface PersonalInfo {
-  _id: string;
-  _type: string;
-  _createdAt: string;
-  _updatedAt: string;
-  profile: {
-    name: string;
-    title: string;
-    tagline: string;
-    location: string;
-    email: string;
-    phone: string;
-    website: string;
-    image: {
-      _type: string;
-      asset: {
-        _ref: string;
-        _type: string;
-      };
-      alt: string;
-      url: string;
-    };
-    availability: {
-      status: "available" | "busy" | "partially-available";
-      message: string;
-      updated: string;
-    };
+  name: string;
+  title: string;
+  location: string;
+  email: string;
+  phone: string;
+  website: string;
+  summary: string;
+  avatar: string;
+  resumeUrl?: string;
+  availability: {
+    status: 'available' | 'busy' | 'unavailable';
+    message: string;
   };
   achievements: Array<{
-    _key: string;
     title: string;
     description: string;
     color: string;
@@ -44,53 +27,96 @@ export interface PersonalInfo {
     specializations: string[];
     currentFocus: string;
     yearsOfExperience: number;
-    developersBuiltCommunity?: number;
-    personalPhilosophy?: string;
-    interests?: string[];
-    workingStyle?: string[];
-    languages?: Array<{
-      name: string;
-      proficiency: string;
-    }>;
   };
   socialLinks: Array<{
-    _key: string;
-    platform: string;
+    name: string;
     url: string;
-    username: string;
     icon: string;
-    primary: boolean;
+    username: string;
   }>;
 }
 
-// Export the imported JSON data with proper typing
-export const personalInfo = personalData as PersonalInfo;
-
-// Legacy compatibility - convert Sanity structure to simple types for existing components
-export const personal = {
-  name: personalInfo.profile.name,
-  title: personalInfo.profile.title,
-  location: personalInfo.profile.location,
-  email: personalInfo.profile.email,
-  phone: personalInfo.profile.phone,
-  website: personalInfo.profile.website,
-  avatar: personalInfo.profile.image.url,
-  bio: personalInfo.about.summary.join(' '),
-  shortBio: personalInfo.profile.tagline,
-  experience: `${personalInfo.about.yearsOfExperience}+ years`,
-  availability: personalInfo.profile.availability.message,
-  achievements: personalInfo.achievements.map(achievement => ({
-    icon: achievement.icon,
-    text: achievement.title
-  })),
-  about: {
-    intro: personalInfo.about.summary[0] || '',
-    approach: personalInfo.about.summary[1] || '',
-    passion: personalInfo.about.summary[2] || '',
-    collaboration: personalInfo.about.workingStyle?.join(' ') || ''
+// Direct data export for immediate use (matching Bryl Lim's clean structure)
+export const personalInfo: PersonalInfo = {
+  name: "PP Namias",
+  title: "Principal AI Engineer & Full-Stack Developer",
+  location: "Manila, Philippines",
+  email: "contact@ppnamias.dev",
+  phone: "+63 123 456 7890",
+  website: "https://ppnamias.dev",
+  summary: "Building technology that makes a difference",
+  avatar: "/profile.jpeg",
+  resumeUrl: "/resume.pdf",
+  availability: {
+    status: "available",
+    message: "Available for new opportunities"
   },
-  social: personalInfo.socialLinks.reduce((acc, link) => {
-    acc[link.platform.toLowerCase()] = link.url;
-    return acc;
-  }, {} as Record<string, string>)
+  achievements: [
+    {
+      title: "PHP Developer Expert",
+      description: "Certified expert in PHP development",
+      color: "blue",
+      icon: "Award",
+      date: "2024",
+      verified: true
+    },
+    {
+      title: "DICT OpenGov HacKathon 2025 Champion",
+      description: "Winner of government hackathon",
+      color: "yellow",
+      icon: "Trophy",
+      date: "2025",
+      verified: true,
+      link: "https://dict.gov.ph/news-and-updates/21070"
+    },
+    {
+      title: "5+ Years Experience",
+      description: "Professional development experience",
+      color: "green",
+      icon: "CheckCircle",
+      date: "2019-2025",
+      verified: true
+    }
+  ],
+  about: {
+    summary: [
+      "I'm a passionate AI Engineer and Full-Stack Developer with over 5 years of experience building scalable web applications and AI solutions.",
+      "I specialize in modern technologies like React, Next.js, Python, and AI/ML frameworks, creating user-centric applications that solve real-world problems.",
+      "My approach combines technical excellence with creative problem-solving, always focusing on clean code, performance, and user experience."
+    ],
+    specializations: [
+      "AI/ML Engineering",
+      "Full-Stack Development", 
+      "Cloud Architecture",
+      "DevOps & Automation"
+    ],
+    currentFocus: "Building AI-powered applications that transform businesses",
+    yearsOfExperience: 5
+  },
+  socialLinks: [
+    {
+      name: "GitHub",
+      url: "https://github.com/PP-Namias",
+      icon: "Github",
+      username: "@PP-Namias"
+    },
+    {
+      name: "LinkedIn",
+      url: "https://linkedin.com/in/pp-namias",
+      icon: "Linkedin", 
+      username: "PP Namias"
+    },
+    {
+      name: "Twitter",
+      url: "https://twitter.com/pp_namias",
+      icon: "Twitter",
+      username: "@pp_namias"
+    },
+    {
+      name: "Email",
+      url: "mailto:contact@ppnamias.dev",
+      icon: "Mail",
+      username: "contact@ppnamias.dev"
+    }
+  ]
 };
