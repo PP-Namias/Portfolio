@@ -12,29 +12,31 @@ import { Footer } from '@/components/layout/Footer';
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-primary">
+    <main className="min-h-screen" style={{ backgroundColor: 'var(--color-background)' }}>
       {/* Header with Professional Profile */}
       <Header />
 
-      {/* Main Content in Two-Column Bryl Lim Style Layout */}
-      <section className="py-16 bg-primary">
-        <TwoColumnLayout
-          leftContent={
-            <>
-              <AboutSection />
-              <TechStackSection />
-              <BeyondCodingSection />
-            </>
-          }
-          rightContent={
-            <>
-              <ExperienceTimeline />
-              <EnhancedProjectsSection />
-              <CertificationsSection />
-              <RecentBlogPostsSection />
-            </>
-          }
-        />
+      {/* Main Content in Bryl Lim Style Layout */}
+      <section className="section" style={{ backgroundColor: 'var(--color-background)' }}>
+        <div className="container">
+          <TwoColumnLayout
+            leftContent={
+              <>
+                <AboutSection />
+                <TechStackSection />
+                <BeyondCodingSection />
+              </>
+            }
+            rightContent={
+              <>
+                <ExperienceTimeline />
+                <EnhancedProjectsSection />
+                <CertificationsSection />
+                <RecentBlogPostsSection />
+              </>
+            }
+          />
+        </div>
       </section>
 
       {/* Contact Section */}
