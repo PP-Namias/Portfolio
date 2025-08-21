@@ -583,6 +583,46 @@ a:hover {
 }
 
 /* Utility Classes */
+.bg-background {
+  background-color: var(--color-background);
+}
+
+.bg-surface {
+  background-color: var(--color-surface);
+}
+
+.bg-card {
+  background-color: var(--color-card);
+}
+
+.text-primary {
+  color: var(--color-text-primary);
+}
+
+.text-secondary {
+  color: var(--color-text-secondary);
+}
+
+.text-muted {
+  color: var(--color-text-muted);
+}
+
+.text-accent {
+  color: var(--color-text-accent);
+}
+
+.border-default {
+  border-color: var(--color-border);
+}
+
+.shadow-card {
+  box-shadow: var(--shadow-card);
+}
+
+.shadow-hover {
+  box-shadow: var(--shadow-card-hover);
+}
+
 .text-balance {
   text-wrap: balance;
 }
