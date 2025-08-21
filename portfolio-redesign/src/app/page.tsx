@@ -1,20 +1,97 @@
-import Image from "next/image";
+import { Header } from '../components/layout/Header';
+import { HeroSection } from '../components/sections/HeroSection';
 
 export default function Home() {
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
+    <main className="min-h-screen">
+      <Header />
+      <HeroSection />
+      
+      {/* About Section Placeholder */}
+      <section id="about" className="section-padding">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="heading-2 text-center mb-8">About Me</h2>
+          <div className="card">
+            <p className="text-lg leading-relaxed text-center" style={{ color: 'var(--color-text-secondary)' }}>
+              I'm a passionate full-stack software engineer with expertise in modern web technologies. 
+              I enjoy building innovative solutions that make a difference in people's lives.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Experience Section Placeholder */}
+      <section id="experience" className="section-padding" style={{ backgroundColor: 'var(--color-bg-secondary)' }}>
+        <div className="max-w-4xl mx-auto">
+          <h2 className="heading-2 text-center mb-8">Experience</h2>
+          <div className="space-y-6">
+            <div className="card">
+              <h3 className="heading-3">Senior Software Engineer</h3>
+              <p style={{ color: 'var(--color-text-secondary)' }}>Building amazing web applications with modern technologies.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Skills Section Placeholder */}
+      <section id="skills" className="section-padding">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="heading-2 text-center mb-8">Skills</h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {['React', 'TypeScript', 'Node.js', 'Next.js', 'PHP', 'Python', 'PostgreSQL', 'Docker'].map((skill) => (
+              <div key={skill} className="badge text-center p-4 cursor-pointer hover:scale-105 transition-transform">
+                {skill}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Projects Section Placeholder */}
+      <section id="projects" className="section-padding" style={{ backgroundColor: 'var(--color-bg-secondary)' }}>
+        <div className="max-w-6xl mx-auto">
+          <h2 className="heading-2 text-center mb-8">Projects</h2>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[1, 2, 3].map((project) => (
+              <div key={project} className="card hover:scale-105 transition-transform cursor-pointer">
+                <div className="h-48 bg-gradient-to-br from-blue-500 to-green-500 rounded-lg mb-4"></div>
+                <h3 className="heading-3">Project {project}</h3>
+                <p style={{ color: 'var(--color-text-secondary)' }}>
+                  A brief description of this amazing project and the technologies used.
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Contact Section Placeholder */}
+      <section id="contact" className="section-padding">
+        <div className="max-w-4xl mx-auto text-center">
+          <h2 className="heading-2 mb-8">Let's Work Together</h2>
+          <div className="card">
+            <p className="text-lg mb-6" style={{ color: 'var(--color-text-secondary)' }}>
+              Ready to bring your ideas to life? Let's discuss your next project.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <button className="btn-primary">Get In Touch</button>
+              <button className="btn-secondary">View Resume</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="py-8 border-t" style={{ borderColor: 'var(--color-border)' }}>
+        <div className="max-w-4xl mx-auto text-center">
+          <p style={{ color: 'var(--color-text-secondary)' }}>
+            © 2025 PP Namias. All rights reserved.
+          </p>
+        </div>
+      </footer>
+    </main>
+  );
+}" "}
             <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
               src/app/page.tsx
             </code>
