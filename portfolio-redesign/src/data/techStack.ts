@@ -1,89 +1,60 @@
-// Tech Stack Interface
+// Import clean JSON data
+import techStackData from './json/techstack-clean.json';
+
+// Technology Interface
+export interface Technology {
+  id: string;
+  name: string;
+  proficiency: 'expert' | 'advanced' | 'intermediate' | 'learning';
+  yearsOfExperience: number;
+  lastUsed: string;
+  category: string;
+  logo: string;
+}
+
+// Tech Category Interface
+export interface TechCategory {
+  _id: string;
+  name: string;
+  description: string;
+  icon: string;
+  color: string;
+  order: number;
+  expanded: boolean;
+  technologies: Technology[];
+}
+
+// Tech Stack Data Interface
 export interface TechStackData {
-  categories: {
+  _id: string;
+  _type: string;
+  _createdAt: string;
+  _updatedAt: string;
+  _version: number;
+  categories: TechCategory[];
+  proficiencyLevels: {
     [key: string]: {
-      technologies: Array<{
-        name: string;
-        proficiency: "expert" | "advanced" | "intermediate" | "learning";
-        yearsOfExperience?: number;
-      }>;
-      icon: string;
+      label: string;
+      description: string;
       color: string;
+      order: number;
+      minYears: number;
     };
+  };
+  statistics: {
+    totalTechnologies: number;
+    expertLevel: number;
+    advancedLevel: number;
+    intermediateLevel: number;
+    learningLevel: number;
+    yearsOfExperience: number;
+    categoriesCount: number;
   };
 }
 
-// Clean, minimalist tech stack data (inspired by Bryl Lim's organization)
-export const techStackData: TechStackData = {
-  categories: {
-    frontend: {
-      icon: "Monitor",
-      color: "blue",
-      technologies: [
-        { name: "React", proficiency: "expert", yearsOfExperience: 5 },
-        { name: "Next.js", proficiency: "expert", yearsOfExperience: 4 },
-        { name: "TypeScript", proficiency: "expert", yearsOfExperience: 4 },
-        { name: "Tailwind CSS", proficiency: "expert", yearsOfExperience: 3 },
-        { name: "Vue.js", proficiency: "advanced", yearsOfExperience: 2 },
-        { name: "Framer Motion", proficiency: "advanced", yearsOfExperience: 2 }
-      ]
-    },
-    backend: {
-      icon: "Server", 
-      color: "green",
-      technologies: [
-        { name: "Node.js", proficiency: "expert", yearsOfExperience: 5 },
-        { name: "Python", proficiency: "expert", yearsOfExperience: 4 },
-        { name: "Express.js", proficiency: "expert", yearsOfExperience: 4 },
-        { name: "FastAPI", proficiency: "advanced", yearsOfExperience: 3 },
-        { name: "Django", proficiency: "advanced", yearsOfExperience: 2 },
-        { name: "GraphQL", proficiency: "advanced", yearsOfExperience: 3 }
-      ]
-    },
-    ai_ml: {
-      icon: "Brain",
-      color: "purple", 
-      technologies: [
-        { name: "TensorFlow", proficiency: "expert", yearsOfExperience: 3 },
-        { name: "PyTorch", proficiency: "advanced", yearsOfExperience: 2 },
-        { name: "OpenAI API", proficiency: "expert", yearsOfExperience: 2 },
-        { name: "Hugging Face", proficiency: "advanced", yearsOfExperience: 2 },
-        { name: "scikit-learn", proficiency: "expert", yearsOfExperience: 3 },
-        { name: "Pandas", proficiency: "expert", yearsOfExperience: 4 }
-      ]
-    },
-    database: {
-      icon: "Database",
-      color: "orange",
-      technologies: [
-        { name: "PostgreSQL", proficiency: "expert", yearsOfExperience: 4 },
-        { name: "MongoDB", proficiency: "expert", yearsOfExperience: 4 },
-        { name: "Redis", proficiency: "advanced", yearsOfExperience: 3 },
-        { name: "Prisma", proficiency: "advanced", yearsOfExperience: 2 },
-        { name: "Firebase", proficiency: "advanced", yearsOfExperience: 3 }
-      ]
-    },
-    cloud: {
-      icon: "Cloud",
-      color: "cyan",
-      technologies: [
-        { name: "AWS", proficiency: "expert", yearsOfExperience: 4 },
-        { name: "Azure", proficiency: "advanced", yearsOfExperience: 3 },
-        { name: "Vercel", proficiency: "expert", yearsOfExperience: 4 },
-        { name: "Docker", proficiency: "advanced", yearsOfExperience: 3 },
-        { name: "Kubernetes", proficiency: "intermediate", yearsOfExperience: 2 }
-      ]
-    },
-    tools: {
-      icon: "Wrench",
-      color: "gray",
-      technologies: [
-        { name: "Git", proficiency: "expert", yearsOfExperience: 5 },
-        { name: "GitHub Actions", proficiency: "advanced", yearsOfExperience: 3 },
-        { name: "VS Code", proficiency: "expert", yearsOfExperience: 5 },
-        { name: "Figma", proficiency: "advanced", yearsOfExperience: 3 },
-        { name: "Postman", proficiency: "expert", yearsOfExperience: 4 }
-      ]
-    }
-  }
-};
+// Export typed data
+export const techStackCollection: TechStackData = techStackData as TechStackData;
+export const techCategories: TechCategory[] = techStackCollection.categories;
+
+// Legacy export for backwards compatibility
+export { techStackCollection as techStackData };
