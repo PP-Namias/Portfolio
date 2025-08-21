@@ -1,0 +1,447 @@
+{
+  "_id": "tech-stack-v2",
+  "_type": "techStack",
+  "_createdAt": "2025-08-22T10:00:00Z",
+  "_updatedAt": "2025-08-22T10:00:00Z",
+  "_version": 2,
+  "categories": [
+    {
+      "_id": "frontend",
+      "name": "Frontend",
+      "description": "Client-side technologies and user interface frameworks",
+      "icon": "Monitor",
+      "color": "blue",
+      "order": 1,
+      "expanded": true,
+      "technologies": [
+        {
+          "id": "react",
+          "name": "React",
+          "proficiency": "expert",
+          "yearsOfExperience": 5,
+          "lastUsed": "2025-08-22",
+          "category": "Library",
+          "logo": "/tech/react.svg"
+        },
+        {
+          "id": "nextjs",
+          "name": "Next.js",
+          "proficiency": "expert",
+          "yearsOfExperience": 4,
+          "lastUsed": "2025-08-22",
+          "category": "Framework",
+          "logo": "/tech/nextjs.svg"
+        },
+        {
+          "id": "typescript",
+          "name": "TypeScript",
+          "proficiency": "expert",
+          "yearsOfExperience": 4,
+          "lastUsed": "2025-08-22",
+          "category": "Language",
+          "logo": "/tech/typescript.svg"
+        },
+        {
+          "id": "tailwindcss",
+          "name": "Tailwind CSS",
+          "proficiency": "expert",
+          "yearsOfExperience": 3,
+          "lastUsed": "2025-08-22",
+          "category": "Framework",
+          "logo": "/tech/tailwind.svg"
+        },
+        {
+          "id": "vue",
+          "name": "Vue.js",
+          "proficiency": "advanced",
+          "yearsOfExperience": 3,
+          "lastUsed": "2024-12-15",
+          "category": "Framework",
+          "logo": "/tech/vue.svg"
+        },
+        {
+          "id": "javascript",
+          "name": "JavaScript",
+          "proficiency": "expert",
+          "yearsOfExperience": 8,
+          "lastUsed": "2025-08-22",
+          "category": "Language",
+          "logo": "/tech/javascript.svg"
+        },
+        {
+          "id": "html5",
+          "name": "HTML5",
+          "proficiency": "expert",
+          "yearsOfExperience": 8,
+          "lastUsed": "2025-08-22",
+          "category": "Language",
+          "logo": "/tech/html5.svg"
+        },
+        {
+          "id": "css3",
+          "name": "CSS3",
+          "proficiency": "expert",
+          "yearsOfExperience": 8,
+          "lastUsed": "2025-08-22",
+          "category": "Language",
+          "logo": "/tech/css3.svg"
+        }
+      ]
+    },
+    {
+      "_id": "backend",
+      "name": "Backend",
+      "description": "Server-side technologies, APIs, and database management",
+      "icon": "Server",
+      "color": "green",
+      "order": 2,
+      "expanded": false,
+      "technologies": [
+        {
+          "id": "nodejs",
+          "name": "Node.js",
+          "proficiency": "expert",
+          "yearsOfExperience": 5,
+          "lastUsed": "2025-08-22",
+          "category": "Runtime",
+          "logo": "/tech/nodejs.svg"
+        },
+        {
+          "id": "php",
+          "name": "PHP",
+          "proficiency": "expert",
+          "yearsOfExperience": 8,
+          "lastUsed": "2025-01-15",
+          "category": "Language",
+          "logo": "/tech/php.svg"
+        },
+        {
+          "id": "laravel",
+          "name": "Laravel",
+          "proficiency": "expert",
+          "yearsOfExperience": 6,
+          "lastUsed": "2024-12-20",
+          "category": "Framework",
+          "logo": "/tech/laravel.svg"
+        },
+        {
+          "id": "python",
+          "name": "Python",
+          "proficiency": "expert",
+          "yearsOfExperience": 4,
+          "lastUsed": "2025-08-22",
+          "category": "Language",
+          "logo": "/tech/python.svg"
+        },
+        {
+          "id": "fastapi",
+          "name": "FastAPI",
+          "proficiency": "advanced",
+          "yearsOfExperience": 2,
+          "lastUsed": "2025-08-20",
+          "category": "Framework",
+          "logo": "/tech/fastapi.svg"
+        },
+        {
+          "id": "expressjs",
+          "name": "Express.js",
+          "proficiency": "expert",
+          "yearsOfExperience": 5,
+          "lastUsed": "2025-07-30",
+          "category": "Framework",
+          "logo": "/tech/express.svg"
+        }
+      ]
+    },
+    {
+      "_id": "ai-ml",
+      "name": "AI & Machine Learning",
+      "description": "Artificial intelligence, machine learning, and data science",
+      "icon": "Brain",
+      "color": "purple",
+      "order": 3,
+      "expanded": false,
+      "technologies": [
+        {
+          "id": "tensorflow",
+          "name": "TensorFlow",
+          "proficiency": "expert",
+          "yearsOfExperience": 3,
+          "lastUsed": "2025-08-22",
+          "category": "Framework",
+          "logo": "/tech/tensorflow.svg"
+        },
+        {
+          "id": "pytorch",
+          "name": "PyTorch",
+          "proficiency": "advanced",
+          "yearsOfExperience": 2,
+          "lastUsed": "2025-08-20",
+          "category": "Framework",
+          "logo": "/tech/pytorch.svg"
+        },
+        {
+          "id": "openai",
+          "name": "OpenAI API",
+          "proficiency": "advanced",
+          "yearsOfExperience": 2,
+          "lastUsed": "2025-08-22",
+          "category": "API",
+          "logo": "/tech/openai.svg"
+        },
+        {
+          "id": "scikit-learn",
+          "name": "Scikit-learn",
+          "proficiency": "advanced",
+          "yearsOfExperience": 3,
+          "lastUsed": "2025-08-15",
+          "category": "Library",
+          "logo": "/tech/sklearn.svg"
+        },
+        {
+          "id": "pandas",
+          "name": "Pandas",
+          "proficiency": "expert",
+          "yearsOfExperience": 4,
+          "lastUsed": "2025-08-22",
+          "category": "Library",
+          "logo": "/tech/pandas.svg"
+        },
+        {
+          "id": "numpy",
+          "name": "NumPy",
+          "proficiency": "expert",
+          "yearsOfExperience": 4,
+          "lastUsed": "2025-08-22",
+          "category": "Library",
+          "logo": "/tech/numpy.svg"
+        }
+      ]
+    },
+    {
+      "_id": "database",
+      "name": "Database",
+      "description": "Database systems and data storage solutions",
+      "icon": "Database",
+      "color": "orange",
+      "order": 4,
+      "expanded": false,
+      "technologies": [
+        {
+          "id": "mysql",
+          "name": "MySQL",
+          "proficiency": "expert",
+          "yearsOfExperience": 8,
+          "lastUsed": "2025-08-20",
+          "category": "Relational",
+          "logo": "/tech/mysql.svg"
+        },
+        {
+          "id": "postgresql",
+          "name": "PostgreSQL",
+          "proficiency": "expert",
+          "yearsOfExperience": 4,
+          "lastUsed": "2025-08-22",
+          "category": "Relational",
+          "logo": "/tech/postgresql.svg"
+        },
+        {
+          "id": "mongodb",
+          "name": "MongoDB",
+          "proficiency": "advanced",
+          "yearsOfExperience": 3,
+          "lastUsed": "2025-08-10",
+          "category": "NoSQL",
+          "logo": "/tech/mongodb.svg"
+        },
+        {
+          "id": "redis",
+          "name": "Redis",
+          "proficiency": "advanced",
+          "yearsOfExperience": 3,
+          "lastUsed": "2025-08-22",
+          "category": "Cache",
+          "logo": "/tech/redis.svg"
+        },
+        {
+          "id": "elasticsearch",
+          "name": "Elasticsearch",
+          "proficiency": "intermediate",
+          "yearsOfExperience": 2,
+          "lastUsed": "2025-07-15",
+          "category": "Search",
+          "logo": "/tech/elasticsearch.svg"
+        }
+      ]
+    },
+    {
+      "_id": "cloud",
+      "name": "Cloud & DevOps",
+      "description": "Cloud platforms, deployment, and infrastructure management",
+      "icon": "Cloud",
+      "color": "cyan",
+      "order": 5,
+      "expanded": false,
+      "technologies": [
+        {
+          "id": "aws",
+          "name": "Amazon AWS",
+          "proficiency": "expert",
+          "yearsOfExperience": 4,
+          "lastUsed": "2025-08-22",
+          "category": "Platform",
+          "logo": "/tech/aws.svg"
+        },
+        {
+          "id": "docker",
+          "name": "Docker",
+          "proficiency": "expert",
+          "yearsOfExperience": 4,
+          "lastUsed": "2025-08-22",
+          "category": "Container",
+          "logo": "/tech/docker.svg"
+        },
+        {
+          "id": "kubernetes",
+          "name": "Kubernetes",
+          "proficiency": "advanced",
+          "yearsOfExperience": 2,
+          "lastUsed": "2025-08-22",
+          "category": "Orchestration",
+          "logo": "/tech/kubernetes.svg"
+        },
+        {
+          "id": "vercel",
+          "name": "Vercel",
+          "proficiency": "expert",
+          "yearsOfExperience": 3,
+          "lastUsed": "2025-08-22",
+          "category": "Platform",
+          "logo": "/tech/vercel.svg"
+        },
+        {
+          "id": "jenkins",
+          "name": "Jenkins",
+          "proficiency": "advanced",
+          "yearsOfExperience": 3,
+          "lastUsed": "2025-08-15",
+          "category": "CI/CD",
+          "logo": "/tech/jenkins.svg"
+        },
+        {
+          "id": "github-actions",
+          "name": "GitHub Actions",
+          "proficiency": "advanced",
+          "yearsOfExperience": 3,
+          "lastUsed": "2025-08-22",
+          "category": "CI/CD",
+          "logo": "/tech/github-actions.svg"
+        }
+      ]
+    },
+    {
+      "_id": "tools",
+      "name": "Tools & Workflow",
+      "description": "Development tools, version control, and productivity software",
+      "icon": "Wrench",
+      "color": "indigo",
+      "order": 6,
+      "expanded": false,
+      "technologies": [
+        {
+          "id": "git",
+          "name": "Git",
+          "proficiency": "expert",
+          "yearsOfExperience": 8,
+          "lastUsed": "2025-08-22",
+          "category": "Version Control",
+          "logo": "/tech/git.svg"
+        },
+        {
+          "id": "vscode",
+          "name": "VS Code",
+          "proficiency": "expert",
+          "yearsOfExperience": 6,
+          "lastUsed": "2025-08-22",
+          "category": "Editor",
+          "logo": "/tech/vscode.svg"
+        },
+        {
+          "id": "figma",
+          "name": "Figma",
+          "proficiency": "advanced",
+          "yearsOfExperience": 4,
+          "lastUsed": "2025-08-20",
+          "category": "Design",
+          "logo": "/tech/figma.svg"
+        },
+        {
+          "id": "postman",
+          "name": "Postman",
+          "proficiency": "expert",
+          "yearsOfExperience": 5,
+          "lastUsed": "2025-08-22",
+          "category": "API Testing",
+          "logo": "/tech/postman.svg"
+        },
+        {
+          "id": "jira",
+          "name": "Jira",
+          "proficiency": "advanced",
+          "yearsOfExperience": 4,
+          "lastUsed": "2025-08-22",
+          "category": "Project Management",
+          "logo": "/tech/jira.svg"
+        },
+        {
+          "id": "slack",
+          "name": "Slack",
+          "proficiency": "expert",
+          "yearsOfExperience": 5,
+          "lastUsed": "2025-08-22",
+          "category": "Communication",
+          "logo": "/tech/slack.svg"
+        }
+      ]
+    }
+  ],
+  "proficiencyLevels": {
+    "expert": {
+      "label": "Expert",
+      "description": "5+ years of experience, can mentor others",
+      "color": "green",
+      "order": 1,
+      "minYears": 5
+    },
+    "advanced": {
+      "label": "Advanced", 
+      "description": "3-5 years of experience, production-ready",
+      "color": "blue",
+      "order": 2,
+      "minYears": 3
+    },
+    "intermediate": {
+      "label": "Intermediate",
+      "description": "1-3 years of experience, comfortable with basics",
+      "color": "yellow",
+      "order": 3,
+      "minYears": 1
+    },
+    "learning": {
+      "label": "Learning",
+      "description": "Currently learning or less than 1 year",
+      "color": "purple",
+      "order": 4,
+      "minYears": 0
+    }
+  },
+  "statistics": {
+    "totalTechnologies": 35,
+    "expertLevel": 16,
+    "advancedLevel": 13,
+    "intermediateLevel": 5,
+    "learningLevel": 1,
+    "yearsOfExperience": 8,
+    "categoriesCount": 6
+  }
+}
