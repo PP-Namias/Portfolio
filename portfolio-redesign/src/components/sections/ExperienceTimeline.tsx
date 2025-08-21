@@ -97,8 +97,6 @@ const ExperienceCard = ({ experience, index }: ExperienceCardProps) => {
                     </div>
                   )
                 ))}
-                  </div>
-                ))}
               </div>
             </div>
           )}
