@@ -12,12 +12,12 @@ import { Footer } from '@/components/layout/Footer';
 
 export default function Home() {
   return (
-    <main className="min-h-screen" style={{ backgroundColor: 'var(--color-background)' }}>
+    <main className="min-h-screen bg-background">
       {/* Header with Professional Profile */}
       <Header />
 
       {/* Main Content in Bryl Lim Style Layout */}
-      <section className="section" style={{ backgroundColor: 'var(--color-background)' }}>
+      <section className="section bg-background">
         <div className="container">
           <TwoColumnLayout
             leftContent={
