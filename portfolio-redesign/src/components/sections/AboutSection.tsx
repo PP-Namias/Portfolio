@@ -37,14 +37,24 @@ export const AboutSection = () => {
             </div>
             <div className="text-xs text-text-secondary">Years Experience</div>
           </div>
-          {personalInfo.about.developersBuiltCommunity && (
-            <div className="text-center">
-              <div className="text-2xl font-bold text-accent mb-1">
-                {(personalInfo.about.developersBuiltCommunity / 1000).toFixed(0)}K+
-              </div>
-              <div className="text-xs text-text-secondary">Community Built</div>
+          <div className="text-center">
+            <div className="text-2xl font-bold text-accent mb-1">
+              {personalInfo.about.metrics.projectsCompleted}+
             </div>
-          )}
+            <div className="text-xs text-text-secondary">Projects Completed</div>
+          </div>
+          <div className="text-center">
+            <div className="text-2xl font-bold text-accent mb-1">
+              {personalInfo.about.metrics.teamsLed}+
+            </div>
+            <div className="text-xs text-text-secondary">Teams Led</div>
+          </div>
+          <div className="text-center">
+            <div className="text-2xl font-bold text-accent mb-1">
+              {personalInfo.about.metrics.certifications}+
+            </div>
+            <div className="text-xs text-text-secondary">Certifications</div>
+          </div>
         </div>
 
         {/* Current Focus */}
