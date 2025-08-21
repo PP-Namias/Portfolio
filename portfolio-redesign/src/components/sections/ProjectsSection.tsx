@@ -108,20 +108,20 @@ export const ProjectsSection = () => {
       className="card"
       id="projects"
     >
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between mb-4">
         <div className="flex items-center">
-          <FolderOpen className="w-5 h-5 mr-3 text-accent" />
-          <h2 className="text-xl font-semibold text-primary">Recent Projects</h2>
+          <FolderOpen className="w-4 h-4 mr-2 text-accent" />
+          <h2 className="text-lg font-semibold text-primary">Recent Projects</h2>
         </div>
         <a 
           href="#all-projects"
-          className="btn-text"
+          className="btn-text text-xs"
         >
           View All
         </a>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 gap-3">
         {displayProjects.map((project: Project, index: number) => (
           <ProjectCard key={project._id} project={project} index={index} />
         ))}
