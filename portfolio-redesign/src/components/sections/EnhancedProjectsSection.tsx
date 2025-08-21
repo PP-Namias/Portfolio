@@ -267,12 +267,11 @@ export const EnhancedProjectsSection = () => {
         {/* Featured Projects */}
         {featuredProjects.length > 0 && (
           <div>
-            <h3 className="text-lg font-medium text-primary mb-4 flex items-center">
+            <h3 className="mobile-heading text-white mb-4 flex items-center">
               <Zap className="w-4 h-4 mr-2 text-yellow-400" />
               Featured Projects
             </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {featuredProjects.map((project, index) => (
+            <div className="grid-mobile-cards">{featuredProjects.map((project, index) => (
                 <ProjectCard key={project.id} project={project} index={index} />
               ))}
             </div>
@@ -282,8 +281,8 @@ export const EnhancedProjectsSection = () => {
         {/* Other Projects */}
         {otherProjects.length > 0 && (
           <div>
-            <h3 className="text-lg font-medium text-primary mb-4">Other Projects</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <h3 className="mobile-heading text-white mb-4">Other Projects</h3>
+            <div className="grid-mobile-cards">
               {otherProjects.map((project, index) => (
                 <ProjectCard key={project.id} project={project} index={index + featuredProjects.length} />
               ))}
