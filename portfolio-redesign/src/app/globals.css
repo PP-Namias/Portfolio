@@ -248,34 +248,40 @@ h1 {
 }
 
 h2 {
-  font-size: 2rem;
-  font-weight: 700;
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
 }
 
 h3 {
-  font-size: 1.5rem;
+  font-size: 1.125rem;
   font-weight: 600;
+  margin-bottom: 0.75rem;
 }
 
 h4 {
-  font-size: 1.25rem;
+  font-size: 1rem;
   font-weight: 600;
+  margin-bottom: 0.5rem;
 }
 
 h5 {
-  font-size: 1.125rem;
+  font-size: 0.9rem;
   font-weight: 600;
+  margin-bottom: 0.5rem;
 }
 
 h6 {
-  font-size: 1rem;
+  font-size: 0.875rem;
   font-weight: 600;
+  margin-bottom: 0.25rem;
 }
 
 p {
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem;
   color: var(--color-text-secondary);
-  line-height: 1.7;
+  line-height: 1.6;
+  font-size: 0.875rem;
 }
 
 a {
