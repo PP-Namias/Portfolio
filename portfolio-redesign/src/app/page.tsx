@@ -3,7 +3,6 @@ import { TwoColumnLayout } from '@/components/layout/TwoColumnLayout';
 import { AboutSection } from '@/components/sections/AboutSection';
 import { TechStackSection } from '@/components/sections/TechStackSection';
 import { ExperienceTimeline } from '@/components/sections/ExperienceTimeline';
-import { BeyondCodingSection } from '@/components/sections/BeyondCodingSection';
 import { ProjectsSection } from '@/components/sections/ProjectsSection';
 import { CertificationsSection } from '@/components/sections/CertificationsSection';
 import { SimpleBlogSection } from '@/components/sections/SimpleBlogSection';
@@ -17,21 +16,20 @@ export default function Home() {
       <Header />
 
       {/* Main Content in Bryl Lim Style Layout */}
-      <section className="section bg-background">
+      <section className="section-sm bg-background">
         <div className="container">
           <TwoColumnLayout
             leftContent={
               <>
                 <AboutSection />
                 <TechStackSection />
-                <BeyondCodingSection />
+                <CertificationsSection />
               </>
             }
             rightContent={
               <>
                 <ExperienceTimeline />
                 <ProjectsSection />
-                <CertificationsSection />
                 <SimpleBlogSection />
               </>
             }
