@@ -130,7 +130,7 @@ export const ContactSection = () => {
               <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
               <span className="font-medium">Available for new projects</span>
             </div>
-            <p className="text-sm text-text-secondary mt-2">
+            <p className="text-sm text-secondary mt-2">
               Currently accepting new client work and collaboration opportunities
             </p>
           </motion.div>
