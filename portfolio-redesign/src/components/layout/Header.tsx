@@ -112,14 +112,8 @@ export const Header = () => {
                   {personalInfo.profile.location}
                 </div>
                 <div className="flex items-center gap-2 text-sm">
-                  <div 
-                    className="w-2 h-2 rounded-full animate-pulse"
-                    style={{ 
-                      backgroundColor: 'var(--color-success)',
-                      borderRadius: 'var(--radius-full)'
-                    }}
-                  ></div>
-                  <span style={{ color: 'var(--color-success)' }} className="font-medium">
+                  <div className="w-2 h-2 bg-success rounded-full animate-pulse"></div>
+                  <span className="text-success font-medium">
                     {personalInfo.profile.availability.message}
                   </span>
                 </div>
