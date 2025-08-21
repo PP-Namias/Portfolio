@@ -44,7 +44,7 @@ const TechCategory = ({ name, data, isExpanded, onToggle }: TechCategoryProps) =
       whileInView={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
       viewport={{ once: true }}
-      className="bg-surface rounded-2xl p-4 border border-default hover:shadow-card-hover transition-all duration-300"
+      className="card-compact glass-card hover:shadow-md transition-all duration-300 animate-fade-in"
     >
       <button
         onClick={onToggle}
@@ -113,17 +113,17 @@ export const TechStackSection = () => {
       className="card"
       id="skills"
     >
-      <div className="flex items-center justify-between mb-4">
+      <div className="mobile-heading text-white mb-4 flex items-center justify-between">
         <div className="flex items-center">
-          <Code className="w-4 h-4 mr-2 text-accent" />
-          <h2 className="text-lg font-semibold text-primary">Tech Stack</h2>
+          <Code className="w-4 h-4 mr-2 text-green-400" />
+          <h2>Tech Stack</h2>
         </div>
-        <button className="text-sm text-accent hover:text-accent-hover font-medium">
+        <button className="text-xs text-green-400 hover:text-green-300 font-medium">
           View All
         </button>
       </div>
 
-      <div className="space-y-3">
+      <div className="grid-mobile-cards">
         {Object.entries(techStackData.categories).map(([category, data]) => (
           <TechCategory
             key={category}
