@@ -1,33 +1,65 @@
 import experienceDataJSON from './json/experience-clean.json';
 
 export interface ExperienceData {
-  id: string;
+  _id: string;
+  _type: string;
+  order: number;
   company: string;
   position: string;
+  department: string;
   location: string;
-  type: string;
+  locationType: string;
+  employmentType: string;
   startDate: string;
   endDate: string | null;
   current: boolean;
+  duration: {
+    years: number;
+    months: number;
+    displayDuration: string;
+  };
   description: string;
   achievements: string[];
   technologies: string[];
-  metrics?: {
+  companyWebsite?: string;
+  metrics: {
+    teamSize?: number;
+    budgetManaged?: string;
+    projectsLed?: number;
+    performanceImprovement?: string;
     impact?: string;
     growth?: string;
     efficiency?: string;
+    revenue?: string;
+    userGrowth?: string;
+    revenueGrowth?: string;
+    userBase?: string;
+    projectsCompleted?: number;
+    clientSatisfaction?: string;
+    uptime?: string;
+    codeReduction?: string;
+    deliverySpeed?: string;
   };
-  companyUrl?: string;
-  projectUrl?: string;
 }
 
 export interface ExperienceCollection {
+  _id: string;
+  _type: string;
+  _createdAt: string;
+  _updatedAt: string;
+  _version: number;
   experiences: ExperienceData[];
-  totalYears: number;
-  currentRole: {
-    company: string;
-    position: string;
-    startDate: string;
+  totalExperience: {
+    years: number;
+    months: number;
+    displayTotal: string;
+  };
+  experienceTypes: string[];
+  locations: string[];
+  skills: {
+    technical: string[];
+    management: string[];
+    domain: string[];
   };
 }
 
