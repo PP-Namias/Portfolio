@@ -1,5 +1,4 @@
 import { Header } from '@/components/layout/Header';
-import { HeroSection } from '@/components/sections/HeroSection';
 import { TwoColumnLayout } from '@/components/layout/TwoColumnLayout';
 import { AboutSection } from '@/components/sections/AboutSection';
 import { TechStackSection } from '@/components/sections/TechStackSection';
@@ -16,9 +15,6 @@ export default function Home() {
     <main className="min-h-screen bg-primary">
       {/* Header with Professional Profile */}
       <Header />
-
-      {/* Hero Section with Typing Animation */}
-      <HeroSection />
 
       {/* Main Content in Two-Column Bryl Lim Style Layout */}
       <section className="py-16 bg-primary">
