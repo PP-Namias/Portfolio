@@ -64,10 +64,10 @@ export const ContactSection = () => {
         >
           {/* Header */}
           <div className="mb-8">
-            <h2 className="text-3xl font-bold text-text-primary mb-4">
+            <h2 className="text-3xl font-bold text-primary mb-4">
               Ready to Build Something Amazing?
             </h2>
-            <p className="text-text-secondary max-w-2xl mx-auto text-lg">
+            <p className="text-secondary max-w-2xl mx-auto text-lg">
               I&apos;m always interested in discussing new opportunities, innovative projects, 
               and ways to leverage technology for positive impact. Let&apos;s connect and explore 
               how we can work together.
@@ -83,11 +83,11 @@ export const ContactSection = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4, delay: index * 0.1 }}
                 viewport={{ once: true }}
-                className="p-4 bg-primary/50 rounded-lg border border-border hover:border-accent/30 transition-colors"
+                className="p-4 bg-card rounded-lg border border-default hover:border-accent/30 transition-colors"
               >
-                <method.icon className={`w-6 h-6 mx-auto mb-3 ${method.primary ? 'text-accent' : 'text-text-secondary'}`} />
-                <h3 className="font-medium text-text-primary mb-1">{method.label}</h3>
-                <p className="text-sm text-text-secondary">{method.value}</p>
+                <method.icon className={`w-6 h-6 mx-auto mb-3 ${method.primary ? 'text-accent' : 'text-secondary'}`} />
+                <h3 className="font-medium text-primary mb-1">{method.label}</h3>
+                <p className="text-sm text-secondary">{method.value}</p>
               </motion.div>
             ))}
           </div>
