@@ -25,39 +25,15 @@ export default function Home() {
             <>
               <AboutSection />
               <TechStackSection />
+              <BeyondCodingSection />
             </>
           }
           rightContent={
             <>
               <ExperienceTimeline />
-              {/* Projects Section - Placeholder for now */}
-              <section className="card" id="projects">
-                <h2 className="text-xl font-semibold text-primary mb-6">Featured Projects</h2>
-                <div className="space-y-4">
-                  <div className="p-4 bg-secondary/20 rounded-lg border border-border">
-                    <h3 className="font-medium text-primary mb-2">AI-Powered Portfolio Website</h3>
-                    <p className="text-sm text-secondary mb-3">
-                      Modern Next.js portfolio with AI integration, featuring dynamic content generation and intelligent user interactions.
-                    </p>
-                    <div className="flex flex-wrap gap-1">
-                      {['Next.js', 'TypeScript', 'AI/ML', 'Tailwind CSS'].map((tech) => (
-                        <span key={tech} className="badge-sm">{tech}</span>
-                      ))}
-                    </div>
-                  </div>
-                  <div className="p-4 bg-secondary/20 rounded-lg border border-border">
-                    <h3 className="font-medium text-primary mb-2">Full-Stack E-commerce Platform</h3>
-                    <p className="text-sm text-secondary mb-3">
-                      Complete e-commerce solution with payment integration, inventory management, and analytics dashboard.
-                    </p>
-                    <div className="flex flex-wrap gap-1">
-                      {['React', 'Node.js', 'PostgreSQL', 'Stripe API'].map((tech) => (
-                        <span key={tech} className="badge-sm">{tech}</span>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </section>
+              <EnhancedProjectsSection />
+              <CertificationsSection />
+              <RecentBlogPostsSection />
             </>
           }
         />
