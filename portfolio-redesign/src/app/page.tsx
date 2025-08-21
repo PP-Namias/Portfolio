@@ -7,7 +7,7 @@ import { ProjectsSection } from '@/components/sections/ProjectsSection';
 import { CertificationsSection } from '@/components/sections/CertificationsSection';
 import { SimpleBlogSection } from '@/components/sections/SimpleBlogSection';
 import { ContactSection } from '@/components/sections/ContactSection';
-import { Footer } from '@/components/layout/Footer';
+import { FooterCompact } from '@/components/layout/FooterCompact';
 
 export default function Home() {
   return (
@@ -41,7 +41,7 @@ export default function Home() {
       <ContactSection />
 
       {/* Footer */}
-      <Footer />
+      <FooterCompact />
     </main>
   );
 }
