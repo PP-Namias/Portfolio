@@ -131,80 +131,91 @@ const ProjectCard = ({ project, index }: ProjectCardProps) => {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6, delay: index * 0.1 }}
+      transition={{ duration: 0.3, delay: index * 0.1 }}
       viewport={{ once: true }}
-      className="group relative bg-secondary/20 border border-border rounded-xl overflow-hidden hover:border-accent/30 transition-all duration-300"
+      className="group card-compact glass-card hover:shadow-lg hover:scale-[1.02] transition-all duration-300 animate-fade-in"
     >
-      {/* Project Thumbnail */}
+      {/* Project Thumbnail - Smaller for mobile */}
       <div 
-        className="h-48 w-full relative"
+        className="h-32 sm:h-36 w-full relative rounded-lg mb-3 overflow-hidden"
         style={{ background: project.thumbnail }}
       >
         <div className="absolute inset-0 bg-black/40 group-hover:bg-black/30 transition-colors duration-300" />
-        <div className="absolute top-4 left-4">
-          <span className={`px-3 py-1 rounded-full text-xs font-medium border ${getStatusColor(project.status)}`}>
+        <div className="absolute top-2 left-2">
+          <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(project.status)}`}>
             {getStatusText(project.status)}
           </span>
         </div>
         {project.featured && (
-          <div className="absolute top-4 right-4">
-            <span className="px-3 py-1 rounded-full text-xs font-medium bg-accent/20 text-accent border border-accent/30">
-              Featured
+          <div className="absolute top-2 right-2">
+            <span className="px-2 py-1 rounded-full text-xs font-medium bg-yellow-500/20 text-yellow-300 border border-yellow-500/30">
+              ★ Featured
             </span>
           </div>
         )}
       </div>
 
-      {/* Project Content */}
-      <div className="p-6">
-        <div className="flex items-start justify-between mb-3">
-          <h3 className="text-lg font-semibold text-primary group-hover:text-accent transition-colors">
+      {/* Project Content - Compact mobile layout */}
+      <div className="space-y-3">
+        <div>
+          <h3 className="mobile-heading text-white group-hover:text-gradient transition-colors line-clamp-1">
             {project.title}
           </h3>
+          <p className="mobile-text text-gray-300 line-clamp-2 leading-relaxed">
+            {project.description}
+          </p>
         </div>
 
-        <p className="text-secondary text-sm mb-4 line-clamp-2">
-          {project.description}
-        </p>
-
-        {/* Technologies */}
-        <div className="flex flex-wrap gap-2 mb-4">
-          {project.technologies.slice(0, 4).map((tech) => (
+        {/* Technologies - Compact pills */}
+        <div className="flex flex-wrap gap-1">
+          {project.technologies.slice(0, 3).map((tech) => (
             <span
               key={tech}
-              className="px-2 py-1 text-xs bg-secondary/30 text-secondary rounded border border-border"
+              className="px-2 py-1 text-xs bg-gray-700/50 text-gray-300 rounded-md font-medium"
             >
               {tech}
             </span>
           ))}
-          {project.technologies.length > 4 && (
-            <span className="px-2 py-1 text-xs bg-secondary/30 text-secondary rounded border border-border">
-              +{project.technologies.length - 4}
+          {project.technologies.length > 3 && (
+            <span className="px-2 py-1 text-xs bg-gray-600/50 text-gray-400 rounded-md">
+              +{project.technologies.length - 3}
             </span>
           )}
         </div>
 
-        {/* Metrics */}
-        <div className="grid grid-cols-2 gap-2 mb-4 text-xs">
-          {Object.entries(project.metrics).map(([key, value]) => (
-            <div key={key} className="flex items-center space-x-1">
-              <Users className="w-3 h-3 text-accent" />
-              <span className="text-secondary">{value}</span>
+        {/* Metrics - Simplified for mobile */}
+        <div className="flex gap-3 text-xs">
+          {project.metrics.performance && (
+            <div className="flex items-center gap-1 text-green-400">
+              <Zap size={12} />
+              <span>{project.metrics.performance}</span>
             </div>
-          ))}
+          )}
+          {project.metrics.users && (
+            <div className="flex items-center gap-1 text-blue-400">
+              <Users size={12} />
+              <span>{project.metrics.users}</span>
+            </div>
+          )}
+          {project.metrics.features && (
+            <div className="flex items-center gap-1 text-purple-400">
+              <FolderOpen size={12} />
+              <span>{project.metrics.features}</span>
+            </div>
+          )}
         </div>
 
-        {/* Links */}
-        <div className="flex items-center space-x-3">
+        {/* Action Buttons - Mobile-optimized */}
+        <div className="flex gap-2 pt-2">
           {project.links.live && (
             <a
               href={project.links.live}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center space-x-1 text-sm text-accent hover:text-accent/80 transition-colors"
+              className="btn-primary flex-1 text-center touch-target tap-highlight focus-ring"
             >
-              <ExternalLink className="w-4 h-4" />
-              <span>Live Demo</span>
+              <ExternalLink size={14} className="inline mr-1" />
+              <span className="text-xs">Live</span>
             </a>
           )}
           {project.links.github && (
@@ -212,10 +223,9 @@ const ProjectCard = ({ project, index }: ProjectCardProps) => {
               href={project.links.github}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center space-x-1 text-sm text-secondary hover:text-accent transition-colors"
+              className="btn-secondary touch-target tap-highlight focus-ring px-3 flex items-center justify-center"
             >
-              <Github className="w-4 h-4" />
-              <span>Code</span>
+              <Github size={14} />
             </a>
           )}
         </div>
