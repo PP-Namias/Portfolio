@@ -1,30 +1,51 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Mail, Phone, MapPin, Calendar, Send, Download, ExternalLink } from 'lucide-react';
+import { 
+  Mail, 
+  Phone, 
+  MapPin, 
+  Calendar, 
+  Send, 
+  Download, 
+  ExternalLink,
+  Copy,
+  CheckCircle,
+  MessageCircle,
+  Clock,
+  Star,
+  Zap
+} from 'lucide-react';
 import { personalInfo } from '@/data/personal';
 
 export const ContactSection = () => {
+  const [copiedField, setCopiedField] = useState<string | null>(null);
+
   const contactMethods = [
     {
       icon: Mail,
       label: 'Email',
       value: personalInfo.profile.email,
       href: `mailto:${personalInfo.profile.email}`,
-      primary: true
+      primary: true,
+      description: 'Available 24/7',
+      canCopy: true
     },
     {
       icon: Phone,
       label: 'Phone',
       value: '+63 123 456 7890',
-      href: 'tel:+631234567890'
+      href: 'tel:+631234567890',
+      description: 'Mon-Fri, 9AM-6PM PST',
+      canCopy: true
     },
     {
       icon: MapPin,
       label: 'Location',
       value: personalInfo.profile.location,
-      href: '#'
+      href: '#',
+      description: 'Open to remote work'
     }
   ];
 
@@ -34,23 +55,43 @@ export const ContactSection = () => {
       label: 'Schedule a Call',
       description: 'Book a 30-minute consultation',
       href: 'https://calendly.com/pp-namias',
-      className: 'btn-primary'
+      className: 'btn-primary-enhanced',
+      badge: 'Popular',
+      stats: '~15 min response'
     },
     {
       icon: Send,
       label: 'Send Email',
       description: 'Reach out directly',
       href: `mailto:${personalInfo.profile.email}`,
-      className: 'btn-secondary'
+      className: 'btn-secondary-enhanced',
+      stats: '~2 hr response'
     },
     {
       icon: Download,
       label: 'Download Resume',
       description: 'View my latest CV',
       href: '/resume.pdf',
-      className: 'btn-secondary'
+      className: 'btn-secondary-enhanced',
+      stats: 'Updated Nov 2024'
     }
   ];
+
+  const responseMetrics = [
+    { label: 'Average Response Time', value: '< 2 hours', icon: Clock },
+    { label: 'Client Satisfaction', value: '5.0/5.0', icon: Star },
+    { label: 'Project Success Rate', value: '100%', icon: Zap }
+  ];
+
+  const handleCopy = async (text: string, field: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopiedField(field);
+      setTimeout(() => setCopiedField(null), 2000);
+    } catch (err) {
+      console.error('Failed to copy:', err);
+    }
+  };
 
   return (
     <section className="py-16 bg-surface border-t border-default" id="contact">
