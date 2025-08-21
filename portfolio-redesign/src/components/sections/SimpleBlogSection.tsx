@@ -105,14 +105,14 @@ export const SimpleBlogSection = () => {
       className="card"
       id="blog"
     >
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between mb-4">
         <div className="flex items-center">
-          <BookOpen className="w-5 h-5 mr-3 text-accent" />
-          <h2 className="text-xl font-semibold text-primary">Recent Blog Posts</h2>
+          <BookOpen className="w-4 h-4 mr-2 text-accent" />
+          <h2 className="text-lg font-semibold text-primary">Recent Blog Posts</h2>
         </div>
         <a 
           href="#all-posts"
-          className="btn-text"
+          className="btn-text text-xs"
         >
           View All
         </a>
