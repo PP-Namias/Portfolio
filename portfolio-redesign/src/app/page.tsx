@@ -43,7 +43,7 @@ export default function Home() {
       <ContactSection />
 
       {/* Footer */}
-      <FooterCompact />
+      <Footer />
     </main>
   );
 }
