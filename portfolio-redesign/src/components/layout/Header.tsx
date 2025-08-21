@@ -101,13 +101,13 @@ export const Header = () => {
               </motion.div>
               
               <div className="space-y-2">
-                <h1 className="text-3xl sm:text-4xl font-bold text-primary">
+                <h1 className="text-3xl sm:text-4xl font-bold text-text-primary">
                   {personalInfo.profile.name}
                 </h1>
-                <p className="text-lg sm:text-xl text-secondary font-medium">
+                <p className="text-lg sm:text-xl text-text-secondary font-medium">
                   {personalInfo.profile.title}
                 </p>
-                <div className="flex items-center text-tertiary text-sm">
+                <div className="flex items-center text-text-secondary text-sm">
                   <MapPin className="w-4 h-4 mr-1" />
                   {personalInfo.profile.location}
                 </div>
@@ -178,7 +178,7 @@ export const Header = () => {
             <motion.button
               whileHover={{ scale: 1.05 }}
               onClick={() => scrollToSection('#home')}
-              className="font-bold text-xl text-primary"
+              className="font-bold text-xl text-text-primary"
             >
               PP Namias
             </motion.button>
@@ -194,7 +194,7 @@ export const Header = () => {
                     className={`flex items-center space-x-2 px-3 py-2 rounded-lg transition-all duration-200 ${
                       activeSection === item.href.slice(1)
                         ? 'text-accent bg-accent/10'
-                        : 'text-secondary hover:text-primary hover:bg-secondary/20'
+                        : 'text-text-secondary hover:text-text-primary hover:bg-secondary/20'
                     }`}
                   >
                     <Icon className="w-4 h-4" />
@@ -225,9 +225,9 @@ export const Header = () => {
                 aria-label="Toggle menu"
               >
                 {isMenuOpen ? (
-                  <X className="w-5 h-5 text-primary" />
+                  <X className="w-5 h-5 text-text-primary" />
                 ) : (
-                  <Menu className="w-5 h-5 text-primary" />
+                  <Menu className="w-5 h-5 text-text-primary" />
                 )}
               </button>
             </div>
@@ -251,7 +251,7 @@ export const Header = () => {
                       className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200 ${
                         activeSection === item.href.slice(1)
                           ? 'text-accent bg-accent/10'
-                          : 'text-secondary hover:text-primary hover:bg-secondary/20'
+                          : 'text-text-secondary hover:text-text-primary hover:bg-secondary/20'
                       }`}
                     >
                       <Icon className="w-5 h-5" />
