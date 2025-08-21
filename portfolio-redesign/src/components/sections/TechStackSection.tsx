@@ -106,11 +106,11 @@ const TechCategory = ({ name, data, isExpanded, onToggle }: TechCategoryProps) =
               className="flex items-center justify-between p-3 bg-surface rounded-lg border border-default"
             >
               <div className="flex-1">
-                <div className="font-medium text-text-primary text-sm">
+                <div className="font-medium text-primary text-sm">
                   {tech.name}
                 </div>
                 {tech.yearsOfExperience && (
-                  <div className="text-xs text-text-secondary">
+                  <div className="text-xs text-muted">
                     {tech.yearsOfExperience} year{tech.yearsOfExperience > 1 ? 's' : ''}
                   </div>
                 )}
