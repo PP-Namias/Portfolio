@@ -9,9 +9,7 @@ import {
   TrendingUp, 
   Award,
   Star,
-  Users,
-  Target,
-  ArrowUpRight
+  Target
 } from 'lucide-react';
 import { experienceData, ExperienceData } from '@/data/experience';
 
