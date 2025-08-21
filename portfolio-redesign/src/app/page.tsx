@@ -4,9 +4,9 @@ import { AboutSection } from '@/components/sections/AboutSection';
 import { TechStackSection } from '@/components/sections/TechStackSection';
 import { ExperienceTimeline } from '@/components/sections/ExperienceTimeline';
 import { BeyondCodingSection } from '@/components/sections/BeyondCodingSection';
-import { EnhancedProjectsSection } from '@/components/sections/EnhancedProjectsSection';
+import { ProjectsSection } from '@/components/sections/ProjectsSection';
 import { CertificationsSection } from '@/components/sections/CertificationsSection';
-import { RecentBlogPostsSection } from '@/components/sections/RecentBlogPostsSection';
+import { SimpleBlogSection } from '@/components/sections/SimpleBlogSection';
 import { ContactSection } from '@/components/sections/ContactSection';
 import { Footer } from '@/components/layout/Footer';
 
@@ -30,9 +30,9 @@ export default function Home() {
             rightContent={
               <>
                 <ExperienceTimeline />
-                <EnhancedProjectsSection />
+                <ProjectsSection />
                 <CertificationsSection />
-                <RecentBlogPostsSection />
+                <SimpleBlogSection />
               </>
             }
           />
