@@ -1,37 +1,37 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 @import "tailwindcss";
 
-/* CSS Custom Properties for Bryl Lim Style Theme System */
+/* CSS Custom Properties for Professional Theme System */
 :root {
-  /* Light theme colors - Clean and Professional */
+  /* Light theme colors - Ultra Professional */
   --color-background: #ffffff;
-  --color-surface: #f9fafb;
+  --color-surface: #fafbfc;
   --color-card: #ffffff;
-  --color-border: #e5e7eb;
-  --color-border-light: #f3f4f6;
+  --color-border: #e1e5e9;
+  --color-border-light: #f1f3f5;
   
-  /* Text colors - High contrast for readability */
-  --color-text-primary: #111827;
-  --color-text-secondary: #6b7280;
-  --color-text-muted: #9ca3af;
-  --color-text-accent: #2563eb;
+  /* Text colors - Optimized contrast for professionalism */
+  --color-text-primary: #0d1117;
+  --color-text-secondary: #656d76;
+  --color-text-muted: #8c959f;
+  --color-text-accent: #0969da;
   
   /* Interactive colors */
-  --color-accent: #2563eb;
-  --color-accent-hover: #1d4ed8;
-  --color-accent-light: #dbeafe;
-  --color-success: #059669;
-  --color-success-light: #d1fae5;
-  --color-warning: #d97706;
-  --color-warning-light: #fef3c7;
+  --color-accent: #0969da;
+  --color-accent-hover: #0550ae;
+  --color-accent-light: #ddf4ff;
+  --color-success: #1a7f37;
+  --color-success-light: #dcffe4;
+  --color-warning: #bf8700;
+  --color-warning-light: #fff8c5;
   
-  /* Button styles */
-  --color-button-primary: #111827;
+  /* Button styles - Professional grade */
+  --color-button-primary: #0d1117;
   --color-button-primary-hover: #000000;
-  --color-button-secondary: #f9fafb;
+  --color-button-secondary: #fafbfc;
   --color-button-secondary-hover: #f3f4f6;
   --color-button-text-primary: #ffffff;
-  --color-button-text-secondary: #111827;
+  --color-button-text-secondary: #0d1117;
   
   /* Enhanced shadows for depth and modern feel */
   --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.05);
@@ -62,35 +62,35 @@
 }
 
 [data-theme='dark'] {
-  /* Dark theme colors - Professional dark mode */
-  --color-background: #0f172a;
-  --color-surface: #1e293b;
-  --color-card: #1e293b;
-  --color-border: #334155;
-  --color-border-light: #475569;
+  /* Dark theme colors - Ultra Professional dark mode */
+  --color-background: #0d1117;
+  --color-surface: #161b22;
+  --color-card: #161b22;
+  --color-border: #30363d;
+  --color-border-light: #21262d;
   
   /* Text colors - Optimized for dark backgrounds */
-  --color-text-primary: #f8fafc;
-  --color-text-secondary: #cbd5e1;
-  --color-text-muted: #94a3b8;
-  --color-text-accent: #60a5fa;
+  --color-text-primary: #f0f6fc;
+  --color-text-secondary: #c9d1d9;
+  --color-text-muted: #8b949e;
+  --color-text-accent: #58a6ff;
   
   /* Interactive colors for dark mode */
-  --color-accent: #60a5fa;
-  --color-accent-hover: #3b82f6;
-  --color-accent-light: #1e40af;
-  --color-success: #10b981;
-  --color-success-light: #064e3b;
-  --color-warning: #f59e0b;
-  --color-warning-light: #78350f;
+  --color-accent: #58a6ff;
+  --color-accent-hover: #388bfd;
+  --color-accent-light: #0d2636;
+  --color-success: #3fb950;
+  --color-success-light: #033a16;
+  --color-warning: #f0883e;
+  --color-warning-light: #2e1c08;
   
   /* Button styles for dark mode */
-  --color-button-primary: #f8fafc;
-  --color-button-primary-hover: #e2e8f0;
-  --color-button-secondary: #334155;
-  --color-button-secondary-hover: #475569;
-  --color-button-text-primary: #0f172a;
-  --color-button-text-secondary: #f8fafc;
+  --color-button-primary: #f0f6fc;
+  --color-button-primary-hover: #ffffff;
+  --color-button-secondary: #21262d;
+  --color-button-secondary-hover: #30363d;
+  --color-button-text-primary: #0d1117;
+  --color-button-text-secondary: #f0f6fc;
   
   /* Enhanced shadows for dark mode with deeper contrast */
   --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.3);
@@ -700,18 +700,23 @@ a:hover {
 }
 
 .backdrop-blur {
-  backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
 }
 
 .backdrop-blur-sm {
-  backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
 }
 
 .backdrop-blur-lg {
-  backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+}
+
+.backdrop-blur-xl {
+  -webkit-backdrop-filter: blur(24px);
+  backdrop-filter: blur(24px);
 }
 
 /* Loading States */
