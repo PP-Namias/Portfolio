@@ -162,11 +162,11 @@ export const TechStackSection = () => {
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center">
           <Code className="w-5 h-5 mr-3 text-accent" />
-          <h2 className="text-xl font-semibold text-text-primary">Tech Stack</h2>
+          <h2 className="text-xl font-semibold text-primary">Tech Stack</h2>
         </div>
         <button 
           onClick={toggleAll}
-          className="text-sm text-accent hover:text-accent/80 transition-colors flex items-center gap-1"
+          className="btn-text"
         >
           {expandedCategories.size === Object.keys(techStackData.categories).length ? 'Collapse All' : 'Expand All'}
           <ChevronDown className="w-3 h-3" />
