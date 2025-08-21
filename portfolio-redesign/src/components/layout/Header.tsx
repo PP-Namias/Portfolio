@@ -79,11 +79,11 @@ export const Header = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className="pt-20 pb-8 bg-primary border-b border-border"
+        className="section bg-background border-b border-default"
         id="home"
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8">
+        <div className="container">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
             {/* Profile Section */}
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
               <motion.div
@@ -93,27 +93,41 @@ export const Header = () => {
                 <img
                   src={personalInfo.profile.avatar || "/profile.jpeg"}
                   alt={personalInfo.profile.name}
-                  className="w-24 h-24 sm:w-32 sm:h-32 rounded-full object-cover border-4 border-accent/20"
+                  className="w-24 h-24 sm:w-32 sm:h-32 rounded-full object-cover shadow-card"
+                  style={{ borderRadius: 'var(--radius-full)' }}
                 />
-                <div className="absolute -bottom-2 -right-2 w-8 h-8 bg-green-500 rounded-full border-4 border-primary flex items-center justify-center">
+                <div 
+                  className="absolute -bottom-2 -right-2 w-8 h-8 bg-success rounded-full flex items-center justify-center shadow-sm"
+                  style={{ 
+                    backgroundColor: 'var(--color-success)',
+                    borderRadius: 'var(--radius-full)',
+                    border: '3px solid var(--color-background)'
+                  }}
+                >
                   <CheckCircle className="w-4 h-4 text-white" />
                 </div>
               </motion.div>
               
               <div className="space-y-2">
-                <h1 className="text-3xl sm:text-4xl font-bold text-text-primary">
+                <h1 className="text-3xl sm:text-4xl font-bold text-primary">
                   {personalInfo.profile.name}
                 </h1>
-                <p className="text-lg sm:text-xl text-text-secondary font-medium">
+                <p className="text-lg sm:text-xl text-secondary font-medium">
                   {personalInfo.profile.title}
                 </p>
-                <div className="flex items-center text-text-secondary text-sm">
+                <div className="flex items-center text-muted text-sm">
                   <MapPin className="w-4 h-4 mr-1" />
                   {personalInfo.profile.location}
                 </div>
                 <div className="flex items-center gap-2 text-sm">
-                  <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                  <span className="text-green-400 font-medium">
+                  <div 
+                    className="w-2 h-2 rounded-full animate-pulse"
+                    style={{ 
+                      backgroundColor: 'var(--color-success)',
+                      borderRadius: 'var(--radius-full)'
+                    }}
+                  ></div>
+                  <span style={{ color: 'var(--color-success)' }} className="font-medium">
                     {personalInfo.profile.availability.message}
                   </span>
                 </div>
@@ -121,7 +135,7 @@ export const Header = () => {
             </div>
 
             {/* CTAs and Achievements */}
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-4 lg:items-end">
               {/* Achievement Badges */}
               <div className="flex flex-wrap gap-2">
                 {personalInfo.achievements.map((achievement, index) => {
@@ -130,7 +144,7 @@ export const Header = () => {
                     <motion.div
                       key={index}
                       whileHover={{ scale: 1.05 }}
-                      className={`px-3 py-1.5 rounded-full text-xs font-semibold border flex items-center gap-1.5 ${getAchievementBadgeClass(achievement.color)}`}
+                      className="chip chip-accent"
                     >
                       {IconComponent && <IconComponent className="w-3 h-3" />}
                       {achievement.title}
@@ -144,7 +158,7 @@ export const Header = () => {
                 <motion.button
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  className="btn-primary flex items-center justify-center gap-2 px-6 py-3"
+                  className="btn btn-primary"
                   onClick={() => scrollToSection('#contact')}
                 >
                   <Calendar className="w-4 h-4" />
@@ -153,7 +167,7 @@ export const Header = () => {
                 <motion.button
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  className="btn-secondary flex items-center justify-center gap-2 px-6 py-3"
+                  className="btn btn-secondary"
                   onClick={() => window.open(`mailto:${personalInfo.profile.email}`)}
                 >
                   <Send className="w-4 h-4" />
