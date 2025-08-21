@@ -42,16 +42,16 @@ const ExperienceCard = ({ experience, index }: ExperienceCardProps) => {
           {/* Header */}
           <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2">
             <div className="flex-1">
-              <h3 className="text-lg font-semibold text-primary mb-1">
+              <h3 className="text-lg font-semibold text-text-primary mb-1">
                 {experience.role}
               </h3>
               <div className="flex items-center gap-2 mb-2">
-                <span className="font-medium text-secondary">{experience.company}</span>
+                <span className="font-medium text-text-secondary">{experience.company}</span>
                 <span className={`px-2 py-1 rounded-full text-xs font-medium border ${getTypeColor(experience.type)}`}>
                   {experience.type.replace('-', ' ')}
                 </span>
               </div>
-              <div className="flex items-center gap-4 text-xs text-tertiary">
+              <div className="flex items-center gap-4 text-xs text-text-secondary">
                 <div className="flex items-center gap-1">
                   <Calendar className="w-3 h-3" />
                   {experience.duration.displayDuration}
@@ -66,10 +66,10 @@ const ExperienceCard = ({ experience, index }: ExperienceCardProps) => {
 
           {/* Key Achievements */}
           <div>
-            <h4 className="text-sm font-medium text-primary mb-2">Key Achievements</h4>
+            <h4 className="text-sm font-medium text-text-primary mb-2">Key Achievements</h4>
             <ul className="space-y-1">
               {experience.achievements.map((achievement, achievementIndex) => (
-                <li key={achievementIndex} className="text-sm text-secondary flex items-start gap-2">
+                <li key={achievementIndex} className="text-sm text-text-secondary flex items-start gap-2">
                   <div className="w-1 h-1 bg-accent rounded-full mt-2 flex-shrink-0"></div>
                   {achievement}
                 </li>
@@ -80,7 +80,7 @@ const ExperienceCard = ({ experience, index }: ExperienceCardProps) => {
           {/* Metrics */}
           {experience.metrics && experience.metrics.length > 0 && (
             <div className="bg-secondary/20 p-3 rounded-lg border border-border">
-              <h4 className="text-sm font-medium text-primary mb-2 flex items-center gap-1">
+              <h4 className="text-sm font-medium text-text-primary mb-2 flex items-center gap-1">
                 <TrendingUp className="w-3 h-3" />
                 Impact Metrics
               </h4>
@@ -90,7 +90,7 @@ const ExperienceCard = ({ experience, index }: ExperienceCardProps) => {
                     <div className="text-lg font-bold text-accent">
                       {metric.value}
                     </div>
-                    <div className="text-xs text-tertiary">
+                    <div className="text-xs text-text-secondary">
                       {metric.label}
                     </div>
                   </div>
