@@ -101,7 +101,7 @@ const ExperienceCard = ({ experience, index }: ExperienceCardProps) => {
 
           {/* Technologies */}
           <div>
-            <h4 className="text-sm font-medium text-primary mb-2">Technologies Used</h4>
+            <h4 className="text-sm font-medium text-text-primary mb-2">Technologies Used</h4>
             <div className="flex flex-wrap gap-1">
               {experience.technologies.map((tech, techIndex) => (
                 <span key={techIndex} className="badge-sm">
@@ -129,7 +129,7 @@ export const ExperienceTimeline = () => {
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center">
           <Briefcase className="w-5 h-5 mr-3 text-accent" />
-          <h2 className="text-xl font-semibold text-primary">Experience</h2>
+          <h2 className="text-xl font-semibold text-text-primary">Experience</h2>
         </div>
         <button className="text-sm text-accent hover:text-accent/80 transition-colors flex items-center gap-1">
           View Resume
