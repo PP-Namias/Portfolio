@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { 
   Menu, X, User, Briefcase, Code, FolderOpen, Mail, Sun, Moon,
@@ -14,14 +14,14 @@ export const Header = () => {
   const [activeSection, setActiveSection] = useState('home');
   const { theme, toggleTheme } = useTheme();
 
-  const navigation = [
+  const navigation = useMemo(() => [
     { name: 'Home', href: '#home', icon: User },
     { name: 'About', href: '#about', icon: User },
     { name: 'Experience', href: '#experience', icon: Briefcase },
     { name: 'Skills', href: '#skills', icon: Code },
     { name: 'Projects', href: '#projects', icon: FolderOpen },
     { name: 'Contact', href: '#contact', icon: Mail },
-  ];
+  ], []);
 
   const iconMap = {
     Award,
