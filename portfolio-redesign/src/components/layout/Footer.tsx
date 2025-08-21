@@ -1,48 +1,97 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Github, Linkedin, Twitter, Mail, ExternalLink, Heart } from 'lucide-react';
+import { 
+  Github, 
+  Linkedin, 
+  Twitter, 
+  Mail, 
+  ExternalLink, 
+  Heart, 
+  ArrowUp, 
+  Code,
+  Coffee,
+  MapPin,
+  Calendar,
+  Star,
+  Zap
+} from 'lucide-react';
 import { personalInfo } from '@/data/personal';
 
 export const Footer = () => {
+  const [emailCopied, setEmailCopied] = useState(false);
+
   const socialLinks = [
     {
       name: 'GitHub',
       href: 'https://github.com/PP-Namias',
       icon: Github,
-      username: '@PP-Namias'
+      username: '@PP-Namias',
+      followers: '1.2k',
+      description: 'Open source projects'
     },
     {
       name: 'LinkedIn',
       href: 'https://linkedin.com/in/pp-namias',
       icon: Linkedin,
-      username: 'PP Namias'
+      username: 'PP Namias',
+      followers: '500+',
+      description: 'Professional network'
     },
     {
       name: 'Twitter',
       href: 'https://twitter.com/pp_namias',
       icon: Twitter,
-      username: '@pp_namias'
+      username: '@pp_namias',
+      followers: '300+',
+      description: 'Tech insights & updates'
     },
     {
       name: 'Email',
       href: `mailto:${personalInfo.profile.email}`,
       icon: Mail,
-      username: personalInfo.profile.email
+      username: personalInfo.profile.email,
+      description: 'Direct contact',
+      canCopy: true
     }
   ];
 
   const quickLinks = [
-    { name: 'About', href: '#about' },
-    { name: 'Experience', href: '#experience' },
-    { name: 'Skills', href: '#skills' },
-    { name: 'Projects', href: '#projects' },
-    { name: 'Blog', href: '#blog' },
-    { name: 'Contact', href: '#contact' }
+    { name: 'About', href: '#about', emoji: '👨‍💻' },
+    { name: 'Experience', href: '#experience', emoji: '🚀' },
+    { name: 'Skills', href: '#skills', emoji: '⚡' },
+    { name: 'Projects', href: '#projects', emoji: '🛠️' },
+    { name: 'Blog', href: '#blog', emoji: '📝' },
+    { name: 'Contact', href: '#contact', emoji: '📞' }
+  ];
+
+  const stats = [
+    { label: 'Years of Experience', value: '5+', icon: Calendar },
+    { label: 'Projects Completed', value: '50+', icon: Code },
+    { label: 'Happy Clients', value: '25+', icon: Star },
+    { label: 'Coffee Consumed', value: '∞', icon: Coffee }
+  ];
+
+  const techStack = [
+    'Next.js', 'TypeScript', 'Tailwind CSS', 'Framer Motion', 'Vercel'
   ];
 
   const currentYear = new Date().getFullYear();
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleEmailCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(personalInfo.profile.email);
+      setEmailCopied(true);
+      setTimeout(() => setEmailCopied(false), 2000);
+    } catch (err) {
+      console.error('Failed to copy email:', err);
+    }
+  };
 
   return (
     <footer className="py-12 bg-primary border-t border-border">
