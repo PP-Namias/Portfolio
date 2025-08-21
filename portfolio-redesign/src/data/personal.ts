@@ -33,24 +33,22 @@ export interface PersonalInfo {
     _key: string;
     title: string;
     description: string;
-    color: "blue" | "green" | "yellow" | "purple" | "red";
+    color: string;
     icon: string;
-    featured: boolean;
-    metrics?: {
-      number: string;
-      label: string;
-    };
+    date: string;
+    verified: boolean;
+    link?: string;
   }>;
   about: {
     summary: string[];
     specializations: string[];
     currentFocus: string;
     yearsOfExperience: number;
-    quote: string;
-    philosophy: string;
-    workingStyle: string[];
-    interests: string[];
-    languages: Array<{
+    developersBuiltCommunity?: number;
+    personalPhilosophy?: string;
+    interests?: string[];
+    workingStyle?: string[];
+    languages?: Array<{
       name: string;
       proficiency: string;
     }>;
@@ -89,7 +87,7 @@ export const personal = {
     intro: personalInfo.about.summary[0] || '',
     approach: personalInfo.about.summary[1] || '',
     passion: personalInfo.about.summary[2] || '',
-    collaboration: personalInfo.about.workingStyle.join(' ')
+    collaboration: personalInfo.about.workingStyle?.join(' ') || ''
   },
   social: personalInfo.socialLinks.reduce((acc, link) => {
     acc[link.platform.toLowerCase()] = link.url;
