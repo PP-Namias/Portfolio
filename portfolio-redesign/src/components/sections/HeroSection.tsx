@@ -66,7 +66,7 @@ export const HeroSection = () => {
                 PP Namias
               </span>
             </h1>
-            <div className="text-xl md:text-2xl text-gray-600 dark:text-gray-300 font-medium mb-2">
+            <div className="text-xl md:text-2xl text-secondary font-medium mb-2">
               {displayText}
               <span className="animate-pulse">|</span>
             </div>
@@ -77,7 +77,7 @@ export const HeroSection = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.4 }}
-            className="flex items-center justify-center space-x-6 mb-8 text-gray-600 dark:text-gray-400"
+            className="flex items-center justify-center space-x-6 mb-8 text-secondary"
           >
             <div className="flex items-center space-x-2">
               <MapPin className="w-4 h-4" />
@@ -143,7 +143,7 @@ export const HeroSection = () => {
                 <a
                   key={social.name}
                   href={social.href}
-                  className="p-2 rounded-lg transition-all hover:scale-110 hover:bg-gray-100 dark:hover:bg-gray-800"
+                  className="p-2 rounded-lg transition-all hover:scale-110 hover:bg-surface"
                   aria-label={social.name}
                 >
                   <Icon className="w-5 h-5 text-gray-600 dark:text-gray-400" />
