@@ -30,27 +30,27 @@ export const AboutSection = () => {
         </div>
 
         {/* Key Stats */}
-        <div className="grid grid-cols-2 gap-4 py-4 border-t border-default">
+        <div className="grid grid-cols-2 gap-4 py-3 border-t border-default">
           <div className="text-center">
-            <div className="text-2xl font-bold text-accent mb-1">
+            <div className="text-xl font-bold text-accent mb-1">
               {personalInfo.about.yearsOfExperience}+
             </div>
             <div className="text-xs text-muted">Years Experience</div>
           </div>
           <div className="text-center">
-            <div className="text-2xl font-bold text-accent mb-1">
+            <div className="text-xl font-bold text-accent mb-1">
               {personalInfo.about.metrics.projectsCompleted}+
             </div>
             <div className="text-xs text-muted">Projects Completed</div>
           </div>
           <div className="text-center">
-            <div className="text-2xl font-bold text-accent mb-1">
+            <div className="text-xl font-bold text-accent mb-1">
               {personalInfo.about.metrics.teamsLed}+
             </div>
             <div className="text-xs text-muted">Teams Led</div>
           </div>
           <div className="text-center">
-            <div className="text-2xl font-bold text-accent mb-1">
+            <div className="text-xl font-bold text-accent mb-1">
               {personalInfo.about.metrics.certifications}+
             </div>
             <div className="text-xs text-muted">Certifications</div>
