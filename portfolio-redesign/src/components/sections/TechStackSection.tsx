@@ -186,8 +186,8 @@ export const TechStackSection = () => {
       </div>
 
       {/* Proficiency Legend */}
-      <div className="mt-6 p-4 bg-secondary/20 rounded-lg border border-border">
-        <h4 className="text-sm font-medium text-text-primary mb-3">Proficiency Levels</h4>
+      <div className="mt-6 p-4 bg-surface rounded-lg border border-default">
+        <h4 className="text-sm font-medium text-primary mb-3">Proficiency Levels</h4>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
           {[
             { level: 'expert', desc: '5+ years' },
@@ -199,7 +199,7 @@ export const TechStackSection = () => {
               <span className={`px-2 py-1 rounded-full text-xs font-medium border ${getProficiencyColor(level)}`}>
                 {level}
               </span>
-              <span className="text-xs text-text-secondary">{desc}</span>
+              <span className="text-xs text-muted">{desc}</span>
             </div>
           ))}
         </div>
