@@ -10,7 +10,17 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Light theme colors
+        // CSS Variable-based colors for theme switching
+        primary: 'var(--color-bg-primary)',
+        secondary: 'var(--color-bg-secondary)',
+        surface: 'var(--color-surface)',
+        'text-primary': 'var(--color-text-primary)',
+        'text-secondary': 'var(--color-text-secondary)',
+        accent: 'var(--color-accent)',
+        'accent-hover': 'var(--color-accent-hover)',
+        border: 'var(--color-border)',
+        
+        // Legacy theme colors for specific usage
         light: {
           background: '#ffffff',
           'background-secondary': '#f8fafc',
@@ -21,7 +31,6 @@ const config: Config = {
           'accent-hover': '#2563eb',
           border: '#e2e8f0',
         },
-        // Dark theme colors (default)
         dark: {
           background: '#0a0a0a',
           'background-secondary': '#1a1a1a',
