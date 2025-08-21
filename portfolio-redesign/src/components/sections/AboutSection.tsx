@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { User, Target, Calendar, Users } from 'lucide-react';
+import { User, Target } from 'lucide-react';
 import { personalInfo } from '@/data/personal';
 
 export const AboutSection = () => {
@@ -78,7 +78,7 @@ export const AboutSection = () => {
         {personalInfo.about.personalPhilosophy && (
           <div className="border-l-4 border-accent pl-4">
             <p className="text-sm italic text-text-secondary">
-              "{personalInfo.about.personalPhilosophy}"
+              &ldquo;{personalInfo.about.personalPhilosophy}&rdquo;
             </p>
           </div>
         )}
