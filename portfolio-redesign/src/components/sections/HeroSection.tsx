@@ -146,7 +146,7 @@ export const HeroSection = () => {
                   className="p-2 rounded-lg transition-all hover:scale-110 hover:bg-surface"
                   aria-label={social.name}
                 >
-                  <Icon className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+                  <Icon className="w-5 h-5 text-secondary" />
                 </a>
               );
             })}
