@@ -1,76 +1,98 @@
+import personalData from './json/personal.json';
+
+// Type definitions for the personal data structure (Sanity CMS compatible)
 export interface PersonalInfo {
+  _id: string;
+  _type: string;
+  _createdAt: string;
+  _updatedAt: string;
   profile: {
     name: string;
     title: string;
+    tagline: string;
     location: string;
     email: string;
-    image: string;
+    phone: string;
+    website: string;
+    image: {
+      _type: string;
+      asset: {
+        _ref: string;
+        _type: string;
+      };
+      alt: string;
+      url: string;
+    };
     availability: {
       status: "available" | "busy" | "partially-available";
       message: string;
+      updated: string;
     };
   };
   achievements: Array<{
+    _key: string;
     title: string;
+    description: string;
     color: "blue" | "green" | "yellow" | "purple" | "red";
     icon: string;
+    featured: boolean;
+    metrics?: {
+      number: string;
+      label: string;
+    };
   }>;
   about: {
     summary: string[];
     specializations: string[];
     currentFocus: string;
     yearsOfExperience: number;
-    developersBuiltCommunity?: number;
-    personalPhilosophy?: string;
+    quote: string;
+    philosophy: string;
+    workingStyle: string[];
+    interests: string[];
+    languages: Array<{
+      name: string;
+      proficiency: string;
+    }>;
   };
+  socialLinks: Array<{
+    _key: string;
+    platform: string;
+    url: string;
+    username: string;
+    icon: string;
+    primary: boolean;
+  }>;
 }
 
-export const personalInfo: PersonalInfo = {
-  profile: {
-    name: "PP Namias",
-    title: "Principal AI Engineer & Full-Stack Developer",
-    location: "Manila, Philippines",
-    email: "contact@ppnamias.dev",
-    image: "/profile.jpeg",
-    availability: {
-      status: "available",
-      message: "Available for projects"
-    }
-  },
-  achievements: [
-    {
-      title: "PHP Expert",
-      color: "blue",
-      icon: "Award"
-    },
-    {
-      title: "DICT OpenGov HacKathon 2025 Champion",
-      color: "yellow",
-      icon: "Trophy"
-    },
-    {
-      title: "Available for Projects",
-      color: "green",
-      icon: "CheckCircle"
-    }
-  ],
+// Export the imported JSON data with proper typing
+export const personalInfo = personalData as PersonalInfo;
+
+// Legacy compatibility - convert Sanity structure to simple types for existing components
+export const personal = {
+  name: personalInfo.profile.name,
+  title: personalInfo.profile.title,
+  location: personalInfo.profile.location,
+  email: personalInfo.profile.email,
+  phone: personalInfo.profile.phone,
+  website: personalInfo.profile.website,
+  avatar: personalInfo.profile.image.url,
+  bio: personalInfo.about.summary.join(' '),
+  shortBio: personalInfo.profile.tagline,
+  experience: `${personalInfo.about.yearsOfExperience}+ years`,
+  availability: personalInfo.profile.availability.message,
+  achievements: personalInfo.achievements.map(achievement => ({
+    icon: achievement.icon,
+    text: achievement.title
+  })),
   about: {
-    summary: [
-      "I'm a full-stack software engineer specializing in developing solutions with JavaScript, Python, and modern web technologies for building modern websites, web applications, mobile apps, search engine optimization, digital marketing, and making code tutorials.",
-      "I've helped startups and MSMEs grow and streamline their processes through software solutions. I've also built a community of over 200,000 developers sharing knowledge and mentorship globally.",
-      "Lately, I've been diving deeper into the world of artificial intelligence, focusing on integrating AI tools and techniques into modern applications. My work now includes developing AI-powered solutions, creating intelligent applications, and leveraging generative AI to optimize development workflows and deliver cutting-edge technology."
-    ],
-    specializations: [
-      "Full-Stack Development",
-      "AI Integration & Development",
-      "Modern Web Technologies",
-      "Digital Marketing & SEO",
-      "Community Building & Mentorship",
-      "Mobile App Development"
-    ],
-    currentFocus: "Integrating AI tools and techniques into modern applications",
-    yearsOfExperience: 5,
-    developersBuiltCommunity: 200000,
-    personalPhilosophy: "Building technology that makes a difference, one line of code at a time."
-  }
+    intro: personalInfo.about.summary[0] || '',
+    approach: personalInfo.about.summary[1] || '',
+    passion: personalInfo.about.summary[2] || '',
+    collaboration: personalInfo.about.workingStyle.join(' ')
+  },
+  social: personalInfo.socialLinks.reduce((acc, link) => {
+    acc[link.platform.toLowerCase()] = link.url;
+    return acc;
+  }, {} as Record<string, string>)
 };
