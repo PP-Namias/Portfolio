@@ -52,12 +52,12 @@ const BlogPostCard = ({ post, index }: { post: BlogPost; index: number }) => {
       viewport={{ once: true }}
       className="group cursor-pointer"
     >
-      <div className="p-4 rounded-lg border border-default hover:border-accent/30 transition-all duration-300 hover:shadow-md">
-        <h3 className="font-semibold text-primary mb-2 group-hover:text-accent transition-colors leading-tight">
+      <div className="p-3 rounded-lg border border-default hover:border-accent/30 transition-all duration-300 hover:shadow-sm">
+        <h3 className="font-medium text-primary mb-2 group-hover:text-accent transition-colors leading-tight text-sm">
           {post.title}
         </h3>
         
-        <p className="text-sm text-secondary mb-3 leading-relaxed line-clamp-2">
+        <p className="text-xs text-secondary mb-2 leading-relaxed line-clamp-2">
           {post.description}
         </p>
 
@@ -118,7 +118,7 @@ export const SimpleBlogSection = () => {
         </a>
       </div>
 
-      <div className="space-y-4">
+      <div className="space-y-3">
         {blogPosts.map((post, index) => (
           <BlogPostCard key={post.id} post={post} index={index} />
         ))}
