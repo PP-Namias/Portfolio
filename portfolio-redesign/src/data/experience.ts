@@ -1,3 +1,59 @@
+import experienceData from './json/experience.json';
+
+// Type definitions for experience data (Sanity CMS compatible)
+export interface ExperienceEntry {
+  _id: string;
+  _type: string;
+  _createdAt: string;
+  _updatedAt: string;
+  company: string;
+  position: string;
+  duration: {
+    start: string;
+    end: string | null;
+    displayDuration: string;
+  };
+  type: "full-time" | "contract" | "freelance" | "internship";
+  location: string;
+  workType: "remote" | "onsite" | "hybrid";
+  description: string;
+  achievements: string[];
+  technologies: string[];
+  responsibilities: string[];
+  keyProjects?: Array<{
+    name: string;
+    description: string;
+    impact: string;
+  }>;
+  metrics?: Array<{
+    label: string;
+    value: string;
+    description?: string;
+  }>;
+  skills: string[];
+  companyInfo?: {
+    industry: string;
+    size: string;
+    description: string;
+    website?: string;
+  };
+  featured: boolean;
+  current: boolean;
+}
+
+interface ExperienceCollection {
+  _id: string;
+  _type: string;
+  _createdAt: string;
+  _updatedAt: string;
+  experiences: ExperienceEntry[];
+}
+
+// Export the imported JSON data with proper typing
+const experienceCollection = experienceData as ExperienceCollection;
+export const experiences = experienceCollection.experiences;
+
+// Legacy compatibility - convert to old format
 export interface ExperienceData {
   id: string;
   company: string;
@@ -18,6 +74,26 @@ export interface ExperienceData {
     value: string | number;
   }>;
 }
+
+export const experienceData: ExperienceData[] = experiences.map(exp => ({
+  id: exp._id,
+  company: exp.company,
+  role: exp.position,
+  duration: {
+    start: exp.duration.start,
+    end: exp.duration.end || "present",
+    displayDuration: exp.duration.displayDuration
+  },
+  type: exp.type,
+  location: exp.location,
+  achievements: exp.achievements,
+  technologies: exp.technologies,
+  responsibilities: exp.responsibilities,
+  metrics: exp.metrics?.map(metric => ({
+    label: metric.label,
+    value: metric.value
+  }))
+}));
 
 export const experienceData: ExperienceData[] = [
   {
