@@ -70,12 +70,12 @@ export const AboutSection = () => {
 
         {/* Specializations */}
         <div>
-          <h3 className="text-sm font-medium text-primary mb-3">Specializations</h3>
-          <div className="flex flex-wrap gap-2">
+          <h3 className="text-sm font-medium text-primary mb-2">Specializations</h3>
+          <div className="flex flex-wrap gap-1.5">
             {personalInfo.about.specializations.map((spec, index) => (
               <motion.span
                 key={index}
-                whileHover={{ scale: 1.05 }}
+                whileHover={{ scale: 1.02 }}
                 className="chip"
               >
                 {spec}
