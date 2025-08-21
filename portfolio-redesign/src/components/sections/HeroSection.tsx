@@ -23,9 +23,9 @@ export const HeroSection = () => {
   }, []);
 
   const badges = [
-    { text: 'PHP Developer Expert', color: 'bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-400' },
-    { text: 'DICT OpenGov HacKathon 2025 Champion', color: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-400' },
-    { text: 'Available for Projects', color: 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400' },
+    { text: 'PHP Developer Expert', color: 'chip' },
+    { text: 'DICT OpenGov HacKathon 2025 Champion', color: 'chip-accent' },
+    { text: 'Available for Projects', color: 'chip-success' },
   ];
 
   const socialLinks = [
