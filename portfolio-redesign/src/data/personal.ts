@@ -1,19 +1,38 @@
+// Import clean JSON data
+import personalData from './json/personal-clean.json';
+
 // Personal Information Interface
 export interface PersonalInfo {
-  name: string;
-  title: string;
-  location: string;
-  email: string;
-  phone: string;
-  website: string;
-  summary: string;
-  avatar: string;
-  resumeUrl?: string;
-  availability: {
-    status: 'available' | 'busy' | 'unavailable';
-    message: string;
+  profile: {
+    name: string;
+    title: string;
+    tagline: string;
+    location: string;
+    email: string;
+    phone: string;
+    website: string;
+    avatar: string;
+    resumeUrl?: string;
+    availability: {
+      status: 'available' | 'busy' | 'unavailable';
+      message: string;
+      lastUpdated: string;
+    };
+  };
+  about: {
+    summary: string[];
+    specializations: string[];
+    currentFocus: string;
+    yearsOfExperience: number;
+    metrics: {
+      projectsCompleted: number;
+      teamsLed: number;
+      certifications: number;
+      openSourceContributions: number;
+    };
   };
   achievements: Array<{
+    id: string;
     title: string;
     description: string;
     color: string;
@@ -21,33 +40,27 @@ export interface PersonalInfo {
     date: string;
     verified: boolean;
     link?: string;
+    category: string;
   }>;
-  about: {
-    summary: string[];
-    specializations: string[];
-    currentFocus: string;
-    yearsOfExperience: number;
-  };
   socialLinks: Array<{
+    id: string;
     name: string;
     url: string;
     icon: string;
     username: string;
+    primary: boolean;
   }>;
+  settings: {
+    showAvailability: boolean;
+    showMetrics: boolean;
+    showAchievements: boolean;
+    contactFormEnabled: boolean;
+    resumeDownloadEnabled: boolean;
+  };
 }
 
-// Direct data export for immediate use (matching Bryl Lim's clean structure)
-export const personalInfo: PersonalInfo = {
-  name: "PP Namias",
-  title: "Principal AI Engineer & Full-Stack Developer",
-  location: "Manila, Philippines",
-  email: "contact@ppnamias.dev",
-  phone: "+63 123 456 7890",
-  website: "https://ppnamias.dev",
-  summary: "Building technology that makes a difference",
-  avatar: "/profile.jpeg",
-  resumeUrl: "/resume.pdf",
-  availability: {
+// Export typed data
+export const personalInfo: PersonalInfo = personalData as PersonalInfo;
     status: "available",
     message: "Available for new opportunities"
   },
