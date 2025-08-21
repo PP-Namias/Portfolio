@@ -23,7 +23,7 @@ export const AboutSection = () => {
         {/* Professional Summary */}
         <div className="space-y-4">
           {personalInfo.about.summary.map((paragraph, index) => (
-            <p key={index} className="text-sm leading-relaxed text-text-secondary">
+            <p key={index} className="text-sm leading-relaxed text-secondary">
               {paragraph}
             </p>
           ))}
