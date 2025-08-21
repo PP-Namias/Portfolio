@@ -74,8 +74,8 @@ const TechCategory = ({ name, data, isExpanded, onToggle }: TechCategoryProps) =
       >
         <div className="flex items-center gap-3">
           {IconComponent && <IconComponent className="w-5 h-5 text-accent" />}
-          <span className="font-medium text-text-primary">{name}</span>
-          <span className="text-xs text-text-secondary bg-secondary/30 px-2 py-1 rounded-full">
+          <span className="font-medium text-primary">{name}</span>
+          <span className="chip-sm text-muted">
             {data.technologies.length} skills
           </span>
         </div>
