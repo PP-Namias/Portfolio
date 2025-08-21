@@ -611,6 +611,22 @@ a:hover {
   color: var(--color-text-accent);
 }
 
+.text-success {
+  color: var(--color-success);
+}
+
+.bg-success {
+  background-color: var(--color-success);
+}
+
+.border-3 {
+  border-width: 3px;
+}
+
+.border-background {
+  border-color: var(--color-background);
+}
+
 .border-default {
   border-color: var(--color-border);
 }
