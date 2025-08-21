@@ -33,13 +33,15 @@
   --color-button-text-primary: #ffffff;
   --color-button-text-secondary: #111827;
   
-  /* Shadows for depth */
+  /* Enhanced shadows for depth and modern feel */
   --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.05);
   --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
   --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
   --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-  --shadow-card: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
-  --shadow-card-hover: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  --shadow-card: 0 1px 3px 0 rgb(0 0 0 / 0.12), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --shadow-card-hover: 0 8px 25px -5px rgb(0 0 0 / 0.15), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --shadow-card-active: 0 12px 35px -8px rgb(0 0 0 / 0.18), 0 6px 8px -6px rgb(0 0 0 / 0.12);
   
   /* Border radius for modern look */
   --radius-sm: 0.5rem;
@@ -47,6 +49,7 @@
   --radius-lg: 1rem;
   --radius-xl: 1.5rem;
   --radius-2xl: 2rem;
+  --radius-3xl: 2.5rem;
   --radius-full: 9999px;
   
   /* Spacing system */
@@ -89,13 +92,15 @@
   --color-button-text-primary: #0f172a;
   --color-button-text-secondary: #f8fafc;
   
-  /* Enhanced shadows for dark mode */
+  /* Enhanced shadows for dark mode with deeper contrast */
   --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.3);
   --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.4), 0 1px 2px -1px rgb(0 0 0 / 0.4);
   --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4), 0 2px 4px -2px rgb(0 0 0 / 0.4);
   --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.4), 0 4px 6px -4px rgb(0 0 0 / 0.4);
-  --shadow-card: 0 1px 3px 0 rgb(0 0 0 / 0.3), 0 1px 2px -1px rgb(0 0 0 / 0.3);
-  --shadow-card-hover: 0 4px 6px -1px rgb(0 0 0 / 0.4), 0 2px 4px -2px rgb(0 0 0 / 0.4);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.5), 0 8px 10px -6px rgb(0 0 0 / 0.4);
+  --shadow-card: 0 1px 3px 0 rgb(0 0 0 / 0.35), 0 1px 2px -1px rgb(0 0 0 / 0.3);
+  --shadow-card-hover: 0 8px 25px -5px rgb(0 0 0 / 0.45), 0 4px 6px -4px rgb(0 0 0 / 0.35);
+  --shadow-card-active: 0 12px 35px -8px rgb(0 0 0 / 0.5), 0 6px 8px -6px rgb(0 0 0 / 0.4);
 }
 
 @theme inline {
@@ -294,21 +299,28 @@ a:hover {
   color: var(--color-accent-hover);
 }
 
-/* Modern Card System */
+/* Modern Card System - Enhanced with Depth */
 .card {
   background-color: var(--color-card);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-2xl);
   padding: var(--card-padding);
   box-shadow: var(--shadow-card);
-  transition: all 0.2s ease;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   position: relative;
   overflow: hidden;
+  transform: translateY(0);
 }
 
 .card:hover {
   box-shadow: var(--shadow-card-hover);
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+  border-color: color-mix(in srgb, var(--color-border) 70%, var(--color-accent));
+}
+
+.card:active {
+  box-shadow: var(--shadow-card-active);
+  transform: translateY(-3px);
 }
 
 .card-compact {
