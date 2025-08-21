@@ -497,10 +497,6 @@ body {
     border: 1px solid black !important;
   }
 }
-  border: none;
-  color: white;
-  box-shadow: var(--shadow-sm);
-}
 
 /* Enhanced Grid System */
 .grid {
