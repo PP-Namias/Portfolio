@@ -1,183 +1,269 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Menu, X } from 'lucide-react';
-import { ThemeToggle } from '../ui/ThemeToggle';
-
-const navigation = [
-  { name: 'About', href: '#about' },
-  { name: 'Experience', href: '#experience' },
-  { name: 'Skills', href: '#skills' },
-  { name: 'Projects', href: '#projects' },
-  { name: 'Contact', href: '#contact' },
-];
+import { motion } from 'framer-motion';
+import { 
+  Menu, X, User, Briefcase, Code, FolderOpen, Mail, Sun, Moon,
+  Calendar, Send, Award, MapPin, CheckCircle, Trophy
+} from 'lucide-react';
+import { useTheme } from '@/hooks/useTheme';
+import { personalInfo } from '@/data/personal';
 
 export const Header = () => {
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [activeSection, setActiveSection] = useState('');
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState('home');
+  const { theme, toggleTheme } = useTheme();
+
+  const navigation = [
+    { name: 'Home', href: '#home', icon: User },
+    { name: 'About', href: '#about', icon: User },
+    { name: 'Experience', href: '#experience', icon: Briefcase },
+    { name: 'Skills', href: '#skills', icon: Code },
+    { name: 'Projects', href: '#projects', icon: FolderOpen },
+    { name: 'Contact', href: '#contact', icon: Mail },
+  ];
+
+  const iconMap = {
+    Award,
+    Trophy,
+    CheckCircle,
+    User,
+    Calendar,
+    Send
+  };
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
-    };
-
-    const handleSectionChange = () => {
       const sections = navigation.map(item => item.href.slice(1));
-      const currentSection = sections.find(section => {
+      const scrollPosition = window.scrollY + 100;
+
+      for (const section of sections) {
         const element = document.getElementById(section);
         if (element) {
-          const rect = element.getBoundingClientRect();
-          return rect.top <= 100 && rect.bottom >= 100;
+          const { offsetTop, offsetHeight } = element;
+          if (scrollPosition >= offsetTop && scrollPosition < offsetTop + offsetHeight) {
+            setActiveSection(section);
+            break;
+          }
         }
-        return false;
-      });
-      
-      if (currentSection) {
-        setActiveSection(currentSection);
       }
     };
 
     window.addEventListener('scroll', handleScroll);
-    window.addEventListener('scroll', handleSectionChange);
-    
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-      window.removeEventListener('scroll', handleSectionChange);
-    };
-  }, []);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [navigation]);
 
   const scrollToSection = (href: string) => {
-    const element = document.querySelector(href);
+    const element = document.getElementById(href.slice(1));
     if (element) {
-      element.scrollIntoView({ 
-        behavior: 'smooth',
-        block: 'start'
-      });
+      element.scrollIntoView({ behavior: 'smooth' });
     }
-    setIsMobileMenuOpen(false);
+    setIsMenuOpen(false);
+  };
+
+  const getAchievementBadgeClass = (color: string) => {
+    const colorClasses = {
+      blue: 'bg-blue-500/20 text-blue-400 border-blue-500/30',
+      green: 'bg-green-500/20 text-green-400 border-green-500/30',
+      yellow: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30',
+      purple: 'bg-purple-500/20 text-purple-400 border-purple-500/30',
+      red: 'bg-red-500/20 text-red-400 border-red-500/30'
+    };
+    return colorClasses[color as keyof typeof colorClasses] || colorClasses.blue;
   };
 
   return (
     <>
-      <header
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-          isScrolled 
-            ? 'backdrop-blur-md bg-white/80 dark:bg-black/80 shadow-md' 
-            : 'bg-transparent'
-        }`}
-        style={{
-          backgroundColor: isScrolled ? 'var(--color-bg-primary)' : 'transparent',
-          borderBottom: isScrolled ? '1px solid var(--color-border)' : 'none',
-        }}
+      {/* Professional Header Section - Bryl Lim Style */}
+      <motion.section
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        className="pt-20 pb-8 bg-primary border-b border-border"
+        id="home"
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            {/* Logo/Name */}
-            <div className="flex-shrink-0">
-              <button
-                onClick={() => scrollToSection('#hero')}
-                className="text-lg font-semibold transition-colors hover:text-blue-600 dark:hover:text-green-400"
-                style={{ color: 'var(--color-text-primary)' }}
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8">
+            {/* Profile Section */}
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                className="relative"
               >
-                PP Namias
-              </button>
+                <img
+                  src={personalInfo.profile.image}
+                  alt={personalInfo.profile.name}
+                  className="w-24 h-24 sm:w-32 sm:h-32 rounded-full object-cover border-4 border-accent/20"
+                />
+                <div className="absolute -bottom-2 -right-2 w-8 h-8 bg-green-500 rounded-full border-4 border-primary flex items-center justify-center">
+                  <CheckCircle className="w-4 h-4 text-white" />
+                </div>
+              </motion.div>
+              
+              <div className="space-y-2">
+                <h1 className="text-3xl sm:text-4xl font-bold text-primary">
+                  {personalInfo.profile.name}
+                </h1>
+                <p className="text-lg sm:text-xl text-secondary font-medium">
+                  {personalInfo.profile.title}
+                </p>
+                <div className="flex items-center text-tertiary text-sm">
+                  <MapPin className="w-4 h-4 mr-1" />
+                  {personalInfo.profile.location}
+                </div>
+                <div className="flex items-center gap-2 text-sm">
+                  <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                  <span className="text-green-400 font-medium">
+                    {personalInfo.profile.availability.message}
+                  </span>
+                </div>
+              </div>
             </div>
+
+            {/* CTAs and Achievements */}
+            <div className="flex flex-col gap-4">
+              {/* Achievement Badges */}
+              <div className="flex flex-wrap gap-2">
+                {personalInfo.achievements.map((achievement, index) => {
+                  const IconComponent = iconMap[achievement.icon as keyof typeof iconMap];
+                  return (
+                    <motion.div
+                      key={index}
+                      whileHover={{ scale: 1.05 }}
+                      className={`px-3 py-1.5 rounded-full text-xs font-semibold border flex items-center gap-1.5 ${getAchievementBadgeClass(achievement.color)}`}
+                    >
+                      {IconComponent && <IconComponent className="w-3 h-3" />}
+                      {achievement.title}
+                    </motion.div>
+                  );
+                })}
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex flex-col sm:flex-row gap-3">
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="btn-primary flex items-center justify-center gap-2 px-6 py-3"
+                  onClick={() => scrollToSection('#contact')}
+                >
+                  <Calendar className="w-4 h-4" />
+                  Schedule a Call
+                </motion.button>
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="btn-secondary flex items-center justify-center gap-2 px-6 py-3"
+                  onClick={() => window.open(`mailto:${personalInfo.profile.email}`)}
+                >
+                  <Send className="w-4 h-4" />
+                  Send Email
+                </motion.button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </motion.section>
+
+      {/* Fixed Navigation */}
+      <motion.header
+        initial={{ y: -100, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.6, delay: 0.2 }}
+        className="fixed top-0 left-0 right-0 z-50 bg-primary/80 backdrop-blur-lg border-b border-border"
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            {/* Logo */}
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              onClick={() => scrollToSection('#home')}
+              className="font-bold text-xl text-primary"
+            >
+              PP Namias
+            </motion.button>
 
             {/* Desktop Navigation */}
             <nav className="hidden md:flex space-x-8">
-              {navigation.map((item) => (
-                <button
-                  key={item.name}
-                  onClick={() => scrollToSection(item.href)}
-                  className={`px-3 py-2 text-sm font-medium transition-all duration-200 rounded-md relative ${
-                    activeSection === item.href.slice(1)
-                      ? 'text-blue-600 dark:text-green-400'
-                      : 'hover:text-blue-600 dark:hover:text-green-400'
-                  }`}
-                  style={{ 
-                    color: activeSection === item.href.slice(1) 
-                      ? 'var(--color-accent)' 
-                      : 'var(--color-text-secondary)' 
-                  }}
-                >
-                  {item.name}
-                  {activeSection === item.href.slice(1) && (
-                    <span 
-                      className="absolute bottom-0 left-0 right-0 h-0.5 rounded-full"
-                      style={{ backgroundColor: 'var(--color-accent)' }}
-                    />
-                  )}
-                </button>
-              ))}
+              {navigation.map((item) => {
+                const Icon = item.icon;
+                return (
+                  <button
+                    key={item.name}
+                    onClick={() => scrollToSection(item.href)}
+                    className={`flex items-center space-x-2 px-3 py-2 rounded-lg transition-all duration-200 ${
+                      activeSection === item.href.slice(1)
+                        ? 'text-accent bg-accent/10'
+                        : 'text-secondary hover:text-primary hover:bg-secondary/20'
+                    }`}
+                  >
+                    <Icon className="w-4 h-4" />
+                    <span className="text-sm font-medium">{item.name}</span>
+                  </button>
+                );
+              })}
             </nav>
 
             {/* Theme Toggle & Mobile Menu */}
             <div className="flex items-center space-x-4">
-              <ThemeToggle />
-              
+              <button
+                onClick={toggleTheme}
+                className="p-2 rounded-lg bg-secondary/20 hover:bg-secondary/30 transition-colors"
+                aria-label="Toggle theme"
+              >
+                {theme === 'dark' ? (
+                  <Sun className="w-5 h-5 text-accent" />
+                ) : (
+                  <Moon className="w-5 h-5 text-accent" />
+                )}
+              </button>
+
               {/* Mobile menu button */}
               <button
-                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="md:hidden p-2 rounded-md transition-colors"
-                style={{ color: 'var(--color-text-primary)' }}
-                aria-label="Toggle mobile menu"
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                className="md:hidden p-2 rounded-lg bg-secondary/20 hover:bg-secondary/30 transition-colors"
+                aria-label="Toggle menu"
               >
-                {isMobileMenuOpen ? (
-                  <X className="w-5 h-5" />
+                {isMenuOpen ? (
+                  <X className="w-5 h-5 text-primary" />
                 ) : (
-                  <Menu className="w-5 h-5" />
+                  <Menu className="w-5 h-5 text-primary" />
                 )}
               </button>
             </div>
           </div>
-        </div>
-      </header>
 
-      {/* Mobile Navigation Menu */}
-      {isMobileMenuOpen && (
-        <div 
-          className="fixed inset-0 z-40 md:hidden"
-          style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}
-          onClick={() => setIsMobileMenuOpen(false)}
-        >
-          <div 
-            className="absolute top-16 left-0 right-0 p-4"
-            style={{ 
-              backgroundColor: 'var(--color-bg-primary)',
-              borderBottom: '1px solid var(--color-border)'
-            }}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <nav className="space-y-2">
-              {navigation.map((item) => (
-                <button
-                  key={item.name}
-                  onClick={() => scrollToSection(item.href)}
-                  className={`block w-full text-left px-4 py-3 text-base font-medium rounded-md transition-colors ${
-                    activeSection === item.href.slice(1)
-                      ? 'bg-blue-50 text-blue-600 dark:bg-green-900/20 dark:text-green-400'
-                      : 'hover:bg-gray-50 dark:hover:bg-gray-800'
-                  }`}
-                  style={{ 
-                    color: activeSection === item.href.slice(1) 
-                      ? 'var(--color-accent)' 
-                      : 'var(--color-text-primary)',
-                    backgroundColor: activeSection === item.href.slice(1) 
-                      ? 'var(--color-bg-secondary)' 
-                      : 'transparent'
-                  }}
-                >
-                  {item.name}
-                </button>
-              ))}
-            </nav>
-          </div>
+          {/* Mobile Navigation */}
+          {isMenuOpen && (
+            <motion.nav
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              className="md:hidden py-4 border-t border-border"
+            >
+              <div className="flex flex-col space-y-2">
+                {navigation.map((item) => {
+                  const Icon = item.icon;
+                  return (
+                    <button
+                      key={item.name}
+                      onClick={() => scrollToSection(item.href)}
+                      className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200 ${
+                        activeSection === item.href.slice(1)
+                          ? 'text-accent bg-accent/10'
+                          : 'text-secondary hover:text-primary hover:bg-secondary/20'
+                      }`}
+                    >
+                      <Icon className="w-5 h-5" />
+                      <span className="font-medium">{item.name}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </motion.nav>
+          )}
         </div>
-      )}
-
-      {/* Spacer to prevent content from hiding behind fixed header */}
-      <div className="h-16" />
+      </motion.header>
     </>
   );
 };
