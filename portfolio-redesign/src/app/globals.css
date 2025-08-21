@@ -328,11 +328,11 @@ a:hover {
   justify-content: center;
   gap: 0.5rem;
   padding: 0.75rem 1.5rem;
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-2xl);
   font-weight: 500;
   font-size: 0.875rem;
   line-height: 1;
-  transition: all 0.2s ease;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   cursor: pointer;
   border: 1px solid transparent;
   text-decoration: none;
@@ -340,6 +340,7 @@ a:hover {
   user-select: none;
   position: relative;
   overflow: hidden;
+  transform: translateY(0);
 }
 
 .btn:focus {
@@ -348,28 +349,30 @@ a:hover {
 }
 
 .btn-primary {
-  background-color: var(--color-button-primary);
+  background: linear-gradient(135deg, var(--color-button-primary), color-mix(in srgb, var(--color-button-primary) 85%, #fff));
   color: var(--color-button-text-primary);
   border-color: var(--color-button-primary);
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--color-button-primary) 25%, transparent);
 }
 
 .btn-primary:hover {
-  background-color: var(--color-button-primary-hover);
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-md);
+  background: linear-gradient(135deg, var(--color-button-primary-hover), color-mix(in srgb, var(--color-button-primary-hover) 85%, #fff));
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px color-mix(in srgb, var(--color-button-primary) 30%, transparent);
 }
 
 .btn-secondary {
   background-color: var(--color-button-secondary);
   color: var(--color-button-text-secondary);
   border-color: var(--color-border);
+  box-shadow: 0 1px 3px color-mix(in srgb, var(--color-text-primary) 8%, transparent);
 }
 
 .btn-secondary:hover {
   background-color: var(--color-button-secondary-hover);
   border-color: var(--color-text-muted);
   transform: translateY(-1px);
-  box-shadow: var(--shadow-sm);
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--color-text-primary) 12%, transparent);
 }
 
 .btn-ghost {
@@ -381,18 +384,20 @@ a:hover {
 .btn-ghost:hover {
   background-color: var(--color-surface);
   color: var(--color-text-primary);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--color-text-primary) 6%, transparent);
 }
 
 .btn-sm {
   padding: 0.5rem 1rem;
   font-size: 0.8125rem;
-  border-radius: var(--radius);
+  border-radius: var(--radius-xl);
 }
 
 .btn-lg {
   padding: 1rem 2rem;
   font-size: 1rem;
-  border-radius: var(--radius-xl);
+  border-radius: var(--radius-3xl);
 }
 
 /* Pill/Chip System for Tech Stack */
