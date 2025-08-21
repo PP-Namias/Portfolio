@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { ThemeProvider } from "@/components/providers/ThemeProvider";
 
 export const metadata: Metadata = {
   title: "PP Namias - Full-Stack Software Engineer",
@@ -49,9 +50,11 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>
       <body className="antialiased min-h-screen transition-colors duration-300">
-        <div id="root">
-          {children}
-        </div>
+        <ThemeProvider>
+          <div id="root">
+            {children}
+          </div>
+        </ThemeProvider>
       </body>
     </html>
   );
