@@ -113,8 +113,8 @@
   
   /* Component spacing */
   --container-padding: 1.5rem;
-  --section-spacing: 4rem;
-  --card-padding: 1.5rem;
+  --section-spacing: 3rem;
+  --card-padding: 1.25rem;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -738,4 +738,29 @@ a:hover {
   :focus-visible {
     outline-width: 3px;
   }
+}
+
+/* Additional Utilities */
+.line-clamp-1 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  line-clamp: 1;
+}
+
+.line-clamp-2 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+}
+
+.line-clamp-3 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
 }
