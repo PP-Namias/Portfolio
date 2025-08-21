@@ -8,6 +8,8 @@ import { BeyondCodingSection } from '@/components/sections/BeyondCodingSection';
 import { EnhancedProjectsSection } from '@/components/sections/EnhancedProjectsSection';
 import { CertificationsSection } from '@/components/sections/CertificationsSection';
 import { RecentBlogPostsSection } from '@/components/sections/RecentBlogPostsSection';
+import { ContactSection } from '@/components/sections/ContactSection';
+import { Footer } from '@/components/layout/Footer';
 
 export default function Home() {
   return (
