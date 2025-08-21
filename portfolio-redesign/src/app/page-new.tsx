@@ -67,8 +67,8 @@ export default function Home() {
               Ready to Build Something Amazing?
             </h2>
             <p className="text-secondary mb-8 max-w-2xl mx-auto">
-              I'm always interested in discussing new opportunities, innovative projects, 
-              and ways to leverage technology for positive impact. Let's connect and explore 
+              I&apos;m always interested in discussing new opportunities, innovative projects, 
+              and ways to leverage technology for positive impact. Let&apos;s connect and explore 
               how we can work together.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
