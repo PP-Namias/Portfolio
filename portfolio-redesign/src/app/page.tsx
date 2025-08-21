@@ -8,7 +8,7 @@ import { CertificationsSection } from '@/components/sections/CertificationsSecti
 import { BeyondCodingSection } from '@/components/sections/BeyondCodingSection';
 import { SimpleBlogSection } from '@/components/sections/SimpleBlogSection';
 import { ContactSection } from '@/components/sections/ContactSection';
-import { FooterCompact } from '@/components/layout/FooterCompact';
+import { Footer } from '@/components/layout/Footer';
 
 export default function Home() {
   return (
