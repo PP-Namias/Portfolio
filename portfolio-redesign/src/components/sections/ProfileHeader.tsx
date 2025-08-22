@@ -21,7 +21,7 @@ export function ProfileHeader() {
       {/* Profile Header */}
       <div className="profile-header">
         <Image
-          src={personalInfo.profile.avatar}
+          src="/profile.jpeg"
           alt={personalInfo.profile.name}
           width={120}
           height={120}
