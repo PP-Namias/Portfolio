@@ -80,7 +80,7 @@ export const Header = () => {
                 <span className="text-white font-bold text-lg">PP</span>
               </div>
               <span className="font-bold text-lg text-[var(--color-text-primary)]">
-                {personalInfo.name.split(' ')[0]}
+                {personalInfo.profile.name.split(' ')[0]}
               </span>
             </motion.div>
 
@@ -186,7 +186,7 @@ export const Header = () => {
                   <div className="w-full h-full rounded-full overflow-hidden bg-[var(--color-background)]">
                     <Image
                       src="/profile.jpeg"
-                      alt={personalInfo.name}
+                      alt={personalInfo.profile.name}
                       width={160}
                       height={160}
                       className="w-full h-full object-cover"
@@ -224,7 +224,7 @@ export const Header = () => {
                 transition={{ duration: 0.8, delay: 0.6 }}
                 className="heading-hero"
               >
-                {personalInfo.name}
+                {personalInfo.profile.name}
               </motion.h1>
               
               <motion.p
@@ -233,7 +233,7 @@ export const Header = () => {
                 transition={{ duration: 0.8, delay: 0.8 }}
                 className="heading-md text-[var(--color-text-secondary)] max-w-3xl mx-auto"
               >
-                {personalInfo.title}
+                {personalInfo.profile.title}
               </motion.p>
 
               {/* Location */}
@@ -244,7 +244,7 @@ export const Header = () => {
                 className="flex items-center justify-center gap-2 text-[var(--color-text-muted)]"
               >
                 <MapPin className="w-4 h-4" />
-                <span className="body-base">{personalInfo.location}</span>
+                <span className="body-base">{personalInfo.profile.location}</span>
               </motion.div>
             </div>
 
