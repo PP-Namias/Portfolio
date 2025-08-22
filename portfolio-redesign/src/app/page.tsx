@@ -11,24 +11,24 @@ import { Footer } from '@/components/layout/Footer';
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-background">
+    <main className="min-h-screen bg-[var(--color-background)]">
       {/* Header with Professional Profile */}
       <Header />
 
       {/* Main Content in Bryl Lim Style Layout */}
-      <section className="py-8 bg-background">
+      <section className="py-8 bg-[var(--color-background)]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-            {/* Left Column - Wider (8/12) */}
-            <div className="lg:col-span-8 space-y-6">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            {/* Left Column - Main Content Area (8/12) */}
+            <div className="lg:col-span-8 space-y-8">
               <AboutSection />
               <ExperienceTimeline />
               <BeyondCodingSection />
               <SimpleBlogSection />
             </div>
             
-            {/* Right Column - Narrower (4/12) */}
-            <div className="lg:col-span-4 space-y-6">
+            {/* Right Column - Sidebar (4/12) */}
+            <div className="lg:col-span-4 space-y-8">
               <TechStackSection />
               <ProjectsSection />
               <CertificationsSection />
