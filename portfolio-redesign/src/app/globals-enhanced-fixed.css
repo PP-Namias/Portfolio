@@ -524,6 +524,14 @@ body {
   animation: float 6s ease-in-out infinite;
 }
 
+.animate-pulse-slow {
+  animation: pulse 4s ease-in-out infinite;
+}
+
+.delay-animation {
+  animation-delay: 2s;
+}
+
 @keyframes float {
   0%, 100% {
     transform: translateY(0px);
@@ -531,10 +539,6 @@ body {
   50% {
     transform: translateY(-10px);
   }
-}
-
-.animate-pulse-slow {
-  animation: pulse 4s ease-in-out infinite;
 }
 
 @keyframes pulse {
