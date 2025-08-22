@@ -1,5 +1,5 @@
-// Import clean JSON data
-import certificationsData from './json/certifications-clean.json';
+// Import JSON data
+import certificationsData from './json/certifications.json';
 
 // Certification Interface
 export interface Certification {
@@ -72,5 +72,5 @@ export interface CertificationsCollection {
 }
 
 // Export typed data
-export const certificationsCollection: CertificationsCollection = certificationsData as CertificationsCollection;
+export const certificationsCollection: CertificationsCollection = certificationsData as unknown as CertificationsCollection;
 export const certificationsList: Certification[] = certificationsCollection.certifications;
