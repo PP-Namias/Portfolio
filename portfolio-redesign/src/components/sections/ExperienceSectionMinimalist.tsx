@@ -66,9 +66,9 @@ export function ExperienceSection() {
                         {/* Key Achievements (max 3) */}
                         {experience.achievements.length > 0 && (
                           <div className="space-y-2">
-                            {experience.achievements.slice(0, 3).map((achievement, achievementIndex) => (
+                            {experience.achievements.slice(0, 3).map((achievement: string, achievementIndex: number) => (
                               <div key={achievementIndex} className="flex items-start gap-2">
-                                <div className="w-1.5 h-1.5 bg-gray-400 rounded-full mt-2 flex-shrink-0"></div>
+                                <div className="w-1-5 h-1-5 bg-gray-400 rounded-full mt-2 flex-shrink-0"></div>
                                 <span className="body-small">{achievement}</span>
                               </div>
                             ))}
