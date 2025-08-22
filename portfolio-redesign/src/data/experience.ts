@@ -1,4 +1,5 @@
-import experienceDataJSON from './json/experience-clean.json';
+// Import JSON data
+import experienceDataJSON from './json/experience.json';
 
 export interface ExperienceData {
   _id: string;
@@ -68,8 +69,22 @@ export interface ExperienceCollection {
 }
 
 // Export the data with proper typing
-export const experienceCollection: ExperienceCollection = experienceDataJSON;
-export const experienceData: ExperienceData[] = experienceDataJSON.experiences;
+export const experienceData: ExperienceData[] = experienceDataJSON as unknown as ExperienceData[];
+export const experienceCollection: ExperienceCollection = {
+  _id: 'exp-collection-1',
+  _type: 'experienceCollection',
+  _createdAt: new Date().toISOString(),
+  _updatedAt: new Date().toISOString(),
+  _version: 1,
+  experiences: experienceData,
+  totalExperience: {
+    years: 5,
+    months: 6,
+    startDate: '2019-01-01'
+  },
+  experienceTypes: [],
+  industryExperience: []
+};
 
 // Export individual experiences for easy access
 export const currentExperience = experienceData.find(exp => exp.current);
