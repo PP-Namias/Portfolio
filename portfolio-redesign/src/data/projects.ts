@@ -77,5 +77,5 @@ export interface ProjectsCollection {
 }
 
 // Export typed data
-export const projectsCollection: ProjectsCollection = projectsData as ProjectsCollection;
+export const projectsCollection: ProjectsCollection = projectsDataJSON as unknown as ProjectsCollection;
 export const featuredProjects: Project[] = projectsCollection.featured;
