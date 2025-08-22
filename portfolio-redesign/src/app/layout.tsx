@@ -44,18 +44,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-      </head>
-      <body className="antialiased min-h-screen transition-colors duration-300">
+      return (
+    <html lang="en" data-theme="dark">
+      <body
+        className={`${inter.className} antialiased bg-[var(--color-background)] text-[var(--color-text-primary)] transition-colors duration-300`}
+      >
         <ThemeProvider>
-          <div id="root">
-            {children}
-          </div>
+          {children}
         </ThemeProvider>
       </body>
     </html>
+  )
   );
 }
