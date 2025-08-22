@@ -6,8 +6,8 @@ import Image from 'next/image';
 import { personalInfo } from '@/data/personal';
 import { techCategories } from '@/data/techStack';
 import { featuredProjects } from '@/data/projects';
-import { experienceCollection } from '@/data/experience';
-import { certificationsCollection } from '@/data/certifications';
+import { experienceData } from '@/data/experience';
+import { certificationsList } from '@/data/certifications';
 import { blogPosts } from '@/data/blog';
 import { useState } from 'react';
 
@@ -368,7 +368,7 @@ function EnhancedProjectsGrid() {
                     <Star size={12} />
                     <span>{project.metrics?.github_stars || 0}</span>
                   </div>
-                  <div>Updated {project.lastUpdated}</div>
+                  <div>Updated Recently</div>
                 </div>
                 
                 <div className="flex gap-2">
@@ -421,7 +421,7 @@ function EnhancedExperienceTimeline() {
       </div>
       <div className="card-content">
         <div className="timeline">
-          {experienceCollection.map((exp, index) => (
+          {experienceData.map((exp, index) => (
             <div key={index} className="timeline-item">
               <div className={`timeline-dot ${exp.current ? 'current' : ''}`}></div>
               <div className="timeline-content">
@@ -431,7 +431,7 @@ function EnhancedExperienceTimeline() {
                     <p className="timeline-company">{exp.company}</p>
                   </div>
                   <div className="timeline-duration">
-                    <div>{exp.duration}</div>
+                    <div>{exp.duration.displayDuration}</div>
                     <div className="text-xs text-gray-500">{exp.location}</div>
                   </div>
                 </div>
@@ -486,7 +486,7 @@ function EnhancedCertificationsCard() {
       </div>
       <div className="card-content">
         <div className="space-y-3">
-          {certificationsCollection.slice(0, 4).map((cert, index) => (
+          {certificationsList.slice(0, 4).map((cert, index) => (
             <motion.div
               key={index}
               className="certification-item"
@@ -495,10 +495,10 @@ function EnhancedCertificationsCard() {
             >
               <div className="flex items-start justify-between">
                 <div className="flex-1">
-                  <h3 className="certification-title">{cert.name}</h3>
+                  <h3 className="certification-title">{cert.title}</h3>
                   <p className="certification-issuer">{cert.issuer}</p>
                   <p className="certification-date">
-                    Earned {cert.dateEarned} • ID: {cert.credentialId}
+                    Earned {new Date(cert.issueDate).toLocaleDateString()} • ID: {cert.credentialId}
                   </p>
                 </div>
                 
