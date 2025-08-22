@@ -1,5 +1,5 @@
-// Import clean JSON data
-import techStackData from './json/techstack-clean.json';
+// Import JSON data
+import techStackDataJSON from './json/techstack.json';
 
 // Technology Interface
 export interface Technology {
