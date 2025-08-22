@@ -25,18 +25,3 @@ export default function Home() {
     </main>
   );
 }
-            <div className="lg:col-span-4 space-y-8">
-              <TechStackSection />
-              <ProjectsSection />
-              <CertificationsSection />
-              <ContactSection />
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Footer */}
-      <Footer />
-    </main>
-  );
-}
