@@ -78,7 +78,8 @@
   --section-spacing: 4rem;
   --card-padding: 1.5rem;
 }
-  
+
+:root {
   /* Mobile-First Button System */
   --color-button-primary: #0f172a;
   --color-button-primary-hover: #1e293b;
@@ -125,7 +126,6 @@
   --text-lg: 1.125rem;
   --text-xl: 1.25rem;
   --text-2xl: 1.5rem;
-}
 }
 
 [data-theme='dark'] {
