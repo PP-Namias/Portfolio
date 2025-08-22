@@ -1,5 +1,5 @@
-// Import clean JSON data
-import personalData from './json/personal-clean.json';
+// Import JSON data
+import personalDataJSON from './json/personal.json';
 
 // Personal Information Interface
 export interface PersonalInfo {
@@ -60,4 +60,4 @@ export interface PersonalInfo {
 }
 
 // Export typed data
-export const personalInfo: PersonalInfo = personalData as PersonalInfo;
+export const personalInfo: PersonalInfo = personalDataJSON as unknown as PersonalInfo;
