@@ -861,8 +861,28 @@ a:focus {
 
 /* Opacity Utilities */
 .opacity-0 { opacity: 0; }
-.group-hover\\:opacity-100 { opacity: 0; }
-.group:hover .group-hover\\:opacity-100 { opacity: 1; }
+.group-hover\:opacity-100 { opacity: 0; }
+.group:hover .group-hover\:opacity-100 { opacity: 1; }
+
+/* Layout Utilities */
+.container { width: 100%; }
+.mx-auto { margin-left: auto; margin-right: auto; }
+.max-w-\[1200px\] { max-width: 1200px; }
+.min-h-screen { min-height: 100vh; }
+.bg-background { background-color: var(--color-background); }
+
+/* Modern Grid System */
+.grid { display: grid; }
+.grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
+.grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+
+/* Column Span Utilities */
+@media (min-width: 1024px) {
+  .lg\:col-span-2 { grid-column: span 2 / span 2; }
+  .lg\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
 
 /* ==========================================================================
    PRINT STYLES
