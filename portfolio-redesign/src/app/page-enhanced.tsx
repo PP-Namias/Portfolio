@@ -119,7 +119,7 @@ function EnhancedProfileHeader() {
         </motion.a>
 
         <motion.a
-          href={personalInfo.social.linkedin || '#'}
+          href={personalInfo.socialLinks.find(link => link.name.toLowerCase() === 'linkedin')?.url || '#'}
           target="_blank"
           rel="noopener noreferrer"
           className="btn btn-ghost"
@@ -131,7 +131,7 @@ function EnhancedProfileHeader() {
         </motion.a>
 
         <motion.a
-          href={personalInfo.social.github || '#'}
+          href={personalInfo.socialLinks.find(link => link.name.toLowerCase() === 'github')?.url || '#'}
           target="_blank"
           rel="noopener noreferrer"
           className="btn btn-ghost"
