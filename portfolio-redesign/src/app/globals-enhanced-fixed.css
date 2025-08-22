@@ -1,47 +1,53 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
-/* Enhanced CSS Variables for Bryl Lim Style Portfolio */
+/* Modern Premium Portfolio Design System */
 :root {
-  /* Dark Theme as Default (Bryl Lim Style) */
-  --color-background: #0d1117;
-  --color-surface: #161b22;
-  --color-card: #21262d;
-  --color-border: #30363d;
-  --color-border-light: #373e47;
+  /* Dark Theme - Matte Black with Glowing Accents */
+  --color-background: #0a0a0a;
+  --color-surface: #111111;
+  --color-card: #1a1a1a;
+  --color-border: #2a2a2a;
+  --color-border-light: #333333;
   
-  /* Text Colors - Dark Theme */
-  --color-text-primary: #f0f6fc;
-  --color-text-secondary: #8b949e;
-  --color-text-muted: #6e7681;
-  --color-text-accent: #58a6ff;
+  /* Enhanced Typography Colors */
+  --color-text-primary: #ffffff;
+  --color-text-secondary: #e5e5e5;
+  --color-text-muted: #a8a8a8;
+  --color-text-accent: #00d4ff;
   
-  /* Interactive Colors */
-  --color-accent: #58a6ff;
-  --color-accent-hover: #79c0ff;
-  --color-accent-light: #0d419d;
-  --color-primary: #1f6feb;
-  --color-accent-secondary: #a5a5f6;
-  --color-success: #3fb950;
-  --color-success-light: #1a7f37;
-  --color-warning: #d29922;
-  --color-warning-light: #9e6a03;
+  /* Premium Accent Colors with Glow */
+  --color-accent: #00d4ff;
+  --color-accent-hover: #00bfea;
+  --color-accent-light: #001f2b;
+  --color-primary: #0080ff;
+  --color-secondary: #8b5cf6;
+  --color-success: #10b981;
+  --color-success-light: #064e3b;
+  --color-warning: #f59e0b;
+  --color-warning-light: #451a03;
+  --color-error: #ef4444;
+  --color-teal: #14b8a6;
+  --color-yellow: #fbbf24;
   
-  /* Enhanced Gradients */
-  --gradient-primary: linear-gradient(135deg, #58a6ff 0%, #1f6feb 100%);
-  --gradient-secondary: linear-gradient(135deg, #a5a5f6 0%, #58a6ff 100%);
-  --gradient-accent: linear-gradient(135deg, #79c0ff 0%, #58a6ff 100%);
-  --gradient-warm: linear-gradient(135deg, #d29922 0%, #f85149 100%);
+  /* Premium Gradients with Glow Effects */
+  --gradient-primary: linear-gradient(135deg, #00d4ff 0%, #0080ff 100%);
+  --gradient-secondary: linear-gradient(135deg, #8b5cf6 0%, #00d4ff 100%);
+  --gradient-accent: linear-gradient(135deg, #00bfea 0%, #14b8a6 100%);
+  --gradient-warm: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+  --gradient-glassmorphism: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
   
-  /* Dark Theme Shadows */
-  --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.3);
-  --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.5), 0 1px 2px -1px rgb(0 0 0 / 0.4);
-  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.5), 0 2px 4px -2px rgb(0 0 0 / 0.4);
-  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.5), 0 4px 6px -4px rgb(0 0 0 / 0.4);
-  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.5), 0 8px 10px -6px rgb(0 0 0 / 0.4);
+  /* Enhanced Shadows with Glow */
+  --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.4);
+  --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.6), 0 1px 2px -1px rgb(0 0 0 / 0.5);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.6), 0 2px 4px -2px rgb(0 0 0 / 0.5);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.6), 0 4px 6px -4px rgb(0 0 0 / 0.5);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.6), 0 8px 10px -6px rgb(0 0 0 / 0.5);
   
-  /* Premium Card Shadows */
-  --shadow-card: 0 1px 3px 0 rgb(0 0 0 / 0.3), 0 1px 2px -1px rgb(0 0 0 / 0.2);
-  --shadow-card-hover: 0 8px 25px -5px rgb(0 0 0 / 0.4), 0 4px 12px -4px rgb(88 166 255 / 0.1);
+  /* Premium Card Shadows with Glow */
+  --shadow-card: 0 4px 12px 0 rgb(0 0 0 / 0.5), 0 1px 3px -1px rgb(0 0 0 / 0.3);
+  --shadow-card-hover: 0 12px 32px -8px rgb(0 0 0 / 0.7), 0 0 20px -4px rgb(0 212 255 / 0.15);
+  --shadow-glow-accent: 0 0 20px rgb(0 212 255 / 0.3), 0 0 40px rgb(0 212 255 / 0.1);
+  --shadow-glow-warm: 0 0 20px rgb(251 191 36 / 0.3), 0 0 40px rgb(251 191 36 / 0.1);
   
   /* Modern Border Radius */
   --radius-xs: 0.375rem;
@@ -50,9 +56,10 @@
   --radius-lg: 1rem;
   --radius-xl: 1.25rem;
   --radius-2xl: 1.5rem;
+  --radius-3xl: 2rem;
   --radius-full: 9999px;
   
-  /* Enhanced Spacing */
+  /* Enhanced Spacing System */
   --space-xs: 0.5rem;
   --space-sm: 0.75rem;
   --space: 1rem;
@@ -60,6 +67,10 @@
   --space-xl: 1.5rem;
   --space-2xl: 2rem;
   --space-3xl: 3rem;
+  --space-4xl: 4rem;
+  --space-5xl: 5rem;
+  --space-6xl: 6rem;
+}
 }
 
 /* Light Theme Override */
