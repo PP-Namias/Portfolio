@@ -1,5 +1,5 @@
-// Import clean JSON data
-import projectsData from './json/projects-clean.json';
+// Import JSON data
+import projectsDataJSON from './json/projects.json';
 
 // Project Interface
 export interface Project {
