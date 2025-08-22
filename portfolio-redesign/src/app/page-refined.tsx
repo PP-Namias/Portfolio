@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import { MapPin, Mail, Github, Linkedin, ExternalLink, Calendar, Download, User, Code, Briefcase, Award, BookOpen, Target, ChevronRight, Star, Calendar as CalendarIcon, Clock, Moon, Sun, Globe, Eye } from 'lucide-react';
 import Image from 'next/image';
 import { personalInfo } from '@/data/personal';
-import { contactMethods, type SocialPlatform } from '@/data/contact';
+import { contactMethods, type ContactMethod } from '@/data/contact';
 import { techCategories } from '@/data/techStack';
 import { featuredProjects } from '@/data/projects';
 import { experienceData } from '@/data/experience';
@@ -35,8 +35,8 @@ const staggerItem = {
 
 // Enhanced Profile Header Component
 const EnhancedProfileHeader = () => {
-  // Get primary email and social links
-  const primaryEmail = contactMethods.find((method: any) => method.type === 'email' && method.primary)?.value || personalInfo.profile.email;
+  // Get primary email and social links  
+  const primaryEmail = contactMethods.find((method: ContactMethod) => method.type === 'email' && method.primary)?.value || personalInfo.profile.email;
   // Hardcoded social links for now - can be updated when socialPlatforms is available
   const githubUrl = "https://github.com/ppnamias";
   const linkedinUrl = "https://linkedin.com/in/ppnamias";
@@ -263,7 +263,7 @@ const EnhancedProjectsGrid = () => {
         >
           {featuredProjects.slice(0, 3).map((project, index) => (
             <motion.div
-              key={project.id || index}
+              key={project._id || index}
               className="project-card-enhanced"
               variants={staggerItem}
               whileHover={{ scale: 1.02 }}
@@ -277,9 +277,9 @@ const EnhancedProjectsGrid = () => {
                   </span>
                 </div>
                 <div className="project-actions">
-                  {project.links.demo && (
+                  {project.links.live && (
                     <motion.a
-                      href={project.links.demo}
+                      href={project.links.live}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="btn-enhanced btn-icon"
@@ -321,7 +321,7 @@ const EnhancedProjectsGrid = () => {
                 <div className="project-meta">
                   <span className="flex-center-gap">
                     <CalendarIcon size={12} />
-                    {new Date(project.completedDate).getFullYear()}
+                    {new Date(project.endDate || project.startDate).getFullYear()}
                   </span>
                   <span className="flex-center-gap">
                     <Star size={12} />
@@ -360,7 +360,7 @@ const EnhancedExperienceTimeline = () => {
           >
             {experienceData.map((exp, index) => (
               <motion.div
-                key={exp.id}
+                key={exp._id}
                 className="timeline-item-enhanced"
                 variants={staggerItem}
               >
@@ -435,7 +435,7 @@ const EnhancedCertificationsCard = () => {
         >
           {certificationsList.slice(0, 4).map((cert) => (
             <motion.div
-              key={cert.id}
+              key={cert._id}
               className="cert-item-enhanced"
               variants={staggerItem}
               whileHover={{ scale: 1.01 }}
@@ -443,9 +443,9 @@ const EnhancedCertificationsCard = () => {
             >
               <div className="cert-content">
                 <div className="cert-info">
-                  <h3 className="cert-title">{cert.name}</h3>
+                  <h3 className="cert-title">{cert.title}</h3>
                   <p className="cert-issuer">{cert.issuer}</p>
-                  <p className="cert-date">{cert.date}</p>
+                  <p className="cert-date">{cert.issueDate}</p>
                   <div className="cert-skills">
                     {cert.skills.slice(0, 3).map((skill) => (
                       <span key={skill} className="badge-enhanced badge-tech-tools">
@@ -455,7 +455,7 @@ const EnhancedCertificationsCard = () => {
                   </div>
                 </div>
                 <motion.a
-                  href={cert.credentialUrl}
+                  href={cert.verificationUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="btn-enhanced btn-icon"
@@ -513,7 +513,7 @@ const EnhancedBlogPostsCard = () => {
         >
           {blogPosts.slice(0, 3).map((post) => (
             <motion.div
-              key={post.id}
+              key={post._id}
               className="blog-item-enhanced"
               variants={staggerItem}
               whileHover={{ scale: 1.01 }}
@@ -525,11 +525,11 @@ const EnhancedBlogPostsCard = () => {
                   <div className="blog-meta">
                     <span className="blog-meta-item">
                       <Calendar size={12} />
-                      {new Date(post.publishedDate).toLocaleDateString()}
+                      {new Date(post.publishedAt).toLocaleDateString()}
                     </span>
                     <span className="blog-meta-item">
                       <Clock size={12} />
-                      {post.readTime} min read
+                      {post.readingTime} min read
                     </span>
                   </div>
                   <p className="blog-excerpt">{post.excerpt}</p>
@@ -542,7 +542,7 @@ const EnhancedBlogPostsCard = () => {
                   </div>
                 </div>
                 <motion.a
-                  href={post.url}
+                  href={`/blog/${post.slug}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="btn-enhanced btn-icon"
