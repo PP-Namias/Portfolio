@@ -53,7 +53,7 @@ export interface TechStackData {
 }
 
 // Export typed data
-export const techStackCollection: TechStackData = techStackData as TechStackData;
+export const techStackCollection: TechStackData = techStackDataJSON as unknown as TechStackData;
 export const techCategories: TechCategory[] = techStackCollection.categories;
 
 // Legacy export for backwards compatibility
