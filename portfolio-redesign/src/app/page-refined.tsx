@@ -2,10 +2,10 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { MapPin, Mail, Github, Linkedin, ExternalLink, Calendar, Download, User, Code, Briefcase, Award, BookOpen, Target, ChevronRight, Star, Calendar as CalendarIcon, Clock, Moon, Sun, Globe, Eye } from 'lucide-react';
+import { MapPin, Mail, Github, Linkedin, ExternalLink, Calendar, Download, User, Code, Briefcase, Award, BookOpen, Target, ChevronRight, Star, Calendar as CalendarIcon, Clock, Eye } from 'lucide-react';
 import Image from 'next/image';
 import { personalInfo } from '@/data/personal';
-import { contactMethods, type ContactMethod } from '@/data/contact';
+import { contactInfo, type ContactMethod } from '@/data/contact';
 import { techCategories } from '@/data/techStack';
 import { featuredProjects } from '@/data/projects';
 import { experienceData } from '@/data/experience';
@@ -36,7 +36,7 @@ const staggerItem = {
 // Enhanced Profile Header Component
 const EnhancedProfileHeader = () => {
   // Get primary email and social links  
-  const primaryEmail = contactMethods.find((method: ContactMethod) => method.type === 'email' && method.primary)?.value || personalInfo.profile.email;
+  const primaryEmail = contactInfo.contactMethods.find((method: ContactMethod) => method.type === 'email' && method.primary)?.value || personalInfo.profile.email;
   // Hardcoded social links for now - can be updated when socialPlatforms is available
   const githubUrl = "https://github.com/ppnamias";
   const linkedinUrl = "https://linkedin.com/in/ppnamias";
