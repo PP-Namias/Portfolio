@@ -8,7 +8,7 @@ import { techStackCollection } from '@/data/techStack';
 import { projectsCollection } from '@/data/projects';
 import { experienceCollection } from '@/data/experience';
 import { certificationsCollection } from '@/data/certifications';
-import { blogCollection } from '@/data/blog';
+import { blogPosts } from '@/data/blog';
 import { useState } from 'react';
 
 // Tech Stack Color Mapping
@@ -176,14 +176,14 @@ function EnhancedAboutCard() {
       <div className="card-content">
         <div className="space-y-4">
           <p className="text-secondary body-base">
-            {personalInfo.summary.professional}
+            {personalInfo.about.summary[0]}
           </p>
           
           {/* Specializations */}
           <div>
             <h3 className="heading-sm mb-3">Core Specializations</h3>
             <div className="flex flex-wrap gap-2">
-              {personalInfo.specializations.map((spec, index) => (
+              {personalInfo.about.specializations.map((spec, index) => (
                 <span key={index} className="badge badge-primary">
                   {spec}
                 </span>
@@ -199,22 +199,22 @@ function EnhancedAboutCard() {
           >
             <div className="pt-4 border-t border-gray-700">
               <p className="text-secondary body-base mb-4">
-                {personalInfo.summary.personal}
+                {personalInfo.about.summary[1] || personalInfo.about.currentFocus}
               </p>
               
               {/* Quick Stats */}
               <div className="grid grid-cols-3 gap-4 p-4 bg-gray-800/50 rounded-lg">
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-blue-400">5+</div>
+                  <div className="text-2xl font-bold text-blue-400">{personalInfo.about.yearsOfExperience}+</div>
                   <div className="text-xs text-gray-400">Years Experience</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-green-400">50+</div>
+                  <div className="text-2xl font-bold text-green-400">{personalInfo.about.metrics.projectsCompleted}+</div>
                   <div className="text-xs text-gray-400">Projects Completed</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-purple-400">15+</div>
-                  <div className="text-xs text-gray-400">Technologies</div>
+                  <div className="text-2xl font-bold text-purple-400">{personalInfo.about.metrics.certifications}+</div>
+                  <div className="text-xs text-gray-400">Certifications</div>
                 </div>
               </div>
             </div>
@@ -559,7 +559,7 @@ function EnhancedBlogPostsCard() {
       </div>
       <div className="card-content">
         <div className="space-y-3">
-          {blogPostsCollection.slice(0, 4).map((post, index) => (
+          {blogPosts.slice(0, 4).map((post, index) => (
             <motion.div
               key={index}
               className="blog-post-item"
@@ -571,17 +571,15 @@ function EnhancedBlogPostsCard() {
                   <h3 className="blog-post-title line-clamp-2">{post.title}</h3>
                   <p className="text-xs text-gray-400 mt-1">
                     <CalendarIcon size={12} className="inline mr-1" />
-                    {post.publishedDate}
+                    {new Date(post.publishedAt).toLocaleDateString()}
                     <Clock size={12} className="inline ml-3 mr-1" />
-                    {post.readTime}
+                    {post.readingTime} min read
                   </p>
                   <p className="text-sm text-gray-300 line-clamp-2 mt-2">{post.excerpt}</p>
                 </div>
                 
                 <motion.a
-                  href={post.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  href={`/blog/${post.slug}`}
                   className="btn-icon ml-3"
                   whileHover={{ scale: 1.1 }}
                 >
@@ -653,7 +651,7 @@ export default function EnhancedDarkPortfolio() {
         >
           <div className="text-center text-gray-400">
             <p className="text-sm">
-              © {new Date().getFullYear()} {personalInfo.name}. Built with Next.js, TypeScript & Framer Motion.
+              © {new Date().getFullYear()} {personalInfo.profile.name}. Built with Next.js, TypeScript & Framer Motion.
             </p>
             <p className="text-xs mt-2">
               Designed for impact. Developed for performance. Crafted with passion.
