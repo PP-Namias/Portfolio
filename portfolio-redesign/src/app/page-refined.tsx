@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import { MapPin, Mail, Github, Linkedin, ExternalLink, Calendar, Download, User, Code, Briefcase, Award, BookOpen, Target, ChevronRight, Star, Calendar as CalendarIcon, Clock, Moon, Sun, Globe, Eye } from 'lucide-react';
 import Image from 'next/image';
 import { personalInfo } from '@/data/personal';
-import { contactMethods } from '@/data/contact';
+import { contactMethods, type SocialPlatform } from '@/data/contact';
 import { techCategories } from '@/data/techStack';
 import { featuredProjects } from '@/data/projects';
 import { experienceData } from '@/data/experience';
@@ -35,6 +35,12 @@ const staggerItem = {
 
 // Enhanced Profile Header Component
 const EnhancedProfileHeader = () => {
+  // Get primary email and social links
+  const primaryEmail = contactMethods.find((method: any) => method.type === 'email' && method.primary)?.value || personalInfo.profile.email;
+  // Hardcoded social links for now - can be updated when socialPlatforms is available
+  const githubUrl = "https://github.com/ppnamias";
+  const linkedinUrl = "https://linkedin.com/in/ppnamias";
+
   return (
     <motion.div 
       className="profile-header-enhanced"
@@ -76,7 +82,7 @@ const EnhancedProfileHeader = () => {
         
         <div className="profile-actions">
           <motion.a
-            href={`mailto:${personalInfo.contact.email}`}
+            href={`mailto:${primaryEmail}`}
             className="btn-enhanced btn-primary"
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
@@ -96,27 +102,31 @@ const EnhancedProfileHeader = () => {
             Download CV
           </motion.a>
           
-          <motion.a
-            href={personalInfo.contact.github}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="btn-enhanced btn-icon"
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-          >
-            <Github size={16} />
-          </motion.a>
+          {githubUrl && (
+            <motion.a
+              href={githubUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-enhanced btn-icon"
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+            >
+              <Github size={16} />
+            </motion.a>
+          )}
           
-          <motion.a
-            href={personalInfo.contact.linkedin}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="btn-enhanced btn-icon"
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-          >
-            <Linkedin size={16} />
-          </motion.a>
+          {linkedinUrl && (
+            <motion.a
+              href={linkedinUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-enhanced btn-icon"
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+            >
+              <Linkedin size={16} />
+            </motion.a>
+          )}
         </div>
       </div>
     </motion.div>
@@ -125,6 +135,9 @@ const EnhancedProfileHeader = () => {
 
 // Enhanced About Card Component
 const EnhancedAboutCard = () => {
+  const aboutSummary = personalInfo.about?.summary?.[0] || personalInfo.profile.tagline;
+  const specializations = personalInfo.about?.specializations || ['Full-Stack Development', 'Cloud Architecture', 'DevOps', 'Team Leadership', 'System Design'];
+
   return (
     <motion.div
       className="card-enhanced"
@@ -138,16 +151,16 @@ const EnhancedAboutCard = () => {
       </div>
       
       <div className="card-content">
-        <p style={{ fontSize: 'var(--text-base)', color: 'var(--text-secondary)', lineHeight: 1.6, margin: 0 }}>
-          {personalInfo.profile.bio}
+        <p className="text-bio">
+          {aboutSummary}
         </p>
         
-        <div style={{ marginTop: 'var(--space-lg)' }}>
-          <h3 style={{ fontSize: 'var(--text-lg)', fontWeight: 600, color: 'var(--text-primary)', marginBottom: 'var(--space-md)' }}>
+        <div className="section-margin">
+          <h3 className="section-title">
             Core Competencies
           </h3>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--space-xs)' }}>
-            {['Full-Stack Development', 'Cloud Architecture', 'DevOps', 'Team Leadership', 'System Design'].map((skill) => (
+          <div className="flex-wrap-gap">
+            {specializations.map((skill) => (
               <span key={skill} className="badge-enhanced badge-outline">
                 {skill}
               </span>
@@ -189,33 +202,25 @@ const EnhancedTechStackCard = () => {
           variants={staggerContainer}
           initial="initial"
           animate="animate"
-          style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-lg)' }}
+          className="flex-column-gap"
         >
           {techCategories.map((category) => (
             <motion.div key={category.name} variants={staggerItem}>
-              <h3 style={{ 
-                fontSize: 'var(--text-base)', 
-                fontWeight: 600, 
-                color: 'var(--text-primary)', 
-                marginBottom: 'var(--space-sm)',
-                display: 'flex',
-                alignItems: 'center',
-                gap: 'var(--space-xs)'
-              }}>
+              <h3 className="category-header">
                 {category.name}
                 <span className={`badge-enhanced ${getCategoryClass(category.name)}`}>
                   {category.technologies.length}
                 </span>
               </h3>
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--space-xs)' }}>
+              <div className="flex-wrap-gap">
                 {category.technologies.map((tech) => (
                   <motion.span
-                    key={tech}
+                    key={typeof tech === 'string' ? tech : tech.name}
                     className={`badge-enhanced ${getCategoryClass(category.name)}`}
                     whileHover={{ scale: 1.05 }}
                     transition={{ type: "spring", stiffness: 400, damping: 20 }}
                   >
-                    {tech}
+                    {typeof tech === 'string' ? tech : tech.name}
                   </motion.span>
                 ))}
               </div>
@@ -254,11 +259,11 @@ const EnhancedProjectsGrid = () => {
           variants={staggerContainer}
           initial="initial"
           animate="animate"
-          style={{ display: 'grid', gap: 'var(--space-lg)' }}
+          className="grid-gap"
         >
           {featuredProjects.slice(0, 3).map((project, index) => (
             <motion.div
-              key={project.id}
+              key={project.id || index}
               className="project-card-enhanced"
               variants={staggerItem}
               whileHover={{ scale: 1.02 }}
@@ -314,11 +319,11 @@ const EnhancedProjectsGrid = () => {
               
               <div className="project-footer">
                 <div className="project-meta">
-                  <span style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-xs)' }}>
+                  <span className="flex-center-gap">
                     <CalendarIcon size={12} />
                     {new Date(project.completedDate).getFullYear()}
                   </span>
-                  <span style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-xs)' }}>
+                  <span className="flex-center-gap">
                     <Star size={12} />
                     Featured
                   </span>
@@ -371,10 +376,10 @@ const EnhancedExperienceTimeline = () => {
                       <h4 className="timeline-company">{exp.company}</h4>
                     </div>
                     <div className="timeline-duration">
-                      <div style={{ fontSize: 'var(--text-xs)', color: 'var(--text-muted)' }}>
+                      <div className="timeline-date">
                         {exp.startDate} - {exp.endDate}
                       </div>
-                      <div style={{ fontSize: 'var(--text-xs)', color: 'var(--text-muted)', textAlign: 'right' }}>
+                      <div className="timeline-date-right">
                         {exp.location}
                       </div>
                     </div>
@@ -382,7 +387,7 @@ const EnhancedExperienceTimeline = () => {
                   
                   <p className="timeline-description">{exp.description}</p>
                   
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--space-xs)' }}>
+                  <div className="flex-wrap-gap">
                     {exp.technologies.slice(0, 5).map((tech) => (
                       <span key={tech} className="badge-enhanced badge-outline">
                         {tech}
@@ -426,7 +431,7 @@ const EnhancedCertificationsCard = () => {
           variants={staggerContainer}
           initial="initial"
           animate="animate"
-          style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-md)' }}
+          className="flex-col-gap-md"
         >
           {certificationsList.slice(0, 4).map((cert) => (
             <motion.div
@@ -465,8 +470,7 @@ const EnhancedCertificationsCard = () => {
         
         {certificationsList.length > 4 && (
           <motion.button
-            className="btn-enhanced btn-ghost"
-            style={{ marginTop: 'var(--space-md)', width: '100%' }}
+            className="btn-enhanced btn-ghost full-width-btn"
             whileHover={{ scale: 1.02 }}
           >
             View All Certifications
@@ -505,7 +509,7 @@ const EnhancedBlogPostsCard = () => {
           variants={staggerContainer}
           initial="initial"
           animate="animate"
-          style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-md)' }}
+          className="flex-col-gap-md"
         >
           {blogPosts.slice(0, 3).map((post) => (
             <motion.div
@@ -519,11 +523,11 @@ const EnhancedBlogPostsCard = () => {
                 <div className="blog-info">
                   <h3 className="blog-title">{post.title}</h3>
                   <div className="blog-meta">
-                    <span style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-xs)' }}>
+                    <span className="blog-meta-item">
                       <Calendar size={12} />
                       {new Date(post.publishedDate).toLocaleDateString()}
                     </span>
-                    <span style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-xs)' }}>
+                    <span className="blog-meta-item">
                       <Clock size={12} />
                       {post.readTime} min read
                     </span>
