@@ -187,67 +187,53 @@ const ExperienceCard = ({ experience, index }: ExperienceCardProps) => {
 
 export const ExperienceTimeline = () => {
   return (
-    <section className="py-20 bg-gradient-to-br from-background via-surface to-background relative overflow-hidden" id="experience">
-      {/* Background Elements */}
-      <div className="absolute inset-0 opacity-20">
-        <div className="absolute top-20 right-10 w-96 h-96 bg-gradient-to-r from-accent/10 to-primary/10 rounded-full blur-3xl" />
-        <div className="absolute bottom-20 left-10 w-72 h-72 bg-gradient-to-r from-primary/10 to-accent/10 rounded-full blur-3xl" />
+    <section className="card relative overflow-hidden" id="experience">
+      {/* Enhanced Background Elements */}
+      <div className="absolute inset-0 opacity-30">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-[var(--color-accent)]/20 to-[var(--color-primary)]/10 rounded-full blur-3xl -translate-y-32 translate-x-32" />
+        <div className="absolute bottom-0 left-0 w-48 h-48 bg-gradient-to-br from-[var(--color-primary)]/20 to-[var(--color-accent)]/10 rounded-full blur-3xl translate-y-24 -translate-x-24" />
       </div>
 
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+      <div className="relative z-10">
         {/* Enhanced Header */}
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
+          transition={{ duration: 0.6 }}
           viewport={{ once: true }}
-          className="text-center mb-16"
+          className="mb-12"
         >
-          <div className="glass-card p-8 inline-block">
-            <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              whileInView={{ scale: 1, opacity: 1 }}
-              transition={{ duration: 0.6 }}
-              viewport={{ once: true }}
-              className="inline-flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-accent/10 to-primary/10 border border-accent/20 rounded-full mb-6"
-            >
-              <Briefcase className="w-4 h-4 text-accent" />
-              <span className="text-sm font-medium text-primary">Professional Journey</span>
-            </motion.div>
-            
-            <h2 className="text-4xl md:text-5xl font-bold mb-4">
-              <span className="bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">
-                Experience Timeline
-              </span>
-            </h2>
-            
-            <p className="text-secondary text-lg max-w-2xl mx-auto">
-              A journey through innovative projects, impactful solutions, and continuous growth 
-              in the ever-evolving world of technology.
-            </p>
-
-            <motion.a
-              href="/resume.pdf"
-              target="_blank"
-              rel="noopener noreferrer"
-              initial={{ opacity: 0, y: 10 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.3 }}
-              viewport={{ once: true }}
-              className="inline-flex items-center gap-2 mt-6 px-6 py-3 bg-gradient-to-r from-accent to-primary text-white font-medium rounded-xl hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl"
-            >
-              <ExternalLink className="w-4 h-4" />
-              View Full Resume
-            </motion.a>
+          <div className="flex items-center gap-4 mb-8">
+            <div className="w-12 h-12 bg-gradient-to-br from-[var(--color-accent)] to-[var(--color-primary)] rounded-xl flex items-center justify-center shadow-lg">
+              <Briefcase className="w-6 h-6 text-white" />
+            </div>
+            <div>
+              <h2 className="heading-md text-[var(--color-text-primary)]">Professional Experience</h2>
+              <p className="body-sm text-[var(--color-text-muted)]">Career journey and key achievements</p>
+            </div>
           </div>
+
+          <motion.a
+            href="/resume.pdf"
+            target="_blank"
+            rel="noopener noreferrer"
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+            viewport={{ once: true }}
+            className="btn btn-primary inline-flex items-center gap-2"
+          >
+            <ExternalLink className="w-4 h-4" />
+            View Full Resume
+          </motion.a>
         </motion.div>
 
         {/* Timeline Container */}
         <div className="relative">
           {/* Main timeline line */}
-          <div className="absolute left-8 top-0 bottom-0 w-0.5 bg-gradient-to-b from-accent via-primary to-accent opacity-30"></div>
+          <div className="absolute left-8 top-0 bottom-0 w-0.5 bg-gradient-to-b from-[var(--color-accent)] via-[var(--color-primary)] to-[var(--color-accent)] opacity-30"></div>
           
-          <div className="space-y-12">
+          <div className="space-y-8">
             {experienceData.map((experience, index) => (
               <ExperienceCard
                 key={experience._id}
@@ -263,7 +249,7 @@ export const ExperienceTimeline = () => {
             whileInView={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5, delay: 0.5 }}
             viewport={{ once: true }}
-            className="absolute left-6 bottom-0 w-6 h-6 bg-gradient-to-r from-accent to-primary rounded-full border-4 border-background shadow-lg flex items-center justify-center"
+            className="absolute left-6 bottom-0 w-6 h-6 bg-gradient-to-r from-[var(--color-accent)] to-[var(--color-primary)] rounded-full border-4 border-[var(--color-background)] shadow-lg flex items-center justify-center"
           >
             <Star className="w-3 h-3 text-white" />
           </motion.div>
