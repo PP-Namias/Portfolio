@@ -4,8 +4,8 @@ import { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Menu, X, User, Briefcase, Code, FolderOpen, Mail, Sun, Moon,
-  Calendar, Send, Award, MapPin, CheckCircle, Trophy, Download,
-  Star, Globe, Sparkles, ArrowRight, ExternalLink
+  Calendar, Send, Award, MapPin, Trophy,
+  Star, Sparkles, ArrowRight, ExternalLink
 } from 'lucide-react';
 import { useTheme } from '@/hooks/useTheme';
 import { personalInfo } from '@/data/personal';
@@ -165,7 +165,7 @@ export const Header = () => {
         {/* Background Effects */}
         <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-background)] via-[var(--color-surface)] to-[var(--color-card)]" />
         <div className="absolute top-0 left-1/4 w-96 h-96 bg-[var(--color-accent)] rounded-full mix-blend-multiply filter blur-xl opacity-10 animate-pulse-slow" />
-        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-[var(--color-secondary)] rounded-full mix-blend-multiply filter blur-xl opacity-10 animate-pulse-slow" style={{ animationDelay: '2s' }} />
+        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-[var(--color-secondary)] rounded-full mix-blend-multiply filter blur-xl opacity-10 animate-pulse-slow delay-animation" />
 
         <div className="relative z-10 max-w-7xl mx-auto px-6 text-center">
           <motion.div
@@ -261,7 +261,7 @@ export const Header = () => {
                 <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
               </a>
               
-              <a href={`mailto:${personalInfo.contact.email}`} className="btn btn-secondary btn-lg group">
+              <a href={`mailto:${personalInfo.profile.email}`} className="btn btn-secondary btn-lg group">
                 <Send className="w-5 h-5" />
                 Send Email
                 <ExternalLink className="w-4 h-4 transition-transform group-hover:translate-x-1" />
