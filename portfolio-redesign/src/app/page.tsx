@@ -34,48 +34,60 @@ const itemVariants = {
 
 export default function Home() {
   return (
-    <div className="main-container">
-      <motion.div 
-        className="portfolio-grid"
-        variants={containerVariants}
-        initial="hidden"
-        animate="visible"
-      >
-        {/* Profile Header - Full Width */}
-        <motion.div className="grid-header" variants={itemVariants}>
-          <ProfileHeader />
-        </motion.div>
+    <div className="min-h-screen bg-background">
+      {/* Container with max-width 1200px and proper padding */}
+      <div className="container mx-auto px-6 py-8 max-w-[1200px]">
+        <motion.div 
+          className="space-y-6"
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+        >
+          {/* Profile Header - Full Width */}
+          <motion.div variants={itemVariants}>
+            <ProfileHeader />
+          </motion.div>
 
-        {/* About Section */}
-        <motion.div className="grid-about" variants={itemVariants}>
-          <AboutCard />
-        </motion.div>
+          {/* Two-column layout: Main content 65%, Sidebar 35% */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Main Content - 65% (2 columns out of 3) */}
+            <div className="lg:col-span-2 space-y-6">
+              {/* About Section */}
+              <motion.div variants={itemVariants}>
+                <AboutCard />
+              </motion.div>
 
-        {/* Tech Stack */}
-        <motion.div className="grid-tech" variants={itemVariants}>
-          <TechStackCard />
-        </motion.div>
+              {/* Projects Grid */}
+              <motion.div variants={itemVariants}>
+                <ProjectsGrid />
+              </motion.div>
 
-        {/* Projects - Full Width */}
-        <motion.div className="grid-projects" variants={itemVariants}>
-          <ProjectsGrid />
-        </motion.div>
+              {/* Experience Timeline */}
+              <motion.div variants={itemVariants}>
+                <ExperienceTimeline />
+              </motion.div>
+            </div>
 
-        {/* Experience Timeline */}
-        <motion.div className="grid-experience" variants={itemVariants}>
-          <ExperienceTimeline />
-        </motion.div>
+            {/* Sidebar - 35% (1 column out of 3) */}
+            <div className="space-y-6">
+              {/* Tech Stack */}
+              <motion.div variants={itemVariants}>
+                <TechStackCard />
+              </motion.div>
 
-        {/* Certifications */}
-        <motion.div className="grid-certifications" variants={itemVariants}>
-          <CertificationsCard />
-        </motion.div>
+              {/* Certifications */}
+              <motion.div variants={itemVariants}>
+                <CertificationsCard />
+              </motion.div>
 
-        {/* Blog Posts */}
-        <motion.div className="grid-blog" variants={itemVariants}>
-          <BlogPostsCard />
+              {/* Blog Posts */}
+              <motion.div variants={itemVariants}>
+                <BlogPostsCard />
+              </motion.div>
+            </div>
+          </div>
         </motion.div>
-      </motion.div>
+      </div>
     </div>
   );
 }
