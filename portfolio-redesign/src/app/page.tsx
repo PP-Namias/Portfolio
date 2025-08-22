@@ -2,13 +2,13 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import ProfileHeader from '@/components/sections/ProfileHeader';
-import AboutCard from '@/components/sections/AboutCard';
-import TechStackCard from '@/components/sections/TechStackCard';
-import ProjectsGrid from '@/components/sections/ProjectsGrid';
-import ExperienceTimeline from '@/components/sections/ExperienceTimeline';
-import CertificationsCard from '@/components/sections/CertificationsCard';
-import BlogPostsCard from '@/components/sections/BlogPostsCard';
+import { ProfileHeader } from '@/components/sections/ProfileHeader';
+import { AboutCard } from '@/components/sections/AboutCard';
+import { TechStackCard } from '@/components/sections/TechStackCard';
+import { ProjectsGrid } from '@/components/sections/ProjectsGrid';
+import { ExperienceTimeline } from '@/components/sections/ExperienceTimeline';
+import { CertificationsCard } from '@/components/sections/CertificationsCard';
+import { BlogPostsCard } from '@/components/sections/BlogPostsCard';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -27,8 +27,7 @@ const itemVariants = {
     opacity: 1,
     y: 0,
     transition: {
-      duration: 0.5,
-      ease: "easeOut"
+      duration: 0.5
     }
   }
 };
