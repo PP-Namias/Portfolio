@@ -4,8 +4,8 @@ import { motion } from 'framer-motion';
 import { MapPin, Mail, Github, Linkedin, ExternalLink, Calendar, Download, User, Code, Briefcase, Award, BookOpen, Target, ChevronRight, Star, Calendar as CalendarIcon, Clock } from 'lucide-react';
 import Image from 'next/image';
 import { personalInfo } from '@/data/personal';
-import { techStackCollection } from '@/data/techStack';
-import { projectsCollection } from '@/data/projects';
+import { techCategories } from '@/data/techStack';
+import { featuredProjects } from '@/data/projects';
 import { experienceCollection } from '@/data/experience';
 import { certificationsCollection } from '@/data/certifications';
 import { blogPosts } from '@/data/blog';
@@ -262,18 +262,18 @@ function EnhancedTechStackCard() {
       </div>
       <div className="card-content">
         <div className="space-y-3">
-          {techStackCollection.map((category, index) => (
+          {techCategories.map((category, index) => (
             <div key={index} className="border border-gray-700 rounded-lg overflow-hidden">
               <button
-                onClick={() => toggleCategory(category.category)}
+                onClick={() => toggleCategory(category.name)}
                 className="w-full p-3 text-left bg-gray-800/50 hover:bg-gray-700/50 transition-colors flex items-center justify-between"
               >
-                <span className="font-medium">{category.category}</span>
+                <span className="font-medium">{category.name}</span>
                 <div className="flex items-center gap-2">
                   <span className="text-xs text-gray-400">{category.technologies.length} tools</span>
                   <ChevronRight 
                     size={16} 
-                    className={`transform transition-transform ${expandedCategories.has(category.category) ? 'rotate-90' : ''}`} 
+                    className={`transform transition-transform ${expandedCategories.has(category.name) ? 'rotate-90' : ''}`} 
                   />
                 </div>
               </button>
@@ -281,8 +281,8 @@ function EnhancedTechStackCard() {
               <motion.div
                 initial={false}
                 animate={{ 
-                  height: expandedCategories.has(category.category) ? 'auto' : 0,
-                  opacity: expandedCategories.has(category.category) ? 1 : 0
+                  height: expandedCategories.has(category.name) ? 'auto' : 0,
+                  opacity: expandedCategories.has(category.name) ? 1 : 0
                 }}
                 style={{ overflow: 'hidden' }}
               >
@@ -291,9 +291,9 @@ function EnhancedTechStackCard() {
                     {category.technologies.map((tech, techIndex) => (
                       <span 
                         key={techIndex} 
-                        className={`badge ${techColors[tech] || 'badge-outline'}`}
+                        className={`badge ${techColors[tech.name] || 'badge-outline'}`}
                       >
-                        {tech}
+                        {tech.name}
                       </span>
                     ))}
                   </div>
@@ -334,7 +334,7 @@ function EnhancedProjectsGrid() {
       </div>
       <div className="card-content">
         <div className="space-y-4">
-          {projectsCollection.slice(0, 3).map((project, index) => (
+          {featuredProjects.slice(0, 3).map((project, index) => (
             <motion.div
               key={index}
               className="project-card"
