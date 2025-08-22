@@ -2,15 +2,16 @@
 
 import { certificationsCollection, type Certification } from '@/data/certifications';
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 
 export function CertificationsCard() {
   const recentCertifications = certificationsCollection.certifications
     .sort((a: Certification, b: Certification) => 
-      new Date(b.dateEarned).getTime() - new Date(a.dateEarned).getTime()
+      new Date(b.issueDate).getTime() - new Date(a.issueDate).getTime()
     )
     .slice(0, 5);
 
-  const getSkillLevelColor = (level: string): string => {
+  const getLevelColor = (level: string): string => {
     const colors: Record<string, string> = {
       'expert': 'text-red-400',
       'advanced': 'text-orange-400',
@@ -53,11 +54,13 @@ export function CertificationsCard() {
               <div className="flex items-start gap-3">
                 {/* Institution Logo/Icon */}
                 <div className="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:bg-gray-700 transition-colors">
-                  {cert.institution.logo ? (
-                    <img 
-                      src={cert.institution.logo} 
-                      alt={cert.institution.name}
-                      className="w-6 h-6 object-contain"
+                  {cert.issuerLogo?.url ? (
+                    <Image 
+                      src={cert.issuerLogo.url} 
+                      alt={cert.issuerLogo.alt || cert.issuer}
+                      width={24}
+                      height={24}
+                      className="object-contain"
                     />
                   ) : (
                     <svg className="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -72,19 +75,19 @@ export function CertificationsCard() {
                     <h3 className="certification-title group-hover:text-blue-400 transition-colors">
                       {cert.title}
                     </h3>
-                    {cert.skillLevel && (
-                      <span className={`badge badge-outline text-xs ${getSkillLevelColor(cert.skillLevel)}`}>
-                        {cert.skillLevel}
+                    {cert.level && (
+                      <span className={`badge badge-outline text-xs ${getLevelColor(cert.level)}`}>
+                        {cert.level}
                       </span>
                     )}
                   </div>
                   
                   <div className="certification-issuer">
-                    {cert.institution.name}
+                    {cert.issuer}
                   </div>
                   
                   <div className="certification-date">
-                    Earned {new Date(cert.dateEarned).toLocaleDateString('en-US', {
+                    Earned {new Date(cert.issueDate).toLocaleDateString('en-US', {
                       month: 'short',
                       year: 'numeric'
                     })}
@@ -127,6 +130,16 @@ export function CertificationsCard() {
                         </svg>
                         Verify
                       </a>
+                    </div>
+                  )}
+
+                  {/* Expiration Warning */}
+                  {cert.expirationDate && new Date(cert.expirationDate) < new Date(Date.now() + 90 * 24 * 60 * 60 * 1000) && (
+                    <div className="mt-2 text-xs text-orange-400">
+                      Expires {new Date(cert.expirationDate).toLocaleDateString('en-US', {
+                        month: 'short',
+                        year: 'numeric'
+                      })}
                     </div>
                   )}
                 </div>
