@@ -230,69 +230,180 @@ const RecommendationCard = ({ recommendation, index }: { recommendation: Recomme
 
 export const CertificationsSection = () => {
   return (
-    <div className="space-y-8">
-      {/* Recent Certifications */}
-      <motion.section
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        viewport={{ once: true }}
-        className="card"
-        id="certifications"
-      >
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-gradient-primary rounded-lg flex items-center justify-center">
-              <Award className="w-5 h-5 text-white" />
-            </div>
-            <div>
-              <h2 className="heading-sm text-primary">Recent Certifications</h2>
-              <p className="text-sm text-muted">Professional credentials and achievements</p>
-            </div>
-          </div>
-          
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="btn btn-secondary"
-          >
-            <ExternalLink className="w-4 h-4" />
-            View All
-          </motion.button>
-        </div>
-
-        <div className="grid-mobile-cards">
-          {certifications.map((cert, index) => (
-            <CertificationCard key={cert.id} cert={cert} index={index} />
-          ))}
-        </div>
-      </motion.section>
-
-      {/* Recommendations */}
-      <motion.section
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: 0.2 }}
-        viewport={{ once: true }}
-        className="card"
-        id="recommendations"
-      >
-        <div className="flex items-center gap-3 mb-6">
-          <div className="w-8 h-8 bg-gradient-secondary rounded-lg flex items-center justify-center">
-            <MessageSquare className="w-5 h-5 text-white" />
+    <section className="card relative overflow-hidden" id="certifications">
+      {/* Decorative Background */}
+      <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-[var(--color-accent)]/20 to-[var(--color-primary)]/10 rounded-full opacity-50 -translate-y-12 translate-x-12" />
+      
+      <div className="relative z-10">
+        {/* Enhanced Header */}
+        <div className="flex items-center gap-4 mb-8">
+          <div className="w-12 h-12 bg-gradient-to-br from-[var(--color-accent)] to-[var(--color-primary)] rounded-xl flex items-center justify-center shadow-lg">
+            <Award className="w-6 h-6 text-white" />
           </div>
           <div>
-            <h2 className="heading-sm text-primary">Professional Recommendations</h2>
-            <p className="text-sm text-muted">What colleagues say about working with me</p>
+            <h2 className="heading-md text-[var(--color-text-primary)]">Certifications & Recognition</h2>
+            <p className="body-sm text-[var(--color-text-muted)]">Professional achievements and endorsements</p>
           </div>
         </div>
 
-        <div className="grid-mobile-cards">
-          {recommendations.map((rec, index) => (
-            <RecommendationCard key={rec.id} recommendation={rec} index={index} />
-          ))}
+        <div className="space-y-8">
+          {/* Enhanced Certifications Grid */}
+          <div>
+            <h3 className="body-lg font-semibold text-[var(--color-text-primary)] mb-6 flex items-center gap-2">
+              <CheckCircle className="w-5 h-5 text-[var(--color-accent)]" />
+              Professional Certifications
+            </h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {certifications.map((cert, index) => {
+                const statusConfig = getStatusConfig(cert.status);
+                const StatusIcon = statusConfig.icon;
+
+                return (
+                  <motion.div
+                    key={cert.id}
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.3, delay: index * 0.1 }}
+                    viewport={{ once: true }}
+                    whileHover={{ scale: 1.02, y: -4 }}
+                    className="glass-card card-compact group cursor-pointer relative overflow-hidden"
+                  >
+                    {/* Background Effect */}
+                    <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-accent)]/5 to-[var(--color-primary)]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    
+                    <div className="relative z-10">
+                      {/* Header with Status */}
+                      <div className="flex items-start justify-between mb-4">
+                        <div className="flex-1">
+                          <h4 className="body-sm font-semibold text-[var(--color-text-primary)] mb-1 group-hover:text-[var(--color-accent)] transition-colors">
+                            {cert.title}
+                          </h4>
+                          <p className="body-xs text-[var(--color-text-secondary)] font-medium">
+                            {cert.issuer}
+                          </p>
+                        </div>
+                        <span className={`chip ${statusConfig.color} flex items-center gap-1`}>
+                          <StatusIcon className="w-3 h-3" />
+                          {statusConfig.text}
+                        </span>
+                      </div>
+
+                      {/* Credential Info */}
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between body-xs text-[var(--color-text-muted)]">
+                          <span>Issued: {cert.date}</span>
+                        </div>
+                        
+                        {cert.credentialId && (
+                          <div className="body-xs text-[var(--color-text-muted)]">
+                            ID: <span className="font-mono text-[var(--color-text-secondary)]">{cert.credentialId}</span>
+                          </div>
+                        )}
+
+                        {cert.verificationUrl && (
+                          <button className="flex items-center gap-1 body-xs text-[var(--color-accent)] hover:text-[var(--color-primary)] transition-colors">
+                            <ExternalLink className="w-3 h-3" />
+                            Verify Credential
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  </motion.div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Enhanced Recommendations */}
+          <div>
+            <h3 className="body-lg font-semibold text-[var(--color-text-primary)] mb-6 flex items-center gap-2">
+              <MessageSquare className="w-5 h-5 text-[var(--color-accent)]" />
+              Professional Recommendations
+            </h3>
+            <div className="space-y-4">
+              {recommendations.map((rec, index) => (
+                <motion.div
+                  key={rec.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                  viewport={{ once: true }}
+                  className="glass-card card-compact relative overflow-hidden"
+                >
+                  {/* Quote Background Effect */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-[var(--color-accent)]/5 via-transparent to-[var(--color-primary)]/5" />
+                  
+                  <div className="relative z-10">
+                    {/* Quote Icon */}
+                    <div className="absolute top-4 left-4 w-8 h-8 bg-gradient-to-br from-[var(--color-accent)] to-[var(--color-primary)] rounded-lg flex items-center justify-center opacity-20">
+                      <MessageSquare className="w-5 h-5 text-white" />
+                    </div>
+
+                    {/* Content */}
+                    <div className="pt-6">
+                      {/* Rating Stars */}
+                      <div className="flex items-center gap-1 mb-4">
+                        {[...Array(rec.rating)].map((_, i) => (
+                          <Star key={i} className="w-4 h-4 fill-[var(--color-accent)] text-[var(--color-accent)]" />
+                        ))}
+                      </div>
+
+                      {/* Quote Text */}
+                      <blockquote className="body-sm text-[var(--color-text-secondary)] leading-relaxed mb-6 italic">
+                        "{rec.text}"
+                      </blockquote>
+
+                      {/* Author Info */}
+                      <div className="flex items-center gap-3 pt-4 border-t border-[var(--color-border)]">
+                        <div className="w-10 h-10 bg-gradient-to-br from-[var(--color-accent)] to-[var(--color-primary)] rounded-full flex items-center justify-center">
+                          <span className="body-sm font-bold text-white">
+                            {rec.author.split(' ').map(n => n[0]).join('')}
+                          </span>
+                        </div>
+                        <div>
+                          <div className="body-sm font-semibold text-[var(--color-text-primary)]">
+                            {rec.author}
+                          </div>
+                          <div className="body-xs text-[var(--color-text-muted)]">
+                            {rec.role}{rec.company && ` at ${rec.company}`}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+
+          {/* Professional Summary Stats */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+            viewport={{ once: true }}
+            className="glass-card card-compact relative overflow-hidden"
+          >
+            <div className="absolute inset-0 bg-gradient-to-r from-[var(--color-accent)]/5 via-transparent to-[var(--color-primary)]/5" />
+            <div className="relative z-10">
+              <div className="grid grid-cols-2 gap-6 text-center">
+                <div>
+                  <div className="body-lg font-bold text-[var(--color-accent)] mb-1">
+                    {certifications.filter(c => c.status === 'active').length}
+                  </div>
+                  <div className="body-xs text-[var(--color-text-muted)]">Active Certifications</div>
+                </div>
+                <div>
+                  <div className="body-lg font-bold text-[var(--color-primary)] mb-1">
+                    {recommendations.length}
+                  </div>
+                  <div className="body-xs text-[var(--color-text-muted)]">Professional Recommendations</div>
+                </div>
+              </div>
+            </div>
+          </motion.div>
         </div>
-      </motion.section>
-    </div>
+      </div>
+    </section>
   );
 };
