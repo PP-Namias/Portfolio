@@ -1,5 +1,5 @@
-// Import clean JSON data
-import blogData from './json/blog-posts-clean.json';
+// Import JSON data
+import blogData from './json/blog-posts.json';
 
 // Blog Post Interface
 export interface BlogPost {
@@ -89,6 +89,6 @@ export interface BlogCollection {
 }
 
 // Export typed data
-export const blogCollection: BlogCollection = blogData as BlogCollection;
+export const blogCollection: BlogCollection = blogData as unknown as BlogCollection;
 export const blogPosts: BlogPost[] = blogCollection.posts;
 export const featuredPosts: BlogPost[] = blogCollection.posts.filter(post => post.featured);
