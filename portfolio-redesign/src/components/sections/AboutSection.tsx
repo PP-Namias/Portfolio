@@ -42,23 +42,23 @@ export const AboutSection = () => {
       id="about"
     >
       {/* Decorative Background */}
-      <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-primary rounded-full opacity-5 -translate-y-16 translate-x-16" />
+      <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-[var(--color-accent)]/20 to-[var(--color-primary)]/10 rounded-full opacity-50 -translate-y-16 translate-x-16" />
       
       <div className="relative z-10">
         {/* Enhanced Header */}
-        <div className="flex items-center gap-3 mb-6">
-          <div className="w-8 h-8 bg-gradient-primary rounded-lg flex items-center justify-center">
-            <User className="w-5 h-5 text-white" />
+        <div className="flex items-center gap-4 mb-8">
+          <div className="w-12 h-12 bg-gradient-to-br from-[var(--color-accent)] to-[var(--color-primary)] rounded-xl flex items-center justify-center shadow-lg">
+            <User className="w-6 h-6 text-white" />
           </div>
           <div>
-            <h2 className="heading-sm text-primary">About Me</h2>
-            <p className="text-sm text-muted">Professional background and expertise</p>
+            <h2 className="heading-md text-[var(--color-text-primary)]">About Me</h2>
+            <p className="body-sm text-[var(--color-text-muted)]">Professional background and expertise</p>
           </div>
         </div>
 
-        <div className="space-y-6">
+        <div className="space-y-8">
           {/* Enhanced Professional Summary */}
-          <div className="space-y-4">
+          <div className="space-y-6">
             {personalInfo.about.summary.map((paragraph, index) => (
               <motion.p 
                 key={index} 
@@ -66,7 +66,7 @@ export const AboutSection = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4, delay: index * 0.1 }}
                 viewport={{ once: true }}
-                className="text-sm leading-relaxed text-secondary"
+                className="body-lg leading-relaxed text-[var(--color-text-secondary)]"
               >
                 {paragraph}
               </motion.p>
@@ -74,7 +74,7 @@ export const AboutSection = () => {
           </div>
 
           {/* Enhanced Key Stats Grid */}
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
             {stats.map((stat, index) => {
               const IconComponent = stat.icon;
               return (
@@ -84,17 +84,17 @@ export const AboutSection = () => {
                   whileInView={{ opacity: 1, scale: 1 }}
                   transition={{ duration: 0.4, delay: index * 0.1 }}
                   viewport={{ once: true }}
-                  whileHover={{ scale: 1.05 }}
-                  className="glass-card card-compact text-center group cursor-pointer"
+                  whileHover={{ scale: 1.05, y: -4 }}
+                  className="glass-card card-compact text-center group cursor-pointer relative overflow-hidden"
                 >
-                  <div className="flex flex-col items-center gap-2">
-                    <div className={`w-8 h-8 rounded-lg bg-surface border border-default flex items-center justify-center group-hover:scale-110 transition-transform ${stat.color}`}>
-                      <IconComponent className="w-4 h-4" />
+                  <div className="flex flex-col items-center gap-3">
+                    <div className={`w-10 h-10 rounded-xl bg-gradient-to-br from-current to-current/50 flex items-center justify-center group-hover:scale-110 transition-transform ${stat.color}`}>
+                      <IconComponent className="w-5 h-5 text-white" />
                     </div>
-                    <div className="text-lg font-bold text-gradient">
+                    <div className="text-2xl font-bold bg-gradient-to-r from-[var(--color-accent)] to-[var(--color-primary)] bg-clip-text text-transparent">
                       {stat.value}
                     </div>
-                    <div className="text-xs text-muted font-medium">
+                    <div className="text-sm text-[var(--color-text-muted)] font-medium">
                       {stat.label}
                     </div>
                   </div>
@@ -111,15 +111,15 @@ export const AboutSection = () => {
             viewport={{ once: true }}
             className="glass-card card-compact relative overflow-hidden"
           >
-            <div className="absolute inset-0 bg-gradient-to-r from-blue-50/50 via-transparent to-purple-50/50 dark:from-blue-900/20 dark:via-transparent dark:to-purple-900/20" />
+            <div className="absolute inset-0 bg-gradient-to-r from-[var(--color-accent)]/5 via-transparent to-[var(--color-primary)]/5" />
             <div className="relative z-10">
-              <div className="flex items-center gap-2 mb-3">
-                <div className="w-6 h-6 bg-gradient-secondary rounded-lg flex items-center justify-center">
-                  <Target className="w-4 h-4 text-white" />
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-8 h-8 bg-gradient-to-br from-[var(--color-accent)] to-[var(--color-primary)] rounded-lg flex items-center justify-center">
+                  <Target className="w-5 h-5 text-white" />
                 </div>
-                <span className="text-sm font-semibold text-primary">Current Focus</span>
+                <span className="body-base font-semibold text-[var(--color-text-primary)]">Current Focus</span>
               </div>
-              <p className="text-sm text-secondary leading-relaxed">
+              <p className="body-base text-[var(--color-text-secondary)] leading-relaxed">
                 {personalInfo.about.currentFocus}
               </p>
             </div>
@@ -127,8 +127,8 @@ export const AboutSection = () => {
 
           {/* Enhanced Specializations */}
           <div>
-            <h3 className="text-sm font-semibold text-primary mb-3">Core Specializations</h3>
-            <div className="flex flex-wrap gap-2">
+            <h3 className="body-base font-semibold text-[var(--color-text-primary)] mb-4">Core Specializations</h3>
+            <div className="flex flex-wrap gap-3">
               {personalInfo.about.specializations.map((spec, index) => (
                 <motion.span
                   key={index}
