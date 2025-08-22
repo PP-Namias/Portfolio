@@ -2,6 +2,7 @@
 
 import { blogCollection, type BlogPost } from '@/data/blog';
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 
 export function BlogPostsCard() {
   const recentPosts = blogCollection.posts
@@ -69,16 +70,18 @@ export function BlogPostsCard() {
               transition={{ duration: 0.5, delay: index * 0.1 }}
               viewport={{ once: true }}
               className="blog-post-item group cursor-pointer"
-              onClick={() => window.open(post.url, '_blank')}
+              onClick={() => window.open(`/blog/${post.slug}`, '_blank')}
             >
               <div className="flex items-start gap-3">
                 {/* Post Thumbnail or Icon */}
                 <div className="w-12 h-12 bg-gray-800 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:bg-gray-700 transition-colors overflow-hidden">
-                  {post.thumbnail ? (
-                    <img 
-                      src={post.thumbnail.url} 
-                      alt={post.thumbnail.alt || post.title}
-                      className="w-full h-full object-cover"
+                  {post.coverImage?.url ? (
+                    <Image 
+                      src={post.coverImage.url} 
+                      alt={post.coverImage.alt || post.title}
+                      width={48}
+                      height={48}
+                      className="object-cover rounded-lg"
                     />
                   ) : (
                     <svg className="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -101,7 +104,7 @@ export function BlogPostsCard() {
                       {post.category}
                     </span>
                     <span className="text-muted text-xs">
-                      {formatReadTime(post.readTime)}
+                      {formatReadTime(post.readingTime)}
                     </span>
                   </div>
                   
@@ -125,21 +128,21 @@ export function BlogPostsCard() {
                     
                     {/* Engagement Stats */}
                     <div className="flex items-center gap-3 text-muted">
-                      {post.stats?.views && (
+                      {post.views && (
                         <div className="flex items-center gap-1">
                           <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                           </svg>
-                          {post.stats.views > 1000 ? `${(post.stats.views / 1000).toFixed(1)}k` : post.stats.views}
+                          {post.views > 1000 ? `${(post.views / 1000).toFixed(1)}k` : post.views}
                         </div>
                       )}
-                      {post.stats?.likes && (
+                      {post.likes && (
                         <div className="flex items-center gap-1">
                           <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                           </svg>
-                          {post.stats.likes}
+                          {post.likes}
                         </div>
                       )}
                     </div>
