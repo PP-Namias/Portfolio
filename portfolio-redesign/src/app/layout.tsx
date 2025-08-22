@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
+import { Inter } from "next/font/google";
 import "./globals-enhanced-fixed.css";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
+
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "PP Namias - Full-Stack Software Engineer",
@@ -44,7 +47,6 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-      return (
     <html lang="en" data-theme="dark">
       <body
         className={`${inter.className} antialiased bg-[var(--color-background)] text-[var(--color-text-primary)] transition-colors duration-300`}
@@ -54,6 +56,5 @@ export default function RootLayout({
         </ThemeProvider>
       </body>
     </html>
-  )
   );
 }
