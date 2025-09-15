@@ -1,0 +1,444 @@
+{
+  "_id": "feedback-collection",
+  "_type": "feedbackCollection",
+  "_createdAt": "2025-08-21T10:00:00Z",
+  "_updatedAt": "2025-08-21T10:00:00Z",
+  "submissions": [
+    {
+      "_id": "feedback-sarah-tech-lead",
+      "_type": "feedback",
+      "_createdAt": "2024-12-01T14:30:00Z",
+      "_updatedAt": "2024-12-01T14:30:00Z",
+      "name": "Sarah Williams",
+      "email": "sarah.williams@techstartup.com",
+      "company": "TechStartup Inc.",
+      "position": "Technical Lead",
+      "source": "portfolio-website",
+      "type": "project-inquiry",
+      "subject": "React Native App Development",
+      "message": "Hi! I came across your portfolio and was impressed by your FinTech mobile app project. We're looking for a React Native developer to build a similar application for our startup. Could we schedule a call to discuss the requirements and timeline?",
+      "priority": "high",
+      "status": "responded",
+      "rating": 5,
+      "projectInterest": ["mobile-development", "fintech", "react-native"],
+      "budget": {
+        "range": "$50,000-$100,000",
+        "timeline": "3-4 months",
+        "urgency": "medium"
+      },
+      "contactPreference": "email",
+      "followUpRequired": false,
+      "responseDate": "2024-12-01T16:45:00Z",
+      "notes": "Interested in mobile banking app similar to SecureBank project. Scheduled call for Dec 5th.",
+      "tags": ["mobile", "fintech", "react-native", "high-value", "responded"],
+      "referralSource": "google-search",
+      "deviceInfo": {
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)",
+        "device": "desktop",
+        "browser": "Chrome"
+      },
+      "location": {
+        "country": "United States",
+        "city": "San Francisco",
+        "timezone": "America/Los_Angeles"
+      }
+    },
+    {
+      "_id": "feedback-marco-founder",
+      "_type": "feedback",
+      "_createdAt": "2024-11-28T09:15:00Z",
+      "_updatedAt": "2024-11-28T09:15:00Z",
+      "name": "Marco Rodriguez",
+      "email": "marco@ecommerceplus.com",
+      "company": "E-commerce Plus",
+      "position": "Founder & CEO",
+      "source": "linkedin",
+      "type": "collaboration-proposal",
+      "subject": "Partnership Opportunity - E-commerce Platform",
+      "message": "Hello, I saw your e-commerce platform work on LinkedIn and it's exactly what we need! We're expanding our business and need a similar AI-powered recommendation system. Your RetailMax project results are impressive. Would you be interested in a partnership where you'd get equity in our company plus development fees?",
+      "priority": "high",
+      "status": "in-discussion",
+      "rating": null,
+      "projectInterest": ["ecommerce", "ai-recommendations", "full-stack", "partnership"],
+      "budget": {
+        "range": "$75,000-$150,000",
+        "timeline": "4-6 months",
+        "urgency": "high"
+      },
+      "contactPreference": "video-call",
+      "followUpRequired": true,
+      "responseDate": "2024-11-28T11:30:00Z",
+      "notes": "Potential equity partnership opportunity. Interested in AI recommendation system. Need to evaluate company valuation.",
+      "tags": ["ecommerce", "ai", "partnership", "equity", "high-value"],
+      "referralSource": "linkedin",
+      "deviceInfo": {
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
+        "device": "desktop",
+        "browser": "Edge"
+      },
+      "location": {
+        "country": "Spain",
+        "city": "Madrid",
+        "timezone": "Europe/Madrid"
+      }
+    },
+    {
+      "_id": "feedback-jennifer-hr",
+      "_type": "feedback",
+      "_createdAt": "2024-11-25T16:20:00Z",
+      "_updatedAt": "2024-11-25T16:20:00Z",
+      "name": "Jennifer Park",
+      "email": "jpark@bigtech.com",
+      "company": "BigTech Corp",
+      "position": "Senior Technical Recruiter",
+      "source": "portfolio-website",
+      "type": "job-opportunity",
+      "subject": "Senior Full-Stack Developer Position",
+      "message": "Hi there! Your portfolio is outstanding, especially the AI analytics platform project. We have a senior full-stack developer position that would be perfect for your skills. The role involves leading a team of 8 developers working on AI-powered business tools. Compensation is very competitive. Would you be open to a conversation?",
+      "priority": "medium",
+      "status": "responded",
+      "rating": 4,
+      "projectInterest": ["full-stack", "ai", "team-leadership", "enterprise"],
+      "budget": {
+        "range": "$180,000-$220,000",
+        "timeline": "full-time",
+        "urgency": "medium"
+      },
+      "contactPreference": "email",
+      "followUpRequired": false,
+      "responseDate": "2024-11-25T18:45:00Z",
+      "notes": "Politely declined. Not looking for full-time employment currently. Referred to freelance opportunities.",
+      "tags": ["job-offer", "full-time", "enterprise", "declined"],
+      "referralSource": "direct",
+      "deviceInfo": {
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)",
+        "device": "desktop", 
+        "browser": "Safari"
+      },
+      "location": {
+        "country": "United States",
+        "city": "Seattle",
+        "timezone": "America/Los_Angeles"
+      }
+    },
+    {
+      "_id": "feedback-alex-student",
+      "_type": "feedback",
+      "_createdAt": "2024-11-22T13:45:00Z",
+      "_updatedAt": "2024-11-22T13:45:00Z",
+      "name": "Alex Chen",
+      "email": "alex.chen@university.edu",
+      "company": "University of Technology",
+      "position": "Computer Science Student",
+      "source": "github",
+      "type": "mentorship-request",
+      "subject": "Mentorship Opportunity",
+      "message": "Hello! I'm a CS student who found your GitHub profile through your open source contributions. Your projects are amazing and exactly the kind of work I want to do after graduation. Would you consider mentoring me? I'm particularly interested in AI integration and full-stack development. I understand you're busy, but even occasional guidance would be incredibly valuable.",
+      "priority": "low",
+      "status": "responded",
+      "rating": 5,
+      "projectInterest": ["mentorship", "learning", "ai", "full-stack"],
+      "budget": {
+        "range": "Pro bono",
+        "timeline": "ongoing",
+        "urgency": "low"
+      },
+      "contactPreference": "email",
+      "followUpRequired": true,
+      "responseDate": "2024-11-23T10:20:00Z",
+      "notes": "Offered monthly mentorship calls. Connected to developer community Discord. Very enthusiastic student.",
+      "tags": ["mentorship", "student", "learning", "pro-bono", "positive"],
+      "referralSource": "github",
+      "deviceInfo": {
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
+        "device": "desktop",
+        "browser": "Chrome"
+      },
+      "location": {
+        "country": "Canada",
+        "city": "Toronto",
+        "timezone": "America/Toronto"
+      }
+    },
+    {
+      "_id": "feedback-dmitri-cto",
+      "_type": "feedback",
+      "_createdAt": "2024-11-20T11:30:00Z",
+      "_updatedAt": "2024-11-20T11:30:00Z",
+      "name": "Dmitri Volkov",
+      "email": "d.volkov@healthtech.com",
+      "company": "HealthTech Solutions",
+      "position": "Chief Technology Officer",
+      "source": "recommendation",
+      "type": "project-inquiry",
+      "subject": "Healthcare Platform Development",
+      "message": "Hi, Jennifer White from HealthConnect recommended your work on their telemedicine platform. We're building a similar solution but with AI-powered diagnostics integration. Your experience with HIPAA compliance and healthcare systems would be invaluable. The project is well-funded and we're looking for a technical lead. Are you available for a detailed discussion?",
+      "priority": "high",
+      "status": "scheduled",
+      "rating": null,
+      "projectInterest": ["healthcare", "ai", "compliance", "telemedicine"],
+      "budget": {
+        "range": "$100,000-$200,000",
+        "timeline": "6-8 months",
+        "urgency": "medium"
+      },
+      "contactPreference": "video-call",
+      "followUpRequired": true,
+      "responseDate": "2024-11-20T14:15:00Z",
+      "notes": "Scheduled call for Nov 25th. Interesting AI diagnostics project. Potential technical lead role.",
+      "tags": ["healthcare", "ai", "compliance", "technical-lead", "high-value"],
+      "referralSource": "recommendation",
+      "deviceInfo": {
+        "userAgent": "Mozilla/5.0 (X11; Linux x86_64)",
+        "device": "desktop",
+        "browser": "Firefox"
+      },
+      "location": {
+        "country": "Germany",
+        "city": "Berlin",
+        "timezone": "Europe/Berlin"
+      }
+    },
+    {
+      "_id": "feedback-lisa-portfolio",
+      "_type": "feedback",
+      "_createdAt": "2024-11-18T20:15:00Z",
+      "_updatedAt": "2024-11-18T20:15:00Z",
+      "name": "Lisa Thompson",
+      "email": "lisa.thompson@freelancer.com",
+      "company": "Independent",
+      "position": "UX Designer",
+      "source": "portfolio-website",
+      "type": "collaboration-proposal",
+      "subject": "UX/Dev Collaboration",
+      "message": "Love your portfolio design! Clean, professional, and the dark theme is perfect. I'm a UX designer looking for developer partners for client projects. Your technical skills combined with my design expertise could be a great partnership. Would you be interested in collaborating on client projects?",
+      "priority": "medium",
+      "status": "responded",
+      "rating": 4,
+      "projectInterest": ["collaboration", "design-dev", "partnerships"],
+      "budget": {
+        "range": "Revenue share",
+        "timeline": "ongoing",
+        "urgency": "low"
+      },
+      "contactPreference": "email",
+      "followUpRequired": false,
+      "responseDate": "2024-11-19T09:30:00Z",
+      "notes": "Interested in collaboration. Added to partner network. Will refer suitable projects.",
+      "tags": ["collaboration", "design", "partnership", "revenue-share"],
+      "referralSource": "direct",
+      "deviceInfo": {
+        "userAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X)",
+        "device": "mobile",
+        "browser": "Safari"
+      },
+      "location": {
+        "country": "Australia",
+        "city": "Sydney",
+        "timezone": "Australia/Sydney"
+      }
+    },
+    {
+      "_id": "feedback-anonymous-spam",
+      "_type": "feedback",
+      "_createdAt": "2024-11-15T03:22:00Z",
+      "_updatedAt": "2024-11-15T03:22:00Z",
+      "name": "John Marketing",
+      "email": "offers@marketing-agency.com",
+      "company": "Marketing Agency",
+      "position": "Sales Representative",
+      "source": "portfolio-website",
+      "type": "spam",
+      "subject": "Increase Your Website Traffic 10x",
+      "message": "Hi there! We can increase your website traffic by 1000% with our proven SEO strategies. Special offer just for you - only $99/month! Click here to get started...",
+      "priority": "low",
+      "status": "spam",
+      "rating": 1,
+      "projectInterest": [],
+      "budget": {
+        "range": "N/A",
+        "timeline": "N/A",
+        "urgency": "low"
+      },
+      "contactPreference": "none",
+      "followUpRequired": false,
+      "responseDate": null,
+      "notes": "Obvious spam. Marked as spam and blocked.",
+      "tags": ["spam", "marketing", "blocked"],
+      "referralSource": "unknown",
+      "deviceInfo": {
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
+        "device": "desktop",
+        "browser": "Chrome"
+      },
+      "location": {
+        "country": "Unknown",
+        "city": "Unknown",
+        "timezone": "Unknown"
+      }
+    }
+  ],
+  "feedbackTypes": [
+    {
+      "_key": "project-inquiry",
+      "name": "Project Inquiry",
+      "description": "Requests for development projects",
+      "icon": "Briefcase",
+      "color": "blue"
+    },
+    {
+      "_key": "collaboration-proposal",
+      "name": "Collaboration Proposal",
+      "description": "Partnership and collaboration opportunities",
+      "icon": "Handshake",
+      "color": "green"
+    },
+    {
+      "_key": "job-opportunity",
+      "name": "Job Opportunity",
+      "description": "Full-time or contract job offers",
+      "icon": "Building",
+      "color": "purple"
+    },
+    {
+      "_key": "mentorship-request",
+      "name": "Mentorship Request",
+      "description": "Requests for mentoring and guidance",
+      "icon": "Users",
+      "color": "orange"
+    },
+    {
+      "_key": "general-inquiry",
+      "name": "General Inquiry",
+      "description": "General questions and feedback",
+      "icon": "MessageSquare",
+      "color": "gray"
+    },
+    {
+      "_key": "spam",
+      "name": "Spam",
+      "description": "Spam and irrelevant messages",
+      "icon": "Shield",
+      "color": "red"
+    }
+  ],
+  "statuses": [
+    {
+      "_key": "new",
+      "name": "New",
+      "description": "Newly received feedback",
+      "color": "yellow"
+    },
+    {
+      "_key": "in-review",
+      "name": "In Review",
+      "description": "Currently reviewing the feedback",
+      "color": "blue"
+    },
+    {
+      "_key": "responded",
+      "name": "Responded",
+      "description": "Response has been sent",
+      "color": "green"
+    },
+    {
+      "_key": "in-discussion",
+      "name": "In Discussion",
+      "description": "Ongoing discussion",
+      "color": "purple"
+    },
+    {
+      "_key": "scheduled",
+      "name": "Scheduled",
+      "description": "Meeting or call scheduled",
+      "color": "orange"
+    },
+    {
+      "_key": "completed",
+      "name": "Completed",
+      "description": "Inquiry resolved or project completed",
+      "color": "green"
+    },
+    {
+      "_key": "spam",
+      "name": "Spam",
+      "description": "Marked as spam",
+      "color": "red"
+    },
+    {
+      "_key": "archived",
+      "name": "Archived",
+      "description": "Archived for reference",
+      "color": "gray"
+    }
+  ],
+  "priorities": [
+    {
+      "_key": "high",
+      "name": "High",
+      "description": "High priority inquiries",
+      "color": "red"
+    },
+    {
+      "_key": "medium",
+      "name": "Medium",
+      "description": "Medium priority inquiries",
+      "color": "yellow"
+    },
+    {
+      "_key": "low",
+      "name": "Low",
+      "description": "Low priority inquiries",
+      "color": "green"
+    }
+  ],
+  "sources": [
+    {
+      "_key": "portfolio-website",
+      "name": "Portfolio Website",
+      "description": "Direct contact through portfolio"
+    },
+    {
+      "_key": "linkedin",
+      "name": "LinkedIn",
+      "description": "Contact through LinkedIn"
+    },
+    {
+      "_key": "github",
+      "name": "GitHub",
+      "description": "Contact through GitHub profile"
+    },
+    {
+      "_key": "recommendation",
+      "name": "Recommendation",
+      "description": "Referred by previous clients"
+    },
+    {
+      "_key": "direct",
+      "name": "Direct",
+      "description": "Direct contact"
+    },
+    {
+      "_key": "unknown",
+      "name": "Unknown",
+      "description": "Unknown source"
+    }
+  ],
+  "analytics": {
+    "totalSubmissions": 7,
+    "responseRate": 85.7,
+    "averageResponseTime": "4.2 hours",
+    "spamRate": 14.3,
+    "conversionRate": 42.9,
+    "topSources": ["portfolio-website", "linkedin", "recommendation"],
+    "topInquiryTypes": ["project-inquiry", "collaboration-proposal"],
+    "monthlyStats": {
+      "november2024": {
+        "submissions": 7,
+        "responses": 6,
+        "conversions": 3,
+        "averageProjectValue": "$87,500"
+      }
+    }
+  }
+}

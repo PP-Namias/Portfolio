@@ -1,0 +1,119 @@
+{
+  "_id": "personal-info",
+  "_type": "personalInfo",
+  "_createdAt": "2025-08-21T10:00:00Z",
+  "_updatedAt": "2025-08-21T10:00:00Z",
+  "profile": {
+    "name": "PP Namias",
+    "title": "Principal AI Engineer & Full-Stack Developer",
+    "tagline": "Building technology that makes a difference",
+    "location": "Manila, Philippines",
+    "email": "contact@ppnamias.dev",
+    "phone": "+63 123 456 7890",
+    "website": "https://ppnamias.dev",
+    "image": {
+      "_type": "image",
+      "asset": {
+        "_ref": "image-profile",
+        "_type": "reference"
+      },
+      "alt": "PP Namias Profile Photo",
+      "url": "/profile.jpeg"
+    },
+    "availability": {
+      "status": "available",
+      "message": "Available for projects",
+      "updated": "2025-08-21T10:00:00Z"
+    }
+  },
+  "achievements": [
+    {
+      "_key": "achievement-1",
+      "title": "PHP Developer Expert",
+      "description": "Certified PHP Expert with advanced expertise",
+      "color": "blue",
+      "icon": "Award",
+      "date": "2024-01-15",
+      "verified": true
+    },
+    {
+      "_key": "achievement-2", 
+      "title": "DICT OpenGov HacKathon 2025 Champion",
+      "description": "Winner of national government hackathon",
+      "color": "yellow",
+      "icon": "Trophy",
+      "date": "2025-03-10",
+      "verified": true,
+      "link": "https://dict.gov.ph/news-and-updates/21070"
+    },
+    {
+      "_key": "achievement-3",
+      "title": "Available for Projects",
+      "description": "Currently accepting new opportunities",
+      "color": "green", 
+      "icon": "CheckCircle",
+      "date": "2025-08-21",
+      "verified": true
+    }
+  ],
+  "about": {
+    "summary": [
+      "I'm a full-stack software engineer specializing in developing solutions with JavaScript, Python, and modern web technologies. I focus on building modern websites, web applications, mobile apps, search engine optimization, digital marketing, and creating educational content through code tutorials.",
+      "I've helped startups and MSMEs grow and streamline their processes through innovative software solutions. I've also built a thriving community of over 200,000 developers worldwide, sharing knowledge and providing mentorship to aspiring programmers.",
+      "Lately, I've been diving deeper into the world of artificial intelligence, focusing on integrating AI tools and techniques into modern applications. My work now includes developing AI-powered solutions, creating intelligent applications, and leveraging generative AI to optimize development workflows and deliver cutting-edge technology."
+    ],
+    "specializations": [
+      "Full-Stack Development",
+      "AI Integration & Development", 
+      "Modern Web Technologies",
+      "Digital Marketing & SEO",
+      "Community Building & Mentorship",
+      "Mobile App Development"
+    ],
+    "currentFocus": "Integrating AI tools and techniques into modern applications",
+    "yearsOfExperience": 8,
+    "developersBuiltCommunity": 200000,
+    "personalPhilosophy": "Building technology that makes a difference, one line of code at a time.",
+    "interests": [
+      "Emerging Technologies",
+      "Minimalism",
+      "Startup Culture",
+      "Open Source",
+      "Developer Education"
+    ]
+  },
+  "socialLinks": [
+    {
+      "_key": "linkedin",
+      "platform": "LinkedIn", 
+      "url": "https://linkedin.com/in/ppnamias",
+      "username": "@ppnamias",
+      "icon": "linkedin",
+      "primary": true
+    },
+    {
+      "_key": "github",
+      "platform": "GitHub",
+      "url": "https://github.com/ppnamias", 
+      "username": "@ppnamias",
+      "icon": "github",
+      "primary": true
+    },
+    {
+      "_key": "twitter",
+      "platform": "Twitter",
+      "url": "https://twitter.com/ppnamias",
+      "username": "@ppnamias", 
+      "icon": "twitter",
+      "primary": false
+    },
+    {
+      "_key": "instagram",
+      "platform": "Instagram",
+      "url": "https://instagram.com/pp.namias",
+      "username": "@pp.namias",
+      "icon": "instagram", 
+      "primary": false
+    }
+  ]
+}
