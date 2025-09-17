@@ -358,13 +358,24 @@ import MainGridLayout from '../layouts/MainGridLayout.astro';
 <script>
     // Contact form handling
     document.addEventListener('DOMContentLoaded', function() {
-        const form = document.getElementById('contact-form');
-        const submitBtn = form.querySelector('.submit-btn');
-        const btnText = submitBtn.querySelector('.btn-text');
-        const btnLoading = submitBtn.querySelector('.btn-loading');
-        const formMessage = document.getElementById('form-message');
+        const form = document.getElementById('contact-form') as HTMLFormElement | null;
         
-        form.addEventListener('submit', async function(e) {
+        if (!form) {
+            console.error('Contact form not found');
+            return;
+        }
+        
+        const submitBtn = form.querySelector('.submit-btn') as HTMLButtonElement | null;
+        const btnText = submitBtn?.querySelector('.btn-text') as HTMLElement | null;
+        const btnLoading = submitBtn?.querySelector('.btn-loading') as HTMLElement | null;
+        const formMessage = document.getElementById('form-message') as HTMLElement | null;
+        
+        if (!submitBtn || !btnText || !btnLoading || !formMessage) {
+            console.error('Required form elements not found');
+            return;
+        }
+        
+        form.addEventListener('submit', async function(e: Event) {
             e.preventDefault();
             
             // Show loading state
