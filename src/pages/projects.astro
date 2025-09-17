@@ -1,288 +1,100 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import MainGridLayout from '../layouts/MainGridLayout.astro';
+import { getEntry, render } from "astro:content";
+import Markdown from "@components/misc/Markdown.astro";
+import I18nKey from "../i18n/i18nKey";
+import { i18n } from "../i18n/translation";
+import MainGridLayout from "../layouts/MainGridLayout.astro";
+
+const projectsPost = await getEntry("spec", "projects");
+
+if (!projectsPost) {
+	throw new Error("Projects page content not found");
+}
+
+const { Content } = await render(projectsPost);
 ---
 
-<Layout title="Projects - PP Namias">
-    <MainGridLayout>
-        <div class="flex w-full rounded-[var(--radius-large)] overflow-hidden relative">
-            <div class="card-base z-10 px-9 py-6 relative w-full">
-                <div class="prose">
-                    <h1 class="text-3xl font-bold mb-8">Featured Projects</h1>
-                    
-                    <!-- Featured Projects Grid -->
-                    <div class="projects-grid mb-12">
-                        <!-- Project 1 -->
-                        <div class="project-card">
-                            <div class="project-image">
-                                <img src="/api/placeholder/400/250" alt="E-commerce Platform" class="w-full h-48 object-cover rounded-t-lg" />
-                            </div>
-                            <div class="project-content p-6">
-                                <h3 class="text-xl font-bold mb-2">E-commerce Platform</h3>
-                                <p class="text-gray-600 mb-4">
-                                    Full-stack e-commerce solution with payment integration, inventory management, 
-                                    and admin dashboard. Built with modern technologies for scalability.
-                                </p>
-                                <div class="tech-stack mb-4">
-                                    <span class="tech-tag">React</span>
-                                    <span class="tech-tag">Node.js</span>
-                                    <span class="tech-tag">MongoDB</span>
-                                    <span class="tech-tag">Stripe</span>
-                                </div>
-                                <div class="project-links">
-                                    <a href="#" class="btn-primary">Live Demo</a>
-                                    <a href="#" class="btn-secondary">GitHub</a>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Project 2 -->
-                        <div class="project-card">
-                            <div class="project-image">
-                                <img src="/api/placeholder/400/250" alt="Task Management App" class="w-full h-48 object-cover rounded-t-lg" />
-                            </div>
-                            <div class="project-content p-6">
-                                <h3 class="text-xl font-bold mb-2">Task Management App</h3>
-                                <p class="text-gray-600 mb-4">
-                                    Collaborative task management application with real-time updates, 
-                                    team collaboration features, and advanced filtering options.
-                                </p>
-                                <div class="tech-stack mb-4">
-                                    <span class="tech-tag">Vue.js</span>
-                                    <span class="tech-tag">Express</span>
-                                    <span class="tech-tag">Socket.io</span>
-                                    <span class="tech-tag">PostgreSQL</span>
-                                </div>
-                                <div class="project-links">
-                                    <a href="#" class="btn-primary">Live Demo</a>
-                                    <a href="#" class="btn-secondary">GitHub</a>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Project 3 -->
-                        <div class="project-card">
-                            <div class="project-image">
-                                <img src="/api/placeholder/400/250" alt="Weather Dashboard" class="w-full h-48 object-cover rounded-t-lg" />
-                            </div>
-                            <div class="project-content p-6">
-                                <h3 class="text-xl font-bold mb-2">Weather Dashboard</h3>
-                                <p class="text-gray-600 mb-4">
-                                    Beautiful weather application with location-based forecasts, 
-                                    interactive maps, and customizable widgets.
-                                </p>
-                                <div class="tech-stack mb-4">
-                                    <span class="tech-tag">React</span>
-                                    <span class="tech-tag">TypeScript</span>
-                                    <span class="tech-tag">Chart.js</span>
-                                    <span class="tech-tag">OpenWeather API</span>
-                                </div>
-                                <div class="project-links">
-                                    <a href="#" class="btn-primary">Live Demo</a>
-                                    <a href="#" class="btn-secondary">GitHub</a>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Project 4 -->
-                        <div class="project-card">
-                            <div class="project-image">
-                                <img src="/api/placeholder/400/250" alt="Portfolio Website" class="w-full h-48 object-cover rounded-t-lg" />
-                            </div>
-                            <div class="project-content p-6">
-                                <h3 class="text-xl font-bold mb-2">Portfolio Website</h3>
-                                <p class="text-gray-600 mb-4">
-                                    Modern portfolio website built with Astro, featuring blog functionality, 
-                                    dark mode, and optimized performance.
-                                </p>
-                                <div class="tech-stack mb-4">
-                                    <span class="tech-tag">Astro</span>
-                                    <span class="tech-tag">Svelte</span>
-                                    <span class="tech-tag">Tailwind CSS</span>
-                                    <span class="tech-tag">TypeScript</span>
-                                </div>
-                                <div class="project-links">
-                                    <a href="#" class="btn-primary">Live Demo</a>
-                                    <a href="#" class="btn-secondary">GitHub</a>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Project 5 -->
-                        <div class="project-card">
-                            <div class="project-image">
-                                <img src="/api/placeholder/400/250" alt="Chat Application" class="w-full h-48 object-cover rounded-t-lg" />
-                            </div>
-                            <div class="project-content p-6">
-                                <h3 class="text-xl font-bold mb-2">Real-time Chat App</h3>
-                                <p class="text-gray-600 mb-4">
-                                    Modern chat application with real-time messaging, file sharing, 
-                                    and group chat functionality using WebSocket technology.
-                                </p>
-                                <div class="tech-stack mb-4">
-                                    <span class="tech-tag">React</span>
-                                    <span class="tech-tag">Socket.io</span>
-                                    <span class="tech-tag">Node.js</span>
-                                    <span class="tech-tag">Redis</span>
-                                </div>
-                                <div class="project-links">
-                                    <a href="#" class="btn-primary">Live Demo</a>
-                                    <a href="#" class="btn-secondary">GitHub</a>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Project 6 -->
-                        <div class="project-card">
-                            <div class="project-image">
-                                <img src="/api/placeholder/400/250" alt="Data Visualization" class="w-full h-48 object-cover rounded-t-lg" />
-                            </div>
-                            <div class="project-content p-6">
-                                <h3 class="text-xl font-bold mb-2">Data Visualization Dashboard</h3>
-                                <p class="text-gray-600 mb-4">
-                                    Interactive dashboard for data visualization with multiple chart types, 
-                                    filters, and export functionality for business analytics.
-                                </p>
-                                <div class="tech-stack mb-4">
-                                    <span class="tech-tag">D3.js</span>
-                                    <span class="tech-tag">Python</span>
-                                    <span class="tech-tag">Flask</span>
-                                    <span class="tech-tag">Pandas</span>
-                                </div>
-                                <div class="project-links">
-                                    <a href="#" class="btn-primary">Live Demo</a>
-                                    <a href="#" class="btn-secondary">GitHub</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- GitHub Stats Section -->
-                    <section class="github-stats">
-                        <h2 class="text-2xl font-semibold mb-6">GitHub Activity</h2>
-                        <div class="stats-grid">
-                            <div class="stat-card">
-                                <h3 class="text-3xl font-bold text-blue-600">50+</h3>
-                                <p class="text-gray-600">Repositories</p>
-                            </div>
-                            <div class="stat-card">
-                                <h3 class="text-3xl font-bold text-green-600">200+</h3>
-                                <p class="text-gray-600">Commits This Year</p>
-                            </div>
-                            <div class="stat-card">
-                                <h3 class="text-3xl font-bold text-purple-600">15+</h3>
-                                <p class="text-gray-600">Languages Used</p>
-                            </div>
-                            <div class="stat-card">
-                                <h3 class="text-3xl font-bold text-orange-600">30+</h3>
-                                <p class="text-gray-600">Stars Earned</p>
-                            </div>
-                        </div>
-                    </section>
-                </div>
-            </div>
+<MainGridLayout title="Projects - Jhon Keneth Namias" description="Explore my latest work and achievements">
+    <div class="flex w-full rounded-[var(--radius-large)] overflow-hidden relative min-h-32">
+        <div class="card-base z-10 px-9 py-6 relative w-full">
+            <Markdown class="mt-2">
+                <Content />
+            </Markdown>
         </div>
-    </MainGridLayout>
-</Layout>
+    </div>
+</MainGridLayout>
 
 <style>
-    .projects-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-        gap: 2rem;
-        margin-bottom: 3rem;
+    /* Enhanced styling for projects content */
+    :global(.card-base h1) {
+        @apply text-4xl font-bold mb-8 text-center;
     }
     
-    .project-card {
-        background: white;
-        border-radius: 0.75rem;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        border: 1px solid #e5e7eb;
-        overflow: hidden;
-        transition: all 0.3s ease;
+    :global(.card-base h2) {
+        @apply text-2xl font-semibold mb-6 text-center text-gray-600;
     }
     
-    .project-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    :global(.card-base h3) {
+        @apply text-xl font-bold mb-4 text-gray-800;
     }
     
-    .tech-stack {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.5rem;
+    :global(.card-base p) {
+        @apply text-gray-600 leading-relaxed mb-4;
     }
     
-    .tech-tag {
-        background: #f3f4f6;
-        color: #374151;
-        padding: 0.25rem 0.75rem;
-        border-radius: 1rem;
-        font-size: 0.75rem;
-        font-weight: 500;
+    :global(.card-base strong) {
+        @apply font-semibold text-gray-800;
     }
     
-    .project-links {
-        display: flex;
-        gap: 1rem;
+    :global(.card-base hr) {
+        @apply border-gray-200 my-8;
     }
     
-    .btn-primary {
-        background: #3b82f6;
-        color: white;
-        padding: 0.5rem 1rem;
-        border-radius: 0.5rem;
-        text-decoration: none;
-        font-weight: 500;
-        transition: background-color 0.2s ease;
+    /* Technology tags styling */
+    :global(.card-base p:has(strong:contains("Technologies:"))) {
+        @apply bg-gray-50 p-4 rounded-lg border-l-4 border-blue-500 mb-4;
     }
     
-    .btn-primary:hover {
-        background: #2563eb;
+    /* Project sections spacing */
+    :global(.card-base h2:first-of-type) {
+        @apply mt-0;
     }
     
-    .btn-secondary {
-        background: transparent;
-        color: #374151;
-        padding: 0.5rem 1rem;
-        border-radius: 0.5rem;
-        text-decoration: none;
-        font-weight: 500;
-        border: 1px solid #d1d5db;
-        transition: all 0.2s ease;
+    /* Button styling enhancements */
+    :global(.card-base a) {
+        @apply no-underline;
     }
     
-    .btn-secondary:hover {
-        background: #f9fafb;
-        border-color: #9ca3af;
+    /* Project title styling */
+    :global(.card-base h2:not(:first-child):not(:nth-child(2))) {
+        @apply text-2xl font-bold text-left text-gray-900 mt-12 mb-4;
     }
     
-    .stats-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 1.5rem;
+    /* GitHub Activity section */
+    :global(.card-base h2:contains("GitHub Activity")) {
+        @apply text-3xl font-semibold text-center mb-8;
     }
     
-    .stat-card {
-        background: white;
-        padding: 2rem;
-        border-radius: 0.75rem;
-        border: 1px solid #e5e7eb;
-        text-align: center;
-        transition: transform 0.2s ease;
-    }
-    
-    .stat-card:hover {
-        transform: translateY(-2px);
-    }
-    
+    /* Responsive design */
     @media (max-width: 768px) {
-        .projects-grid {
-            grid-template-columns: 1fr;
+        :global(.card-base) {
+            @apply px-6 py-4;
         }
         
-        .project-links {
-            flex-direction: column;
+        :global(.card-base h1) {
+            @apply text-3xl mb-6;
+        }
+        
+        :global(.card-base h2) {
+            @apply text-xl mb-4;
+        }
+        
+        :global(.card-base .flex) {
+            @apply flex-col gap-2;
+        }
+        
+        :global(.card-base .grid) {
+            @apply grid-cols-1 gap-4;
         }
     }
 </style>
