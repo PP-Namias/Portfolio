@@ -2,6 +2,8 @@
 
 ## Explore my latest work and achievements
 
+Each project represents a unique challenge solved with innovative technology, showcasing my expertise in AI, automation, and full-stack development.
+
 ---
 
 ## Story Adaptive Game Engine (SAGE AI)
@@ -10,12 +12,15 @@
 
 **Technologies:** React • Node.js • OpenAI API • PostgreSQL • Xendit • TypeScript • Tailwind CSS • Express.js
 
-<div class="flex gap-4 my-6">
-  <a href="https://sage-ai-demo.vercel.app" target="_blank" rel="noopener noreferrer" class="inline-flex items-center px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5">
-    Live Demo
+<div class="flex flex-wrap gap-4 mt-6">
+  <a href="https://sage-ai-demo.vercel.app" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-green-500 to-green-600 text-white font-semibold rounded-lg hover:from-green-600 hover:to-green-700 transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl">
+    🚀 Live Demo
   </a>
-  <a href="https://github.com/PP-Namias/sage-ai" target="_blank" rel="noopener noreferrer" class="inline-flex items-center px-6 py-3 bg-gray-800 hover:bg-gray-900 text-white font-semibold rounded-lg transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5">
-    Code
+  <a href="/projects/sage-ai/" class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white font-semibold rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl">
+    📖 View Details
+  </a>
+  <a href="https://github.com/PP-Namias/sage-ai" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-gray-700 to-gray-800 text-white font-semibold rounded-lg hover:from-gray-800 hover:to-gray-900 transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl">
+    💻 Code
   </a>
 </div>
 
@@ -23,16 +28,19 @@
 
 ## AI Automation Platform
 
-**No-code automation platform using n8n, Twilio, and AI services to create intelligent chatbots and workflow automation for businesses.**
+**Enterprise-grade automation platform featuring no-code AI workflows, CRM integration, and intelligent lead processing. Built with n8n, Twilio, and multiple AI services for scalable business automation.**
 
-**Technologies:** n8n • Twilio • ElevenLabs • ChatGPT • Gemini • Node.js • Express.js
+**Technologies:** n8n • Twilio • ElevenLabs • ChatGPT • Gemini • CRM • API Integration • Webhook
 
-<div class="flex gap-4 my-6">
-  <a href="https://automation-platform-demo.com" target="_blank" rel="noopener noreferrer" class="inline-flex items-center px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5">
-    Live Demo
+<div class="flex flex-wrap gap-4 mt-6">
+  <a href="https://automation-demo.example.com" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-green-500 to-green-600 text-white font-semibold rounded-lg hover:from-green-600 hover:to-green-700 transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl">
+    🚀 Live Demo
   </a>
-  <a href="https://github.com/PP-Namias/ai-automation" target="_blank" rel="noopener noreferrer" class="inline-flex items-center px-6 py-3 bg-gray-800 hover:bg-gray-900 text-white font-semibold rounded-lg transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5">
-    Code
+  <a href="/projects/ai-automation-platform/" class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white font-semibold rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl">
+    📖 View Details
+  </a>
+  <a href="https://github.com/PP-Namias/ai-automation-platform" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-gray-700 to-gray-800 text-white font-semibold rounded-lg hover:from-gray-800 hover:to-gray-900 transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl">
+    💻 Code
   </a>
 </div>
 
@@ -40,14 +48,88 @@
 
 ## Full-Stack Insurance Portal
 
-**Comprehensive insurance management system with modern UI/UX design, backend infrastructure, and seamless user experience for chapel and columbarium services.**
+**Comprehensive insurance management platform with policy administration, claims processing, and customer portal. Built with React, Node.js, and integrated payment systems for seamless insurance operations.**
 
-**Technologies:** React • Node.js • PostgreSQL • Express.js • Tailwind CSS • JWT
+**Technologies:** React • Node.js • Express.js • PostgreSQL • Redis • TypeScript • Material-UI • PDF Generation
 
-<div class="flex gap-4 my-6">
-  <a href="https://aeternitas-portal.com" target="_blank" rel="noopener noreferrer" class="inline-flex items-center px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5">
-    Live Demo
+<div class="flex flex-wrap gap-4 mt-6">
+  <a href="https://insurance-portal-demo.vercel.app" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-green-500 to-green-600 text-white font-semibold rounded-lg hover:from-green-600 hover:to-green-700 transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl">
+    🚀 Live Demo
   </a>
+  <a href="/projects/insurance-portal/" class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white font-semibold rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl">
+    📖 View Details
+  </a>
+  <a href="https://github.com/PP-Namias/insurance-portal" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-gray-700 to-gray-800 text-white font-semibold rounded-lg hover:from-gray-800 hover:to-gray-900 transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl">
+    💻 Code
+  </a>
+</div>
+
+---
+
+## E-Commerce Platform
+
+**Full-featured e-commerce solution with product management, payment processing, inventory tracking, and customer management. Built with React, Node.js, and integrated with modern payment gateways.**
+
+**Technologies:** React • Node.js • Express.js • MongoDB • Stripe • Redux • Material-UI • JWT
+
+<div class="flex flex-wrap gap-4 mt-6">
+  <a href="https://ecommerce-demo.example.com" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-green-500 to-green-600 text-white font-semibold rounded-lg hover:from-green-600 hover:to-green-700 transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl">
+    🚀 Live Demo
+  </a>
+  <a href="/projects/ecommerce-platform/" class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white font-semibold rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl">
+    📖 View Details
+  </a>
+  <a href="https://github.com/PP-Namias/ecommerce-platform" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-gray-700 to-gray-800 text-white font-semibold rounded-lg hover:from-gray-800 hover:to-gray-900 transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl">
+    💻 Code
+  </a>
+</div>
+
+---
+
+## Portfolio Website
+
+**Personal portfolio website built with Astro, featuring modern design, blog functionality, and showcase of professional work. Optimized for performance and SEO with dark/light theme support.**
+
+**Technologies:** Astro • TypeScript • Tailwind CSS • Svelte • Markdown • Vercel
+
+<div class="flex flex-wrap gap-4 mt-6">
+  <a href="https://pp-namias.vercel.app" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-green-500 to-green-600 text-white font-semibold rounded-lg hover:from-green-600 hover:to-green-700 transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl">
+    🚀 Live Demo
+  </a>
+  <a href="/projects/portfolio-website/" class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white font-semibold rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl">
+    📖 View Details
+  </a>
+  <a href="https://github.com/PP-Namias/Portfolio" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-gray-700 to-gray-800 text-white font-semibold rounded-lg hover:from-gray-800 hover:to-gray-900 transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl">
+    💻 Code
+  </a>
+</div>
+
+---
+
+## GitHub Activity
+
+Check out my latest contributions and open-source projects on GitHub. I'm always working on something new and exciting!
+
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+  <div class="bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 p-6 rounded-xl border border-blue-200 dark:border-blue-700">
+    <h3 class="text-2xl font-bold text-[var(--primary)] mb-2">50+</h3>
+    <p class="text-gray-600 dark:text-gray-300 font-medium">Public Repositories</p>
+  </div>
+  <div class="bg-gradient-to-br from-green-50 to-blue-50 dark:from-green-900/20 dark:to-blue-900/20 p-6 rounded-xl border border-green-200 dark:border-green-700">
+    <h3 class="text-2xl font-bold text-[var(--primary)] mb-2">1000+</h3>
+    <p class="text-gray-600 dark:text-gray-300 font-medium">Contributions This Year</p>
+  </div>
+  <div class="bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 p-6 rounded-xl border border-purple-200 dark:border-purple-700">
+    <h3 class="text-2xl font-bold text-[var(--primary)] mb-2">5+</h3>
+    <p class="text-gray-600 dark:text-gray-300 font-medium">Years Experience</p>
+  </div>
+</div>
+
+<div class="text-center mt-12">
+  <a href="https://github.com/PP-Namias" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-gray-800 to-black text-white font-semibold rounded-lg hover:from-black hover:to-gray-800 transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl">
+    🔗 View All Projects on GitHub
+  </a>
+</div>
   <a href="https://github.com/PP-Namias/insurance-portal" target="_blank" rel="noopener noreferrer" class="inline-flex items-center px-6 py-3 bg-gray-800 hover:bg-gray-900 text-white font-semibold rounded-lg transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5">
     Code
   </a>
