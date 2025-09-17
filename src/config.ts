@@ -42,13 +42,13 @@ export const siteConfig: SiteConfig = {
 export const navBarConfig: NavBarConfig = {
 	links: [
 		LinkPreset.Home,
-		LinkPreset.Archive,
-		LinkPreset.About,
-		{
-			name: "GitHub",
-			url: "https://github.com/saicaca/fuwari", // Internal links should not include the base path, as it is automatically added
-			external: true, // Show an external link icon and will open in a new tab
-		},
+		{ name: "About", url: "/about" },
+		{ name: "Skills", url: "/skills" },
+		{ name: "Experience", url: "/experience" },
+		{ name: "Projects", url: "/projects" },
+		{ name: "Gallery", url: "/gallery" },
+		{ name: "Blog", url: "/archive" },
+		{ name: "Contact", url: "/contact" },
 	],
 };
 
