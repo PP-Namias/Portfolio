@@ -1,53 +1,98 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import MainGridLayout from '../layouts/MainGridLayout.astro';
+import { getEntry, render } from "astro:content";
+import Markdown from "@components/misc/Markdown.astro";
+import I18nKey from "../i18n/i18nKey";
+import { i18n } from "../i18n/translation";
+import MainGridLayout from "../layouts/MainGridLayout.astro";
+
+const experiencePost = await getEntry("spec", "experience");
+
+if (!experiencePost) {
+	throw new Error("Experience page content not found");
+}
+
+const { Content } = await render(experiencePost);
 ---
 
-<Layout title="Experience - PP Namias">
-    <MainGridLayout>
-        <div class="flex w-full rounded-[var(--radius-large)] overflow-hidden relative">
-            <div class="card-base z-10 px-9 py-6 relative w-full">
-                <div class="prose">
-                    <h1 class="text-3xl font-bold mb-8">Professional Experience</h1>
-                    
-                    <!-- Timeline -->
-                    <div class="timeline-container">
-                        <div class="timeline-item">
-                            <div class="timeline-marker"></div>
-                            <div class="timeline-content">
-                                <div class="timeline-date">2023 - Present</div>
-                                <h3 class="text-xl font-semibold mb-2">Full Stack Developer</h3>
-                                <h4 class="text-lg text-gray-600 mb-3">Your Current Company</h4>
-                                <p class="mb-3">
-                                    Leading development of modern web applications using React, Node.js, and cloud technologies.
-                                    Collaborating with cross-functional teams to deliver high-quality software solutions.
-                                </p>
-                                <ul class="list-disc ml-5 space-y-1 text-sm">
-                                    <li>Developed and maintained 5+ production applications</li>
-                                    <li>Improved application performance by 40% through optimization</li>
-                                    <li>Mentored 3 junior developers and conducted code reviews</li>
-                                    <li>Implemented CI/CD pipelines reducing deployment time by 60%</li>
-                                </ul>
-                                <div class="tech-tags mt-3">
-                                    <span class="tech-tag">React</span>
-                                    <span class="tech-tag">Node.js</span>
-                                    <span class="tech-tag">TypeScript</span>
-                                    <span class="tech-tag">AWS</span>
-                                </div>
-                            </div>
-                        </div>
+<MainGridLayout title="Experience - Jhon Keneth Namias" description="My professional journey and achievements">
+    <div class="flex w-full rounded-[var(--radius-large)] overflow-hidden relative min-h-32">
+        <div class="card-base z-10 px-9 py-6 relative w-full">
+            <Markdown class="mt-2">
+                <Content />
+            </Markdown>
+        </div>
+    </div>
+</MainGridLayout>
 
-                        <div class="timeline-item">
-                            <div class="timeline-marker"></div>
-                            <div class="timeline-content">
-                                <div class="timeline-date">2022 - 2023</div>
-                                <h3 class="text-xl font-semibold mb-2">Frontend Developer</h3>
-                                <h4 class="text-lg text-gray-600 mb-3">Previous Company</h4>
-                                <p class="mb-3">
-                                    Focused on creating responsive and user-friendly interfaces using modern frontend technologies.
-                                    Worked closely with UX/UI designers to implement pixel-perfect designs.
-                                </p>
-                                <ul class="list-disc ml-5 space-y-1 text-sm">
+<style>
+    /* Enhanced styling for experience content */
+    :global(.card-base h1) {
+        @apply text-4xl font-bold mb-8 text-center;
+    }
+    
+    :global(.card-base h2) {
+        @apply text-2xl font-semibold mb-4 mt-8 text-blue-600;
+    }
+    
+    :global(.card-base h3) {
+        @apply text-lg font-medium mb-2 text-gray-700;
+    }
+    
+    :global(.card-base p) {
+        @apply text-gray-600 leading-relaxed mb-4;
+    }
+    
+    :global(.card-base strong) {
+        @apply font-semibold text-gray-800;
+    }
+    
+    :global(.card-base ul) {
+        @apply list-disc list-inside space-y-2 mb-4 text-gray-600;
+    }
+    
+    :global(.card-base li) {
+        @apply leading-relaxed;
+    }
+    
+    :global(.card-base hr) {
+        @apply border-gray-200 my-8;
+    }
+    
+    /* Technology tags styling */
+    :global(.card-base p:has(strong:contains("Technologies:"))) {
+        @apply bg-gray-50 p-4 rounded-lg border-l-4 border-blue-500;
+    }
+    
+    /* Achievement lists styling */
+    :global(.card-base p:has(strong:contains("Key Achievements:")) + ul) {
+        @apply bg-green-50 p-4 rounded-lg border-l-4 border-green-500;
+    }
+    
+    /* Certification sections */
+    :global(.card-base h3:contains("Certified")) {
+        @apply text-purple-600 font-semibold;
+    }
+    
+    /* Career highlights section */
+    :global(.card-base p:has(strong:contains("Years Experience"))) {
+        @apply bg-gradient-to-r from-blue-50 to-purple-50 p-6 rounded-xl border border-blue-200;
+    }
+    
+    /* Responsive design */
+    @media (max-width: 768px) {
+        :global(.card-base) {
+            @apply px-6 py-4;
+        }
+        
+        :global(.card-base h1) {
+            @apply text-3xl;
+        }
+        
+        :global(.card-base h2) {
+            @apply text-xl;
+        }
+    }
+</style>
                                     <li>Built responsive web applications serving 10,000+ users</li>
                                     <li>Reduced page load times by 50% through code optimization</li>
                                     <li>Collaborated with design team on 15+ project implementations</li>
