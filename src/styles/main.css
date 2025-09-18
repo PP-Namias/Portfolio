@@ -284,6 +284,31 @@
     grid-column: span 2;
 }
 
+.gallery-item--portrait {
+    grid-row: span 1.5;
+}
+
+/* Random sizing with nth-child for organic Pinterest feel */
+.gallery-masonry .gallery-item:nth-child(3n) {
+    grid-row: span 1.5;
+}
+
+.gallery-masonry .gallery-item:nth-child(5n) {
+    grid-row: span 1.3;
+}
+
+.gallery-masonry .gallery-item:nth-child(7n) {
+    grid-row: span 1.8;
+}
+
+.gallery-masonry .gallery-item:nth-child(11n) {
+    grid-row: span 1.2;
+}
+
+.gallery-masonry .gallery-item:nth-child(13n) {
+    grid-row: span 2.2;
+}
+
 /* Gallery overlay for hover effects */
 .gallery-overlay {
     position: absolute;
@@ -341,6 +366,31 @@
     .gallery-item--tall {
         grid-row: span 1;
     }
+}
+
+/* Gallery-specific styling for unique Pinterest effects */
+.landscape-gallery .gallery-item:nth-child(2n) {
+    grid-row: span 1.6;
+}
+
+.portrait-gallery .gallery-item:nth-child(3n) {
+    grid-row: span 1.8;
+}
+
+.urban-gallery .gallery-item:nth-child(4n) {
+    grid-row: span 1.4;
+}
+
+.street-gallery .gallery-item:nth-child(5n) {
+    grid-row: span 1.2;
+}
+
+.nature-gallery .gallery-item:nth-child(6n) {
+    grid-row: span 1.9;
+}
+
+.abstract-gallery .gallery-item:nth-child(7n) {
+    grid-row: span 1.5;
 }
 
 /* Specific gallery type styling */

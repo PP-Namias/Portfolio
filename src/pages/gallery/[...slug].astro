@@ -1,0 +1,75 @@
+---
+import { getCollection, type CollectionEntry } from "astro:content";
+import { getEntry, render } from "astro:content";
+import MainGridLayout from "../../layouts/MainGridLayout.astro";
+import Markdown from "../../components/misc/Markdown.astro";
+
+interface Props {
+  gallery: CollectionEntry<"gallery">;
+}
+
+export async function getStaticPaths() {
+  const allGalleries = await getCollection("gallery");
+  
+  return allGalleries.map((gallery) => ({
+    params: { slug: gallery.slug },
+    props: { gallery },
+  }));
+}
+
+const { gallery } = Astro.props;
+const { Content } = await render(gallery);
+---
+
+<MainGridLayout title={gallery.data.title} description={gallery.data.description}>
+  <div class="card-base gallery-page">
+    <Markdown class="mt-2">
+      <Content />
+    </Markdown>
+  </div>
+</MainGridLayout>
+
+<style>
+.gallery-page {
+  max-width: none;
+  width: 100%;
+}
+
+.gallery-page :global(.gallery-masonry) {
+  max-width: 1400px;
+  margin: 2rem auto;
+}
+
+.gallery-page :global(h1) {
+  text-align: center;
+  margin-bottom: 1rem;
+  font-size: 2.5rem;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.gallery-page :global(h2) {
+  margin-top: 3rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.gallery-page :global(h3) {
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}
+
+.gallery-page :global(p) {
+  max-width: 800px;
+  margin: 1rem auto;
+  text-align: center;
+  line-height: 1.6;
+}
+
+.gallery-page :global(.gallery-masonry + h2),
+.gallery-page :global(.gallery-masonry + h3) {
+  margin-top: 4rem;
+}
+</style>
