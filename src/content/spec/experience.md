@@ -1,3 +1,8 @@
+---
+title: "Experience"
+banner: "Professional Experience"
+---
+
 # Professional Experience
 
 My professional journey and achievements spanning AI automation, full-stack development, and team leadership.

@@ -40,6 +40,7 @@ const projectsCollection = defineCollection({
 		category: z.string().optional().default(""),
 		status: z.string().optional().default("completed"),
 		tags: z.array(z.string()).optional().default([]),
+		lang: z.string().optional().default(""),
 
 		/* For internal use - navigation */
 		prevTitle: z.string().default(""),

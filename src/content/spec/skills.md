@@ -1,3 +1,8 @@
+---
+title: "Skills"
+banner: "Technical Skills & Expertise"
+---
+
 # <span class="text-[var(--primary)] bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent dark:from-blue-400 dark:to-purple-400">Technical Skills & Expertise</span>
 
 ## <span class="text-gray-600 dark:text-gray-300">My technology stack and professional capabilities</span>
