@@ -38,6 +38,117 @@ const { Content } = await render(gallery);
 .gallery-page :global(.gallery-masonry) {
   max-width: 1400px;
   margin: 2rem auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-auto-rows: 20px;
+  gap: 20px;
+  padding: 20px 0;
+}
+
+.gallery-page :global(.gallery-item) {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  background: var(--card-bg);
+  grid-row-end: span 12; /* Default height */
+}
+
+.gallery-page :global(.gallery-item:hover) {
+  transform: translateY(-8px);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+.gallery-page :global(.gallery-item img) {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.gallery-page :global(.gallery-item:hover img) {
+  transform: scale(1.05);
+}
+
+/* Pinterest-style varied aspect ratios */
+.gallery-page :global(.gallery-item--tall) {
+  grid-row-end: span 18;
+}
+
+.gallery-page :global(.gallery-item--wide) {
+  grid-row-end: span 10;
+}
+
+.gallery-page :global(.gallery-item--square) {
+  grid-row-end: span 14;
+}
+
+.gallery-page :global(.gallery-item--portrait) {
+  grid-row-end: span 16;
+}
+
+.gallery-page :global(.gallery-item--large) {
+  grid-row-end: span 20;
+}
+
+/* Random sizing with nth-child for organic Pinterest feel */
+.gallery-page :global(.gallery-masonry .gallery-item:nth-child(3n)) {
+  grid-row-end: span 15;
+}
+
+.gallery-page :global(.gallery-masonry .gallery-item:nth-child(5n)) {
+  grid-row-end: span 11;
+}
+
+.gallery-page :global(.gallery-masonry .gallery-item:nth-child(7n)) {
+  grid-row-end: span 17;
+}
+
+.gallery-page :global(.gallery-masonry .gallery-item:nth-child(11n)) {
+  grid-row-end: span 13;
+}
+
+.gallery-page :global(.gallery-masonry .gallery-item:nth-child(13n)) {
+  grid-row-end: span 19;
+}
+
+/* Hover overlay with detailed information */
+.gallery-page :global(.gallery-overlay) {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.9) 0%,
+    rgba(0, 0, 0, 0.7) 40%,
+    rgba(0, 0, 0, 0.3) 70%,
+    transparent 100%
+  );
+  color: white;
+  padding: 2rem 1.5rem 1.5rem;
+  transform: translateY(100%);
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(8px);
+}
+
+.gallery-page :global(.gallery-item:hover .gallery-overlay) {
+  transform: translateY(0);
+}
+
+.gallery-page :global(.gallery-overlay h3) {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: white;
+}
+
+.gallery-page :global(.gallery-overlay p) {
+  font-size: 0.875rem;
+  opacity: 0.9;
+  line-height: 1.4;
 }
 
 .gallery-page :global(h1) {
@@ -71,5 +182,64 @@ const { Content } = await render(gallery);
 .gallery-page :global(.gallery-masonry + h2),
 .gallery-page :global(.gallery-masonry + h3) {
   margin-top: 4rem;
+}
+
+/* Responsive breakpoints */
+@media (max-width: 1200px) {
+  .gallery-page :global(.gallery-masonry) {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 16px;
+  }
+}
+
+@media (max-width: 768px) {
+  .gallery-page :global(.gallery-masonry) {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px;
+    padding: 16px 0;
+  }
+  
+  .gallery-page :global(.gallery-item) {
+    grid-row-end: span 10;
+  }
+  
+  .gallery-page :global(.gallery-item--tall) {
+    grid-row-end: span 14;
+  }
+  
+  .gallery-page :global(.gallery-item--large) {
+    grid-row-end: span 16;
+  }
+  
+  .gallery-page :global(.gallery-overlay) {
+    padding: 1.5rem 1rem 1rem;
+  }
+  
+  .gallery-page :global(.gallery-overlay h3) {
+    font-size: 1rem;
+  }
+  
+  .gallery-page :global(.gallery-overlay p) {
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .gallery-page :global(.gallery-masonry) {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+  
+  .gallery-page :global(.gallery-item) {
+    grid-row-end: span 8;
+  }
+  
+  .gallery-page :global(.gallery-item--tall) {
+    grid-row-end: span 12;
+  }
+  
+  .gallery-page :global(.gallery-item--large) {
+    grid-row-end: span 14;
+  }
 }
 </style>

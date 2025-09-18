@@ -4,6 +4,9 @@ import Markdown from "@components/misc/Markdown.astro";
 import I18nKey from "../i18n/i18nKey";
 import { i18n } from "../i18n/translation";
 import MainGridLayout from "../layouts/MainGridLayout.astro";
+import GalleryPage from "../components/GalleryPage.astro";
+import Pagination from "../components/control/Pagination.astro";
+import { PAGE_SIZE } from "../constants/constants";
 
 const galleryPost = await getEntry("spec", "gallery");
 
@@ -13,11 +16,27 @@ if (!galleryPost) {
 
 const { Content } = await render(galleryPost);
 
-// Get all gallery collections
+// Get all gallery collections and paginate like posts
 const allGalleryCollections = await getCollection("gallery");
 const publishedGalleries = allGalleryCollections
-	.filter(gallery => gallery.data.published !== false)
+	.filter(gallery => gallery.data.published)
 	.sort((a, b) => new Date(b.data.published).getTime() - new Date(a.data.published).getTime());
+
+// Create a page object similar to posts pagination
+const page = {
+	data: publishedGalleries,
+	currentPage: 1,
+	lastPage: 1,
+	size: publishedGalleries.length,
+	total: publishedGalleries.length,
+	url: {
+		current: "/gallery/",
+		next: undefined,
+		prev: undefined
+	}
+};
+
+const len = page.data.length;
 ---
 
 <MainGridLayout banner={galleryPost.data.banner} title={galleryPost.data.title}>
@@ -25,177 +44,8 @@ const publishedGalleries = allGalleryCollections
         <Markdown class="mt-2">
             <Content />
         </Markdown>
-        
-        <!-- Gallery Collections Grid -->
-        <div class="gallery-collections-grid mt-8">
-            {publishedGalleries.map((gallery) => (
-                <div class="gallery-collection-card">
-                    <a href={`/gallery/${gallery.slug}/`} class="block">
-                        <div class="gallery-preview">
-                            <div class="gallery-preview-grid">
-                                <div class="preview-item preview-item--large">
-                                    <img src="/src/assets/images/demo-banner.png" alt={gallery.data.title} loading="lazy" />
-                                </div>
-                                <div class="preview-item">
-                                    <img src="/src/assets/images/demo-avatar.png" alt={gallery.data.title} loading="lazy" />
-                                </div>
-                                <div class="preview-item">
-                                    <img src="/src/assets/images/demo-banner.png" alt={gallery.data.title} loading="lazy" />
-                                </div>
-                                <div class="preview-item">
-                                    <img src="/src/assets/images/demo-avatar.png" alt={gallery.data.title} loading="lazy" />
-                                </div>
-                            </div>
-                            <div class="gallery-overlay">
-                                <h3 class="gallery-title">{gallery.data.title}</h3>
-                                <p class="gallery-description">{gallery.data.description}</p>
-                                <div class="gallery-meta">
-                                    <span class="gallery-category">{gallery.data.category}</span>
-                                    <span class="gallery-location">{gallery.data.location}</span>
-                                </div>
-                                <div class="gallery-tags">
-                                    {gallery.data.tags?.slice(0, 3).map(tag => (
-                                        <span class="tag">{tag}</span>
-                                    ))}
-                                </div>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-            ))}
-        </div>
     </div>
+    
+    <!-- Gallery Collections using consistent styling -->
+    <GalleryPage page={page}></GalleryPage>
 </MainGridLayout>
-
-<style>
-.gallery-collections-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-    gap: 2rem;
-    margin-top: 2rem;
-}
-
-.gallery-collection-card {
-    border-radius: 1rem;
-    overflow: hidden;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease;
-    background: var(--card-bg);
-    border: 1px solid var(--line-divider);
-}
-
-.gallery-collection-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-}
-
-.gallery-preview {
-    position: relative;
-    height: 300px;
-    overflow: hidden;
-}
-
-.gallery-preview-grid {
-    display: grid;
-    grid-template-columns: 2fr 1fr;
-    grid-template-rows: 1fr 1fr;
-    gap: 4px;
-    height: 100%;
-    padding: 8px;
-}
-
-.preview-item {
-    border-radius: 8px;
-    overflow: hidden;
-    position: relative;
-}
-
-.preview-item--large {
-    grid-row: 1 / -1;
-}
-
-.preview-item img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.3s ease;
-}
-
-.gallery-collection-card:hover .preview-item img {
-    transform: scale(1.05);
-}
-
-.gallery-overlay {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
-    color: white;
-    padding: 2rem 1.5rem 1.5rem;
-    transform: translateY(60%);
-    transition: transform 0.3s ease;
-}
-
-.gallery-collection-card:hover .gallery-overlay {
-    transform: translateY(0);
-}
-
-.gallery-title {
-    font-size: 1.25rem;
-    font-weight: 600;
-    margin-bottom: 0.5rem;
-    color: white;
-}
-
-.gallery-description {
-    font-size: 0.875rem;
-    opacity: 0.9;
-    margin-bottom: 1rem;
-    line-height: 1.4;
-}
-
-.gallery-meta {
-    display: flex;
-    gap: 1rem;
-    margin-bottom: 0.75rem;
-    font-size: 0.75rem;
-    opacity: 0.8;
-}
-
-.gallery-category, .gallery-location {
-    background: rgba(255, 255, 255, 0.2);
-    padding: 0.25rem 0.5rem;
-    border-radius: 0.25rem;
-    backdrop-filter: blur(4px);
-}
-
-.gallery-tags {
-    display: flex;
-    gap: 0.5rem;
-    flex-wrap: wrap;
-}
-
-.tag {
-    background: rgba(255, 255, 255, 0.15);
-    padding: 0.125rem 0.375rem;
-    border-radius: 0.25rem;
-    font-size: 0.6875rem;
-    backdrop-filter: blur(4px);
-}
-
-@media (max-width: 768px) {
-    .gallery-collections-grid {
-        grid-template-columns: 1fr;
-        gap: 1.5rem;
-    }
-    
-    .gallery-collection-card {
-        min-width: 0;
-    }
-    
-    .gallery-overlay {
-        transform: translateY(40%);
-    }
-}
-</style>
