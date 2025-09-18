@@ -24,6 +24,10 @@ The Web Design Gallery serves as both a portfolio piece and a comprehensive reso
 ![Web Design Hero Banner](./hero-banner.jpg)
 *The main hero section featuring dynamic typography and engaging visual elements*
 
+:::tip[Design Philosophy]
+Our approach embraces clean, uncluttered interfaces that prioritize content and functionality. Every element serves a purpose, contributing to an intuitive user experience.
+:::
+
 ## Design Philosophy
 
 ### Minimalist Aesthetics
@@ -32,11 +36,17 @@ Our approach embraces clean, uncluttered interfaces that prioritize content and 
 ![Minimalist Design Example](./minimalist-design.jpg)
 *Clean, focused layout emphasizing whitespace and typography*
 
+:::important[User Experience Focus]
+Every design decision is backed by user research and testing to ensure optimal usability across all user segments.
+:::
+
 ### Color Psychology & Branding
 Strategic use of color palettes that evoke specific emotions and reinforce brand identity. From vibrant, energetic schemes to calm, professional tones.
 
 ![Color Palette Showcase](./color-palettes.jpg)
 *Various color schemes demonstrating mood and brand alignment*
+
+::github{repo="PP-Namias/web-design-gallery"}
 
 ## Featured Projects
 
@@ -45,6 +55,10 @@ A complete overhaul of a traditional e-commerce interface, focusing on conversio
 
 ![E-commerce Homepage](./ecommerce-home.jpg)
 *Modern e-commerce homepage with improved navigation and product discovery*
+
+:::note[Performance Results]
+The redesign achieved a 35% increase in conversion rates and 50% reduction in bounce rate within the first month of deployment.
+:::
 
 ![Product Detail Page](./product-detail.jpg)
 *Enhanced product pages with interactive elements and social proof*
@@ -55,6 +69,10 @@ Clean, data-driven interface design for a B2B software platform, emphasizing usa
 ![Dashboard Overview](./dashboard-main.jpg)
 *Main dashboard featuring key metrics and navigation elements*
 
+:::warning[Data Complexity]
+Managing complex data visualization while maintaining clarity required extensive user testing and iterative design improvements.
+:::
+
 ![Analytics Section](./analytics-view.jpg)
 *Detailed analytics interface with interactive charts and data visualization*
 
@@ -63,6 +81,11 @@ Bold, visually striking design that showcases creative work while maintaining pr
 
 ![Agency Portfolio](./agency-portfolio.jpg)
 *Dynamic portfolio grid with hover effects and project previews*
+
+> [!TIP]
+> The portfolio design balances visual impact with fast loading times through optimized image delivery and progressive enhancement.
+
+The design secret :spoiler[uses a sophisticated grid system with **CSS Grid** and **Flexbox** for responsive layouts]!
 
 ![Case Study Layout](./agency-portfolio.jpg)
 *Detailed case study presentation with rich media integration*
