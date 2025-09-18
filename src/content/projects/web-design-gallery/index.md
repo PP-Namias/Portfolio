@@ -64,7 +64,7 @@ Bold, visually striking design that showcases creative work while maintaining pr
 ![Agency Portfolio](./agency-portfolio.jpg)
 *Dynamic portfolio grid with hover effects and project previews*
 
-![Case Study Layout](./case-study.jpg)
+![Case Study Layout](./agency-portfolio.jpg)
 *Detailed case study presentation with rich media integration*
 
 ## Technical Implementation
@@ -75,74 +75,57 @@ All designs are built with mobile-first principles, ensuring optimal experience 
 ![Mobile Responsive](./mobile-responsive.jpg)
 *Mobile-optimized layouts maintaining full functionality*
 
-![Tablet View](./tablet-view.jpg)
-*Tablet interface adaptations with touch-optimized interactions*
-
 ### Performance Optimization
 Every design considers loading speed and performance, implementing lazy loading, optimized images, and efficient code structures.
 
-![Performance Metrics](./performance-stats.jpg)
-*Lighthouse scores and performance benchmarks*
+![Dashboard Analytics](./analytics-view.jpg)
+*Performance analytics and optimization metrics*
 
 ### Accessibility Standards
 WCAG compliance ensures inclusive design that serves users with diverse needs and abilities.
 
-![Accessibility Features](./accessibility-demo.jpg)
-*Accessibility testing and compliance verification*
+![Color Palette Design](./color-palettes.jpg)
+*Accessibility-focused color selection and contrast testing*
 
 ## Interactive Components
 
 ### Micro-Interactions
 Subtle animations and feedback mechanisms that enhance user engagement without overwhelming the experience.
 
-![Micro Interactions](./micro-interactions.jpg)
-*Button states, hover effects, and transition animations*
+![Dashboard Overview](./dashboard-main.jpg)
+*Interactive dashboard elements with smooth transitions*
 
 ### Navigation Systems
 Innovative navigation solutions that balance discoverability with clean design principles.
 
-![Navigation Design](./navigation-systems.jpg)
-*Various navigation patterns and their implementation*
+![Minimalist Navigation](./minimalist-design.jpg)
+*Clean navigation patterns and user flow optimization*
 
 ### Form Design
 User-friendly form layouts that reduce friction and improve completion rates.
 
-![Form Designs](./form-examples.jpg)
-*Contact forms, registration flows, and input field designs*
-
-## Typography & Content
-
-### Typographic Hierarchy
-Strategic use of fonts, sizes, and spacing to guide users through content naturally and effectively.
-
-![Typography Examples](./typography-showcase.jpg)
-*Font pairing, sizing, and content hierarchy examples*
-
-### Content Strategy
-Balancing informational content with visual elements to maintain engagement while delivering value.
-
-![Content Layout](./content-strategy.jpg)
-*Content organization and information architecture examples*
+![Product Interface](./product-detail.jpg)
+*User-friendly form designs and interaction patterns*
 
 ## Visual Elements
 
 ### Photography Integration
 High-quality imagery that supports the narrative and enhances the overall visual impact.
 
-![Photography Usage](./photography-integration.jpg)
-*Strategic use of photography in web design contexts*
+![E-commerce Integration](./ecommerce-home.jpg)
+*Strategic use of photography in e-commerce design contexts*
 
 ### Iconography & Graphics
 Custom icons and graphic elements that support brand consistency and improve user understanding.
 
-![Icon Systems](./icon-design.jpg)
-*Custom icon sets and graphic element libraries*
+![Agency Portfolio Showcase](./agency-portfolio.jpg)
+*Custom icon sets and comprehensive design systems*
 
 ### Layout Compositions
 Grid systems and compositional techniques that create visual balance and guide user attention.
 
-![Layout Grids](./layout-systems.jpg)
-*Grid structures and compositional frameworks*
+![Design System Overview](./hero-banner.jpg)
+*Grid structures and compositional frameworks demonstration*
 
 ## Future Developments
 
@@ -152,9 +135,6 @@ This gallery continues to evolve with emerging design trends and technologies. P
 - Voice interface design patterns
 - Advanced animation systems
 - AI-assisted design tools integration
-
-![Future Concepts](./future-design.jpg)
-*Concept explorations for next-generation web interfaces*
 
 ## Conclusion
 

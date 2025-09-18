@@ -4,7 +4,7 @@ description: "Advanced AI-driven text adventure game featuring dynamic storytell
 published: 2024-12-01
 updated: 2024-12-15
 featured: true
-image: "/project-images/sage-ai-cover.jpg"
+image: "./cover.jpg"
 technologies: ["React", "Node.js", "OpenAI API", "PostgreSQL", "Xendit", "TypeScript", "Tailwind CSS", "Express.js"]
 demoUrl: "https://sage-ai-demo.vercel.app"
 codeUrl: "https://github.com/PP-Namias/sage-ai"
@@ -15,11 +15,12 @@ tags: ["AI", "Gaming", "React", "OpenAI", "PostgreSQL", "TypeScript"]
 
 # Story Adaptive Game Engine (SAGE AI)
 
-![SAGE AI Screenshot](/project-images/sage-ai-screenshot.jpg)
-
 ## 🎮 Project Overview
 
 SAGE AI represents the next evolution in text-based adventure gaming, where artificial intelligence doesn't just generate content—it crafts personalized, adaptive narratives that respond to player choices in real-time. This isn't just a game; it's an intelligent storytelling platform that learns and evolves with each player interaction.
+
+![SAGE AI Gameplay Interface](./gameplay-screenshot.jpg)
+*The main gameplay interface showing dynamic story generation and player choice system*
 
 ## ✨ Key Features
 
@@ -35,11 +36,17 @@ SAGE AI represents the next evolution in text-based adventure gaming, where arti
 - **Subscription Management**: Flexible pricing tiers for different user types
 - **Revenue Analytics**: Comprehensive dashboard for tracking monetization
 
+![Dashboard Analytics](./dashboard-analytics.jpg)
+*Revenue analytics and user engagement tracking dashboard*
+
 ### ⚡ Technical Excellence
 - **Real-time Processing**: Sub-second response times for AI generation
 - **Scalable Architecture**: PostgreSQL database optimized for narrative branching
 - **Progressive Web App**: Full offline capability with service workers
 - **Responsive Design**: Seamless experience across all devices
+
+![Technical Architecture](./cover.jpg)
+*System architecture showing AI integration and data flow*
 
 ## 🛠 Technical Implementation
 
