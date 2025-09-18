@@ -50,6 +50,65 @@
             }
         }
     }
+
+    /* Gallery Styles */
+    .gallery-grid,
+    .portfolio-gallery,
+    .mobile-gallery,
+    .final-showcase-gallery {
+        @apply grid gap-4 mb-8;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        grid-auto-rows: 200px;
+    }
+
+    .gallery-grid img,
+    .portfolio-gallery img,
+    .mobile-gallery img,
+    .final-showcase-gallery img {
+        @apply w-full h-full object-cover rounded-lg cursor-pointer transition-transform duration-300;
+        &:hover {
+            @apply scale-105 shadow-lg;
+        }
+    }
+
+    /* Varied grid item sizes for Pinterest-style layout */
+    .gallery-grid img:nth-child(3n+1),
+    .portfolio-gallery img:nth-child(4n+1) {
+        grid-row: span 2;
+    }
+
+    .gallery-grid img:nth-child(5n+1),
+    .mobile-gallery img:nth-child(3n+2) {
+        grid-row: span 3;
+    }
+
+    .final-showcase-gallery img:nth-child(2n+1) {
+        grid-row: span 2;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .gallery-grid,
+        .portfolio-gallery,
+        .mobile-gallery,
+        .final-showcase-gallery {
+            grid-template-columns: repeat(2, 1fr);
+            grid-auto-rows: 150px;
+            gap: 2px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .gallery-grid,
+        .portfolio-gallery,
+        .mobile-gallery,
+        .final-showcase-gallery {
+            grid-template-columns: 1fr;
+            grid-auto-rows: 200px;
+        }
+    }
+        }
+    }
     .btn-regular {
         @apply transition flex items-center justify-center bg-[var(--btn-regular-bg)] hover:bg-[var(--btn-regular-bg-hover)] active:bg-[var(--btn-regular-bg-active)]
         text-[var(--btn-content)] dark:text-white/75
