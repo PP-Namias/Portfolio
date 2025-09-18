@@ -2,6 +2,7 @@
 import { AUTO_MODE, DARK_MODE, LIGHT_MODE } from "@constants/constants.ts";
 import I18nKey from "@i18n/i18nKey";
 import { i18n } from "@i18n/translation";
+// cSpell:ignore iconify
 import Icon from "@iconify/svelte";
 import {
 	applyThemeToDocument,
@@ -48,12 +49,16 @@ function toggleScheme() {
 
 function showPanel() {
 	const panel = document.querySelector("#light-dark-panel");
-	panel.classList.remove("float-panel-closed");
+	if (panel) {
+		panel.classList.remove("float-panel-closed");
+	}
 }
 
 function hidePanel() {
 	const panel = document.querySelector("#light-dark-panel");
-	panel.classList.add("float-panel-closed");
+	if (panel) {
+		panel.classList.add("float-panel-closed");
+	}
 }
 </script>
 
