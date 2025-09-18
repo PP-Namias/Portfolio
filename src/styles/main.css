@@ -230,3 +230,124 @@
     }
   }
 }
+
+/* Pinterest-Style Masonry Gallery */
+.gallery-masonry {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-gap: 20px;
+    grid-auto-rows: 220px;
+    padding: 20px 0;
+}
+
+.gallery-item {
+    position: relative;
+    border-radius: 12px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    background: var(--card-bg);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.gallery-item:hover {
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+}
+
+.gallery-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.gallery-item:hover img {
+    transform: scale(1.05);
+}
+
+/* Different aspect ratios for Pinterest effect */
+.gallery-item--tall {
+    grid-row: span 2;
+}
+
+.gallery-item--wide {
+    grid-column: span 2;
+}
+
+.gallery-item--square {
+    grid-row: span 1;
+}
+
+.gallery-item--large {
+    grid-row: span 2;
+    grid-column: span 2;
+}
+
+/* Gallery overlay for hover effects */
+.gallery-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+    color: white;
+    padding: 20px;
+    transform: translateY(100%);
+    transition: transform 0.3s ease;
+}
+
+.gallery-item:hover .gallery-overlay {
+    transform: translateY(0);
+}
+
+.gallery-overlay h3 {
+    margin: 0 0 5px 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.gallery-overlay p {
+    margin: 0;
+    font-size: 0.9rem;
+    opacity: 0.9;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .gallery-masonry {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        grid-auto-rows: 200px;
+        grid-gap: 15px;
+    }
+    
+    .gallery-item--wide {
+        grid-column: span 1;
+    }
+    
+    .gallery-item--large {
+        grid-column: span 1;
+        grid-row: span 1;
+    }
+}
+
+@media (max-width: 480px) {
+    .gallery-masonry {
+        grid-template-columns: 1fr 1fr;
+        grid-auto-rows: 180px;
+        grid-gap: 10px;
+    }
+    
+    .gallery-item--tall {
+        grid-row: span 1;
+    }
+}
+
+/* Specific gallery type styling */
+.portrait-gallery .gallery-item {
+    background: linear-gradient(45deg, #667eea 0%, #764ba2 100%);
+}
+
+.architecture-gallery .gallery-item {
+    background: linear-gradient(45deg, #f093fb 0%, #f5576c 100%);
+}
