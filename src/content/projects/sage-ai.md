@@ -10,6 +10,7 @@ demoUrl: "https://sage-ai-demo.vercel.app"
 codeUrl: "https://github.com/PP-Namias/sage-ai"
 category: "AI & Gaming"
 status: "completed"
+tags: ["AI", "Gaming", "React", "OpenAI", "PostgreSQL", "TypeScript"]
 ---
 
 # Story Adaptive Game Engine (SAGE AI)

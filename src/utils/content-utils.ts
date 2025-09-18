@@ -112,3 +112,47 @@ export async function getCategoryList(): Promise<Category[]> {
 	}
 	return ret;
 }
+
+// // Retrieve projects and sort them by publication date
+async function getRawSortedProjects() {
+	const allProjects = await getCollection("projects");
+
+	const sorted = allProjects.sort((a, b) => {
+		const dateA = new Date(a.data.published);
+		const dateB = new Date(b.data.published);
+		return dateA > dateB ? -1 : 1;
+	});
+	return sorted;
+}
+
+export async function getSortedProjects() {
+	const sorted = await getRawSortedProjects();
+
+	for (let i = 1; i < sorted.length; i++) {
+		sorted[i].data.nextSlug = sorted[i - 1].slug;
+		sorted[i].data.nextTitle = sorted[i - 1].data.title;
+	}
+	for (let i = 0; i < sorted.length - 1; i++) {
+		sorted[i].data.prevSlug = sorted[i + 1].slug;
+		sorted[i].data.prevTitle = sorted[i + 1].data.title;
+	}
+
+	return sorted;
+}
+
+export type ProjectForList = {
+	slug: string;
+	data: CollectionEntry<"projects">["data"];
+};
+
+export async function getSortedProjectsList(): Promise<ProjectForList[]> {
+	const sortedFullProjects = await getRawSortedProjects();
+
+	// delete project.body
+	const sortedProjectsList = sortedFullProjects.map((project) => ({
+		slug: project.slug,
+		data: project.data,
+	}));
+
+	return sortedProjectsList;
+}

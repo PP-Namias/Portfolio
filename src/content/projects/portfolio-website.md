@@ -1,24 +1,36 @@
 ---
-title: "Portfolio Website"
-description: "Personal portfolio website built with Astro, featuring modern design, blog functionality, and showcase of professional work. Optimized for performance and SEO with dark/light theme support."
+title: "Portfolio Website & Design System"
+description: "Modern portfolio website built with Astro, featuring dark/light mode, responsive design, content management, and advanced image gallery capabilities. Showcases modern web development techniques and user experience design."
 published: 2024-09-15
 updated: 2024-12-18
-featured: false
+featured: true
 image: "/project-images/portfolio-cover.jpg"
 technologies: ["Astro", "TypeScript", "Tailwind CSS", "Svelte", "Markdown", "Vercel"]
 demoUrl: "https://pp-namias.vercel.app"
 codeUrl: "https://github.com/PP-Namias/Portfolio"
 category: "Web Development"
 status: "active"
+tags: ["Astro", "TypeScript", "Portfolio", "Web Design", "Responsive", "Dark Mode"]
 ---
 
-# Portfolio Website
+# Portfolio Website & Design System
 
-![Portfolio Website](/project-images/portfolio-homepage.jpg)
+![Portfolio Hero](/project-images/portfolio-homepage.jpg)
 
-## 🌟 Personal Brand Platform
+## � Project Overview
 
-This portfolio website serves as my digital presence, showcasing my professional journey, technical skills, and project achievements. Built with modern web technologies, it demonstrates my commitment to clean code, performance optimization, and user experience design.
+This portfolio website represents the culmination of modern web development practices, combining performance, accessibility, and user experience into a cohesive digital presence. Built with **Astro** for optimal performance and **TypeScript** for type safety, this project showcases both technical expertise and design sensibility.
+
+## ✨ Key Features & Visual Showcase
+
+### 🌓 Adaptive Design System
+The website features a comprehensive design system that adapts seamlessly between light and dark modes, ensuring optimal readability and user preference accommodation.
+
+### 📱 Responsive Design Excellence
+Meticulously crafted responsive design that provides an exceptional experience across all device sizes, from mobile phones to ultrawide monitors.
+
+### 🎨 Component Architecture
+Modular component system built with reusable patterns and consistent styling, making maintenance and expansion straightforward.
 
 ## ✨ Key Features
 
