@@ -1,3 +1,8 @@
+---
+title: "Contact"
+banner: "Get In Touch"
+---
+
 # <span class="text-[var(--primary)] bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent dark:from-blue-400 dark:to-purple-400">Get In Touch</span>
 
 ## <span class="text-gray-600 dark:text-gray-300">Let's collaborate and build something amazing together</span>

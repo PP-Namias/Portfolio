@@ -20,7 +20,10 @@ const postsCollection = defineCollection({
 	}),
 });
 const specCollection = defineCollection({
-	schema: z.object({}),
+	schema: z.object({
+		title: z.string().optional(),
+		banner: z.string().optional(),
+	}),
 });
 
 const projectsCollection = defineCollection({
@@ -37,7 +40,7 @@ const projectsCollection = defineCollection({
 		category: z.string().optional().default(""),
 		status: z.string().optional().default("completed"),
 		tags: z.array(z.string()).optional().default([]),
-		
+
 		/* For internal use - navigation */
 		prevTitle: z.string().default(""),
 		prevSlug: z.string().default(""),
@@ -59,7 +62,7 @@ const galleryCollection = defineCollection({
 		camera: z.string().optional().default(""),
 		settings: z.string().optional().default(""),
 		dimensions: z.string().optional().default(""),
-		
+
 		/* For internal use - navigation */
 		prevTitle: z.string().default(""),
 		prevSlug: z.string().default(""),
