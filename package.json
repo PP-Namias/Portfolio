@@ -9,10 +9,16 @@
     "build": "astro build && pagefind --site dist",
     "preview": "astro preview",
     "astro": "astro",
+    "astro:check": "astro check",
     "type-check": "tsc --noEmit --isolatedDeclarations",
     "new-post": "node scripts/new-post.js",
     "format": "biome format --write ./src",
     "lint": "biome check --write ./src",
+    "biome:ci": "biome ci ./src --reporter=github",
+    "biome:check": "biome check ./src",
+    "biome:format": "biome format --write ./src",
+    "ci:quality": "pnpm run biome:ci && pnpm run astro:check",
+    "ci:build": "pnpm run ci:quality && pnpm run build",
     "preinstall": "npx only-allow pnpm"
   },
   "dependencies": {
