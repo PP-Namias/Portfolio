@@ -1,20 +1,24 @@
 ---
-import { getCollection, type CollectionEntry } from "astro:content";
-import { getEntry, render } from "astro:content";
-import MainGridLayout from "../../layouts/MainGridLayout.astro";
+import {
+	type CollectionEntry,
+	getCollection,
+	getEntry,
+	render,
+} from "astro:content";
 import Markdown from "../../components/misc/Markdown.astro";
+import MainGridLayout from "../../layouts/MainGridLayout.astro";
 
 interface Props {
-  gallery: CollectionEntry<"gallery">;
+	gallery: CollectionEntry<"gallery">;
 }
 
 export async function getStaticPaths() {
-  const allGalleries = await getCollection("gallery");
-  
-  return allGalleries.map((gallery) => ({
-    params: { slug: gallery.slug },
-    props: { gallery },
-  }));
+	const allGalleries = await getCollection("gallery");
+
+	return allGalleries.map((gallery) => ({
+		params: { slug: gallery.slug },
+		props: { gallery },
+	}));
 }
 
 const { gallery } = Astro.props;

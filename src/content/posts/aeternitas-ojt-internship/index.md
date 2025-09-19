@@ -1,6 +1,6 @@
 ---
 title: "OJT Internship at Aeternitas Chapels & Columbarium: Leading HRIS Development as Lead Software Engineer"
-published: 2025-06-15
+published: 2025-06-15T00:00:00.000Z
 description: "Experience as Lead Software Engineer during OJT internship at Aeternitas Chapels & Columbarium in Quezon City. Built comprehensive HRIS system using React-TS, Electron, Express, and PostgreSQL while leading a 7-member development team through client needs analysis, deployment, and post-launch support."
 image: "./cover.jpg"
 tags: ["OJT Internship", "Lead Software Engineer", "HRIS Development", "React TypeScript", "Electron", "Express.js", "PostgreSQL", "Team Leadership", "Client Management"]

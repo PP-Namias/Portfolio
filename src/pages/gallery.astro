@@ -1,12 +1,12 @@
 ---
-import { getEntry, render, getCollection } from "astro:content";
+import { getCollection, getEntry, render } from "astro:content";
 import Markdown from "@components/misc/Markdown.astro";
+import Pagination from "../components/control/Pagination.astro";
+import GalleryPage from "../components/GalleryPage.astro";
+import { PAGE_SIZE } from "../constants/constants";
 import I18nKey from "../i18n/i18nKey";
 import { i18n } from "../i18n/translation";
 import MainGridLayout from "../layouts/MainGridLayout.astro";
-import GalleryPage from "../components/GalleryPage.astro";
-import Pagination from "../components/control/Pagination.astro";
-import { PAGE_SIZE } from "../constants/constants";
 
 const galleryPost = await getEntry("spec", "gallery");
 
@@ -19,8 +19,12 @@ const { Content } = await render(galleryPost);
 // Get all gallery collections and paginate like posts
 const allGalleryCollections = await getCollection("gallery");
 const publishedGalleries = allGalleryCollections
-	.filter(gallery => gallery.data.published)
-	.sort((a, b) => new Date(b.data.published).getTime() - new Date(a.data.published).getTime());
+	.filter((gallery) => gallery.data.published)
+	.sort(
+		(a, b) =>
+			new Date(b.data.published).getTime() -
+			new Date(a.data.published).getTime(),
+	);
 
 // Create a page object similar to posts pagination
 const page = {
@@ -32,8 +36,8 @@ const page = {
 	url: {
 		current: "/gallery/",
 		next: undefined,
-		prev: undefined
-	}
+		prev: undefined,
+	},
 };
 
 const len = page.data.length;
