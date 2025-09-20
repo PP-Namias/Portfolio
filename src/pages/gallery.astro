@@ -1,8 +1,9 @@
 ---
 import { getCollection, getEntry, render } from "astro:content";
 import Markdown from "@components/misc/Markdown.astro";
+import EnhancedGalleryCard from "../components/EnhancedGalleryCard.astro";
+import GalleryModal from "../components/GalleryModal.astro";
 import Pagination from "../components/control/Pagination.astro";
-import GalleryPage from "../components/GalleryPage.astro";
 import { PAGE_SIZE } from "../constants/constants";
 import I18nKey from "../i18n/i18nKey";
 import { i18n } from "../i18n/translation";
@@ -26,13 +27,31 @@ const publishedGalleries = allGalleryCollections
 			new Date(a.data.published).getTime(),
 	);
 
+// Transform gallery data for enhanced cards
+const enhancedGalleries = publishedGalleries.map(gallery => ({
+	...gallery.data,
+	slug: gallery.slug,
+	image: `/gallery/${gallery.slug}/cover.jpg`, // Assuming cover.jpg exists in each gallery folder
+	detailedImages: [], // Will be populated when individual gallery items are created
+	features: [
+		`Location: ${gallery.data.location}`,
+		`Camera: ${gallery.data.camera}`,
+		`Settings: ${gallery.data.settings}`,
+		`Dimensions: ${gallery.data.dimensions}`
+	],
+	projectDate: gallery.data.published,
+	techStack: gallery.data.tags || [],
+	category: gallery.data.category || 'Photography',
+	liveDemo: `/gallery/${gallery.slug}`,
+}));
+
 // Create a page object similar to posts pagination
 const page = {
-	data: publishedGalleries,
+	data: enhancedGalleries,
 	currentPage: 1,
 	lastPage: 1,
-	size: publishedGalleries.length,
-	total: publishedGalleries.length,
+	size: enhancedGalleries.length,
+	total: enhancedGalleries.length,
 	url: {
 		current: "/gallery/",
 		next: undefined,
@@ -50,6 +69,60 @@ const len = page.data.length;
         </Markdown>
     </div>
     
-    <!-- Gallery Collections using consistent styling -->
-    <GalleryPage page={page}></GalleryPage>
+    <!-- Enhanced Gallery Grid -->
+    <div class="gallery-container mt-8">
+        <!-- Gallery Stats -->
+        <div class="mb-6 text-center">
+            <p class="text-gray-600 dark:text-gray-300">
+                {len === 0 ? (
+                    <span>No gallery items found</span>
+                ) : (
+                    <span>
+                        Showcasing <strong>{len}</strong> visual project{len === 1 ? '' : 's'}
+                    </span>
+                )}
+            </p>
+        </div>
+
+        <!-- Gallery Grid -->
+        {len > 0 && (
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                {page.data.map((gallery) => (
+                    <EnhancedGalleryCard
+                        image={gallery.image}
+                        title={gallery.title}
+                        description={gallery.description}
+                        category={gallery.category}
+                        techStack={gallery.techStack}
+                        liveDemo={gallery.liveDemo}
+                        detailedImages={gallery.detailedImages}
+                        features={gallery.features}
+                        projectDate={gallery.projectDate.toISOString()}
+                    />
+                ))}
+            </div>
+        )}
+
+        <!-- Call to Action -->
+        <div class="text-center mt-12 p-6 bg-gray-50 dark:bg-gray-800 rounded-lg">
+            <h3 class="text-xl font-semibold mb-3 text-gray-900 dark:text-white">
+                Interested in working together?
+            </h3>
+            <p class="text-gray-600 dark:text-gray-300 mb-4">
+                Let's discuss how I can help bring your next project to life.
+            </p>
+            <a 
+                href="/contact/" 
+                class="inline-flex items-center bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-md transition-colors font-medium"
+            >
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                </svg>
+                Get In Touch
+            </a>
+        </div>
+    </div>
+
+    <!-- Gallery Modal -->
+    <GalleryModal />
 </MainGridLayout>

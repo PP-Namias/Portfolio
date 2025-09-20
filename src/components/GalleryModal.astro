@@ -1,0 +1,445 @@
+---
+// Gallery Modal Component for Detailed Project Viewing
+---
+
+<div id="gallery-modal" class="modal fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 hidden backdrop-blur-sm">
+  <div class="modal-content bg-white dark:bg-gray-800 rounded-lg max-w-6xl max-h-[95vh] overflow-auto m-4 shadow-2xl">
+    <!-- Modal Header -->
+    <div class="modal-header flex justify-between items-center p-6 border-b border-gray-200 dark:border-gray-700 sticky top-0 bg-white dark:bg-gray-800 z-10">
+      <div class="header-content">
+        <h2 id="modal-title" class="text-2xl font-bold text-gray-900 dark:text-white"></h2>
+        <p id="modal-category" class="text-sm text-blue-600 dark:text-blue-400 font-medium"></p>
+      </div>
+      <button id="modal-close" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 text-3xl font-light transition-colors">
+        ×
+      </button>
+    </div>
+    
+    <!-- Modal Body -->
+    <div class="modal-body p-6">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Image Section (2/3 width on large screens) -->
+        <div class="image-section lg:col-span-2">
+          <div class="main-image-container mb-4">
+            <img 
+              id="modal-main-image" 
+              src="" 
+              alt="" 
+              class="w-full rounded-lg shadow-lg transition-all duration-300 cursor-zoom-in"
+              onclick="this.classList.toggle('zoomed')"
+            />
+          </div>
+          
+          <!-- Image Gallery Thumbnails -->
+          <div id="modal-image-gallery" class="grid grid-cols-4 gap-3">
+            <!-- Additional images will be populated here -->
+          </div>
+          
+          <!-- Image Controls -->
+          <div class="image-controls mt-4 flex justify-center gap-2">
+            <button id="prev-image" class="p-2 rounded-full bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+              </svg>
+            </button>
+            <button id="next-image" class="p-2 rounded-full bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+        
+        <!-- Info Section (1/3 width on large screens) -->
+        <div class="info-section lg:col-span-1">
+          <!-- Project Overview -->
+          <div class="mb-6">
+            <h3 class="text-lg font-semibold mb-3 text-gray-900 dark:text-white flex items-center">
+              <svg class="w-5 h-5 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+              </svg>
+              Project Overview
+            </h3>
+            <p id="modal-description" class="text-gray-600 dark:text-gray-300 leading-relaxed"></p>
+          </div>
+          
+          <!-- Project Details -->
+          <div class="mb-6">
+            <h3 class="text-lg font-semibold mb-3 text-gray-900 dark:text-white flex items-center">
+              <svg class="w-5 h-5 mr-2 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+              Project Details
+            </h3>
+            <div class="space-y-2 text-sm">
+              <div id="modal-client" class="flex justify-between">
+                <span class="text-gray-600 dark:text-gray-400">Client:</span>
+                <span class="font-medium text-gray-900 dark:text-white"></span>
+              </div>
+              <div id="modal-date" class="flex justify-between">
+                <span class="text-gray-600 dark:text-gray-400">Date:</span>
+                <span class="font-medium text-gray-900 dark:text-white"></span>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Technology Stack -->
+          <div class="mb-6">
+            <h3 class="text-lg font-semibold mb-3 text-gray-900 dark:text-white flex items-center">
+              <svg class="w-5 h-5 mr-2 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+              </svg>
+              Technology Stack
+            </h3>
+            <div id="modal-tech-stack" class="flex flex-wrap gap-2">
+              <!-- Tech stack badges will be populated here -->
+            </div>
+          </div>
+          
+          <!-- Key Features -->
+          <div class="mb-6">
+            <h3 class="text-lg font-semibold mb-3 text-gray-900 dark:text-white flex items-center">
+              <svg class="w-5 h-5 mr-2 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path>
+              </svg>
+              Key Features
+            </h3>
+            <ul id="modal-features" class="space-y-1 text-sm text-gray-600 dark:text-gray-300">
+              <!-- Features will be populated here -->
+            </ul>
+          </div>
+          
+          <!-- Project Links -->
+          <div class="mb-6">
+            <h3 class="text-lg font-semibold mb-3 text-gray-900 dark:text-white flex items-center">
+              <svg class="w-5 h-5 mr-2 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path>
+              </svg>
+              Project Links
+            </h3>
+            <div id="modal-links" class="flex flex-col gap-3">
+              <!-- Links will be populated here -->
+            </div>
+          </div>
+          
+          <!-- Share Section -->
+          <div class="border-t border-gray-200 dark:border-gray-700 pt-4">
+            <h3 class="text-lg font-semibold mb-3 text-gray-900 dark:text-white">Share Project</h3>
+            <div class="flex gap-2">
+              <button onclick="shareProject('twitter')" class="p-2 rounded-full bg-blue-500 text-white hover:bg-blue-600 transition-colors">
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/>
+                </svg>
+              </button>
+              <button onclick="shareProject('linkedin')" class="p-2 rounded-full bg-blue-700 text-white hover:bg-blue-800 transition-colors">
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                </svg>
+              </button>
+              <button onclick="copyProjectLink()" class="p-2 rounded-full bg-gray-500 text-white hover:bg-gray-600 transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Gallery modal functionality
+  document.addEventListener('DOMContentLoaded', function() {
+    const modal = document.getElementById('gallery-modal');
+    const modalClose = document.getElementById('modal-close');
+    const galleryCards = document.querySelectorAll('.gallery-card');
+    const modalMainImage = document.getElementById('modal-main-image');
+    const prevImageBtn = document.getElementById('prev-image');
+    const nextImageBtn = document.getElementById('next-image');
+    
+    let currentProject = null;
+    let currentImageIndex = 0;
+    let projectImages = [];
+    
+    // Open modal function
+    function openModal(projectData) {
+      currentProject = projectData;
+      
+      // Populate modal content
+      document.getElementById('modal-title').textContent = projectData.title;
+      document.getElementById('modal-category').textContent = projectData.category;
+      document.getElementById('modal-description').textContent = projectData.description;
+      
+      // Set main image
+      modalMainImage.src = projectData.mainImage;
+      modalMainImage.alt = projectData.title;
+      
+      // Setup image gallery
+      projectImages = [projectData.mainImage, ...(projectData.detailedImages || [])];
+      currentImageIndex = 0;
+      updateImageGallery();
+      
+      // Populate project details
+      if (projectData.client) {
+        document.querySelector('#modal-client span:last-child').textContent = projectData.client;
+        document.getElementById('modal-client').style.display = 'flex';
+      } else {
+        document.getElementById('modal-client').style.display = 'none';
+      }
+      
+      if (projectData.projectDate) {
+        const date = new Date(projectData.projectDate).toLocaleDateString('en-US', { 
+          year: 'numeric', 
+          month: 'long' 
+        });
+        document.querySelector('#modal-date span:last-child').textContent = date;
+        document.getElementById('modal-date').style.display = 'flex';
+      } else {
+        document.getElementById('modal-date').style.display = 'none';
+      }
+      
+      // Populate tech stack
+      const techStackContainer = document.getElementById('modal-tech-stack');
+      techStackContainer.innerHTML = projectData.techStack.map(tech => 
+        `<span class="bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 text-sm px-3 py-1 rounded-full font-medium">${tech}</span>`
+      ).join('');
+      
+      // Populate features
+      const featuresContainer = document.getElementById('modal-features');
+      if (projectData.features && projectData.features.length > 0) {
+        featuresContainer.innerHTML = projectData.features.map(feature => 
+          `<li class="flex items-start"><svg class="w-4 h-4 text-green-500 mr-2 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>${feature}</li>`
+        ).join('');
+      } else {
+        featuresContainer.innerHTML = '<li class="text-gray-500 italic">Features information not available</li>';
+      }
+      
+      // Populate links
+      const linksContainer = document.getElementById('modal-links');
+      linksContainer.innerHTML = '';
+      
+      if (projectData.liveDemo) {
+        linksContainer.innerHTML += `
+          <a href="${projectData.liveDemo}" target="_blank" rel="noopener noreferrer" 
+             class="flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition-colors">
+            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+            </svg>
+            Live Demo
+          </a>`;
+      }
+      
+      if (projectData.sourceCode) {
+        linksContainer.innerHTML += `
+          <a href="${projectData.sourceCode}" target="_blank" rel="noopener noreferrer" 
+             class="flex items-center justify-center bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-md transition-colors">
+            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+            </svg>
+            Source Code
+          </a>`;
+      }
+      
+      if (!projectData.liveDemo && !projectData.sourceCode) {
+        linksContainer.innerHTML = '<p class="text-gray-500 text-sm italic">Project links not available</p>';
+      }
+      
+      // Show modal
+      modal.classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+      
+      // Track analytics
+      if (typeof gtag !== 'undefined') {
+        gtag('event', 'project_detail_view', {
+          'event_category': 'engagement',
+          'event_label': projectData.title,
+          'value': 1
+        });
+      }
+    }
+    
+    // Update image gallery
+    function updateImageGallery() {
+      const galleryContainer = document.getElementById('modal-image-gallery');
+      galleryContainer.innerHTML = '';
+      
+      projectImages.forEach((image, index) => {
+        const thumbnail = document.createElement('img');
+        thumbnail.src = image;
+        thumbnail.alt = `${currentProject.title} - Image ${index + 1}`;
+        thumbnail.className = `w-full h-16 object-cover rounded cursor-pointer transition-all duration-200 ${
+          index === currentImageIndex ? 'ring-2 ring-blue-500' : 'hover:opacity-75'
+        }`;
+        thumbnail.onclick = () => changeImage(index);
+        galleryContainer.appendChild(thumbnail);
+      });
+      
+      // Update navigation buttons
+      prevImageBtn.style.display = projectImages.length > 1 ? 'block' : 'none';
+      nextImageBtn.style.display = projectImages.length > 1 ? 'block' : 'none';
+    }
+    
+    // Change main image
+    function changeImage(index) {
+      currentImageIndex = index;
+      modalMainImage.src = projectImages[index];
+      updateImageGallery();
+    }
+    
+    // Close modal function
+    function closeModal() {
+      modal.classList.add('hidden');
+      document.body.style.overflow = 'auto';
+      currentProject = null;
+      projectImages = [];
+      currentImageIndex = 0;
+    }
+    
+    // Event listeners
+    galleryCards.forEach(card => {
+      card.addEventListener('click', function() {
+        const dataScript = this.querySelector('.gallery-data');
+        if (dataScript) {
+          try {
+            const projectData = JSON.parse(dataScript.textContent);
+            openModal(projectData);
+          } catch (e) {
+            console.error('Error parsing gallery data:', e);
+          }
+        }
+      });
+    });
+    
+    modalClose.addEventListener('click', closeModal);
+    
+    // Image navigation
+    prevImageBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const newIndex = currentImageIndex > 0 ? currentImageIndex - 1 : projectImages.length - 1;
+      changeImage(newIndex);
+    });
+    
+    nextImageBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const newIndex = currentImageIndex < projectImages.length - 1 ? currentImageIndex + 1 : 0;
+      changeImage(newIndex);
+    });
+    
+    // Close modal when clicking outside
+    modal.addEventListener('click', function(e) {
+      if (e.target === modal) {
+        closeModal();
+      }
+    });
+    
+    // Close on escape key
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape' && currentProject) {
+        closeModal();
+      }
+      
+      // Image navigation with arrow keys
+      if (currentProject && projectImages.length > 1) {
+        if (e.key === 'ArrowLeft') {
+          prevImageBtn.click();
+        } else if (e.key === 'ArrowRight') {
+          nextImageBtn.click();
+        }
+      }
+    });
+    
+    // Share functions
+    window.shareProject = function(platform) {
+      if (!currentProject) return;
+      
+      const url = window.location.href;
+      const text = `Check out this project: ${currentProject.title}`;
+      
+      if (platform === 'twitter') {
+        window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`, '_blank');
+      } else if (platform === 'linkedin') {
+        window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`, '_blank');
+      }
+      
+      // Track share event
+      if (typeof gtag !== 'undefined') {
+        gtag('event', 'project_share', {
+          'event_category': 'engagement',
+          'event_label': `${platform}-${currentProject.title}`,
+          'value': 1
+        });
+      }
+    };
+    
+    window.copyProjectLink = function() {
+      navigator.clipboard.writeText(window.location.href).then(() => {
+        // Show success feedback
+        const button = event.target.closest('button');
+        const originalHTML = button.innerHTML;
+        button.innerHTML = '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>';
+        setTimeout(() => {
+          button.innerHTML = originalHTML;
+        }, 2000);
+      });
+    };
+  });
+</script>
+
+<style>
+.modal {
+  backdrop-filter: blur(4px);
+}
+
+.modal-content {
+  max-width: 90vw;
+  max-height: 95vh;
+  animation: modalSlideIn 0.3s ease-out;
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9) translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.gallery-image.zoomed {
+  transform: scale(1.5);
+  cursor: zoom-out;
+}
+
+#modal-image-gallery img {
+  aspect-ratio: 16/9;
+}
+
+@media (max-width: 1024px) {
+  .modal-body .grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .info-section {
+    order: -1;
+  }
+}
+
+@media (max-width: 640px) {
+  .modal-content {
+    margin: 1rem;
+    max-height: calc(100vh - 2rem);
+  }
+  
+  .modal-header {
+    padding: 1rem;
+  }
+  
+  .modal-body {
+    padding: 1rem;
+  }
+}
+</style>
