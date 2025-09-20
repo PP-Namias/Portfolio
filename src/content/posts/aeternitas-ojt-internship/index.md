@@ -1,18 +1,35 @@
 ---
-title: "OJT Internship at Aeternitas Chapels & Columbarium: Leading HRIS Development as Lead Software Engineer"
+title: "Lead Software Engineer OJT at Aeternitas Chapels & Columbarium: HRIS Development & Team Leadership | Kenneth Namias"
 published: 2025-06-15T00:00:00.000Z
-description: "Experience as Lead Software Engineer during OJT internship at Aeternitas Chapels & Columbarium in Quezon City. Built comprehensive HRIS system using React-TS, Electron, Express, and PostgreSQL while leading a 7-member development team through client needs analysis, deployment, and post-launch support."
+description: "Kenneth Namias led a 7-member development team as Lead Software Engineer during OJT internship at Aeternitas Chapels & Columbarium. Built comprehensive HRIS system using React-TS, Electron, Express, PostgreSQL with full client management and deployment."
 image: "./cover.jpg"
-tags: ["OJT Internship", "Lead Software Engineer", "HRIS Development", "React TypeScript", "Electron", "Express.js", "PostgreSQL", "Team Leadership", "Client Management"]
+tags: ["OJT Internship", "Lead Software Engineer", "HRIS Development", "React TypeScript", "Electron", "Express.js", "PostgreSQL", "Team Leadership", "Client Management", "Kenneth Namias"]
 category: "Professional Experience"
 draft: false
+keywords: ["Kenneth Namias OJT", "Lead Software Engineer internship", "HRIS development React", "Team leadership software", "Aeternitas Chapels Columbarium", "Enterprise software development"]
+readingTime: "12 min read"
 ---
 
-> **From Student to Lead: Transforming Business Operations Through Enterprise Software Development**
+> **From Student to Lead: How I transformed from intern to Lead Software Engineer, managing a 7-member team and delivering enterprise HRIS solutions during my OJT experience**
 
-# 💼 OJT Internship at Aeternitas Chapels & Columbarium
+# � Lead Software Engineer OJT: Building Enterprise HRIS at Aeternitas Chapels & Columbarium
 
-*Leading enterprise HRIS development and team management during on-the-job training experience*
+*Real-world experience leading enterprise software development and team management during on-the-job training*
+
+---
+
+## 🎯 Quick Overview
+
+**What you'll discover:**
+- How I progressed from intern to Lead Software Engineer in weeks
+- Complete HRIS system development using modern tech stack
+- Team leadership strategies for managing 7 developers
+- Client requirements analysis and project delivery process
+- Real enterprise software deployment and support
+
+**Experience level:** Intermediate to Advanced
+**Time to read:** 12 minutes
+**Tech stack:** React TypeScript, Electron, Express.js, PostgreSQL
 
 ---
 

@@ -1,22 +1,41 @@
 ---
-title: "About Me: John Kenneth Ryan Namias"
+title: "About Kenneth Namias: Full Stack Developer & AI Automation Specialist | Software Engineer Portfolio"
 published: 2024-09-19
-description: "Get to know me - a passionate Full Stack x Automation Developer crafting innovative solutions and building the future of technology."
+description: "Kenneth Namias is a passionate Full Stack Developer and AI Automation Specialist at UCC Congressional Campus. Discover his journey in modern web development, enterprise solutions, and innovative automation technologies."
 image: "./cover.jpg"
-tags: ["About Me", "Full Stack Developer", "Automation", "Career", "Personal"]
+tags: ["About Kenneth Namias", "Full Stack Developer", "AI Automation", "Software Engineer", "Career Journey", "UCC Congressional Campus", "Personal"]
 category: "Personal"
 draft: false
+keywords: ["Kenneth Namias", "Full Stack Developer Philippines", "AI Automation Specialist", "Software Engineer UCC", "React TypeScript developer", "Enterprise solutions"]
+readingTime: "5 min read"
 ---
 
 # Hello, I'm John Kenneth Ryan Namias! 👋
 
-Welcome to my digital space! I'm a passionate **Full Stack x Automation Developer** currently working at **UCC Congressional Campus**, where I blend creativity with cutting-edge technology to build solutions that make a difference.
+> **Full Stack Developer & AI Automation Specialist crafting innovative solutions at the intersection of technology and business needs**
 
-## 🚀 My Journey
+Welcome to my digital space! I'm a passionate **Full Stack Developer and AI Automation Specialist** currently working at **UCC Congressional Campus**, where I blend creativity with cutting-edge technology to build solutions that make a real difference in people's work and lives.
 
-My story in technology began with curiosity and has evolved into a deep passion for creating seamless, automated solutions that bridge the gap between complex problems and elegant solutions. As a full-stack developer with a specialization in automation, I don't just write code—I craft experiences and build systems that work intelligently in the background.
+## 🎯 Quick Overview
 
-## 💼 What I Do
+**What you'll learn about me:**
+- My journey from curious student to professional developer
+- Expertise in full-stack development and AI automation
+- Current role and responsibilities at UCC Congressional Campus
+- Vision for the future of technology and automation
+
+**Time to read:** 5 minutes
+**Current focus:** Enterprise automation & modern web development
+
+---
+
+## 🚀 My Professional Journey
+
+My story in technology began with curiosity and has evolved into a deep passion for creating seamless, automated solutions that bridge the gap between complex problems and elegant solutions. As a **Full Stack Developer with specialization in AI automation**, I don't just write code—I craft experiences and build intelligent systems that work efficiently in the background.
+
+### 💼 Current Role: Full Stack x Automation Developer
+
+At **UCC Congressional Campus**, I focus on:
 
 ### Full Stack Development
 - **Frontend**: Creating intuitive, responsive user interfaces using modern frameworks and libraries

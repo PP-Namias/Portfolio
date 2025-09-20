@@ -1,22 +1,42 @@
 ---
-title: "My Professional Journey: From Student to Full Stack x Automation Developer"
+title: "Kenneth Namias Professional Journey: From Computer Science Graduate to Lead Software Engineer | Career Story"
 published: 2024-09-19
-description: "The story of my career progression from Computer Science graduate to Full Stack x Automation Developer at UCC Congressional Campus - challenges, growth, and achievements."
+description: "Follow Kenneth Namias' career progression from Computer Science graduate to Full Stack Developer and Lead Software Engineer at UCC Congressional Campus. Learn about professional growth, challenges overcome, and key achievements in software development."
 image: "./cover.jpg"
-tags: ["Career", "Professional Development", "Full Stack Developer", "Automation", "UCC Congressional Campus"]
+tags: ["Kenneth Namias Career", "Professional Development", "Full Stack Developer Journey", "Software Engineer Growth", "UCC Congressional Campus", "Lead Developer"]
 category: "Professional"
 draft: false
+keywords: ["Kenneth Namias career", "Software engineer career progression", "Full Stack Developer journey", "Professional development software", "UCC Congressional Campus developer", "Lead Software Engineer"]
+readingTime: "8 min read"
 ---
 
-# From Graduate to Professional: My Career Evolution 🚀
+# 🚀 From Graduate to Lead: Kenneth Namias' Professional Journey in Software Development
 
-The transition from academia to the professional world is a journey filled with learning, challenges, and incredible growth opportunities. My path from a Computer Science graduate to becoming a **Full Stack x Automation Developer** at **UCC Congressional Campus** has been both exciting and rewarding—a continuous evolution of skills, responsibilities, and impact.
+> **The evolution from Computer Science graduate to Lead Software Engineer: challenges, growth, and achievements in modern software development**
 
-## 🌱 The Beginning: First Steps into Professional Development
+The transition from academia to the professional world is a journey filled with learning, challenges, and incredible growth opportunities. My path from a **Computer Science graduate** to becoming a **Lead Software Engineer** and **Full Stack Developer** at **UCC Congressional Campus** has been both exciting and rewarding—a continuous evolution of skills, responsibilities, and impact.
 
-### From Classroom to Real-World Applications
+---
 
-The shift from theoretical learning to practical application was both thrilling and challenging. While my Computer Science education provided a solid foundation, the professional world demanded:
+## 🎯 Career Overview
+
+**What you'll discover:**
+- How I transitioned from theoretical learning to practical application
+- Key milestones in my professional development journey
+- Challenges faced and strategies used to overcome them
+- Current role and responsibilities as Lead Software Engineer
+
+**Experience timeline:** 2022-2025
+**Time to read:** 8 minutes
+**Focus areas:** Full-stack development, team leadership, enterprise solutions
+
+---
+
+## 🌱 The Beginning: First Steps into Professional Software Development
+
+### 📚 From Classroom to Real-World Applications
+
+The shift from theoretical learning to practical application was both thrilling and challenging. While my **Computer Science education** provided a solid foundation, the professional world demanded:
 
 - **Practical Problem-Solving**: Real business challenges with actual constraints and deadlines
 - **Stakeholder Communication**: Translating technical concepts for non-technical audiences

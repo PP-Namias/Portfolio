@@ -36,6 +36,20 @@ export type SiteConfig = {
 	};
 
 	favicon: Favicon[];
+	
+	analytics?: {
+		enable: boolean;
+		googleAnalyticsId: string;
+		partytown?: boolean;
+	};
+	
+	seo?: {
+		siteName: string;
+		description: string;
+		keywords: string[];
+		author: string;
+		twitterHandle?: string;
+	};
 };
 
 export type Favicon = {

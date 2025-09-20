@@ -37,6 +37,18 @@ export const siteConfig: SiteConfig = {
 		//   sizes: '32x32',              // (Optional) Size of the favicon, set only if you have favicons of different sizes
 		// }
 	],
+	analytics: {
+		enable: true,
+		googleAnalyticsId: "G-XXXXXXXXXX", // Replace with your Google Analytics ID
+		partytown: false, // Enable Partytown for better performance (optional)
+	},
+	seo: {
+		siteName: "Kenneth Namias Portfolio",
+		description: "Experienced Full-Stack Developer specializing in AI automation, modern web technologies, and enterprise solutions. Building innovative software solutions with React, TypeScript, Python, and AI integration.",
+		keywords: ["Full-Stack Developer", "AI Automation", "React", "TypeScript", "Python", "Web Development", "Software Engineer", "Kenneth Namias"],
+		author: "Kenneth Namias",
+		twitterHandle: "@KennethNamias",
+	},
 };
 
 export const navBarConfig: NavBarConfig = {

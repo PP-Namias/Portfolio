@@ -1,0 +1,89 @@
+---
+interface Props {
+  id?: string;
+  partytown?: boolean;
+}
+
+const { id = "G-XXXXXXXXXX", partytown = false } = Astro.props;
+
+// Only load analytics in production
+const isProd = import.meta.env.PROD;
+const gtag = partytown ? "gtag" : "gtag";
+---
+
+{isProd && id && id !== "G-XXXXXXXXXX" && (
+  <>
+    <!-- Google tag (gtag.js) -->
+    <script type="text/partytown" async src={`https://www.googletagmanager.com/gtag/js?id=${id}`}></script>
+    <script type="text/partytown" define:vars={{ id, gtag }}>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', id, {
+        // Enhance user privacy
+        anonymize_ip: true,
+        // Respect user's tracking preferences
+        respect_dnt: true,
+        // Custom configuration
+        page_title: document.title,
+        custom_map: {
+          'custom_dimension_1': 'user_type'
+        }
+      });
+
+      // Enhanced ecommerce tracking for contact form conversions
+      window.trackConversion = function(event_name, parameters = {}) {
+        gtag('event', event_name, {
+          event_category: 'engagement',
+          event_label: parameters.label || '',
+          value: parameters.value || 1,
+          ...parameters
+        });
+      };
+
+      // Track page performance
+      window.addEventListener('load', function() {
+        const perfData = performance.getEntriesByType('navigation')[0];
+        if (perfData) {
+          gtag('event', 'page_load_time', {
+            event_category: 'performance',
+            event_label: 'load_time',
+            value: Math.round(perfData.loadEventEnd - perfData.loadEventStart)
+          });
+        }
+      });
+
+      // Track scroll depth
+      let maxScroll = 0;
+      let scrollTimer = null;
+      
+      window.addEventListener('scroll', function() {
+        clearTimeout(scrollTimer);
+        scrollTimer = setTimeout(function() {
+          const scrollPercent = Math.round((window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100);
+          if (scrollPercent > maxScroll && scrollPercent % 25 === 0) {
+            maxScroll = scrollPercent;
+            gtag('event', 'scroll_depth', {
+              event_category: 'engagement',
+              event_label: 'scroll_depth',
+              value: scrollPercent
+            });
+          }
+        }, 100);
+      });
+    </script>
+  </>
+)}
+
+{!isProd && (
+  <script>
+    // Development mode - log analytics events to console
+    console.log('📊 Analytics Debug Mode');
+    window.gtag = function() {
+      console.log('📊 GA Event:', arguments);
+    };
+    window.trackConversion = function(event_name, parameters) {
+      console.log('📊 Conversion:', event_name, parameters);
+    };
+  </script>
+)}
