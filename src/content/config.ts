@@ -57,8 +57,29 @@ const galleryCollection = defineCollection({
 		published: z.date(),
 		updated: z.date().optional(),
 		featured: z.boolean().optional().default(false),
-		category: z.string().optional().default(""),
+		category: z.enum(['enterprise', 'web-development', 'ai-automation', 'architecture', 'photography']).optional().default('web-development'),
 		tags: z.array(z.string()).optional().default([]),
+		
+		// Enhanced project metadata following Gallery Best Practices Guide
+		mainImage: z.string(),
+		additionalImages: z.array(z.string()).optional().default([]),
+		techStack: z.array(z.string()).optional().default([]),
+		features: z.array(z.string()).optional().default([]),
+		liveDemo: z.string().url().optional(),
+		sourceCode: z.string().url().optional(),
+		
+		// Project details
+		projectDate: z.date().optional(),
+		client: z.string().optional(),
+		teamSize: z.number().optional(),
+		duration: z.string().optional(),
+		
+		// Challenges, solutions, and results
+		challenges: z.array(z.string()).optional().default([]),
+		solutions: z.array(z.string()).optional().default([]),
+		results: z.array(z.string()).optional().default([]),
+		
+		// Legacy fields for backward compatibility
 		location: z.string().optional().default(""),
 		camera: z.string().optional().default(""),
 		settings: z.string().optional().default(""),

@@ -1,26 +1,26 @@
 ---
 interface Props {
-  title?: string;
-  description?: string;
-  image?: string;
-  type?: 'website' | 'article' | 'profile';
-  publishedTime?: string;
-  modifiedTime?: string;
-  author?: string;
-  tags?: string[];
-  canonicalUrl?: string;
+	title?: string;
+	description?: string;
+	image?: string;
+	type?: "website" | "article" | "profile";
+	publishedTime?: string;
+	modifiedTime?: string;
+	author?: string;
+	tags?: string[];
+	canonicalUrl?: string;
 }
 
 const {
-  title = "Kenneth Namias - Full-Stack Developer & AI Automation Expert",
-  description = "Experienced Full-Stack Developer specializing in AI automation, modern web technologies, and enterprise solutions. Building innovative software solutions with React, TypeScript, Python, and AI integration.",
-  image = "/favicon/favicon-light-192.png",
-  type = "website",
-  publishedTime,
-  modifiedTime,
-  author = "Kenneth Namias",
-  tags = [],
-  canonicalUrl
+	title = "Kenneth Namias - Full-Stack Developer & AI Automation Expert",
+	description = "Experienced Full-Stack Developer specializing in AI automation, modern web technologies, and enterprise solutions. Building innovative software solutions with React, TypeScript, Python, and AI integration.",
+	image = "/favicon/favicon-light-192.png",
+	type = "website",
+	publishedTime,
+	modifiedTime,
+	author = "Kenneth Namias",
+	tags = [],
+	canonicalUrl,
 } = Astro.props;
 
 const currentUrl = new URL(Astro.url.pathname, Astro.site);
@@ -29,32 +29,38 @@ const imageUrl = new URL(image, Astro.site).href;
 
 // Structured data for better search engine understanding
 const structuredData = {
-  "@context": "https://schema.org",
-  "@type": type === 'article' ? "BlogPosting" : type === 'profile' ? "Person" : "WebSite",
-  name: title,
-  description: description,
-  url: canonical,
-  image: imageUrl,
-  ...(type === 'article' && {
-    author: {
-      "@type": "Person",
-      name: author
-    },
-    ...(publishedTime && { datePublished: publishedTime }),
-    ...(modifiedTime && { dateModified: modifiedTime }),
-    ...(tags.length > 0 && { keywords: tags.join(', ') })
-  }),
-  ...(type === 'profile' && {
-    "@type": "Person",
-    name: "Kenneth Namias",
-    jobTitle: "Full-Stack Developer & AI Automation Expert",
-    description: "Experienced software engineer specializing in modern web technologies, AI automation, and enterprise solutions",
-    url: canonical,
-    sameAs: [
-      "https://github.com/PP-Namias",
-      "https://linkedin.com/in/kenneth-namias"
-    ]
-  })
+	"@context": "https://schema.org",
+	"@type":
+		type === "article"
+			? "BlogPosting"
+			: type === "profile"
+				? "Person"
+				: "WebSite",
+	name: title,
+	description: description,
+	url: canonical,
+	image: imageUrl,
+	...(type === "article" && {
+		author: {
+			"@type": "Person",
+			name: author,
+		},
+		...(publishedTime && { datePublished: publishedTime }),
+		...(modifiedTime && { dateModified: modifiedTime }),
+		...(tags.length > 0 && { keywords: tags.join(", ") }),
+	}),
+	...(type === "profile" && {
+		"@type": "Person",
+		name: "Kenneth Namias",
+		jobTitle: "Full-Stack Developer & AI Automation Expert",
+		description:
+			"Experienced software engineer specializing in modern web technologies, AI automation, and enterprise solutions",
+		url: canonical,
+		sameAs: [
+			"https://github.com/PP-Namias",
+			"https://linkedin.com/in/kenneth-namias",
+		],
+	}),
 };
 ---
 

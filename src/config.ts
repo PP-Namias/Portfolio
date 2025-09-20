@@ -44,8 +44,18 @@ export const siteConfig: SiteConfig = {
 	},
 	seo: {
 		siteName: "Kenneth Namias Portfolio",
-		description: "Experienced Full-Stack Developer specializing in AI automation, modern web technologies, and enterprise solutions. Building innovative software solutions with React, TypeScript, Python, and AI integration.",
-		keywords: ["Full-Stack Developer", "AI Automation", "React", "TypeScript", "Python", "Web Development", "Software Engineer", "Kenneth Namias"],
+		description:
+			"Experienced Full-Stack Developer specializing in AI automation, modern web technologies, and enterprise solutions. Building innovative software solutions with React, TypeScript, Python, and AI integration.",
+		keywords: [
+			"Full-Stack Developer",
+			"AI Automation",
+			"React",
+			"TypeScript",
+			"Python",
+			"Web Development",
+			"Software Engineer",
+			"Kenneth Namias",
+		],
 		author: "Kenneth Namias",
 		twitterHandle: "@KennethNamias",
 	},
