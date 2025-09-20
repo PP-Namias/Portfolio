@@ -31,18 +31,19 @@ const publishedGalleries = allGalleryCollections
 const enhancedGalleries = publishedGalleries.map(gallery => ({
 	...gallery.data,
 	slug: gallery.slug,
-	image: `/gallery/${gallery.slug}/cover.jpg`, // Assuming cover.jpg exists in each gallery folder
-	detailedImages: [], // Will be populated when individual gallery items are created
-	features: [
-		`Location: ${gallery.data.location}`,
-		`Camera: ${gallery.data.camera}`,
-		`Settings: ${gallery.data.settings}`,
-		`Dimensions: ${gallery.data.dimensions}`
-	],
-	projectDate: gallery.data.published,
-	techStack: gallery.data.tags || [],
-	category: gallery.data.category || 'Photography',
-	liveDemo: `/gallery/${gallery.slug}`,
+	image: gallery.data.mainImage || `/images/gallery/${gallery.slug}/cover.jpg`,
+	detailedImages: gallery.data.additionalImages || [],
+	features: gallery.data.features || [],
+	challenges: gallery.data.challenges || [],
+	solutions: gallery.data.solutions || [],
+	results: gallery.data.results || [],
+	projectDate: gallery.data.projectDate || gallery.data.published,
+	techStack: gallery.data.techStack || gallery.data.tags || [],
+	liveDemo: gallery.data.liveDemo,
+	sourceCode: gallery.data.sourceCode,
+	client: gallery.data.client,
+	teamSize: gallery.data.teamSize,
+	duration: gallery.data.duration,
 }));
 
 // Create a page object similar to posts pagination
@@ -69,24 +70,77 @@ const len = page.data.length;
         </Markdown>
     </div>
     
-    <!-- Enhanced Gallery Grid -->
+    <!-- Enhanced Gallery Container -->
     <div class="gallery-container mt-8">
-        <!-- Gallery Stats -->
-        <div class="mb-6 text-center">
-            <p class="text-gray-600 dark:text-gray-300">
-                {len === 0 ? (
-                    <span>No gallery items found</span>
-                ) : (
-                    <span>
-                        Showcasing <strong>{len}</strong> visual project{len === 1 ? '' : 's'}
-                    </span>
-                )}
-            </p>
+        <!-- Gallery Header -->
+        <div class="gallery-header mb-8">
+            <!-- Gallery Stats -->
+            <div class="text-center mb-6">
+                <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+                    Professional Portfolio Gallery
+                </h2>
+                <p class="text-gray-600 dark:text-gray-300 text-lg">
+                    {len === 0 ? (
+                        <span>No gallery items found</span>
+                    ) : (
+                        <span>
+                            Showcasing <strong>{len}</strong> professional project{len === 1 ? '' : 's'} across enterprise development, AI automation, and modern web applications
+                        </span>
+                    )}
+                </p>
+            </div>
+
+            <!-- Filter and Search Controls -->
+            <div class="gallery-controls bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6">
+                <div class="flex flex-col md:flex-row gap-4 items-center justify-between">
+                    <!-- Category Filters -->
+                    <div class="filter-section">
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            Filter by Category
+                        </label>
+                        <div class="flex flex-wrap gap-2">
+                            <button class="filter-btn active" data-filter="all">
+                                All Projects
+                            </button>
+                            <button class="filter-btn" data-filter="enterprise">
+                                Enterprise
+                            </button>
+                            <button class="filter-btn" data-filter="web-development">
+                                Web Development
+                            </button>
+                            <button class="filter-btn" data-filter="ai-automation">
+                                AI & Automation
+                            </button>
+                            <button class="filter-btn" data-filter="architecture">
+                                Architecture
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Search Box -->
+                    <div class="search-section">
+                        <label for="gallery-search" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            Search Projects
+                        </label>
+                        <div class="relative">
+                            <input
+                                type="text"
+                                id="gallery-search"
+                                placeholder="Search by title, technology, or description..."
+                                class="w-full px-4 py-2 pl-10 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+                            />
+                            <svg class="absolute left-3 top-2.5 h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <!-- Gallery Grid -->
+        <!-- Gallery Grid with Enhanced Layout -->
         {len > 0 && (
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+            <div id="gallery-grid" class="gallery-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-8">
                 {page.data.map((gallery) => (
                     <EnhancedGalleryCard
                         image={gallery.image}
@@ -95,34 +149,373 @@ const len = page.data.length;
                         category={gallery.category}
                         techStack={gallery.techStack}
                         liveDemo={gallery.liveDemo}
+                        sourceCode={gallery.sourceCode}
                         detailedImages={gallery.detailedImages}
                         features={gallery.features}
-                        projectDate={gallery.projectDate.toISOString()}
+                        challenges={gallery.challenges}
+                        solutions={gallery.solutions}
+                        results={gallery.results}
+                        projectDate={gallery.projectDate}
+                        client={gallery.client}
+                        teamSize={gallery.teamSize}
+                        duration={gallery.duration}
+                        featured={gallery.featured}
                     />
                 ))}
             </div>
         )}
 
-        <!-- Call to Action -->
-        <div class="text-center mt-12 p-6 bg-gray-50 dark:bg-gray-800 rounded-lg">
-            <h3 class="text-xl font-semibold mb-3 text-gray-900 dark:text-white">
-                Interested in working together?
+        <!-- No Results Message -->
+        <div id="no-results" class="hidden text-center py-12">
+            <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+            </svg>
+            <h3 class="mt-2 text-sm font-medium text-gray-900 dark:text-white">No projects found</h3>
+            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Try adjusting your search terms or filters.</p>
+        </div>
+
+        <!-- Professional Call to Action -->
+        <div class="text-center mt-16 p-8 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-700 rounded-xl shadow-lg">
+            <h3 class="text-2xl font-bold mb-4 text-gray-900 dark:text-white">
+                Ready to Build Something Amazing?
             </h3>
-            <p class="text-gray-600 dark:text-gray-300 mb-4">
-                Let's discuss how I can help bring your next project to life.
+            <p class="text-gray-600 dark:text-gray-300 mb-6 max-w-2xl mx-auto">
+                These projects represent just a glimpse of what's possible. Whether you need enterprise software development, 
+                AI automation, or modern web applications, I'm here to turn your vision into reality.
             </p>
-            <a 
-                href="/contact/" 
-                class="inline-flex items-center bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-md transition-colors font-medium"
-            >
-                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
-                </svg>
-                Get In Touch
-            </a>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a 
+                    href="/contact/" 
+                    class="inline-flex items-center bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg transition-all duration-300 font-medium shadow-lg hover:shadow-xl transform hover:-translate-y-1"
+                >
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                    </svg>
+                    Start a Conversation
+                </a>
+                <a 
+                    href="/projects/" 
+                    class="inline-flex items-center bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-white px-8 py-3 rounded-lg transition-all duration-300 font-medium"
+                >
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                    </svg>
+                    View All Projects
+                </a>
+            </div>
         </div>
     </div>
 
     <!-- Gallery Modal -->
     <GalleryModal />
 </MainGridLayout>
+
+<style>
+/* Gallery Best Practices - Enhanced Styling */
+.gallery-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.gallery-controls {
+  border: 1px solid rgba(229, 231, 235, 0.5);
+  backdrop-filter: blur(10px);
+}
+
+.filter-btn {
+  @apply px-4 py-2 text-sm font-medium rounded-full border border-gray-300 dark:border-gray-600 
+         text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 
+         hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200;
+}
+
+.filter-btn.active {
+  @apply bg-blue-600 text-white border-blue-600 hover:bg-blue-700 shadow-md;
+}
+
+.gallery-grid {
+  min-height: 400px;
+  transition: all 0.3s ease;
+}
+
+.gallery-card.hidden {
+  display: none !important;
+}
+
+.gallery-card.fade-out {
+  opacity: 0;
+  transform: scale(0.95);
+  transition: all 0.3s ease;
+}
+
+.gallery-card.fade-in {
+  opacity: 1;
+  transform: scale(1);
+  transition: all 0.3s ease;
+}
+
+/* Enhanced responsive grid */
+@media (min-width: 640px) {
+  .gallery-grid {
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .gallery-grid {
+    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+  }
+}
+
+@media (min-width: 1280px) {
+  .gallery-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Search input styling */
+#gallery-search {
+  transition: all 0.2s ease;
+}
+
+#gallery-search:focus {
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* Loading animation */
+.gallery-loading {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.gallery-loading::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 20px;
+  height: 20px;
+  margin: -10px 0 0 -10px;
+  border: 2px solid #f3f3f3;
+  border-top: 2px solid #3498db;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Enhanced CTA section */
+.text-center a {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.text-center a:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(59, 130, 246, 0.15);
+}
+
+/* Professional typography */
+.gallery-header h2 {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Dark mode enhancements */
+@media (prefers-color-scheme: dark) {
+  .gallery-controls {
+    background: rgba(31, 41, 55, 0.8);
+    border-color: rgba(75, 85, 99, 0.3);
+  }
+  
+  .gallery-header h2 {
+    background: linear-gradient(135deg, #60a5fa 0%, #a78bfa 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+}
+</style>
+
+<script>
+// Gallery Best Practices - Enhanced Functionality
+document.addEventListener('DOMContentLoaded', function() {
+  const galleryGrid = document.getElementById('gallery-grid');
+  const searchInput = document.getElementById('gallery-search');
+  const filterButtons = document.querySelectorAll('.filter-btn');
+  const noResults = document.getElementById('no-results');
+  
+  let currentFilter = 'all';
+  let currentSearch = '';
+  
+  // Filter functionality
+  filterButtons.forEach(button => {
+    button.addEventListener('click', function() {
+      // Update active button
+      filterButtons.forEach(btn => btn.classList.remove('active'));
+      this.classList.add('active');
+      
+      currentFilter = this.dataset.filter;
+      filterGallery();
+      
+      // Analytics tracking
+      if (typeof gtag !== 'undefined') {
+        gtag('event', 'gallery_filter', {
+          'event_category': 'engagement',
+          'event_label': currentFilter,
+          'value': 1
+        });
+      }
+    });
+  });
+  
+  // Search functionality with debouncing
+  let searchTimeout;
+  searchInput.addEventListener('input', function() {
+    clearTimeout(searchTimeout);
+    searchTimeout = setTimeout(() => {
+      currentSearch = this.value.toLowerCase().trim();
+      filterGallery();
+      
+      // Analytics tracking
+      if (typeof gtag !== 'undefined' && currentSearch) {
+        gtag('event', 'gallery_search', {
+          'event_category': 'engagement',
+          'event_label': currentSearch,
+          'value': 1
+        });
+      }
+    }, 300);
+  });
+  
+  function filterGallery() {
+    const cards = galleryGrid.querySelectorAll('.gallery-card');
+    let visibleCount = 0;
+    
+    cards.forEach(card => {
+      const title = card.dataset.title?.toLowerCase() || '';
+      const description = card.dataset.description?.toLowerCase() || '';
+      const category = card.dataset.category?.toLowerCase() || '';
+      const techStack = card.dataset.techStack ? 
+        JSON.parse(card.dataset.techStack).join(' ').toLowerCase() : '';
+      
+      // Check filter match
+      const filterMatch = currentFilter === 'all' || category === currentFilter;
+      
+      // Check search match
+      const searchMatch = !currentSearch || 
+        title.includes(currentSearch) || 
+        description.includes(currentSearch) || 
+        techStack.includes(currentSearch) ||
+        category.includes(currentSearch);
+      
+      if (filterMatch && searchMatch) {
+        card.classList.remove('hidden', 'fade-out');
+        card.classList.add('fade-in');
+        visibleCount++;
+      } else {
+        card.classList.add('fade-out');
+        setTimeout(() => {
+          card.classList.add('hidden');
+          card.classList.remove('fade-out', 'fade-in');
+        }, 200);
+      }
+    });
+    
+    // Show/hide no results message
+    if (visibleCount === 0) {
+      noResults.classList.remove('hidden');
+    } else {
+      noResults.classList.add('hidden');
+    }
+    
+    // Update URL with current filters (optional)
+    updateURL();
+  }
+  
+  function updateURL() {
+    const url = new URL(window.location);
+    
+    if (currentFilter !== 'all') {
+      url.searchParams.set('category', currentFilter);
+    } else {
+      url.searchParams.delete('category');
+    }
+    
+    if (currentSearch) {
+      url.searchParams.set('search', currentSearch);
+    } else {
+      url.searchParams.delete('search');
+    }
+    
+    // Update URL without reload
+    window.history.replaceState({}, '', url);
+  }
+  
+  // Initialize from URL parameters
+  function initializeFromURL() {
+    const url = new URL(window.location);
+    const categoryParam = url.searchParams.get('category');
+    const searchParam = url.searchParams.get('search');
+    
+    if (categoryParam) {
+      currentFilter = categoryParam;
+      const filterBtn = document.querySelector(`[data-filter="${categoryParam}"]`);
+      if (filterBtn) {
+        filterButtons.forEach(btn => btn.classList.remove('active'));
+        filterBtn.classList.add('active');
+      }
+    }
+    
+    if (searchParam) {
+      currentSearch = searchParam;
+      searchInput.value = searchParam;
+    }
+    
+    if (categoryParam || searchParam) {
+      filterGallery();
+    }
+  }
+  
+  // Keyboard shortcuts
+  document.addEventListener('keydown', function(e) {
+    // Focus search on '/' key
+    if (e.key === '/' && !e.ctrlKey && !e.metaKey) {
+      e.preventDefault();
+      searchInput.focus();
+    }
+    
+    // Clear search on 'Escape' key
+    if (e.key === 'Escape' && searchInput === document.activeElement) {
+      searchInput.value = '';
+      currentSearch = '';
+      filterGallery();
+      searchInput.blur();
+    }
+  });
+  
+  // Initialize
+  initializeFromURL();
+  
+  // Intersection Observer for performance
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('animate-fade-in');
+      }
+    });
+  }, {
+    threshold: 0.1,
+    rootMargin: '0px 0px -50px 0px'
+  });
+  
+  // Observe gallery cards
+  document.querySelectorAll('.gallery-card').forEach(card => {
+    observer.observe(card);
+  });
+});
+</script>
