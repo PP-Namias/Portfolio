@@ -198,7 +198,7 @@
 </div>
 
 <script>
-  // Gallery modal functionality
+  // Gallery modal functionality with enhanced analytics
   document.addEventListener('DOMContentLoaded', function() {
     const modal = document.getElementById('gallery-modal');
     const modalClose = document.getElementById('modal-close');
@@ -210,10 +210,33 @@
     let currentProject = null;
     let currentImageIndex = 0;
     let projectImages = [];
+    let modalOpenTime = 0;
+    let imageViewTimes = {};
     
-    // Open modal function
+    // Analytics helper function
+    function trackModalEvent(eventName, eventData = {}) {
+      if (typeof gtag !== 'undefined') {
+        gtag('event', eventName, {
+          event_category: 'gallery_modal',
+          ...eventData
+        });
+      }
+      console.log(`Modal Analytics: ${eventName}`, eventData);
+    }
+    
+    // Open modal function with enhanced analytics
     function openModal(projectData) {
+      modalOpenTime = Date.now();
       currentProject = projectData;
+      imageViewTimes = {};
+      
+      // Track modal open event
+      trackModalEvent('modal_opened', {
+        project_title: projectData.title,
+        project_category: projectData.category,
+        open_method: 'card_click',
+        timestamp: new Date().toISOString()
+      });
       
       // Populate modal content
       document.getElementById('modal-title').textContent = projectData.title;

@@ -29,6 +29,15 @@ export default defineConfig({
 	site: "https://fuwari.vercel.app/",
 	base: "/",
 	trailingSlash: "always",
+	// Modern image optimization configuration
+	image: {
+		service: {
+			entrypoint: "astro/assets/services/sharp",
+			config: {
+				limitInputPixels: 268402689, // ~16K x 16K max resolution
+			}
+		},
+	},
 	integrations: [
 		tailwind({
 			nesting: true,

@@ -4,7 +4,8 @@ description: "Exploring the intersection of modern architecture and minimalist d
 published: 2024-10-10
 updated: 2024-12-18
 featured: true
-category: "Architecture"
+category: "architecture"
+mainImage: "/images/gallery/architectural-minimalism/hero.jpg"
 tags: ["Architecture", "Minimalism", "Design", "Geometry", "Modern", "Details"]
 location: "Urban Centers & Design Districts"
 camera: "Canon EOS R5 + RF 16-35mm f/2.8L"

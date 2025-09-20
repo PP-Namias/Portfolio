@@ -4,6 +4,7 @@ import Markdown from "@components/misc/Markdown.astro";
 import EnhancedGalleryCard from "../components/EnhancedGalleryCard.astro";
 import GalleryModal from "../components/GalleryModal.astro";
 import Pagination from "../components/control/Pagination.astro";
+import SEOHead from "../components/SEOHead.astro";
 import { PAGE_SIZE } from "../constants/constants";
 import I18nKey from "../i18n/i18nKey";
 import { i18n } from "../i18n/translation";
@@ -61,9 +62,52 @@ const page = {
 };
 
 const len = page.data.length;
+
+// SEO metadata following Gallery Best Practices Guide
+const galleryMeta = {
+  title: "Kenneth Namias Portfolio Gallery - Professional Software Development Projects",
+  description: "Explore Kenneth Namias' visual portfolio gallery featuring enterprise HRIS systems, AI automation tools, and modern web applications. See real project screenshots and technical implementations.",
+  keywords: ["Kenneth Namias portfolio", "software development gallery", "HRIS screenshots", "React projects", "enterprise applications", "AI automation", "web development portfolio"],
+  ogImage: "/images/gallery/gallery-preview.jpg",
+  url: "https://kennethnamias.dev/gallery",
+  structured: {
+    "@context": "https://schema.org",
+    "@type": "ImageGallery",
+    "name": "Kenneth Namias Portfolio Gallery",
+    "description": "Professional software development project gallery showcasing enterprise systems, AI automation, and modern web applications",
+    "author": {
+      "@type": "Person",
+      "name": "Kenneth Namias",
+      "jobTitle": "Software Developer",
+      "url": "https://kennethnamias.dev"
+    },
+    "numberOfItems": len,
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": "https://kennethnamias.dev/gallery"
+    }
+  }
+};
 ---
 
 <MainGridLayout banner={galleryPost.data.banner} title={galleryPost.data.title}>
+    <!-- Enhanced SEO Head -->
+    <SEOHead 
+        slot="head"
+        title={galleryMeta.title}
+        description={galleryMeta.description}
+        image={galleryMeta.ogImage}
+        type="website"
+        author="Kenneth Namias"
+        tags={galleryMeta.keywords}
+        canonicalUrl={galleryMeta.url}
+    />
+    
+    <!-- Structured Data for Gallery -->
+    <script type="application/ld+json" slot="head">
+        {JSON.stringify(galleryMeta.structured)}
+    </script>
+    
     <div class="card-base">
         <Markdown class="mt-2">
             <Content />
@@ -141,25 +185,9 @@ const len = page.data.length;
         <!-- Gallery Grid with Enhanced Layout -->
         {len > 0 && (
             <div id="gallery-grid" class="gallery-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-8">
-                {page.data.map((gallery) => (
+                {galleryPosts.map((project) => (
                     <EnhancedGalleryCard
-                        image={gallery.image}
-                        title={gallery.title}
-                        description={gallery.description}
-                        category={gallery.category}
-                        techStack={gallery.techStack}
-                        liveDemo={gallery.liveDemo}
-                        sourceCode={gallery.sourceCode}
-                        detailedImages={gallery.detailedImages}
-                        features={gallery.features}
-                        challenges={gallery.challenges}
-                        solutions={gallery.solutions}
-                        results={gallery.results}
-                        projectDate={gallery.projectDate}
-                        client={gallery.client}
-                        teamSize={gallery.teamSize}
-                        duration={gallery.duration}
-                        featured={gallery.featured}
+                        project={project}
                     />
                 ))}
             </div>
@@ -342,61 +370,84 @@ const len = page.data.length;
 </style>
 
 <script>
-// Gallery Best Practices - Enhanced Functionality
+// Gallery Best Practices - Enhanced Functionality with Analytics
 document.addEventListener('DOMContentLoaded', function() {
   const galleryGrid = document.getElementById('gallery-grid');
-  const searchInput = document.getElementById('gallery-search');
+  const searchInput = document.getElementById('gallery-search') as HTMLInputElement;
   const filterButtons = document.querySelectorAll('.filter-btn');
   const noResults = document.getElementById('no-results');
   
   let currentFilter = 'all';
   let currentSearch = '';
+  let searchTimeout: ReturnType<typeof setTimeout>;
   
-  // Filter functionality
+  // Analytics helper function
+  function trackEvent(eventName: string, eventData: any = {}) {
+    // Google Analytics 4 tracking
+    if (typeof gtag !== 'undefined') {
+      gtag('event', eventName, {
+        event_category: 'gallery_engagement',
+        ...eventData
+      });
+    }
+    
+    // Additional analytics providers can be added here
+    console.log(`Analytics: ${eventName}`, eventData);
+  }
+  
+  // Track initial gallery view
+  trackEvent('gallery_page_view', {
+    total_projects: document.querySelectorAll('.gallery-card').length,
+    timestamp: new Date().toISOString()
+  });
+  
+  // Filter functionality with analytics
   filterButtons.forEach(button => {
     button.addEventListener('click', function() {
       // Update active button
       filterButtons.forEach(btn => btn.classList.remove('active'));
       this.classList.add('active');
       
-      currentFilter = this.dataset.filter;
-      filterGallery();
+      const previousFilter = currentFilter;
+      currentFilter = this.dataset.filter!;
       
-      // Analytics tracking
-      if (typeof gtag !== 'undefined') {
-        gtag('event', 'gallery_filter', {
-          'event_category': 'engagement',
-          'event_label': currentFilter,
-          'value': 1
-        });
-      }
+      // Track filter usage
+      trackEvent('gallery_filter_used', {
+        filter_from: previousFilter,
+        filter_to: currentFilter,
+        timestamp: new Date().toISOString()
+      });
+      
+      filterGallery();
     });
   });
   
-  // Search functionality with debouncing
-  let searchTimeout;
-  searchInput.addEventListener('input', function() {
+  // Search functionality with debouncing and analytics
+  searchInput?.addEventListener('input', function() {
     clearTimeout(searchTimeout);
     searchTimeout = setTimeout(() => {
+      const previousSearch = currentSearch;
       currentSearch = this.value.toLowerCase().trim();
-      filterGallery();
       
-      // Analytics tracking
-      if (typeof gtag !== 'undefined' && currentSearch) {
-        gtag('event', 'gallery_search', {
-          'event_category': 'engagement',
-          'event_label': currentSearch,
-          'value': 1
+      // Track search behavior
+      if (currentSearch && currentSearch !== previousSearch) {
+        trackEvent('gallery_search_performed', {
+          search_term: currentSearch,
+          search_length: currentSearch.length,
+          timestamp: new Date().toISOString()
         });
       }
+      
+      filterGallery();
     }, 300);
   });
   
   function filterGallery() {
-    const cards = galleryGrid.querySelectorAll('.gallery-card');
+    const cards = galleryGrid?.querySelectorAll('.gallery-card') as NodeListOf<HTMLElement>;
     let visibleCount = 0;
+    const startTime = performance.now();
     
-    cards.forEach(card => {
+    cards?.forEach(card => {
       const title = card.dataset.title?.toLowerCase() || '';
       const description = card.dataset.description?.toLowerCase() || '';
       const category = card.dataset.category?.toLowerCase() || '';
@@ -426,19 +477,35 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
     
+    // Track filter performance and results
+    const endTime = performance.now();
+    trackEvent('gallery_filter_completed', {
+      filter_applied: currentFilter,
+      search_term: currentSearch,
+      results_count: visibleCount,
+      filter_duration_ms: Math.round(endTime - startTime),
+      timestamp: new Date().toISOString()
+    });
+    
     // Show/hide no results message
-    if (visibleCount === 0) {
-      noResults.classList.remove('hidden');
-    } else {
-      noResults.classList.add('hidden');
+    if (noResults) {
+      if (visibleCount === 0) {
+        noResults.classList.remove('hidden');
+        trackEvent('gallery_no_results', {
+          filter: currentFilter,
+          search: currentSearch
+        });
+      } else {
+        noResults.classList.add('hidden');
+      }
     }
     
-    // Update URL with current filters (optional)
+    // Update URL with current filters
     updateURL();
   }
   
   function updateURL() {
-    const url = new URL(window.location);
+    const url = new URL(window.location.href);
     
     if (currentFilter !== 'all') {
       url.searchParams.set('category', currentFilter);
@@ -458,7 +525,7 @@ document.addEventListener('DOMContentLoaded', function() {
   
   // Initialize from URL parameters
   function initializeFromURL() {
-    const url = new URL(window.location);
+    const url = new URL(window.location.href);
     const categoryParam = url.searchParams.get('category');
     const searchParam = url.searchParams.get('search');
     
@@ -471,41 +538,110 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     }
     
-    if (searchParam) {
+    if (searchParam && searchInput) {
       currentSearch = searchParam;
       searchInput.value = searchParam;
     }
     
     if (categoryParam || searchParam) {
+      trackEvent('gallery_url_parameters_loaded', {
+        category: categoryParam,
+        search: searchParam
+      });
       filterGallery();
     }
   }
   
-  // Keyboard shortcuts
+  // Enhanced keyboard shortcuts with analytics
   document.addEventListener('keydown', function(e) {
     // Focus search on '/' key
-    if (e.key === '/' && !e.ctrlKey && !e.metaKey) {
+    if (e.key === '/' && !e.ctrlKey && !e.metaKey && searchInput) {
       e.preventDefault();
       searchInput.focus();
+      trackEvent('gallery_keyboard_shortcut', {
+        shortcut: 'search_focus',
+        key: '/'
+      });
     }
     
     // Clear search on 'Escape' key
-    if (e.key === 'Escape' && searchInput === document.activeElement) {
+    if (e.key === 'Escape' && searchInput === document.activeElement && searchInput) {
       searchInput.value = '';
       currentSearch = '';
       filterGallery();
       searchInput.blur();
+      trackEvent('gallery_keyboard_shortcut', {
+        shortcut: 'search_clear',
+        key: 'Escape'
+      });
     }
+  });
+  
+  // Track gallery card interactions
+  document.querySelectorAll('.gallery-card').forEach((card, index) => {
+    card.addEventListener('click', function() {
+      trackEvent('gallery_card_clicked', {
+        project_title: this.dataset.title,
+        project_category: this.dataset.category,
+        card_position: index + 1,
+        current_filter: currentFilter,
+        current_search: currentSearch,
+        timestamp: new Date().toISOString()
+      });
+    });
+    
+    // Track hover interactions for engagement
+    let hoverStartTime: number;
+    card.addEventListener('mouseenter', function() {
+      hoverStartTime = Date.now();
+    });
+    
+    card.addEventListener('mouseleave', function() {
+      if (hoverStartTime) {
+        const hoverDuration = Date.now() - hoverStartTime;
+        if (hoverDuration > 1000) { // Only track meaningful hovers
+          trackEvent('gallery_card_hover', {
+            project_title: this.dataset.title,
+            hover_duration_ms: hoverDuration,
+            card_position: index + 1
+          });
+        }
+      }
+    });
+  });
+  
+  // Track external link clicks
+  document.querySelectorAll('a[href^="http"]').forEach(link => {
+    link.addEventListener('click', function(e) {
+      const href = this.getAttribute('href');
+      const linkText = this.textContent?.trim();
+      
+      trackEvent('external_link_clicked', {
+        link_url: href,
+        link_text: linkText,
+        link_context: 'gallery_page',
+        timestamp: new Date().toISOString()
+      });
+    });
   });
   
   // Initialize
   initializeFromURL();
   
-  // Intersection Observer for performance
+  // Performance monitoring with Intersection Observer
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
         entry.target.classList.add('animate-fade-in');
+        
+        // Track which projects come into view
+        const projectTitle = (entry.target as HTMLElement).dataset.title;
+        if (projectTitle) {
+          trackEvent('gallery_card_viewed', {
+            project_title: projectTitle,
+            view_timestamp: new Date().toISOString()
+          });
+        }
       }
     });
   }, {
@@ -513,9 +649,35 @@ document.addEventListener('DOMContentLoaded', function() {
     rootMargin: '0px 0px -50px 0px'
   });
   
-  // Observe gallery cards
+  // Observe gallery cards for view tracking
   document.querySelectorAll('.gallery-card').forEach(card => {
     observer.observe(card);
+  });
+  
+  // Page visibility tracking
+  document.addEventListener('visibilitychange', function() {
+    if (document.hidden) {
+      trackEvent('gallery_page_hidden', {
+        time_on_page: Date.now() - window.performance.timing.navigationStart,
+        current_filter: currentFilter,
+        current_search: currentSearch
+      });
+    } else {
+      trackEvent('gallery_page_visible', {
+        timestamp: new Date().toISOString()
+      });
+    }
+  });
+  
+  // Track page unload
+  window.addEventListener('beforeunload', function() {
+    trackEvent('gallery_page_exit', {
+      time_on_page: Date.now() - window.performance.timing.navigationStart,
+      interactions_performed: {
+        filter_changes: currentFilter !== 'all',
+        search_performed: currentSearch.length > 0
+      }
+    });
   });
 });
 </script>
