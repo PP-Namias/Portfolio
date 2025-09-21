@@ -51,6 +51,7 @@ const galleryClasses = `
 `.trim();
 ---
 
+{/* Optimized Gallery Image */}
 <Image
   src={src}
   alt={alt}
@@ -60,6 +61,9 @@ const galleryClasses = `
   loading={loading}
   sizes={mainImageSizes}
   quality={quality}
+  data-gallery-image
+  data-project-title={projectTitle}
+  data-index={index}
 />
 
 <style>
