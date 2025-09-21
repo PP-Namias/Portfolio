@@ -9,7 +9,7 @@ technologies: ["n8n", "Twilio", "ElevenLabs", "ChatGPT", "Gemini", "CRM", "API I
 demoUrl: "https://automation-demo.example.com"
 codeUrl: "https://github.com/PP-Namias/ai-automation-platform"
 category: "AI & Automation"
-status: "active"
+tags: ["AI/ML", "Automation", "Enterprise"]
 ---
 
 # AI Automation Platform

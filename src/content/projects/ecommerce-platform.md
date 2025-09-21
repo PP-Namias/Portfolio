@@ -8,8 +8,8 @@ image: "/project-images/ecommerce-cover.jpg"
 technologies: ["React", "Node.js", "Express.js", "MongoDB", "Stripe", "Redux", "Material-UI", "JWT"]
 demoUrl: "https://ecommerce-demo.example.com"
 codeUrl: "https://github.com/PP-Namias/ecommerce-platform"
-category: "E-Commerce"
-status: "completed"
+tags: ["React", "Node.js", "E-Commerce", "Database", "Case-Study"]
+category: "Web Development"
 ---
 
 # E-Commerce Platform

@@ -4,8 +4,8 @@ published: 2024-08-15
 updated: 2024-12-01
 description: "A comprehensive e-commerce solution featuring AI-powered recommendations, real-time analytics, payment processing, and modern microservices architecture. Built with Next.js, TypeScript, and cloud-native technologies."
 image: "./platform-hero.jpg"
-tags: ["E-Commerce", "AI", "Next.js", "TypeScript", "Microservices", "Cloud", "React"]
-category: "Full-Stack Development"
+tags: ["Full-Stack", "E-Commerce", "React", "Node.js", "Case-Study"]
+category: "Web Development"
 status: "Featured"
 technologies: ["Next.js", "TypeScript", "Node.js", "PostgreSQL", "Redis", "Docker", "AWS", "Stripe", "OpenAI", "TensorFlow"]
 demoUrl: "https://ecommerce-platform-demo.vercel.app"

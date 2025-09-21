@@ -3,8 +3,8 @@ title: "GitGoing - Computer Science GitHub Webinar: Transforming Collaboration T
 published: 2025-03-15
 description: "Discover the journey of teaching over 1,000+ computer science students the importance of Git and GitHub collaboration. From personal learning struggles to becoming a university speaker, this is the story of how version control knowledge transformed an entire academic community."
 image: "./cover.jpg"
-tags: ["Git", "GitHub", "Version Control", "Education", "Computer Science", "University Speaking", "Developer Collaboration", "Software Development"]
-category: "Education & Speaking"
+tags: ["DevOps", "Education", "Tutorial"]
+category: "Career"
 draft: false
 ---
 

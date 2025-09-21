@@ -3,8 +3,8 @@ title: "Setting up Development Infrastructure and Environment: From CS50 Curiosi
 published: 2025-06-12
 description: "Explore the journey from Harvard CS50 curiosity to mastering modern development infrastructure. Learn about GitHub repository setup, deployment strategies across Azure, Railway, and Vercel, automated testing pipelines, and advanced N8N automation workflows that power professional software development."
 image: "./cover.jpg"
-tags: ["DevOps", "Development Infrastructure", "CI/CD", "GitHub", "Azure", "Railway", "Vercel", "Automated Testing", "N8N Automation", "Environment Setup"]
-category: "Development Operations"
+tags: ["DevOps", "Tutorial", "Cloud", "Best-Practices"]
+category: "Technical"
 draft: false
 ---
 

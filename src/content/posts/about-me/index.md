@@ -3,7 +3,7 @@ title: "About Kenneth Namias: Full Stack Developer & AI Automation Specialist | 
 published: 2024-09-19
 description: "Kenneth Namias is a passionate Full Stack Developer and AI Automation Specialist at UCC Congressional Campus. Discover his journey in modern web development, enterprise solutions, and innovative automation technologies."
 image: "./cover.jpg"
-tags: ["About Kenneth Namias", "Full Stack Developer", "AI Automation", "Software Engineer", "Career Journey", "UCC Congressional Campus", "Personal"]
+tags: ["Full-Stack", "Education"]
 category: "Personal"
 draft: false
 keywords: ["Kenneth Namias", "Full Stack Developer Philippines", "AI Automation Specialist", "Software Engineer UCC", "React TypeScript developer", "Enterprise solutions"]

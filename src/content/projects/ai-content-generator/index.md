@@ -4,8 +4,8 @@ published: 2024-10-01
 updated: 2024-12-15
 description: "Complete development journey of an AI content generation platform featuring GPT integration, custom templates, batch processing, and analytics. A comprehensive showcase of modern AI application development."
 image: "./hero-showcase.jpg"
-tags: ["AI", "GPT", "Content Generation", "SaaS", "React", "Node.js", "OpenAI"]
-category: "AI Development"
+tags: ["AI/ML", "Automation", "Productivity"]
+category: "AI & Automation"
 status: "Production"
 technologies: ["OpenAI GPT-4", "React", "Node.js", "MongoDB", "Stripe", "AWS", "Docker", "TypeScript"]
 demoUrl: "https://ai-content-gen-demo.com"

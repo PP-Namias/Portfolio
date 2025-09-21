@@ -3,7 +3,7 @@ title: "Automation Mastery: Revolutionizing Educational Technology Through Intel
 published: 2024-09-19
 description: "Deep dive into my automation expertise - how I design, implement, and optimize automated solutions that transform educational processes and enhance user experiences."
 image: "./cover.jpg"
-tags: ["Automation", "Process Optimization", "Educational Technology", "Workflow Automation", "Innovation"]
+tags: ["Automation", "Tutorial", "Best-Practices", "DevOps"]
 category: "Technical"
 draft: false
 ---

@@ -4,7 +4,7 @@ published: 2024-09-01
 updated: 2024-12-01
 description: "A comprehensive tutorial documenting the complete development process of a modern React dashboard with real-time data, advanced visualizations, and responsive design. Follow along with detailed screenshots and code examples."
 image: "./dashboard-hero.jpg"
-tags: ["React", "Dashboard", "Tutorial", "Frontend", "TypeScript", "Charts", "Real-time"]
+tags: ["React", "TypeScript", "Business-Intelligence"]
 category: "Web Development"
 status: "Tutorial"
 technologies: ["React 18", "TypeScript", "Tailwind CSS", "Chart.js", "Socket.io", "Vite", "React Query", "Zustand"]

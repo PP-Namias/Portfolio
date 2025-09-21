@@ -3,8 +3,8 @@ title: "Lead Software Engineer OJT at Aeternitas Chapels & Columbarium: HRIS Dev
 published: 2025-06-15T00:00:00.000Z
 description: "Kenneth Namias led a 7-member development team as Lead Software Engineer during OJT internship at Aeternitas Chapels & Columbarium. Built comprehensive HRIS system using React-TS, Electron, Express, PostgreSQL with full client management and deployment."
 image: "./cover.jpg"
-tags: ["OJT Internship", "Lead Software Engineer", "HRIS Development", "React TypeScript", "Electron", "Express.js", "PostgreSQL", "Team Leadership", "Client Management", "Kenneth Namias"]
-category: "Professional Experience"
+tags: ["Full-Stack", "Case-Study", "Enterprise", "Education"]
+category: "Career"
 draft: false
 keywords: ["Kenneth Namias OJT", "Lead Software Engineer internship", "HRIS development React", "Team leadership software", "Aeternitas Chapels Columbarium", "Enterprise software development"]
 readingTime: "12 min read"

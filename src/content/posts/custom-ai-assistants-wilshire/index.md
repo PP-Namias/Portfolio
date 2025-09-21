@@ -3,8 +3,8 @@ title: "Custom AI Assistants for Wilshire Financial Network"
 published: 2025-07-18
 description: "Discover a comprehensive suite of custom AI assistants built for Wilshire Financial Network using OpenAI's GPT technology. From automated reporting to marketing strategies, these purpose-built tools streamline workflows and boost productivity across finance, marketing, and consulting teams."
 image: "./cover.jpg"
-tags: ["AI Assistants", "GPT Technology", "Business Automation", "Productivity Tools", "OpenAI", "Workflow Optimization", "Custom AI Solutions"]
-category: "AI Projects"
+tags: ["AI/ML", "Case-Study", "Enterprise", "Automation"]
+category: "Projects"
 draft: false
 ---
 

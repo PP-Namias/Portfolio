@@ -4,8 +4,8 @@ published: 2024-11-15
 updated: 2024-11-29
 description: "A comprehensive showcase of modern web design trends, featuring responsive layouts, interactive components, and stunning visual presentations across multiple projects."
 image: "./hero-banner.jpg"
-tags: ["Web Design", "UI/UX", "Portfolio", "Frontend", "Visual Design"]
-category: "Design & Development"
+tags: ["React", "TypeScript", "Case-Study"]
+category: "Design & Creative"
 status: "Featured"
 technologies: ["HTML5", "CSS3", "JavaScript", "React", "Tailwind CSS", "Framer Motion", "GSAP"]
 demoUrl: "https://webdesign-gallery-demo.com"

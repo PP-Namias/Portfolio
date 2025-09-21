@@ -3,8 +3,8 @@ title: "Meet John Kenneth Ryan Namias: Full Stack x Automation Developer"
 published: 2025-09-19
 description: "Discover the journey, expertise, and passion of John Kenneth Ryan Namias - a dedicated Full Stack x Automation Developer transforming technology at UCC Congressional Campus."
 image: "./cover.jpg"
-tags: ["About Me", "Full Stack Developer", "Automation Engineer", "UCC Congressional Campus", "Professional Journey", "Technology Innovation"]
-category: "About Me"
+tags: ["Full-Stack", "Education"]
+category: "Personal"
 draft: false
 ---
 

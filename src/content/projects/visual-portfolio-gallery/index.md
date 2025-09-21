@@ -4,8 +4,8 @@ published: 2024-12-01
 updated: 2024-12-18
 description: "A comprehensive visual portfolio gallery featuring Pinterest-style masonry layouts, diverse aspect ratios, and interactive lightbox functionality. Showcasing the ultimate image gallery experience with varied proportions and seamless user interactions."
 image: "./hero-gallery.jpg"
-tags: ["Gallery", "Visual", "Portfolio", "Pinterest", "Masonry", "Lightbox", "Photography", "Design"]
-category: "Visual Design"
+tags: ["TypeScript", "Open-Source"]
+category: "Design & Creative"
 status: "Featured"
 technologies: ["CSS Grid", "PhotoSwipe", "Responsive Design", "JavaScript", "Lightbox", "Image Optimization"]
 demoUrl: "https://visual-gallery-demo.com"

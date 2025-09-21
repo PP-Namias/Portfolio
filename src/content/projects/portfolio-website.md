@@ -10,7 +10,7 @@ demoUrl: "https://pp-namias.vercel.app"
 codeUrl: "https://github.com/PP-Namias/Portfolio"
 category: "Web Development"
 status: "active"
-tags: ["Astro", "TypeScript", "Portfolio", "Web Design", "Responsive", "Dark Mode"]
+tags: ["TypeScript", "Open-Source", "Best-Practices"]
 ---
 
 # Portfolio Website & Design System

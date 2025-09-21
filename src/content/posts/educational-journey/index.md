@@ -3,8 +3,8 @@ title: "My Educational Journey: BS in Computer Science at UCC Congressional Camp
 published: 2024-09-19
 description: "Deep dive into my academic journey pursuing Computer Science at UCC Congressional Campus - the foundation that shaped my career as a Full Stack x Automation Developer."
 image: "./cover.jpg"
-tags: ["Education", "Computer Science", "UCC Congressional Campus", "Academic Journey", "Learning"]
-category: "Personal"
+tags: ["Education", "Full-Stack"]
+category: "Career"
 draft: false
 ---
 

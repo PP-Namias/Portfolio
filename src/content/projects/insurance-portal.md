@@ -8,8 +8,8 @@ image: "/project-images/insurance-portal-cover.jpg"
 technologies: ["React", "Node.js", "Express.js", "PostgreSQL", "Redis", "TypeScript", "Material-UI", "PDF Generation"]
 demoUrl: "https://insurance-portal-demo.vercel.app"
 codeUrl: "https://github.com/PP-Namias/insurance-portal"
-category: "Enterprise Software"
-status: "completed"
+tags: ["Enterprise", "Full-Stack", "FinTech"]
+category: "Enterprise Solutions"
 ---
 
 # Full-Stack Insurance Portal
