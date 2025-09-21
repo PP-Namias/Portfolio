@@ -1,0 +1,27 @@
+---
+import { getSortedPosts } from "../utils/content-utils";
+
+const allBlogPosts = await getSortedPosts();
+console.log("Total posts found:", allBlogPosts.length);
+console.log("Posts:", allBlogPosts.map(p => ({ title: p.data.title, draft: p.data.draft, published: p.data.published })));
+---
+
+<html>
+<head>
+    <title>Debug Posts</title>
+</head>
+<body>
+    <h1>Debug Posts Page</h1>
+    <p>Total posts: {allBlogPosts.length}</p>
+    
+    <ul>
+        {allBlogPosts.map(post => (
+            <li>
+                <strong>{post.data.title}</strong> 
+                - Draft: {post.data.draft} 
+                - Published: {post.data.published.toISOString()}
+            </li>
+        ))}
+    </ul>
+</body>
+</html>
