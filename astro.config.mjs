@@ -26,7 +26,7 @@ import { remarkReadingTime } from "./src/plugins/remark-reading-time.mjs";
 
 // https://astro.build/config
 export default defineConfig({
-	site: "http://namias.tech",
+	site: "https://namias.tech/",
 	base: "/",
 	trailingSlash: "always",
 	// Modern image optimization configuration
