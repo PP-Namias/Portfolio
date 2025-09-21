@@ -1,45 +1,45 @@
 ---
 // Enhanced Gallery Card Component with Modern Image Optimization
-import type { CollectionEntry } from 'astro:content';
-import OptimizedGalleryImage from './OptimizedGalleryImage.astro';
+import type { CollectionEntry } from "astro:content";
+import OptimizedGalleryImage from "./OptimizedGalleryImage.astro";
 
 export interface Props {
-  project: CollectionEntry<'gallery'>;
-  class?: string;
+	project: CollectionEntry<"gallery">;
+	class?: string;
 }
 
-const { project, class: className = '' } = Astro.props;
+const { project, class: className = "" } = Astro.props;
 const { data } = project;
 
 // Early return if data is undefined
 if (!data) {
-  return;
+	return;
 }
 
 // Extract data for easier access
 const {
-  title,
-  description,
-  category,
-  techStack = [],
-  mainImage,
-  liveDemo,
-  sourceCode,
-  additionalImages: detailedImages = [],
-  features = [],
-  challenges = [],
-  solutions = [],
-  results = [],
-  projectDate,
-  client,
-  teamSize,
-  duration,
-  featured = false
+	title,
+	description,
+	category,
+	techStack = [],
+	mainImage,
+	liveDemo,
+	sourceCode,
+	additionalImages: detailedImages = [],
+	features = [],
+	challenges = [],
+	solutions = [],
+	results = [],
+	projectDate,
+	client,
+	teamSize,
+	duration,
+	featured = false,
 } = data;
 
 // Generate tech stack for data attributes
 const techStackString = JSON.stringify(techStack);
-const galleryId = title.replace(/\s+/g, '-').toLowerCase();
+const galleryId = title.replace(/\s+/g, "-").toLowerCase();
 ---
 
 <div 

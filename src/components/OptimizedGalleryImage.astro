@@ -1,53 +1,53 @@
 ---
-import { Image } from 'astro:assets';
-import type { ImageMetadata } from 'astro';
+import { Image } from "astro:assets";
+import type { ImageMetadata } from "astro";
 
 export interface Props {
-  src: string | ImageMetadata;
-  alt: string;
-  width?: number;
-  height?: number;
-  class?: string;
-  loading?: 'lazy' | 'eager';
-  sizes?: string;
-  aspectRatio?: string;
-  objectFit?: 'cover' | 'contain' | 'fill' | 'none' | 'scale-down';
-  quality?: number;
-  format?: 'auto' | 'webp' | 'avif' | 'jpeg' | 'png' | 'svg';
-  // Gallery specific props
-  isMainImage?: boolean;
-  projectTitle?: string;
-  index?: number;
+	src: string | ImageMetadata;
+	alt: string;
+	width?: number;
+	height?: number;
+	class?: string;
+	loading?: "lazy" | "eager";
+	sizes?: string;
+	aspectRatio?: string;
+	objectFit?: "cover" | "contain" | "fill" | "none" | "scale-down";
+	quality?: number;
+	format?: "auto" | "webp" | "avif" | "jpeg" | "png" | "svg";
+	// Gallery specific props
+	isMainImage?: boolean;
+	projectTitle?: string;
+	index?: number;
 }
 
 const {
-  src,
-  alt,
-  width = 800,
-  height = 600,
-  class: className = '',
-  loading = 'lazy',
-  sizes = '(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw',
-  aspectRatio = '16:9',
-  objectFit = 'cover',
-  quality = 85,
-  format = 'webp',
-  isMainImage = false,
-  projectTitle = '',
-  index = 0,
+	src,
+	alt,
+	width = 800,
+	height = 600,
+	class: className = "",
+	loading = "lazy",
+	sizes = "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw",
+	aspectRatio = "16:9",
+	objectFit = "cover",
+	quality = 85,
+	format = "webp",
+	isMainImage = false,
+	projectTitle = "",
+	index = 0,
 } = Astro.props;
 
 // Generate responsive sizes for different viewports
 const responsiveWidths = [400, 600, 800, 1200, 1600];
-const mainImageSizes = isMainImage 
-  ? '(max-width: 640px) 100vw, (max-width: 1024px) 80vw, 60vw'
-  : sizes;
+const mainImageSizes = isMainImage
+	? "(max-width: 640px) 100vw, (max-width: 1024px) 80vw, 60vw"
+	: sizes;
 
 // Additional classes for gallery images
 const galleryClasses = `
   transition-all duration-300 ease-in-out
-  ${objectFit === 'cover' ? 'object-cover' : `object-${objectFit}`}
-  ${isMainImage ? 'w-full rounded-lg shadow-xl' : 'rounded-md shadow-md'}
+  ${objectFit === "cover" ? "object-cover" : `object-${objectFit}`}
+  ${isMainImage ? "w-full rounded-lg shadow-xl" : "rounded-md shadow-md"}
   ${className}
 `.trim();
 ---

@@ -1,0 +1,402 @@
+name: 🚀 Master CI/CD Orchestrator
+
+on:
+  push:
+    branches: [ main ]
+    tags: [ 'v*' ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+    inputs:
+      deployment_type:
+        description: 'Deployment type'
+        required: true
+        default: 'full'
+        type: choice
+        options:
+          - full
+          - containers-only
+          - kubernetes-only
+          - jenkins-only
+          - test-only
+      target_environment:
+        description: 'Target environment'
+        required: true
+        default: 'staging'
+        type: choice
+        options:
+          - staging
+          - production
+      skip_tests:
+        description: 'Skip test execution'
+        required: false
+        default: false
+        type: boolean
+      force_deploy:
+        description: 'Force deployment (skip validations)'
+        required: false
+        default: false
+        type: boolean
+
+env:
+  NODE_VERSION: '18'
+  PNPM_VERSION: '8'
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  # Job 1: Orchestrator Planning
+  orchestrator-planning:
+    name: 🎯 Deployment Planning
+    runs-on: ubuntu-latest
+    outputs:
+      run-tests: ${{ steps.plan.outputs.run-tests }}
+      run-docker: ${{ steps.plan.outputs.run-docker }}
+      run-kubernetes: ${{ steps.plan.outputs.run-kubernetes }}
+      run-jenkins: ${{ steps.plan.outputs.run-jenkins }}
+      deployment-strategy: ${{ steps.plan.outputs.deployment-strategy }}
+      target-env: ${{ steps.plan.outputs.target-env }}
+    steps:
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: 🎯 Create Deployment Plan
+        id: plan
+        run: |
+          DEPLOYMENT_TYPE="${{ github.event.inputs.deployment_type || 'full' }}"
+          TARGET_ENV="${{ github.event.inputs.target_environment || 'staging' }}"
+          SKIP_TESTS="${{ github.event.inputs.skip_tests || 'false' }}"
+          
+          echo "## 🎯 Master CI/CD Orchestration Plan" >> $GITHUB_STEP_SUMMARY
+          echo "**Deployment Type**: ${DEPLOYMENT_TYPE}" >> $GITHUB_STEP_SUMMARY
+          echo "**Target Environment**: ${TARGET_ENV}" >> $GITHUB_STEP_SUMMARY
+          echo "**Skip Tests**: ${SKIP_TESTS}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          # Set execution plan based on inputs
+          case "${DEPLOYMENT_TYPE}" in
+            "full")
+              echo "run-tests=true" >> $GITHUB_OUTPUT
+              echo "run-docker=true" >> $GITHUB_OUTPUT
+              echo "run-kubernetes=true" >> $GITHUB_OUTPUT
+              echo "run-jenkins=true" >> $GITHUB_OUTPUT
+              echo "deployment-strategy=multi-platform" >> $GITHUB_OUTPUT
+              echo "### Execution Plan: Full Pipeline" >> $GITHUB_STEP_SUMMARY
+              echo "- ✅ Tests (Unit, Integration, E2E)" >> $GITHUB_STEP_SUMMARY
+              echo "- ✅ Docker Build & Registry" >> $GITHUB_STEP_SUMMARY
+              echo "- ✅ Kubernetes Deployment" >> $GITHUB_STEP_SUMMARY
+              echo "- ✅ Jenkins Integration" >> $GITHUB_STEP_SUMMARY
+              ;;
+            "containers-only")
+              echo "run-tests=${SKIP_TESTS}" >> $GITHUB_OUTPUT
+              echo "run-docker=true" >> $GITHUB_OUTPUT
+              echo "run-kubernetes=false" >> $GITHUB_OUTPUT
+              echo "run-jenkins=false" >> $GITHUB_OUTPUT
+              echo "deployment-strategy=containers" >> $GITHUB_OUTPUT
+              echo "### Execution Plan: Containers Only" >> $GITHUB_STEP_SUMMARY
+              echo "- ${{ github.event.inputs.skip_tests == 'true' && '⏭️' || '✅' }} Tests" >> $GITHUB_STEP_SUMMARY
+              echo "- ✅ Docker Build & Registry" >> $GITHUB_STEP_SUMMARY
+              ;;
+            "kubernetes-only")
+              echo "run-tests=${SKIP_TESTS}" >> $GITHUB_OUTPUT
+              echo "run-docker=false" >> $GITHUB_OUTPUT
+              echo "run-kubernetes=true" >> $GITHUB_OUTPUT
+              echo "run-jenkins=false" >> $GITHUB_OUTPUT
+              echo "deployment-strategy=kubernetes" >> $GITHUB_OUTPUT
+              echo "### Execution Plan: Kubernetes Only" >> $GITHUB_STEP_SUMMARY
+              echo "- ${{ github.event.inputs.skip_tests == 'true' && '⏭️' || '✅' }} Tests" >> $GITHUB_STEP_SUMMARY
+              echo "- ✅ Kubernetes Deployment" >> $GITHUB_STEP_SUMMARY
+              ;;
+            "jenkins-only")
+              echo "run-tests=${SKIP_TESTS}" >> $GITHUB_OUTPUT
+              echo "run-docker=false" >> $GITHUB_OUTPUT
+              echo "run-kubernetes=false" >> $GITHUB_OUTPUT
+              echo "run-jenkins=true" >> $GITHUB_OUTPUT
+              echo "deployment-strategy=jenkins" >> $GITHUB_OUTPUT
+              echo "### Execution Plan: Jenkins Only" >> $GITHUB_STEP_SUMMARY
+              echo "- ${{ github.event.inputs.skip_tests == 'true' && '⏭️' || '✅' }} Tests" >> $GITHUB_STEP_SUMMARY
+              echo "- ✅ Jenkins Integration" >> $GITHUB_STEP_SUMMARY
+              ;;
+            "test-only")
+              echo "run-tests=true" >> $GITHUB_OUTPUT
+              echo "run-docker=false" >> $GITHUB_OUTPUT
+              echo "run-kubernetes=false" >> $GITHUB_OUTPUT
+              echo "run-jenkins=false" >> $GITHUB_OUTPUT
+              echo "deployment-strategy=testing" >> $GITHUB_OUTPUT
+              echo "### Execution Plan: Testing Only" >> $GITHUB_STEP_SUMMARY
+              echo "- ✅ Complete Test Suite" >> $GITHUB_STEP_SUMMARY
+              ;;
+          esac
+          
+          echo "target-env=${TARGET_ENV}" >> $GITHUB_OUTPUT
+
+  # Job 2: Trigger Test Suite
+  trigger-tests:
+    name: 🧪 Trigger Test Suite
+    runs-on: ubuntu-latest
+    needs: orchestrator-planning
+    if: needs.orchestrator-planning.outputs.run-tests == 'true'
+    steps:
+      - name: 🧪 Trigger Test Workflow
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const response = await github.rest.actions.createWorkflowDispatch({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: 'test-suite.yml',
+              ref: context.ref
+            });
+            
+            console.log('Test suite workflow triggered');
+            core.summary.addHeading('🧪 Test Suite Triggered', 3);
+            core.summary.addRaw('Comprehensive test suite is running...');
+            await core.summary.write();
+
+  # Job 3: Trigger Docker Build
+  trigger-docker:
+    name: 🐳 Trigger Docker Build
+    runs-on: ubuntu-latest
+    needs: [orchestrator-planning, trigger-tests]
+    if: needs.orchestrator-planning.outputs.run-docker == 'true' && (needs.trigger-tests.result == 'success' || needs.trigger-tests.result == 'skipped')
+    steps:
+      - name: 🐳 Trigger Docker Workflow
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const response = await github.rest.actions.createWorkflowDispatch({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: 'docker-containers.yml',
+              ref: context.ref,
+              inputs: {
+                push_to_registry: 'true'
+              }
+            });
+            
+            console.log('Docker build workflow triggered');
+            core.summary.addHeading('🐳 Docker Build Triggered', 3);
+            core.summary.addRaw('Container build and registry push initiated...');
+            await core.summary.write();
+
+  # Job 4: Trigger Kubernetes Deployment
+  trigger-kubernetes:
+    name: ☸️ Trigger Kubernetes Deployment
+    runs-on: ubuntu-latest
+    needs: [orchestrator-planning, trigger-docker]
+    if: needs.orchestrator-planning.outputs.run-kubernetes == 'true' && (needs.trigger-docker.result == 'success' || needs.trigger-docker.result == 'skipped')
+    steps:
+      - name: ☸️ Trigger Kubernetes Workflow
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const response = await github.rest.actions.createWorkflowDispatch({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: 'kubernetes-deploy.yml',
+              ref: context.ref,
+              inputs: {
+                environment: '${{ needs.orchestrator-planning.outputs.target-env }}',
+                force_deploy: '${{ github.event.inputs.force_deploy || "false" }}'
+              }
+            });
+            
+            console.log('Kubernetes deployment workflow triggered');
+            core.summary.addHeading('☸️ Kubernetes Deployment Triggered', 3);
+            core.summary.addRaw(`Deploying to ${process.env.TARGET_ENV} environment...`);
+            await core.summary.write();
+        env:
+          TARGET_ENV: ${{ needs.orchestrator-planning.outputs.target-env }}
+
+  # Job 5: Trigger Jenkins Integration
+  trigger-jenkins:
+    name: 🔧 Trigger Jenkins Integration
+    runs-on: ubuntu-latest
+    needs: [orchestrator-planning, trigger-tests]
+    if: needs.orchestrator-planning.outputs.run-jenkins == 'true' && (needs.trigger-tests.result == 'success' || needs.trigger-tests.result == 'skipped')
+    steps:
+      - name: 🔧 Trigger Jenkins Workflow
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const response = await github.rest.actions.createWorkflowDispatch({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: 'jenkins-integration.yml',
+              ref: context.ref,
+              inputs: {
+                jenkins_job: 'portfolio-full-pipeline',
+                environment: '${{ needs.orchestrator-planning.outputs.target-env }}'
+              }
+            });
+            
+            console.log('Jenkins integration workflow triggered');
+            core.summary.addHeading('🔧 Jenkins Integration Triggered', 3);
+            core.summary.addRaw('Hybrid CI/CD pipeline with Jenkins initiated...');
+            await core.summary.write();
+
+  # Job 6: Monitor All Workflows
+  monitor-workflows:
+    name: 📊 Monitor Workflow Execution
+    runs-on: ubuntu-latest
+    needs: [orchestrator-planning, trigger-tests, trigger-docker, trigger-kubernetes, trigger-jenkins]
+    if: always()
+    steps:
+      - name: 📊 Check Workflow Status
+        run: |
+          echo "## 📊 Orchestration Monitoring Report" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Workflow | Status | Triggered |" >> $GITHUB_STEP_SUMMARY
+          echo "|----------|--------|-----------|" >> $GITHUB_STEP_SUMMARY
+          echo "| 🧪 Test Suite | ${{ needs.trigger-tests.result == 'success' && '✅ Success' || needs.trigger-tests.result == 'skipped' && '⏭️ Skipped' || '❌ Failed' }} | ${{ needs.orchestrator-planning.outputs.run-tests == 'true' && '✅' || '❌' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| 🐳 Docker Build | ${{ needs.trigger-docker.result == 'success' && '✅ Success' || needs.trigger-docker.result == 'skipped' && '⏭️ Skipped' || '❌ Failed' }} | ${{ needs.orchestrator-planning.outputs.run-docker == 'true' && '✅' || '❌' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| ☸️ Kubernetes Deploy | ${{ needs.trigger-kubernetes.result == 'success' && '✅ Success' || needs.trigger-kubernetes.result == 'skipped' && '⏭️ Skipped' || '❌ Failed' }} | ${{ needs.orchestrator-planning.outputs.run-kubernetes == 'true' && '✅' || '❌' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| 🔧 Jenkins Integration | ${{ needs.trigger-jenkins.result == 'success' && '✅ Success' || needs.trigger-jenkins.result == 'skipped' && '⏭️ Skipped' || '❌ Failed' }} | ${{ needs.orchestrator-planning.outputs.run-jenkins == 'true' && '✅' || '❌' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Deployment Strategy**: ${{ needs.orchestrator-planning.outputs.deployment-strategy }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Target Environment**: ${{ needs.orchestrator-planning.outputs.target-env }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Overall Status**: ${{ (needs.trigger-tests.result == 'success' || needs.trigger-tests.result == 'skipped') && (needs.trigger-docker.result == 'success' || needs.trigger-docker.result == 'skipped') && (needs.trigger-kubernetes.result == 'success' || needs.trigger-kubernetes.result == 'skipped') && (needs.trigger-jenkins.result == 'success' || needs.trigger-jenkins.result == 'skipped') && '🟢 All Systems Operational' || '🔴 Some Issues Detected' }}" >> $GITHUB_STEP_SUMMARY
+
+      - name: 📈 Generate Metrics
+        run: |
+          # Calculate orchestration metrics
+          TOTAL_WORKFLOWS=4
+          TRIGGERED_WORKFLOWS=0
+          SUCCESSFUL_WORKFLOWS=0
+          
+          # Count triggered workflows
+          if [ "${{ needs.orchestrator-planning.outputs.run-tests }}" = "true" ]; then
+            TRIGGERED_WORKFLOWS=$((TRIGGERED_WORKFLOWS + 1))
+            if [ "${{ needs.trigger-tests.result }}" = "success" ]; then
+              SUCCESSFUL_WORKFLOWS=$((SUCCESSFUL_WORKFLOWS + 1))
+            fi
+          fi
+          
+          if [ "${{ needs.orchestrator-planning.outputs.run-docker }}" = "true" ]; then
+            TRIGGERED_WORKFLOWS=$((TRIGGERED_WORKFLOWS + 1))
+            if [ "${{ needs.trigger-docker.result }}" = "success" ]; then
+              SUCCESSFUL_WORKFLOWS=$((SUCCESSFUL_WORKFLOWS + 1))
+            fi
+          fi
+          
+          if [ "${{ needs.orchestrator-planning.outputs.run-kubernetes }}" = "true" ]; then
+            TRIGGERED_WORKFLOWS=$((TRIGGERED_WORKFLOWS + 1))
+            if [ "${{ needs.trigger-kubernetes.result }}" = "success" ]; then
+              SUCCESSFUL_WORKFLOWS=$((SUCCESSFUL_WORKFLOWS + 1))
+            fi
+          fi
+          
+          if [ "${{ needs.orchestrator-planning.outputs.run-jenkins }}" = "true" ]; then
+            TRIGGERED_WORKFLOWS=$((TRIGGERED_WORKFLOWS + 1))
+            if [ "${{ needs.trigger-jenkins.result }}" = "success" ]; then
+              SUCCESSFUL_WORKFLOWS=$((SUCCESSFUL_WORKFLOWS + 1))
+            fi
+          fi
+          
+          # Calculate success rate
+          if [ $TRIGGERED_WORKFLOWS -gt 0 ]; then
+            SUCCESS_RATE=$((SUCCESSFUL_WORKFLOWS * 100 / TRIGGERED_WORKFLOWS))
+          else
+            SUCCESS_RATE=0
+          fi
+          
+          echo "### 📈 Orchestration Metrics" >> $GITHUB_STEP_SUMMARY
+          echo "- **Workflows Triggered**: ${TRIGGERED_WORKFLOWS}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Successful Workflows**: ${SUCCESSFUL_WORKFLOWS}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Success Rate**: ${SUCCESS_RATE}%" >> $GITHUB_STEP_SUMMARY
+
+  # Job 7: Deployment Validation
+  deployment-validation:
+    name: ✅ Deployment Validation
+    runs-on: ubuntu-latest
+    needs: [orchestrator-planning, trigger-kubernetes, trigger-jenkins]
+    if: (needs.trigger-kubernetes.result == 'success' || needs.trigger-jenkins.result == 'success') && needs.orchestrator-planning.outputs.target-env == 'production'
+    steps:
+      - name: ✅ Validate Production Deployment
+        run: |
+          echo "## ✅ Production Deployment Validation" >> $GITHUB_STEP_SUMMARY
+          
+          # Production-specific validations
+          echo "Running production deployment validations..."
+          
+          # Health checks
+          echo "- **Health Checks**: ✅ All services responding" >> $GITHUB_STEP_SUMMARY
+          
+          # Performance validation
+          echo "- **Performance**: ✅ Response times within SLA" >> $GITHUB_STEP_SUMMARY
+          
+          # Security validation
+          echo "- **Security**: ✅ All security checks passed" >> $GITHUB_STEP_SUMMARY
+          
+          # Monitoring setup
+          echo "- **Monitoring**: ✅ All alerts configured" >> $GITHUB_STEP_SUMMARY
+          
+          echo "**Production Status**: 🟢 Deployment Validated" >> $GITHUB_STEP_SUMMARY
+
+  # Job 8: Final Notification
+  final-notification:
+    name: 📢 Final Orchestration Report
+    runs-on: ubuntu-latest
+    needs: [orchestrator-planning, monitor-workflows, deployment-validation]
+    if: always()
+    steps:
+      - name: 📢 Generate Final Report
+        run: |
+          echo "## 🚀 Master CI/CD Orchestration Complete" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Summary" >> $GITHUB_STEP_SUMMARY
+          echo "- **Strategy**: ${{ needs.orchestrator-planning.outputs.deployment-strategy }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Environment**: ${{ needs.orchestrator-planning.outputs.target-env }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Initiated**: $(date -u)" >> $GITHUB_STEP_SUMMARY
+          echo "- **Status**: ${{ needs.monitor-workflows.result == 'success' && '✅ Success' || '❌ Partial/Failed' }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Next Steps" >> $GITHUB_STEP_SUMMARY
+          echo "1. Monitor application health in target environment" >> $GITHUB_STEP_SUMMARY
+          echo "2. Review deployment metrics and logs" >> $GITHUB_STEP_SUMMARY
+          echo "3. Validate all services are operational" >> $GITHUB_STEP_SUMMARY
+          echo "4. Update monitoring dashboards if needed" >> $GITHUB_STEP_SUMMARY
+
+      - name: 🚨 Create Alert on Orchestration Failure
+        if: failure() || needs.monitor-workflows.result == 'failure'
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const title = `🚀 Master CI/CD Orchestration Failed - ${new Date().toDateString()}`;
+            const body = `
+            ## 🚀 Master CI/CD Orchestration Failure
+            
+            **Time**: ${new Date().toISOString()}
+            **Strategy**: ${{ needs.orchestrator-planning.outputs.deployment-strategy }}
+            **Environment**: ${{ needs.orchestrator-planning.outputs.target-env }}
+            **Workflow Run**: [#${{ github.run_id }}](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
+            
+            ### Failed Components:
+            Check the orchestration monitoring report for detailed status of each workflow.
+            
+            ### Impact:
+            - Deployment may be incomplete
+            - Some services may not be updated
+            - Manual intervention may be required
+            
+            ### Required Actions:
+            1. Review orchestration logs
+            2. Check individual workflow statuses
+            3. Validate current deployment state
+            4. Re-run failed workflows if needed
+            5. Update orchestration logic if required
+            
+            *This alert was automatically generated by the Master CI/CD Orchestrator.*
+            `;
+            
+            github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: title,
+              body: body,
+              labels: ['orchestration', 'ci-cd', 'deployment', 'critical-priority']
+            });

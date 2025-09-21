@@ -1,0 +1,257 @@
+name: 🐳 Docker Build & Container Registry
+
+on:
+  push:
+    branches: [ main, develop ]
+    tags: [ 'v*' ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+    inputs:
+      push_to_registry:
+        description: 'Push to container registry'
+        required: false
+        default: false
+        type: boolean
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+  NODE_VERSION: '18'
+  PNPM_VERSION: '8'
+
+jobs:
+  # Job 1: Build Multi-stage Docker Image
+  docker-build:
+    name: 🐳 Build Docker Image
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    outputs:
+      image-digest: ${{ steps.build.outputs.digest }}
+      image-tags: ${{ steps.meta.outputs.tags }}
+    steps:
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: 🔧 Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: 🐳 Log in to Container Registry
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 🏷️ Extract metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
+            type=sha,prefix={{branch}}-
+
+      - name: 🏗️ Build and Push Docker Image
+        id: build
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          platforms: linux/amd64,linux/arm64
+          push: ${{ github.event_name != 'pull_request' || github.event.inputs.push_to_registry == 'true' }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          build-args: |
+            NODE_VERSION=${{ env.NODE_VERSION }}
+            PNPM_VERSION=${{ env.PNPM_VERSION }}
+
+      - name: 📊 Generate Build Summary
+        run: |
+          echo "## 🐳 Docker Build Summary" >> $GITHUB_STEP_SUMMARY
+          echo "**Image**: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Digest**: ${{ steps.build.outputs.digest }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Tags**: ${{ steps.meta.outputs.tags }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Platforms**: linux/amd64, linux/arm64" >> $GITHUB_STEP_SUMMARY
+
+  # Job 2: Container Security Scanning
+  container-security:
+    name: 🔒 Container Security Scan
+    runs-on: ubuntu-latest
+    needs: docker-build
+    if: github.event_name != 'pull_request'
+    steps:
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: 🔒 Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ${{ needs.docker-build.outputs.image-tags }}
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+
+      - name: 📤 Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v2
+        if: always()
+        with:
+          sarif_file: 'trivy-results.sarif'
+
+      - name: 🔒 Run Container Structure Test
+        run: |
+          curl -LO https://storage.googleapis.com/container-structure-test/latest/container-structure-test-linux-amd64
+          chmod +x container-structure-test-linux-amd64
+          sudo mv container-structure-test-linux-amd64 /usr/local/bin/container-structure-test
+          
+          # Create basic structure test
+          cat > container-structure-test.yaml << EOF
+          schemaVersion: '2.0.0'
+          commandTests:
+            - name: "node version"
+              command: "node"
+              args: ["--version"]
+              expectedOutput: ["v${{ env.NODE_VERSION }}.*"]
+          fileExistenceTests:
+            - name: 'app directory'
+              path: '/app'
+              shouldExist: true
+            - name: 'node_modules'
+              path: '/app/node_modules'
+              shouldExist: true
+          EOF
+          
+          # Run structure test
+          container-structure-test test --image ${{ needs.docker-build.outputs.image-tags }} --config container-structure-test.yaml
+
+  # Job 3: Performance Testing
+  container-performance:
+    name: ⚡ Container Performance Test
+    runs-on: ubuntu-latest
+    needs: docker-build
+    steps:
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: ⚡ Test Container Performance
+        run: |
+          echo "## ⚡ Container Performance Test" >> $GITHUB_STEP_SUMMARY
+          
+          # Pull the image
+          docker pull ${{ needs.docker-build.outputs.image-tags }}
+          
+          # Start container and measure startup time
+          start_time=$(date +%s)
+          container_id=$(docker run -d -p 3000:3000 ${{ needs.docker-build.outputs.image-tags }})
+          
+          # Wait for container to be ready
+          timeout 60 bash -c 'until curl -f http://localhost:3000 > /dev/null 2>&1; do sleep 1; done'
+          end_time=$(date +%s)
+          
+          startup_time=$((end_time - start_time))
+          echo "**Startup Time**: ${startup_time} seconds" >> $GITHUB_STEP_SUMMARY
+          
+          # Test memory usage
+          memory_usage=$(docker stats --no-stream --format "table {{.MemUsage}}" $container_id | tail -1)
+          echo "**Memory Usage**: $memory_usage" >> $GITHUB_STEP_SUMMARY
+          
+          # Cleanup
+          docker stop $container_id
+          docker rm $container_id
+
+  # Job 4: Multi-environment Deploy
+  deploy-containers:
+    name: 🚀 Deploy Containers
+    runs-on: ubuntu-latest
+    needs: [docker-build, container-security]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    strategy:
+      matrix:
+        environment: [staging, production]
+    environment:
+      name: ${{ matrix.environment }}
+      url: ${{ steps.deploy.outputs.url }}
+    steps:
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: 🚀 Deploy to ${{ matrix.environment }}
+        id: deploy
+        run: |
+          echo "Deploying ${{ needs.docker-build.outputs.image-tags }} to ${{ matrix.environment }}"
+          
+          # This would typically integrate with your container orchestration platform
+          # Examples: Kubernetes, Docker Swarm, AWS ECS, Azure Container Instances
+          
+          # For demo purposes, we'll simulate deployment
+          if [ "${{ matrix.environment }}" = "staging" ]; then
+            echo "url=https://staging.your-domain.com" >> $GITHUB_OUTPUT
+          else
+            echo "url=https://your-domain.com" >> $GITHUB_OUTPUT
+          fi
+          
+          echo "## 🚀 Deployment to ${{ matrix.environment }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Image**: ${{ needs.docker-build.outputs.image-tags }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Environment**: ${{ matrix.environment }}" >> $GITHUB_STEP_SUMMARY
+          echo "**URL**: ${{ steps.deploy.outputs.url }}" >> $GITHUB_STEP_SUMMARY
+
+      - name: 🧪 Post-deployment Health Check
+        run: |
+          echo "Running health check for ${{ matrix.environment }}"
+          # Add your health check logic here
+          # curl -f ${{ steps.deploy.outputs.url }}/health || exit 1
+
+  # Job 5: Notification
+  notify-deployment:
+    name: 📢 Deployment Notifications
+    runs-on: ubuntu-latest
+    needs: [deploy-containers]
+    if: always()
+    steps:
+      - name: 📢 Send Success Notification
+        if: needs.deploy-containers.result == 'success'
+        run: |
+          echo "## 🎉 Deployment Successful!" >> $GITHUB_STEP_SUMMARY
+          echo "All container deployments completed successfully!" >> $GITHUB_STEP_SUMMARY
+
+      - name: 🚨 Send Failure Notification
+        if: needs.deploy-containers.result == 'failure'
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const title = `🚨 Container Deployment Failed - ${new Date().toDateString()}`;
+            const body = `
+            ## 🚨 Container Deployment Failure
+            
+            **Time**: ${new Date().toISOString()}
+            **Workflow**: [${context.workflow}](${context.server_url}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})
+            **Commit**: ${context.sha}
+            
+            ### Failed Steps:
+            Check the workflow logs for detailed error information.
+            
+            ### Required Actions:
+            1. Review deployment logs
+            2. Check container health
+            3. Verify configuration
+            4. Re-run deployment if needed
+            
+            *This alert was automatically generated by the CI/CD pipeline.*
+            `;
+            
+            github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: title,
+              body: body,
+              labels: ['deployment', 'containers', 'high-priority', 'ci-cd']
+            });

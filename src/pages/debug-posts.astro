@@ -3,7 +3,14 @@ import { getSortedPosts } from "../utils/content-utils";
 
 const allBlogPosts = await getSortedPosts();
 console.log("Total posts found:", allBlogPosts.length);
-console.log("Posts:", allBlogPosts.map(p => ({ title: p.data.title, draft: p.data.draft, published: p.data.published })));
+console.log(
+	"Posts:",
+	allBlogPosts.map((p) => ({
+		title: p.data.title,
+		draft: p.data.draft,
+		published: p.data.published,
+	})),
+);
 ---
 
 <html>

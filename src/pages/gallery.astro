@@ -29,7 +29,7 @@ const publishedGalleries = allGalleryCollections
 	);
 
 // Transform gallery data for enhanced cards
-const enhancedGalleries = publishedGalleries.map(gallery => ({
+const enhancedGalleries = publishedGalleries.map((gallery) => ({
 	...gallery.data,
 	slug: gallery.slug,
 	image: gallery.data.mainImage || `/images/gallery/${gallery.slug}/cover.jpg`,
@@ -65,28 +65,39 @@ const len = page.data.length;
 
 // SEO metadata following Gallery Best Practices Guide
 const galleryMeta = {
-  title: "Kenneth Namias Portfolio Gallery - Professional Software Development Projects",
-  description: "Explore Kenneth Namias' visual portfolio gallery featuring enterprise HRIS systems, AI automation tools, and modern web applications. See real project screenshots and technical implementations.",
-  keywords: ["Kenneth Namias portfolio", "software development gallery", "HRIS screenshots", "React projects", "enterprise applications", "AI automation", "web development portfolio"],
-  ogImage: "/images/gallery/gallery-preview.jpg",
-  url: "https://kennethnamias.dev/gallery",
-  structured: {
-    "@context": "https://schema.org",
-    "@type": "ImageGallery",
-    "name": "Kenneth Namias Portfolio Gallery",
-    "description": "Professional software development project gallery showcasing enterprise systems, AI automation, and modern web applications",
-    "author": {
-      "@type": "Person",
-      "name": "Kenneth Namias",
-      "jobTitle": "Software Developer",
-      "url": "https://kennethnamias.dev"
-    },
-    "numberOfItems": len,
-    "mainEntityOfPage": {
-      "@type": "WebPage",
-      "@id": "https://kennethnamias.dev/gallery"
-    }
-  }
+	title:
+		"Kenneth Namias Portfolio Gallery - Professional Software Development Projects",
+	description:
+		"Explore Kenneth Namias' visual portfolio gallery featuring enterprise HRIS systems, AI automation tools, and modern web applications. See real project screenshots and technical implementations.",
+	keywords: [
+		"Kenneth Namias portfolio",
+		"software development gallery",
+		"HRIS screenshots",
+		"React projects",
+		"enterprise applications",
+		"AI automation",
+		"web development portfolio",
+	],
+	ogImage: "/images/gallery/gallery-preview.jpg",
+	url: "https://kennethnamias.dev/gallery",
+	structured: {
+		"@context": "https://schema.org",
+		"@type": "ImageGallery",
+		name: "Kenneth Namias Portfolio Gallery",
+		description:
+			"Professional software development project gallery showcasing enterprise systems, AI automation, and modern web applications",
+		author: {
+			"@type": "Person",
+			name: "Kenneth Namias",
+			jobTitle: "Software Developer",
+			url: "https://kennethnamias.dev",
+		},
+		numberOfItems: len,
+		mainEntityOfPage: {
+			"@type": "WebPage",
+			"@id": "https://kennethnamias.dev/gallery",
+		},
+	},
 };
 ---
 
