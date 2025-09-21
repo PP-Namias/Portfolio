@@ -1,0 +1,180 @@
+---
+import { Image } from 'astro:assets';
+
+interface Props {
+  src: string;
+  alt: string;
+  title?: string;
+  class?: string;
+  width?: number;
+  height?: number;
+  loading?: 'lazy' | 'eager';
+  quality?: number;
+  format?: 'webp' | 'avif' | 'jpeg' | 'png';
+  sizes?: string;
+}
+
+const {
+  src,
+  alt,
+  title,
+  class: className = '',
+  width = 800,
+  height = 600,
+  loading = 'lazy',
+  quality = 85,
+  format = 'webp',
+  sizes = '(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw'
+} = Astro.props;
+
+// Determine if this is a remote URL or local asset
+const isRemoteImage = src.startsWith('http') || src.startsWith('//');
+
+// For remote images, we'll use a regular img tag with optimization hints
+// For local images, we'll use Astro's Image component
+---
+
+{isRemoteImage ? (
+  <img
+    src={src}
+    alt={alt}
+    title={title}
+    class={`gallery-optimized-image ${className}`}
+    width={width}
+    height={height}
+    loading={loading}
+    decoding="async"
+    sizes={sizes}
+    style={`aspect-ratio: ${width}/${height};`}
+  />
+) : (
+  <Image
+    src={src}
+    alt={alt}
+    title={title}
+    class={`gallery-optimized-image ${className}`}
+    width={width}
+    height={height}
+    loading={loading}
+    quality={quality}
+    format={format}
+    sizes={sizes}
+  />
+)}
+
+<style>
+.gallery-optimized-image {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  border-radius: 0.75rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+}
+
+.gallery-optimized-image[loading="lazy"] {
+  animation: shimmer 1.5s infinite;
+}
+
+.gallery-optimized-image:loaded {
+  animation: none;
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .gallery-optimized-image {
+    background: linear-gradient(90deg, #374151 25%, #4b5563 50%, #374151 75%);
+    background-size: 200% 100%;
+  }
+}
+
+/* Responsive optimizations */
+@media (max-width: 640px) {
+  .gallery-optimized-image {
+    border-radius: 0.5rem;
+  }
+}
+
+/* High DPI display optimizations */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .gallery-optimized-image {
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+  }
+}
+
+/* Performance optimizations */
+.gallery-optimized-image {
+  will-change: transform;
+  contain: layout style;
+}
+
+/* Hover effects for interactive elements */
+.gallery-card:hover .gallery-optimized-image {
+  transform: scale(1.02);
+}
+
+/* Focus states for accessibility */
+.gallery-card:focus-within .gallery-optimized-image {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+</style>
+
+<script>
+// Enhanced image loading with performance monitoring
+document.addEventListener('DOMContentLoaded', function() {
+  const images = document.querySelectorAll('.gallery-optimized-image');
+  
+  // Track image loading performance
+  function trackImageLoad(img: HTMLImageElement, loadTime: number) {
+    if (typeof gtag !== 'undefined') {
+      gtag('event', 'image_load_performance', {
+        event_category: 'gallery_performance',
+        load_time_ms: loadTime,
+        image_src: img.src,
+        image_width: img.naturalWidth,
+        image_height: img.naturalHeight
+      });
+    }
+  }
+  
+  // Enhanced intersection observer for lazy loading
+  const imageObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const img = entry.target as HTMLImageElement;
+        const startTime = performance.now();
+        
+        img.addEventListener('load', () => {
+          const loadTime = performance.now() - startTime;
+          trackImageLoad(img, loadTime);
+          img.classList.add('loaded');
+        }, { once: true });
+        
+        img.addEventListener('error', () => {
+          console.warn('Failed to load gallery image:', img.src);
+          // Fallback to a placeholder
+          img.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjYwMCIgdmlld0JveD0iMCAwIDgwMCA2MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI4MDAiIGhlaWdodD0iNjAwIiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik00MDAgMzAwTDM2MCAyNjBIMjQwVjM0MEg1NjBWMjYwSDQ0MEw0MDAgMzAwWiIgZmlsbD0iIzlDQTNBRiIvPgo8L3N2Zz4K';
+        }, { once: true });
+        
+        imageObserver.unobserve(img);
+      }
+    });
+  }, {
+    threshold: 0.1,
+    rootMargin: '50px 0px'
+  });
+  
+  // Observe all gallery images
+  images.forEach(img => {
+    imageObserver.observe(img);
+  });
+});
+</script>

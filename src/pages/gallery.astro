@@ -134,63 +134,125 @@ const galleryMeta = {
                 </p>
             </div>
 
-            <!-- Filter and Search Controls -->
-            <div class="gallery-controls bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6">
+            <!-- Enhanced Filter and Search Controls with Accessibility -->
+            <div class="gallery-controls bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6" role="region" aria-label="Gallery search and filter controls">
                 <div class="flex flex-col md:flex-row gap-4 items-center justify-between">
-                    <!-- Category Filters -->
+                    <!-- Category Filters with Enhanced Accessibility -->
                     <div class="filter-section">
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                            Filter by Category
-                        </label>
-                        <div class="flex flex-wrap gap-2">
-                            <button class="filter-btn active" data-filter="all">
-                                All Projects
-                            </button>
-                            <button class="filter-btn" data-filter="enterprise">
-                                Enterprise
-                            </button>
-                            <button class="filter-btn" data-filter="web-development">
-                                Web Development
-                            </button>
-                            <button class="filter-btn" data-filter="ai-automation">
-                                AI & Automation
-                            </button>
-                            <button class="filter-btn" data-filter="architecture">
-                                Architecture
-                            </button>
-                        </div>
+                        <fieldset>
+                            <legend class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                Filter by Category
+                            </legend>
+                            <div class="flex flex-wrap gap-2" role="group" aria-label="Project category filters">
+                                <button 
+                                    class="filter-btn active" 
+                                    data-filter="all"
+                                    type="button"
+                                    aria-pressed="true"
+                                    aria-describedby="all-projects-desc"
+                                >
+                                    All Projects
+                                </button>
+                                <div id="all-projects-desc" class="sr-only">Show all projects in the gallery</div>
+                                
+                                <button 
+                                    class="filter-btn" 
+                                    data-filter="enterprise"
+                                    type="button"
+                                    aria-pressed="false"
+                                    aria-describedby="enterprise-desc"
+                                >
+                                    Enterprise
+                                </button>
+                                <div id="enterprise-desc" class="sr-only">Show only enterprise software projects</div>
+                                
+                                <button 
+                                    class="filter-btn" 
+                                    data-filter="web-development"
+                                    type="button"
+                                    aria-pressed="false"
+                                    aria-describedby="web-dev-desc"
+                                >
+                                    Web Development
+                                </button>
+                                <div id="web-dev-desc" class="sr-only">Show only web development projects</div>
+                                
+                                <button 
+                                    class="filter-btn" 
+                                    data-filter="ai-automation"
+                                    type="button"
+                                    aria-pressed="false"
+                                    aria-describedby="ai-auto-desc"
+                                >
+                                    AI & Automation
+                                </button>
+                                <div id="ai-auto-desc" class="sr-only">Show only artificial intelligence and automation projects</div>
+                                
+                                <button 
+                                    class="filter-btn" 
+                                    data-filter="architecture"
+                                    type="button"
+                                    aria-pressed="false"
+                                    aria-describedby="architecture-desc"
+                                >
+                                    Architecture
+                                </button>
+                                <div id="architecture-desc" class="sr-only">Show only software architecture projects</div>
+                            </div>
+                        </fieldset>
                     </div>
 
-                    <!-- Search Box -->
+                    <!-- Enhanced Search Box with Accessibility -->
                     <div class="search-section">
                         <label for="gallery-search" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                             Search Projects
                         </label>
                         <div class="relative">
                             <input
-                                type="text"
+                                type="search"
                                 id="gallery-search"
                                 placeholder="Search by title, technology, or description..."
                                 class="w-full px-4 py-2 pl-10 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+                                autocomplete="off"
+                                aria-describedby="search-help"
+                                role="searchbox"
+                                aria-label="Search projects"
                             />
-                            <svg class="absolute left-3 top-2.5 h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="absolute left-3 top-2.5 h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                             </svg>
+                        </div>
+                        <div id="search-help" class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                            Press '/' to focus search, 'Escape' to clear
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Gallery Grid with Enhanced Layout -->
+        <!-- Enhanced Gallery Grid with Accessibility -->
         {len > 0 && (
-            <div id="gallery-grid" class="gallery-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-8">
-                {galleryPosts.map((project) => (
-                    <EnhancedGalleryCard
-                        project={project}
-                    />
-                ))}
-            </div>
+            <main role="main" aria-label="Project gallery">
+                <div 
+                    id="gallery-grid" 
+                    class="gallery-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-8"
+                    role="region"
+                    aria-label={`Gallery displaying ${len} project${len === 1 ? '' : 's'}`}
+                    aria-live="polite"
+                    aria-relevant="additions removals"
+                >
+                    {page.data.map((project: any) => (
+                        <EnhancedGalleryCard
+                            project={project}
+                        />
+                    ))}
+                </div>
+                
+                <!-- Live Region for Filter Results -->
+                <div id="filter-results-announcement" class="sr-only" aria-live="polite" aria-atomic="true">
+                    <!-- Results will be announced here for screen readers -->
+                </div>
+            </main>
         )}
 
         <!-- No Results Message -->
@@ -401,12 +463,16 @@ document.addEventListener('DOMContentLoaded', function() {
     timestamp: new Date().toISOString()
   });
   
-  // Filter functionality with analytics
+  // Filter functionality with analytics and accessibility
   filterButtons.forEach(button => {
     button.addEventListener('click', function() {
-      // Update active button
-      filterButtons.forEach(btn => btn.classList.remove('active'));
+      // Update active button and ARIA states
+      filterButtons.forEach(btn => {
+        btn.classList.remove('active');
+        btn.setAttribute('aria-pressed', 'false');
+      });
       this.classList.add('active');
+      this.setAttribute('aria-pressed', 'true');
       
       const previousFilter = currentFilter;
       currentFilter = this.dataset.filter!;
@@ -487,16 +553,25 @@ document.addEventListener('DOMContentLoaded', function() {
       timestamp: new Date().toISOString()
     });
     
-    // Show/hide no results message
+    // Show/hide no results message and announce to screen readers
+    const announceElement = document.getElementById('filter-results-announcement');
     if (noResults) {
       if (visibleCount === 0) {
         noResults.classList.remove('hidden');
+        if (announceElement) {
+          announceElement.textContent = `No projects found for the current filter: ${currentFilter}${currentSearch ? ` and search: ${currentSearch}` : ''}. Try adjusting your criteria.`;
+        }
         trackEvent('gallery_no_results', {
           filter: currentFilter,
           search: currentSearch
         });
       } else {
         noResults.classList.add('hidden');
+        if (announceElement) {
+          const filterText = currentFilter === 'all' ? 'all categories' : currentFilter;
+          const searchText = currentSearch ? ` matching "${currentSearch}"` : '';
+          announceElement.textContent = `Showing ${visibleCount} project${visibleCount === 1 ? '' : 's'} in ${filterText}${searchText}.`;
+        }
       }
     }
     
@@ -628,31 +703,105 @@ document.addEventListener('DOMContentLoaded', function() {
   // Initialize
   initializeFromURL();
   
-  // Performance monitoring with Intersection Observer
-  const observer = new IntersectionObserver((entries) => {
+  // Enhanced Performance monitoring with Intersection Observer and Lazy Loading
+  const performanceObserver = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
-        entry.target.classList.add('animate-fade-in');
+        const card = entry.target as HTMLElement;
         
-        // Track which projects come into view
-        const projectTitle = (entry.target as HTMLElement).dataset.title;
+        // Add fade-in animation
+        card.classList.add('animate-fade-in');
+        
+        // Lazy load images
+        const images = card.querySelectorAll('img[data-src]');
+        images.forEach((img: HTMLImageElement) => {
+          if (img.dataset.src) {
+            img.src = img.dataset.src;
+            img.removeAttribute('data-src');
+            img.classList.add('loaded');
+          }
+        });
+        
+        // Load background images
+        if (card.dataset.bgImage) {
+          card.style.backgroundImage = `url(${card.dataset.bgImage})`;
+          card.removeAttribute('data-bg-image');
+        }
+        
+        // Track performance metrics
+        const projectTitle = card.dataset.title;
         if (projectTitle) {
           trackEvent('gallery_card_viewed', {
             project_title: projectTitle,
-            view_timestamp: new Date().toISOString()
+            view_timestamp: new Date().toISOString(),
+            load_time: performance.now() - window.performance.timing.navigationStart
           });
         }
+        
+        // Stop observing this element
+        performanceObserver.unobserve(card);
       }
     });
   }, {
     threshold: 0.1,
-    rootMargin: '0px 0px -50px 0px'
+    rootMargin: '0px 0px -100px 0px'
   });
   
-  // Observe gallery cards for view tracking
-  document.querySelectorAll('.gallery-card').forEach(card => {
-    observer.observe(card);
+  // Priority loading observer for above-the-fold content
+  const priorityObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const card = entry.target as HTMLElement;
+        card.style.transform = 'translateY(0)';
+        card.style.opacity = '1';
+        priorityObserver.unobserve(card);
+      }
+    });
+  }, {
+    threshold: 0.2,
+    rootMargin: '50px'
   });
+  
+  // Observe gallery cards with performance optimization
+  document.querySelectorAll('.gallery-card').forEach((card, index) => {
+    const cardElement = card as HTMLElement;
+    
+    // Prioritize first 6 cards for immediate loading
+    if (index < 6) {
+      priorityObserver.observe(cardElement);
+      // Pre-load critical images immediately
+      const criticalImages = cardElement.querySelectorAll('img[data-src]');
+      criticalImages.forEach((img: HTMLImageElement) => {
+        if (img.dataset.src) {
+          img.src = img.dataset.src;
+          img.removeAttribute('data-src');
+        }
+      });
+    } else {
+      // Lazy load remaining cards
+      cardElement.style.transform = 'translateY(20px)';
+      cardElement.style.opacity = '0.3';
+      performanceObserver.observe(cardElement);
+    }
+  });
+  
+  // Preload critical resources
+  function preloadCriticalResources() {
+    const criticalImages = Array.from(document.querySelectorAll('.gallery-card')).slice(0, 3);
+    criticalImages.forEach(card => {
+      const img = (card as HTMLElement).querySelector('img');
+      if (img && img.src) {
+        const link = document.createElement('link');
+        link.rel = 'preload';
+        link.as = 'image';
+        link.href = img.src;
+        document.head.appendChild(link);
+      }
+    });
+  }
+  
+  // Initialize critical resource preloading
+  preloadCriticalResources();
   
   // Page visibility tracking
   document.addEventListener('visibilitychange', function() {
@@ -681,3 +830,164 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 });
 </script>
+
+<style>
+/* Gallery Performance & Animation Styles */
+.gallery-container {
+  contain: layout style paint;
+}
+
+.gallery-grid {
+  contain: layout;
+}
+
+.gallery-card {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform, opacity;
+  transform: translateZ(0); /* Force hardware acceleration */
+}
+
+.gallery-card:hover {
+  transform: translateY(-4px) translateZ(0);
+}
+
+/* Enhanced Loading States */
+.gallery-card img {
+  transition: opacity 0.3s ease;
+  opacity: 0;
+}
+
+.gallery-card img.loaded {
+  opacity: 1;
+}
+
+.gallery-card img[data-src] {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* Performance optimizations */
+.fade-in {
+  animation: fadeIn 0.4s ease-out forwards;
+}
+
+.fade-out {
+  animation: fadeOut 0.2s ease-in forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+}
+
+.animate-fade-in {
+  animation: slideInUp 0.6s ease-out forwards;
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Search and Filter Performance */
+.search-input {
+  will-change: auto;
+  contain: layout style;
+}
+
+.filter-btn {
+  transition: all 0.2s ease;
+  will-change: background-color, color;
+}
+
+.filter-btn.active {
+  background-color: rgb(37 99 235);
+  color: white;
+  transform: scale(1.05);
+}
+
+/* Responsive performance optimizations */
+@media (max-width: 768px) {
+  .gallery-card {
+    will-change: auto; /* Reduce will-change on mobile */
+  }
+  
+  .gallery-card:hover {
+    transform: none; /* Disable hover transforms on mobile */
+  }
+}
+
+/* Prefers reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .gallery-card,
+  .filter-btn,
+  .fade-in,
+  .fade-out,
+  .animate-fade-in {
+    animation: none !important;
+    transition: none !important;
+  }
+  
+  .gallery-card:hover {
+    transform: none;
+  }
+}
+
+/* Critical above-the-fold optimization */
+.gallery-card:nth-child(-n+6) {
+  contain: layout style;
+}
+
+/* Loading skeleton for better perceived performance */
+.gallery-skeleton {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 0.75rem;
+  height: 300px;
+}
+
+/* No results optimization */
+.no-results {
+  contain: content;
+}
+
+/* Search optimization */
+.search-container {
+  contain: layout style;
+}
+
+/* Filter container optimization */
+.filter-container {
+  contain: layout style;
+}
+</style>
