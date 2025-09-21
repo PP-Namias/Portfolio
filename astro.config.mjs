@@ -26,7 +26,7 @@ import { remarkReadingTime } from "./src/plugins/remark-reading-time.mjs";
 
 // https://astro.build/config
 export default defineConfig({
-	site: "https://fuwari.vercel.app/",
+	site: "http://namias.tech",
 	base: "/",
 	trailingSlash: "always",
 	// Modern image optimization configuration
@@ -35,7 +35,7 @@ export default defineConfig({
 			entrypoint: "astro/assets/services/sharp",
 			config: {
 				limitInputPixels: 268402689, // ~16K x 16K max resolution
-			}
+			},
 		},
 	},
 	integrations: [
