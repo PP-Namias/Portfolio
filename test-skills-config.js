@@ -1,5 +1,5 @@
 // Test Skills Data Configuration
-import { skillsDatabase, skillCategories, getSkillStats, getTrendingSkills } from "../src/data/skillsConfig";
+import { skillsDatabase, getSkillStats, getTrendingSkills } from "./src/data/skillsConfig.ts";
 
 console.log("=== Skills Configuration Test ===\n");
 
@@ -16,9 +16,8 @@ console.log(`- Recent Updates: ${stats.recentUpdates}\n`);
 
 // Test categories
 console.log("📁 Categories:");
-Object.entries(skillCategories).forEach(([key, category]) => {
-  const skillsInCategory = skillsDatabase[key];
-  console.log(`- ${category.title}: ${skillsInCategory.length} skills`);
+Object.entries(skillsDatabase).forEach(([key, skills]) => {
+  console.log(`- ${key}: ${skills.length} skills`);
 });
 console.log("");
 
