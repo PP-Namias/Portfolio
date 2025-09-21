@@ -1,10 +1,11 @@
 ---
 title: "Urban Street Photography"
 description: "Candid moments and urban life captured through the lens, showcasing the energy and diversity of city streets."
+mainImage: "/images/gallery/street/urban-life.jpg"
 published: 2024-11-10
 updated: 2024-12-18
 featured: true
-category: "Street"
+category: "photography"
 tags: ["Street Photography", "Urban", "Candid", "City Life", "Documentary"]
 location: "Downtown Metropolitan Area"
 camera: "Fujifilm X-T5 + XF 23mm f/1.4"

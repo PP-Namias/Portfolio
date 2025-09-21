@@ -1,10 +1,11 @@
 ---
 title: "Portrait Photography Collection"
 description: "A curated collection of portrait photography showcasing different lighting techniques and emotional expressions."
+mainImage: "/images/gallery/portraits/studio-portrait.jpg"
 published: 2024-11-15
 updated: 2024-12-18
 featured: true
-category: "Portrait"
+category: "photography"
 tags: ["Portrait", "Studio", "Natural Light", "Fashion", "People"]
 location: "Studio & Outdoor Locations"
 camera: "Canon EOS R6 + RF 85mm f/1.2L"

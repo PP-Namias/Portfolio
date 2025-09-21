@@ -1,10 +1,11 @@
 ---
 title: "Mountain Vista at Sunset"
 description: "A breathtaking landscape photography collection showcasing mountain peaks during golden hour."
+mainImage: "/images/gallery/landscape/mountain-sunset.jpg"
 published: 2024-12-01
 updated: 2024-12-18
 featured: true
-category: "Landscape"
+category: "photography"
 tags: ["Landscape", "Sunset", "Mountains", "Golden Hour", "Nature"]
 location: "Rocky Mountain National Park"
 camera: "Canon EOS R5 + RF 24-70mm f/2.8L"

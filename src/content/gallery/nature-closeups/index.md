@@ -1,10 +1,11 @@
 ---
 title: "Nature Macro & Closeups"
 description: "Intimate details of the natural world revealed through macro photography, showcasing textures, patterns, and hidden beauty."
+mainImage: "/images/gallery/nature/macro-flower.jpg"
 published: 2024-10-25
 updated: 2024-12-18
 featured: true
-category: "Nature"
+category: "photography"
 tags: ["Macro", "Nature", "Closeup", "Details", "Flora", "Textures"]
 location: "Botanical Gardens & Nature Preserves"
 camera: "Canon EOS R7 + RF 100mm f/2.8L Macro"

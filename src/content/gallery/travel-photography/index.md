@@ -1,10 +1,11 @@
 ---
 title: "Travel Photography Journey"
 description: "Documenting adventures around the world, capturing diverse cultures, landscapes, and moments that tell the story of our planet."
+mainImage: "/images/gallery/travel/world-journey.jpg"
 published: 2024-11-01
 updated: 2024-12-18
 featured: true
-category: "Travel"
+category: "photography"
 tags: ["Travel", "Culture", "Adventure", "Landscapes", "People", "Architecture"]
 location: "Worldwide Destinations"
 camera: "Canon EOS R6 + RF 24-105mm f/4L"

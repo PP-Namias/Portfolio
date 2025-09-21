@@ -1,10 +1,11 @@
 ---
 title: "Creative Abstracts & Artistic Vision"
 description: "Experimental photography exploring color, form, and conceptual ideas through abstract compositions and artistic interpretation."
+mainImage: "/images/gallery/abstracts/abstract-main.jpg"
 published: 2024-11-15
 updated: 2024-12-18
 featured: true
-category: "Abstract"
+category: "photography"
 tags: ["Abstract", "Creative", "Artistic", "Experimental", "Color", "Form"]
 location: "Studio & Urban Environments"
 camera: "Canon EOS R6 Mark II + Various Lenses"

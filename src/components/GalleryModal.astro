@@ -198,23 +198,26 @@
 </div>
 
 <script>
+  // Type declaration for gtag
+  declare function gtag(...args: any[]): void;
+
   // Gallery modal functionality with enhanced analytics
   document.addEventListener('DOMContentLoaded', function() {
-    const modal = document.getElementById('gallery-modal');
-    const modalClose = document.getElementById('modal-close');
+    const modal = document.getElementById('gallery-modal') as HTMLElement | null;
+    const modalClose = document.getElementById('modal-close') as HTMLElement | null;
     const galleryCards = document.querySelectorAll('.gallery-card');
-    const modalMainImage = document.getElementById('modal-main-image');
-    const prevImageBtn = document.getElementById('prev-image');
-    const nextImageBtn = document.getElementById('next-image');
+    const modalMainImage = document.getElementById('modal-main-image') as HTMLImageElement | null;
+    const prevImageBtn = document.getElementById('prev-image') as HTMLButtonElement | null;
+    const nextImageBtn = document.getElementById('next-image') as HTMLButtonElement | null;
     
-    let currentProject = null;
+    let currentProject: any = null;
     let currentImageIndex = 0;
-    let projectImages = [];
+    let projectImages: string[] = [];
     let modalOpenTime = 0;
-    let imageViewTimes = {};
+    let imageViewTimes: Record<string, number> = {};
     
     // Analytics helper function
-    function trackModalEvent(eventName, eventData = {}) {
+    function trackModalEvent(eventName: string, eventData: Record<string, any> = {}) {
       if (typeof gtag !== 'undefined') {
         gtag('event', eventName, {
           event_category: 'gallery_modal',
@@ -225,7 +228,9 @@
     }
     
     // Open modal function with enhanced analytics
-    function openModal(projectData) {
+    function openModal(projectData: any) {
+      if (!modal || !modalMainImage) return;
+      
       modalOpenTime = Date.now();
       currentProject = projectData;
       imageViewTimes = {};
@@ -239,9 +244,13 @@
       });
       
       // Populate modal content
-      document.getElementById('modal-title').textContent = projectData.title;
-      document.getElementById('modal-category').textContent = projectData.category;
-      document.getElementById('modal-description').textContent = projectData.description;
+      const modalTitle = document.getElementById('modal-title');
+      const modalCategory = document.getElementById('modal-category');
+      const modalDescription = document.getElementById('modal-description');
+      
+      if (modalTitle) modalTitle.textContent = projectData.title;
+      if (modalCategory) modalCategory.textContent = projectData.category;
+      if (modalDescription) modalDescription.textContent = projectData.description;
       
       // Set main image
       modalMainImage.src = projectData.mainImage;
@@ -254,10 +263,13 @@
       
       // Populate project details
       if (projectData.client) {
-        document.querySelector('#modal-client span:last-child').textContent = projectData.client;
-        document.getElementById('modal-client').style.display = 'flex';
+        const clientSpan = document.querySelector('#modal-client span:last-child') as HTMLElement;
+        const modalClient = document.getElementById('modal-client');
+        if (clientSpan) clientSpan.textContent = projectData.client;
+        if (modalClient) modalClient.style.display = 'flex';
       } else {
-        document.getElementById('modal-client').style.display = 'none';
+        const modalClient = document.getElementById('modal-client');
+        if (modalClient) modalClient.style.display = 'none';
       }
       
       if (projectData.projectDate) {
@@ -265,34 +277,42 @@
           year: 'numeric', 
           month: 'long' 
         });
-        document.querySelector('#modal-date span:last-child').textContent = date;
-        document.getElementById('modal-date').style.display = 'flex';
+        const dateSpan = document.querySelector('#modal-date span:last-child') as HTMLElement;
+        const modalDate = document.getElementById('modal-date');
+        if (dateSpan) dateSpan.textContent = date;
+        if (modalDate) modalDate.style.display = 'flex';
       } else {
-        document.getElementById('modal-date').style.display = 'none';
+        const modalDate = document.getElementById('modal-date');
+        if (modalDate) modalDate.style.display = 'none';
       }
       
       // Populate tech stack
       const techStackContainer = document.getElementById('modal-tech-stack');
-      techStackContainer.innerHTML = projectData.techStack.map(tech => 
-        `<span class="bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 text-sm px-3 py-1 rounded-full font-medium">${tech}</span>`
-      ).join('');
+      if (techStackContainer) {
+        techStackContainer.innerHTML = projectData.techStack.map((tech: string) => 
+          `<span class="bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 text-sm px-3 py-1 rounded-full font-medium">${tech}</span>`
+        ).join('');
+      }
       
       // Populate features
       const featuresContainer = document.getElementById('modal-features');
-      if (projectData.features && projectData.features.length > 0) {
-        featuresContainer.innerHTML = projectData.features.map(feature => 
-          `<li class="flex items-start"><svg class="w-4 h-4 text-green-500 mr-2 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>${feature}</li>`
-        ).join('');
-      } else {
-        featuresContainer.innerHTML = '<li class="text-gray-500 italic">Features information not available</li>';
+      if (featuresContainer) {
+        if (projectData.features && projectData.features.length > 0) {
+          featuresContainer.innerHTML = projectData.features.map((feature: string) => 
+            `<li class="flex items-start"><svg class="w-4 h-4 text-green-500 mr-2 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>${feature}</li>`
+          ).join('');
+        } else {
+          featuresContainer.innerHTML = '<li class="text-gray-500 italic">Features information not available</li>';
+        }
       }
       
       // Populate links
       const linksContainer = document.getElementById('modal-links');
-      linksContainer.innerHTML = '';
-      
-      if (projectData.liveDemo) {
-        linksContainer.innerHTML += `
+      if (linksContainer) {
+        linksContainer.innerHTML = '';
+        
+        if (projectData.liveDemo) {
+          linksContainer.innerHTML += `
           <a href="${projectData.liveDemo}" target="_blank" rel="noopener noreferrer" 
              class="flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition-colors">
             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -300,10 +320,10 @@
             </svg>
             Live Demo
           </a>`;
-      }
-      
-      if (projectData.sourceCode) {
-        linksContainer.innerHTML += `
+        }
+        
+        if (projectData.sourceCode) {
+          linksContainer.innerHTML += `
           <a href="${projectData.sourceCode}" target="_blank" rel="noopener noreferrer" 
              class="flex items-center justify-center bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-md transition-colors">
             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -311,10 +331,11 @@
             </svg>
             Source Code
           </a>`;
-      }
-      
-      if (!projectData.liveDemo && !projectData.sourceCode) {
-        linksContainer.innerHTML = '<p class="text-gray-500 text-sm italic">Project links not available</p>';
+        }
+        
+        if (!projectData.liveDemo && !projectData.sourceCode) {
+          linksContainer.innerHTML = '<p class="text-gray-500 text-sm italic">Project links not available</p>';
+        }
       }
       
       // Show modal
@@ -334,26 +355,29 @@
     // Update image gallery
     function updateImageGallery() {
       const galleryContainer = document.getElementById('modal-image-gallery');
-      galleryContainer.innerHTML = '';
-      
-      projectImages.forEach((image, index) => {
-        const thumbnail = document.createElement('img');
-        thumbnail.src = image;
-        thumbnail.alt = `${currentProject.title} - Image ${index + 1}`;
-        thumbnail.className = `w-full h-16 object-cover rounded cursor-pointer transition-all duration-200 ${
-          index === currentImageIndex ? 'ring-2 ring-blue-500' : 'hover:opacity-75'
-        }`;
-        thumbnail.onclick = () => changeImage(index);
-        galleryContainer.appendChild(thumbnail);
-      });
+      if (galleryContainer) {
+        galleryContainer.innerHTML = '';
+        
+        projectImages.forEach((image: string, index: number) => {
+          const thumbnail = document.createElement('img');
+          thumbnail.src = image;
+          thumbnail.alt = `${currentProject.title} - Image ${index + 1}`;
+          thumbnail.className = `w-full h-16 object-cover rounded cursor-pointer transition-all duration-200 ${
+            index === currentImageIndex ? 'ring-2 ring-blue-500' : 'hover:opacity-75'
+          }`;
+          thumbnail.onclick = () => changeImage(index);
+          galleryContainer.appendChild(thumbnail);
+        });
+      }
       
       // Update navigation buttons
-      prevImageBtn.style.display = projectImages.length > 1 ? 'block' : 'none';
-      nextImageBtn.style.display = projectImages.length > 1 ? 'block' : 'none';
+      if (prevImageBtn) prevImageBtn.style.display = projectImages.length > 1 ? 'block' : 'none';
+      if (nextImageBtn) nextImageBtn.style.display = projectImages.length > 1 ? 'block' : 'none';
     }
     
     // Change main image
-    function changeImage(index) {
+    function changeImage(index: number) {
+      if (!modalMainImage) return;
       currentImageIndex = index;
       modalMainImage.src = projectImages[index];
       updateImageGallery();
@@ -361,6 +385,7 @@
     
     // Close modal function
     function closeModal() {
+      if (!modal) return;
       modal.classList.add('hidden');
       document.body.style.overflow = 'auto';
       currentProject = null;
@@ -370,11 +395,11 @@
     
     // Event listeners
     galleryCards.forEach(card => {
-      card.addEventListener('click', function() {
-        const dataScript = this.querySelector('.gallery-data');
+      card.addEventListener('click', function(this: Element) {
+        const dataScript = this.querySelector('.gallery-data') as HTMLScriptElement;
         if (dataScript) {
           try {
-            const projectData = JSON.parse(dataScript.textContent);
+            const projectData = JSON.parse(dataScript.textContent || '{}');
             openModal(projectData);
           } catch (e) {
             console.error('Error parsing gallery data:', e);
@@ -383,30 +408,30 @@
       });
     });
     
-    modalClose.addEventListener('click', closeModal);
+    modalClose?.addEventListener('click', closeModal);
     
     // Image navigation
-    prevImageBtn.addEventListener('click', (e) => {
+    prevImageBtn?.addEventListener('click', (e: Event) => {
       e.stopPropagation();
       const newIndex = currentImageIndex > 0 ? currentImageIndex - 1 : projectImages.length - 1;
       changeImage(newIndex);
     });
     
-    nextImageBtn.addEventListener('click', (e) => {
+    nextImageBtn?.addEventListener('click', (e: Event) => {
       e.stopPropagation();
       const newIndex = currentImageIndex < projectImages.length - 1 ? currentImageIndex + 1 : 0;
       changeImage(newIndex);
     });
     
     // Close modal when clicking outside
-    modal.addEventListener('click', function(e) {
+    modal?.addEventListener('click', function(e: Event) {
       if (e.target === modal) {
         closeModal();
       }
     });
     
     // Close on escape key
-    document.addEventListener('keydown', function(e) {
+    document.addEventListener('keydown', function(e: KeyboardEvent) {
       if (e.key === 'Escape' && currentProject) {
         closeModal();
       }
@@ -414,15 +439,15 @@
       // Image navigation with arrow keys
       if (currentProject && projectImages.length > 1) {
         if (e.key === 'ArrowLeft') {
-          prevImageBtn.click();
+          prevImageBtn?.click();
         } else if (e.key === 'ArrowRight') {
-          nextImageBtn.click();
+          nextImageBtn?.click();
         }
       }
     });
     
     // Share functions
-    window.shareProject = function(platform) {
+    (window as any).shareProject = function(platform: string) {
       if (!currentProject) return;
       
       const url = window.location.href;
@@ -444,15 +469,18 @@
       }
     };
     
-    window.copyProjectLink = function() {
+    (window as any).copyProjectLink = function() {
       navigator.clipboard.writeText(window.location.href).then(() => {
-        // Show success feedback
-        const button = event.target.closest('button');
-        const originalHTML = button.innerHTML;
-        button.innerHTML = '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>';
-        setTimeout(() => {
-          button.innerHTML = originalHTML;
-        }, 2000);
+        // Show success feedback  
+        const target = (event as Event)?.target as Element;
+        const button = target?.closest('button') as HTMLButtonElement;
+        if (button) {
+          const originalHTML = button.innerHTML;
+          button.innerHTML = '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>';
+          setTimeout(() => {
+            button.innerHTML = originalHTML;
+          }, 2000);
+        }
       });
     };
   });

@@ -12,7 +12,7 @@ export interface Props {
   aspectRatio?: string;
   objectFit?: 'cover' | 'contain' | 'fill' | 'scale-down' | 'none';
   quality?: number;
-  format?: 'auto' | 'webp' | 'avif' | 'jpeg' | 'png';
+  format?: 'auto' | 'webp' | 'avif' | 'jpeg' | 'png' | 'svg';
   // Gallery specific props
   isMainImage?: boolean;
   projectTitle?: string;
@@ -60,11 +60,6 @@ const galleryClasses = `
   loading={loading}
   sizes={mainImageSizes}
   quality={quality}
-  format={format}
-  style={`aspect-ratio: ${aspectRatio};`}
-  data-gallery-image={isMainImage ? 'main' : 'thumbnail'}
-  data-project-title={projectTitle}
-  data-image-index={index}
 />
 
 <style>
@@ -121,6 +116,9 @@ const galleryClasses = `
 </style>
 
 <script>
+  // Type declaration for gtag
+  declare function gtag(...args: any[]): void;
+
   // Enhanced image loading behavior with analytics
   document.addEventListener('DOMContentLoaded', function() {
     const images = document.querySelectorAll('[data-gallery-image]');

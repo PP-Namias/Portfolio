@@ -1,10 +1,11 @@
 ---
 title: "Urban Architecture Photography"
 description: "Modern architectural photography capturing the geometric beauty and urban landscapes of contemporary cities."
+mainImage: "/images/gallery/architecture/urban-skyline.jpg"
 published: 2024-10-20
 updated: 2024-12-18
 featured: false
-category: "Architecture"
+category: "architecture"
 tags: ["Architecture", "Urban", "Modern", "Geometric", "City"]
 location: "Downtown Metropolitan Area"
 camera: "Canon EOS R5 + RF 14-35mm f/4L"

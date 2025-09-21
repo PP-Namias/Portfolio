@@ -1,10 +1,11 @@
 ---
 title: "Wildlife Photography Collection"
 description: "Capturing the beauty and behavior of wildlife in their natural habitats, from intimate portraits to dramatic action shots."
+mainImage: "/images/gallery/wildlife/animal-portraits.jpg"
 published: 2024-09-15
 updated: 2024-12-18
 featured: true
-category: "Wildlife"
+category: "photography"
 tags: ["Wildlife", "Animals", "Nature", "Action", "Portraits", "Conservation"]
 location: "National Parks & Wildlife Reserves"
 camera: "Canon EOS R5 + RF 100-500mm f/4.5-7.1L"
