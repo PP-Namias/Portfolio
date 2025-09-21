@@ -1,0 +1,27 @@
+---
+// Vercel Analytics & Speed Insights Component
+// This provides additional insights alongside existing GA4 tracking
+---
+
+{import.meta.env.PROD && (
+  <>
+    <!-- Vercel Analytics -->
+    <script type="module">
+      import { inject } from '@vercel/analytics';
+      import { injectSpeedInsights } from '@vercel/speed-insights';
+      
+      // Initialize Vercel Analytics
+      inject();
+      
+      // Initialize Speed Insights  
+      injectSpeedInsights();
+    </script>
+  </>
+)}
+
+{!import.meta.env.PROD && (
+  <script>
+    // Development mode - log Vercel events to console
+    console.log('🚀 Vercel Analytics Debug Mode');
+  </script>
+)}

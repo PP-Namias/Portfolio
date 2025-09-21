@@ -5,6 +5,8 @@ import "@fontsource/roboto/700.css";
 
 import ConfigCarrier from "@components/ConfigCarrier.astro";
 import SEOHead from "@components/SEOHead.astro";
+import Analytics from "@components/Analytics.astro";
+import VercelAnalytics from "@components/VercelAnalytics.astro";
 import { profileConfig, siteConfig } from "@/config";
 import {
 	AUTO_MODE,
@@ -161,6 +163,10 @@ const bannerOffset =
 
 
 		<slot name="head"></slot>
+
+		<!-- Analytics -->
+		<Analytics id={siteConfig.analytics?.googleAnalyticsId} />
+		<VercelAnalytics />
 
 		<link rel="alternate" type="application/rss+xml" title={profileConfig.name} href={`${Astro.site}rss.xml`}/>
 
