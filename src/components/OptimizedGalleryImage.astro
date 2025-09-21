@@ -1,5 +1,6 @@
 ---
 import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
 
 export interface Props {
   src: string | ImageMetadata;
@@ -10,7 +11,7 @@ export interface Props {
   loading?: 'lazy' | 'eager';
   sizes?: string;
   aspectRatio?: string;
-  objectFit?: 'cover' | 'contain' | 'fill' | 'scale-down' | 'none';
+  objectFit?: 'cover' | 'contain' | 'fill' | 'none' | 'scale-down';
   quality?: number;
   format?: 'auto' | 'webp' | 'avif' | 'jpeg' | 'png' | 'svg';
   // Gallery specific props
@@ -52,19 +53,22 @@ const galleryClasses = `
 ---
 
 {/* Optimized Gallery Image */}
-<Image
-  src={src}
-  alt={alt}
-  width={width}
-  height={height}
-  class={galleryClasses}
-  loading={loading}
-  sizes={mainImageSizes}
-  quality={quality}
+<div 
   data-gallery-image
   data-project-title={projectTitle}
   data-index={index}
-/>
+  class={galleryClasses}
+>
+  <Image
+    src={src}
+    alt={alt}
+    width={width}
+    height={height}
+    loading={loading}
+    class="w-full h-full object-cover"
+    {...(typeof src === 'string' ? {} : {})}
+  />
+</div>
 
 <style>
   /* Enhanced image loading states */
