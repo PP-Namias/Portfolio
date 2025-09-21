@@ -3,8 +3,8 @@ title: "Kenneth Namias Professional Journey: From Computer Science Graduate to L
 published: 2024-09-19
 description: "Follow Kenneth Namias' career progression from Computer Science graduate to Full Stack Developer and Lead Software Engineer at UCC Congressional Campus. Learn about professional growth, challenges overcome, and key achievements in software development."
 image: "./cover.jpg"
-tags: ["Kenneth Namias Career", "Professional Development", "Full Stack Developer Journey", "Software Engineer Growth", "UCC Congressional Campus", "Lead Developer"]
-category: "Professional"
+tags: ["Full-Stack", "Education", "Enterprise"]
+category: "Career"
 draft: false
 keywords: ["Kenneth Namias career", "Software engineer career progression", "Full Stack Developer journey", "Professional development software", "UCC Congressional Campus developer", "Lead Software Engineer"]
 readingTime: "8 min read"

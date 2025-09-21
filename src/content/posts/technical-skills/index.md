@@ -3,7 +3,7 @@ title: "Technical Arsenal: A Deep Dive into My Full Stack Development Skills"
 published: 2024-09-19
 description: "Comprehensive breakdown of my technical expertise as a Full Stack x Automation Developer - programming languages, frameworks, tools, and methodologies that power innovative solutions."
 image: "./cover.jpg"
-tags: ["Technical Skills", "Programming", "Full Stack", "Development Tools", "Technology Stack"]
+tags: ["Full-Stack", "Tutorial", "Best-Practices"]
 category: "Technical"
 draft: false
 ---

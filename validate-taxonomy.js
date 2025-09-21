@@ -59,7 +59,7 @@ class ContentValidator {
   }
 
   extractFrontmatter(content) {
-    const frontmatterRegex = /^---\n([\s\S]*?)\n---/;
+    const frontmatterRegex = /^---\s*\n([\s\S]*?)\n---/;
     const match = content.match(frontmatterRegex);
     
     if (!match) return null;
@@ -68,18 +68,21 @@ class ContentValidator {
     const lines = match[1].split('\n');
     
     for (const line of lines) {
-      if (line.includes('title:')) {
-        const titleMatch = line.match(/title:\s*["']?([^"'\n]*)["']?/);
-        if (titleMatch) frontmatter.title = titleMatch[1];
+      const trimmedLine = line.trim();
+      if (!trimmedLine) continue;
+      
+      if (trimmedLine.includes('title:')) {
+        const titleMatch = trimmedLine.match(/title:\s*["']?([^"'\n]*)["']?/);
+        if (titleMatch) frontmatter.title = titleMatch[1].trim();
       }
       
-      if (line.includes('category:')) {
-        const categoryMatch = line.match(/category:\s*["']?([^"'\n]*)["']?/);
-        if (categoryMatch) frontmatter.category = categoryMatch[1];
+      if (trimmedLine.includes('category:')) {
+        const categoryMatch = trimmedLine.match(/category:\s*["']?([^"'\n]*)["']?/);
+        if (categoryMatch) frontmatter.category = categoryMatch[1].trim();
       }
       
-      if (line.includes('tags:')) {
-        const tagsMatch = line.match(/tags:\s*\[([^\]]*)\]/);
+      if (trimmedLine.includes('tags:')) {
+        const tagsMatch = trimmedLine.match(/tags:\s*\[([^\]]*)\]/);
         if (tagsMatch) {
           frontmatter.tags = tagsMatch[1]
             .split(',')
@@ -88,8 +91,8 @@ class ContentValidator {
         }
       }
       
-      if (line.includes('draft:')) {
-        const draftMatch = line.match(/draft:\s*(true|false)/);
+      if (trimmedLine.includes('draft:')) {
+        const draftMatch = trimmedLine.match(/draft:\s*(true|false)/);
         if (draftMatch) frontmatter.draft = draftMatch[1] === 'true';
       }
     }

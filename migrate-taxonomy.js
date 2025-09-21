@@ -159,7 +159,7 @@ function standardizeTags(tags) {
 }
 
 function extractFrontmatter(content) {
-  const frontmatterRegex = /^---\n([\s\S]*?)\n---/;
+  const frontmatterRegex = /^---\s*\n([\s\S]*?)\n---/;
   const match = content.match(frontmatterRegex);
   
   if (!match) return null;
@@ -168,13 +168,16 @@ function extractFrontmatter(content) {
   const lines = match[1].split('\n');
   
   for (const line of lines) {
-    if (line.includes('category:')) {
-      const categoryMatch = line.match(/category:\s*["']?([^"'\n]*)["']?/);
-      if (categoryMatch) frontmatter.category = categoryMatch[1];
+    const trimmedLine = line.trim();
+    if (!trimmedLine) continue;
+    
+    if (trimmedLine.includes('category:')) {
+      const categoryMatch = trimmedLine.match(/category:\s*["']?([^"'\n]*)["']?/);
+      if (categoryMatch) frontmatter.category = categoryMatch[1].trim();
     }
     
-    if (line.includes('tags:')) {
-      const tagsMatch = line.match(/tags:\s*\[([^\]]*)\]/);
+    if (trimmedLine.includes('tags:')) {
+      const tagsMatch = trimmedLine.match(/tags:\s*\[([^\]]*)\]/);
       if (tagsMatch) {
         frontmatter.tags = tagsMatch[1]
           .split(',')

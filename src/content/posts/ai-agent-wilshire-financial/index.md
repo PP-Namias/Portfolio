@@ -3,8 +3,8 @@ title: "AI Agent for Wilshire Financial Network: COA - Chief Operating Agent"
 published: 2025-09-19
 description: "Discover how we revolutionized business operations for Wilshire Financial Network with COA, a custom AI-powered Chief Operating Agent that transforms scattered data into strategic intelligence."
 image: "./cover.jpg"
-tags: ["AI Agent", "Business Intelligence", "Automation", "Financial Technology", "Data Analytics", "Machine Learning", "Process Optimization"]
-category: "AI Projects"
+tags: ["AI/ML", "Case-Study", "FinTech", "Enterprise"]
+category: "Projects"
 draft: false
 ---
 

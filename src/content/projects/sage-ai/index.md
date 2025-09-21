@@ -8,9 +8,9 @@ image: "./cover.jpg"
 technologies: ["React", "Node.js", "OpenAI API", "PostgreSQL", "Xendit", "TypeScript", "Tailwind CSS", "Express.js"]
 demoUrl: "https://sage-ai-demo.vercel.app"
 codeUrl: "https://github.com/PP-Namias/sage-ai"
-category: "AI & Gaming"
+category: "AI & Automation"
 status: "completed"
-tags: ["AI", "Gaming", "React", "OpenAI", "PostgreSQL", "TypeScript"]
+tags: ["AI/ML", "React", "Gaming", "Database", "TypeScript"]
 ---
 
 # Story Adaptive Game Engine (SAGE AI)
