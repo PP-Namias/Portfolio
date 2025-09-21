@@ -1,9 +1,10 @@
 ---
 import { getEntry, render } from "astro:content";
 import Markdown from "@components/misc/Markdown.astro";
+import EnhancedSkillsSection from "@components/EnhancedSkillsSection.astro";
 import I18nKey from "../i18n/i18nKey";
 import { i18n } from "../i18n/translation";
-import MainGridLayout from "../layouts/MainGridLayout.astro";
+import Layout from "../layouts/Layout.astro";
 
 const skillsPost = await getEntry("spec", "skills");
 
@@ -14,10 +15,18 @@ if (!skillsPost) {
 const { Content } = await render(skillsPost);
 ---
 
-<MainGridLayout banner={skillsPost.data.banner} title={skillsPost.data.title}>
-    <div class="card-base">
-        <Markdown class="mt-2">
-            <Content />
-        </Markdown>
-    </div>
-</MainGridLayout>
+<Layout title="Technical Skills & Expertise" description="Comprehensive overview of Kenneth Namias' technical skills, expertise, and professional capabilities across frontend, backend, AI, and DevOps technologies.">
+    <!-- Enhanced Interactive Skills Section -->
+    <EnhancedSkillsSection />
+    
+    <!-- Optional: Additional Skills Content -->
+    <section class="py-16 px-4 bg-white dark:bg-gray-900">
+        <div class="max-w-4xl mx-auto">
+            <div class="card-base">
+                <Markdown class="mt-2">
+                    <Content />
+                </Markdown>
+            </div>
+        </div>
+    </section>
+</Layout>
