@@ -128,6 +128,14 @@ const isRemoteImage = src.startsWith('http') || src.startsWith('//');
 </style>
 
 <script>
+// Type declaration for Google Analytics gtag function
+declare global {
+  interface Window {
+    gtag: (...args: any[]) => void;
+  }
+  var gtag: (...args: any[]) => void;
+}
+
 // Enhanced image loading with performance monitoring
 document.addEventListener('DOMContentLoaded', function() {
   const images = document.querySelectorAll('.gallery-optimized-image');

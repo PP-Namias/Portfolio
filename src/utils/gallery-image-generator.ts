@@ -174,10 +174,10 @@ export function getProjectImageUrl(projectSlug: string, imageType: 'main' | 'det
 
   if (imageType === 'main') {
     return imageMapping[projectSlug]?.main || `${baseUrl}/1600x900/?technology,software,development`;
-  } else {
-    const details = imageMapping[projectSlug]?.detail || [];
-    return details[Math.floor(Math.random() * details.length)] || `${baseUrl}/1200x800/?technology,software`;
   }
+  
+  const details = imageMapping[projectSlug]?.detail || [];
+  return details[Math.floor(Math.random() * details.length)] || `${baseUrl}/1200x800/?technology,software`;
 }
 
 /**

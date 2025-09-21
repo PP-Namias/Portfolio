@@ -432,8 +432,13 @@ const galleryMeta = {
 </style>
 
 <script>
-// Type declaration for gtag  
-declare function gtag(...args: any[]): void;
+// Type declaration for Google Analytics gtag function
+declare global {
+  interface Window {
+    gtag: (...args: any[]) => void;
+  }
+  var gtag: (...args: any[]) => void;
+}
 
 // Gallery Best Practices - Enhanced Functionality with Analytics
 document.addEventListener('DOMContentLoaded', function() {
@@ -468,7 +473,7 @@ document.addEventListener('DOMContentLoaded', function() {
   
   // Filter functionality with analytics and accessibility
   filterButtons.forEach(button => {
-    button.addEventListener('click', function() {
+    button.addEventListener('click', function(this: HTMLButtonElement) {
       // Update active button and ARIA states
       filterButtons.forEach(btn => {
         btn.classList.remove('active');
@@ -657,7 +662,7 @@ document.addEventListener('DOMContentLoaded', function() {
   
   // Track gallery card interactions
   document.querySelectorAll('.gallery-card').forEach((card, index) => {
-    card.addEventListener('click', function() {
+    card.addEventListener('click', function(this: HTMLElement) {
       trackEvent('gallery_card_clicked', {
         project_title: this.dataset.title,
         project_category: this.dataset.category,
@@ -674,7 +679,7 @@ document.addEventListener('DOMContentLoaded', function() {
       hoverStartTime = Date.now();
     });
     
-    card.addEventListener('mouseleave', function() {
+    card.addEventListener('mouseleave', function(this: HTMLElement) {
       if (hoverStartTime) {
         const hoverDuration = Date.now() - hoverStartTime;
         if (hoverDuration > 1000) { // Only track meaningful hovers
@@ -690,7 +695,7 @@ document.addEventListener('DOMContentLoaded', function() {
   
   // Track external link clicks
   document.querySelectorAll('a[href^="http"]').forEach(link => {
-    link.addEventListener('click', function(e) {
+    link.addEventListener('click', function(this: HTMLAnchorElement, e) {
       const href = this.getAttribute('href');
       const linkText = this.textContent?.trim();
       
@@ -717,11 +722,12 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Lazy load images
         const images = card.querySelectorAll('img[data-src]');
-        images.forEach((img: HTMLImageElement) => {
-          if (img.dataset.src) {
-            img.src = img.dataset.src;
-            img.removeAttribute('data-src');
-            img.classList.add('loaded');
+        images.forEach((img) => {
+          const imageElement = img as HTMLImageElement;
+          if (imageElement.dataset.src) {
+            imageElement.src = imageElement.dataset.src;
+            imageElement.removeAttribute('data-src');
+            imageElement.classList.add('loaded');
           }
         });
         
@@ -774,10 +780,11 @@ document.addEventListener('DOMContentLoaded', function() {
       priorityObserver.observe(cardElement);
       // Pre-load critical images immediately
       const criticalImages = cardElement.querySelectorAll('img[data-src]');
-      criticalImages.forEach((img: HTMLImageElement) => {
-        if (img.dataset.src) {
-          img.src = img.dataset.src;
-          img.removeAttribute('data-src');
+      criticalImages.forEach((img) => {
+        const imageElement = img as HTMLImageElement;
+        if (imageElement.dataset.src) {
+          imageElement.src = imageElement.dataset.src;
+          imageElement.removeAttribute('data-src');
         }
       });
     } else {
