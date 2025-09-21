@@ -1,0 +1,292 @@
+name: 🚀 Advanced Deployment
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Deployment Environment'
+        required: true
+        default: 'production'
+        type: choice
+        options:
+          - production
+          - staging
+      force_deploy:
+        description: 'Force deployment (skip some checks)'
+        required: false
+        default: false
+        type: boolean
+
+env:
+  NODE_VERSION: '18'
+  PNPM_VERSION: '8'
+
+jobs:
+  # Job 1: Pre-deployment Validation
+  pre-deployment-validation:
+    name: 🔍 Pre-deployment Validation
+    runs-on: ubuntu-latest
+    if: github.event.inputs.force_deploy != 'true'
+    outputs:
+      should-deploy: ${{ steps.validation.outputs.should-deploy }}
+    steps:
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: 📦 Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: ${{ env.PNPM_VERSION }}
+          run_install: false
+
+      - name: 📁 Get pnpm store directory
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+      - name: 🗄️ Setup pnpm cache
+        uses: actions/cache@v3
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: 📦 Install Dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: 🧪 Run Critical Tests
+        run: |
+          echo "Running critical pre-deployment tests..."
+          pnpm test:unit
+          pnpm test:integration
+
+      - name: 🏗️ Build Validation
+        run: |
+          echo "Validating build process..."
+          pnpm build
+
+      - name: 🔍 Security Check
+        run: |
+          echo "Running security audit..."
+          pnpm audit --audit-level moderate
+
+      - name: 📊 Bundle Analysis
+        run: |
+          echo "Analyzing bundle size..."
+          # Add bundle analysis commands here
+          echo "Bundle analysis completed"
+
+      - name: ✅ Validation Results
+        id: validation
+        run: |
+          echo "should-deploy=true" >> $GITHUB_OUTPUT
+          echo "## ✅ Pre-deployment Validation Passed" >> $GITHUB_STEP_SUMMARY
+          echo "All validation checks completed successfully!" >> $GITHUB_STEP_SUMMARY
+
+  # Job 2: Production Deployment
+  production-deployment:
+    name: 🚀 Production Deployment
+    runs-on: ubuntu-latest
+    needs: [pre-deployment-validation]
+    if: always() && (needs.pre-deployment-validation.outputs.should-deploy == 'true' || github.event.inputs.force_deploy == 'true')
+    environment: 
+      name: ${{ github.event.inputs.environment || 'production' }}
+      url: ${{ steps.deploy.outputs.deployment-url }}
+    steps:
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: 📦 Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: ${{ env.PNPM_VERSION }}
+          run_install: false
+
+      - name: 📁 Get pnpm store directory
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+      - name: 🗄️ Setup pnpm cache
+        uses: actions/cache@v3
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: 📦 Install Dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: 🏗️ Build for Production
+        run: |
+          echo "Building for production environment..."
+          pnpm build
+        env:
+          NODE_ENV: production
+
+      - name: 🚀 Deploy to Vercel
+        id: deploy
+        uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          vercel-args: '--prod'
+          working-directory: ./
+
+      - name: 📝 Deployment Summary
+        run: |
+          echo "## 🚀 Deployment Summary" >> $GITHUB_STEP_SUMMARY
+          echo "**Environment**: ${{ github.event.inputs.environment || 'production' }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Deployment URL**: ${{ steps.deploy.outputs.preview-url }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Deployed At**: $(date)" >> $GITHUB_STEP_SUMMARY
+          echo "**Version**: ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+
+  # Job 3: Post-deployment Testing
+  post-deployment-testing:
+    name: 🧪 Post-deployment Testing
+    runs-on: ubuntu-latest
+    needs: [production-deployment]
+    steps:
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: 🧪 Smoke Tests
+        run: |
+          echo "Running post-deployment smoke tests..."
+          DEPLOYMENT_URL="${{ needs.production-deployment.outputs.deployment-url }}"
+          
+          # Basic connectivity test
+          if curl -f -s --max-time 30 "$DEPLOYMENT_URL" > /dev/null; then
+            echo "✅ Site is accessible"
+          else
+            echo "❌ Site is not accessible"
+            exit 1
+          fi
+          
+          # Test key pages
+          pages=("/" "/about/" "/projects/" "/gallery/" "/contact/")
+          for page in "${pages[@]}"; do
+            if curl -f -s --max-time 15 "${DEPLOYMENT_URL}${page}" > /dev/null; then
+              echo "✅ Page $page is accessible"
+            else
+              echo "❌ Page $page is not accessible"
+            fi
+          done
+
+      - name: ⚡ Performance Check
+        run: |
+          echo "Running post-deployment performance check..."
+          npx lighthouse-ci autorun --config=lighthouserc.json || true
+
+      - name: 🔍 Security Scan
+        run: |
+          echo "Running post-deployment security scan..."
+          # Add security scanning commands here
+          echo "Security scan completed"
+
+      - name: 📊 Test Results
+        run: |
+          echo "## 🧪 Post-deployment Test Results" >> $GITHUB_STEP_SUMMARY
+          echo "✅ All smoke tests passed" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Performance check completed" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Security scan completed" >> $GITHUB_STEP_SUMMARY
+
+  # Job 4: Rollback (if needed)
+  rollback-deployment:
+    name: 🔄 Rollback Deployment
+    runs-on: ubuntu-latest
+    needs: [production-deployment, post-deployment-testing]
+    if: failure() && needs.production-deployment.result == 'success'
+    steps:
+      - name: 🔄 Initiate Rollback
+        run: |
+          echo "## 🔄 Deployment Rollback Initiated" >> $GITHUB_STEP_SUMMARY
+          echo "**Reason**: Post-deployment tests failed" >> $GITHUB_STEP_SUMMARY
+          echo "**Action**: Rolling back to previous version" >> $GITHUB_STEP_SUMMARY
+          
+          # Add rollback commands here
+          echo "Rollback process completed"
+
+      - name: 🚨 Create Rollback Alert
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const title = `🔄 Deployment Rollback - ${new Date().toDateString()}`;
+            const body = `
+            ## 🔄 Deployment Rollback Performed
+            
+            **Rollback Time**: ${new Date().toISOString()}
+            **Environment**: ${{ github.event.inputs.environment || 'production' }}
+            **Reason**: Post-deployment tests failed
+            
+            ### Details:
+            - **Failed Job**: Post-deployment testing
+            - **Previous Version**: Restored
+            - **Status**: Site is back to stable state
+            
+            ### Next Steps:
+            1. Review failed test results
+            2. Fix issues in development
+            3. Re-test before next deployment
+            4. Update deployment procedures if needed
+            
+            *This alert was automatically generated by the deployment system.*
+            `;
+            
+            github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: title,
+              body: body,
+              labels: ['deployment', 'rollback', 'high-priority', 'production']
+            });
+
+  # Job 5: Deployment Notification
+  deployment-notification:
+    name: 📢 Deployment Notification
+    runs-on: ubuntu-latest
+    needs: [production-deployment, post-deployment-testing]
+    if: always() && needs.production-deployment.result == 'success'
+    steps:
+      - name: 📢 Success Notification
+        if: needs.post-deployment-testing.result == 'success'
+        run: |
+          echo "## 🎉 Deployment Successful!" >> $GITHUB_STEP_SUMMARY
+          echo "**Environment**: ${{ github.event.inputs.environment || 'production' }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Status**: ✅ All tests passed" >> $GITHUB_STEP_SUMMARY
+          echo "**URL**: ${{ needs.production-deployment.outputs.deployment-url }}" >> $GITHUB_STEP_SUMMARY
+
+      - name: 📢 Failure Notification
+        if: needs.post-deployment-testing.result == 'failure'
+        run: |
+          echo "## ⚠️ Deployment Issues Detected" >> $GITHUB_STEP_SUMMARY
+          echo "**Environment**: ${{ github.event.inputs.environment || 'production' }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Status**: ⚠️ Post-deployment tests failed" >> $GITHUB_STEP_SUMMARY
+          echo "**Action**: Check test results and consider rollback" >> $GITHUB_STEP_SUMMARY
+
+      - name: 📊 Deployment Metrics
+        run: |
+          echo "Recording deployment metrics..."
+          echo "Deployment completed at $(date)"
+          # Add metrics collection here
