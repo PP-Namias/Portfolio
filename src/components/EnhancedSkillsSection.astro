@@ -2,6 +2,7 @@
 // src/components/EnhancedSkillsSection.astro
 import { Icon } from "astro-icon/components";
 import { skillsDatabase, skillCategories, type SkillData, getSkillStats } from "../data/skillsConfig";
+import SkillsSearch from "./SkillsSearch.astro";
 
 const skillStats = getSkillStats();
 
@@ -22,6 +23,9 @@ const totalProjects = skillStats.totalProjects;
         Comprehensive skill set across modern development stack with proven experience in enterprise-grade applications
       </p>
     </div>
+
+    <!-- Advanced Search -->
+    <SkillsSearch />
 
     <!-- Filter Tabs -->
     <div class="flex flex-wrap justify-center gap-4 mb-12">
@@ -130,6 +134,13 @@ const totalProjects = skillStats.totalProjects;
         </div>
       </div>
     </div>
+
+    <!-- Mobile Swipe Indicators -->
+    <div class="mobile-swipe-indicator fixed bottom-4 left-4 right-4 flex justify-center space-x-2 opacity-50 transition-opacity duration-300 z-20 md:hidden">
+      <div class="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
+      <div class="w-2 h-2 bg-blue-500 rounded-full animate-pulse delay-150"></div>
+      <div class="w-2 h-2 bg-blue-500 rounded-full animate-pulse delay-300"></div>
+    </div>
   </div>
 </section>
 
@@ -174,33 +185,90 @@ const totalProjects = skillStats.totalProjects;
   .skill-progress {
     transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1);
   }
+
+  /* Mobile Enhancements */
+  @media (max-width: 768px) {
+    .skill-card {
+      touch-action: manipulation;
+      user-select: none;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .skill-card:active {
+      transform: scale(0.98);
+    }
+    
+    .mobile-swipe-indicator {
+      display: flex;
+    }
+    
+    .filter-container {
+      overflow-x: auto;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+      padding-bottom: 10px;
+    }
+    
+    .filter-container::-webkit-scrollbar {
+      display: none;
+    }
+    
+    .filter-btn {
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    #skills-grid {
+      touch-action: pan-y pinch-zoom;
+    }
+  }
+
+  @media (min-width: 769px) {
+    .mobile-swipe-indicator {
+      display: none;
+    }
+  }
 </style>
 
 <script>
-  class SkillsInteraction {
+  interface SkillsInteractionInterface {
+    filterButtons: NodeListOf<HTMLElement>;
+    skillCards: NodeListOf<HTMLElement>;
+    init(): void;
+    setupFiltering(): void;
+    filterSkills(filter: string): void;
+    updateActiveButton(activeButton: HTMLElement): void;
+    animateProgressBars(): void;
+  }
+
+  class SkillsInteraction implements SkillsInteractionInterface {
+    filterButtons: NodeListOf<HTMLElement>;
+    skillCards: NodeListOf<HTMLElement>;
+
     constructor() {
       this.filterButtons = document.querySelectorAll('.filter-btn');
       this.skillCards = document.querySelectorAll('.skill-card');
       this.init();
     }
     
-    init() {
+    init(): void {
       this.setupFiltering();
       this.animateProgressBars();
     }
     
-    setupFiltering() {
-      this.filterButtons.forEach(button => {
-        button.addEventListener('click', (e) => {
-          const filter = e.target.dataset.filter;
+    setupFiltering(): void {
+      this.filterButtons.forEach((button: HTMLElement) => {
+        button.addEventListener('click', (e: Event) => {
+          const target = e.target as HTMLElement;
+          const filter = target.dataset.filter || 'all';
           this.filterSkills(filter);
-          this.updateActiveButton(e.target);
+          this.updateActiveButton(target);
         });
       });
     }
     
-    filterSkills(filter) {
-      this.skillCards.forEach((card, index) => {
+    filterSkills(filter: string): void {
+      this.skillCards.forEach((card: HTMLElement, index: number) => {
         const category = card.dataset.category;
         const shouldShow = filter === 'all' || category === filter;
         
@@ -214,25 +282,28 @@ const totalProjects = skillStats.totalProjects;
       });
     }
     
-    updateActiveButton(activeButton) {
-      this.filterButtons.forEach(btn => btn.classList.remove('active'));
+    updateActiveButton(activeButton: HTMLElement): void {
+      this.filterButtons.forEach((btn: HTMLElement) => btn.classList.remove('active'));
       activeButton.classList.add('active');
     }
     
-    animateProgressBars() {
-      const progressBars = document.querySelectorAll('.skill-progress');
+    animateProgressBars(): void {
+      const progressBars = document.querySelectorAll('.skill-progress') as NodeListOf<HTMLElement>;
       
       const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
           if (entry.isIntersecting) {
-            const level = entry.target.dataset.level;
-            entry.target.style.width = `${level}%`;
+            const target = entry.target as HTMLElement;
+            const level = target.dataset.level;
+            if (level) {
+              target.style.width = `${level}%`;
+            }
             observer.unobserve(entry.target);
           }
         });
       }, { threshold: 0.5 });
       
-      progressBars.forEach(bar => {
+      progressBars.forEach((bar: HTMLElement) => {
         bar.style.width = '0%';
         observer.observe(bar);
       });
@@ -242,5 +313,12 @@ const totalProjects = skillStats.totalProjects;
   // Initialize when DOM loads
   document.addEventListener('DOMContentLoaded', () => {
     new SkillsInteraction();
+    
+    // Initialize mobile enhancements
+    if (window.innerWidth <= 768) {
+      import('../utils/mobileSkillsEnhancer').then(({ MobileSkillsEnhancer }) => {
+        new MobileSkillsEnhancer();
+      });
+    }
   });
 </script>

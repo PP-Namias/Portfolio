@@ -1,0 +1,480 @@
+---
+// Enhanced Skills Search Component
+// src/components/SkillsSearch.astro
+import { Icon } from "astro-icon/components";
+
+interface Props {
+  placeholder?: string;
+  className?: string;
+}
+
+const { placeholder = "Search skills, technologies, or projects...", className = "" } = Astro.props;
+---
+
+<div class={`skills-search-container ${className}`}>
+  <div class="search-input-wrapper">
+    <Icon name="material-symbols:search" class="search-icon" />
+    <input
+      type="text"
+      placeholder={placeholder}
+      class="skills-search-input"
+      id="skills-search"
+      autocomplete="off"
+      role="searchbox"
+      aria-label="Search skills"
+    />
+    <button class="search-clear-btn" type="button" aria-label="Clear search" style="display: none;">
+      <Icon name="material-symbols:close" class="w-4 h-4" />
+    </button>
+  </div>
+  
+  <div class="search-filters">
+    <button class="search-filter-btn active" data-search-filter="all">
+      All Results
+    </button>
+    <button class="search-filter-btn" data-search-filter="name">
+      Skill Names
+    </button>
+    <button class="search-filter-btn" data-search-filter="projects">
+      Projects
+    </button>
+    <button class="search-filter-btn" data-search-filter="description">
+      Descriptions
+    </button>
+  </div>
+  
+  <div class="search-suggestions" style="display: none;">
+    <div class="search-suggestions-header">
+      <span class="suggestions-title">Quick Suggestions</span>
+    </div>
+    <div class="search-suggestions-list">
+      <!-- Suggestions will be populated dynamically -->
+    </div>
+  </div>
+  
+  <div class="search-results-info">
+    <span class="results-count" style="display: none;"></span>
+    <span class="no-results-message" style="display: none;">
+      No skills found matching your search. Try different keywords or browse by category.
+    </span>
+  </div>
+</div>
+
+<style>
+  .skills-search-container {
+    @apply mb-8 space-y-4;
+  }
+  
+  .search-input-wrapper {
+    @apply relative flex items-center;
+    @apply bg-white/10 backdrop-blur-lg rounded-xl border border-white/20;
+    @apply focus-within:bg-white/15 focus-within:border-white/40 transition-all duration-300;
+  }
+  
+  .search-icon {
+    @apply absolute left-4 w-5 h-5 text-white/60 pointer-events-none;
+  }
+  
+  .skills-search-input {
+    @apply w-full pl-12 pr-12 py-4 bg-transparent border-none outline-none;
+    @apply text-white placeholder-white/60 text-lg;
+    @apply focus:ring-0 focus:border-transparent;
+  }
+  
+  .search-clear-btn {
+    @apply absolute right-4 p-1 text-white/60 hover:text-white/90;
+    @apply transition-colors duration-200 rounded-full hover:bg-white/10;
+  }
+  
+  .search-filters {
+    @apply flex flex-wrap gap-2 justify-center;
+  }
+  
+  .search-filter-btn {
+    @apply px-4 py-2 rounded-full text-sm font-medium transition-all duration-200;
+    @apply bg-white/10 text-white/80 border border-white/20;
+    @apply hover:bg-white/20 hover:text-white hover:border-white/40;
+  }
+  
+  .search-filter-btn.active {
+    @apply bg-white text-gray-900 border-white;
+  }
+  
+  .search-suggestions {
+    @apply bg-white/10 backdrop-blur-lg rounded-xl border border-white/20 p-4;
+    @apply absolute z-10 mt-2 w-full max-h-64 overflow-y-auto;
+  }
+  
+  .search-suggestions-header {
+    @apply flex items-center justify-between mb-3 pb-2 border-b border-white/20;
+  }
+  
+  .suggestions-title {
+    @apply text-white/90 font-medium text-sm;
+  }
+  
+  .search-suggestions-list {
+    @apply space-y-1;
+  }
+  
+  .suggestion-item {
+    @apply px-3 py-2 rounded-lg text-white/80 hover:bg-white/10;
+    @apply cursor-pointer transition-colors duration-200 text-sm;
+    @apply flex items-center justify-between;
+  }
+  
+  .suggestion-item:hover {
+    @apply text-white bg-white/15;
+  }
+  
+  .suggestion-category {
+    @apply text-xs text-white/50 ml-2;
+  }
+  
+  .search-results-info {
+    @apply text-center;
+  }
+  
+  .results-count {
+    @apply text-white/80 text-sm;
+  }
+  
+  .no-results-message {
+    @apply text-white/60 text-sm;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .search-filters {
+      @apply flex-col space-y-2;
+    }
+    
+    .search-filter-btn {
+      @apply w-full text-center;
+    }
+    
+    .skills-search-input {
+      @apply text-base;
+    }
+  }
+  
+  /* Animation for search results */
+  .search-highlight {
+    @apply bg-yellow-200 text-gray-900 px-1 rounded;
+  }
+  
+  @keyframes searchPulse {
+    0%, 100% { 
+      opacity: 1; 
+    }
+    50% { 
+      opacity: 0.7; 
+    }
+  }
+  
+  .searching {
+    animation: searchPulse 1.5s ease-in-out infinite;
+  }
+</style>
+
+<script>
+  interface SearchResult {
+    element: HTMLElement;
+    skill: any;
+    matchType: 'name' | 'project' | 'description';
+    relevance: number;
+  }
+
+  class SkillsSearch {
+    private searchInput: HTMLInputElement;
+    private clearButton: HTMLButtonElement;
+    private filterButtons: NodeListOf<HTMLElement>;
+    private suggestionsContainer: HTMLElement;
+    private suggestionsList: HTMLElement;
+    private resultsCount: HTMLElement;
+    private noResultsMessage: HTMLElement;
+    private skillCards: NodeListOf<HTMLElement>;
+    private allSkills: any[] = [];
+    private currentFilter: string = 'all';
+    private debounceTimer: number = 0;
+
+    constructor() {
+      this.initializeElements();
+      this.loadSkillsData();
+      this.setupEventListeners();
+      this.generateSuggestions();
+    }
+
+    private initializeElements(): void {
+      this.searchInput = document.getElementById('skills-search') as HTMLInputElement;
+      this.clearButton = document.querySelector('.search-clear-btn') as HTMLButtonElement;
+      this.filterButtons = document.querySelectorAll('.search-filter-btn');
+      this.suggestionsContainer = document.querySelector('.search-suggestions') as HTMLElement;
+      this.suggestionsList = document.querySelector('.search-suggestions-list') as HTMLElement;
+      this.resultsCount = document.querySelector('.results-count') as HTMLElement;
+      this.noResultsMessage = document.querySelector('.no-results-message') as HTMLElement;
+      this.skillCards = document.querySelectorAll('.skill-card');
+    }
+
+    private async loadSkillsData(): Promise<void> {
+      try {
+        const skillsModule = await import('../data/skillsConfig');
+        this.allSkills = skillsModule.getAllSkills();
+      } catch (error) {
+        console.error('Failed to load skills data:', error);
+      }
+    }
+
+    private setupEventListeners(): void {
+      // Search input events
+      this.searchInput.addEventListener('input', (e) => {
+        clearTimeout(this.debounceTimer);
+        this.debounceTimer = window.setTimeout(() => {
+          this.handleSearch((e.target as HTMLInputElement).value);
+        }, 300);
+      });
+
+      this.searchInput.addEventListener('focus', () => {
+        this.showSuggestions();
+      });
+
+      this.searchInput.addEventListener('blur', () => {
+        // Delay hiding to allow clicking on suggestions
+        setTimeout(() => this.hideSuggestions(), 200);
+      });
+
+      // Clear button
+      this.clearButton.addEventListener('click', () => {
+        this.clearSearch();
+      });
+
+      // Filter buttons
+      this.filterButtons.forEach((button: HTMLElement) => {
+        button.addEventListener('click', () => {
+          this.updateSearchFilter(button.dataset.searchFilter || 'all');
+          this.handleSearch(this.searchInput.value);
+        });
+      });
+
+      // Keyboard navigation
+      this.searchInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          this.clearSearch();
+        }
+      });
+    }
+
+    private handleSearch(query: string): void {
+      const trimmedQuery = query.trim().toLowerCase();
+      
+      if (trimmedQuery.length === 0) {
+        this.showAllSkills();
+        this.hideResultsInfo();
+        this.hideSuggestions();
+        this.hideClearButton();
+        return;
+      }
+
+      this.showClearButton();
+      this.hideSuggestions();
+      
+      const results = this.searchSkills(trimmedQuery);
+      this.displaySearchResults(results, trimmedQuery);
+      this.updateResultsInfo(results.length, trimmedQuery);
+    }
+
+    private searchSkills(query: string): SearchResult[] {
+      const results: SearchResult[] = [];
+
+      this.skillCards.forEach((card: HTMLElement) => {
+        const skillName = card.querySelector('.skill-name')?.textContent?.toLowerCase() || '';
+        const skillProjects = Array.from(card.querySelectorAll('.project-tag'))
+          .map(tag => tag.textContent?.toLowerCase() || '').join(' ');
+        const skillDescription = card.querySelector('.skill-description')?.textContent?.toLowerCase() || '';
+
+        let relevance = 0;
+        let matchType: 'name' | 'project' | 'description' = 'description';
+
+        // Check different match types based on current filter
+        if (this.currentFilter === 'all' || this.currentFilter === 'name') {
+          if (skillName.includes(query)) {
+            relevance += skillName.startsWith(query) ? 100 : 50;
+            matchType = 'name';
+          }
+        }
+
+        if (this.currentFilter === 'all' || this.currentFilter === 'projects') {
+          if (skillProjects.includes(query)) {
+            relevance += 30;
+            if (relevance < 30) matchType = 'project';
+          }
+        }
+
+        if (this.currentFilter === 'all' || this.currentFilter === 'description') {
+          if (skillDescription.includes(query)) {
+            relevance += 20;
+            if (relevance < 20) matchType = 'description';
+          }
+        }
+
+        if (relevance > 0) {
+          results.push({
+            element: card,
+            skill: this.getSkillFromCard(card),
+            matchType,
+            relevance
+          });
+        }
+      });
+
+      // Sort by relevance
+      return results.sort((a, b) => b.relevance - a.relevance);
+    }
+
+    private getSkillFromCard(card: HTMLElement): any {
+      return {
+        name: card.querySelector('.skill-name')?.textContent || '',
+        category: card.dataset.category || '',
+        projects: Array.from(card.querySelectorAll('.project-tag'))
+          .map(tag => tag.textContent || '')
+      };
+    }
+
+    private displaySearchResults(results: SearchResult[], query: string): void {
+      // Hide all cards first
+      this.skillCards.forEach((card: HTMLElement) => {
+        card.style.display = 'none';
+      });
+
+      // Show matching cards with highlighting
+      results.forEach((result, index) => {
+        result.element.style.display = 'block';
+        result.element.style.animationDelay = `${index * 0.1}s`;
+        this.highlightMatches(result.element, query);
+      });
+    }
+
+    private highlightMatches(card: HTMLElement, query: string): void {
+      const elements = [
+        card.querySelector('.skill-name'),
+        card.querySelector('.skill-description'),
+        ...Array.from(card.querySelectorAll('.project-tag'))
+      ];
+
+      elements.forEach(element => {
+        if (element && element.textContent) {
+          const text = element.textContent;
+          const regex = new RegExp(`(${query})`, 'gi');
+          element.innerHTML = text.replace(regex, '<span class="search-highlight">$1</span>');
+        }
+      });
+    }
+
+    private updateSearchFilter(filter: string): void {
+      this.currentFilter = filter;
+      
+      this.filterButtons.forEach((btn: HTMLElement) => {
+        btn.classList.remove('active');
+      });
+      
+      const activeButton = document.querySelector(`[data-search-filter="${filter}"]`);
+      activeButton?.classList.add('active');
+    }
+
+    private showAllSkills(): void {
+      this.skillCards.forEach((card: HTMLElement) => {
+        card.style.display = 'block';
+        // Remove any existing highlights
+        this.removeHighlights(card);
+      });
+    }
+
+    private removeHighlights(card: HTMLElement): void {
+      const highlights = card.querySelectorAll('.search-highlight');
+      highlights.forEach(highlight => {
+        const parent = highlight.parentNode;
+        if (parent) {
+          parent.replaceChild(document.createTextNode(highlight.textContent || ''), highlight);
+          parent.normalize();
+        }
+      });
+    }
+
+    private generateSuggestions(): void {
+      const suggestions = [
+        { text: 'React', category: 'Frontend' },
+        { text: 'TypeScript', category: 'Frontend' },
+        { text: 'Node.js', category: 'Backend' },
+        { text: 'Python', category: 'Backend' },
+        { text: 'Docker', category: 'DevOps' },
+        { text: 'AI Integration', category: 'AI' },
+        { text: 'Database Design', category: 'Database' }
+      ];
+
+      this.suggestionsList.innerHTML = suggestions.map(suggestion => 
+        `<div class="suggestion-item" data-suggestion="${suggestion.text}">
+          ${suggestion.text}
+          <span class="suggestion-category">${suggestion.category}</span>
+        </div>`
+      ).join('');
+
+      // Add click handlers to suggestions
+      this.suggestionsList.querySelectorAll('.suggestion-item').forEach(item => {
+        item.addEventListener('click', () => {
+          const suggestion = (item as HTMLElement).dataset.suggestion || '';
+          this.searchInput.value = suggestion;
+          this.handleSearch(suggestion);
+          this.hideSuggestions();
+        });
+      });
+    }
+
+    private showSuggestions(): void {
+      if (this.searchInput.value.trim() === '') {
+        this.suggestionsContainer.style.display = 'block';
+      }
+    }
+
+    private hideSuggestions(): void {
+      this.suggestionsContainer.style.display = 'none';
+    }
+
+    private updateResultsInfo(count: number, query: string): void {
+      if (count > 0) {
+        this.resultsCount.textContent = `Found ${count} skill${count !== 1 ? 's' : ''} matching "${query}"`;
+        this.resultsCount.style.display = 'block';
+        this.noResultsMessage.style.display = 'none';
+      } else {
+        this.resultsCount.style.display = 'none';
+        this.noResultsMessage.style.display = 'block';
+      }
+    }
+
+    private hideResultsInfo(): void {
+      this.resultsCount.style.display = 'none';
+      this.noResultsMessage.style.display = 'none';
+    }
+
+    private showClearButton(): void {
+      this.clearButton.style.display = 'block';
+    }
+
+    private hideClearButton(): void {
+      this.clearButton.style.display = 'none';
+    }
+
+    private clearSearch(): void {
+      this.searchInput.value = '';
+      this.showAllSkills();
+      this.hideResultsInfo();
+      this.hideSuggestions();
+      this.hideClearButton();
+      this.searchInput.focus();
+    }
+  }
+
+  // Initialize when DOM is loaded
+  document.addEventListener('DOMContentLoaded', () => {
+    new SkillsSearch();
+  });
+</script>
