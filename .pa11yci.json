@@ -1,15 +1,15 @@
 {
-  "defaults": {
-    "timeout": 30000,
-    "wait": 1000
-  },
-  "urls": [
-    "http://localhost:4321/",
-    "http://localhost:4321/about/",
-    "http://localhost:4321/projects/",
-    "http://localhost:4321/gallery/",
-    "http://localhost:4321/skills/",
-    "http://localhost:4321/experience/",
-    "http://localhost:4321/contact/"
-  ]
+	"defaults": {
+		"timeout": 30000,
+		"wait": 1000
+	},
+	"urls": [
+		"http://localhost:4321/",
+		"http://localhost:4321/about/",
+		"http://localhost:4321/projects/",
+		"http://localhost:4321/gallery/",
+		"http://localhost:4321/skills/",
+		"http://localhost:4321/experience/",
+		"http://localhost:4321/contact/"
+	]
 }
