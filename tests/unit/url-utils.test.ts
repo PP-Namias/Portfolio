@@ -14,7 +14,7 @@ describe("URL Utils", () => {
 		it("should handle empty slug", () => {
 			const url = getPostUrlBySlug("");
 
-			expect(url).toBe("/posts//");
+			expect(url).toBe("/posts/");
 		});
 
 		it("should handle special characters in slug", () => {
