@@ -70,6 +70,13 @@ engineers. Expert in TypeScript/React ecosystems, microservices architecture, AI
 
 ## Featured Projects
 
+### Portfolio Website
+**2025** | https://namias.tech/
+
+• Built comprehensive Astro portfolio with TypeScript, featuring enterprise CI/CD pipeline automation
+• Implemented dual analytics tracking (GA4 + Vercel), search functionality, and responsive design
+• Developed automated deployment workflows, quality checks, and comprehensive monitoring systems
+
 ### Java Rice - Interactive Food Ordering System
 **2023** | https://github.com/PP-Namias/Java-Rice
 
