@@ -253,8 +253,8 @@ export class MobileSkillsEnhancer {
 
 			if (!isExpanded) {
 				card.classList.add("expanded");
-				details.style.maxHeight = details.scrollHeight + "px";
-				projects.style.maxHeight = projects.scrollHeight + "px";
+				details.style.maxHeight = `${details.scrollHeight}px`;
+				projects.style.maxHeight = `${projects.scrollHeight}px`;
 				card.style.transform = "scale(1.02)";
 				card.style.zIndex = "10";
 			} else {

@@ -87,7 +87,7 @@ export class SkillsPerformanceOptimizer {
 
 		// Trigger animation on next frame
 		requestAnimationFrame(() => {
-			const scaleValue = Number.parseInt(level) / 100;
+			const scaleValue = Number.parseInt(level, 10) / 100;
 			progressBar.style.transform = `scaleX(${scaleValue})`;
 		});
 	}

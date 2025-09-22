@@ -624,7 +624,10 @@ export const getSkillsAboveLevel = (minLevel: number): SkillData[] => {
 
 export const getSkillsByExperience = (minYears: number): SkillData[] => {
 	return getAllSkills().filter((skill) => {
-		const years = Number.parseInt(skill.experience.match(/\d+/)?.[0] || "0");
+		const years = Number.parseInt(
+			skill.experience.match(/\d+/)?.[0] || "0",
+			10,
+		);
 		return years >= minYears;
 	});
 };
