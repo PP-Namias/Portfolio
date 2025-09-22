@@ -20,7 +20,7 @@ Expert in TypeScript/React ecosystems, microservices architecture, AI automation
 ### Technical Lead | Aeternitas Chapels & Columbarium
 **2025 - Present** | https://aeternitas-chapels-and-columbarium.vercel.app/
 
-• Led 7-engineer team building enterprise HRIS: React-TypeScript, Electron, Express, PostgreSQL
+• Led 7-engineer team building enterprise HRIS: React-TypeScript, Electron, Express, PostgreSQL stack
 • Architected employee management platform handling payroll, time tracking, analytics for 500+ users
 • Established CI/CD pipeline achieving 99.9% uptime, reduced deployment time 80%
 
@@ -73,9 +73,9 @@ Expert in TypeScript/React ecosystems, microservices architecture, AI automation
 ### AI-Powered Story Engine
 **2024** | https://text-adventure-six.vercel.app/
 
-• Built GPT-integrated text adventure platform with dynamic narrative generation
+• Built GPT-integrated text adventure platform with dynamic narrative generation algorithms
 • Implemented Stable Diffusion API for real-time visual content based on user choices
-• Delivered adaptive storytelling algorithms processing 1000+ user interactions
+• Delivered adaptive storytelling system processing 1000+ user interactions
 
 ---
 
