@@ -59,15 +59,25 @@ const galleryClasses = `
   data-index={index}
   class={galleryClasses}
 >
-  <Image
-    src={src}
-    alt={alt}
-    width={width}
-    height={height}
-    loading={loading}
-    class="w-full h-full object-cover"
-    {...(typeof src === 'string' ? {} : {})}
-  />
+  {typeof src === 'string' ? (
+    <img
+      src={src}
+      alt={alt}
+      width={width}
+      height={height}
+      loading={loading}
+      class="w-full h-full object-cover"
+    />
+  ) : (
+    <Image
+      src={src}
+      alt={alt}
+      width={width}
+      height={height}
+      loading={loading}
+      class="w-full h-full object-cover"
+    />
+  )}
 </div>
 
 <style>

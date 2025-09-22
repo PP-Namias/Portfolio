@@ -2,43 +2,54 @@
 // Skills Analytics Dashboard Component
 // src/components/SkillsAnalytics.astro
 import { Icon } from "astro-icon/components";
-import { skillsDatabase, getSkillStats, getTrendingSkills } from "../data/skillsConfig";
+import {
+	getSkillStats,
+	getTrendingSkills,
+	skillsDatabase,
+} from "../data/skillsConfig";
 
 const skillStats = getSkillStats();
 const trendingSkills = getTrendingSkills();
 
 // Calculate category distributions
-const categoryData = Object.entries(skillsDatabase).map(([category, skills]) => ({
-  category,
-  count: skills.length,
-  averageLevel: Math.round(skills.reduce((sum, skill) => sum + skill.level, 0) / skills.length),
-  expertCount: skills.filter(skill => skill.level >= 90).length,
-  totalProjects: [...new Set(skills.flatMap(skill => skill.projects))].length
-}));
+const categoryData = Object.entries(skillsDatabase).map(
+	([category, skills]) => ({
+		category,
+		count: skills.length,
+		averageLevel: Math.round(
+			skills.reduce((sum, skill) => sum + skill.level, 0) / skills.length,
+		),
+		expertCount: skills.filter((skill) => skill.level >= 90).length,
+		totalProjects: [...new Set(skills.flatMap((skill) => skill.projects))]
+			.length,
+	}),
+);
 
 // Experience distribution
 const experienceGroups = {
-  junior: { count: 0, skills: [] as string[] },
-  intermediate: { count: 0, skills: [] as string[] },
-  senior: { count: 0, skills: [] as string[] },
-  expert: { count: 0, skills: [] as string[] }
+	junior: { count: 0, skills: [] as string[] },
+	intermediate: { count: 0, skills: [] as string[] },
+	senior: { count: 0, skills: [] as string[] },
+	expert: { count: 0, skills: [] as string[] },
 };
 
-Object.values(skillsDatabase).flat().forEach(skill => {
-  if (skill.level < 60) {
-    experienceGroups.junior.count++;
-    experienceGroups.junior.skills.push(skill.name);
-  } else if (skill.level < 75) {
-    experienceGroups.intermediate.count++;
-    experienceGroups.intermediate.skills.push(skill.name);
-  } else if (skill.level < 90) {
-    experienceGroups.senior.count++;
-    experienceGroups.senior.skills.push(skill.name);
-  } else {
-    experienceGroups.expert.count++;
-    experienceGroups.expert.skills.push(skill.name);
-  }
-});
+Object.values(skillsDatabase)
+	.flat()
+	.forEach((skill) => {
+		if (skill.level < 60) {
+			experienceGroups.junior.count++;
+			experienceGroups.junior.skills.push(skill.name);
+		} else if (skill.level < 75) {
+			experienceGroups.intermediate.count++;
+			experienceGroups.intermediate.skills.push(skill.name);
+		} else if (skill.level < 90) {
+			experienceGroups.senior.count++;
+			experienceGroups.senior.skills.push(skill.name);
+		} else {
+			experienceGroups.expert.count++;
+			experienceGroups.expert.skills.push(skill.name);
+		}
+	});
 ---
 
 <div class="skills-analytics-dashboard">

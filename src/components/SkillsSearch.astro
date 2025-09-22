@@ -4,11 +4,14 @@
 import { Icon } from "astro-icon/components";
 
 interface Props {
-  placeholder?: string;
-  className?: string;
+	placeholder?: string;
+	className?: string;
 }
 
-const { placeholder = "Search skills, technologies, or projects...", className = "" } = Astro.props;
+const {
+	placeholder = "Search skills, technologies, or projects...",
+	className = "",
+} = Astro.props;
 ---
 
 <div class={`skills-search-container ${className}`}>

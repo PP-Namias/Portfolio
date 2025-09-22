@@ -1,12 +1,13 @@
 ---
+import SkillsAnalyticsDashboard from "../components/SkillsAnalytics.astro";
+import { siteConfig } from "../config";
 // Skills Analytics Page
 // src/pages/skills-analytics.astro
 import Layout from "../layouts/Layout.astro";
-import SkillsAnalyticsDashboard from "../components/SkillsAnalytics.astro";
-import { siteConfig } from "../config";
 
 const pageTitle = "Skills Analytics Dashboard";
-const pageDescription = "Comprehensive analysis of technical expertise, skill development tracking, and learning progress insights.";
+const pageDescription =
+	"Comprehensive analysis of technical expertise, skill development tracking, and learning progress insights.";
 ---
 
 <Layout title={pageTitle} description={pageDescription}>

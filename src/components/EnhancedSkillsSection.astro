@@ -1,7 +1,12 @@
 ---
 // src/components/EnhancedSkillsSection.astro
 import { Icon } from "astro-icon/components";
-import { skillsDatabase, skillCategories, type SkillData, getSkillStats } from "../data/skillsConfig";
+import {
+	getSkillStats,
+	type SkillData,
+	skillCategories,
+	skillsDatabase,
+} from "../data/skillsConfig";
 import SkillsSearch from "./SkillsSearch.astro";
 
 const skillStats = getSkillStats();
