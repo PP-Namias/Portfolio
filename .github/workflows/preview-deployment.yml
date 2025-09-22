@@ -1,4 +1,4 @@
-name: 🚀 Preview Deployment & PR Validation
+name: "Preview Deployment & PR Validation"
 
 on:
   pull_request:

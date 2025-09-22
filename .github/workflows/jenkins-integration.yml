@@ -1,4 +1,4 @@
-name: 🔧 Jenkins Integration & Hybrid CI/CD
+name: "Jenkins Integration & Hybrid CI/CD"
 
 on:
   push:

@@ -1,4 +1,4 @@
-name: 🦊 GitLab CI Integration & Multi-Platform Sync
+name: "GitLab CI Integration & Multi-Platform Sync"
 
 on:
   push:

@@ -1,4 +1,4 @@
-name: 🚀 Master CI/CD Orchestrator
+name: "Master CI/CD Orchestrator"
 
 on:
   push:
@@ -200,12 +200,12 @@ jobs:
               ref: context.ref,
               inputs: {
                 environment: '${{ needs.orchestrator-planning.outputs.target-env }}',
-                force_deploy: '${{ github.event.inputs.force_deploy || "false" }}'
+                force_deploy: '${{ github.event.inputs.force_deploy }}' || 'false'
               }
             });
             
             console.log('Kubernetes deployment workflow triggered');
-            core.summary.addHeading('☸️ Kubernetes Deployment Triggered', 3);
+            core.summary.addHeading('Kubernetes Deployment Triggered', 3);
             core.summary.addRaw(`Deploying to ${process.env.TARGET_ENV} environment...`);
             await core.summary.write();
         env:

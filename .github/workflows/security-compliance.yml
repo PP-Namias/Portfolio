@@ -1,4 +1,4 @@
-name: 🔒 Security & Compliance Scanning
+name: "Security & Compliance Scanning"
 
 on:
   push:
