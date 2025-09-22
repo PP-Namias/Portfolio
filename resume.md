@@ -1,6 +1,6 @@
 # John Kenneth Ryan B. Namias
 
-**Senior Software Engineer | Technical Lead**
+**Software Engineer | Full-Stack Developer**
 
 **Email:** jkrbn99@gmail.com | **Phone:** (+63) 927-253-3969  
 **Location:** Caloocan City, Philippines | **Portfolio:** https://namias.tech/
@@ -9,62 +9,62 @@
 
 ## Professional Summary
 
-Technical lead with 5+ years architecting enterprise systems across healthcare, legal, fintech, e-commerce.
-Delivered 8+ production applications serving 2000+ users. Led cross-functional teams of 15+ engineers.
-Expert in TypeScript/React ecosystems, microservices architecture, AI automation, team scaling.
+Software engineer with 5+ years architecting enterprise systems across healthcare, legal, fintech,
+e-commerce. Delivered 8+ production applications serving 2000+ users. Led cross-functional teams of 15+
+engineers. Expert in TypeScript/React ecosystems, microservices architecture, AI automation, team scaling.
 
 ---
 
 ## Professional Experience
 
-### Technical Lead | Aeternitas Chapels & Columbarium
-**2025 - Present** | https://aeternitas-chapels-and-columbarium.vercel.app/
+### Head Technician | PhoneCraft Cellphone Repair
+**2020 - Present** | https://phonecraft.vercel.app/
 
-• Led 7-engineer team building enterprise HRIS: React-TypeScript, Electron, Express, PostgreSQL stack
-• Architected employee management platform handling payroll, time tracking, analytics for 500+ users
-• Established CI/CD pipeline achieving 99.9% uptime, reduced deployment time 80%
+• Performed precision diagnostics: BGA rework, IC reballing, micro-soldering on mobile devices
+• Managed repair operations, inventory systems, technical support workflows for high-volume facility
+• Maintained quality standards achieving 95% customer satisfaction rate across 1000+ repairs
 
-### AI Solutions Engineer | Wilshire Financial Network
-**2025** | https://www.wilshirefinancialnetwork.net/
-
-• Built GPT-powered automation reducing social media workflow overhead 40%
-• Deployed custom AI agents optimizing internal processes for consulting teams
-• Delivered production AI integrations for 3 client-facing applications
-
-### Senior Developer | JIMIRENE Healthcare Systems
-**2025** | https://github.com/Genrei123/clinic-management-system
-
-• Engineered HIPAA-compliant CMS: React-TypeScript, Spring Boot, MySQL
-• Automated medical records, appointment scheduling, billing for 1000+ patients
-• Reduced staff manual workload 60%, improved patient processing speed 45%
-
-### Systems Architect | CaseMaster Legal Platform
-**2024** | https://github.com/PP-Namias/CaseMaster
-
-• Built Electron-TypeScript application integrating Microsoft 365 APIs
-• Collaborated with Supreme Court attorney optimizing case management workflows
-• Achieved 35% improvement in case access speed through data synchronization
-
-### Backend Developer | J'5 Pharmacy Platform
-**2025** | https://j5pharmacy.com
-
-• Developed Spring Boot API supporting real-time inventory, B2B ordering for 50+ vendors
-• Implemented secure payment processing, multi-vendor marketplace capabilities
-• Enabled automated restocking, price comparison across centralized platform
-
-### Platform Administrator | UCC-Ingo Academic Portal
+### Website Administrator | UCC-Ingo Academic Platform
 **2025 - Present** | https://uccingo.vercel.app
 
 • Managed Next.js platform with headless CMS serving 1000+ students
 • Led 9-engineer team launching gallery feature for academic project showcase
 • Maintained 99.8% uptime, optimized course access reducing load times 30%
 
-### Hardware Operations Lead | PhoneCraft Repair Services
-**2020 - Present** | https://phonecraft.vercel.app/
+### Software Engineer Intern | Aeternitas Chapels & Columbarium
+**2025** | https://aeternitas-chapels-and-columbarium.vercel.app/
 
-• Performed precision diagnostics: BGA rework, IC reballing, micro-soldering
-• Managed repair operations, inventory systems, technical support workflows
-• Maintained quality standards achieving 95% customer satisfaction rate
+• Led 7-engineer team building enterprise HRIS: React-TypeScript, Electron, Express, PostgreSQL stack
+• Architected employee management platform handling payroll, time tracking, analytics for 500+ users
+• Established CI/CD pipeline achieving 99.9% uptime, reduced deployment time 80%
+
+### AI Consultant Trainee | Wilshire Financial Network
+**2025** | https://www.wilshirefinancialnetwork.net/
+
+• Built GPT-powered automation reducing social media workflow overhead 40%
+• Deployed custom AI agents optimizing internal processes for consulting teams  
+• Delivered production AI integrations for 3 client-facing applications
+
+### Full Stack Developer | JIMIRENE Clinic Management System
+**2025** | https://github.com/Genrei123/clinic-management-system
+
+• Engineered HIPAA-compliant CMS: React-TypeScript, Spring Boot, MySQL
+• Automated medical records, appointment scheduling, billing for 1000+ patients
+• Reduced staff manual workload 60%, improved patient processing speed 45%
+
+### System Analyst | Legal Workflow Manager (CaseMaster)
+**2024** | https://github.com/PP-Namias/CaseMaster
+
+• Built Electron-TypeScript application integrating Microsoft 365 APIs
+• Collaborated with Supreme Court attorney optimizing case management workflows
+• Achieved 35% improvement in case access speed through data synchronization
+
+### Web Developer | J'5 Pharmacy Platform
+**2025** | https://j5pharmacy.com
+
+• Developed Spring Boot API supporting real-time inventory, B2B ordering for 50+ vendors
+• Implemented secure payment processing, multi-vendor marketplace capabilities
+• Enabled automated restocking, price comparison across centralized platform
 
 ---
 
