@@ -1,4 +1,4 @@
-name: "Kubernetes Deployment"
+name: Kubernetes Deployment
 
 on:
   workflow_run:
@@ -316,7 +316,7 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const env = '${{ github.event.inputs.environment }}' || 'staging';
+            const env = '${{ github.event.inputs.environment || 'staging' }}';
             const title = `Kubernetes Rollback - ${env} - ${new Date().toDateString()}`;
             const body = `
             ## Kubernetes Deployment Rollback

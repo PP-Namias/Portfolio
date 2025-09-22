@@ -1,4 +1,4 @@
-name: "Docker Build & Container Registry"
+name: Docker Build and Container Registry
 
 on:
   push:

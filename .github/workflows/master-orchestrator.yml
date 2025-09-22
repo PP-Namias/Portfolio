@@ -1,4 +1,4 @@
-name: "Master CI/CD Orchestrator"
+name: Master CI/CD Orchestrator
 
 on:
   push:
@@ -200,7 +200,7 @@ jobs:
               ref: context.ref,
               inputs: {
                 environment: '${{ needs.orchestrator-planning.outputs.target-env }}',
-                force_deploy: '${{ github.event.inputs.force_deploy }}' || 'false'
+                force_deploy: '${{ github.event.inputs.force_deploy || 'false' }}'
               }
             });
             

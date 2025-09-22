@@ -1,4 +1,4 @@
-name: "Monitoring & Health Checks"
+name: Monitoring and Health Checks
 
 on:
   schedule:

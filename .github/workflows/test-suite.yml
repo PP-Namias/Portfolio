@@ -1,4 +1,4 @@
-name: "Test Suite - Unit, Integration & E2E"
+name: Test Suite - Unit Integration and E2E
 
 on:
   push:
