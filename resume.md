@@ -70,6 +70,34 @@ engineers. Expert in TypeScript/React ecosystems, microservices architecture, AI
 
 ## Featured Projects
 
+### Java Rice - Interactive Food Ordering System
+**2023** | https://github.com/PP-Namias/Java-Rice
+
+• Built comprehensive Java GUI application for restaurant food ordering with QR code integration
+• Implemented admin panel for menu management, sales reports, order tracking, and customer analytics
+• Developed secure payment gateway integration with promotional discount system and voucher support
+
+### Student Attendance Management System
+**2023** | https://github.com/PP-Namias/Student-Attendance-Management-System
+
+• Built comprehensive C# WPF application with barcode scanning for attendance tracking automation
+• Implemented Material Design UI with PostgreSQL database and role-based authentication system
+• Developed mobile integration, offline sync capabilities, and comprehensive reporting analytics
+
+### Car Dealership Management System
+**2022** | https://github.com/PP-Namias/Car-Dealership-Management-Program
+
+• Built comprehensive C++ console application for car dealership operations with file handling system
+• Implemented role-based authentication with Admin, Employee, and Guest access levels
+• Developed employee management, inventory control, order processing, and comprehensive logging features
+
+### Pre-enrollment Management System
+**2022** | https://github.com/PP-Namias/Pre-enrollment-Management-System
+
+• Built comprehensive VB.NET desktop application for student enrollment data processing and management
+• Implemented role-based access control with Super Admin, Admin, Teacher, and Guest user levels
+• Developed real-time attendance logging with photo identification verification system
+
 ### AI-Powered Story Engine
 **2024** | https://text-adventure-six.vercel.app/
 
