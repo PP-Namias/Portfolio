@@ -186,14 +186,14 @@ const { placeholder = "Search skills, technologies, or projects...", className =
   }
 
   class SkillsSearch {
-    private searchInput: HTMLInputElement;
-    private clearButton: HTMLButtonElement;
-    private filterButtons: NodeListOf<HTMLElement>;
-    private suggestionsContainer: HTMLElement;
-    private suggestionsList: HTMLElement;
-    private resultsCount: HTMLElement;
-    private noResultsMessage: HTMLElement;
-    private skillCards: NodeListOf<HTMLElement>;
+    private searchInput!: HTMLInputElement;
+    private clearButton!: HTMLButtonElement;
+    private filterButtons!: NodeListOf<HTMLElement>;
+    private suggestionsContainer!: HTMLElement;
+    private suggestionsList!: HTMLElement;
+    private resultsCount!: HTMLElement;
+    private noResultsMessage!: HTMLElement;
+    private skillCards!: NodeListOf<HTMLElement>;
     private allSkills: any[] = [];
     private currentFilter: string = 'all';
     private debounceTimer: number = 0;

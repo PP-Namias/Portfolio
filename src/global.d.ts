@@ -11,6 +11,9 @@ declare global {
 				}>;
 			}>;
 		};
+		// Analytics and custom functions
+		trackConversion?: (event_name: string, parameters: Record<string, unknown>) => void;
+		exportSkillsCSV?: () => void;
 	}
 }
 

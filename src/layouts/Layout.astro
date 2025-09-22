@@ -74,7 +74,7 @@ if (title) {
 // Enhanced SEO defaults
 const seoDescription =
 	description ||
-	siteConfig.description ||
+	siteConfig.seo?.description ||
 	"Kenneth Namias - Full-Stack Developer specializing in AI automation, modern web technologies, and enterprise solutions.";
 const seoType = setOGTypeArticle
 	? "article"
