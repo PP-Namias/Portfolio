@@ -23,8 +23,8 @@ test.describe("Visual Regression Tests", () => {
 		});
 	});
 
-	test("Projects page visual regression", async ({ page }) => {
-		await page.goto("/posts/");
+		test("Projects page visual regression", async ({ page }) => {
+			await page.goto("/archive/");
 		await page.waitForLoadState("networkidle");
 
 		await expect(page).toHaveScreenshot("projects-page.png", {
@@ -33,8 +33,8 @@ test.describe("Visual Regression Tests", () => {
 		});
 	});
 
-	test("Gallery page visual regression", async ({ page }) => {
-		await page.goto("/posts/");
+		test("Gallery page visual regression", async ({ page }) => {
+			await page.goto("/archive/");
 		await page.waitForLoadState("networkidle");
 
 		await expect(page).toHaveScreenshot("gallery-page.png", {

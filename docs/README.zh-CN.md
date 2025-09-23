@@ -16,7 +16,6 @@
 - [ ] 评论
 - [x] 搜索
 - [x] 文内目录
-
 ## 👀 要求
 
 - Node.js <= 22
@@ -25,10 +24,9 @@
 ## 🚀 使用方法 1
 
 使用 [create-fuwari](https://github.com/L4Ph/create-fuwari) 在本地初始化项目。
-
 ```sh
 # npm
-npm create fuwari@latest
+ - Admonitions ([预览及使用](http://namias.tech/archive/markdown-extended/#admonitions))
 
 # yarn
 yarn create fuwari

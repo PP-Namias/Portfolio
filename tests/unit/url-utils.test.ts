@@ -8,20 +8,20 @@ describe("URL Utils", () => {
 			const slug = "test-post";
 			const url = getPostUrlBySlug(slug);
 
-			expect(url).toBe("/posts/test-post/");
+			expect(url).toBe("/archive/test-post/");
 		});
 
 		it("should handle empty slug", () => {
 			const url = getPostUrlBySlug("");
 
-			expect(url).toBe("/posts/");
+			expect(url).toBe("/archive/");
 		});
 
 		it("should handle special characters in slug", () => {
 			const slug = "test-post-with-numbers-123";
 			const url = getPostUrlBySlug(slug);
 
-			expect(url).toBe("/posts/test-post-with-numbers-123/");
+			expect(url).toBe("/archive/test-post-with-numbers-123/");
 		});
 	});
 

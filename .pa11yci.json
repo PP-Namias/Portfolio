@@ -6,7 +6,7 @@
 	"urls": [
 		"http://localhost:4321/",
 		"http://localhost:4321/about/",
-		"http://localhost:4321/posts/",
+		"http://localhost:4321/archive/",
 		"http://localhost:4321/contact/"
 	]
 }

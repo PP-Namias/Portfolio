@@ -157,9 +157,9 @@ codeUrl: "https://github.com/username/project"
 
 This portfolio supports enhanced Markdown features:
 
-- **Admonitions** - Callout boxes for tips, warnings, and notes ([Preview and Usage](https://ppnamias.vercel.app/posts/markdown-extended/#admonitions))
-- **GitHub Repository Cards** - Embed repository information ([Preview and Usage](https://ppnamias.vercel.app/posts/markdown-extended/#github-repository-cards))  
-- **Enhanced Code Blocks** - Syntax highlighting with Expressive Code ([Preview](https://ppnamias.vercel.app/posts/expressive-code/) / [Docs](https://expressive-code.com/))
+- **Admonitions** - Callout boxes for tips, warnings, and notes ([Preview and Usage](https://ppnamias.vercel.app/archive/markdown-extended/#admonitions))
+- **GitHub Repository Cards** - Embed repository information ([Preview and Usage](https://ppnamias.vercel.app/archive/markdown-extended/#github-repository-cards))  
+- **Enhanced Code Blocks** - Syntax highlighting with Expressive Code ([Preview](https://ppnamias.vercel.app/archive/expressive-code/) / [Docs](https://expressive-code.com/))
 - **Math Equations** - KaTeX support for mathematical expressions
 - **Table of Contents** - Automatic TOC generation
 

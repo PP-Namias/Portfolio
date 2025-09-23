@@ -1,6 +1,6 @@
 ---
 export async function get() {
-  return new Response(null, { status: 301, headers: { Location: "/posts/" } });
+  return new Response(null, { status: 301, headers: { Location: "/archive/" } });
 }
 ---
 
@@ -8,11 +8,11 @@ export async function get() {
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta http-equiv="refresh" content="0;url=/posts/" />
+  <meta http-equiv="refresh" content="0;url=/archive/" />
     <meta name="robots" content="noindex" />
     <title>Moved</title>
   </head>
   <body>
-    Page moved to <a href="/posts/">Posts</a>.
+  Page moved to <a href="/archive/">Archive</a>.
   </body>
 </html>

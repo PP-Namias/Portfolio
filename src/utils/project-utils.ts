@@ -128,7 +128,7 @@ export async function searchProjects(query: string): Promise<ProjectEntry[]> {
  */
 export function getProjectUrl(_project: ProjectEntry): string {
 	// Projects are archived; point links to the blog posts listing to avoid 404s
-	return "/posts/";
+	return "/archive/";
 }
 
 /**
