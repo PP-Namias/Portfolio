@@ -1,0 +1,12 @@
+---
+// Archived: src/pages/archive.astro
+import ArchivePanel from "@components/archived/ArchivePanel.svelte";
+import MainGridLayout from "@layouts/MainGridLayout.astro";
+import { getSortedPostsList } from "../../src/utils/content-utils";
+
+const sortedPostsList = await getSortedPostsList();
+---
+
+<MainGridLayout title="Archive (Archived)">
+    <ArchivePanel sortedPosts={sortedPostsList} client:only="svelte"></ArchivePanel>
+</MainGridLayout>

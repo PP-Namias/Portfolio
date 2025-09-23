@@ -1,0 +1,17 @@
+---
+// Archived: src/pages/projects.astro
+import { getEntry, render } from "astro:content";
+import Markdown from "@components/misc/Markdown.astro";
+import MainGridLayout from "@layouts/MainGridLayout.astro";
+
+const projectsPost = await getEntry("spec", "projects");
+const { Content } = await render(projectsPost);
+---
+
+<MainGridLayout title="Projects (Archived)">
+    <div class="card-base">
+        <Markdown class="mt-2">
+            <Content />
+        </Markdown>
+    </div>
+</MainGridLayout>

@@ -1,0 +1,17 @@
+---
+// Archived: src/pages/experience.astro
+import { getEntry, render } from "astro:content";
+import Markdown from "@components/misc/Markdown.astro";
+import MainGridLayout from "@layouts/MainGridLayout.astro";
+
+const experiencePost = await getEntry("spec", "experience");
+const { Content } = await render(experiencePost);
+---
+
+<MainGridLayout title="Experience (Archived)">
+    <div class="card-base">
+        <Markdown class="mt-2">
+            <Content />
+        </Markdown>
+    </div>
+</MainGridLayout>
