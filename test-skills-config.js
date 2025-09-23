@@ -42,15 +42,3 @@ skillsDatabase.frontend.forEach((skill) => {
 });
 
 console.log("\n✅ All tests completed successfully!");
-	console.log(
-		`- ${skill.name}: Level ${skill.level}%, ${skill.projects.length} projects`,
-	);
-});
-
-console.log("\n✅ All tests completed successfully!");
-	console.log(
-		`- ${skill.name}: Level ${skill.level}%, ${skill.projects.length} projects`,
-	);
-});
-
-console.log("\n✅ All tests completed successfully!");

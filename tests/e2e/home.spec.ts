@@ -74,11 +74,3 @@ test.describe("Home Page", () => {
 		}
 	});
 });
-			expect(typeof isDarkMode).toBe("boolean");
-		}
-	});
-});
-			expect(typeof isDarkMode).toBe("boolean");
-		}
-	});
-});
