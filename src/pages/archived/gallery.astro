@@ -1,37 +1,18 @@
 ---
-// Archived: src/pages/gallery.astro
-import { getCollection, getEntry, render } from "astro:content";
-import Markdown from "@components/misc/Markdown.astro";
-import Pagination from "../components/control/Pagination.astro";
-import EnhancedGalleryCard from "@components/archived/EnhancedGalleryCard.astro";
-import GalleryModal from "@components/archived/GalleryModal.astro";
-import SEOHead from "@components/SEOHead.astro";
-import { PAGE_SIZE } from "../constants/constants";
-import MainGridLayout from "../layouts/MainGridLayout.astro";
-
-const galleryPost = await getEntry("spec", "gallery");
-const { Content } = await render(galleryPost);
-
-const allGalleryCollections = await getCollection("gallery");
-const publishedGalleries = allGalleryCollections.filter((g) => g.data.published);
-const enhancedGalleries = publishedGalleries.map(g => ({...g.data, slug: g.slug}));
-
+export async function get() {
+  return new Response(null, { status: 301, headers: { Location: "/posts/" } });
+}
 ---
 
-<MainGridLayout title="Gallery (Archived)">
-    <div class="card-base">
-        <Markdown class="mt-2">
-            <Content />
-        </Markdown>
-    </div>
-
-    <div class="gallery-container mt-8">
-        <div id="gallery-grid" class="gallery-grid">
-            {enhancedGalleries.map(project => (
-                <EnhancedGalleryCard project={project} />
-            ))}
-        </div>
-    </div>
-
-    <GalleryModal />
-</MainGridLayout>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="refresh" content="0;url=/posts/" />
+    <meta name="robots" content="noindex" />
+    <title>Moved</title>
+  </head>
+  <body>
+    Page moved to <a href="/posts/">Posts</a>.
+  </body>
+</html>
