@@ -112,6 +112,22 @@ engineers. Expert in TypeScript/React ecosystems, microservices architecture, AI
 • Implemented Stable Diffusion API for real-time visual content based on user choices
 • Delivered adaptive storytelling system processing 1000+ user interactions
 
+### Galaxy Animation - Interactive Solar System
+**2023** | https://pp-namias.github.io/Galaxy-Animation/
+
+• Created mesmerizing galaxy animation showcasing complete solar system using pure HTML, CSS, and JavaScript
+• Implemented realistic planetary orbits, celestial mechanics, and educational content with detailed astronomical data
+• Added galaxy gallery images for enhanced visual experience and comprehensive astronomical visualization
+• Achieved 11 GitHub stars and 35 successful deployments with MIT open-source license for educational use
+
+### CSS3 Robot Animation - Web Art & Educational Platform
+**2023** | https://pp-namias.github.io/CSS3-Robot-Animation/
+
+• Designed cute robot character using pure CSS3 animations without external libraries or frameworks
+• Created step-by-step tutorials and educational resources for CSS design learning and web art appreciation
+• Implemented minimalist, user-friendly interface with smooth animations for enhanced user experience
+• Achieved 7 GitHub stars with comprehensive documentation for CSS animation education and web development
+
 ---
 
 ## Education
