@@ -20,5 +20,8 @@
       "@/*": ["src/*"]
     }
   },
-  "include": ["src/**/*"]
+  "include": ["src/**/*"],
+  "exclude": [
+    "src/pages/projects/[...slug].astro"
+  ]
 }
