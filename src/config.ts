@@ -64,12 +64,8 @@ export const siteConfig: SiteConfig = {
 export const navBarConfig: NavBarConfig = {
 	links: [
 		LinkPreset.Home,
+		{ name: "Blogs", url: "/posts/" },
 		{ name: "About", url: "/about/" },
-		{ name: "Skills", url: "/skills/" },
-		{ name: "Experience", url: "/experience/" },
-		{ name: "Projects", url: "/projects/" },
-		{ name: "Gallery", url: "/gallery/" },
-		{ name: "Blog", url: "/archive/" },
 		{ name: "Contact", url: "/contact/" },
 	],
 };
