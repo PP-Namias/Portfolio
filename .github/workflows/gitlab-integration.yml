@@ -39,7 +39,7 @@ jobs:
     if: github.event.inputs.gitlab_action == 'sync' || github.event.inputs.gitlab_action == 'mirror' || github.event_name == 'push'
     steps:
       - name: 📥 Checkout GitHub Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
