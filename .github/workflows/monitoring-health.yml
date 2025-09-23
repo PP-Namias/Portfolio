@@ -37,7 +37,7 @@ jobs:
           fi
           
           # Check key pages
-          pages=("/about/" "/projects/" "/gallery/" "/contact/")
+          pages=("/about/" "/posts/" "/contact/")
           for page in "${pages[@]}"; do
             if curl -f -s --max-time 15 "${{ env.PRODUCTION_URL }}${page}" > /dev/null; then
               echo "✅ **${page}**: Available" >> $GITHUB_STEP_SUMMARY

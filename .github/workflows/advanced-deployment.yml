@@ -183,7 +183,7 @@ jobs:
           fi
           
           # Test key pages
-          pages=("/" "/about/" "/projects/" "/gallery/" "/contact/")
+          pages=("/" "/about/" "/posts/" "/contact/")
           for page in "${pages[@]}"; do
             if curl -f -s --max-time 15 "${DEPLOYMENT_URL}${page}" > /dev/null; then
               echo "✅ Page $page is accessible"

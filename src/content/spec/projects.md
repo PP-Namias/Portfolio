@@ -34,7 +34,7 @@ title: "Projects"
   <a href="https://sage-ai-demo.vercel.app" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-600 text-white font-semibold rounded-lg hover:from-green-600 hover:to-emerald-700 transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl dark:shadow-green-500/25">
     🚀 Live Demo
   </a>
-  <a href="/projects/sage-ai/" class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white font-semibold rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl dark:shadow-blue-500/25">
+  <a href="/posts/" class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white font-semibold rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl dark:shadow-blue-500/25">
     📖 View Details
   </a>
   <a href="https://github.com/PP-Namias/sage-ai" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-gray-700 to-gray-800 text-white font-semibold rounded-lg hover:from-gray-800 hover:to-gray-900 transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl dark:shadow-gray-700/25">
@@ -68,7 +68,7 @@ title: "Projects"
   <a href="https://automation-demo.example.com" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-600 text-white font-semibold rounded-lg hover:from-green-600 hover:to-emerald-700 transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl dark:shadow-green-500/25">
     🚀 Live Demo
   </a>
-  <a href="/projects/ai-automation-platform/" class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white font-semibold rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl dark:shadow-blue-500/25">
+  <a href="/posts/" class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white font-semibold rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl dark:shadow-blue-500/25">
     📖 View Details
   </a>
   <a href="https://github.com/PP-Namias/ai-automation-platform" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-gray-700 to-gray-800 text-white font-semibold rounded-lg hover:from-gray-800 hover:to-gray-900 transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl dark:shadow-gray-700/25">
@@ -98,7 +98,7 @@ title: "Projects"
 </div>
 
 <div class="flex flex-wrap gap-4 mb-8">
-  <a href="/projects/insurance-portal/" class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white font-semibold rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl dark:shadow-blue-500/25">
+  <a href="/posts/" class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white font-semibold rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl dark:shadow-blue-500/25">
     📖 View Details
   </a>
   <a href="https://github.com/PP-Namias/insurance-portal" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-gray-700 to-gray-800 text-white font-semibold rounded-lg hover:from-gray-800 hover:to-gray-900 transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl dark:shadow-gray-700/25">
@@ -132,7 +132,7 @@ title: "Projects"
   <a href="https://ecommerce-demo.example.com" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-600 text-white font-semibold rounded-lg hover:from-green-600 hover:to-emerald-700 transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl dark:shadow-green-500/25">
     🚀 Live Demo
   </a>
-  <a href="/projects/ecommerce-platform/" class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white font-semibold rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl dark:shadow-blue-500/25">
+  <a href="/posts/" class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white font-semibold rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl dark:shadow-blue-500/25">
     📖 View Details
   </a>
   <a href="https://github.com/PP-Namias/ecommerce-platform" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-gray-700 to-gray-800 text-white font-semibold rounded-lg hover:from-gray-800 hover:to-gray-900 transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl dark:shadow-gray-700/25">
@@ -166,7 +166,7 @@ title: "Projects"
   <a href="https://pp-namias.vercel.app" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-600 text-white font-semibold rounded-lg hover:from-green-600 hover:to-emerald-700 transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl dark:shadow-green-500/25">
     � Live Site
   </a>
-  <a href="/projects/portfolio-website/" class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white font-semibold rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl dark:shadow-blue-500/25">
+  <a href="/posts/" class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white font-semibold rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl dark:shadow-blue-500/25">
     📖 View Details
   </a>
   <a href="https://github.com/PP-Namias/portfolio-website" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-gray-700 to-gray-800 text-white font-semibold rounded-lg hover:from-gray-800 hover:to-gray-900 transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl dark:shadow-gray-700/25">

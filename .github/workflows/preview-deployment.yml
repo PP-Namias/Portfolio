@@ -92,10 +92,10 @@ jobs:
             - [ ] Homepage loads correctly
             - [ ] Blog posts are visible
             - [ ] Navigation works
-            - [ ] Gallery functionality
             - [ ] Contact forms
             - [ ] Mobile responsiveness
             - [ ] Dark/Light mode toggle
+             - [ ] Posts functionality
             
             *This preview will be automatically updated when you push new commits.*`;
             
@@ -174,7 +174,7 @@ jobs:
           urls: |
             ${{ needs.deploy-preview.outputs.preview-url }}
             ${{ needs.deploy-preview.outputs.preview-url }}/about/
-            ${{ needs.deploy-preview.outputs.preview-url }}/projects/
+             ${{ needs.deploy-preview.outputs.preview-url }}/posts/
           configPath: './lighthouserc.json'
           uploadArtifacts: true
           temporaryPublicStorage: true
