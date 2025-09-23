@@ -1,12 +1,18 @@
 ---
-// Archived: src/pages/archive.astro
-import ArchivePanel from "@components/archived/ArchivePanel.svelte";
-import MainGridLayout from "@layouts/MainGridLayout.astro";
-import { getSortedPostsList } from "../../src/utils/content-utils";
-
-const sortedPostsList = await getSortedPostsList();
+export async function get() {
+  return new Response(null, { status: 301, headers: { Location: "/posts/" } });
+}
 ---
 
-<MainGridLayout title="Archive (Archived)">
-    <ArchivePanel sortedPosts={sortedPostsList} client:only="svelte"></ArchivePanel>
-</MainGridLayout>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="refresh" content="0;url=/posts/" />
+    <meta name="robots" content="noindex" />
+    <title>Moved</title>
+  </head>
+  <body>
+    Page moved to <a href="/posts/">Posts</a>.
+  </body>
+</html>

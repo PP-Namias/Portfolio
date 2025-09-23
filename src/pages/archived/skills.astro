@@ -1,31 +1,18 @@
 ---
-// Archived: src/pages/skills.astro
-// Original page archived as part of site simplification to blog-only site.
-import { getEntry, render } from "astro:content";
-import EnhancedSkillsSection from "@components/archived/EnhancedSkillsSection.astro";
-import Markdown from "@components/misc/Markdown.astro";
-import I18nKey from "../i18n/i18nKey";
-import { i18n } from "../i18n/translation";
-import Layout from "../layouts/Layout.astro";
-
-const skillsPost = await getEntry("spec", "skills");
-
-if (!skillsPost) {
-    throw new Error("Skills page content not found (archived copy)");
+export async function get() {
+  return new Response(null, { status: 301, headers: { Location: "/posts/" } });
 }
-
-const { Content } = await render(skillsPost);
 ---
 
-<Layout title="Technical Skills & Expertise (Archived)">
-    <EnhancedSkillsSection />
-    <section class="py-16 px-4 bg-white dark:bg-gray-900">
-        <div class="max-w-4xl mx-auto">
-            <div class="card-base">
-                <Markdown class="mt-2">
-                    <Content />
-                </Markdown>
-            </div>
-        </div>
-    </section>
-</Layout>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="refresh" content="0;url=/posts/" />
+    <meta name="robots" content="noindex" />
+    <title>Moved</title>
+  </head>
+  <body>
+    Page moved to <a href="/posts/">Posts</a>.
+  </body>
+</html>

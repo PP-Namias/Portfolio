@@ -1,17 +1,18 @@
 ---
-// Archived: src/pages/experience.astro
-import { getEntry, render } from "astro:content";
-import Markdown from "@components/misc/Markdown.astro";
-import MainGridLayout from "@layouts/MainGridLayout.astro";
-
-const experiencePost = await getEntry("spec", "experience");
-const { Content } = await render(experiencePost);
+export async function get() {
+  return new Response(null, { status: 301, headers: { Location: "/posts/" } });
+}
 ---
 
-<MainGridLayout title="Experience (Archived)">
-    <div class="card-base">
-        <Markdown class="mt-2">
-            <Content />
-        </Markdown>
-    </div>
-</MainGridLayout>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="refresh" content="0;url=/posts/" />
+    <meta name="robots" content="noindex" />
+    <title>Moved</title>
+  </head>
+  <body>
+    Page moved to <a href="/posts/">Posts</a>.
+  </body>
+</html>
