@@ -1,55 +1,20 @@
 ---
-import SkillsAnalyticsDashboard from "../components/SkillsAnalytics.astro";
-import { siteConfig } from "../config";
-// Skills Analytics Page
-// src/pages/skills-analytics.astro
-import Layout from "../layouts/Layout.astro";
-
-const pageTitle = "Skills Analytics Dashboard";
-const pageDescription =
-	"Comprehensive analysis of technical expertise, skill development tracking, and learning progress insights.";
+export async function get() {
+  return new Response(null, { status: 301, headers: { Location: "/posts/" } });
+}
 ---
 
-<Layout title={pageTitle} description={pageDescription}>
-  <main class="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-gray-900 dark:via-blue-900 dark:to-indigo-900">
-    <!-- Hero Section -->
-    <section class="pt-24 pb-12">
-      <div class="container mx-auto px-6">
-        <div class="text-center max-w-4xl mx-auto">
-          <h1 class="text-5xl md:text-6xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent mb-6">
-            Skills Analytics
-          </h1>
-          <p class="text-xl md:text-2xl text-gray-600 dark:text-gray-300 leading-relaxed mb-8">
-            Data-driven insights into technical expertise, growth patterns, and learning trajectory
-          </p>
-          <div class="flex flex-wrap justify-center gap-4 mb-12">
-            <div class="analytics-badge">
-              <span class="badge-icon">📊</span>
-              <span>Real-time Analytics</span>
-            </div>
-            <div class="analytics-badge">
-              <span class="badge-icon">📈</span>
-              <span>Growth Tracking</span>
-            </div>
-            <div class="analytics-badge">
-              <span class="badge-icon">🎯</span>
-              <span>Goal Management</span>
-            </div>
-            <div class="analytics-badge">
-              <span class="badge-icon">🔍</span>
-              <span>Detailed Insights</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Analytics Dashboard -->
-    <section class="pb-24">
-      <div class="container mx-auto px-6">
-        <SkillsAnalyticsDashboard />
-      </div>
-    </section>
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="refresh" content="0;url=/posts/" />
+    <title>Moved</title>
+  </head>
+  <body>
+    Page moved to <a href="/posts/">Posts</a>.
+  </body>
+</html>
 
     <!-- Additional Insights Section -->
     <section class="py-16 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm">
@@ -177,29 +142,21 @@ const pageDescription =
     @apply flex items-center justify-center text-white mb-4;
   }
 
-  .feature-title {
-    @apply text-xl font-bold text-gray-900 dark:text-white mb-3;
+  ---
+  export async function get() {
+    return new Response(null, {
+      status: 301,
+      headers: { Location: "/posts/" },
+    });
   }
+  ---
 
-  .feature-description {
-    @apply text-gray-600 dark:text-gray-400 leading-relaxed;
-  }
-
-  /* Animations */
-  @keyframes float {
-    0%, 100% { transform: translateY(0px); }
-    50% { transform: translateY(-10px); }
-  }
-
-  .analytics-badge:nth-child(1) { animation: float 6s ease-in-out infinite; }
-  .analytics-badge:nth-child(2) { animation: float 6s ease-in-out infinite 1.5s; }
-  .analytics-badge:nth-child(3) { animation: float 6s ease-in-out infinite 3s; }
-  .analytics-badge:nth-child(4) { animation: float 6s ease-in-out infinite 4.5s; }
-
-  /* Responsive Design */
-  @media (max-width: 768px) {
-    .analytics-badge {
-      @apply w-full justify-center;
-    }
-  }
-</style>
+  <html>
+    <head>
+      <meta http-equiv="refresh" content="0;url=/posts/" />
+      <title>Moved</title>
+    </head>
+    <body>
+      <p>Page moved to <a href="/posts/">Posts</a>.</p>
+    </body>
+  </html>

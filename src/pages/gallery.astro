@@ -1,138 +1,20 @@
 ---
-import { getCollection, getEntry, render } from "astro:content";
-import Markdown from "@components/misc/Markdown.astro";
-import Pagination from "../components/control/Pagination.astro";
-import EnhancedGalleryCard from "../components/EnhancedGalleryCard.astro";
-import GalleryModal from "../components/GalleryModal.astro";
-import SEOHead from "../components/SEOHead.astro";
-import { PAGE_SIZE } from "../constants/constants";
-import I18nKey from "../i18n/i18nKey";
-import { i18n } from "../i18n/translation";
-import MainGridLayout from "../layouts/MainGridLayout.astro";
-
-const galleryPost = await getEntry("spec", "gallery");
-
-if (!galleryPost) {
-	throw new Error("Gallery page content not found");
+export async function get() {
+  return new Response(null, { status: 301, headers: { Location: "/posts/" } });
 }
-
-const { Content } = await render(galleryPost);
-
-// Get all gallery collections and paginate like posts
-const allGalleryCollections = await getCollection("gallery");
-const publishedGalleries = allGalleryCollections
-	.filter((gallery) => gallery.data.published)
-	.sort(
-		(a, b) =>
-			new Date(b.data.published).getTime() -
-			new Date(a.data.published).getTime(),
-	);
-
-// Transform gallery data for enhanced cards
-const enhancedGalleries = publishedGalleries.map((gallery) => ({
-	...gallery.data,
-	slug: gallery.slug,
-	image: gallery.data.mainImage || `/images/gallery/${gallery.slug}/cover.jpg`,
-	detailedImages: gallery.data.additionalImages || [],
-	features: gallery.data.features || [],
-	challenges: gallery.data.challenges || [],
-	solutions: gallery.data.solutions || [],
-	results: gallery.data.results || [],
-	projectDate: gallery.data.projectDate || gallery.data.published,
-	techStack: gallery.data.techStack || gallery.data.tags || [],
-	liveDemo: gallery.data.liveDemo,
-	sourceCode: gallery.data.sourceCode,
-	client: gallery.data.client,
-	teamSize: gallery.data.teamSize,
-	duration: gallery.data.duration,
-}));
-
-// Create a page object similar to posts pagination
-const page = {
-	data: enhancedGalleries,
-	currentPage: 1,
-	lastPage: 1,
-	size: enhancedGalleries.length,
-	total: enhancedGalleries.length,
-	url: {
-		current: "/gallery/",
-		next: undefined,
-		prev: undefined,
-	},
-};
-
-const len = page.data.length;
-
-// SEO metadata following Gallery Best Practices Guide
-const galleryMeta = {
-	title:
-		"Kenneth Namias Portfolio Gallery - Professional Software Development Projects",
-	description:
-		"Explore Kenneth Namias' visual portfolio gallery featuring enterprise HRIS systems, AI automation tools, and modern web applications. See real project screenshots and technical implementations.",
-	keywords: [
-		"Kenneth Namias portfolio",
-		"software development gallery",
-		"HRIS screenshots",
-		"React projects",
-		"enterprise applications",
-		"AI automation",
-		"web development portfolio",
-	],
-	ogImage: "/images/gallery/gallery-preview.jpg",
-	url: "https://kennethnamias.dev/gallery",
-	structured: {
-		"@context": "https://schema.org",
-		"@type": "ImageGallery",
-		name: "Kenneth Namias Portfolio Gallery",
-		description:
-			"Professional software development project gallery showcasing enterprise systems, AI automation, and modern web applications",
-		author: {
-			"@type": "Person",
-			name: "Kenneth Namias",
-			jobTitle: "Software Developer",
-			url: "https://kennethnamias.dev",
-		},
-		numberOfItems: len,
-		mainEntityOfPage: {
-			"@type": "WebPage",
-			"@id": "https://kennethnamias.dev/gallery",
-		},
-	},
-};
 ---
 
-<MainGridLayout banner={galleryPost.data.banner} title={galleryPost.data.title}>
-    <!-- Enhanced SEO Head -->
-    <SEOHead 
-        slot="head"
-        title={galleryMeta.title}
-        description={galleryMeta.description}
-        image={galleryMeta.ogImage}
-        type="website"
-        author="Kenneth Namias"
-        tags={galleryMeta.keywords}
-        canonicalUrl={galleryMeta.url}
-    />
-    
-    <!-- Structured Data for Gallery -->
-    <script type="application/ld+json" slot="head">
-        {JSON.stringify(galleryMeta.structured)}
-    </script>
-    
-    <div class="card-base">
-        <Markdown class="mt-2">
-            <Content />
-        </Markdown>
-    </div>
-    
-    <!-- Enhanced Gallery Container -->
-    <div class="gallery-container mt-8">
-        <!-- Gallery Header -->
-        <div class="gallery-header mb-8">
-            <!-- Gallery Stats -->
-            <div class="text-center mb-6">
-                <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-                    Professional Portfolio Gallery
+<!doctype html>
+<html>
+  <head>
+  <meta charset="utf-8" />
+  <meta http-equiv="refresh" content="0;url=/posts/" />
+  <title>Moved</title>
+  </head>
+  <body>
+  Page moved to <a href="/posts/">Posts</a>.
+  </body>
+</html>
                 </h2>
                 <p class="text-gray-600 dark:text-gray-300 text-lg">
                     {len === 0 ? (

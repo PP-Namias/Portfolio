@@ -1,14 +1,18 @@
 ---
-import ArchivePanel from "@components/ArchivePanel.svelte";
-import I18nKey from "@i18n/i18nKey";
-import { i18n } from "@i18n/translation";
-import MainGridLayout from "@layouts/MainGridLayout.astro";
-import { getSortedPostsList } from "../utils/content-utils";
-
-const sortedPostsList = await getSortedPostsList();
+export async function get() {
+    return new Response(null, { status: 301, headers: { Location: "/posts/" } });
+}
 ---
 
-<MainGridLayout title={i18n(I18nKey.archive)}>
-    <ArchivePanel sortedPosts={sortedPostsList} client:only="svelte"></ArchivePanel>
-</MainGridLayout>
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="refresh" content="0;url=/posts/" />
+        <title>Moved</title>
+    </head>
+    <body>
+        Page moved to <a href="/posts/">Posts</a>.
+    </body>
+</html>
 
