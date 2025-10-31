@@ -1,0 +1,299 @@
+%-----------------------------------------------------------------------------------------------------------------------------------------------%
+%	The MIT License (MIT)
+%
+%	Copyright (c) 2021 Jitin Nair
+%
+%	Permission is hereby granted, free of charge, to any person obtaining a copy
+%	of this software and associated documentation files (the "Software"), to deal
+%	in the Software without restriction, including without limitation the rights
+%	to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+%	copies of the Software, and to permit persons to whom the Software is
+%	furnished to do so, subject to the following conditions:
+%	
+%	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+%	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+%	FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+%	AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+%	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+%	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+%	THE SOFTWARE.
+%	
+%
+%-----------------------------------------------------------------------------------------------------------------------------------------------%
+
+%----------------------------------------------------------------------------------------
+%	DOCUMENT DEFINITION
+%----------------------------------------------------------------------------------------
+
+% article class because we want to fully customize the page and not use a cv template
+\documentclass[a4paper,12pt]{article}
+
+%----------------------------------------------------------------------------------------
+%	FONT
+%----------------------------------------------------------------------------------------
+
+% % fontspec allows you to use TTF/OTF fonts directly
+% \usepackage{fontspec}
+% \defaultfontfeatures{Ligatures=TeX}
+
+% % modified for ShareLaTeX use
+% \setmainfont[
+% SmallCapsFont = Fontin-SmallCaps.otf,
+% BoldFont = Fontin-Bold.otf,
+% ItalicFont = Fontin-Italic.otf
+% ]
+% {Fontin.otf}
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES
+%----------------------------------------------------------------------------------------
+\usepackage{url}
+\usepackage{parskip} 	
+
+%other packages for formatting
+\RequirePackage{color}
+\RequirePackage{graphicx}
+\usepackage[usenames,dvipsnames]{xcolor}
+\usepackage[scale=0.9]{geometry}
+
+%tabularx environment
+\usepackage{tabularx}
+
+%for lists within experience section
+\usepackage{enumitem}
+
+% centered version of 'X' col. type
+\newcolumntype{C}{>{\centering\arraybackslash}X} 
+
+%to prevent spillover of tabular into next pages
+\usepackage{supertabular}
+\usepackage{tabularx}
+\newlength{\fullcollw}
+\setlength{\fullcollw}{0.47\textwidth}
+
+%custom \section
+\usepackage{titlesec}				
+\usepackage{multicol}
+\usepackage{multirow}
+
+%CV Sections inspired by: 
+%http://stefano.italians.nl/archives/26
+\titleformat{\section}{\Large\scshape\raggedright}{}{0em}{}[\titlerule]
+\titlespacing{\section}{0pt}{10pt}{10pt}
+
+%for publications
+\usepackage[style=authoryear,sorting=ynt, maxbibnames=2]{biblatex}
+
+%Setup hyperref package, and colours for links
+\usepackage[unicode, draft=false]{hyperref}
+\definecolor{linkcolour}{rgb}{0,0.2,0.6}
+\hypersetup{colorlinks,breaklinks,urlcolor=linkcolour,linkcolor=linkcolour}
+\addbibresource{citations.bib}
+\setlength\bibitemsep{1em}
+
+%for social icons
+\usepackage{fontawesome5}
+
+%debug page outer frames
+%\usepackage{showframe}
+
+
+% job listing environments
+\newenvironment{jobshort}[2]
+    {
+    \begin{tabularx}{\linewidth}{@{}l X r@{}}
+    \textbf{#1} & \hfill &  #2 \\[3.75pt]
+    \end{tabularx}
+    }
+    {
+    }
+
+\newenvironment{joblong}[2]
+    {
+    \begin{tabularx}{\linewidth}{@{}l X r@{}}
+    \textbf{#1} & \hfill &  #2 \\[3.75pt]
+    \end{tabularx}
+    \begin{minipage}[t]{\linewidth}
+    \begin{itemize}[nosep,after=\strut, leftmargin=1em, itemsep=3pt,label=--]
+    }
+    {
+    \end{itemize}
+    \end{minipage}    
+    }
+
+
+
+%----------------------------------------------------------------------------------------
+%	BEGIN DOCUMENT
+%----------------------------------------------------------------------------------------
+\begin{document}
+
+% non-numbered pages
+\pagestyle{empty} 
+
+%----------------------------------------------------------------------------------------
+%	TITLE
+%----------------------------------------------------------------------------------------
+
+% \begin{tabularx}{\linewidth}{ @{}X X@{} }
+% \huge{Your Name}\vspace{2pt} & \hfill \emoji{incoming-envelope} email@email.com \\
+% \raisebox{-0.05\height}\faGithub\ username \ | \
+% \raisebox{-0.00\height}\faLinkedin\ username \ | \ \raisebox{-0.05\height}\faGlobe \ mysite.com  & \hfill \emoji{calling} number
+% \end{tabularx}
+
+\begin{tabularx}{\linewidth}{@{} C @{}}
+\Huge{Jhon Keneth Ryan B. Namias} \\[7.5pt]
+\href{https://namias.tech/}{\raisebox{-0.05\height}\faGlobe \ namias.tech} \ $|$ \ 
+\href{mailto:jkrbn99@gmail.com}{\raisebox{-0.05\height}\faEnvelope \ jkrbn99@gmail.com} \ $|$ \ 
+\href{tel:+639272533969}{\raisebox{-0.05\height}\faMobile \ +63.927.253.3969} \\
+Caloocan City, PH \\
+\end{tabularx}
+
+%----------------------------------------------------------------------------------------
+% EXPERIENCE SECTIONS
+%----------------------------------------------------------------------------------------
+
+%Interests/ Keywords/ Summary
+\section{Summary}
+Experienced full-stack developer and AI consultant with expertise in web technologies and enterprise solutions.
+
+%Experience
+\section{Work Experience}
+
+\begin{joblong}{Head Technician | PhoneCraft Cellphone Repair}{2020 - Present}
+\item Performed precision diagnostics: BGA rework, IC reballing, micro-soldering on mobile devices
+\item Managed repair operations, inventory systems, technical support workflows for high-volume facility
+\item Maintained quality standards achieving 95\% customer satisfaction rate across 1000+ repairs
+\end{joblong}
+\href{https://phonecraft.vercel.app/}{PhoneCraft Website}
+
+\begin{joblong}{Website Administrator | Ucc-Ingo}{2025 - Present}
+\item Managed Next.js platform with headless CMS serving 1000+ students
+\item Led 9-engineer team launching gallery feature for academic project showcase
+\item Maintained 99.8\% uptime, optimized course access reducing load times 30\%
+\end{joblong}
+\href{https://uccingo.tech/}{Ucc-Ingo Website}
+
+\begin{joblong}{Software Engineer Intern | Aeternitas Chapels \& Columbarium}{2025}
+\item Led 7-engineer team building enterprise HRIS: React-TypeScript, Electron, Express, PostgreSQL stack
+\item Architected employee management platform handling payroll, time tracking, analytics for 500+ users
+\item Established CI/CD pipeline achieving 99.9\% uptime, reduced deployment time 80\%
+\end{joblong}
+\href{https://aeternitas.ph/}{Aeternitas Website}
+
+\begin{joblong}{Artificial Intelligence Consultant Trainee | Wilshire Financial Network}{2025}
+\item Built GPT-powered automation reducing social media workflow overhead 40\%
+\item Deployed custom AI agents optimizing internal processes for consulting teams
+\item Delivered production AI integrations for 3 client-facing applications
+\end{joblong}
+\href{https://www.wilshirefinancialnetwork.net/}{Wilshire Financial Network}
+
+\begin{joblong}{Full Stack Developer | JIMIRENE Clinic Management System}{2025}
+\item Engineered HIPAA-compliant CMS: React-TypeScript, Spring Boot, MySQL
+\item Automated medical records, appointment scheduling, billing for 1000+ patients
+\item Reduced staff manual workload 60\%, improved patient processing speed 45\%
+\end{joblong}
+\href{https://github.com/Genrei123/clinic-management-system}{GitHub Repository}
+
+\begin{joblong}{Full Stack Web Developer | J'5 Pharmacy}{2025}
+\item Developed Spring Boot API supporting real-time inventory, B2B ordering for 50+ vendors
+\item Implemented secure payment processing, multi-vendor marketplace capabilities
+\item Enabled automated restocking, price comparison across centralized platform
+\end{joblong}
+\href{https://j5pharmacy.com}{J'5 Pharmacy Website}
+
+\begin{joblong}{System Analyst | Legal Workflow Manager (CaseMaster)}{2024}
+\item Built Electron-TypeScript application integrating Microsoft 365 APIs
+\item Collaborated with Supreme Court attorney optimizing case management workflows
+\item Achieved 35\% improvement in case access speed through data synchronization
+\end{joblong}
+\href{https://github.com/PP-Namias/CaseMaster}{GitHub Repository}
+  
+%Projects
+\section{Projects}
+
+\begin{tabularx}{\linewidth}{ @{}l r@{} }
+\textbf{Story Adaptive Game Engine - Software Engineering Project} & \hfill \href{https://text-adventure-six.vercel.app/}{Demo} \\[3.75pt]
+\multicolumn{2}{@{}X@{}}{- Built GPT-integrated text adventure platform with dynamic narrative generation algorithms
+- Implemented Stable Diffusion API for real-time visual content based on user choices
+- Delivered adaptive storytelling system processing 1000+ user interactions} \\
+\end{tabularx}
+
+\begin{tabularx}{\linewidth}{ @{}l r@{} }
+\textbf{Java Rice - Interactive Food Ordering System} & \hfill \href{https://github.com/PP-Namias/Java-Rice}{GitHub} \\[3.75pt]
+\multicolumn{2}{@{}X@{}}{- Built comprehensive Java GUI application for restaurant food ordering with QR code integration
+- Implemented admin panel for menu management, sales reports, order tracking, and customer analytics
+- Developed secure payment gateway integration with promotional discount system and voucher support} \\
+\end{tabularx}
+
+\begin{tabularx}{\linewidth}{ @{}l r@{} }
+\textbf{Student Attendance Management System} & \hfill \href{https://github.com/PP-Namias/Student-Attendance-Management-System}{GitHub} \\[3.75pt]
+\multicolumn{2}{@{}X@{}}{- Built comprehensive C\# WPF application with barcode/QR scanning for attendance tracking automation
+- Implemented Material Design UI with PostgreSQL database and role-based authentication system
+- Developed desktop integration, offline sync capabilities, and comprehensive reporting analytics} \\
+\end{tabularx}
+
+\begin{tabularx}{\linewidth}{ @{}l r@{} }
+\textbf{Galaxy Animation - Interactive Solar System} & \hfill \href{https://pp-namias.github.io/Galaxy-Animation/}{Demo} \\[3.75pt]
+\multicolumn{2}{@{}X@{}}{- Created mesmerizing galaxy animation showcasing complete solar system using pure HTML, CSS, and JavaScript
+- Implemented realistic planetary orbits, celestial mechanics, and educational content with detailed astronomical data
+- Added galaxy gallery images for enhanced visual experience and comprehensive astronomical visualization} \\
+\end{tabularx}
+
+\begin{tabularx}{\linewidth}{ @{}l r@{} }
+\textbf{CSS3 Robot Animation - Web Art \& Educational Platform} & \hfill \href{https://pp-namias.github.io/CSS3-Robot-Animation/}{Demo} \\[3.75pt]
+\multicolumn{2}{@{}X@{}}{- Designed cute robot character using pure CSS3 animations without external libraries or frameworks
+- Created step-by-step tutorials and educational resources for CSS design learning and web art appreciation
+- Implemented minimalist, user-friendly interface with smooth animations for enhanced user experience} \\
+\end{tabularx}
+
+\begin{tabularx}{\linewidth}{ @{}l r@{} }
+\textbf{Car Dealership Management System} & \hfill \href{https://github.com/PP-Namias/Car-Dealership-Management-Program}{GitHub} \\[3.75pt]
+\multicolumn{2}{@{}X@{}}{- Built comprehensive C++ console application for car dealership operations with file handling system
+- Implemented role-based authentication with Admin, Employee, and Guest access levels
+- Developed employee management, inventory control, order processing, and comprehensive logging features} \\
+\end{tabularx}
+
+\begin{tabularx}{\linewidth}{ @{}l r@{} }
+\textbf{Pre-enrollment Management System} & \hfill \href{https://github.com/PP-Namias/Pre-enrollment-Management-System}{GitHub} \\[3.75pt]
+\multicolumn{2}{@{}X@{}}{- Built comprehensive VB.NET desktop application for student enrollment data processing and management
+- Implemented role-based access control with Super Admin, Admin, Teacher, and Guest user levels
+- Developed real-time attendance logging with photo identification verification system} \\
+\end{tabularx}
+
+%----------------------------------------------------------------------------------------
+%	EDUCATION
+%----------------------------------------------------------------------------------------
+\section{Education, Leadership \& Affiliations}
+
+\begin{tabularx}{\linewidth}{@{}l X@{}}	
+
+2026 & BS, Computer Science at \textbf{University of Caloocan City} \hfill Caloocan, NCR \\
+
+2025 & Head of Technical Committee, BS Computer Science Council \hfill Caloocan, NCR \\
+& - Led 9-engineer team organizing technical events for 1000+ participants \\
+& - Conducted Git, GitHub, Visual Studio Code workshops improving campus coding literacy \\
+& - Built digital platform enabling thesis project showcase, fostering student collaboration \\
+
+2024 & Program Committee, BS Computer Science Council \hfill Caloocan, NCR \\
+& - Coordinated 5+ technical events with comprehensive curriculum development \\
+& - Organized training sessions: version control, IDE proficiency, software development practices \\
+& - Established technical skill development programs for 200+ computer science students \\
+
+\end{tabularx}
+
+
+
+%----------------------------------------------------------------------------------------
+%	SKILLS
+%----------------------------------------------------------------------------------------
+\section{Certifications \& Skills}
+\begin{tabularx}{\linewidth}{@{}l X@{}}
+Certifications &  \normalsize{Certified Java NC3 passer}\\
+Skills  &  \normalsize{JavaScript/TypeScript, React, Spring Boot, PostgreSQL, Express.js, Electron, Git, Next.js, Vite}\\  
+\end{tabularx}
+
+\vfill
+\center{\footnotesize Last updated: \today}
+
+\end{document}
