@@ -25,22 +25,10 @@
       "area": "Computer Science"
     }
   ],
-  "work": [
-    {
-      "company": "",
-      "location": "",
-      "position": "",
-      "website": "",
-      "startDate": "",
-      "endDate": "",
-      "highlights": [
-        ""
-      ]
-    }
-  ],
+  "work": [],
   "skills": [
     {
-      "level": "",
+      "name": "Interests",
       "keywords": [
         "Data science",
         "Web development",
@@ -48,8 +36,7 @@
         "Game development",
         "Linguistics",
         "Fitness"
-      ],
-      "name": "Interests"
+      ]
     },
     {
       "keywords": [
@@ -166,7 +153,7 @@
         "Streamlit"
       ],
       "description": "Web application providing a visual representation using a choropleth map of the estimated magnitude of poor families in the Philippines from the years 2006, 2009, 2012, and 2015.",
-      "url": "https://github.com/PP-Namias/philippine-poverty-area-estimates-choropleth/tree/master"
+      "url": "https://github.com/PP-Namias/philippine-poverty-area-estimates-choropleth"
     },
     {
       "name": "A Not-So-Public Public Board - 2023",
@@ -278,7 +265,7 @@
         "Numpy",
         "Scikit-learn",
         "Jupyter",
-        "KMeans Clutering",
+        "KMeans Clustering",
         "DBSCAN",
         "Agglomerative Clustering"
       ],
@@ -302,10 +289,9 @@
   ],
   "awards": [
     {
-      "summary": "",
       "title": "Google Data Analytics Capstone: Complete a Case Study",
       "date": "Jul 2023",
-      "awarder": "Google "
+      "awarder": "Google"
     },
     {
       "title": "Data Analysis with R Programming",
@@ -333,7 +319,7 @@
       "awarder": "Google"
     },
     {
-      "title": " Foundations: Data, Data, Everywhere",
+      "title": "Foundations: Data, Data, Everywhere",
       "date": "Dec 2022",
       "awarder": "Google"
     },
@@ -353,7 +339,7 @@
       "awarder": "Project SPARTA PH"
     },
     {
-      "title": " Data Science and Machine Learning Using Python",
+      "title": "Data Science and Machine Learning Using Python",
       "awarder": "Project SPARTA PH",
       "date": "Sep 2022"
     },
@@ -378,7 +364,7 @@
       "awarder": "Department of Information and Communications Technology - Philippines"
     },
     {
-      "title": " Basic Statistics With Python",
+      "title": "Basic Statistics With Python",
       "awarder": "Department of Information and Communications Technology - Philippines",
       "date": "Jul 2022"
     },
@@ -393,12 +379,12 @@
       "awarder": "Project SPARTA PH"
     },
     {
-      "title": " Programming for Intermediate Users Using Python",
+      "title": "Programming for Intermediate Users Using Python",
       "date": "Jul 2022",
       "awarder": "Department of Information and Communications Technology - Philippines"
     },
     {
-      "title": " Visualize Data with Python",
+      "title": "Visualize Data with Python",
       "date": "Jul 2022",
       "awarder": "Department of Information and Communications Technology - Philippines"
     },
@@ -413,12 +399,12 @@
       "awarder": "Project SPARTA PH"
     },
     {
-      "title": "Data Visualization Using Tableau and Pytho",
+      "title": "Data Visualization Using Tableau and Python",
       "date": "Feb 2022",
       "awarder": "Project SPARTA PH"
     },
     {
-      "title": " SQL for Business Users",
+      "title": "SQL for Business Users",
       "awarder": "Project SPARTA PH",
       "date": "Feb 2022"
     },
@@ -439,7 +425,7 @@
     },
     {
       "awarder": "Project SPARTA PH",
-      "title": " Data Management Fundamentals",
+      "title": "Data Management Fundamentals",
       "date": "Mar 2021"
     },
     {

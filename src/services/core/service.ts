@@ -38,7 +38,7 @@ export class CoreService implements ICoreService {
   async downloadResume(): ReturnType<ICoreService["downloadResume"]> {
     return await new JsFileDownloader({
       url: resume,
-      filename: "RESUME_CABRERA-JENJADE.pdf",
+      filename: "RESUME_NAMIAS-JHON-KENETH.pdf",
       method: "GET",
     });
   }

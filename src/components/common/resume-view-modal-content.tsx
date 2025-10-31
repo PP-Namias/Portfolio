@@ -35,7 +35,7 @@ export const ResumeViewModalContent = () => {
       {(onClose) => (
         <>
           <ModalHeader className="flex flex-col gap-1">
-            <p>RESUME_CABRERA-JENJADE.PDF</p>
+            <p>RESUME_NAMIAS-JHON-KENETH.PDF</p>
             <p className="text-base font-normal">{""}</p>
           </ModalHeader>
           <ModalBody>
