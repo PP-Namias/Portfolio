@@ -1,0 +1,50 @@
+[
+  {
+    "name": "github",
+    "icon": "github",
+    "label": "PP-Namias",
+    "link": "https://github.com/PP-Namias"
+  },
+
+  {
+    "name": "facebook",
+    "icon": "facebook",
+    "label": "Jhon Keneth Ryan Namias",
+    "link": "https://www.facebook.com/jhon.keneth.namias.2024/"
+  },
+
+  {
+    "name": "linkedin",
+    "icon": "linksys",
+    "label": "Jhon Keneth Ryan Namias",
+    "link": "https://www.linkedin.com/in/pp-namias/"
+  },
+
+  {
+    "name": "spotify",
+    "icon": "spotify",
+    "label": "PP Namias",
+    "link": "https://open.spotify.com/user/12180365121"
+  },
+
+  {
+    "name": "discord",
+    "icon": "discord",
+    "label": "@PP-Namias",
+    "link": "https://discord.com/users/683914336376455200"
+  },
+
+  {
+    "name": "instagram",
+    "icon": "instagram",
+    "label": "@pp_namias",
+    "link": "https://www.instagram.com/pp_namias/"
+  },
+
+  {
+    "name": "x",
+    "icon": "x",
+    "label": "@PP_Namias",
+    "link": "https://x.com/PP_Namias"
+  }
+]

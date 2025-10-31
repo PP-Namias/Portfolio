@@ -1,0 +1,184 @@
+[
+  {
+    "company": "PhoneCraft Cellphone Repair",
+    "position": "Head Technician",
+    "summary": "Performed precision diagnostics: BGA rework, IC reballing, micro-soldering on mobile devices. Managed repair operations, inventory systems, technical support workflows for high-volume facility. Maintained quality standards achieving 95% customer satisfaction rate across 1000+ repairs.",
+    "country": "Philippines",
+    "modality": "On-site",
+    "type": "Full-time",
+    "startedAt": "2020-01",
+    "endedAt": null,
+    "technologies": [
+      "Hardware Repair",
+      "BGA Rework",
+      "IC Reballing",
+      "Micro-soldering",
+      "Inventory Management",
+      "Technical Support",
+      "Quality Assurance",
+      "Customer Satisfaction"
+    ],
+    "highlights": [
+      "Performed precision diagnostics including BGA rework, IC reballing, and micro-soldering on mobile devices.",
+      "Managed repair operations, inventory systems, and technical support workflows for a high-volume facility.",
+      "Maintained quality standards achieving 95% customer satisfaction rate across 1000+ repairs."
+    ]
+  },
+  {
+    "company": "Ucc-Ingo",
+    "position": "Website Administrator",
+    "summary": "Managed Next.js platform with headless CMS serving 1000+ students. Led 9-engineer team launching gallery feature for academic project showcase. Maintained 99.8% uptime, optimized course access reducing load times 30%.",
+    "country": "Philippines",
+    "modality": "On-site",
+    "type": "Full-time",
+    "startedAt": "2025-01",
+    "endedAt": null,
+    "technologies": [
+      "Next.js",
+      "Headless CMS",
+      "Team Leadership",
+      "Performance Optimization",
+      "Uptime Management",
+      "Course Access",
+      "Gallery Feature",
+      "Academic Platform"
+    ],
+    "highlights": [
+      "Managed Next.js platform with headless CMS serving 1000+ students.",
+      "Led 9-engineer team launching gallery feature for academic project showcase.",
+      "Maintained 99.8% uptime and optimized course access, reducing load times by 30%."
+    ]
+  },
+  {
+    "company": "Aeternitas Chapels & Columbarium",
+    "position": "Software Engineer Intern",
+    "summary": "Led 7-engineer team building enterprise HRIS: React-TypeScript, Electron, Express, PostgreSQL stack. Architected employee management platform handling payroll, time tracking, analytics for 500+ users. Established CI/CD pipeline achieving 99.9% uptime, reduced deployment time 80%.",
+    "country": "Philippines",
+    "modality": "On-site",
+    "type": "Internship",
+    "startedAt": "2025-01",
+    "endedAt": "2025-12",
+    "technologies": [
+      "React",
+      "TypeScript",
+      "Electron",
+      "Express.js",
+      "PostgreSQL",
+      "HRIS",
+      "Payroll",
+      "Time Tracking",
+      "Analytics",
+      "CI/CD",
+      "Team Leadership",
+      "Enterprise Software"
+    ],
+    "highlights": [
+      "Led 7-engineer team building enterprise HRIS using React-TypeScript, Electron, Express, and PostgreSQL.",
+      "Architected employee management platform handling payroll, time tracking, and analytics for 500+ users.",
+      "Established CI/CD pipeline achieving 99.9% uptime and reduced deployment time by 80%."
+    ]
+  },
+  {
+    "company": "Wilshire Financial Network",
+    "position": "Artificial Intelligence Consultant Trainee",
+    "summary": "Built GPT-powered automation reducing social media workflow overhead 40%. Deployed custom AI agents optimizing internal processes for consulting teams. Delivered production AI integrations for 3 client-facing applications.",
+    "country": "Philippines",
+    "modality": "Remote",
+    "type": "Internship",
+    "startedAt": "2025-01",
+    "endedAt": "2025-12",
+    "technologies": [
+      "GPT",
+      "AI Agents",
+      "Automation",
+      "Social Media",
+      "AI Integration",
+      "Workflow Optimization",
+      "Custom AI",
+      "Production Deployment"
+    ],
+    "highlights": [
+      "Built GPT-powered automation reducing social media workflow overhead by 40%.",
+      "Deployed custom AI agents optimizing internal processes for consulting teams.",
+      "Delivered production AI integrations for 3 client-facing applications."
+    ]
+  },
+  {
+    "company": "JIMIRENE Clinic Management System",
+    "position": "Full Stack Developer",
+    "summary": "Engineered HIPAA-compliant CMS: React-TypeScript, Spring Boot, MySQL. Automated medical records, appointment scheduling, billing for 1000+ patients. Reduced staff manual workload 60%, improved patient processing speed 45%.",
+    "country": "Philippines",
+    "modality": "Remote",
+    "type": "Full-time",
+    "startedAt": "2025-01",
+    "endedAt": "2025-12",
+    "technologies": [
+      "React",
+      "TypeScript",
+      "Spring Boot",
+      "MySQL",
+      "HIPAA",
+      "Medical Records",
+      "Appointment Scheduling",
+      "Billing",
+      "Automation",
+      "Patient Management"
+    ],
+    "highlights": [
+      "Engineered HIPAA-compliant CMS using React-TypeScript, Spring Boot, and MySQL.",
+      "Automated medical records, appointment scheduling, and billing for 1000+ patients.",
+      "Reduced staff manual workload by 60% and improved patient processing speed by 45%."
+    ]
+  },
+  {
+    "company": "J'5 Pharmacy",
+    "position": "Full Stack Web Developer",
+    "summary": "Developed Spring Boot API supporting real-time inventory, B2B ordering for 50+ vendors. Implemented secure payment processing, multi-vendor marketplace capabilities. Enabled automated restocking, price comparison across centralized platform.",
+    "country": "Philippines",
+    "modality": "Remote",
+    "type": "Full-time",
+    "startedAt": "2025-01",
+    "endedAt": "2025-12",
+    "technologies": [
+      "Spring Boot",
+      "API",
+      "Real-time Inventory",
+      "Payment Processing",
+      "Multi-vendor Marketplace",
+      "B2B Ordering",
+      "Automated Restocking",
+      "Price Comparison",
+      "Centralized Platform"
+    ],
+    "highlights": [
+      "Developed Spring Boot API supporting real-time inventory and B2B ordering for 50+ vendors.",
+      "Implemented secure payment processing and multi-vendor marketplace capabilities.",
+      "Enabled automated restocking and price comparison across a centralized platform."
+    ]
+  },
+  {
+    "company": "Legal Workflow Manager (CaseMaster)",
+    "position": "System Analyst",
+    "summary": "Built Electron-TypeScript application integrating Microsoft 365 APIs. Collaborated with Supreme Court attorney optimizing case management workflows. Achieved 35% improvement in case access speed through data synchronization.",
+    "country": "Philippines",
+    "modality": "Remote",
+    "type": "Full-time",
+    "startedAt": "2024-01",
+    "endedAt": "2024-12",
+    "technologies": [
+      "Electron",
+      "TypeScript",
+      "Microsoft 365 APIs",
+      "Case Management",
+      "Data Synchronization",
+      "Workflow Optimization",
+      "Legal Software",
+      "Collaboration"
+    ],
+    "highlights": [
+      "Built Electron-TypeScript application integrating Microsoft 365 APIs.",
+      "Collaborated with Supreme Court attorney optimizing case management workflows.",
+      "Achieved 35% improvement in case access speed through data synchronization."
+    ]
+  }
+]

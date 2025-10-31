@@ -1,0 +1,56 @@
+@import "tailwindcss";
+@plugin './hero.ts';
+@source '../node_modules/@heroui/theme/dist/**/*.{js,ts,jsx,tsx}';
+@custom-variant dark (&:is(.dark *));
+
+@font-face {
+  font-family: "Geist";
+  src: url("./assets/fonts/geist/Geist[wght].woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@layer base {
+  :root {
+    --custom-background: 0 0% 90%;
+    --custom-foreground: 0 0% 0%;
+    --custom-secondary: 0 0% 95%;
+    --custom-secondary-foreground: 0 0% 0%;
+  }
+
+  .dark {
+    --custom-background: 240 5% 15.9%;
+    --custom-foreground: 0 0% 98%;
+    --custom-secondary: 240 6% 10%;
+    --custom-secondary-foreground: 0 0% 0%;
+  }
+}
+
+@theme {
+  --font-geist: Geist, sans-serif;
+
+  --color-custom-background: hsl(var(--custom-background));
+  --color-custom-background-foreground: hsl(var(--custom-foreground));
+  --color-custom-secondary: hsl(var(--custom-secondary));
+  --color-custom-secondary-foreground: hsl(var(--custom-secondary-foreground));
+}
+
+.bg-grid {
+  inset: 0;
+  height: 100%;
+  width: 100%;
+  background-image:
+    linear-gradient(to right, rgba(128, 128, 128, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(128, 128, 128, 0.05) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+* {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+html {
+  font-size: 15px;
+}

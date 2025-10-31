@@ -1,27 +1,13 @@
 {
-  "extends": "astro/tsconfigs/strict",
+  "files": [],
+  "references": [
+    { "path": "./tsconfig.app.json" },
+    { "path": "./tsconfig.node.json" }
+  ],
   "compilerOptions": {
     "baseUrl": ".",
-    "strictNullChecks": true,
-    "allowJs": false,
-    "declaration": true,
-    "plugins": [
-      {
-        "name": "@astrojs/ts-plugin"
-      }
-    ],
     "paths": {
-      "@components/*": ["src/components/*"],
-      "@assets/*": ["src/assets/*"],
-      "@constants/*": ["src/constants/*"],
-      "@utils/*": ["src/utils/*"],
-      "@i18n/*": ["src/i18n/*"],
-      "@layouts/*": ["src/layouts/*"],
-      "@/*": ["src/*"]
+      "@/*": ["./src/*"]
     }
-  },
-  "include": ["src/**/*"],
-  "exclude": [
-    "src/pages/projects/[...slug].astro"
-  ]
+  }
 }
