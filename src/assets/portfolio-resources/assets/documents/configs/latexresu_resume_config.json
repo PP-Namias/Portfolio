@@ -7,445 +7,220 @@
     "awards": "Accomplishments"
   },
   "basics": {
-    "email": "pp.namias@gmail.com",
+    "email": "jkrbn99@gmail.com",
     "phone": "(+63) 927-253-3969",
     "location": {
-      "address": "Manila, Philippines"
+      "address": "Caloocan City, Philippines"
     },
-    "website": "namias.tech",
-    "name": "Jhon Keneth Namias"
+    "website": "https://namias.tech/",
+    "name": "Jhon Keneth Ryan B. Namias"
   },
   "education": [
     {
-      "endDate": "Present",
-      "institution": "San Pablo Colleges",
-      "location": "Hermanos Belen, Street, San Pablo City",
+      "startDate": "2022",
+      "endDate": "2026",
+      "institution": "University of Caloocan City",
+      "location": "Caloocan, NCR",
       "studyType": "BS",
-      "startDate": "Sep 2022",
       "area": "Computer Science"
     }
   ],
-  "work": [],
-  "skills": [
+  "work": [
     {
-      "name": "Interests",
-      "keywords": [
-        "Data science",
-        "Web development",
-        "App development",
-        "Game development",
-        "Linguistics",
-        "Fitness"
+      "company": "PhoneCraft Cellphone Repair",
+      "location": "Philippines",
+      "position": "Head Technician",
+      "website": "https://phonecraft.vercel.app/",
+      "startDate": "2020",
+      "endDate": "Present",
+      "highlights": [
+        "Performed precision diagnostics: BGA rework, IC reballing, micro-soldering on mobile devices",
+        "Managed repair operations, inventory systems, technical support workflows for high-volume facility",
+        "Maintained quality standards achieving 95% customer satisfaction rate across 1000+ repairs"
       ]
     },
     {
-      "keywords": [
-        "Python",
-        "Javascript",
-        "Typescript",
-        "R",
-        "Java",
-        "Php",
-        "Dart",
-        "Csharp",
-        "Bash",
-        "Html",
-        "Css",
-        "React",
-        "Nextjs",
-        "Codeigniter",
-        "Bootstrap",
-        "Tailwindcss",
-        "Daisyui",
-        "Shadcnui",
-        "Nextui",
-        "Flutter",
-        "Postgresql",
-        "Mysql",
-        "Supabase",
-        "Pocketbase",
-        "Flask",
-        "Streamlit",
-        "Ggplot",
-        "Pandas",
-        "Numpy",
-        "Seaborn",
-        "Plotly",
-        "Sklearn",
-        "Git",
-        "Github",
-        "Jupyter",
-        "Linux",
-        "Ubuntu",
-        "Zorin",
-        "Vscode",
-        "Photoshop",
-        "Indesign",
-        "Premiere"
-      ],
-      "name": "Technologies"
+      "company": "Ucc-Ingo",
+      "location": "Philippines",
+      "position": "Website Administrator",
+      "website": "https://uccingo.tech/",
+      "startDate": "2025",
+      "endDate": "Present",
+      "highlights": [
+        "Managed Next.js platform with headless CMS serving 1000+ students",
+        "Led 9-engineer team launching gallery feature for academic project showcase",
+        "Maintained 99.8% uptime, optimized course access reducing load times 30%"
+      ]
+    },
+    {
+      "company": "Aeternitas Chapels & Columbarium",
+      "location": "Philippines",
+      "position": "Software Engineer Intern",
+      "website": "https://aeternitas.ph/",
+      "startDate": "2025",
+      "endDate": "2025",
+      "highlights": [
+        "Led 7-engineer team building enterprise HRIS: React-TypeScript, Electron, Express, PostgreSQL stack",
+        "Architected employee management platform handling payroll, time tracking, analytics for 500+ users",
+        "Established CI/CD pipeline achieving 99.9% uptime, reduced deployment time 80%"
+      ]
+    },
+    {
+      "company": "Wilshire Financial Network",
+      "location": "Remote",
+      "position": "Artificial Intelligence Consultant Trainee",
+      "website": "https://www.wilshirefinancialnetwork.net/",
+      "startDate": "2025",
+      "endDate": "2025",
+      "highlights": [
+        "Built GPT-powered automation reducing social media workflow overhead 40%",
+        "Deployed custom AI agents optimizing internal processes for consulting teams",
+        "Delivered production AI integrations for 3 client-facing applications"
+      ]
+    },
+    {
+      "company": "JIMIRENE Clinic Management System",
+      "location": "Philippines",
+      "position": "Full Stack Developer",
+      "website": "https://github.com/Genrei123/clinic-management-system",
+      "startDate": "2025",
+      "endDate": "2025",
+      "highlights": [
+        "Engineered HIPAA-compliant CMS: React-TypeScript, Spring Boot, MySQL",
+        "Automated medical records, appointment scheduling, billing for 1000+ patients",
+        "Reduced staff manual workload 60%, improved patient processing speed 45%"
+      ]
+    },
+    {
+      "company": "J'5 Pharmacy",
+      "location": "Philippines",
+      "position": "Full Stack Web Developer",
+      "website": "https://j5pharmacy.com",
+      "startDate": "2025",
+      "endDate": "2025",
+      "highlights": [
+        "Developed Spring Boot API supporting real-time inventory, B2B ordering for 50+ vendors",
+        "Implemented secure payment processing, multi-vendor marketplace capabilities",
+        "Enabled automated restocking, price comparison across centralized platform"
+      ]
+    },
+    {
+      "company": "CaseMaster",
+      "location": "Philippines",
+      "position": "System Analyst / Legal Workflow Manager",
+      "website": "https://github.com/PP-Namias/CaseMaster",
+      "startDate": "2024",
+      "endDate": "2024",
+      "highlights": [
+        "Built Electron-TypeScript application integrating Microsoft 365 APIs",
+        "Collaborated with Supreme Court attorney optimizing case management workflows",
+        "Achieved 35% improvement in case access speed through data synchronization"
+      ]
+    },
+    {
+      "company": "BS Computer Science Council",
+      "location": "Caloocan, NCR",
+      "position": "Head of Technical Committee",
+      "website": "",
+      "startDate": "2025",
+      "endDate": "2025",
+      "highlights": [
+        "Led 9-engineer team organizing technical events for 1000+ participants",
+        "Conducted Git, GitHub, Visual Studio Code workshops improving campus coding literacy",
+        "Built digital platform enabling thesis project showcase, fostering student collaboration"
+      ]
+    },
+    {
+      "company": "BS Computer Science Council",
+      "location": "Caloocan, NCR",
+      "position": "Program Committee",
+      "website": "",
+      "startDate": "2024",
+      "endDate": "2024",
+      "highlights": [
+        "Coordinated 5+ technical events with comprehensive curriculum development",
+        "Organized training sessions: version control, IDE proficiency, software development practices",
+        "Established technical skill development programs for 200+ computer science students"
+      ]
     }
   ],
   "projects": [
     {
-      "name": "RM Collection Virtual Storefront Platform - 2023",
-      "keywords": [
-        "Next.js",
-        "React",
-        "ShadcnUi",
-        "TailwindCSS",
-        "Supabase",
-        "Vercel"
-      ],
-      "description": "A course requirement in CS Elective 2, virtual storefront platform for a jewelry wholesaler based in Japan.",
-      "url": "https://github.com/PP-Namias/rm-collection"
+      "name": "Story Adaptive Game Engine - Software Engineering Project",
+      "keywords": ["GPT", "Stable Diffusion", "React", "Node.js"],
+      "description": "Built GPT-integrated text adventure platform with dynamic narrative generation algorithms and real-time visual content generation.",
+      "url": "https://text-adventure-six.vercel.app/",
+      "year": "2025"
     },
     {
-      "name": "Beyond Decor Portfolio And Inquiry Website - 2023",
-      "keywords": [
-        "Next.js",
-        "React",
-        "DaisyUi",
-        "TailwindCSS",
-        "Pocketbase",
-        "Vercel"
-      ],
-      "description": "A course requirement in AL102. Portfolio and inquiry website system for Beyond Decor, a party and entertainment service.",
-      "url": "https://github.com/PP-Namias/beyond-decor"
+      "name": "Java Rice - Interactive Food Ordering System",
+      "keywords": ["Java", "QR", "GUI", "Admin Panel"],
+      "description": "Comprehensive Java GUI application for restaurant food ordering with QR code integration, admin panel, and secure payment gateway.",
+      "url": "https://github.com/PP-Namias/Java-Rice",
+      "year": "2024"
     },
     {
-      "name": "Google Data Analytics Capstone Case Study - 2023",
-      "keywords": [
-        "Python",
-        "R",
-        "Tidyverse",
-        "Pandas",
-        "Jupyter"
-      ],
-      "description": "A case study on a fictional bike share company based on Chicago. Aiming to gain valuable insights into customer behavior and usage patterns.",
-      "url": "https://github.com/PP-Namias/google-data-analytics-capstone-case-study"
+      "name": "Student Attendance Management System",
+      "keywords": ["C#", "WPF", "Barcode", "PostgreSQL"],
+      "description": "C# WPF application with barcode/QR scanning for attendance tracking automation, offline sync, and reporting.",
+      "url": "https://github.com/PP-Namias/Student-Attendance-Management-System",
+      "year": "2023"
     },
     {
-      "name": "Cookhaina Directory - 2023",
-      "keywords": [
-        "Python",
-        "Flask",
-        "HTML",
-        "CSS",
-        "Javascript",
-        "Bootstrap",
-        "Public API",
-        "Supabase",
-        "Render"
-      ],
-      "description": "A web application that functions as a digital cookbook. Built with Flask and utilizes the API provided by The Meal DB to retrieve information about meals.",
-      "url": "https://github.com/PP-Namias/cookhaina-directory"
+      "name": "Galaxy Animation - Interactive Solar System",
+      "keywords": ["HTML", "CSS", "JavaScript", "Animation"],
+      "description": "Mesmerizing galaxy animation showcasing complete solar system using pure HTML, CSS, and JavaScript.",
+      "url": "https://pp-namias.github.io/Galaxy-Animation/",
+      "year": "2023"
     },
     {
-      "name": "Philippine Poverty Area Estimates Web App Choropleth Visualization - 2023",
-      "keywords": [
-        "Python",
-        "Pandas",
-        "Numpy",
-        "Seaborn",
-        "Plotly",
-        "Jupyter",
-        "Streamlit"
-      ],
-      "description": "Web application providing a visual representation using a choropleth map of the estimated magnitude of poor families in the Philippines from the years 2006, 2009, 2012, and 2015.",
-      "url": "https://github.com/PP-Namias/philippine-poverty-area-estimates-choropleth"
+      "name": "CSS3 Robot Animation - Web Art & Educational Platform",
+      "keywords": ["CSS3", "Animation", "Education"],
+      "description": "Designed a cute robot character using pure CSS3 animations and created tutorials and educational resources.",
+      "url": "https://pp-namias.github.io/CSS3-Robot-Animation/",
+      "year": "2023"
     },
     {
-      "name": "A Not-So-Public Public Board - 2023",
-      "keywords": [
-        "React",
-        "Flask",
-        "DaisyUi",
-        "TailwindCSS",
-        "Vigenere Cipher",
-        "Github Pages"
-      ],
-      "description": "Web application that combines the concept of a freedom public board with a twist of encryption.",
-      "url": "https://github.com/PP-Namias/a-not-so-public-public-board"
+      "name": "Car Dealership Management System",
+      "keywords": ["C++", "Console App", "File Handling"],
+      "description": "C++ console application for car dealership operations with role-based authentication and inventory control.",
+      "url": "https://github.com/PP-Namias/Car-Dealership-Management-Program",
+      "year": "2022"
     },
     {
-      "name": "Expression Converter - 2023",
-      "keywords": [
-        "Java",
-        "Java Swing GUI",
-        "Data Structure",
-        "Stack"
-      ],
-      "description": "A course requirement in data structures and algorithm: java application made with java swing designed to provide a user-friendly interface for converting expressions between infix, prefix, and postfix notations.",
-      "url": "https://github.com/PP-Namias/expression-converter"
-    },
-    {
-      "name": "Anagram - 2023",
-      "keywords": [
-        "HTML",
-        "CSS",
-        "Javascript",
-        "Bootstrap"
-      ],
-      "description": "A midterm course requirement for CS Professional Elective 1: web-based anagram game made using HTML, CSS, and vanilla JS.",
-      "url": "https://github.com/PP-Namias/anagram"
-    },
-    {
-      "name": "Data Visualization: Prime Number Forest - 2023",
-      "keywords": [
-        "Python",
-        "Pandas",
-        "Numpy",
-        "Plotly",
-        "Github Pages"
-      ],
-      "description": "An interactive data visualization made with python, plotly, pandas, and numpy, of how prime numbers from 1 - 200 would look like if it was a forest.",
-      "url": "https://github.com/PP-Namias/prime-number-forest-3d"
-    },
-    {
-      "name": "Old Portfolio - 2022",
-      "keywords": [
-        "React",
-        "Bootstrap",
-        "Github Pages"
-      ],
-      "description": "My old personal portfolio that I made back when I was in my first year of college.",
-      "url": "https://github.com/PP-Namias/old-portfolio"
-    },
-    {
-      "name": "SPARTA Capstone: Data Science and Machine Learning using Python - 2022",
-      "keywords": [
-        "Python",
-        "Pandas",
-        "Numpy",
-        "Scikit-learn",
-        "Jupyter",
-        "Xgboost",
-        "K-Neighbours Classifier",
-        "Logistic Regression",
-        "Random Forest Classifier"
-      ],
-      "description": "A machine learning peer graded capstone of Smarter Philippines through Data Analytics R&D, Training and Adoption (SPARTA).",
-      "url": "https://github.com/PP-Namias/sparta-data-science-and-machine-learning-using-python"
-    },
-    {
-      "name": "SPARTA: Representing Data and Feature Engineering - 2022",
-      "keywords": [
-        "Python",
-        "Pandas",
-        "Numpy",
-        "Scikit-learn",
-        "Jupyter",
-        "Logistic Regression",
-        "Random Forest Classifier",
-        "Support Vector Machines"
-      ],
-      "description": "A machine learning peer graded assignment of project SPARTA. Implementation of feature engineering on adult income data set.",
-      "url": "https://github.com/PP-Namias/sparta-representing-data-and-feature-engineering"
-    },
-    {
-      "name": "SPARTA: Supervised ML Binary Classification - 2022",
-      "keywords": [
-        "Python",
-        "Pandas",
-        "Numpy",
-        "Scikit-learn",
-        "Jupyter",
-        "Logistic Regression",
-        "Random Forest Classifier"
-      ],
-      "description": "A machine learning peer graded assignment of project SPARTA. Implementation of machine learning classification on breast cancer wisconsin diagnostic data set.",
-      "url": "https://github.com/PP-Namias/sparta-supervisedml-binary-classification"
-    },
-    {
-      "name": "SPARTA: Unsupervised ML Clustering - 2022",
-      "keywords": [
-        "Python",
-        "Pandas",
-        "Numpy",
-        "Scikit-learn",
-        "Jupyter",
-        "KMeans Clustering",
-        "DBSCAN",
-        "Agglomerative Clustering"
-      ],
-      "description": "A machine learning peer graded assignment of project SPARTA. Implementation of machine learning clustering on iris plants data set.",
-      "url": "https://github.com/PP-Namias/sparta-unsupervisedml-clustering"
-    },
-    {
-      "name": "Declutter - 2022",
-      "keywords": [
-        "Python",
-        "Flask",
-        "HTML",
-        "CSS",
-        "Bootstrap",
-        "Supabase",
-        "Render"
-      ],
-      "description": "Web application that provides a platform for users to write and share their thoughts in a clutter-free space.",
-      "url": "https://github.com/PP-Namias/declutter"
+      "name": "Pre-enrollment Management System",
+      "keywords": ["VB.NET", "Desktop", "Enrollment"],
+      "description": "VB.NET desktop application for student enrollment data processing with role-based access and photo verification.",
+      "url": "https://github.com/PP-Namias/Pre-enrollment-Management-System",
+      "year": "2022"
     }
   ],
   "awards": [
     {
-      "title": "Google Data Analytics Capstone: Complete a Case Study",
-      "date": "Jul 2023",
-      "awarder": "Google"
-    },
-    {
-      "title": "Data Analysis with R Programming",
-      "date": "Jun 2023",
-      "awarder": "Google"
-    },
-    {
-      "title": "Share Data Through the Art of Visualization",
-      "date": "May 2023",
-      "awarder": "Google"
-    },
-    {
-      "date": "Apr 2023",
-      "title": "Analyze Data to Answer Questions",
-      "awarder": "Google"
-    },
-    {
-      "title": "Process Data from Dirty to Clean",
-      "date": "Mar 2023",
-      "awarder": "Google"
-    },
-    {
-      "title": "Prepare Data for Exploration",
-      "date": "Jan 2023",
-      "awarder": "Google"
-    },
-    {
-      "title": "Foundations: Data, Data, Everywhere",
-      "date": "Dec 2022",
-      "awarder": "Google"
-    },
-    {
-      "title": "Ask Questions to Make Data-Driven Decisions",
-      "date": "Nov 2022",
-      "awarder": "Google"
-    },
-    {
-      "title": "Computing in Python",
-      "date": "Feb 2022",
-      "awarder": "Project SPARTA PH"
-    },
-    {
-      "title": "Computing Microspecialization Pathway",
-      "date": "Sep 2022",
-      "awarder": "Project SPARTA PH"
-    },
-    {
-      "title": "Data Science and Machine Learning Using Python",
-      "awarder": "Project SPARTA PH",
-      "date": "Sep 2022"
-    },
-    {
-      "awarder": "Project SPARTA PH",
-      "title": "Data Visualization Microspecialization Pathway",
-      "date": "Sep 2022"
-    },
-    {
-      "title": "Methods and Algorithms Microspecialization Pathway",
-      "date": "Sep 2022",
-      "awarder": "Project SPARTA PH"
-    },
-    {
-      "title": "Build Python Web Apps with Flask",
-      "date": "Aug 2022",
-      "awarder": "Department of Information and Communications Technology - Philippines"
-    },
-    {
-      "title": "Analyze Data with Python",
-      "date": "Jul 2022",
-      "awarder": "Department of Information and Communications Technology - Philippines"
-    },
-    {
-      "title": "Basic Statistics With Python",
-      "awarder": "Department of Information and Communications Technology - Philippines",
-      "date": "Jul 2022"
-    },
-    {
-      "title": "Experimental Design and Analysis",
-      "awarder": "Project SPARTA PH",
-      "date": "Jul 2022"
-    },
-    {
-      "title": "Programming for Beginners Using Python",
-      "date": "Jul 2022",
-      "awarder": "Project SPARTA PH"
-    },
-    {
-      "title": "Programming for Intermediate Users Using Python",
-      "date": "Jul 2022",
-      "awarder": "Department of Information and Communications Technology - Philippines"
-    },
-    {
-      "title": "Visualize Data with Python",
-      "date": "Jul 2022",
-      "awarder": "Department of Information and Communications Technology - Philippines"
-    },
-    {
-      "title": "Statistical Analysis and Modeling Using SQL and Python",
-      "date": "May 2022",
-      "awarder": "Project SPARTA PH"
-    },
-    {
-      "title": "Computing in Python",
-      "date": "Feb 2022",
-      "awarder": "Project SPARTA PH"
-    },
-    {
-      "title": "Data Visualization Using Tableau and Python",
-      "date": "Feb 2022",
-      "awarder": "Project SPARTA PH"
-    },
-    {
-      "title": "SQL for Business Users",
-      "awarder": "Project SPARTA PH",
-      "date": "Feb 2022"
-    },
-    {
-      "title": "Storytelling Using Data",
-      "date": "Dec 2021",
-      "awarder": "Project SPARTA PH"
-    },
-    {
-      "awarder": "Project SPARTA PH",
-      "title": "Dashboards and Drill-Down Analytics",
-      "date": "Sep 2021"
-    },
-    {
-      "awarder": "Project SPARTA PH",
-      "title": "Data Visualization Fundamentals",
-      "date": "Sep 2021"
-    },
-    {
-      "awarder": "Project SPARTA PH",
-      "title": "Data Management Fundamentals",
-      "date": "Mar 2021"
-    },
-    {
-      "awarder": "Project SPARTA PH",
-      "title": "Essential Excel Skills for Data Preparation and Analysis",
-      "date": "Jan 2021"
-    },
-    {
-      "awarder": "Project SPARTA PH",
-      "title": "Getting Grounded on Analytics",
-      "date": "Dec 2020"
+      "title": "Certified Java NC3 passer",
+      "date": "",
+      "awarder": "TESDA / Certification"
     }
   ],
-  "sections": [
-    "templates",
-    "profile",
-    "education",
-    "work",
-    "skills",
-    "projects",
-    "awards"
-  ]
+  "skills": [
+    {
+      "name": "Core Skills",
+      "keywords": [
+        "JavaScript/TypeScript",
+        "React",
+        "Spring Boot",
+        "PostgreSQL",
+        "Express.js",
+        "Electron",
+        "Git",
+        "Next.js",
+        "Vite"
+      ]
+    },
+    {
+      "name": "Interests",
+      "keywords": ["Data science", "Web development", "App development", "Game development"]
+    }
+  ],
+  "sections": ["templates", "profile", "education", "work", "skills", "projects", "awards"]
 }
