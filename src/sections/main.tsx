@@ -17,7 +17,7 @@ export const Main = () => {
   const personalImage = optimizedImages[personalImageKey];
 
   return (
-    <div className="bg-background flex flex-col gap-12 rounded-xl p-6 lg:p-4 xl:gap-16 2xl:p-6">
+    <div className="bg-background flex flex-col gap-6 rounded-xl p-6 lg:gap-4 lg:p-4 2xl:gap-6 2xl:p-6">
       <div className="grid grid-cols-12 gap-6 lg:gap-4 2xl:gap-6">
         <div className="order-last col-span-full sm:order-first sm:col-span-5 lg:col-span-6 xl:col-span-5">
           <div className="relative h-full w-full">
@@ -48,12 +48,12 @@ export const Main = () => {
               src="https://komarev.com/ghpvc/?username=PP-Namias&label=Profile%20Views&color=000000&style=flat&label=Visitors"
             />
           </div>
-          <div className="mt-auto hidden h-[68%] sm:block lg:hidden lg:h-[68%] xl:block">
+          <div className="mt-4 hidden h-[68%] sm:block lg:hidden lg:h-[68%] xl:block">
             <DiscordPresenceCard />
           </div>
         </div>
       </div>
-      <div className="mt-auto text-xs sm:text-base lg:text-sm 2xl:text-base">
+      <div className="text-xs sm:text-base lg:text-sm 2xl:text-base">
         <p className="">
           Philippines-based software engineer specializing in
           <span className="text-primary font-bold">
