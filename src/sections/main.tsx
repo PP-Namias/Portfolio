@@ -2,8 +2,7 @@ import { Image } from "@heroui/react";
 import { Heart } from "lucide-react";
 import { PhilippineTime } from "../components/common/philippine-time";
 import { EmploymentStatus } from "@/components/common/employment-status";
-import { GithubRecentCommitTile } from "@/components/features/github/github-recent-commit-tile";
-import { LastFmRecentTrackTile } from "@/components/features/last-fm/lastfm-recent-track-tile";
+import { DiscordPresenceCard } from "@/components/features/discord/discord-presence-card";
 
 const optimizedImages: Record<string, string> = import.meta.glob(
   "../assets/portfolio-resources/assets/images/*.jpg",
@@ -50,10 +49,7 @@ export const Main = () => {
             />
           </div>
           <div className="mt-auto hidden h-[68%] sm:block lg:hidden lg:h-[68%] xl:block">
-            <div className="grid h-full grid-rows-2 gap-1">
-              <GithubRecentCommitTile />
-              <LastFmRecentTrackTile />
-            </div>
+            <DiscordPresenceCard />
           </div>
         </div>
       </div>
