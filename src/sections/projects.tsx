@@ -46,13 +46,6 @@ export const Projects = () => {
 
   return (
     <>
-      {data && (
-        <div className="mb-4 rounded-xl bg-custom-background p-4">
-          <p className="text-sm font-semibold text-foreground/80">
-            Total Projects: <span className="text-primary">{data.length}</span>
-          </p>
-        </div>
-      )}
       <div className="space-y-4">
         {data?.map((project) => {
           const imageKey = Object.keys(optimizedImages).find((key) =>
