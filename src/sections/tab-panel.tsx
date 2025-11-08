@@ -3,7 +3,7 @@ import { ChevronRight } from "lucide-react";
 import { Contact } from "./contact";
 import { Projects } from "./projects";
 import { Experiences } from "./experiences";
-import Gallery from "./gallery";
+// import Gallery from "./gallery";
 
 export const TabPanel = () => {
   return (
@@ -31,11 +31,11 @@ export const TabPanel = () => {
               <Projects />
             </TabContent>
           </Tab>
-          <Tab key="gallery" title={<TabTitle title="Gallery" />}>
+          {/* <Tab key="gallery" title={<TabTitle title="Gallery" />}>
             <TabContent>
               <Gallery />
             </TabContent>
-          </Tab>
+          </Tab> */}
           <Tab key="contact" title={<TabTitle title="Contact" />}>
             <TabContent>
               <Contact />
