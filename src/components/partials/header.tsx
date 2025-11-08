@@ -1,4 +1,5 @@
 import { ResumeViewModalContent } from "@/components/common/resume-view-modal-content";
+import { CalendlyButton } from "@/components/common/calendly-button";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { Button, Modal, useDisclosure } from "@heroui/react";
 import { cn } from "@heroui/theme";
@@ -18,6 +19,11 @@ export const Header = () => {
         </div>
 
         <div className="flex gap-1">
+          <CalendlyButton
+            size="sm"
+            variant="primary"
+            className="hidden sm:flex"
+          />
           <Button
             onPress={onOpen}
             size="sm"

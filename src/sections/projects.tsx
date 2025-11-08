@@ -1,9 +1,10 @@
 import { ProjectCard } from "@/components/features/projects/project-card";
+import { ProjectSearchFilter } from "@/components/features/projects/project-search-filter";
 import { ErrorTile } from "@/components/ui/error-tile";
 import { LoadingTile } from "@/components/ui/loading-tile";
 import { useCore } from "@/hooks/use-core";
-import { Button } from "@heroui/react";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
+import type { Project } from "@/services/core/types";
 
 const optimizedImages: Record<string, string> = import.meta.glob(
   "../assets/portfolio-resources/assets/images/projects/*.png",
@@ -14,6 +15,16 @@ export const Projects = () => {
   const { queryProjects } = useCore();
   const { data: _data, isLoading, error } = queryProjects();
   const data = useMemo(() => _data, [_data]);
+  const [filteredProjects, setFilteredProjects] = useState<Project[]>([]);
+
+  // Update filtered projects when data changes
+  useMemo(() => {
+    if (data) {
+      setFilteredProjects(data);
+    }
+  }, [data]);
+
+  const displayProjects = filteredProjects.length > 0 ? filteredProjects : data;
 
   if (isLoading)
     return (
@@ -49,19 +60,9 @@ export const Projects = () => {
 
   return (
     <>
-      <div className="sticky top-0 z-20 flex w-full justify-end p-2">
-        <Button
-          isDisabled
-          size="sm"
-          className="group border-default bg-background w-max rounded-lg border px-3 py-1 font-mono text-sm uppercase opacity-80 transition-all duration-300 ease-in-out hover:scale-105"
-        >
-          <p className="">
-            {"Project count: "} {data?.length}
-          </p>
-        </Button>
-      </div>
+      {data && <ProjectSearchFilter projects={data} onFilterChange={setFilteredProjects} />}
       <div className="space-y-4">
-        {data?.map((project) => {
+        {displayProjects?.map((project) => {
           const imageKey = Object.keys(optimizedImages).find((key) =>
             key.includes(project.image),
           )!;

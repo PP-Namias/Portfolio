@@ -2,6 +2,7 @@ import { RecentExperienceTile } from "@/components/features/experiences/recent-e
 import { GithubRecentCommitTile } from "@/components/features/github/github-recent-commit-tile";
 import { LastFmRecentTrackTile } from "@/components/features/last-fm/lastfm-recent-track-tile";
 import { Footer } from "@/components/partials/footer";
+import { FloatingActionButton } from "@/components/common/floating-action-button";
 import { GithubActivityCalendar } from "@/sections/github-activity-calendar";
 import { GithubStats } from "@/sections/github-stats";
 import { TabPanel } from "@/sections/tab-panel";
@@ -18,6 +19,7 @@ export const Route = createFileRoute("/")({
 function RouteComponent() {
   return (
     <div className="bg-grid lg:absolute lg:inset-0 lg:flex lg:items-center lg:justify-center">
+      <FloatingActionButton />
       <div className="bg-custom-background block h-full w-full space-y-2 p-2 sm:p-4 lg:flex lg:max-h-[1080px] lg:max-w-[1920px] lg:gap-4 lg:space-y-0 lg:rounded-xl">
         <ScrollShadow
           hideScrollBar

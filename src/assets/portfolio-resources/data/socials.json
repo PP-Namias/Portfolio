@@ -1,50 +1,63 @@
 [
   {
+    "name": "calendly",
+    "icon": "calendar",
+    "label": "Schedule a Meeting",
+    "link": "https://calendly.com/pp-namias",
+    "featured": true
+  },
+  {
     "name": "github",
     "icon": "github",
     "label": "PP-Namias",
     "link": "https://github.com/PP-Namias"
   },
-
+  {
+    "name": "email",
+    "icon": "mail",
+    "label": "pp.namias@gmail.com",
+    "link": "mailto:pp.namias@gmail.com"
+  },
+  {
+    "name": "whatsapp",
+    "icon": "message-circle",
+    "label": "WhatsApp",
+    "link": "https://wa.me/1234567890"
+  },
+  {
+    "name": "linkedin",
+    "icon": "linkedin",
+    "label": "Jhon Keneth Ryan Namias",
+    "link": "https://www.linkedin.com/in/pp-namias/"
+  },
   {
     "name": "facebook",
     "icon": "facebook",
     "label": "Jhon Keneth Ryan Namias",
     "link": "https://www.facebook.com/jhon.keneth.namias.2024/"
   },
-
-  {
-    "name": "linkedin",
-    "icon": "linksys",
-    "label": "Jhon Keneth Ryan Namias",
-    "link": "https://www.linkedin.com/in/pp-namias/"
-  },
-
-  {
-    "name": "spotify",
-    "icon": "spotify",
-    "label": "PP Namias",
-    "link": "https://open.spotify.com/user/12180365121"
-  },
-
   {
     "name": "discord",
-    "icon": "discord",
+    "icon": "message-square",
     "label": "@PP-Namias",
     "link": "https://discord.com/users/683914336376455200"
   },
-
+  {
+    "name": "x",
+    "icon": "twitter",
+    "label": "@PP_Namias",
+    "link": "https://x.com/PP_Namias"
+  },
   {
     "name": "instagram",
     "icon": "instagram",
     "label": "@pp_namias",
     "link": "https://www.instagram.com/pp_namias/"
   },
-
   {
-    "name": "x",
-    "icon": "x",
-    "label": "@PP_Namias",
-    "link": "https://x.com/PP_Namias"
+    "name": "spotify",
+    "icon": "music",
+    "label": "PP Namias",
+    "link": "https://open.spotify.com/user/12180365121"
   }
 ]

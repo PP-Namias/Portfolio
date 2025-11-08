@@ -90,6 +90,18 @@ if (error) return <ErrorTile className="h-[280px]" />;
 - Toggle: `useThemeContext().toggleTheme()`
 - Classes: `bg-custom-background`, `bg-custom-secondary`
 
+### 8. Floating Action Button
+- Component: `src/components/common/floating-action-button.tsx`
+- Speed dial menu with quick actions (Schedule, Download, Contact)
+- Uses Framer Motion for animations
+- Self-contained, no props needed
+
+### 9. Search & Filter Pattern
+- Example: `ProjectSearchFilter` component
+- Real-time filtering with useState
+- Multiple filter types (search, dropdown, tags)
+- Callback pattern: `onFilterChange(filtered: T[])`
+
 ## Development Commands
 ```bash
 npm run dev      # Vite dev server (localhost:5173)
