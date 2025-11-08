@@ -1,10 +1,7 @@
 import { ProjectCard } from "@/components/features/projects/project-card";
-import { ProjectSearchFilter } from "@/components/features/projects/project-search-filter";
 import { ErrorTile } from "@/components/ui/error-tile";
 import { LoadingTile } from "@/components/ui/loading-tile";
 import { useCore } from "@/hooks/use-core";
-import { useMemo, useState } from "react";
-import type { Project } from "@/services/core/types";
 
 const optimizedImages: Record<string, string> = import.meta.glob(
   "../assets/portfolio-resources/assets/images/projects/*.png",
@@ -13,18 +10,7 @@ const optimizedImages: Record<string, string> = import.meta.glob(
 
 export const Projects = () => {
   const { queryProjects } = useCore();
-  const { data: _data, isLoading, error } = queryProjects();
-  const data = useMemo(() => _data, [_data]);
-  const [filteredProjects, setFilteredProjects] = useState<Project[]>([]);
-
-  // Update filtered projects when data changes
-  useMemo(() => {
-    if (data) {
-      setFilteredProjects(data);
-    }
-  }, [data]);
-
-  const displayProjects = filteredProjects.length > 0 ? filteredProjects : data;
+  const { data, isLoading, error } = queryProjects();
 
   if (isLoading)
     return (
@@ -60,9 +46,15 @@ export const Projects = () => {
 
   return (
     <>
-      {data && <ProjectSearchFilter projects={data} onFilterChange={setFilteredProjects} />}
+      {data && (
+        <div className="mb-4 rounded-xl bg-custom-background p-4">
+          <p className="text-sm font-semibold text-foreground/80">
+            Total Projects: <span className="text-primary">{data.length}</span>
+          </p>
+        </div>
+      )}
       <div className="space-y-4">
-        {displayProjects?.map((project) => {
+        {data?.map((project) => {
           const imageKey = Object.keys(optimizedImages).find((key) =>
             key.includes(project.image),
           )!;
