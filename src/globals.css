@@ -54,3 +54,50 @@
 html {
   font-size: 15px;
 }
+
+/* ============================================
+   Masonry Grid Styles
+   ============================================ */
+
+.masonry-grid {
+  display: flex;
+  margin-left: -8px; /* gutter size offset */
+  width: auto;
+}
+
+.masonry-grid-column {
+  padding-left: 8px; /* gutter size */
+  background-clip: padding-box;
+}
+
+.masonry-grid-column > div {
+  margin-bottom: 8px;
+  animation: fadeInUp 0.3s ease-out;
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  .masonry-grid {
+    margin-left: -4px;
+  }
+
+  .masonry-grid-column {
+    padding-left: 4px;
+  }
+
+  .masonry-grid-column > div {
+    margin-bottom: 4px;
+  }
+}
+
+/* Animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

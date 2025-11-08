@@ -6,7 +6,6 @@ import { useCore } from "@/hooks/use-core";
 import type { GalleryItem } from "@/types/gallery";
 import { useState, useMemo } from "react";
 import Masonry from "react-masonry-css";
-import "./gallery.css";
 
 const optimizedImages: Record<string, string> = import.meta.glob(
   "../assets/portfolio-resources/assets/images/certifications/*.{jpg,png,gif,webp}",
