@@ -15,7 +15,7 @@ type ActionItem = {
 export const FloatingActionButton = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { downloadResumeMutation } = useCore();
-  const calendlyUrl = "https://calendly.com/pp-namias";
+  const calendlyUrl = "https://calendly.com/pp-namias/15-minute-meeting";
 
   const actions: ActionItem[] = [
     {

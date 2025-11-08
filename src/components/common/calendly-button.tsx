@@ -17,7 +17,7 @@ export const CalendlyButton = ({
   showIcon = true,
   children = "Schedule a Call",
 }: CalendlyButtonProps) => {
-  const calendlyUrl = "https://calendly.com/pp-namias";
+  const calendlyUrl = "https://calendly.com/pp-namias/15-minute-meeting";
 
   const variantClasses = {
     default: "bg-custom-secondary text-foreground hover:bg-custom-secondary/80",
