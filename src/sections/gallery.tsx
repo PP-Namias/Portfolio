@@ -1,6 +1,5 @@
 import { GalleryCard } from "@/components/features/gallery/gallery-card";
 import { GalleryModal } from "@/components/features/gallery/gallery-modal";
-import { GalleryFilters } from "@/components/features/gallery/gallery-filters";
 import { ErrorTile } from "@/components/ui/error-tile";
 import { LoadingTile } from "@/components/ui/loading-tile";
 import { useCore } from "@/hooks/use-core";
@@ -19,44 +18,12 @@ const optimizedVideos: Record<string, string> = import.meta.glob(
   { eager: true, import: "default" },
 );
 
-type MediaFilterType = "all" | "image" | "video" | "gif";
-
 export default function Gallery() {
   const { queryCertifications } = useCore();
   const { data: _data, isLoading, error } = queryCertifications();
   const data = useMemo(() => _data as GalleryItem[] | undefined, [_data]);
 
-  const [activeFilter, setActiveFilter] = useState<MediaFilterType>("all");
-  const [searchQuery, setSearchQuery] = useState("");
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
-
-  // Filter and search logic
-  const filteredData = useMemo(() => {
-    if (!data) return [];
-
-    let filtered = [...data];
-
-    // Apply media type filter
-    if (activeFilter !== "all") {
-      filtered = filtered.filter(
-        (item: GalleryItem) => item.mediaType === activeFilter,
-      );
-    }
-
-    // Apply search filter - now includes issuer
-    if (searchQuery.trim()) {
-      const query = searchQuery.toLowerCase();
-      filtered = filtered.filter(
-        (item: GalleryItem) =>
-          item.title.toLowerCase().includes(query) ||
-          item.description?.toLowerCase().includes(query) ||
-          item.issuer?.toLowerCase().includes(query) ||
-          item.tags?.some((tag: string) => tag.toLowerCase().includes(query)),
-      );
-    }
-
-    return filtered;
-  }, [data, activeFilter, searchQuery]);
 
   // Masonry breakpoints
   const breakpointColumns = {
@@ -71,89 +38,48 @@ export default function Gallery() {
 
   if (isLoading)
     return (
-      <>
-        <GalleryFilters
-          activeFilter={activeFilter}
-          onFilterChange={setActiveFilter}
-          searchQuery={searchQuery}
-          onSearchChange={setSearchQuery}
-          totalCount={0}
-          filteredCount={0}
-        />
-        <Masonry
-          breakpointCols={breakpointColumns}
-          className="masonry-grid"
-          columnClassName="masonry-grid-column"
-        >
-          {Array(12)
-            .fill(0)
-            .map((_, index) => (
-              <LoadingTile
-                key={`GalleryCardLoadingComponent-${index}`}
-                className="h-[250px] rounded-lg"
-              />
-            ))}
-        </Masonry>
-      </>
+      <Masonry
+        breakpointCols={breakpointColumns}
+        className="masonry-grid"
+        columnClassName="masonry-grid-column"
+      >
+        {Array(12)
+          .fill(0)
+          .map((_, index) => (
+            <LoadingTile
+              key={`GalleryCardLoadingComponent-${index}`}
+              className="h-[250px] rounded-lg"
+            />
+          ))}
+      </Masonry>
     );
 
   if (error)
     return (
-      <>
-        <GalleryFilters
-          activeFilter={activeFilter}
-          onFilterChange={setActiveFilter}
-          searchQuery={searchQuery}
-          onSearchChange={setSearchQuery}
-          totalCount={0}
-          filteredCount={0}
-        />
-        <Masonry
-          breakpointCols={breakpointColumns}
-          className="masonry-grid"
-          columnClassName="masonry-grid-column"
-        >
-          {Array(12)
-            .fill(0)
-            .map((_, index) => (
-              <ErrorTile
-                key={`GalleryCardErrorComponent-${index}`}
-                className="h-[250px] rounded-lg"
-              />
-            ))}
-        </Masonry>
-      </>
+      <Masonry
+        breakpointCols={breakpointColumns}
+        className="masonry-grid"
+        columnClassName="masonry-grid-column"
+      >
+        {Array(12)
+          .fill(0)
+          .map((_, index) => (
+            <ErrorTile
+              key={`GalleryCardErrorComponent-${index}`}
+              className="h-[250px] rounded-lg"
+            />
+          ))}
+      </Masonry>
     );
 
   return (
     <>
-      <GalleryFilters
-        activeFilter={activeFilter}
-        onFilterChange={setActiveFilter}
-        searchQuery={searchQuery}
-        onSearchChange={setSearchQuery}
-        totalCount={data?.length || 0}
-        filteredCount={filteredData.length}
-      />
-
-      {filteredData.length === 0 ? (
-        <div className="flex h-64 items-center justify-center rounded-lg border-2 border-dashed border-default-200">
-          <div className="text-center">
-            <p className="text-lg font-semibold text-default-500">
-              No items found
-            </p>
-            <p className="text-sm text-default-400">
-              Try adjusting your filters or search query
-            </p>
-          </div>
-        </div>
-      ) : (
-        <Masonry
-          breakpointCols={breakpointColumns}
-          className="masonry-grid"
-          columnClassName="masonry-grid-column"
-        >
-          {filteredData.map((item: GalleryItem, index: number) => {
+      <Masonry
+        breakpointCols={breakpointColumns}
+        className="masonry-grid"
+        columnClassName="masonry-grid-column"
+      >
+        {data?.map((item: GalleryItem, index: number) => {
             // Determine media source
             let mediaSource = "";
             if (item.mediaType === "video") {
@@ -183,28 +109,27 @@ export default function Gallery() {
               />
             );
           })}
-        </Masonry>
-      )}
+      </Masonry>
 
       {/* Gallery Modal */}
-      {selectedIndex !== null && filteredData[selectedIndex] && (
+      {selectedIndex !== null && data && data[selectedIndex] && (
         <GalleryModal
           isOpen={selectedIndex !== null}
           onClose={() => {
             setSelectedIndex(null);
           }}
-          item={filteredData[selectedIndex]}
+          item={data[selectedIndex]}
           currentIndex={selectedIndex}
-          totalItems={filteredData.length}
+          totalItems={data.length}
           onNavigate={(direction) => {
             if (direction === "prev") {
               setSelectedIndex((prev) => {
-                const newIndex = prev === null || prev === 0 ? filteredData.length - 1 : prev - 1;
+                const newIndex = prev === null || prev === 0 ? data.length - 1 : prev - 1;
                 return newIndex;
               });
             } else {
               setSelectedIndex((prev) => {
-                const newIndex = prev === null || prev === filteredData.length - 1 ? 0 : prev + 1;
+                const newIndex = prev === null || prev === data.length - 1 ? 0 : prev + 1;
                 return newIndex;
               });
             }
