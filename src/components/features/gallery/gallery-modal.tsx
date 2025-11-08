@@ -57,29 +57,22 @@ export const GalleryModal = ({
       : item.media || item.image || "";
   }
 
-  // Keyboard navigation with console logging for debugging
+  // Keyboard navigation
   useEffect(() => {
     if (!isOpen) return;
 
-    console.log("🎹 Keyboard navigation enabled for gallery modal");
-
     const handleKeyDown = (e: KeyboardEvent) => {
-      console.log("🔑 Key pressed:", e.key);
-      
       if (e.key === "ArrowLeft") {
         e.preventDefault();
         e.stopPropagation();
-        console.log("⬅️ Navigate to previous item");
         onNavigate("prev");
       } else if (e.key === "ArrowRight") {
         e.preventDefault();
         e.stopPropagation();
-        console.log("➡️ Navigate to next item");
         onNavigate("next");
       } else if (e.key === "Escape") {
         e.preventDefault();
         e.stopPropagation();
-        console.log("❌ Close modal");
         onClose();
       }
     };
@@ -87,7 +80,6 @@ export const GalleryModal = ({
     window.addEventListener("keydown", handleKeyDown, { capture: true });
     
     return () => {
-      console.log("🎹 Keyboard navigation disabled");
       window.removeEventListener("keydown", handleKeyDown, { capture: true });
     };
   }, [isOpen, onNavigate, onClose]);
@@ -143,33 +135,33 @@ export const GalleryModal = ({
               </div>
             </ModalHeader>
             <ModalBody className="relative p-0">
-              {/* Navigation Buttons - Positioned OUTSIDE media container for visibility */}
+              {/* Navigation Buttons - HIGH CONTRAST for visibility on all backgrounds */}
               {totalItems > 1 && (
                 <>
-                  {/* LEFT ARROW BUTTON - Very Prominent */}
+                  {/* LEFT ARROW BUTTON - Dark with bright accent */}
                   <Button
                     isIconOnly
                     size="lg"
-                    className="absolute left-4 top-1/2 z-50 -translate-y-1/2 animate-pulse rounded-full bg-white/20 border-2 border-white/40 text-white shadow-2xl backdrop-blur-md transition-all hover:bg-white/30 hover:scale-125 hover:animate-none"
+                    className="absolute left-4 top-1/2 z-50 -translate-y-1/2 rounded-full bg-gradient-to-br from-gray-900 to-black border-2 border-blue-400 text-blue-400 shadow-[0_0_20px_rgba(59,130,246,0.5)] backdrop-blur-md transition-all hover:border-blue-300 hover:text-blue-300 hover:shadow-[0_0_30px_rgba(59,130,246,0.8)] hover:scale-125 active:scale-110"
                     onPress={() => onNavigate("prev")}
                     aria-label="Previous image"
                   >
                     <ChevronLeft size={32} strokeWidth={3} />
                   </Button>
                   
-                  {/* RIGHT ARROW BUTTON - Very Prominent */}
+                  {/* RIGHT ARROW BUTTON - Dark with bright accent */}
                   <Button
                     isIconOnly
                     size="lg"
-                    className="absolute right-4 top-1/2 z-50 -translate-y-1/2 animate-pulse rounded-full bg-white/20 border-2 border-white/40 text-white shadow-2xl backdrop-blur-md transition-all hover:bg-white/30 hover:scale-125 hover:animate-none"
+                    className="absolute right-4 top-1/2 z-50 -translate-y-1/2 rounded-full bg-gradient-to-br from-gray-900 to-black border-2 border-blue-400 text-blue-400 shadow-[0_0_20px_rgba(59,130,246,0.5)] backdrop-blur-md transition-all hover:border-blue-300 hover:text-blue-300 hover:shadow-[0_0_30px_rgba(59,130,246,0.8)] hover:scale-125 active:scale-110"
                     onPress={() => onNavigate("next")}
                     aria-label="Next image"
                   >
                     <ChevronRight size={32} strokeWidth={3} />
                   </Button>
                   
-                  {/* Keyboard Hint Overlay - Shows on first open */}
-                  <div className="absolute bottom-6 left-1/2 z-40 -translate-x-1/2 rounded-full bg-black/70 px-4 py-2 text-xs text-white backdrop-blur-md animate-pulse">
+                  {/* Keyboard Hint Overlay - High contrast */}
+                  <div className="absolute bottom-6 left-1/2 z-40 -translate-x-1/2 rounded-full bg-gradient-to-r from-gray-900 to-black border border-blue-400 px-4 py-2 text-xs text-blue-300 shadow-[0_0_15px_rgba(59,130,246,0.4)] backdrop-blur-md">
                     Use ← → arrow keys to navigate
                   </div>
                 </>

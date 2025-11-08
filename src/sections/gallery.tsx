@@ -191,25 +191,20 @@ export default function Gallery() {
         <GalleryModal
           isOpen={selectedIndex !== null}
           onClose={() => {
-            console.log("🚪 Closing gallery modal");
             setSelectedIndex(null);
           }}
           item={filteredData[selectedIndex]}
           currentIndex={selectedIndex}
           totalItems={filteredData.length}
           onNavigate={(direction) => {
-            console.log(`🔄 Navigation: ${direction}, Current: ${selectedIndex}/${filteredData.length}`);
-            
             if (direction === "prev") {
               setSelectedIndex((prev) => {
                 const newIndex = prev === null || prev === 0 ? filteredData.length - 1 : prev - 1;
-                console.log(`⬅️ Prev: ${prev} → ${newIndex}`);
                 return newIndex;
               });
             } else {
               setSelectedIndex((prev) => {
                 const newIndex = prev === null || prev === filteredData.length - 1 ? 0 : prev + 1;
-                console.log(`➡️ Next: ${prev} → ${newIndex}`);
                 return newIndex;
               });
             }

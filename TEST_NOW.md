@@ -33,46 +33,46 @@ Wait for: `Local: http://localhost:5173`
 Modal opens - **YOU MUST SEE**:
 
 ```
-     ⚪  <─── THIS: Large white circle
-    ╱  ╲      Pulsing animation
-   │ ◀  │     On the LEFT
-    ╲  ╱
-     ⚪
+     ⚫  <─── THIS: DARK circle with BLUE GLOW
+    ╱  ╲      Dark gradient background
+   │ ◀  │     BLUE arrow icon
+    ╲  ╱      Blue glowing border
+     ⚫       (Visible on WHITE images!)
 ```
 
 ```
-     ⚪  <─── THIS: Large white circle
-    ╱  ╲      Pulsing animation  
-   │ ▶  │     On the RIGHT
-    ╲  ╱
-     ⚪
+     ⚫  <─── THIS: DARK circle with BLUE GLOW
+    ╱  ╲      Dark gradient background
+   │ ▶  │     BLUE arrow icon
+    ╲  ╱      Blue glowing border
+     ⚫       (Visible on WHITE images!)
 ```
 
 ```
-"Use ← → arrow keys to navigate"  <─── THIS: At bottom center
+"Use ← → arrow keys to navigate"  <─── THIS: Dark with BLUE text
 ```
 
 ```
 "5 / 30"  <─── THIS: In header (position counter)
 ```
 
-### ⚠️ If You DON'T See White Pulsing Buttons = PROBLEM!
+### ⚠️ If You DON'T See Dark Buttons with Blue Glow = PROBLEM!
 
 ---
 
 ## 🖱️ Step 4: Test Mouse Navigation (20 seconds)
 
-1. Click the **LEFT button** (white circle with ◀)
+1. Click the **LEFT button** (dark circle with blue ◀)
    - Image should change to PREVIOUS
    - Position counter should decrease: "5 / 30" → "4 / 30"
 
-2. Click the **RIGHT button** (white circle with ▶)
+2. Click the **RIGHT button** (dark circle with blue ▶)
    - Image should change to NEXT
    - Position counter should increase: "4 / 30" → "5 / 30"
 
 3. Hover over buttons
    - They should SCALE UP
-   - Pulsing should STOP
+   - Blue glow should INTENSIFY
 
 ### ✅ If this works = Mouse navigation is PERFECT!
 
@@ -141,8 +141,9 @@ Mark these off as you test:
 
 - [ ] Gallery grid loads with images
 - [ ] Click image → Modal opens
-- [ ] **SEE white pulsing buttons** ← CRITICAL!
-- [ ] **SEE keyboard hint at bottom**
+- [ ] **SEE dark buttons with blue glow** ← CRITICAL!
+- [ ] **VISIBLE ON WHITE IMAGES** ← KEY TEST!
+- [ ] **SEE keyboard hint at bottom (blue text)**
 - [ ] **SEE position counter in header**
 - [ ] Click LEFT button → Previous image
 - [ ] Click RIGHT button → Next image
@@ -196,7 +197,8 @@ Mark these off as you test:
 
 After completing all steps above (2 minutes), you should have:
 
-✅ Confirmed navigation buttons are visible  
+✅ Confirmed dark navigation buttons with blue glow are visible  
+✅ Confirmed buttons work on white/light images  
 ✅ Confirmed mouse navigation works  
 ✅ Confirmed keyboard navigation works  
 ✅ Confirmed search integration works  
@@ -211,14 +213,16 @@ After completing all steps above (2 minutes), you should have:
 
 ### THIS IS THE MOST IMPORTANT:
 
-When you click any gallery image, you **MUST** see these **PULSING WHITE CIRCLES**:
+When you click any gallery image, you **MUST** see these **DARK BUTTONS WITH BLUE GLOW**:
 
 ```
-    ⚪              YOUR IMAGE              ⚪
-   (◀)                                    (▶)
-  PULSE                                  PULSE
+    ⚫              YOUR IMAGE              ⚫
+   (◀)             (even if white!)        (▶)
+  BLUE                                    BLUE
+  GLOW                                    GLOW
 ```
 
+**NEW: Works on white backgrounds!** ✅  
 **If you see these = SUCCESS!** ✅  
 **If you don't = Check troubleshooting guide** ❌
 
@@ -226,4 +230,6 @@ When you click any gallery image, you **MUST** see these **PULSING WHITE CIRCLES
 
 **NOW GO TEST IT!** 🚀
 
-Open your terminal, run `npm run dev`, and see your amazing navigation in action!
+Open your terminal, run `npm run dev`, and see your amazing HIGH CONTRAST navigation in action!
+
+**The buttons will now be visible on ALL your white certification images!** 🎉

@@ -2,18 +2,19 @@
 
 ## 🔥 WHAT YOU MUST SEE (3 Things!)
 
-### 1. PULSING WHITE BUTTONS ⭐ MOST IMPORTANT
+### 1. DARK BUTTONS WITH BLUE GLOW ⭐ MOST IMPORTANT
 When modal opens, look for:
-- **Large white circles** on LEFT and RIGHT
-- **Pulsing animation** (gentle pulse)
-- **White borders** around buttons
+- **Dark circular buttons** on LEFT and RIGHT
+- **Bright BLUE glowing borders** (visible on ANY background!)
+- **Blue arrow icons**
 
-**If you don't see these = SOMETHING IS WRONG!**
+**NOW VISIBLE ON WHITE IMAGES!** ✅
 
 ### 2. KEYBOARD HINT
 At bottom center:
 - **"Use ← → arrow keys to navigate"**
-- Black background, pulsing
+- Dark background with blue text
+- Blue glowing effect
 
 ### 3. POSITION COUNTER
 In modal header:
@@ -25,8 +26,8 @@ In modal header:
 ## 🎮 How to Use
 
 ### Mouse
-- Click **LEFT button** (←) = Previous
-- Click **RIGHT button** (→) = Next
+- Click **LEFT button** (dark with blue ←) = Previous
+- Click **RIGHT button** (dark with blue →) = Next
 
 ### Keyboard
 - Press **←** = Previous
@@ -57,8 +58,8 @@ In modal header:
 
 ## ✅ Success = You See This:
 
-- ✅ White pulsing buttons
-- ✅ Keyboard hint at bottom
+- ✅ **Dark buttons with blue glow** (visible on white images!)
+- ✅ Keyboard hint at bottom (blue text)
 - ✅ Position counter in header
 - ✅ Buttons respond to clicks
 - ✅ Arrow keys work
