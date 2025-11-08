@@ -34,6 +34,7 @@
     "react-activity-calendar": "^2.7.13",
     "react-dom": "^19.1.1",
     "react-fast-marquee": "^1.6.5",
+    "react-masonry-css": "^1.0.16",
     "tailwindcss": "^4.1.12"
   },
   "devDependencies": {
