@@ -1,14 +1,9 @@
 import { useContact } from "@/hooks/use-contact";
 import { CalendlyButton } from "@/components/common/calendly-button";
-import { Input, Textarea, Button, addToast, Select, SelectItem } from "@heroui/react";
+import { Input, Textarea, Button, addToast } from "@heroui/react";
 import { ArrowDownLeft, MapPin } from "lucide-react";
 import { useForm, type AnyFieldApi } from "@tanstack/react-form";
-import {
-  contactFormSchema as formSchema,
-  projectTypes,
-  budgetRanges,
-  timelines,
-} from "@/constants/form-schemas/contact";
+import { contactFormSchema as formSchema } from "@/constants/form-schemas/contact";
 import { useCallback } from "react";
 
 export const Contact = () => {
@@ -18,9 +13,6 @@ export const Contact = () => {
     defaultValues: {
       name: "",
       email: "",
-      projectType: "",
-      budget: "",
-      timeline: "",
       message: "",
     },
     validators: {
@@ -172,95 +164,6 @@ export const Contact = () => {
                       );
                     }}
                   />
-                  <form.Field
-                    name="projectType"
-                    children={(field) => {
-                      const { isInvalid, errorMessage } = getFieldError(field);
-
-                      return (
-                        <Select
-                          id={field.name}
-                          size="sm"
-                          label="Project Type"
-                          placeholder="Select project type"
-                          selectedKeys={field.state.value ? [field.state.value] : []}
-                          onSelectionChange={(keys) => {
-                            const value = Array.from(keys)[0] as string;
-                            field.handleChange(value);
-                          }}
-                          onBlur={field.handleBlur}
-                          isInvalid={isInvalid}
-                          errorMessage={errorMessage}
-                        >
-                          {projectTypes.map((type) => (
-                            <SelectItem key={type} value={type}>
-                              {type}
-                            </SelectItem>
-                          ))}
-                        </Select>
-                      );
-                    }}
-                  />
-                  <div className="grid gap-3 sm:grid-cols-2">
-                    <form.Field
-                      name="budget"
-                      children={(field) => {
-                        const { isInvalid, errorMessage } = getFieldError(field);
-
-                        return (
-                          <Select
-                            id={field.name}
-                            size="sm"
-                            label="Budget Range"
-                            placeholder="Select budget"
-                            selectedKeys={field.state.value ? [field.state.value] : []}
-                            onSelectionChange={(keys) => {
-                              const value = Array.from(keys)[0] as string;
-                              field.handleChange(value);
-                            }}
-                            onBlur={field.handleBlur}
-                            isInvalid={isInvalid}
-                            errorMessage={errorMessage}
-                          >
-                            {budgetRanges.map((range) => (
-                              <SelectItem key={range} value={range}>
-                                {range}
-                              </SelectItem>
-                            ))}
-                          </Select>
-                        );
-                      }}
-                    />
-                    <form.Field
-                      name="timeline"
-                      children={(field) => {
-                        const { isInvalid, errorMessage } = getFieldError(field);
-
-                        return (
-                          <Select
-                            id={field.name}
-                            size="sm"
-                            label="Timeline"
-                            placeholder="Select timeline"
-                            selectedKeys={field.state.value ? [field.state.value] : []}
-                            onSelectionChange={(keys) => {
-                              const value = Array.from(keys)[0] as string;
-                              field.handleChange(value);
-                            }}
-                            onBlur={field.handleBlur}
-                            isInvalid={isInvalid}
-                            errorMessage={errorMessage}
-                          >
-                            {timelines.map((time) => (
-                              <SelectItem key={time} value={time}>
-                                {time}
-                              </SelectItem>
-                            ))}
-                          </Select>
-                        );
-                      }}
-                    />
-                  </div>
                   <form.Field
                     name="message"
                     children={(field) => {
