@@ -7,6 +7,7 @@ export type Project = {
   processURL: string | null;
   tags: string[];
   year: number;
+  githubRepo?: string; // Format: "owner/repo" e.g., "PP-Namias/Portfolio"
 };
 
 export type Certification = {

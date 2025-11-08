@@ -1,6 +1,6 @@
 import { RecentExperienceTile } from "@/components/features/experiences/recent-experience-tile";
 import { GithubRecentCommitTile } from "@/components/features/github/github-recent-commit-tile";
-import { LastFmRecentTrackTile } from "@/components/features/last-fm/lastfm-recent-track-tile";
+import { DiscordPresenceTile } from "@/components/features/discord/discord-presence-tile";
 import { Footer } from "@/components/partials/footer";
 import { FloatingActionButton } from "@/components/common/floating-action-button";
 import { GithubActivityCalendar } from "@/sections/github-activity-calendar";
@@ -32,7 +32,7 @@ function RouteComponent() {
           <Technologies />
           <div className="bg-background grid h-[5rem] grid-cols-2 gap-1 rounded-xl p-[3px] sm:hidden lg:grid xl:hidden">
             <GithubRecentCommitTile />
-            <LastFmRecentTrackTile />
+            <DiscordPresenceTile />
           </div>
           <GithubStats />
           <GithubActivityCalendar />

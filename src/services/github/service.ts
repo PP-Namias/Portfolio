@@ -5,6 +5,7 @@ import type {
   GithubContributionStats,
   GithubEvent,
   GithubRecentCommit,
+  GithubRepository,
 } from "./types";
 
 export class GithubService implements IGithubService {
@@ -15,6 +16,7 @@ export class GithubService implements IGithubService {
     this.getBaseUserInformation = this.getBaseUserInformation.bind(this);
     this.getContributionStats = this.getContributionStats.bind(this);
     this.getRecentCommit = this.getRecentCommit.bind(this);
+    this.getRepository = this.getRepository.bind(this);
   }
 
   async getContributionStats(): ReturnType<
@@ -66,6 +68,16 @@ export class GithubService implements IGithubService {
     const url = `https://api.github.com/users/${this.githubUsername}`;
     return await axios
       .get<GithubBaseUserInformation>(url)
+      .then((response) => response.data);
+  }
+
+  async getRepository(
+    owner: string,
+    repo: string
+  ): ReturnType<IGithubService["getRepository"]> {
+    const url = `https://api.github.com/repos/${owner}/${repo}`;
+    return await axios
+      .get<GithubRepository>(url)
       .then((response) => response.data);
   }
 }

@@ -59,19 +59,18 @@ export const Main = () => {
       </div>
       <div className="mt-auto text-xs sm:text-base lg:text-sm 2xl:text-base">
         <p className="">
-          A Philippines-based 22-year-old
+          Philippines-based software engineer specializing in
           <span className="text-primary font-bold">
             {
-              " multi-disciplinary engineer in Fullstack Development, DevOps, Quality Engineering, and Data Science."
+              " Full-Stack Development, DevOps Engineering, Quality Assurance, and Data Science."
             }{" "}
           </span>
-          Over the past few years, I’ve been building scalable applications,
-          automating complex workflows, and transforming raw data into
-          actionable insights. My work spans from developing web platforms and
-          intuitive apps to architecting reliable systems and crafting
-          data-driven solutions. I thrive at the intersection of code, systems,
-          and intelligence — bringing fresh perspectives and a drive to turn
-          ideas into impactful, meaningful solutions.
+          I architect and deliver production-ready solutions that solve real-world problems — 
+          from building high-performance web applications and implementing CI/CD pipelines, 
+          to engineering data-driven systems and ensuring code quality at scale. 
+          With expertise spanning modern frameworks, cloud infrastructure, automated testing, 
+          and machine learning, I transform complex technical challenges into elegant, 
+          scalable solutions that drive measurable business impact.
         </p>
       </div>
     </div>

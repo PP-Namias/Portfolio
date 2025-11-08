@@ -18,12 +18,13 @@ export const GithubActivityCalendar = memo(() => {
 
   const filteredContributions = useMemo(() => {
     if (!contributions) return [];
-    const startDate = new Date("2022-01-02").getTime();
+    // Show only 2025 contributions
+    const startOf2025 = new Date("2025-01-01").getTime();
     const now = Date.now();
 
     return contributions
       .map((c) => ({ ...c, timestamp: new Date(c.date).getTime() }))
-      .filter((c) => c.timestamp >= startDate && c.timestamp <= now)
+      .filter((c) => c.timestamp >= startOf2025 && c.timestamp <= now)
       .sort((a, b) => a.timestamp - b.timestamp);
   }, [contributions]);
 
@@ -67,7 +68,7 @@ export const GithubActivityCalendar = memo(() => {
                 hideTotalCount
               />
               <div className="absolute bottom-0 block text-[10px] md:bottom-0">
-                Github contributions from 2022 - Present
+                Daily coding activity - 2025
               </div>
             </div>
           )}

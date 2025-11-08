@@ -24,9 +24,18 @@ export default function useGithub() {
       staleTime: 60 * 1000 * 1.5,
     });
 
+  const queryRepository = (owner: string, repo: string) =>
+    useQuery({
+      queryFn: () => githubService.getRepository(owner, repo),
+      queryKey: ["github_repository", owner, repo],
+      staleTime: 60 * 1000 * 60, // 1 hour
+      enabled: !!owner && !!repo,
+    });
+
   return {
     queryContributionStats,
     queryBaseUserInformation,
     queryRecentCommit,
+    queryRepository,
   };
 }

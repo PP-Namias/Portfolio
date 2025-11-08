@@ -2,6 +2,7 @@ import type { Project } from "@/services/core";
 import { Button, Image, ScrollShadow } from "@heroui/react";
 import { cn } from "@heroui/theme";
 import { Github, Settings2, Globe } from "lucide-react";
+import { ProjectGithubMetrics } from "./project-github-metrics";
 
 type ProjectCardProps = {
   children: React.ReactNode;
@@ -35,6 +36,11 @@ type ProjectCardContentTagsProps = {
 
 type ProjectCardContentFooterProps = {
   children: React.ReactNode;
+  className?: string;
+};
+
+type ProjectCardGithubMetricsProps = {
+  githubRepo?: string;
   className?: string;
 };
 
@@ -255,6 +261,14 @@ const ProjectCardLiveButton = ({
   );
 };
 
+const ProjectCardGithubMetrics = ({
+  githubRepo,
+  className,
+}: ProjectCardGithubMetricsProps) => {
+  if (!githubRepo) return null;
+  return <ProjectGithubMetrics githubRepo={githubRepo} className={className} />;
+};
+
 ProjectCard.ImageView = ProjectCardImageView;
 ProjectCard.Body = ProjectCardBody;
 ProjectCard.Content = ProjectCardContent;
@@ -267,3 +281,4 @@ ProjectCard.LiveButton = ProjectCardLiveButton;
 ProjectCard.Image = ProjectCardImage;
 ProjectCard.Title = ProjectCardTitle;
 ProjectCard.Description = ProjectCardDescription;
+ProjectCard.GithubMetrics = ProjectCardGithubMetrics;

@@ -79,6 +79,12 @@ export const Projects = () => {
                       title={project.title}
                       year={project.year}
                     />
+                    {project.githubRepo && (
+                      <ProjectCard.GithubMetrics
+                        githubRepo={project.githubRepo}
+                        className="mb-2"
+                      />
+                    )}
                     <div className="mb-4 flex flex-col gap-2">
                       <ProjectCard.Description
                         classNames={{ container: "flex-grow" }}

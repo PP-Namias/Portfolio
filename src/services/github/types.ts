@@ -91,3 +91,19 @@ export type GithubRecentCommit = {
   commit_message?: string;
   created_at: string;
 };
+
+export type GithubRepository = {
+  id: number;
+  name: string;
+  full_name: string;
+  description: string | null;
+  html_url: string;
+  stargazers_count: number;
+  watchers_count: number;
+  forks_count: number;
+  open_issues_count: number;
+  language: string | null;
+  created_at: string;
+  updated_at: string;
+  pushed_at: string;
+};
