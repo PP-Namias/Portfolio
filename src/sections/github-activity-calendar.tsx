@@ -18,13 +18,13 @@ export const GithubActivityCalendar = memo(() => {
 
   const filteredContributions = useMemo(() => {
     if (!contributions) return [];
-    // Show only 2025 contributions
+    // Show all 2025 contributions (full year)
     const startOf2025 = new Date("2025-01-01").getTime();
-    const now = Date.now();
+    const endOf2025 = new Date("2025-12-31T23:59:59").getTime();
 
     return contributions
       .map((c) => ({ ...c, timestamp: new Date(c.date).getTime() }))
-      .filter((c) => c.timestamp >= startOf2025 && c.timestamp <= now)
+      .filter((c) => c.timestamp >= startOf2025 && c.timestamp <= endOf2025)
       .sort((a, b) => a.timestamp - b.timestamp);
   }, [contributions]);
 

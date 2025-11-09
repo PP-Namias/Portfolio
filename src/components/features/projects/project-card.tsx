@@ -3,6 +3,7 @@ import { Button, Image, ScrollShadow } from "@heroui/react";
 import { cn } from "@heroui/theme";
 import { Github, Settings2, Globe } from "lucide-react";
 import { ProjectGithubMetrics } from "./project-github-metrics";
+import { ProjectLikeButton } from "./project-like-button";
 
 type ProjectCardProps = {
   children: React.ReactNode;
@@ -54,6 +55,11 @@ type ProjectCardProcessButtonProps = {
 };
 type ProjectCardLiveButtonProps = {
   url: string | null;
+  className?: string;
+};
+
+type ProjectCardLikeButtonProps = {
+  projectId: string;
   className?: string;
 };
 
@@ -269,6 +275,13 @@ const ProjectCardGithubMetrics = ({
   return <ProjectGithubMetrics githubRepo={githubRepo} className={className} />;
 };
 
+const ProjectCardLikeButton = ({
+  projectId,
+  className,
+}: ProjectCardLikeButtonProps) => {
+  return <ProjectLikeButton projectId={projectId} className={className} />;
+};
+
 ProjectCard.ImageView = ProjectCardImageView;
 ProjectCard.Body = ProjectCardBody;
 ProjectCard.Content = ProjectCardContent;
@@ -282,3 +295,4 @@ ProjectCard.Image = ProjectCardImage;
 ProjectCard.Title = ProjectCardTitle;
 ProjectCard.Description = ProjectCardDescription;
 ProjectCard.GithubMetrics = ProjectCardGithubMetrics;
+ProjectCard.LikeButton = ProjectCardLikeButton;
