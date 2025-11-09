@@ -19,12 +19,6 @@
     "link": "mailto:pp.namias@gmail.com"
   },
   {
-    "name": "whatsapp",
-    "icon": "message-circle",
-    "label": "WhatsApp",
-    "link": "https://wa.me/1234567890"
-  },
-  {
     "name": "linkedin",
     "icon": "linkedin",
     "label": "Jhon Keneth Ryan Namias",
@@ -53,11 +47,5 @@
     "icon": "instagram",
     "label": "@pp_namias",
     "link": "https://www.instagram.com/pp_namias/"
-  },
-  {
-    "name": "spotify",
-    "icon": "music",
-    "label": "PP Namias",
-    "link": "https://open.spotify.com/user/12180365121"
   }
 ]
