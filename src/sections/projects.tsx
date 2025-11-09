@@ -2,6 +2,8 @@ import { ProjectCard } from "@/components/features/projects/project-card";
 import { ErrorTile } from "@/components/ui/error-tile";
 import { LoadingTile } from "@/components/ui/loading-tile";
 import { useCore } from "@/hooks/use-core";
+import { usePageSEO } from "@/hooks/use-seo";
+import { sectionMetadata } from "@/utilities/seo";
 
 const optimizedImages: Record<string, string> = import.meta.glob(
   "../assets/portfolio-resources/assets/images/projects/*.png",
@@ -11,6 +13,9 @@ const optimizedImages: Record<string, string> = import.meta.glob(
 export const Projects = () => {
   const { queryProjects } = useCore();
   const { data, isLoading, error } = queryProjects();
+
+  // Update SEO for Projects section
+  usePageSEO(sectionMetadata.projects);
 
   if (isLoading)
     return (

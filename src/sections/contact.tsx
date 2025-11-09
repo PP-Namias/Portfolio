@@ -1,4 +1,6 @@
 import { useContact } from "@/hooks/use-contact";
+import { usePageSEO } from "@/hooks/use-seo";
+import { sectionMetadata } from "@/utilities/seo";
 import { CalendlyButton } from "@/components/common/calendly-button";
 import { Input, Textarea, Button, addToast } from "@heroui/react";
 import { ArrowDownLeft, MapPin } from "lucide-react";
@@ -8,6 +10,9 @@ import { useCallback } from "react";
 
 export const Contact = () => {
   const { sendMessageMutation } = useContact();
+
+  // Update SEO for Contact section
+  usePageSEO(sectionMetadata.contact);
 
   const form = useForm({
     defaultValues: {

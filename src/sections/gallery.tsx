@@ -3,6 +3,8 @@ import { GalleryModal } from "@/components/features/gallery/gallery-modal";
 import { ErrorTile } from "@/components/ui/error-tile";
 import { LoadingTile } from "@/components/ui/loading-tile";
 import { useCore } from "@/hooks/use-core";
+import { usePageSEO } from "@/hooks/use-seo";
+import { sectionMetadata } from "@/utilities/seo";
 import type { GalleryItem } from "@/types/gallery";
 import { useState, useMemo } from "react";
 import Masonry from "react-masonry-css";
@@ -23,6 +25,9 @@ export default function Gallery() {
   const data = useMemo(() => _data as GalleryItem[] | undefined, [_data]);
 
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+
+  // Update SEO for Gallery section
+  usePageSEO(sectionMetadata.gallery);
 
   // Masonry breakpoints
   const breakpointColumns = {

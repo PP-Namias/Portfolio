@@ -2,6 +2,8 @@ import { ExperienceCard } from "@/components/features/experiences/experience-car
 import { ErrorTile } from "@/components/ui/error-tile";
 import { LoadingTile } from "@/components/ui/loading-tile";
 import { useCore } from "@/hooks/use-core";
+import { usePageSEO } from "@/hooks/use-seo";
+import { sectionMetadata } from "@/utilities/seo";
 import { TimeUtilities } from "@/utilities/time";
 import dayjs from "dayjs";
 import { useCallback, useMemo } from "react";
@@ -11,6 +13,9 @@ export const Experiences = () => {
   const { data: _data, isLoading, error } = queryExperiences();
 
   const data = useMemo(() => _data, [_data]);
+
+  // Update SEO for Career section
+  usePageSEO(sectionMetadata.career);
 
   const experienceDuration = useMemo(() => {
     if (!data) return 0;

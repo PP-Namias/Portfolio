@@ -11,12 +11,28 @@ import { ScrollShadow } from "@heroui/scroll-shadow";
 import { createFileRoute } from "@tanstack/react-router";
 import { Header } from "../components/partials/header";
 import { Main } from "../sections/main";
+import { useSEO } from "@/hooks/use-seo";
+import {
+  sectionMetadata,
+  generatePersonSchema,
+  generateWebsiteSchema,
+  generateProfileSchema,
+} from "@/utilities/seo";
 
 export const Route = createFileRoute("/")({
   component: RouteComponent,
 });
 
 function RouteComponent() {
+  // Initialize SEO for homepage
+  useSEO({
+    metadata: sectionMetadata.home,
+    schema: [
+      generatePersonSchema(),
+      generateWebsiteSchema(),
+      generateProfileSchema(),
+    ],
+  });
   return (
     <div className="bg-grid lg:absolute lg:inset-0 lg:flex lg:items-center lg:justify-center">
       <FloatingActionButton />

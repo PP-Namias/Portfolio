@@ -1,0 +1,20 @@
+{
+  "name": "Jhon Keneth Namias - Portfolio",
+  "short_name": "PP Namias",
+  "description": "Portfolio of Jhon Keneth Namias - Full-Stack Developer & Data Analyst",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#272a30",
+  "theme_color": "#0070f0",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "any",
+      "type": "image/x-icon"
+    }
+  ],
+  "categories": ["portfolio", "developer", "technology"],
+  "lang": "en-US",
+  "dir": "ltr"
+}
