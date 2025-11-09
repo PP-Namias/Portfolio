@@ -17,12 +17,12 @@ export const DiscordPresenceCard = () => {
   }, []);
 
   // Theme-aware Lanyard configuration
-  // Light mode: theme=light&bg=f2f2f2 (matches --custom-secondary: 0 0% 95%)
-  // Dark mode: theme=dark&bg=1a1d23 (matches --custom-secondary: 240 6% 10%)
+  // Light mode: theme=light&bg=e6e6e6 (matches --custom-background: 0 0% 90%)
+  // Dark mode: theme=dark&bg=272a30 (matches --custom-background: 240 5% 15.9%)
   const themeConfig =
     theme === "dark"
-      ? "theme=dark&bg=1a1d23"
-      : "theme=light&bg=f2f2f2";
+      ? "theme=dark&bg=272a30"
+      : "theme=light&bg=e6e6e6";
 
   const lanyardUrl = `https://lanyard-profile-readme.vercel.app/api/${discordUserId}?${themeConfig}&animated=false&hideDiscrim=false&borderRadius=30px&idleMessage=Probably%20doing%20something%20else...&t=${timestamp}`;
 
