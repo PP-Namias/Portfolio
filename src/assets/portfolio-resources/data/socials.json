@@ -15,19 +15,19 @@
   {
     "name": "email",
     "icon": "mail",
-    "label": "pp.namias@gmail.com",
+    "label": "Gmail",
     "link": "mailto:pp.namias@gmail.com"
   },
   {
     "name": "linkedin",
     "icon": "linkedin",
-    "label": "Jhon Keneth Ryan Namias",
+    "label": "LinkedIn",
     "link": "https://www.linkedin.com/in/pp-namias/"
   },
   {
     "name": "facebook",
     "icon": "facebook",
-    "label": "Jhon Keneth Ryan Namias",
+    "label": "Facebook",
     "link": "https://www.facebook.com/jhon.keneth.namias.2024/"
   },
   {
