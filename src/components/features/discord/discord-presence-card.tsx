@@ -1,6 +1,8 @@
+import { useThemeContext } from "@/context/theme-context";
 import { useEffect, useState } from "react";
 
 export const DiscordPresenceCard = () => {
+  const { theme } = useThemeContext();
   const discordUserId = "683914336376455200";
   const discordProfileUrl = `https://discord.com/users/${discordUserId}`;
   const [timestamp, setTimestamp] = useState(Date.now());
@@ -14,7 +16,15 @@ export const DiscordPresenceCard = () => {
     return () => clearInterval(interval);
   }, []);
 
-  const lanyardUrl = `https://lanyard-profile-readme.vercel.app/api/${discordUserId}?theme=dark&bg=0d1117&animated=false&hideDiscrim=false&borderRadius=30px&idleMessage=Probably%20doing%20something%20else...&t=${timestamp}`;
+  // Theme-aware Lanyard configuration
+  // Light mode: theme=light&bg=f2f2f2 (matches --custom-secondary: 0 0% 95%)
+  // Dark mode: theme=dark&bg=1a1d23 (matches --custom-secondary: 240 6% 10%)
+  const themeConfig =
+    theme === "dark"
+      ? "theme=dark&bg=1a1d23"
+      : "theme=light&bg=f2f2f2";
+
+  const lanyardUrl = `https://lanyard-profile-readme.vercel.app/api/${discordUserId}?${themeConfig}&animated=false&hideDiscrim=false&borderRadius=30px&idleMessage=Probably%20doing%20something%20else...&t=${timestamp}`;
 
   return (
     <a

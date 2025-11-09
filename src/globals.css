@@ -55,10 +55,6 @@ html {
   font-size: 15px;
 }
 
-/* ============================================
-   Masonry Grid Styles
-   ============================================ */
-
 .masonry-grid {
   display: flex;
   margin-left: -8px; /* gutter size offset */
