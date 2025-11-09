@@ -64,9 +64,6 @@ export const SocialsModalContent = () => {
             <div className="flex flex-wrap gap-2">
               {socials.data?.map((social, index) => {
                 const socialInfo = getSocialInfo(social.name);
-                const iconSrc = socialInfo.useLocalIcon && socialInfo.localIcon
-                  ? socialInfo.localIcon
-                  : `https://cdn.simpleicons.org/${socialInfo.slug}/000000/ffffff`;
                 
                 return (
                   <a
@@ -76,17 +73,18 @@ export const SocialsModalContent = () => {
                     key={`SocialTile-${social.link}-${index}`}
                     className="bg-custom-secondary hover:border-primary hover:bg-primary/5 dark:border-default dark:hover:border-primary flex grow items-center gap-3 rounded-xl border border-transparent px-3 py-2 transition-all duration-300 ease-in-out"
                   >
-                    <img
-                      src={iconSrc}
-                      alt={`${socialInfo.displayName} icon`}
-                      className="size-8"
-                      onError={(e) => {
-                        // Fallback to a generic icon if the specific one fails
-                        if (!socialInfo.useLocalIcon) {
+                    {socialInfo.useCustomIcon ? (
+                      <LinkedInIcon />
+                    ) : (
+                      <img
+                        src={`https://cdn.simpleicons.org/${socialInfo.slug}/000000/ffffff`}
+                        alt={`${socialInfo.displayName} icon`}
+                        className="size-8"
+                        onError={(e) => {
                           e.currentTarget.src = `https://cdn.simpleicons.org/googlechrome/000000/ffffff`;
-                        }
-                      }}
-                    />
+                        }}
+                      />
+                    )}
                     <div className="flex flex-col">
                       <p className="text-xs font-medium">{socialInfo.displayName}</p>
                       <p className="text-sm text-default-500">{socialInfo.subtitle || social.label}</p>
