@@ -2,13 +2,18 @@ import { ErrorTile } from "@/components/ui/error-tile";
 import { LoadingTile } from "@/components/ui/loading-tile";
 import { useThemeContext } from "@/context/theme-context";
 import useGithub from "@/hooks/use-github";
-import { ScrollShadow } from "@heroui/react";
-import { memo, useMemo } from "react";
+import { memo, useMemo, useRef, useState } from "react";
 import ActivityCalendar from "react-activity-calendar";
 
 export const GithubActivityCalendar = memo(() => {
   const { theme } = useThemeContext();
   const { queryContributionStats } = useGithub();
+
+  // Drag to scroll state
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [startX, setStartX] = useState(0);
+  const [scrollLeft, setScrollLeft] = useState(0);
 
   const {
     data: { contributions } = {},
@@ -33,6 +38,38 @@ export const GithubActivityCalendar = memo(() => {
     dark: ["hsl(0, 0%, 8%)", "#0070f0"],
   };
 
+  // Mouse drag handlers
+  const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!scrollContainerRef.current) return;
+    setIsDragging(true);
+    setStartX(e.pageX - scrollContainerRef.current.offsetLeft);
+    setScrollLeft(scrollContainerRef.current.scrollLeft);
+    scrollContainerRef.current.style.cursor = "grabbing";
+    scrollContainerRef.current.style.userSelect = "none";
+  };
+
+  const handleMouseLeave = () => {
+    if (!scrollContainerRef.current) return;
+    setIsDragging(false);
+    scrollContainerRef.current.style.cursor = "grab";
+    scrollContainerRef.current.style.userSelect = "auto";
+  };
+
+  const handleMouseUp = () => {
+    if (!scrollContainerRef.current) return;
+    setIsDragging(false);
+    scrollContainerRef.current.style.cursor = "grab";
+    scrollContainerRef.current.style.userSelect = "auto";
+  };
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!isDragging || !scrollContainerRef.current) return;
+    e.preventDefault();
+    const x = e.pageX - scrollContainerRef.current.offsetLeft;
+    const walk = (x - startX) * 2; // Scroll speed multiplier
+    scrollContainerRef.current.scrollLeft = scrollLeft - walk;
+  };
+
   if (isLoading)
     return (
       <div className="bg-background h-[10.8rem] rounded-xl p-[3px]">
@@ -50,29 +87,32 @@ export const GithubActivityCalendar = memo(() => {
   return (
     <>
       <div
-        className={`bg-background flex h-[11rem] items-center overflow-x-scroll overflow-y-hidden rounded-xl p-4`}
+        ref={scrollContainerRef}
+        className="bg-background relative flex h-[11rem] cursor-grab items-center overflow-x-scroll overflow-y-hidden rounded-xl p-4 active:cursor-grabbing [&::-webkit-scrollbar]:hidden"
+        onMouseDown={handleMouseDown}
+        onMouseLeave={handleMouseLeave}
+        onMouseUp={handleMouseUp}
+        onMouseMove={handleMouseMove}
+        style={{
+          scrollbarWidth: "none",
+          msOverflowStyle: "none",
+        }}
       >
-        <ScrollShadow
-          orientation="horizontal"
-          className="relative h-full w-full"
-          size={100}
-        >
-          {filteredContributions && (
-            <div className="w-max">
-              <ActivityCalendar
-                data={filteredContributions}
-                theme={customTheme}
-                colorScheme={theme as "light" | "dark"}
-                fontSize={10}
-                blockSize={10}
-                hideTotalCount
-              />
-              <div className="absolute bottom-0 block text-[10px] md:bottom-0">
-                Daily coding activity - 2025
-              </div>
+        {filteredContributions && (
+          <div className="w-max">
+            <ActivityCalendar
+              data={filteredContributions}
+              theme={customTheme}
+              colorScheme={theme as "light" | "dark"}
+              fontSize={10}
+              blockSize={10}
+              hideTotalCount
+            />
+            <div className="absolute bottom-4 left-4 block text-[10px]">
+              Daily coding activity - 2025
             </div>
-          )}
-        </ScrollShadow>
+          </div>
+        )}
       </div>
     </>
   );
