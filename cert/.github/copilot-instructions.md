@@ -1,50 +1,61 @@
 # Copilot Instructions for Certificate Tracking Project
 
 ## Project Overview
-This is a personal certificate tracking project for IT training certifications. The goal is to track progress toward obtaining 5 free certificates in: Programming, Database, AI Agent, API, and Cybersecurity.
+Personal IT certificate tracking project for obtaining 5 FREE certificates in current IT trends:
+- **Programming** (Python/JavaScript)
+- **Database** (SQL/NoSQL)
+- **AI Agent** (Generative AI/LLMs)
+- **API** (REST APIs/Postman)
+- **Cybersecurity** (Security Fundamentals)
 
-## Key Files
-- `CERTIFICATE_PLAN.md` - Main planning document with course options and progress tracking
-- `certificates/` - Folder structure for storing earned certificates (organized by category)
-
-## Document Update Guidelines
-
-### When updating CERTIFICATE_PLAN.md:
-1. **Status Updates:** Change `⬜ Not Started` to `🔄 In Progress` or `✅ Completed`
-2. **Progress Tracker:** Check off completed steps using `[x]` instead of `[ ]`
-3. **Completion Dates:** Fill in dates when certificates are earned
-4. **Links:** Verify all course URLs are still active before recommending
-
-### Certificate Requirements:
-- All courses must be **FREE** (or free audit option)
-- Minimum **8 hours** duration
-- Must have **quiz/assessment** for certificate
-- Must provide **downloadable certificate**
-
-### Adding New Courses:
-When adding courses, include:
-```markdown
-| Platform | Course Name | Duration | Certificate | Link |
-|----------|-------------|----------|-------------|------|
-| **[Name]** | Course Title | X hours | ✅ Free | [Link](URL) |
-```
-
-## Folder Structure Convention
+## Key Files & Structure
 ```
 cert/
-├── certificates/
+├── CERTIFICATE_PLAN.md       # Main planning document (source of truth)
+├── certificates/             # Store earned certificates here
 │   ├── programming/
 │   ├── database/
 │   ├── ai-agent/
 │   ├── api/
 │   └── cybersecurity/
-├── CERTIFICATE_PLAN.md
-└── .github/copilot-instructions.md
+└── .github/
+    └── copilot-instructions.md
 ```
 
-## Priority Order for Fast Completion
-1. HackerRank (instant skill verification)
-2. Kaggle (practical, quick courses)
-3. Postman Academy (industry-recognized)
-4. Cisco Networking Academy (established provider)
-5. Google Cloud Skills Boost (comprehensive paths)
+## Document Update Guidelines
+
+### Status Markers
+- `⬜ Not Started` → `🔄 In Progress` → `✅ Completed`
+- Progress checkboxes: `[ ]` → `[x]`
+
+### Speed Indicators
+- ⚡ FASTEST (1-2h) - Test-only, instant certificate
+- 🚀 Fast (4-8h) - Short modules + quiz
+- 🔵 Medium (8-15h) - Comprehensive content
+- 🐢 Long (20+ hours) - Deep learning paths
+
+### Certificate Requirements
+- ✅ Must be **FREE** (or free audit option)
+- ✅ Minimum **8 hours** duration (for academic credit)
+- ✅ Must have **quiz/assessment**
+- ✅ Must provide **downloadable certificate**
+
+### Adding New Courses
+```markdown
+| Platform | Course | Duration | Certificate | Speed | Link |
+|----------|--------|----------|-------------|-------|------|
+| **⭐ Name** | Course Title | Xh | ✅ Free | ⚡ FASTEST | [Link](URL) |
+```
+
+## Priority Platforms (Fastest First)
+1. **HackerRank** - Test-only, instant certificates
+2. **Google Cloud Skills Boost** - Free badges, quick modules
+3. **Kaggle** - Hands-on notebooks, practical
+4. **Postman Academy** - Industry-recognized API certs
+5. **Cisco Networking Academy** - Established, recognized
+
+## When Updating Progress
+1. Update status in Summary table
+2. Check off steps in Progress Tracker
+3. Add completion date
+4. Move certificate file to appropriate folder
