@@ -1,5 +1,181 @@
 [
   {
+    "title": "2nd Place Programming Competition",
+    "image": "2nd Place Programming Compitition Certificate.jpg",
+    "issuer": "University of Caloocan City",
+    "issuedAt": "2025-12-01",
+    "tags": ["Programming", "Competition", "Award", "Achievement"]
+  },
+
+  {
+    "title": "CS Council Member",
+    "image": "CS COUNCIL NAMIAS.png",
+    "issuer": "University of Caloocan City",
+    "issuedAt": "2025-06-01",
+    "tags": ["Leadership", "Student Council", "Computer Science"]
+  },
+
+  {
+    "title": "Cybersecurity Fundamentals",
+    "image": "Cybersecurity Fundamentals.png",
+    "issuer": "IBM",
+    "issuedAt": "2025-01-15",
+    "tags": ["Cybersecurity", "Security", "IBM", "Information Security"]
+  },
+
+  {
+    "title": "Deployment Static Website using Firebase",
+    "image": "Deployment Static basic Website using Firebase.png",
+    "issuer": "Google Developer Student Clubs",
+    "issuedAt": "2024-11-15",
+    "tags": ["Firebase", "Deployment", "Web Development", "Google Cloud"]
+  },
+
+  {
+    "title": "Google Maps APIs and Camera Integration using React Native",
+    "image": "Google maps APIs and Camera Integration using React Native.png",
+    "issuer": "Google Developer Student Clubs",
+    "issuedAt": "2024-10-20",
+    "tags": ["React Native", "Google Maps API", "Mobile Development", "Camera Integration"]
+  },
+
+  {
+    "title": "Google User Authentication",
+    "image": "Google User AUthentication.jpg",
+    "issuer": "Google Developer Student Clubs",
+    "issuedAt": "2024-09-15",
+    "tags": ["Authentication", "OAuth", "Google", "Security"]
+  },
+
+  {
+    "title": "How to Navigate the Database Universe",
+    "image": "How to Navigate the Database Universe.png",
+    "issuer": "AWS",
+    "issuedAt": "2024-08-10",
+    "tags": ["Database", "AWS", "Cloud", "Data Management"]
+  },
+
+  {
+    "title": "Software Engineer",
+    "image": "hackerrank-software-engineer.png",
+    "issuer": "HackerRank",
+    "issuedAt": "2025-12-20",
+    "tags": ["Software Engineering", "Problem Solving", "Data Structures", "Algorithms"]
+  },
+
+  {
+    "title": "Frontend Developer (React)",
+    "image": "hackerrank-frontend-developer-react.png",
+    "issuer": "HackerRank",
+    "issuedAt": "2025-12-20",
+    "tags": ["Frontend Development", "React", "JavaScript", "CSS"]
+  },
+
+  {
+    "title": "REST API (Intermediate)",
+    "image": "hackerrank-rest-api-intermediate.png",
+    "issuer": "HackerRank",
+    "issuedAt": "2025-12-20",
+    "tags": ["REST API", "API Development", "HTTP", "Web Services"]
+  },
+
+  {
+    "title": "SQL (Advanced)",
+    "image": "hackerrank-sql-advanced.png",
+    "issuer": "HackerRank",
+    "issuedAt": "2025-12-20",
+    "tags": ["SQL", "Database", "Advanced Queries", "Performance Optimization"]
+  },
+
+  {
+    "title": "SQL (Intermediate)",
+    "image": "hackerrank-sql-intermediate.png",
+    "issuer": "HackerRank",
+    "issuedAt": "2025-12-20",
+    "tags": ["SQL", "Database", "Joins", "Subqueries"]
+  },
+
+  {
+    "title": "SQL (Basic)",
+    "image": "hackerrank-sql-basic.png",
+    "issuer": "HackerRank",
+    "issuedAt": "2025-12-20",
+    "tags": ["SQL", "Database", "Basic Queries"]
+  },
+
+  {
+    "title": "React (Basic)",
+    "image": "hackerrank-react-basic.png",
+    "issuer": "HackerRank",
+    "issuedAt": "2025-12-20",
+    "tags": ["React", "JavaScript", "Frontend", "Components"]
+  },
+
+  {
+    "title": "Python (Basic)",
+    "image": "hackerrank-python-basic.png",
+    "issuer": "HackerRank",
+    "issuedAt": "2025-12-20",
+    "tags": ["Python", "Programming", "Basic Syntax"]
+  },
+
+  {
+    "title": "Problem Solving (Intermediate)",
+    "image": "hackerrank-problem-solving-intermediate.png",
+    "issuer": "HackerRank",
+    "issuedAt": "2025-12-20",
+    "tags": ["Problem Solving", "Algorithms", "Data Structures"]
+  },
+
+  {
+    "title": "Problem Solving (Basic)",
+    "image": "hackerrank-problem-solving-basic.png",
+    "issuer": "HackerRank",
+    "issuedAt": "2025-12-20",
+    "tags": ["Problem Solving", "Algorithms", "Logic"]
+  },
+
+  {
+    "title": "Node.js (Intermediate)",
+    "image": "hackerrank-nodejs-intermediate.png",
+    "issuer": "HackerRank",
+    "issuedAt": "2025-12-20",
+    "tags": ["Node.js", "JavaScript", "Backend", "API"]
+  },
+
+  {
+    "title": "Node.js (Basic)",
+    "image": "hackerrank-nodejs-basic.png",
+    "issuer": "HackerRank",
+    "issuedAt": "2025-12-20",
+    "tags": ["Node.js", "JavaScript", "Backend"]
+  },
+
+  {
+    "title": "JavaScript (Intermediate)",
+    "image": "hackerrank-javascript-intermediate.png",
+    "issuer": "HackerRank",
+    "issuedAt": "2025-12-20",
+    "tags": ["JavaScript", "ES6", "Programming"]
+  },
+
+  {
+    "title": "JavaScript (Basic)",
+    "image": "hackerrank-javascript-basic.png",
+    "issuer": "HackerRank",
+    "issuedAt": "2025-12-20",
+    "tags": ["JavaScript", "Programming", "Basic Syntax"]
+  },
+
+  {
+    "title": "Java (Basic)",
+    "image": "hackerrank-java-basic.png",
+    "issuer": "HackerRank",
+    "issuedAt": "2025-12-20",
+    "tags": ["Java", "OOP", "Programming"]
+  },
+
+  {
     "title": "AWS Cloud Practitioner Essentials",
     "image": "AWS Cloud Practitioner Essentials.jpg",
     "issuer": "AWS",

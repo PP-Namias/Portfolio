@@ -36,6 +36,12 @@ export const useCore = () => {
       queryKey: ["certifications"],
     });
 
+  const queryGallery = () =>
+    useQuery({
+      queryFn: coreService.getGallery,
+      queryKey: ["gallery"],
+    });
+
   const downloadResumeMutation = useMutation({
     mutationFn: coreService.downloadResume,
   });
@@ -47,6 +53,7 @@ export const useCore = () => {
     queryExperiences,
     querySocials,
     queryCertifications,
+    queryGallery,
     downloadResumeMutation,
   };
 };

@@ -7,7 +7,7 @@ import { Button, Modal, useDisclosure } from "@heroui/react";
 import { useMemo } from "react";
 
 const optimizedImages: Record<string, string> = import.meta.glob(
-  "../assets/portfolio-resources/assets/images/certifications/*.jpg",
+  "../assets/portfolio-resources/assets/images/certifications/*.{png,jpg,jpeg,JPG,jfif,gif,webp}",
   { eager: true, import: "default", query: "?format=webp&meta&quality=1" },
 );
 

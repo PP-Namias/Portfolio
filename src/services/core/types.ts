@@ -48,3 +48,18 @@ export type Experience = {
   technologies: string[];
   highlights: string[];
 };
+
+export type MediaType = "image" | "video" | "gif";
+
+export type GalleryItem = {
+  title: string;
+  mediaType: MediaType;
+  media: string;
+  image?: string;
+  thumbnail?: string;
+  description?: string;
+  issuer?: string;
+  tags: string[];
+  createdAt?: string;
+  issuedAt?: string;
+};

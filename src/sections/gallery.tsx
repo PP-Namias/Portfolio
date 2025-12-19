@@ -5,12 +5,12 @@ import { LoadingTile } from "@/components/ui/loading-tile";
 import { useCore } from "@/hooks/use-core";
 import { usePageSEO } from "@/hooks/use-seo";
 import { sectionMetadata } from "@/utilities/seo";
-import type { GalleryItem } from "@/types/gallery";
+import type { GalleryItem } from "@/services/core/types";
 import { useState, useMemo } from "react";
 import Masonry from "react-masonry-css";
 
 const optimizedImages: Record<string, string> = import.meta.glob(
-  "../assets/portfolio-resources/assets/images/certifications/*.{jpg,png,gif,webp}",
+  "../assets/portfolio-resources/assets/images/gallery/*.{png,jpg,jpeg,JPG,jfif,gif,webp}",
   { eager: true, import: "default", query: "?format=webp&meta&quality=1" },
 );
 
@@ -20,8 +20,8 @@ const optimizedVideos: Record<string, string> = import.meta.glob(
 );
 
 export default function Gallery() {
-  const { queryCertifications } = useCore();
-  const { data: _data, isLoading, error } = queryCertifications();
+  const { queryGallery } = useCore();
+  const { data: _data, isLoading, error } = queryGallery();
   const data = useMemo(() => _data as GalleryItem[] | undefined, [_data]);
 
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);

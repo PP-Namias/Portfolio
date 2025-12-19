@@ -1,178 +1,204 @@
 # Copilot Instructions - Portfolio v3
 
-## Stack & Architecture
-React 19 SPA with **TanStack Router** (file-based), **TanStack Query** (data), **HeroUI** (UI), **Tailwind v4** (styling). Portfolio content is static JSON in `src/assets/portfolio-resources/data/`.
+## Stack
+React 19 + TanStack Router (file-based) + TanStack Query + HeroUI + Tailwind v4. Static portfolio data lives in `src/assets/portfolio-resources/data/*.json`.
 
-## Critical Patterns
+## Core Architecture: Service Layer Pattern
 
-### 1. Service Layer (3-Tier Pattern)
-Data fetching uses **Interface → Service → Hook** pattern:
+**All data fetching follows Interface → Service → Hook → Component:**
 
 ```typescript
-// 1. Interface defines contract (src/services/core/interface.ts)
-export interface ICoreService {
-  getProjects(): Promise<Project[]>;
-}
+// 1. Interface (src/services/core/interface.ts)
+export interface ICoreService { getProjects(): Promise<Project[]>; }
 
-// 2. Service implements (src/services/core/service.ts)
+// 2. Service (src/services/core/service.ts) - MUST bind methods in constructor
 export class CoreService implements ICoreService {
-  constructor() {
-    this.getProjects = this.getProjects.bind(this); // MUST bind
-  }
+  constructor() { this.getProjects = this.getProjects.bind(this); }
   async getProjects(): ReturnType<ICoreService["getProjects"]> {
-    return projects as Project[]; // JSON import
+    return projects as Project[];
   }
 }
 
-// 3. Hook wraps with TanStack Query (src/hooks/use-core.ts)
-export const useCore = () => {
-  const coreService = new CoreService();
-  const queryProjects = () => useQuery({
-    queryFn: coreService.getProjects,
-    queryKey: ["projects"],
-  });
-  return { queryProjects };
-};
+// 3. Hook (src/hooks/use-core.ts)
+const queryProjects = () => useQuery({ queryFn: coreService.getProjects, queryKey: ["projects"] });
 
-// 4. Usage in components
-const { data } = useCore().queryProjects();
+// 4. Component usage
+const { data, isLoading, error } = useCore().queryProjects();
 ```
 
-**Adding new data**: Follow all 3 steps + bind constructor.
+## Image Optimization (vite-imagetools)
 
-### 2. Static Content as API
-JSON files in `src/assets/portfolio-resources/data/` are imported by services as if calling an API:
-- `projects.json`, `experiences.json`, `certifications.json`, `technologies.json`, `socials.json`, `gallery.json`
-- Change content: Edit JSON directly
-- Media references: Filename strings resolved by Vite globs
-
-### 3. Image Optimization Pattern
-Every section that displays images uses `import.meta.glob` with `vite-imagetools`:
+Sections displaying images use `import.meta.glob` to auto-optimize. **All image globs MUST include all supported formats:**
 
 ```typescript
-// Standard pattern (see gallery.tsx, projects.tsx, main.tsx)
+// Pattern used in projects.tsx, gallery.tsx, certifications.tsx
+// IMPORTANT: Include ALL image formats: png, jpg, jpeg, JPG, jfif, gif, webp
 const optimizedImages: Record<string, string> = import.meta.glob(
-  "../assets/portfolio-resources/assets/images/projects/*.png",
+  "../assets/portfolio-resources/assets/images/projects/*.{png,jpg,jpeg,JPG,jfif,gif,webp}",
   { eager: true, import: "default", query: "?format=webp&meta" }
 );
-
-// Match JSON filename to optimized path
-const imageKey = Object.keys(optimizedImages).find(key => 
-  key.includes(item.media)
-);
-const imageUrl = imageKey ? optimizedImages[imageKey] : item.media;
+const imageKey = Object.keys(optimizedImages).find(key => key.includes(item.image));
 ```
 
-### 4. Component Organization
-- `src/sections/`: Page layouts (Main, TabPanel, Gallery, Projects, Experiences)
-- `src/components/features/`: Domain logic by feature (`github/`, `projects/`, `gallery/`)
-- `src/components/ui/`: Reusable UI (`LoadingTile`, `ErrorTile`, `MetricCard`)
-- `src/components/partials/`: Layout (`Header`, `Footer`)
-- `src/components/common/`: Shared business logic
+**Supported image formats:** `.png`, `.jpg`, `.jpeg`, `.JPG`, `.jfif`, `.gif`, `.webp`
 
-### 5. Loading/Error States
-Always wrap async content with tiles:
+**Note:** PDF files cannot be optimized with vite-imagetools. For PDF certificates, import them directly or use a fallback.
 
+## Component Architecture
+
+| Directory | Purpose | Example |
+|-----------|---------|---------|
+| `src/sections/` | Page-level layouts | `projects.tsx`, `gallery.tsx` |
+| `src/components/features/` | Domain components | `projects/project-card.tsx` |
+| `src/components/ui/` | Reusable primitives | `LoadingTile`, `ErrorTile` |
+| `src/components/common/` | Shared business logic | `floating-action-button.tsx` |
+
+**Compound Component Pattern** (see `project-card.tsx`):
+```tsx
+<ProjectCard>
+  <ProjectCard.Body>
+    <ProjectCard.Image imageUrl={img} />
+    <ProjectCard.Title title={t} year={y} />
+  </ProjectCard.Body>
+</ProjectCard>
+```
+
+## Loading/Error States
+
+Always wrap async content:
 ```tsx
 if (isLoading) return <LoadingTile className="h-[280px]" />;
 if (error) return <ErrorTile className="h-[280px]" />;
 ```
 
-### 6. Routing (TanStack Router)
-- File-based: `src/routes/*.tsx` → auto-generates `routeTree.gen.ts`
-- Root route (`__root.tsx`): Wraps with devtools
-- Main route (`index.tsx`): 2-column responsive layout
-- QueryClient passed via router context
+## Commands
 
-### 7. Theming
-- Context: `src/context/theme-context.tsx` (light/dark/system)
-- CSS variables: `src/globals.css` defines `--custom-background`, `--custom-secondary`
-- Toggle: `useThemeContext().toggleTheme()`
-- Classes: `bg-custom-background`, `bg-custom-secondary`
-
-### 8. Floating Action Button
-- Component: `src/components/common/floating-action-button.tsx`
-- Speed dial menu with quick actions (Schedule, Download, Contact)
-- Uses Framer Motion for animations
-- Self-contained, no props needed
-
-### 9. Search & Filter Pattern
-- Example: `ProjectSearchFilter` component
-- Real-time filtering with useState
-- Multiple filter types (search, dropdown, tags)
-- Callback pattern: `onFilterChange(filtered: T[])`
-
-## Development Commands
 ```bash
-npm run dev      # Vite dev server (localhost:5173)
+npm run dev      # Vite dev (localhost:5173)
 npm run build    # tsc + vite build
-npm run lint     # ESLint (typescript-eslint + react-hooks)
-npm run preview  # Preview production build
+npm run lint     # ESLint
+npx prettier --write .  # Format (Tailwind plugin auto-sorts classes)
 ```
 
-## Formatting Conventions
+## Pre-Commit Checklist
 
-### Prettier Configuration
-Project uses Prettier with **Tailwind CSS plugin** (`.prettierrc`):
-- **Tailwind Class Sorting**: Automatically sorts Tailwind classes in recommended order
-- **Run manually**: `npx prettier --write .` (no npm script defined)
-- **IDE Integration**: Configure editor to format on save
+**ALWAYS run these commands before committing:**
 
-### Code Style Patterns
-From existing codebase:
-- **Imports**: Group by external → internal, single line for simple imports
-- **Type Imports**: Use `import type { ... }` for type-only imports
-- **String Quotes**: Double quotes (Prettier default)
-- **Component Props**: Destructure in function signature when few props
-- **Tailwind Classes**: Long className strings on separate line, multi-line for complex HeroUI `classNames` objects
-- **Arrow Functions**: Implicit returns for simple JSX, explicit for logic
+```bash
+# 1. Run linting to catch code quality issues
+npm run lint
 
-Example:
-```tsx
-// Good: Tailwind plugin auto-sorts classes
-<div className="flex h-[85vh] flex-col space-y-2 overflow-y-scroll lg:h-full">
-  
-// Good: Multi-line for complex classNames objects
-<Tabs
-  classNames={{
-    tabList: "w-max m-[3px] p-0 dark:bg-background",
-    base: "w-full bg-custom-secondary dark:bg-background",
-  }}
->
+# 2. Build the project to ensure no TypeScript/compilation errors
+npm run build
+
+# 3. (Optional) Format code
+npx prettier --write .
 ```
 
-## External Integrations
-- **GitHub API**: `GithubService` → `api.github.com` + `github-contributions-api.jogruber.de` (no auth)
-- **Last.fm**: `LastFmService` → recent tracks
-- **Contact Form**: `ContactService` → FormSubmit.co (`hello@jadecabrera.com`)
-- **PDF Resume**: `@react-pdf-viewer/core` + `pdfjs-dist@3.4.120`
+**Do NOT commit if:**
+- `npm run lint` reports errors
+- `npm run build` fails
+- There are TypeScript type errors
 
-## Key File Paths
-- Entry: `src/main.tsx` → `src/App.tsx` (providers: Theme, HeroUI, QueryClient, Router)
-- Config: `vite.config.ts` (alias `@` → `/src`, plugins: router, imagetools, tailwind)
-- Types: `src/services/*/types.ts`, `src/types/*.ts`
-- Data: `src/assets/portfolio-resources/data/*.json`
+## Adding New Features
 
-## Adding Features
+**New JSON data type:**
+1. Add JSON to `src/assets/portfolio-resources/data/`
+2. Add type to `src/services/core/types.ts`
+3. Add to `ICoreService` interface → implement in `CoreService` (bind!) → add to `useCore()` hook
 
-**New JSON Data Type**:
-1. Add `src/assets/portfolio-resources/data/newtype.json`
-2. Define type in `src/services/core/types.ts`
-3. Add method to `ICoreService` interface
-4. Implement in `CoreService` (import + bind)
-5. Add `queryNewType()` to `useCore()` hook
+**New external API:** Create `src/services/newapi/` with `interface.ts`, `service.ts`, `types.ts` + hook in `src/hooks/`
 
-**New External API**:
-1. Create `src/services/newapi/` (interface.ts, service.ts, types.ts)
-2. Create `src/hooks/use-newapi.ts`
-3. Use axios for HTTP calls
+## External APIs (no auth required)
+- GitHub: `api.github.com` + `github-contributions-api.jogruber.de` via `GithubService`
+- Last.fm: `LastFmService` for recent tracks
+- Contact: FormSubmit.co via `ContactService`
 
-**New Tab**:
-1. Create section in `src/sections/newsection.tsx`
-2. Add `<Tab>` to `TabPanel` component
+## Key Conventions
+- **Type imports**: `import type { ... }` for types only
+- **Path alias**: `@/` → `src/` (configured in vite.config.ts)
+- **Theming**: CSS vars `--custom-background`, `--custom-secondary` in globals.css
+- **Routing**: File-based in `src/routes/`, auto-generates `routeTree.gen.ts`
 
-## Common Issues
-- **Routes not working**: Restart dev server, check `routeTree.gen.ts` regenerated
-- **Images not loading**: Verify JSON filename matches file in `assets/images/`, glob pattern includes extension
-- **TypeScript errors**: Service methods must bind in constructor, return types match interface
-- **Build fails**: Run `npm run lint` first, check `@/` alias resolves
+## Gotchas
+- Service methods MUST be bound in constructor or TanStack Query fails
+- Image filenames in JSON must match actual files in `assets/images/`
+- **Image glob patterns MUST include ALL formats:** `*.{png,jpg,jpeg,JPG,jfif,gif,webp}` - missing formats will cause images not to display
+- Restart dev server if routes don't update (`routeTree.gen.ts` regeneration)
+- Always run `npm run build` before committing to catch TypeScript errors
+
+## Adding Gallery & Certifications Content
+
+### Gallery Setup Guide
+
+1. **Add images to the gallery folder:**
+   ```
+   src/assets/portfolio-resources/assets/images/gallery/
+   ```
+   Supported formats: `.png`, `.jpg`, `.jpeg`, `.JPG`, `.jfif`, `.gif`, `.webp`
+
+2. **Add entries to `gallery.json`:**
+   ```json
+   // src/assets/portfolio-resources/data/gallery.json
+   [
+     {
+       "title": "Image Title",
+       "mediaType": "image",
+       "media": "filename.jpg",
+       "tags": ["tag1", "tag2"],
+       "createdAt": "2025-01-15"
+     }
+   ]
+   ```
+
+3. **GalleryItem type fields:**
+   | Field | Type | Required | Description |
+   |-------|------|----------|-------------|
+   | `title` | string | ✅ | Display title |
+   | `mediaType` | `"image"` \| `"video"` \| `"gif"` | ✅ | Media type |
+   | `media` | string | ✅ | Filename (must match file in gallery folder) |
+   | `tags` | string[] | ✅ | Tags for filtering |
+   | `createdAt` | string | ❌ | ISO date (YYYY-MM-DD) |
+   | `description` | string | ❌ | Optional description |
+   | `thumbnail` | string | ❌ | Thumbnail filename for videos |
+
+### Certifications Setup Guide
+
+1. **Add certificate images to:**
+   ```
+   src/assets/portfolio-resources/assets/images/certifications/
+   ```
+   Supported formats: `.png`, `.jpg`, `.jpeg`, `.JPG`, `.jfif`, `.gif`, `.webp`
+   
+   **Note:** PDF certificates should be converted to images (jpg/png) for display.
+
+2. **Add entries to `certifications.json`:**
+   ```json
+   // src/assets/portfolio-resources/data/certifications.json
+   [
+     {
+       "title": "Certificate Title",
+       "image": "certificate-filename.jpg",
+       "issuer": "Issuing Organization",
+       "issuedAt": "2025-01-15",
+       "tags": ["skill1", "skill2"]
+     }
+   ]
+   ```
+
+3. **Certification type fields:**
+   | Field | Type | Required | Description |
+   |-------|------|----------|-------------|
+   | `title` | string | ✅ | Certificate title |
+   | `image` | string | ✅ | Filename (must match file in certifications folder) |
+   | `issuer` | string | ✅ | Issuing organization |
+   | `issuedAt` | string | ✅ | ISO date (YYYY-MM-DD) |
+   | `tags` | string[] | ✅ | Related skills/topics |
+
+### Troubleshooting Images Not Displaying
+
+1. **Check filename match:** The `image`/`media` field in JSON must exactly match the filename
+2. **Check file extension:** Ensure the extension is in the glob pattern
+3. **Restart dev server:** After adding new images, restart `npm run dev`
+4. **Check console:** Look for 404 errors or vite-imagetools warnings
+5. **Verify path:** Images must be in the correct subfolder (gallery/, certifications/, projects/)

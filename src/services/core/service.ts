@@ -1,6 +1,7 @@
 import resume from "@/assets/portfolio-resources/assets/documents/resume.pdf";
 import experiences from "@/assets/portfolio-resources/data/experiences.json";
 import certifications from "@/assets/portfolio-resources/data/certifications.json";
+import gallery from "@/assets/portfolio-resources/data/gallery.json";
 import projects from "@/assets/portfolio-resources/data/projects.json";
 import socials from "@/assets/portfolio-resources/data/socials.json";
 import technologies from "@/assets/portfolio-resources/data/technologies.json";
@@ -9,6 +10,7 @@ import type { ICoreService } from "./interface";
 import type {
   Certification,
   Experience,
+  GalleryItem,
   Project,
   Social,
   Technology,
@@ -19,6 +21,7 @@ export class CoreService implements ICoreService {
     this.getTechnologies = this.getTechnologies.bind(this);
     this.getProjects = this.getProjects.bind(this);
     this.getCertifications = this.getCertifications.bind(this);
+    this.getGallery = this.getGallery.bind(this);
     this.getResumeUrl = this.getResumeUrl.bind(this);
     this.getSocials = this.getSocials.bind(this);
   }
@@ -53,5 +56,9 @@ export class CoreService implements ICoreService {
 
   async getCertifications(): ReturnType<ICoreService["getCertifications"]> {
     return certifications as Certification[];
+  }
+
+  async getGallery(): ReturnType<ICoreService["getGallery"]> {
+    return gallery as GalleryItem[];
   }
 }

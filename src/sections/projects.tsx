@@ -6,7 +6,7 @@ import { usePageSEO } from "@/hooks/use-seo";
 import { sectionMetadata } from "@/utilities/seo";
 
 const optimizedImages: Record<string, string> = import.meta.glob(
-  "../assets/portfolio-resources/assets/images/projects/*.png",
+  "../assets/portfolio-resources/assets/images/projects/*.{png,jpg,jpeg,JPG,jfif,gif,webp}",
   { eager: true, import: "default", query: "?format=webp&meta" },
 );
 
