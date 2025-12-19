@@ -85,7 +85,7 @@ export const Projects = () => {
                     </div>
                   </ProjectCard.ContentBody>
                   <ProjectCard.ContentFooter>
-                    <ProjectCard.LikeButton projectId={project.title} />
+                    <ProjectCard.StarsButton repositoryURL={project.repositoryURL} />
                     <ProjectCard.RepositoryButton url={project.repositoryURL} />
                     <ProjectCard.ProcessButton url={project.processURL} />
                     <ProjectCard.LiveButton url={project.liveURL} />

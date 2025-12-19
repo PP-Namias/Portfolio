@@ -4,6 +4,7 @@ import { cn } from "@heroui/theme";
 import { Github, Settings2, Globe } from "lucide-react";
 import { ProjectGithubMetrics } from "./project-github-metrics";
 import { ProjectLikeButton } from "./project-like-button";
+import { ProjectStarsButton } from "./project-stars-button";
 
 type ProjectCardProps = {
   children: React.ReactNode;
@@ -60,6 +61,11 @@ type ProjectCardLiveButtonProps = {
 
 type ProjectCardLikeButtonProps = {
   projectId: string;
+  className?: string;
+};
+
+type ProjectCardStarsButtonProps = {
+  repositoryURL: string | null;
   className?: string;
 };
 
@@ -282,6 +288,13 @@ const ProjectCardLikeButton = ({
   return <ProjectLikeButton projectId={projectId} className={className} />;
 };
 
+const ProjectCardStarsButton = ({
+  repositoryURL,
+  className,
+}: ProjectCardStarsButtonProps) => {
+  return <ProjectStarsButton repositoryURL={repositoryURL} className={className} />;
+};
+
 ProjectCard.ImageView = ProjectCardImageView;
 ProjectCard.Body = ProjectCardBody;
 ProjectCard.Content = ProjectCardContent;
@@ -296,3 +309,4 @@ ProjectCard.Title = ProjectCardTitle;
 ProjectCard.Description = ProjectCardDescription;
 ProjectCard.GithubMetrics = ProjectCardGithubMetrics;
 ProjectCard.LikeButton = ProjectCardLikeButton;
+ProjectCard.StarsButton = ProjectCardStarsButton;
