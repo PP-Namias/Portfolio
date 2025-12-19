@@ -8,13 +8,15 @@ import {
   Image,
 } from "@heroui/react";
 import { Download, Calendar, ChevronLeft, ChevronRight, Award } from "lucide-react";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useCallback } from "react";
 import type { GalleryItem } from "../../../types/gallery";
 
 type GalleryModalProps = {
   isOpen: boolean;
   onClose: () => void;
   item: GalleryItem;
+  mediaUrl: string; // Optimized image URL for display
+  downloadUrl: string; // Original image URL for download
   currentIndex: number;
   totalItems: number;
   onNavigate: (direction: "prev" | "next") => void;
@@ -24,38 +26,13 @@ export const GalleryModal = ({
   isOpen,
   onClose,
   item,
+  mediaUrl,
+  downloadUrl,
   currentIndex,
   totalItems,
   onNavigate,
 }: GalleryModalProps) => {
   const videoRef = useRef<HTMLVideoElement>(null);
-
-  // Get optimized media source
-  const optimizedImages: Record<string, string> = import.meta.glob(
-    "../../../assets/portfolio-resources/assets/images/certifications/*.{jpg,png,gif,webp}",
-    { eager: true, import: "default", query: "?format=webp&meta&quality=1" },
-  );
-
-  const optimizedVideos: Record<string, string> = import.meta.glob(
-    "../../../assets/portfolio-resources/assets/videos/gallery/*.{mp4,webm}",
-    { eager: true, import: "default" },
-  );
-
-  // Determine media source
-  let mediaSource = "";
-  if (item.mediaType === "video") {
-    const videoKey = Object.keys(optimizedVideos).find((key) =>
-      key.includes(item.media),
-    );
-    mediaSource = videoKey ? optimizedVideos[videoKey] : item.media;
-  } else {
-    const imageKey = Object.keys(optimizedImages).find((key) =>
-      key.includes(item.media || item.image || ""),
-    );
-    mediaSource = imageKey
-      ? optimizedImages[imageKey]
-      : item.media || item.image || "";
-  }
 
   // Keyboard navigation
   useEffect(() => {
@@ -94,14 +71,38 @@ export const GalleryModal = ({
     });
   };
 
-  const handleDownload = () => {
-    const link = document.createElement("a");
-    link.href = mediaSource;
-    link.download = item.title;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
+  // Download function that properly fetches the image as blob
+  const handleDownload = useCallback(async () => {
+    try {
+      // Fetch the original image as blob
+      const response = await fetch(downloadUrl);
+      const blob = await response.blob();
+      
+      // Create object URL from blob
+      const blobUrl = URL.createObjectURL(blob);
+      
+      // Get file extension from original media name
+      const originalFileName = item.media || item.image || item.title;
+      const extension = originalFileName.split('.').pop() || 'jpg';
+      const sanitizedTitle = item.title.replace(/[^a-zA-Z0-9\s-]/g, '').replace(/\s+/g, '-');
+      const fileName = `${sanitizedTitle}.${extension}`;
+      
+      // Create download link
+      const link = document.createElement("a");
+      link.href = blobUrl;
+      link.download = fileName;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      // Clean up object URL
+      URL.revokeObjectURL(blobUrl);
+    } catch (error) {
+      console.error("Download failed:", error);
+      // Fallback: open image in new tab
+      window.open(downloadUrl, '_blank');
+    }
+  }, [downloadUrl, item]);
 
   return (
     <Modal
@@ -173,14 +174,14 @@ export const GalleryModal = ({
                   {item.mediaType === "video" ? (
                     <video
                       ref={videoRef}
-                      src={mediaSource}
+                      src={mediaUrl}
                       controls
                       className="h-auto w-full"
                       autoPlay
                     />
                   ) : (
                     <Image
-                      src={mediaSource}
+                      src={mediaUrl}
                       alt={item.title}
                       className="h-auto w-full object-contain"
                       classNames={{

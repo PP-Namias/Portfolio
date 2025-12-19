@@ -1,1 +1,156 @@
-[]
+[
+  {
+    "title": "Birthday Picture 2024 - 1",
+    "mediaType": "image",
+    "media": "Birthday Picture 2024 (1).JPG",
+    "tags": ["Birthday", "2024", "Personal"],
+    "createdAt": "2024-09-09"
+  },
+  {
+    "title": "Birthday Picture 2024 - 2",
+    "mediaType": "image",
+    "media": "Birthday Picture 2024 (2).JPG",
+    "tags": ["Birthday", "2024", "Personal"],
+    "createdAt": "2024-09-09"
+  },
+  {
+    "title": "Birthday Picture 2024 - 3",
+    "mediaType": "image",
+    "media": "Birthday Picture 2024 (3).JPG",
+    "tags": ["Birthday", "2024", "Personal"],
+    "createdAt": "2024-09-09"
+  },
+  {
+    "title": "Birthday Picture 2024 - 4",
+    "mediaType": "image",
+    "media": "Birthday Picture 2024 (4).JPG",
+    "tags": ["Birthday", "2024", "Personal"],
+    "createdAt": "2024-09-09"
+  },
+  {
+    "title": "Birthday Picture 2024 - 5",
+    "mediaType": "image",
+    "media": "Birthday Picture 2024 (5).JPG",
+    "tags": ["Birthday", "2024", "Personal"],
+    "createdAt": "2024-09-09"
+  },
+  {
+    "title": "Birthday Picture 2024 - 6",
+    "mediaType": "image",
+    "media": "Birthday Picture 2024 (6).JPG",
+    "tags": ["Birthday", "2024", "Personal"],
+    "createdAt": "2024-09-09"
+  },
+  {
+    "title": "Birthday Picture 2024 - 7",
+    "mediaType": "image",
+    "media": "Birthday Picture 2024 (7).JPG",
+    "tags": ["Birthday", "2024", "Personal"],
+    "createdAt": "2024-09-09"
+  },
+  {
+    "title": "Birthday Picture 2024 - 8",
+    "mediaType": "image",
+    "media": "Birthday Picture 2024 (8).JPG",
+    "tags": ["Birthday", "2024", "Personal"],
+    "createdAt": "2024-09-09"
+  },
+  {
+    "title": "Birthday Picture 2024 - 9",
+    "mediaType": "image",
+    "media": "Birthday Picture 2024 (9).JPG",
+    "tags": ["Birthday", "2024", "Personal"],
+    "createdAt": "2024-09-09"
+  },
+  {
+    "title": "Dream PC Setup",
+    "mediaType": "image",
+    "media": "Dream PC setup.jpg",
+    "tags": ["Tech", "Setup", "Gaming"],
+    "createdAt": "2024-06-15"
+  },
+  {
+    "title": "Friend Group Pic 2025",
+    "mediaType": "image",
+    "media": "Friend Group Pic 2025.jpg",
+    "tags": ["Friends", "2025", "Group Photo"],
+    "createdAt": "2025-01-10"
+  },
+  {
+    "title": "HackForGov 2025 - 1",
+    "mediaType": "image",
+    "media": "HackForGov 2025 (1).jpeg",
+    "tags": ["Hackathon", "HackForGov", "2025", "Competition"],
+    "createdAt": "2025-11-03"
+  },
+  {
+    "title": "HackForGov 2025 - 2",
+    "mediaType": "image",
+    "media": "HackForGov 2025 (2).jpeg",
+    "tags": ["Hackathon", "HackForGov", "2025", "Competition"],
+    "createdAt": "2025-11-03"
+  },
+  {
+    "title": "HackForGov 2025 - 3",
+    "mediaType": "image",
+    "media": "HackForGov 2025 (3).jpeg",
+    "tags": ["Hackathon", "HackForGov", "2025", "Competition"],
+    "createdAt": "2025-11-03"
+  },
+  {
+    "title": "HackForGov 2025 - 4",
+    "mediaType": "image",
+    "media": "HackForGov 2025 (4).jpeg",
+    "tags": ["Hackathon", "HackForGov", "2025", "Competition"],
+    "createdAt": "2025-11-03"
+  },
+  {
+    "title": "HackForGov 2025 - 5",
+    "mediaType": "image",
+    "media": "HackForGov 2025 (5).jpeg",
+    "tags": ["Hackathon", "HackForGov", "2025", "Competition"],
+    "createdAt": "2025-11-03"
+  },
+  {
+    "title": "HackForGov 2025 - 6",
+    "mediaType": "image",
+    "media": "HackForGov 2025 (6).jpeg",
+    "tags": ["Hackathon", "HackForGov", "2025", "Competition"],
+    "createdAt": "2025-11-03"
+  },
+  {
+    "title": "Jhon Keneth Namias",
+    "mediaType": "image",
+    "media": "Jhon Keneth Namias (2).jpg",
+    "tags": ["Portrait", "Personal", "Profile"],
+    "createdAt": "2024-08-20"
+  },
+  {
+    "title": "MASH Team",
+    "mediaType": "image",
+    "media": "MASH Team.jpeg",
+    "tags": ["Team", "MASH", "Group Photo"],
+    "createdAt": "2025-02-10"
+  },
+  {
+    "title": "Profile Picture",
+    "mediaType": "image",
+    "media": "me.jpg",
+    "tags": ["Portrait", "Personal", "Profile"],
+    "createdAt": "2024-05-01"
+  },
+  {
+    "title": "Namias Profile White BG",
+    "mediaType": "image",
+    "media": "Namias Profile White BG.png",
+    "tags": ["Portrait", "Professional", "Profile"],
+    "createdAt": "2024-07-15"
+  },
+  {
+    "title": "Random OJT Pic",
+    "mediaType": "image",
+    "media": "Random OJT Pic.jpg",
+    "tags": ["OJT", "Internship", "Work"],
+    "createdAt": "2025-06-01"
+  }
+]

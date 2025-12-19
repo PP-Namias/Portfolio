@@ -6,12 +6,19 @@ import { useCore } from "@/hooks/use-core";
 import { usePageSEO } from "@/hooks/use-seo";
 import { sectionMetadata } from "@/utilities/seo";
 import type { GalleryItem } from "@/services/core/types";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useCallback } from "react";
 import Masonry from "react-masonry-css";
 
+// Optimized images for display (converted to webp)
 const optimizedImages: Record<string, string> = import.meta.glob(
-  "../assets/portfolio-resources/assets/images/gallery/*.{png,jpg,jpeg,JPG,jfif,gif,webp}",
+  "../assets/portfolio-resources/assets/images/gallery/*.{png,jpg,jpeg,JPG,JPEG,jfif,gif,webp}",
   { eager: true, import: "default", query: "?format=webp&meta&quality=1" },
+);
+
+// Original images for download (not converted)
+const originalImages: Record<string, string> = import.meta.glob(
+  "../assets/portfolio-resources/assets/images/gallery/*.{png,jpg,jpeg,JPG,JPEG,jfif,gif,webp}",
+  { eager: true, import: "default" },
 );
 
 const optimizedVideos: Record<string, string> = import.meta.glob(
@@ -28,6 +35,24 @@ export default function Gallery() {
 
   // Update SEO for Gallery section
   usePageSEO(sectionMetadata.gallery);
+
+  // Helper function to get media source
+  const getMediaSource = useCallback((item: GalleryItem, useOriginal = false) => {
+    if (item.mediaType === "video") {
+      const videoKey = Object.keys(optimizedVideos).find((key) =>
+        key.includes(item.media),
+      );
+      return videoKey ? optimizedVideos[videoKey] : item.media;
+    } else {
+      const images = useOriginal ? originalImages : optimizedImages;
+      const imageKey = Object.keys(images).find((key) =>
+        key.includes(item.media || item.image || ""),
+      );
+      return imageKey
+        ? images[imageKey]
+        : item.media || item.image || "";
+    }
+  }, []);
 
   // Masonry breakpoints
   const breakpointColumns = {
@@ -84,21 +109,7 @@ export default function Gallery() {
         columnClassName="masonry-grid-column"
       >
         {data?.map((item: GalleryItem, index: number) => {
-            // Determine media source
-            let mediaSource = "";
-            if (item.mediaType === "video") {
-              const videoKey = Object.keys(optimizedVideos).find((key) =>
-                key.includes(item.media),
-              );
-              mediaSource = videoKey ? optimizedVideos[videoKey] : item.media;
-            } else {
-              const imageKey = Object.keys(optimizedImages).find((key) =>
-                key.includes(item.media || item.image || ""),
-              );
-              mediaSource = imageKey
-                ? optimizedImages[imageKey]
-                : item.media || item.image || "";
-            }
+            const mediaSource = getMediaSource(item, false);
 
             return (
               <GalleryCard
@@ -116,30 +127,38 @@ export default function Gallery() {
       </Masonry>
 
       {/* Gallery Modal */}
-      {selectedIndex !== null && data && data[selectedIndex] && (
-        <GalleryModal
-          isOpen={selectedIndex !== null}
-          onClose={() => {
-            setSelectedIndex(null);
-          }}
-          item={data[selectedIndex]}
-          currentIndex={selectedIndex}
-          totalItems={data.length}
-          onNavigate={(direction) => {
-            if (direction === "prev") {
-              setSelectedIndex((prev) => {
-                const newIndex = prev === null || prev === 0 ? data.length - 1 : prev - 1;
-                return newIndex;
-              });
-            } else {
-              setSelectedIndex((prev) => {
-                const newIndex = prev === null || prev === data.length - 1 ? 0 : prev + 1;
-                return newIndex;
-              });
-            }
-          }}
-        />
-      )}
+      {selectedIndex !== null && data && data[selectedIndex] && (() => {
+        const selectedItem = data[selectedIndex];
+        const displayUrl = getMediaSource(selectedItem, false);
+        const downloadUrl = getMediaSource(selectedItem, true);
+        
+        return (
+          <GalleryModal
+            isOpen={selectedIndex !== null}
+            onClose={() => {
+              setSelectedIndex(null);
+            }}
+            item={selectedItem}
+            mediaUrl={displayUrl}
+            downloadUrl={downloadUrl}
+            currentIndex={selectedIndex}
+            totalItems={data.length}
+            onNavigate={(direction) => {
+              if (direction === "prev") {
+                setSelectedIndex((prev) => {
+                  const newIndex = prev === null || prev === 0 ? data.length - 1 : prev - 1;
+                  return newIndex;
+                });
+              } else {
+                setSelectedIndex((prev) => {
+                  const newIndex = prev === null || prev === data.length - 1 ? 0 : prev + 1;
+                  return newIndex;
+                });
+              }
+            }}
+          />
+        );
+      })()}
     </>
   );
 }
