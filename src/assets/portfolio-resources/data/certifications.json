@@ -1,7 +1,7 @@
 [
   {
     "title": "Software Engineer Intern",
-    "image": "software_engineer_intern certificate-1.png",
+    "image": "hackerrank-software-engineer-intern.png",
     "issuer": "HackerRank",
     "issuedAt": "2025-12-20",
     "tags": ["Software Engineering", "Intern", "Problem Solving", "Data Structures"]
@@ -21,6 +21,22 @@
     "issuer": "HackerRank",
     "issuedAt": "2025-12-20",
     "tags": ["Frontend Development", "React", "JavaScript", "CSS"]
+  },
+
+  {
+    "title": "Angular (Intermediate)",
+    "image": "hackerrank-angular-intermediate.png",
+    "issuer": "HackerRank",
+    "issuedAt": "2025-12-20",
+    "tags": ["Angular", "TypeScript", "Frontend", "Web Development"]
+  },
+
+  {
+    "title": "Angular (Basic)",
+    "image": "hackerrank-angular-basic.png",
+    "issuer": "HackerRank",
+    "issuedAt": "2025-12-20",
+    "tags": ["Angular", "TypeScript", "Frontend", "Components"]
   },
 
   {
@@ -61,6 +77,14 @@
     "issuer": "HackerRank",
     "issuedAt": "2025-12-20",
     "tags": ["React", "JavaScript", "Frontend", "Components"]
+  },
+
+  {
+    "title": "R (Basic)",
+    "image": "hackerrank-r-basic.png",
+    "issuer": "HackerRank",
+    "issuedAt": "2025-12-20",
+    "tags": ["R", "Data Science", "Statistics", "Programming"]
   },
 
   {
@@ -125,6 +149,22 @@
     "issuer": "HackerRank",
     "issuedAt": "2025-12-20",
     "tags": ["Java", "OOP", "Programming"]
+  },
+
+  {
+    "title": "CSS (Basic)",
+    "image": "hackerrank-css-basic.png",
+    "issuer": "HackerRank",
+    "issuedAt": "2025-12-20",
+    "tags": ["CSS", "Styling", "Frontend", "Web Design"]
+  },
+
+  {
+    "title": "C# (Basic)",
+    "image": "hackerrank-csharp-basic.png",
+    "issuer": "HackerRank",
+    "issuedAt": "2025-12-20",
+    "tags": ["C#", ".NET", "OOP", "Programming"]
   },
 
   {
