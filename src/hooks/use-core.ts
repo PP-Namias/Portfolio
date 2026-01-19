@@ -46,6 +46,12 @@ export const useCore = () => {
     mutationFn: coreService.downloadResume,
   });
 
+  const queryProfile = () =>
+    useQuery({
+      queryFn: coreService.getProfile,
+      queryKey: ["profile"],
+    });
+
   return {
     resumeUrl,
     queryProjects,
@@ -54,6 +60,7 @@ export const useCore = () => {
     querySocials,
     queryCertifications,
     queryGallery,
+    queryProfile,
     downloadResumeMutation,
   };
 };

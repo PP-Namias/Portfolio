@@ -5,6 +5,7 @@ import gallery from "@/assets/portfolio-resources/data/gallery.json";
 import projects from "@/assets/portfolio-resources/data/projects.json";
 import socials from "@/assets/portfolio-resources/data/socials.json";
 import technologies from "@/assets/portfolio-resources/data/technologies.json";
+import profile from "@/assets/portfolio-resources/data/profile.json";
 import JsFileDownloader from "js-file-downloader";
 import type { ICoreService } from "./interface";
 import type {
@@ -14,6 +15,7 @@ import type {
   Project,
   Social,
   Technology,
+  Profile,
 } from "./types";
 
 export class CoreService implements ICoreService {
@@ -24,6 +26,7 @@ export class CoreService implements ICoreService {
     this.getGallery = this.getGallery.bind(this);
     this.getResumeUrl = this.getResumeUrl.bind(this);
     this.getSocials = this.getSocials.bind(this);
+    this.getProfile = this.getProfile.bind(this);
   }
 
   async getTechnologies(): ReturnType<ICoreService["getTechnologies"]> {
@@ -60,5 +63,9 @@ export class CoreService implements ICoreService {
 
   async getGallery(): ReturnType<ICoreService["getGallery"]> {
     return gallery as GalleryItem[];
+  }
+
+  async getProfile(): ReturnType<ICoreService["getProfile"]> {
+    return profile as Profile;
   }
 }

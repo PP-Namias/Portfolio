@@ -5,6 +5,7 @@ import type {
   Project,
   Social,
   Technology,
+  Profile,
 } from "./types";
 
 export interface ICoreService {
@@ -16,4 +17,5 @@ export interface ICoreService {
   getExperiences(): Promise<Experience[]>;
   getSocials(): Promise<Social[]>;
   downloadResume(): Promise<void>;
+  getProfile(): Promise<Profile>;
 }

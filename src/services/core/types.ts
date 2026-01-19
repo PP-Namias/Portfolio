@@ -49,6 +49,30 @@ export type Experience = {
   highlights: string[];
 };
 
+export type Profile = {
+  name: string;
+  title: string;
+  email: string;
+  phone: string;
+  location: string;
+  github: string;
+  linkedin: string;
+  summary: string;
+  highlights: {
+    yearsExperience: number;
+    projectsCompleted: number;
+    primaryTechnologies: string[];
+  };
+};
+
+export type ContactInfo = {
+  email: string;
+  phone: string;
+  location: string;
+  github: string;
+  linkedin: string;
+};
+
 export type MediaType = "image" | "video" | "gif";
 
 export type GalleryItem = {

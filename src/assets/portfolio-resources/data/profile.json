@@ -1,0 +1,15 @@
+{
+  "name": "Jhon Keneth Namias",
+  "title": "Full Stack Developer",
+  "email": "jhonamiasss@gmail.com",
+  "phone": "+63 912 345 6789",
+  "location": "Caloocan City, Philippines",
+  "github": "https://github.com/jhonmamias",
+  "linkedin": "https://linkedin.com/in/jhon-keneth-namias",
+  "summary": "Passionate Full Stack Developer with 3+ years of experience building scalable web applications. Specialized in React, TypeScript, and Node.js with a proven track record of delivering high-impact projects. Strong focus on clean code, performance optimization, and user experience. Currently pursuing Bachelor of Science in Computer Science at the University of Caloocan City.",
+  "highlights": {
+    "yearsExperience": 3,
+    "projectsCompleted": 25,
+    "primaryTechnologies": ["React", "TypeScript", "Node.js"]
+  }
+}
