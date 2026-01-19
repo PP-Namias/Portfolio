@@ -1,0 +1,351 @@
+[
+  {
+    "name": "bash",
+    "logo": "gnubash",
+    "category": "Programming Languages & Tools"
+  },
+  {
+    "name": "csharp",
+    "logo": "sharp",
+    "category": "Programming Languages & Tools"
+  },
+  {
+    "name": "dart",
+    "logo": "dart",
+    "category": "Programming Languages & Tools"
+  },
+  {
+    "name": "html",
+    "logo": "html5",
+    "category": "Programming Languages & Tools"
+  },
+  {
+    "name": "css",
+    "logo": "css",
+    "category": "Programming Languages & Tools"
+  },
+  {
+    "name": "java",
+    "logo": "openjdk",
+    "category": "Programming Languages & Tools"
+  },
+  {
+    "name": "javascript",
+    "logo": "javascript",
+    "category": "Programming Languages & Tools"
+  },
+  {
+    "name": "php",
+    "logo": "php",
+    "category": "Programming Languages & Tools"
+  },
+  {
+    "name": "python",
+    "logo": "python",
+    "category": "Programming Languages & Tools"
+  },
+  {
+    "name": "r",
+    "logo": "r",
+    "category": "Programming Languages & Tools"
+  },
+  {
+    "name": "typescript",
+    "logo": "typescript",
+    "category": "Programming Languages & Tools"
+  },
+  {
+    "name": "docker",
+    "logo": "docker",
+    "category": "Programming Languages & Tools"
+  },
+  {
+    "name": "git",
+    "logo": "git",
+    "category": "Programming Languages & Tools"
+  },
+  {
+    "name": "labview",
+    "logo": "labview",
+    "category": "Programming Languages & Tools"
+  },
+
+  {
+    "name": "bootstrap",
+    "logo": "bootstrap",
+    "category": "Frameworks & Libraries"
+  },
+  {
+    "name": "codeigniter",
+    "logo": "codeigniter",
+    "category": "Frameworks & Libraries"
+  },
+  {
+    "name": "daisyui",
+    "logo": "daisyui",
+    "category": "Frameworks & Libraries"
+  },
+  {
+    "name": "fastapi",
+    "logo": "fastapi",
+    "category": "Frameworks & Libraries"
+  },
+  {
+    "name": "flask",
+    "logo": "flask",
+    "category": "Frameworks & Libraries"
+  },
+  {
+    "name": "flask-restx",
+    "logo": "flask",
+    "category": "Frameworks & Libraries"
+  },
+  {
+    "name": "flutter",
+    "logo": "flutter",
+    "category": "Frameworks & Libraries"
+  },
+  {
+    "name": "heroui",
+    "logo": "heroui",
+    "category": "Frameworks & Libraries"
+  },
+  {
+    "name": "javafx",
+    "logo": "openjdk",
+    "category": "Frameworks & Libraries"
+  },
+  {
+    "name": "laravel",
+    "logo": "laravel",
+    "category": "Frameworks & Libraries"
+  },
+  {
+    "name": "nextjs",
+    "logo": "nextdotjs",
+    "category": "Frameworks & Libraries"
+  },
+  {
+    "name": "open api",
+    "logo": "openapiinitiative",
+    "category": "Frameworks & Libraries"
+  },
+  {
+    "name": "pydantic",
+    "logo": "pydantic",
+    "category": "Frameworks & Libraries"
+  },
+  {
+    "name": "react",
+    "logo": "react",
+    "category": "Frameworks & Libraries"
+  },
+  {
+    "name": "shadcnui",
+    "logo": "shadcnui",
+    "category": "Frameworks & Libraries"
+  },
+  {
+    "name": "streamlit",
+    "logo": "streamlit",
+    "category": "Frameworks & Libraries"
+  },
+  {
+    "name": "swagger",
+    "logo": "swagger",
+    "category": "Frameworks & Libraries"
+  },
+  {
+    "name": "tailwindcss",
+    "logo": "tailwindcss",
+    "category": "Frameworks & Libraries"
+  },
+  {
+    "name": "ggplot",
+    "logo": "tidyverse",
+    "category": "Frameworks & Libraries"
+  },
+  {
+    "name": "numpy",
+    "logo": "numpy",
+    "category": "Frameworks & Libraries"
+  },
+  {
+    "name": "pandas",
+    "logo": "pandas",
+    "category": "Frameworks & Libraries"
+  },
+  {
+    "name": "plotly",
+    "logo": "plotly",
+    "category": "Frameworks & Libraries"
+  },
+  {
+    "name": "seaborn",
+    "logo": "python",
+    "category": "Frameworks & Libraries"
+  },
+  {
+    "name": "sklearn",
+    "logo": "scikitlearn",
+    "category": "Frameworks & Libraries"
+  },
+  {
+    "name": "grafana k6",
+    "logo": "k6",
+    "category": "Frameworks & Libraries"
+  },
+  {
+    "name": "robot framework",
+    "logo": "robotframework",
+    "category": "Frameworks & Libraries"
+  },
+  {
+    "name": "jupyter",
+    "logo": "jupyter",
+    "category": "Frameworks & Libraries"
+  },
+  {
+    "name": "allure",
+    "logo": "circle",
+    "category": "Frameworks & Libraries"
+  },
+
+  {
+    "name": "hashicorp vault",
+    "logo": "vault",
+    "category": "Infrastructures & Services"
+  },
+  {
+    "name": "influxdb",
+    "logo": "influxdb",
+    "category": "Infrastructures & Services"
+  },
+  {
+    "name": "mysql",
+    "logo": "mysql",
+    "category": "Infrastructures & Services"
+  },
+  {
+    "name": "nocodb",
+    "logo": "airtable",
+    "category": "Infrastructures & Services"
+  },
+  {
+    "name": "pocketbase",
+    "logo": "pocketbase",
+    "category": "Infrastructures & Services"
+  },
+  {
+    "name": "postgresql",
+    "logo": "postgresql",
+    "category": "Infrastructures & Services"
+  },
+  {
+    "name": "supabase",
+    "logo": "supabase",
+    "category": "Infrastructures & Services"
+  },
+  {
+    "name": "browserstack",
+    "logo": "bt",
+    "category": "Infrastructures & Services"
+  },
+  {
+    "name": "github",
+    "logo": "github",
+    "category": "Infrastructures & Services"
+  },
+  {
+    "name": "grafana",
+    "logo": "grafana",
+    "category": "Infrastructures & Services"
+  },
+  {
+    "name": "grafana loki",
+    "logo": "grafana",
+    "category": "Infrastructures & Services"
+  },
+  {
+    "name": "jenkins",
+    "logo": "jenkins",
+    "category": "Infrastructures & Services"
+  },
+  {
+    "name": "aws ec2",
+    "logo": "cloudways",
+    "category": "Infrastructures & Services"
+  },
+  {
+    "name": "slack",
+    "logo": "slack",
+    "category": "Infrastructures & Services"
+  },
+  {
+    "name": "vapi",
+    "logo": "vectary",
+    "category": "Infrastructures & Services"
+  },
+  {
+    "name": "arduino",
+    "logo": "arduino",
+    "category": "Infrastructures & Services"
+  },
+  {
+    "name": "n8n",
+    "logo": "n8n",
+    "category": "Infrastructures & Services"
+  },
+
+  {
+    "name": "vscodium",
+    "logo": "vscodium",
+    "category": "Development Environment"
+  },
+  {
+    "name": "neovim",
+    "logo": "neovim",
+    "category": "Development Environment"
+  },
+  {
+    "name": "tmux",
+    "logo": "tmux",
+    "category": "Development Environment"
+  },
+  {
+    "name": "linux",
+    "logo": "linux",
+    "category": "Development Environment"
+  },
+  {
+    "name": "ubuntu",
+    "logo": "ubuntu",
+    "category": "Development Environment"
+  },
+  {
+    "name": "zorin",
+    "logo": "zorin",
+    "category": "Development Environment"
+  },
+  {
+    "name": "macos",
+    "logo": "macos",
+    "category": "Development Environment"
+  },
+
+  {
+    "name": "indesign",
+    "logo": "aframe",
+    "category": "Creative Suite"
+  },
+  {
+    "name": "photoshop",
+    "logo": "aframe",
+    "category": "Creative Suite"
+  },
+  {
+    "name": "premiere",
+    "logo": "aframe",
+    "category": "Creative Suite"
+  }
+]

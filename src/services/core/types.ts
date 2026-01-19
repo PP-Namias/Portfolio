@@ -34,6 +34,7 @@ export type Technology = {
   name: string;
   logo: string;
   category: string;
+  proficiency?: number;
 };
 
 export type Experience = {
