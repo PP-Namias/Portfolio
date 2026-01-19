@@ -4,6 +4,7 @@ import { Resume } from '@/components/features/resume/resume-container';
 import { ResumeHeader } from '@/components/features/resume/resume-header';
 import { ProfessionalSummary } from '@/components/features/resume/professional-summary';
 import { TechnicalSkills } from '@/components/features/resume/technical-skills';
+import { ProfessionalExperience } from '@/components/features/resume/professional-experience';
 import type { Technology } from '@/services/core/types';
 
 export const Route = createFileRoute('/resume-preview')({
@@ -11,9 +12,10 @@ export const Route = createFileRoute('/resume-preview')({
 });
 
 function ResumePreview() {
-  const { queryProfile, queryTechnologies, downloadResumeMutation } = useCore();
+  const { queryProfile, queryTechnologies, queryExperiences, downloadResumeMutation } = useCore();
   const { data: profile, isLoading, error } = queryProfile();
   const { data: technologies } = queryTechnologies();
+  const { data: experiences } = queryExperiences();
 
   if (isLoading) {
     return (
@@ -85,6 +87,11 @@ function ResumePreview() {
           <TechnicalSkills 
             technologies={technologies.filter(t => t.proficiency !== undefined) as Array<Technology & { proficiency: number }>} 
           />
+        )}
+
+        {/* Phase 3.1: Professional Experience */}
+        {experiences && experiences.length > 0 && (
+          <ProfessionalExperience experiences={experiences} />
         )}
       </Resume.Container>
     </div>

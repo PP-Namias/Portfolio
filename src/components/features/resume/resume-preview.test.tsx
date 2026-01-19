@@ -34,6 +34,27 @@ vi.mock('@/hooks/use-core', () => ({
       isLoading: false,
       error: null
     }),
+    queryExperiences: () => ({
+      data: [
+        {
+          company: 'Tech Corp',
+          position: 'Senior Developer',
+          summary: 'Led development team building scalable applications.',
+          country: 'USA',
+          modality: 'Remote',
+          type: 'Full-time',
+          startedAt: '2020-01',
+          endedAt: null,
+          technologies: ['React', 'TypeScript', 'Node.js'],
+          highlights: [
+            'Built microservices architecture serving 1M+ users',
+            'Reduced deployment time by 80% through CI/CD automation'
+          ]
+        }
+      ],
+      isLoading: false,
+      error: null
+    }),
     downloadResumeMutation: {
       mutate: vi.fn()
     }
