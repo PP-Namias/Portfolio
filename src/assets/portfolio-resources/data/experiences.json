@@ -22,7 +22,9 @@
       "Performed precision diagnostics including BGA rework, IC reballing, and micro-soldering on mobile devices.",
       "Managed repair operations, inventory systems, and technical support workflows for a high-volume facility.",
       "Maintained quality standards achieving 95% customer satisfaction rate across 1000+ repairs."
-    ]
+    ],
+    "achievements": ["95% Customer Satisfaction", "1000+ Repairs", "Team Lead"],
+    "relatedProjects": []
   },
   {
     "company": "Ucc-Ingo",
@@ -47,7 +49,9 @@
       "Managed Next.js platform with headless CMS serving 1000+ students.",
       "Led 9-engineer team launching gallery feature for academic project showcase.",
       "Maintained 99.8% uptime and optimized course access, reducing load times by 30%."
-    ]
+    ],
+    "achievements": ["99.8% Uptime", "1000+ Students", "9-Person Team Lead"],
+    "relatedProjects": []
   },
   {
     "company": "Aeternitas Chapels & Columbarium",
@@ -76,7 +80,9 @@
       "Led 7-engineer team building enterprise HRIS using React-TypeScript, Electron, Express, and PostgreSQL.",
       "Architected employee management platform handling payroll, time tracking, and analytics for 500+ users.",
       "Established CI/CD pipeline achieving 99.9% uptime and reduced deployment time by 80%."
-    ]
+    ],
+    "achievements": ["99.9% Uptime", "500+ Users", "80% Faster Deployment", "7-Person Team Lead"],
+    "relatedProjects": []
   },
   {
     "company": "Wilshire Financial Network",
@@ -101,7 +107,9 @@
       "Built GPT-powered automation reducing social media workflow overhead by 40%.",
       "Deployed custom AI agents optimizing internal processes for consulting teams.",
       "Delivered production AI integrations for 3 client-facing applications."
-    ]
+    ],
+    "achievements": ["40% Workflow Reduction", "3 AI Integrations", "Production Deployed"],
+    "relatedProjects": ["Story Adaptive Game Engine - Software Engineering Project"]
   },
   {
     "company": "JIMIRENE Clinic Management System",
@@ -128,7 +136,9 @@
       "Engineered HIPAA-compliant CMS using React-TypeScript, Spring Boot, and MySQL.",
       "Automated medical records, appointment scheduling, and billing for 1000+ patients.",
       "Reduced staff manual workload by 60% and improved patient processing speed by 45%."
-    ]
+    ],
+    "achievements": ["HIPAA Compliant", "1000+ Patients", "60% Workload Reduction", "45% Faster Processing"],
+    "relatedProjects": []
   },
   {
     "company": "J'5 Pharmacy",
@@ -154,7 +164,9 @@
       "Developed Spring Boot API supporting real-time inventory and B2B ordering for 50+ vendors.",
       "Implemented secure payment processing and multi-vendor marketplace capabilities.",
       "Enabled automated restocking and price comparison across a centralized platform."
-    ]
+    ],
+    "achievements": ["50+ Vendors", "Secure Payments", "Real-time Inventory"],
+    "relatedProjects": []
   },
   {
     "company": "Legal Workflow Manager (CaseMaster)",
@@ -179,6 +191,8 @@
       "Built Electron-TypeScript application integrating Microsoft 365 APIs.",
       "Collaborated with Supreme Court attorney optimizing case management workflows.",
       "Achieved 35% improvement in case access speed through data synchronization."
-    ]
+    ],
+    "achievements": ["35% Faster Access", "Supreme Court", "MS 365 Integration"],
+    "relatedProjects": []
   }
 ]

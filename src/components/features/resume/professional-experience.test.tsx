@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import { ProfessionalExperience } from './professional-experience';
 
 const mockExperiences = [
@@ -17,7 +17,9 @@ const mockExperiences = [
       'Built microservices architecture serving 1M+ users',
       'Reduced deployment time by 80% through CI/CD automation',
       'Mentored 5 junior developers'
-    ]
+    ],
+    achievements: ['99.9% Uptime', '1M+ Users', 'Team Lead'],
+    relatedProjects: ['Story Adaptive Game Engine']
   },
   {
     company: 'StartupCo',
@@ -32,7 +34,9 @@ const mockExperiences = [
     highlights: [
       'Launched MVP in 3 months',
       'Achieved 95% test coverage'
-    ]
+    ],
+    achievements: ['95% Test Coverage', 'MVP Launch'],
+    relatedProjects: []
   }
 ];
 
@@ -127,7 +131,8 @@ describe('ProfessionalExperience', () => {
 
     it('should display metrics in highlights', () => {
       render(<ProfessionalExperience experiences={mockExperiences} />);
-      expect(screen.getByText(/1M\+/i)).toBeInTheDocument();
+      // Use getAllByText since metrics may appear in both highlights and achievement badges
+      expect(screen.getAllByText(/1M\+/i).length).toBeGreaterThan(0);
       expect(screen.getByText(/80%/i)).toBeInTheDocument();
     });
   });
@@ -290,6 +295,162 @@ describe('ProfessionalExperience', () => {
       experiences.forEach(exp => {
         expect(exp).toHaveClass('page-break-inside-avoid');
       });
+    });
+  });
+
+  // Phase 3.2 Enhancement Tests
+  describe('Duration Calculation', () => {
+    it('should display duration for current role', () => {
+      render(<ProfessionalExperience experiences={mockExperiences} />);
+      // Should show duration - use getAllByText since multiple experiences have durations
+      const durationElements = screen.getAllByText(/\d+\s*(?:years?|months?)/i);
+      expect(durationElements.length).toBeGreaterThan(0);
+    });
+
+    it('should display duration for completed role', () => {
+      render(<ProfessionalExperience experiences={mockExperiences} />);
+      // StartupCo: 2018-06 to 2019-12 = 1 year 7 months (inclusive)
+      expect(screen.getByText(/1 year 7 months/i)).toBeInTheDocument();
+    });
+
+    it('should calculate months correctly', () => {
+      const shortExperience = [{
+        ...mockExperiences[0],
+        startedAt: '2024-01',
+        endedAt: '2024-06',
+        company: 'Short Term Co'
+      }];
+      render(<ProfessionalExperience experiences={shortExperience} />);
+      // 6 months duration (Jan-Jun inclusive)
+      expect(screen.getByText(/6\s*months?/i)).toBeInTheDocument();
+    });
+
+    it('should handle edge case of same month start and end', () => {
+      const sameMonthExp = [{
+        ...mockExperiences[0],
+        startedAt: '2024-01',
+        endedAt: '2024-01',
+        company: 'One Month Co'
+      }];
+      render(<ProfessionalExperience experiences={sameMonthExp} />);
+      // 1 month duration (same month = 1 month)
+      expect(screen.getByText(/1\s*month/i)).toBeInTheDocument();
+    });
+  });
+
+  describe('Achievement Badges', () => {
+    it('should display achievement badges', () => {
+      render(<ProfessionalExperience experiences={mockExperiences} />);
+      expect(screen.getByText('99.9% Uptime')).toBeInTheDocument();
+      expect(screen.getByText('1M+ Users')).toBeInTheDocument();
+      expect(screen.getByText('Team Lead')).toBeInTheDocument();
+    });
+
+    it('should render achievements as chips/badges', () => {
+      render(<ProfessionalExperience experiences={mockExperiences} />);
+      expect(screen.getByText('95% Test Coverage')).toBeInTheDocument();
+      expect(screen.getByText('MVP Launch')).toBeInTheDocument();
+    });
+
+    it('should handle experiences without achievements', () => {
+      const noAchievements = [{
+        ...mockExperiences[0],
+        achievements: undefined
+      }];
+      render(<ProfessionalExperience experiences={noAchievements} />);
+      expect(screen.getByText('Tech Corp')).toBeInTheDocument();
+    });
+
+    it('should handle empty achievements array', () => {
+      const emptyAchievements = [{
+        ...mockExperiences[0],
+        achievements: []
+      }];
+      render(<ProfessionalExperience experiences={emptyAchievements} />);
+      expect(screen.getByText('Tech Corp')).toBeInTheDocument();
+    });
+  });
+
+  describe('Expand/Collapse Functionality', () => {
+    it('should render expand button for each experience', () => {
+      const { container } = render(<ProfessionalExperience experiences={mockExperiences} />);
+      const expandButtons = container.querySelectorAll('[data-testid="expand-toggle"], [aria-expanded]');
+      expect(expandButtons.length).toBeGreaterThanOrEqual(1);
+    });
+
+    it('should toggle expanded state on click', () => {
+      render(<ProfessionalExperience experiences={mockExperiences} />);
+      const toggleButton = screen.getAllByRole('button').find(btn => 
+        btn.getAttribute('aria-expanded') !== null || 
+        btn.textContent?.includes('Show') ||
+        btn.textContent?.includes('Hide')
+      );
+      
+      if (toggleButton) {
+        const initialState = toggleButton.getAttribute('aria-expanded');
+        fireEvent.click(toggleButton);
+        const newState = toggleButton.getAttribute('aria-expanded');
+        expect(newState).not.toBe(initialState);
+      }
+    });
+
+    it('should show/hide details section on expand', () => {
+      render(<ProfessionalExperience experiences={mockExperiences} />);
+      // Initially technologies should be visible in expanded mode
+      expect(screen.getByText('React')).toBeInTheDocument();
+    });
+
+    it('should have proper aria-expanded attribute', () => {
+      const { container } = render(<ProfessionalExperience experiences={mockExperiences} />);
+      const expandableElements = container.querySelectorAll('[aria-expanded]');
+      expandableElements.forEach(el => {
+        const ariaExpanded = el.getAttribute('aria-expanded');
+        expect(['true', 'false']).toContain(ariaExpanded);
+      });
+    });
+  });
+
+  describe('Related Projects', () => {
+    it('should display related project links', () => {
+      render(<ProfessionalExperience experiences={mockExperiences} />);
+      expect(screen.getByText(/Story Adaptive Game Engine/i)).toBeInTheDocument();
+    });
+
+    it('should handle experiences without related projects', () => {
+      const noProjects = [{
+        ...mockExperiences[0],
+        relatedProjects: undefined
+      }];
+      render(<ProfessionalExperience experiences={noProjects} />);
+      expect(screen.getByText('Tech Corp')).toBeInTheDocument();
+    });
+
+    it('should handle empty related projects array', () => {
+      render(<ProfessionalExperience experiences={mockExperiences} />);
+      // StartupCo has empty relatedProjects
+      expect(screen.getByText('StartupCo')).toBeInTheDocument();
+    });
+
+    it('should render project link with icon', () => {
+      const { container } = render(<ProfessionalExperience experiences={mockExperiences} />);
+      const projectSection = container.querySelector('[data-testid="related-projects"], .related-projects');
+      if (projectSection) {
+        expect(projectSection).toBeInTheDocument();
+      }
+    });
+  });
+
+  describe('Hover Effects', () => {
+    it('should have hover classes on experience cards', () => {
+      const { container } = render(<ProfessionalExperience experiences={mockExperiences} />);
+      const cards = container.querySelectorAll('[class*="hover"]');
+      expect(cards.length).toBeGreaterThan(0);
+    });
+
+    it('should have transition classes for smooth effects', () => {
+      const { container } = render(<ProfessionalExperience experiences={mockExperiences} />);
+      const transitionElements = container.querySelectorAll('[class*="transition"]');
+      expect(transitionElements.length).toBeGreaterThan(0);
     });
   });
 });

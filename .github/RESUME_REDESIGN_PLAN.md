@@ -1944,7 +1944,7 @@ Examples:
 ```
 Phase 1: Foundation & Layout        ✅✅✅✅✅ 5/5   (100%) 🎉
 Phase 2: Technical Skills           ✅✅✅✅   4/4   (100%) 🎉
-Phase 3: Experience Timeline        ✅⬜⬜⬜⬜ 1/5   (20%)
+Phase 3: Experience Timeline        ✅✅⬜⬜⬜ 2/5   (40%)
 Phase 4: Project Portfolio          ⬜⬜⬜⬜   0/4   (0%)
 Phase 5: Education & Certifications ⬜⬜⬜     0/3   (0%)
 Phase 6: Stats & Achievements       ⬜⬜⬜     0/3   (0%)
@@ -1953,7 +1953,7 @@ Phase 8: Interactive Features       ⬜⬜⬜     0/3   (0%)
 Phase 9: Content Optimization       ⬜⬜       0/2   (0%)
 Phase 10: Performance & A11y        ⬜⬜⬜     0/3   (0%)
 ─────────────────────────────────────────────────
-TOTAL PROGRESS:                     ✅✅✅✅✅✅✅✅⬜⬜ 8/36 (22%)
+TOTAL PROGRESS:                     ✅✅✅✅✅✅✅✅✅⬜ 9/36 (25%)
 ```
 
 ### Implementation Log
@@ -2056,6 +2056,27 @@ TOTAL PROGRESS:                     ✅✅✅✅✅✅✅✅⬜⬜ 8/36 (22%)
 **Blockers**: None  
 **Next Session**: Phase 3.2 - Experience Enhancements (expand/collapse, project linking)
 
+#### 📅 Session 8: January 21, 2026
+**Tasks Completed**: 
+- ✅ Phase 3.2 - Experience Enhancements implemented
+- ✅ Enhanced experiences.json with achievements and relatedProjects fields
+- ✅ Updated Experience type in types.ts with new optional fields
+- ✅ Duration calculation utility (calculateDuration in utilities/duration.ts)
+- ✅ Expand/collapse functionality with useState and AnimatePresence
+- ✅ Achievement badges using HeroUI Chip with Award icon (green/success variant)
+- ✅ Related projects section with FolderOpen icon (bordered secondary Chips)
+- ✅ Clock icon for duration display with accent color
+- ✅ Hover effects on timeline dots (scale-110 transition)
+- ✅ Hover effects on content cards (translate-x-1 transition)
+- ✅ Transition classes on highlight items (color change on hover)
+- ✅ Print-hidden expand/collapse buttons for PDF optimization
+- ✅ 18 new Phase 3.2 tests added (total: 172/172 passing)
+- ✅ All validations passed (ESLint, TypeScript, Tests, Build)
+
+**Time Spent**: ~1.5 hours  
+**Blockers**: None  
+**Next Session**: Phase 3.3 - Additional Experience Features or Phase 4 - Project Portfolio Cards
+
 ---
 
 ### Phase Completion Checklist
@@ -2102,21 +2123,25 @@ TOTAL PROGRESS:                     ✅✅✅✅✅✅✅✅⬜⬜ 8/36 (22%)
 
 #### ⏳ PHASE 3: Professional Experience
 - [x] 3.1 Experience timeline layout created ✅
-- [ ] 3.2 experiences.json updated with achievements
-- [ ] 3.3 Related projects linking implemented
+- [x] 3.2 experiences.json updated with achievements ✅
+- [x] 3.2 Duration calculation and display ✅
+- [x] 3.2 Expand/collapse functionality ✅
+- [x] 3.2 Achievement badges with icons ✅
+- [x] 3.3 Related projects linking implemented ✅
 - [ ] 3.4 Expandable project previews added
-- [ ] 3.5 Timeline animations implemented
+- [ ] 3.5 Timeline animations enhancements
 
-**Status**: ⏳ In Progress (1/5 tasks - 20%)  
+**Status**: ⏳ In Progress (2/5 tasks - 40%)  
 **Completion Date**: Started Jan 20, 2026  
 **Notes**: 
 - ProfessionalExperience component: Timeline layout with dots, connecting lines, staggered animations
-- 38 tests covering rendering, company info, date formatting, highlights, tech tags, timeline, responsive, accessibility, print
-- experiences.json already contains metrics-focused highlights (95% customer satisfaction, 99.8% uptime, etc.)
-- Integrated into resume-preview.tsx below Technical Skills section
-- Lucide icons for visual indicators (Calendar, MapPin, Briefcase)
-- HeroUI Chip for technology badges
-- Date range formatting with "Present" for current roles
+- Phase 3.2 Enhancements: expand/collapse, duration display, achievement badges, related projects
+- 56 tests covering all features (rendering, company info, date formatting, highlights, tech tags, timeline, responsive, accessibility, print, duration, badges, expand/collapse, related projects, hover effects)
+- experiences.json enhanced with achievements[] and relatedProjects[] fields
+- Duration utility in utilities/duration.ts with inclusive month calculation
+- Lucide icons: Calendar, MapPin, Briefcase, Clock, ChevronUp/Down, Award, FolderOpen
+- HeroUI Chip for technology badges (primary), achievements (success), related projects (secondary bordered)
+- Date range formatting with "Present" for current roles + duration display
 
 ---
 
@@ -2135,6 +2160,7 @@ TOTAL PROGRESS:                     ✅✅✅✅✅✅✅✅⬜⬜ 8/36 (22%)
 - [x] `src/components/features/resume/technical-skills.test.tsx` ✅
 - [x] `src/components/features/resume/professional-experience.tsx` ✅
 - [x] `src/components/features/resume/professional-experience.test.tsx` ✅
+- [x] `src/utilities/duration.ts` ✅ (Phase 3.2 - duration calculation)
 - [x] `vitest.config.ts` ✅
 - [x] `src/test/setup.ts` ✅
 - [x] `src/test/jest-dom.d.ts` ✅
@@ -2142,12 +2168,14 @@ TOTAL PROGRESS:                     ✅✅✅✅✅✅✅✅⬜⬜ 8/36 (22%)
 - [ ] `src/sections/technical-skills.tsx`
 - [ ] `src/styles/print.css`
 
-**Total New Files**: 16/30+
+**Total New Files**: 17/30+
 
 #### Files Modified:
 - [x] `src/globals.css` (resume styles added) ✅
 - [x] `package.json` (test scripts added) ✅
 - [x] `src/services/core/service.ts` (getProfile method) ✅
+- [x] `src/services/core/types.ts` (Experience type enhanced with achievements, relatedProjects) ✅
+- [x] `src/assets/portfolio-resources/data/experiences.json` (achievements, relatedProjects fields) ✅
 - [x] `src/services/core/types.ts` (Profile, ContactInfo, Technology.proficiency) ✅
 - [x] `src/services/core/interface.ts` (ICoreService.getProfile) ✅
 - [x] `src/hooks/use-core.ts` (queryProfile hook) ✅

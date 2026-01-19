@@ -48,6 +48,8 @@ export type Experience = {
   endedAt: string | null;
   technologies: string[];
   highlights: string[];
+  achievements?: string[];
+  relatedProjects?: string[];
 };
 
 export type Profile = {
