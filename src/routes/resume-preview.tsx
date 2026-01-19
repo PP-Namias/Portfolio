@@ -3,14 +3,17 @@ import { useCore } from '@/hooks/use-core';
 import { Resume } from '@/components/features/resume/resume-container';
 import { ResumeHeader } from '@/components/features/resume/resume-header';
 import { ProfessionalSummary } from '@/components/features/resume/professional-summary';
+import { TechnicalSkills } from '@/components/features/resume/technical-skills';
+import type { Technology } from '@/services/core/types';
 
 export const Route = createFileRoute('/resume-preview')({
   component: ResumePreview,
 });
 
 function ResumePreview() {
-  const { queryProfile, downloadResumeMutation } = useCore();
+  const { queryProfile, queryTechnologies, downloadResumeMutation } = useCore();
   const { data: profile, isLoading, error } = queryProfile();
+  const { data: technologies } = queryTechnologies();
 
   if (isLoading) {
     return (
@@ -76,6 +79,13 @@ function ResumePreview() {
           summary={profile.summary}
           highlights={profile.highlights}
         />
+
+        {/* Phase 2.1: Technical Skills */}
+        {technologies && technologies.length > 0 && (
+          <TechnicalSkills 
+            technologies={technologies.filter(t => t.proficiency !== undefined) as Array<Technology & { proficiency: number }>} 
+          />
+        )}
       </Resume.Container>
     </div>
   );

@@ -25,6 +25,15 @@ vi.mock('@/hooks/use-core', () => ({
       isLoading: false,
       error: null
     }),
+    queryTechnologies: () => ({
+      data: [
+        { name: 'React', category: 'Frontend', proficiency: 90, logo: 'react' },
+        { name: 'TypeScript', category: 'Languages', proficiency: 85, logo: 'typescript' },
+        { name: 'Node.js', category: 'Backend', proficiency: 80, logo: 'nodejs' }
+      ],
+      isLoading: false,
+      error: null
+    }),
     downloadResumeMutation: {
       mutate: vi.fn()
     }
@@ -72,6 +81,13 @@ describe('ResumePreview Integration', () => {
         // Professional Summary section
         expect(screen.getByText('Professional Summary')).toBeInTheDocument();
         expect(screen.getByText(/Experienced software engineer/i)).toBeInTheDocument();
+      });
+    });
+
+    it('should render TechnicalSkills component (Phase 2.1)', async () => {
+      renderWithQueryClient(<ResumePreview />);
+      await waitFor(() => {
+        expect(screen.getByText('Technical Skills')).toBeInTheDocument();
       });
     });
   });
@@ -122,9 +138,10 @@ describe('ResumePreview Integration', () => {
     it('should display all primary technologies', async () => {
       renderWithQueryClient(<ResumePreview />);
       await waitFor(() => {
-        expect(screen.getByText('React')).toBeInTheDocument();
-        expect(screen.getByText('TypeScript')).toBeInTheDocument();
-        expect(screen.getByText('Node.js')).toBeInTheDocument();
+        // Use getAllByText since these technologies appear in multiple places (summary + technical skills)
+        expect(screen.getAllByText('React').length).toBeGreaterThanOrEqual(1);
+        expect(screen.getAllByText('TypeScript').length).toBeGreaterThanOrEqual(1);
+        expect(screen.getAllByText('Node.js').length).toBeGreaterThanOrEqual(1);
       });
     });
   });
@@ -152,11 +169,13 @@ describe('ResumePreview Integration', () => {
       const { container } = renderWithQueryClient(<ResumePreview />);
       await waitFor(() => {
         const sections = container.querySelectorAll('section, header');
-        expect(sections.length).toBeGreaterThanOrEqual(2);
+        expect(sections.length).toBeGreaterThanOrEqual(3);
         // Header should come first
         expect(sections[0].tagName).toBe('HEADER');
         // Summary should come second
         expect(sections[1].getAttribute('id')).toBe('summary');
+        // Technical Skills should come third
+        expect(sections[2].getAttribute('id')).toBe('technical-skills');
       });
     });
   });
@@ -166,6 +185,54 @@ describe('ResumePreview Integration', () => {
       renderWithQueryClient(<ResumePreview />);
       await waitFor(() => {
         expect(screen.queryByText(/loading/i)).not.toBeInTheDocument();
+      });
+    });
+  });
+
+  describe('TechnicalSkills Integration (Phase 2)', () => {
+    it('should render Technical Skills section', async () => {
+      renderWithQueryClient(<ResumePreview />);
+      await waitFor(() => {
+        expect(screen.getByText('Technical Skills')).toBeInTheDocument();
+      });
+    });
+
+    it('should display technologies with proficiency', async () => {
+      renderWithQueryClient(<ResumePreview />);
+      await waitFor(() => {
+        // Use getAllByText since technologies appear in both summary and technical skills
+        expect(screen.getAllByText('React').length).toBeGreaterThanOrEqual(1);
+        expect(screen.getAllByText('TypeScript').length).toBeGreaterThanOrEqual(1);
+        expect(screen.getAllByText('Node.js').length).toBeGreaterThanOrEqual(1);
+      });
+    });
+
+    it('should display proficiency percentages', async () => {
+      renderWithQueryClient(<ResumePreview />);
+      await waitFor(() => {
+        expect(screen.getByText('90%')).toBeInTheDocument();
+        expect(screen.getByText('85%')).toBeInTheDocument();
+        expect(screen.getByText('80%')).toBeInTheDocument();
+      });
+    });
+
+    it('should group technologies by category', async () => {
+      renderWithQueryClient(<ResumePreview />);
+      await waitFor(() => {
+        expect(screen.getByText('Frontend')).toBeInTheDocument();
+        expect(screen.getByText('Languages')).toBeInTheDocument();
+        expect(screen.getByText('Backend')).toBeInTheDocument();
+      });
+    });
+
+    it('should only render technologies with proficiency data', async () => {
+      const { container } = renderWithQueryClient(<ResumePreview />);
+      await waitFor(() => {
+        const technicalSkillsSection = container.querySelector('#technical-skills');
+        expect(technicalSkillsSection).toBeInTheDocument();
+        // Should have 3 technologies with proficiency
+        const techNames = container.querySelectorAll('#technical-skills .font-medium');
+        expect(techNames.length).toBeGreaterThanOrEqual(3);
       });
     });
   });
