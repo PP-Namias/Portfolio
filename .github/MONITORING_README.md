@@ -14,7 +14,7 @@ Edit [`.github/workflows/monitoring-health.yml`](.github/workflows/monitoring-he
 
 ```yaml
 env:
-  PRODUCTION_URL: 'https://jadecabrera.com'  # Update this to your domain
+  PRODUCTION_URL: 'https://namias.tech'  # Update this to your domain
 ```
 
 ### 2. Verify Configuration

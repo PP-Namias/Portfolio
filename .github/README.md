@@ -10,8 +10,11 @@ The CI/CD pipeline consists of multiple workflows designed to ensure code qualit
 
 1. **[ci-cd-pipeline.yml](.github/workflows/ci-cd-pipeline.yml)** - Complete CI/CD pipeline
 2. **[quality-check.yml](.github/workflows/quality-check.yml)** - Fast quality checks for PRs
-3. **[daily-health-check.yml](.github/workflows/daily-health-check.yml)** - Daily system health monitoring
-4. **[dependency-updates.yml](.github/workflows/dependency-updates.yml)** - Automated dependency management
+3. **[monitoring-health.yml](.github/workflows/monitoring-health.yml)** - 24/7 health monitoring (every 6 hours) 🆕
+4. **[daily-health-check.yml](.github/workflows/daily-health-check.yml)** - Daily system health monitoring
+5. **[dependency-updates.yml](.github/workflows/dependency-updates.yml)** - Automated dependency management
+
+> 📊 **NEW**: Automated monitoring is now active! See [MONITORING_QUICK_START.md](MONITORING_QUICK_START.md) for details.
 
 ## 🏗️ Main CI/CD Pipeline Features
 

@@ -10,7 +10,7 @@ on:
 env:
   NODE_VERSION: '18'
   PNPM_VERSION: '8'
-  PRODUCTION_URL: 'https://jadecabrera.com'
+  PRODUCTION_URL: 'https://namias.tech'
 
 jobs:
   # Job 1: Uptime Monitoring
