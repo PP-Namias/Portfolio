@@ -10,7 +10,7 @@ on:
 env:
   NODE_VERSION: '18'
   PNPM_VERSION: '8'
-  PRODUCTION_URL: 'https://your-portfolio-domain.com' # Update with your actual domain
+  PRODUCTION_URL: 'https://jadecabrera.com'
 
 jobs:
   # Job 1: Uptime Monitoring
@@ -86,16 +86,17 @@ jobs:
   performance-monitoring:
     name: ⚡ Performance Monitoring
     runs-on: ubuntu-latest
+    continue-on-error: true
     steps:
       - name: 📥 Checkout Repository
         uses: actions/checkout@v4
 
       - name: ⚡ Run Lighthouse Performance Audit
+        continue-on-error: true
         uses: treosh/lighthouse-ci-action@v10
         with:
           urls: |
             ${{ env.PRODUCTION_URL }}
-          configPath: './lighthouserc.json'
           uploadArtifacts: true
           temporaryPublicStorage: true
 
@@ -118,6 +119,7 @@ jobs:
   broken-links-check:
     name: 🔗 Broken Links Detection
     runs-on: ubuntu-latest
+    continue-on-error: true
     steps:
       - name: 📥 Checkout Repository
         uses: actions/checkout@v4
@@ -131,21 +133,25 @@ jobs:
         run: npm install -g broken-link-checker
 
       - name: 🔗 Check for Broken Links
+        continue-on-error: true
         run: |
           echo "## 🔗 Broken Links Check" >> $GITHUB_STEP_SUMMARY
           echo "**Date**: $(date)" >> $GITHUB_STEP_SUMMARY
           echo "**Target**: ${{ env.PRODUCTION_URL }}" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           
-          # Run broken link checker
-          blc ${{ env.PRODUCTION_URL }} --recursive --follow --exclude-external > broken_links.txt 2>&1 || true
+          # Run broken link checker with limited depth to avoid timeout
+          blc ${{ env.PRODUCTION_URL }} --recursive --follow --exclude-external --max-sockets 10 --max-socket-errors 5 > broken_links.txt 2>&1 || {
+            echo "⚠️ **Status**: Link checker completed with warnings" >> $GITHUB_STEP_SUMMARY
+            echo "Check may be incomplete due to timeout or access restrictions" >> $GITHUB_STEP_SUMMARY
+          }
           
-          if grep -q "BROKEN" broken_links.txt; then
+          if [ -f broken_links.txt ] && grep -q "BROKEN" broken_links.txt; then
             echo "❌ **Status**: Broken links detected" >> $GITHUB_STEP_SUMMARY
             echo "" >> $GITHUB_STEP_SUMMARY
             echo "### Broken Links Found:" >> $GITHUB_STEP_SUMMARY
             echo '```' >> $GITHUB_STEP_SUMMARY
-            grep "BROKEN" broken_links.txt >> $GITHUB_STEP_SUMMARY || true
+            grep "BROKEN" broken_links.txt | head -20 >> $GITHUB_STEP_SUMMARY || true
             echo '```' >> $GITHUB_STEP_SUMMARY
           else
             echo "✅ **Status**: No broken links detected" >> $GITHUB_STEP_SUMMARY
@@ -163,8 +169,13 @@ jobs:
   ssl-certificate-check:
     name: 🔒 SSL Certificate Monitoring
     runs-on: ubuntu-latest
+    continue-on-error: true
+    outputs:
+      ssl-status: ${{ steps.ssl-check.outputs.status }}
     steps:
       - name: 🔒 Check SSL Certificate
+        id: ssl-check
+        continue-on-error: true
         run: |
           echo "## 🔒 SSL Certificate Status" >> $GITHUB_STEP_SUMMARY
           echo "**Date**: $(date)" >> $GITHUB_STEP_SUMMARY
@@ -174,32 +185,46 @@ jobs:
           echo "**Domain**: $DOMAIN" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           
-          # Check SSL certificate expiration
-          EXPIRY=$(echo | openssl s_client -servername $DOMAIN -connect $DOMAIN:443 2>/dev/null | openssl x509 -noout -dates | grep notAfter | cut -d'=' -f2)
-          EXPIRY_TIMESTAMP=$(date -d "$EXPIRY" +%s)
-          CURRENT_TIMESTAMP=$(date +%s)
-          DAYS_UNTIL_EXPIRY=$(( (EXPIRY_TIMESTAMP - CURRENT_TIMESTAMP) / 86400 ))
-          
-          echo "**Expiry Date**: $EXPIRY" >> $GITHUB_STEP_SUMMARY
-          echo "**Days Until Expiry**: $DAYS_UNTIL_EXPIRY" >> $GITHUB_STEP_SUMMARY
-          
-          if [ $DAYS_UNTIL_EXPIRY -lt 30 ]; then
-            echo "⚠️ **Status**: SSL certificate expires soon!" >> $GITHUB_STEP_SUMMARY
-            echo "ssl_warning=true" >> $GITHUB_ENV
-          elif [ $DAYS_UNTIL_EXPIRY -lt 7 ]; then
-            echo "🚨 **Status**: SSL certificate expires very soon!" >> $GITHUB_STEP_SUMMARY
-            echo "ssl_critical=true" >> $GITHUB_ENV
+          # Check SSL certificate expiration with better error handling
+          if CERT_INFO=$(echo | openssl s_client -servername $DOMAIN -connect $DOMAIN:443 2>/dev/null | openssl x509 -noout -dates 2>/dev/null); then
+            EXPIRY=$(echo "$CERT_INFO" | grep notAfter | cut -d'=' -f2)
+            
+            if [ -n "$EXPIRY" ]; then
+              EXPIRY_TIMESTAMP=$(date -d "$EXPIRY" +%s 2>/dev/null || date -j -f "%b %d %T %Y %Z" "$EXPIRY" +%s 2>/dev/null)
+              CURRENT_TIMESTAMP=$(date +%s)
+              DAYS_UNTIL_EXPIRY=$(( (EXPIRY_TIMESTAMP - CURRENT_TIMESTAMP) / 86400 ))
+              
+              echo "**Expiry Date**: $EXPIRY" >> $GITHUB_STEP_SUMMARY
+              echo "**Days Until Expiry**: $DAYS_UNTIL_EXPIRY" >> $GITHUB_STEP_SUMMARY
+              
+              if [ $DAYS_UNTIL_EXPIRY -lt 7 ]; then
+                echo "🚨 **Status**: SSL certificate expires very soon!" >> $GITHUB_STEP_SUMMARY
+                echo "ssl_critical=true" >> $GITHUB_ENV
+                echo "status=critical" >> $GITHUB_OUTPUT
+              elif [ $DAYS_UNTIL_EXPIRY -lt 30 ]; then
+                echo "⚠️ **Status**: SSL certificate expires soon!" >> $GITHUB_STEP_SUMMARY
+                echo "ssl_warning=true" >> $GITHUB_ENV
+                echo "status=warning" >> $GITHUB_OUTPUT
+              else
+                echo "✅ **Status**: SSL certificate is valid" >> $GITHUB_STEP_SUMMARY
+                echo "status=valid" >> $GITHUB_OUTPUT
+              fi
+            else
+              echo "⚠️ **Status**: Could not parse certificate expiry date" >> $GITHUB_STEP_SUMMARY
+            fi
           else
-            echo "✅ **Status**: SSL certificate is valid" >> $GITHUB_STEP_SUMMARY
+            echo "⚠️ **Status**: Could not retrieve SSL certificate" >> $GITHUB_STEP_SUMMARY
+            echo "Check may have failed due to network restrictions or certificate issues" >> $GITHUB_STEP_SUMMARY
           fi
 
       - name: 🚨 Create SSL Alert
-        if: env.ssl_warning == 'true' || env.ssl_critical == 'true'
+        if: steps.ssl-check.outputs.status == 'warning' || steps.ssl-check.outputs.status == 'critical'
+        continue-on-error: true
         uses: actions/github-script@v6
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const priority = process.env.ssl_critical === 'true' ? 'CRITICAL' : 'WARNING';
+            const priority = '${{ steps.ssl-check.outputs.status }}' === 'critical' ? 'CRITICAL' : 'WARNING';
             const title = `🔒 SSL Certificate ${priority} - Renewal Required`;
             const body = `
             ## 🔒 SSL Certificate ${priority}

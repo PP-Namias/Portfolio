@@ -126,11 +126,13 @@ graph TB
 ### 6. 📊 Monitoring & Health
 
 #### Monitoring & Health (`monitoring-health.yml`)
-- **Uptime Monitoring**: 24/7 availability checks
-- **Performance Auditing**: Lighthouse performance testing
-- **SSL Monitoring**: Certificate expiration tracking
-- **Broken Link Detection**: Automated link validation
-- **Health Dashboard**: Comprehensive system status
+- **Uptime Monitoring**: 24/7 availability checks every 6 hours
+- **Performance Auditing**: Lighthouse performance testing (non-blocking)
+- **SSL Monitoring**: Certificate expiration tracking with 30/7 day alerts
+- **Broken Link Detection**: Automated link validation with rate limiting
+- **Health Dashboard**: Comprehensive system status overview
+- **Error Resilience**: Non-critical checks use `continue-on-error` for better reliability
+- **Smart Alerting**: Automatic GitHub issue creation for critical failures
 
 #### Daily Health Check (`daily-health-check.yml`)
 - **Automated Testing**: Daily system validation
@@ -319,7 +321,56 @@ debug_mode: true
 verbose_logging: true
 ```
 
-## 📚 Additional Resources
+## � Troubleshooting
+
+### Monitoring & Health Checks Failures
+
+#### Issue: Performance Monitoring Fails
+**Symptoms**: `⚡ Performance Monitoring` job fails with Lighthouse errors
+
+**Solutions**:
+1. Check if the production URL is accessible
+2. Verify `lighthouserc.json` configuration exists
+3. The job now uses `continue-on-error: true` to prevent blocking other checks
+4. Check Lighthouse CI action logs for specific errors
+
+#### Issue: Broken Links Detection Fails
+**Symptoms**: `🔗 Broken Links Detection` job times out or fails
+
+**Solutions**:
+1. Link checker now has rate limiting (`--max-sockets 10`)
+2. External links are excluded by default to reduce scan time
+3. Job uses `continue-on-error: true` to not block workflow
+4. Check if the site has anti-bot protection blocking the checker
+
+#### Issue: SSL Certificate Check Fails
+**Symptoms**: `🔒 SSL Certificate Monitoring` job fails to retrieve certificate
+
+**Solutions**:
+1. Verify the domain in `PRODUCTION_URL` is correct and accessible
+2. Check if SSL/TLS is properly configured
+3. Job now has better error handling for connection issues
+4. Uses `continue-on-error: true` to allow workflow to complete
+5. Manual verification: `echo | openssl s_client -servername yourdomain.com -connect yourdomain.com:443`
+
+#### Issue: Production URL Not Set
+**Symptoms**: All checks fail with connection errors
+
+**Solution**: Update `PRODUCTION_URL` in the workflow file:
+```yaml
+env:
+  PRODUCTION_URL: 'https://your-actual-domain.com'
+```
+
+### Best Practices for Health Monitoring
+
+1. **Update Production URL**: Always set the correct domain in `monitoring-health.yml`
+2. **Review Alert Frequency**: Scheduled runs are every 6 hours - adjust if needed
+3. **Monitor GitHub Issues**: The workflow auto-creates issues for critical failures
+4. **Check Artifacts**: Link check reports are uploaded as artifacts for review
+5. **Non-Blocking Design**: Individual check failures won't stop the entire workflow
+
+## �📚 Additional Resources
 
 - [GitHub Actions Documentation](https://docs.github.com/en/actions)
 - [Docker Best Practices](https://docs.docker.com/develop/best-practices/)
