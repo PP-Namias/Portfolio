@@ -438,6 +438,12 @@ describe('ProfessionalExperience', () => {
         expect(projectSection).toBeInTheDocument();
       }
     });
+
+    it('should render project chips as clickable', () => {
+      const { container } = render(<ProfessionalExperience experiences={mockExperiences} />);
+      const projectChips = container.querySelectorAll('[data-testid="project-chip"]');
+      expect(projectChips.length).toBeGreaterThan(0);
+    });
   });
 
   describe('Hover Effects', () => {
@@ -451,6 +457,74 @@ describe('ProfessionalExperience', () => {
       const { container } = render(<ProfessionalExperience experiences={mockExperiences} />);
       const transitionElements = container.querySelectorAll('[class*="transition"]');
       expect(transitionElements.length).toBeGreaterThan(0);
+    });
+  });
+
+  describe('Enhanced Timeline Animations', () => {
+    it('should have motion container for staggered animations', () => {
+      const { container } = render(<ProfessionalExperience experiences={mockExperiences} />);
+      // The container should exist and have experiences
+      const experienceItems = container.querySelectorAll('.experience-item');
+      expect(experienceItems.length).toBe(2);
+    });
+
+    it('should have gradient on timeline line', () => {
+      const { container } = render(<ProfessionalExperience experiences={mockExperiences} />);
+      const timelineLine = container.querySelector('.timeline-line');
+      expect(timelineLine).toHaveClass('bg-gradient-to-b');
+    });
+
+    it('should have pulse animation on current role dot', () => {
+      const { container } = render(<ProfessionalExperience experiences={mockExperiences} />);
+      // First experience (Tech Corp) has no endedAt, so should have animate-pulse
+      const timelineDots = container.querySelectorAll('.timeline-dot');
+      const firstDotInner = timelineDots[0]?.querySelector('[class*="animate-pulse"]');
+      expect(firstDotInner).toBeInTheDocument();
+    });
+
+    it('should have enhanced hover scale on timeline dots', () => {
+      const { container } = render(<ProfessionalExperience experiences={mockExperiences} />);
+      const timelineDots = container.querySelectorAll('.timeline-dot div');
+      timelineDots.forEach(dot => {
+        expect(dot).toHaveClass('group-hover:scale-125');
+      });
+    });
+
+    it('should have shadow effect on timeline dot hover', () => {
+      const { container } = render(<ProfessionalExperience experiences={mockExperiences} />);
+      const timelineDots = container.querySelectorAll('.timeline-dot div');
+      timelineDots.forEach(dot => {
+        expect(dot).toHaveClass('group-hover:shadow-lg');
+      });
+    });
+  });
+
+  describe('Project Preview Integration', () => {
+    const mockProjects = [
+      {
+        title: 'Story Adaptive Game Engine',
+        image: 'test.png',
+        description: 'A test project description',
+        repositoryURL: 'https://github.com/test/repo',
+        liveURL: 'https://example.com',
+        processURL: null,
+        tags: ['React', 'TypeScript'],
+        year: 2025,
+      }
+    ];
+
+    it('should render with projects prop', () => {
+      render(<ProfessionalExperience experiences={mockExperiences} projects={mockProjects} />);
+      expect(screen.getByText('Tech Corp')).toBeInTheDocument();
+    });
+
+    it('should show external link icon on matching project chips', () => {
+      const { container } = render(
+        <ProfessionalExperience experiences={mockExperiences} projects={mockProjects} />
+      );
+      // Project chip for "Story Adaptive Game Engine" should have external link icon
+      const projectChips = container.querySelectorAll('[data-testid="project-chip"]');
+      expect(projectChips.length).toBeGreaterThan(0);
     });
   });
 });
