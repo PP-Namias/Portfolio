@@ -17,6 +17,34 @@
     --custom-foreground: 0 0% 0%;
     --custom-secondary: 0 0% 95%;
     --custom-secondary-foreground: 0 0% 0%;
+    
+    /* Resume-specific colors */
+    --resume-primary: 0 0% 9%;           /* Deep black for text */
+    --resume-secondary: 0 0% 45%;        /* Medium gray */
+    --resume-tertiary: 0 0% 71%;         /* Light gray */
+    --resume-accent: 217 91% 60%;        /* Professional blue */
+    --resume-accent-hover: 217 91% 50%;
+    --resume-border: 0 0% 89%;           /* Subtle borders */
+    --resume-background: 0 0% 100%;      /* Pure white */
+    --resume-background-alt: 0 0% 98%;   /* Off-white */
+    
+    /* Spacing scale for resume */
+    --resume-space-xs: 0.5rem;   /* 8px */
+    --resume-space-sm: 1rem;     /* 16px */
+    --resume-space-md: 1.5rem;   /* 24px */
+    --resume-space-lg: 2rem;     /* 32px */
+    --resume-space-xl: 3rem;     /* 48px */
+    --resume-space-2xl: 4rem;    /* 64px */
+    
+    /* Typography scale */
+    --resume-text-xs: 0.75rem;    /* 12px */
+    --resume-text-sm: 0.875rem;   /* 14px */
+    --resume-text-base: 1rem;     /* 16px */
+    --resume-text-lg: 1.125rem;   /* 18px */
+    --resume-text-xl: 1.25rem;    /* 20px */
+    --resume-text-2xl: 1.5rem;    /* 24px */
+    --resume-text-3xl: 2rem;      /* 32px */
+    --resume-text-4xl: 2.5rem;    /* 40px */
   }
 
   .dark {
@@ -24,6 +52,16 @@
     --custom-foreground: 0 0% 98%;
     --custom-secondary: 240 6% 10%;
     --custom-secondary-foreground: 0 0% 0%;
+    
+    /* Dark mode resume colors */
+    --resume-primary: 0 0% 98%;          /* Off-white text */
+    --resume-secondary: 0 0% 63%;        /* Medium gray */
+    --resume-tertiary: 0 0% 45%;         /* Darker gray */
+    --resume-accent: 217 91% 65%;        /* Lighter blue */
+    --resume-accent-hover: 217 91% 75%;
+    --resume-border: 0 0% 20%;           /* Dark borders */
+    --resume-background: 240 5% 15.9%;   /* Dark bg */
+    --resume-background-alt: 240 6% 10%; /* Darker bg */
   }
 }
 
@@ -34,6 +72,16 @@
   --color-custom-background-foreground: hsl(var(--custom-foreground));
   --color-custom-secondary: hsl(var(--custom-secondary));
   --color-custom-secondary-foreground: hsl(var(--custom-secondary-foreground));
+  
+  /* Resume color theme */
+  --color-resume-primary: hsl(var(--resume-primary));
+  --color-resume-secondary: hsl(var(--resume-secondary));
+  --color-resume-tertiary: hsl(var(--resume-tertiary));
+  --color-resume-accent: hsl(var(--resume-accent));
+  --color-resume-accent-hover: hsl(var(--resume-accent-hover));
+  --color-resume-border: hsl(var(--resume-border));
+  --color-resume-bg: hsl(var(--resume-background));
+  --color-resume-bg-alt: hsl(var(--resume-background-alt));
 }
 
 .bg-grid {
@@ -95,5 +143,76 @@ html {
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+/* Resume-specific styles */
+.resume-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  background: hsl(var(--resume-background));
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.1);
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+.resume-section {
+  padding: var(--resume-space-lg) var(--resume-space-xl);
+  border-bottom: 1px solid hsl(var(--resume-border));
+}
+
+.resume-section:last-child {
+  border-bottom: none;
+}
+
+.resume-section-header {
+  font-size: var(--resume-text-2xl);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: var(--resume-space-md);
+  color: hsl(var(--resume-primary));
+  position: relative;
+  padding-bottom: var(--resume-space-sm);
+}
+
+.resume-section-header::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 60px;
+  height: 3px;
+  background: hsl(var(--resume-accent));
+  border-radius: 9999px;
+}
+
+/* Print optimization */
+@media print {
+  .resume-container {
+    max-width: 100%;
+    box-shadow: none;
+    border-radius: 0;
+  }
+  
+  .resume-section {
+    page-break-inside: avoid;
+    padding: 1rem 0.5rem;
+  }
+  
+  .no-print {
+    display: none !important;
+  }
+  
+  /* Force print colors */
+  * {
+    color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  
+  /* Hide backgrounds for print */
+  body {
+    background: white !important;
   }
 }
