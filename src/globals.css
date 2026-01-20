@@ -18,15 +18,15 @@
     --custom-secondary: 0 0% 95%;
     --custom-secondary-foreground: 0 0% 0%;
     
-    /* Resume-specific colors */
+    /* Resume-specific colors - Professional palette */
     --resume-primary: 0 0% 9%;           /* Deep black for text */
-    --resume-secondary: 0 0% 45%;        /* Medium gray */
-    --resume-tertiary: 0 0% 71%;         /* Light gray */
-    --resume-accent: 217 91% 60%;        /* Professional blue */
-    --resume-accent-hover: 217 91% 50%;
-    --resume-border: 0 0% 89%;           /* Subtle borders */
+    --resume-secondary: 0 0% 40%;        /* Medium gray (darkened for better contrast) */
+    --resume-tertiary: 0 0% 65%;         /* Light gray */
+    --resume-accent: 217 91% 55%;        /* Professional blue (slightly darker) */
+    --resume-accent-hover: 217 91% 45%;  /* Deeper blue on hover */
+    --resume-border: 0 0% 88%;           /* Subtle borders */
     --resume-background: 0 0% 100%;      /* Pure white */
-    --resume-background-alt: 0 0% 98%;   /* Off-white */
+    --resume-background-alt: 0 0% 97%;   /* Off-white (more contrast) */
     
     /* Spacing scale for resume */
     --resume-space-xs: 0.5rem;   /* 8px */
@@ -36,15 +36,38 @@
     --resume-space-xl: 3rem;     /* 48px */
     --resume-space-2xl: 4rem;    /* 64px */
     
-    /* Typography scale */
+    /* Typography scale - Enhanced for professional look */
     --resume-text-xs: 0.75rem;    /* 12px */
     --resume-text-sm: 0.875rem;   /* 14px */
     --resume-text-base: 1rem;     /* 16px */
     --resume-text-lg: 1.125rem;   /* 18px */
     --resume-text-xl: 1.25rem;    /* 20px */
     --resume-text-2xl: 1.5rem;    /* 24px */
-    --resume-text-3xl: 2rem;      /* 32px */
-    --resume-text-4xl: 2.5rem;    /* 40px */
+    --resume-text-3xl: 1.875rem;  /* 30px - adjusted for better hierarchy */
+    --resume-text-4xl: 2.25rem;   /* 36px - adjusted for name/title */
+    --resume-text-5xl: 3rem;      /* 48px - for large headers */
+    
+    /* Font weights for hierarchy */
+    --resume-font-normal: 400;
+    --resume-font-medium: 500;
+    --resume-font-semibold: 600;
+    --resume-font-bold: 700;
+    --resume-font-extrabold: 800;
+    
+    /* Line heights for readability */
+    --resume-leading-tight: 1.25;
+    --resume-leading-snug: 1.375;
+    --resume-leading-normal: 1.5;
+    --resume-leading-relaxed: 1.625;
+    --resume-leading-loose: 2;
+    
+    /* Letter spacing for professional look */
+    --resume-tracking-tighter: -0.05em;
+    --resume-tracking-tight: -0.025em;
+    --resume-tracking-normal: 0em;
+    --resume-tracking-wide: 0.025em;
+    --resume-tracking-wider: 0.05em;
+    --resume-tracking-widest: 0.1em;
   }
 
   .dark {
@@ -53,15 +76,38 @@
     --custom-secondary: 240 6% 10%;
     --custom-secondary-foreground: 0 0% 0%;
     
-    /* Dark mode resume colors */
-    --resume-primary: 0 0% 98%;          /* Off-white text */
-    --resume-secondary: 0 0% 63%;        /* Medium gray */
-    --resume-tertiary: 0 0% 45%;         /* Darker gray */
-    --resume-accent: 217 91% 65%;        /* Lighter blue */
-    --resume-accent-hover: 217 91% 75%;
-    --resume-border: 0 0% 20%;           /* Dark borders */
+    /* Dark mode resume colors - Enhanced for readability */
+    --resume-primary: 0 0% 96%;          /* Off-white text (softer on eyes) */
+    --resume-secondary: 0 0% 65%;        /* Medium gray (better contrast) */
+    --resume-tertiary: 0 0% 50%;         /* Darker gray */
+    --resume-accent: 217 91% 60%;        /* Lighter blue for dark bg */
+    --resume-accent-hover: 217 91% 70%;  /* Even lighter on hover */
+    --resume-border: 0 0% 22%;           /* Dark borders (more visible) */
     --resume-background: 240 5% 15.9%;   /* Dark bg */
-    --resume-background-alt: 240 6% 10%; /* Darker bg */
+    --resume-background-alt: 240 6% 12%; /* Darker bg (more contrast) */
+  }
+  
+  /* Base typography improvements */
+  body {
+    font-family: var(--font-geist), system-ui, -apple-system, sans-serif;
+    font-size: var(--resume-text-base);
+    line-height: var(--resume-leading-normal);
+    color: hsl(var(--resume-primary));
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+  
+  /* Smooth transitions for theme switching */
+  * {
+    transition-property: color, background-color, border-color, opacity;
+    transition-duration: 200ms;
+    transition-timing-function: ease-in-out;
+  }
+  
+  /* Disable transitions on page load */
+  .preload * {
+    transition: none !important;
   }
 }
 
@@ -100,7 +146,15 @@
 }
 
 html {
-  font-size: 15px;
+  font-size: 16px; /* Standard 16px base for better readability */
+  scroll-behavior: smooth;
+}
+
+/* Focus visible for accessibility */
+*:focus-visible {
+  outline: 2px solid hsl(var(--resume-accent));
+  outline-offset: 2px;
+  border-radius: 2px;
 }
 
 .masonry-grid {
@@ -151,14 +205,24 @@ html {
   max-width: 1000px;
   margin: 0 auto;
   background: hsl(var(--resume-background));
-  box-shadow: 0 0 40px rgba(0, 0, 0, 0.1);
-  border-radius: 0.5rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08), 0 0 60px rgba(0, 0, 0, 0.04);
+  border-radius: 0.75rem;
   overflow: hidden;
+  transition: box-shadow 300ms ease;
+}
+
+.resume-container:hover {
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12), 0 0 80px rgba(0, 0, 0, 0.06);
 }
 
 .resume-section {
   padding: var(--resume-space-lg) var(--resume-space-xl);
   border-bottom: 1px solid hsl(var(--resume-border));
+  transition: background-color 200ms ease;
+}
+
+.resume-section:hover {
+  background-color: hsl(var(--resume-background-alt) / 0.5);
 }
 
 .resume-section:last-child {
@@ -166,10 +230,11 @@ html {
 }
 
 .resume-section-header {
-  font-size: var(--resume-text-2xl);
-  font-weight: 600;
+  font-size: var(--resume-text-3xl);
+  font-weight: var(--resume-font-semibold);
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: var(--resume-tracking-wider);
+  line-height: var(--resume-leading-tight);
   margin-bottom: var(--resume-space-md);
   color: hsl(var(--resume-primary));
   position: relative;
@@ -181,10 +246,69 @@ html {
   position: absolute;
   bottom: 0;
   left: 0;
-  width: 60px;
-  height: 3px;
-  background: hsl(var(--resume-accent));
+  width: 64px;
+  height: 4px;
+  background: linear-gradient(90deg, hsl(var(--resume-accent)), hsl(var(--resume-accent) / 0.3));
   border-radius: 9999px;
+  transition: width 300ms ease;
+}
+
+.resume-section:hover .resume-section-header::after {
+  width: 96px;
+}
+
+/* Enhanced link styles */
+a {
+  color: hsl(var(--resume-accent));
+  text-decoration: none;
+  transition: color 200ms ease, opacity 200ms ease;
+  position: relative;
+}
+
+a:hover {
+  color: hsl(var(--resume-accent-hover));
+  opacity: 0.9;
+}
+
+a:focus-visible {
+  outline: 2px solid hsl(var(--resume-accent));
+  outline-offset: 3px;
+}
+
+/* Stat cards and metric cards hover effects */
+.stat-card,
+[class*="card"] {
+  transition: transform 200ms ease, box-shadow 200ms ease, border-color 200ms ease;
+}
+
+.stat-card:hover,
+[class*="card"]:hover {
+  transform: translateY(-2px);
+}
+
+/* Button hover effects */
+button:not(:disabled) {
+  transition: all 200ms ease;
+}
+
+button:not(:disabled):hover {
+  transform: translateY(-1px);
+}
+
+button:not(:disabled):active {
+  transform: translateY(0);
+}
+
+/* Chip/Badge hover effects */
+[data-slot="chip"],
+[data-slot="badge"] {
+  transition: transform 150ms ease, opacity 150ms ease;
+}
+
+[data-slot="chip"]:hover,
+[data-slot="badge"]:hover {
+  transform: scale(1.05);
+  opacity: 0.95;
 }
 
 /* Print optimization */
