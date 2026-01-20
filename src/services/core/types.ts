@@ -52,6 +52,17 @@ export type Experience = {
   relatedProjects?: string[];
 };
 
+export type Education = {
+  degree: string;
+  institution: string;
+  location: string;
+  startedAt: string;
+  endedAt: string | null;
+  gpa?: string;
+  honors?: string[];
+  relevantCourses?: string[];
+};
+
 export type Profile = {
   name: string;
   title: string;
@@ -66,6 +77,7 @@ export type Profile = {
     projectsCompleted: number;
     primaryTechnologies: string[];
   };
+  education?: Education[];
 };
 
 export type ContactInfo = {

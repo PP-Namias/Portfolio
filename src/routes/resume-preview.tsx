@@ -5,19 +5,26 @@ import { ResumeHeader } from '@/components/features/resume/resume-header';
 import { ProfessionalSummary } from '@/components/features/resume/professional-summary';
 import { TechnicalSkills } from '@/components/features/resume/technical-skills';
 import { ProfessionalExperience } from '@/components/features/resume/professional-experience';
-import { ProjectPortfolio } from '@/components/features/resume/project-portfolio';
-import type { Technology } from '@/services/core/types';
+import { ProjectPortfolio } from '@/components/features/resume/project-portfolio';import { EducationCertifications } from '@/components/features/resume/education-certifications';import type { Technology } from '@/services/core/types';
 
 export const Route = createFileRoute('/resume-preview')({
   component: ResumePreview,
 });
 
 function ResumePreview() {
-  const { queryProfile, queryTechnologies, queryExperiences, queryProjects, downloadResumeMutation } = useCore();
+  const { 
+    queryProfile, 
+    queryTechnologies, 
+    queryExperiences, 
+    queryProjects, 
+    queryCertifications,
+    downloadResumeMutation 
+  } = useCore();
   const { data: profile, isLoading, error } = queryProfile();
   const { data: technologies } = queryTechnologies();
   const { data: experiences } = queryExperiences();
   const { data: projects } = queryProjects();
+  const { data: certifications } = queryCertifications();
 
   if (isLoading) {
     return (
@@ -99,6 +106,14 @@ function ResumePreview() {
         {/* Phase 4: Project Portfolio */}
         {projects && projects.length > 0 && (
           <ProjectPortfolio projects={projects} />
+        )}
+
+        {/* Phase 5: Education & Certifications */}
+        {profile.education && certifications && (
+          <EducationCertifications 
+            education={profile.education} 
+            certifications={certifications} 
+          />
         )}
       </Resume.Container>
     </div>

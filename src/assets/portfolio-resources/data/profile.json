@@ -11,5 +11,24 @@
     "yearsExperience": 3,
     "projectsCompleted": 25,
     "primaryTechnologies": ["React", "TypeScript", "Node.js"]
-  }
+  },
+  "education": [
+    {
+      "degree": "Bachelor of Science in Computer Science",
+      "institution": "University of Caloocan City",
+      "location": "Caloocan City, Philippines",
+      "startedAt": "2021-08",
+      "endedAt": null,
+      "gpa": "3.8",
+      "honors": ["Dean's List", "Academic Excellence Award"],
+      "relevantCourses": [
+        "Data Structures and Algorithms",
+        "Software Engineering",
+        "Database Management Systems",
+        "Web Development",
+        "Mobile Application Development",
+        "Artificial Intelligence"
+      ]
+    }
+  ]
 }
