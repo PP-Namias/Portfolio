@@ -290,7 +290,7 @@ describe('ProjectPreviewModal', () => {
           onClose={() => {}}
         />
       );
-      expect(screen.getByTestId('close-button')).toHaveAttribute('aria-label', 'Close modal');
+      expect(screen.getByTestId('close-button')).toHaveAttribute('aria-label', 'Close modal (Press Escape)');
     });
   });
 
@@ -329,6 +329,133 @@ describe('ProjectPreviewModal', () => {
       );
       const modal = screen.getByTestId('project-modal');
       expect(modal).toHaveClass('shadow-2xl');
+    });
+  });
+
+  describe('Keyboard Navigation', () => {
+    it('should close modal on Escape key press', () => {
+      const onClose = vi.fn();
+      render(
+        <ProjectPreviewModal
+          project={mockProject}
+          isOpen={true}
+          onClose={onClose}
+        />
+      );
+      
+      fireEvent.keyDown(document, { key: 'Escape' });
+      expect(onClose).toHaveBeenCalled();
+    });
+
+    it('should have focus ring on close button', () => {
+      render(
+        <ProjectPreviewModal
+          project={mockProject}
+          isOpen={true}
+          onClose={() => {}}
+        />
+      );
+      const closeButton = screen.getByTestId('close-button');
+      expect(closeButton).toHaveClass('focus:ring-2');
+      expect(closeButton).toHaveClass('focus:ring-resume-accent');
+    });
+
+    it('should have escape key hint in aria-label', () => {
+      render(
+        <ProjectPreviewModal
+          project={mockProject}
+          isOpen={true}
+          onClose={() => {}}
+        />
+      );
+      const closeButton = screen.getByTestId('close-button');
+      expect(closeButton).toHaveAttribute('aria-label', 'Close modal (Press Escape)');
+    });
+  });
+
+  describe('Touch-Friendly Interactions', () => {
+    it('should have minimum 44px tap target on close button', () => {
+      render(
+        <ProjectPreviewModal
+          project={mockProject}
+          isOpen={true}
+          onClose={() => {}}
+        />
+      );
+      const closeButton = screen.getByTestId('close-button');
+      expect(closeButton).toHaveClass('min-w-[44px]');
+      expect(closeButton).toHaveClass('min-h-[44px]');
+    });
+
+    it('should have touch-manipulation class on close button', () => {
+      render(
+        <ProjectPreviewModal
+          project={mockProject}
+          isOpen={true}
+          onClose={() => {}}
+        />
+      );
+      const closeButton = screen.getByTestId('close-button');
+      expect(closeButton).toHaveClass('touch-manipulation');
+    });
+
+    it('should have active scale effect on close button', () => {
+      render(
+        <ProjectPreviewModal
+          project={mockProject}
+          isOpen={true}
+          onClose={() => {}}
+        />
+      );
+      const closeButton = screen.getByTestId('close-button');
+      expect(closeButton).toHaveClass('active:scale-95');
+    });
+
+    it('should have minimum 44px height on action buttons', () => {
+      render(
+        <ProjectPreviewModal
+          project={mockProject}
+          isOpen={true}
+          onClose={() => {}}
+        />
+      );
+      const liveLink = screen.getByTestId('live-link');
+      const repoLink = screen.getByTestId('repo-link');
+      
+      expect(liveLink).toHaveClass('min-h-[44px]');
+      expect(repoLink).toHaveClass('min-h-[44px]');
+    });
+
+    it('should have touch-manipulation on all buttons', () => {
+      render(
+        <ProjectPreviewModal
+          project={mockProject}
+          isOpen={true}
+          onClose={() => {}}
+        />
+      );
+      const liveLink = screen.getByTestId('live-link');
+      const repoLink = screen.getByTestId('repo-link');
+      const closeFooterButton = screen.getByTestId('close-footer-button');
+      
+      expect(liveLink).toHaveClass('touch-manipulation');
+      expect(repoLink).toHaveClass('touch-manipulation');
+      expect(closeFooterButton).toHaveClass('touch-manipulation');
+    });
+
+    it('should have active scale on action buttons', () => {
+      render(
+        <ProjectPreviewModal
+          project={mockProject}
+          isOpen={true}
+          onClose={() => {}}
+        />
+      );
+      const liveLink = screen.getByTestId('live-link');
+      const repoLink = screen.getByTestId('repo-link');
+      
+      expect(liveLink).toHaveClass('active:scale-95');
+      expect(repoLink).toHaveClass('active:scale-95');
     });
   });
 });

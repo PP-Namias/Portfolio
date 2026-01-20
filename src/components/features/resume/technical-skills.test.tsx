@@ -230,4 +230,40 @@ describe('TechnicalSkills', () => {
       });
     });
   });
+
+  describe('Tooltip Interactions', () => {
+    it('should render tech skills with hover targets', () => {
+      const { container } = render(<TechnicalSkills technologies={mockTechnologies} />);
+      const hoverTargets = container.querySelectorAll('.cursor-help');
+      expect(hoverTargets.length).toBe(mockTechnologies.length);
+    });
+
+    it('should have tooltip trigger elements for each skill', () => {
+      const { container } = render(<TechnicalSkills technologies={mockTechnologies} />);
+      const skillNames = container.querySelectorAll('.cursor-help .text-sm');
+      expect(skillNames.length).toBe(mockTechnologies.length);
+    });
+
+    it('should display skill name in hover area', () => {
+      const { container } = render(<TechnicalSkills technologies={mockTechnologies} />);
+      mockTechnologies.forEach(tech => {
+        expect(container.textContent).toContain(tech.name);
+      });
+    });
+
+    it('should show proficiency percentage in hover area', () => {
+      const { container } = render(<TechnicalSkills technologies={mockTechnologies} />);
+      mockTechnologies.forEach(tech => {
+        expect(container.textContent).toContain(`${tech.proficiency}%`);
+      });
+    });
+
+    it('should have cursor-help styling for accessibility', () => {
+      const { container } = render(<TechnicalSkills technologies={mockTechnologies} />);
+      const hoverTargets = container.querySelectorAll('.cursor-help');
+      hoverTargets.forEach(target => {
+        expect(target).toHaveClass('cursor-help');
+      });
+    });
+  });
 });

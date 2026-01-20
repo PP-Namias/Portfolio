@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { Tooltip } from '@heroui/react';
 import { Resume } from './resume-container';
 
 interface Technology {
@@ -68,15 +69,36 @@ export const TechnicalSkills = ({ technologies }: TechnicalSkillsProps) => {
                     }}
                     className="space-y-1"
                   >
-                    {/* Skill Name and Proficiency */}
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm font-medium text-resume-primary">
-                        {tech.name}
-                      </span>
-                      <span className="text-xs text-resume-secondary font-semibold">
-                        {tech.proficiency}%
-                      </span>
-                    </div>
+                    {/* Skill Name and Proficiency with Tooltip */}
+                    <Tooltip
+                      content={
+                        <div className="px-2 py-1 text-xs">
+                          <p className="font-semibold">{tech.name}</p>
+                          <p className="text-resume-secondary">Proficiency: {tech.proficiency}%</p>
+                          <p className="text-resume-tertiary mt-1">
+                            {tech.proficiency >= 80 && 'Expert - Advanced mastery'}
+                            {tech.proficiency >= 60 && tech.proficiency < 80 && 'Proficient - Strong working knowledge'}
+                            {tech.proficiency >= 40 && tech.proficiency < 60 && 'Intermediate - Comfortable using'}
+                            {tech.proficiency < 40 && 'Learning - Basic understanding'}
+                          </p>
+                        </div>
+                      }
+                      placement="top"
+                      delay={200}
+                      closeDelay={0}
+                      classNames={{
+                        content: 'bg-resume-background-alt border border-resume-border shadow-lg'
+                      }}
+                    >
+                      <div className="flex justify-between items-center cursor-help">
+                        <span className="text-sm font-medium text-resume-primary">
+                          {tech.name}
+                        </span>
+                        <span className="text-xs text-resume-secondary font-semibold">
+                          {tech.proficiency}%
+                        </span>
+                      </div>
+                    </Tooltip>
 
                     {/* Progress Bar */}
                     <div

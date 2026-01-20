@@ -1,6 +1,7 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { Chip, Button } from '@heroui/react';
 import { X, ExternalLink, Github, Calendar, Tag } from 'lucide-react';
+import { useEffect, useRef } from 'react';
 
 interface Project {
   title: string;
@@ -24,6 +25,55 @@ export const ProjectPreviewModal = ({
   isOpen,
   onClose,
 }: ProjectPreviewModalProps) => {
+  const modalRef = useRef<HTMLDivElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+
+  // Handle escape key and focus management
+  useEffect(() => {
+    if (!isOpen) return;
+
+    // Focus close button when modal opens
+    closeButtonRef.current?.focus();
+
+    // Handle escape key
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+
+    // Trap focus within modal
+    const handleTab = (e: KeyboardEvent) => {
+      if (e.key !== 'Tab' || !modalRef.current) return;
+
+      const focusableElements = modalRef.current.querySelectorAll(
+        'button, a[href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      );
+      const firstElement = focusableElements[0] as HTMLElement;
+      const lastElement = focusableElements[focusableElements.length - 1] as HTMLElement;
+
+      if (e.shiftKey && document.activeElement === firstElement) {
+        e.preventDefault();
+        lastElement?.focus();
+      } else if (!e.shiftKey && document.activeElement === lastElement) {
+        e.preventDefault();
+        firstElement?.focus();
+      }
+    };
+
+    document.addEventListener('keydown', handleEscape);
+    document.addEventListener('keydown', handleTab);
+
+    // Prevent body scroll
+    document.body.style.overflow = 'hidden';
+
+    return () => {
+      document.removeEventListener('keydown', handleEscape);
+      document.removeEventListener('keydown', handleTab);
+      document.body.style.overflow = 'unset';
+    };
+  }, [isOpen, onClose]);
+
   if (!project) return null;
 
   return (
@@ -48,6 +98,7 @@ export const ProjectPreviewModal = ({
             exit={{ opacity: 0 }}
           >
             <motion.div
+              ref={modalRef}
               className="relative w-full max-w-2xl bg-resume-bg border border-resume-border rounded-xl shadow-2xl overflow-hidden"
               initial={{ scale: 0.9, y: 20 }}
               animate={{ scale: 1, y: 0 }}
@@ -61,9 +112,10 @@ export const ProjectPreviewModal = ({
             >
               {/* Close Button */}
               <button
+                ref={closeButtonRef}
                 onClick={onClose}
-                className="absolute top-4 right-4 p-2 rounded-full bg-resume-border/50 hover:bg-resume-border text-resume-secondary hover:text-resume-primary transition-colors duration-200 z-10"
-                aria-label="Close modal"
+                className="absolute top-4 right-4 p-3 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-full bg-resume-border/50 hover:bg-resume-border active:scale-95 text-resume-secondary hover:text-resume-primary transition-all duration-200 z-10 focus:outline-none focus:ring-2 focus:ring-resume-accent touch-manipulation"
+                aria-label="Close modal (Press Escape)"
                 data-testid="close-button"
               >
                 <X size={20} />
@@ -134,7 +186,8 @@ export const ProjectPreviewModal = ({
                     rel="noopener noreferrer"
                     color="primary"
                     variant="solid"
-                    size="sm"
+                    size="md"
+                    className="min-h-[44px] touch-manipulation active:scale-95 transition-transform"
                     startContent={<ExternalLink size={16} />}
                     data-testid="live-link"
                   >
@@ -149,7 +202,8 @@ export const ProjectPreviewModal = ({
                     rel="noopener noreferrer"
                     color="default"
                     variant="bordered"
-                    size="sm"
+                    size="md"
+                    className="min-h-[44px] touch-manipulation active:scale-95 transition-transform"
                     startContent={<Github size={16} />}
                     data-testid="repo-link"
                   >
@@ -160,8 +214,9 @@ export const ProjectPreviewModal = ({
                   onClick={onClose}
                   color="default"
                   variant="light"
-                  size="sm"
-                  className="ml-auto"
+                  size="md"
+                  className="ml-auto min-h-[44px] touch-manipulation active:scale-95 transition-transform"
+                  data-testid="close-footer-button"
                 >
                   Close
                 </Button>
