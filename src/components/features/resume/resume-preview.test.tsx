@@ -55,6 +55,22 @@ vi.mock('@/hooks/use-core', () => ({
       isLoading: false,
       error: null
     }),
+    queryProjects: () => ({
+      data: [
+        {
+          title: 'Story Adaptive Game Engine',
+          image: 'story-game.jpg',
+          description: 'AI-powered game engine',
+          repositoryURL: 'https://github.com/test/game-engine',
+          liveURL: 'https://game-engine.test',
+          processURL: null,
+          tags: ['React', 'TypeScript', 'GPT-4'],
+          year: 2025
+        }
+      ],
+      isLoading: false,
+      error: null
+    }),
     downloadResumeMutation: {
       mutate: vi.fn()
     }

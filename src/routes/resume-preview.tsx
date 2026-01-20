@@ -5,6 +5,7 @@ import { ResumeHeader } from '@/components/features/resume/resume-header';
 import { ProfessionalSummary } from '@/components/features/resume/professional-summary';
 import { TechnicalSkills } from '@/components/features/resume/technical-skills';
 import { ProfessionalExperience } from '@/components/features/resume/professional-experience';
+import { ProjectPortfolio } from '@/components/features/resume/project-portfolio';
 import type { Technology } from '@/services/core/types';
 
 export const Route = createFileRoute('/resume-preview')({
@@ -12,10 +13,11 @@ export const Route = createFileRoute('/resume-preview')({
 });
 
 function ResumePreview() {
-  const { queryProfile, queryTechnologies, queryExperiences, downloadResumeMutation } = useCore();
+  const { queryProfile, queryTechnologies, queryExperiences, queryProjects, downloadResumeMutation } = useCore();
   const { data: profile, isLoading, error } = queryProfile();
   const { data: technologies } = queryTechnologies();
   const { data: experiences } = queryExperiences();
+  const { data: projects } = queryProjects();
 
   if (isLoading) {
     return (
@@ -92,6 +94,11 @@ function ResumePreview() {
         {/* Phase 3.1: Professional Experience */}
         {experiences && experiences.length > 0 && (
           <ProfessionalExperience experiences={experiences} />
+        )}
+
+        {/* Phase 4: Project Portfolio */}
+        {projects && projects.length > 0 && (
+          <ProjectPortfolio projects={projects} />
         )}
       </Resume.Container>
     </div>
