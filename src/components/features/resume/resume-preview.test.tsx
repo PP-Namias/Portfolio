@@ -71,6 +71,19 @@ vi.mock('@/hooks/use-core', () => ({
       isLoading: false,
       error: null
     }),
+    queryCertifications: () => ({
+      data: [
+        {
+          title: 'AWS Certified Developer',
+          image: 'aws-cert.jpg',
+          issuer: 'Amazon Web Services',
+          issuedAt: '2023-06',
+          tags: ['AWS', 'Cloud', 'DevOps']
+        }
+      ],
+      isLoading: false,
+      error: null
+    }),
     downloadResumeMutation: {
       mutate: vi.fn()
     }
