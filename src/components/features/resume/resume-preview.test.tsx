@@ -219,13 +219,15 @@ describe('ResumePreview Integration', () => {
       const { container } = renderWithQueryClient(<ResumePreview />);
       await waitFor(() => {
         const sections = container.querySelectorAll('section, header');
-        expect(sections.length).toBeGreaterThanOrEqual(3);
+        expect(sections.length).toBeGreaterThanOrEqual(4);
         // Header should come first
         expect(sections[0].tagName).toBe('HEADER');
-        // Summary should come second
-        expect(sections[1].getAttribute('id')).toBe('summary');
-        // Technical Skills should come third
-        expect(sections[2].getAttribute('id')).toBe('technical-skills');
+        // Stats Overview should come second (Phase 6)
+        expect(sections[1].getAttribute('id')).toBe('stats');
+        // Summary should come third
+        expect(sections[2].getAttribute('id')).toBe('summary');
+        // Technical Skills should come fourth
+        expect(sections[3].getAttribute('id')).toBe('technical-skills');
       });
     });
   });

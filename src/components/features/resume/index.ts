@@ -1,5 +1,6 @@
 export { Resume } from './resume-container';
 export { ResumeHeader } from './resume-header';
+export { StatsOverview } from './stats-overview';
 export { ProfessionalSummary } from './professional-summary';
 export { TechnicalSkills } from './technical-skills';
 export { ProfessionalExperience } from './professional-experience';

@@ -2,10 +2,13 @@ import { createFileRoute } from '@tanstack/react-router';
 import { useCore } from '@/hooks/use-core';
 import { Resume } from '@/components/features/resume/resume-container';
 import { ResumeHeader } from '@/components/features/resume/resume-header';
+import { StatsOverview } from '@/components/features/resume/stats-overview';
 import { ProfessionalSummary } from '@/components/features/resume/professional-summary';
 import { TechnicalSkills } from '@/components/features/resume/technical-skills';
 import { ProfessionalExperience } from '@/components/features/resume/professional-experience';
-import { ProjectPortfolio } from '@/components/features/resume/project-portfolio';import { EducationCertifications } from '@/components/features/resume/education-certifications';import type { Technology } from '@/services/core/types';
+import { ProjectPortfolio } from '@/components/features/resume/project-portfolio';
+import { EducationCertifications } from '@/components/features/resume/education-certifications';
+import type { Technology } from '@/services/core/types';
 
 export const Route = createFileRoute('/resume-preview')({
   component: ResumePreview,
@@ -83,6 +86,16 @@ function ResumePreview() {
             linkedin: profile.linkedin,
           }}
           onDownloadPDF={() => downloadResumeMutation.mutate()}
+        />
+
+        {/* Phase 6: Stats Overview */}
+        <StatsOverview
+          stats={{
+            yearsExperience: profile.highlights.yearsExperience || 0,
+            projectsCompleted: profile.highlights.projectsCompleted || 0,
+            technologiesCount: technologies?.length || 0,
+            certificationsCount: certifications?.length || 0,
+          }}
         />
 
         {/* Phase 1.3: Professional Summary */}
