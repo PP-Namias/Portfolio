@@ -1,0 +1,90 @@
+'use client';
+
+import React from 'react';
+import { motion } from 'framer-motion';
+import { MapPin, Mail, ChevronRight, ExternalLink } from 'lucide-react';
+import { profile } from '@/data/profile';
+import { Button } from '@/components/ui/Button';
+import { VerifiedBadge } from '@/components/ui/VerifiedBadge';
+import { ThemeToggle } from '@/components/ui/ThemeToggle';
+
+export function HeroSection() {
+  const initials = profile.name
+    .split(' ')
+    .map((n) => n[0])
+    .join('');
+
+  return (
+    <motion.section
+      className="relative"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+    >
+      {/* Theme toggle */}
+      <div className="absolute top-0 right-0">
+        <ThemeToggle />
+      </div>
+
+      <div className="flex flex-col sm:flex-row items-start gap-5">
+        {/* Profile Photo */}
+        <div className="flex-shrink-0">
+          <div className="h-[150px] w-[150px] rounded-2xl bg-gradient-to-br from-accent-pink/20 to-accent-pink/5 dark:from-accent-pink/10 dark:to-accent-pink/5 border border-border-light dark:border-border-dark overflow-hidden">
+            <img
+              src={profile.profilePhoto || '/placeholder-profile.jpg'}
+              alt={profile.name}
+              className="h-full w-full object-cover"
+              loading="eager"
+              onError={(e) => {
+                const target = e.currentTarget;
+                target.style.display = 'none';
+                const parent = target.parentElement;
+                if (parent) {
+                  parent.innerHTML = `<div class="h-full w-full flex items-center justify-center text-4xl text-accent-pink font-bold bg-gradient-to-br from-accent-pink/20 to-accent-pink/5 dark:from-accent-pink/10 dark:to-accent-pink/5">${initials}</div>`;
+                }
+              }}
+            />
+          </div>
+        </div>
+
+        {/* Profile Info */}
+        <div className="flex-1 min-w-0 pt-1">
+          {/* Name */}
+          <h1 className="text-2xl font-bold text-text-primary-light dark:text-text-primary-dark flex items-center flex-wrap">
+            {profile.name}
+            <VerifiedBadge />
+          </h1>
+
+          {/* Location */}
+          <div className="flex items-center gap-1.5 mt-1.5">
+            <MapPin className="h-3.5 w-3.5 text-text-muted-light dark:text-text-muted-dark" />
+            <span className="text-sm text-text-muted-light dark:text-text-muted-dark">
+              {profile.location}
+            </span>
+          </div>
+
+          {/* Tagline / Roles */}
+          <p className="mt-2 text-base font-medium text-text-primary-light dark:text-text-primary-dark">
+            {profile.roles.join(' \\ ')}
+          </p>
+
+          {/* CTA Buttons */}
+          <div className="flex flex-wrap items-center gap-2.5 mt-4">
+            <Button variant="primary" size="md" href={profile.resumeUrl}>
+              View Resume
+              <ExternalLink className="h-3.5 w-3.5" />
+            </Button>
+            <Button variant="ghost" size="md" href={`mailto:${profile.email}`}>
+              <Mail className="h-4 w-4" />
+              Send Email
+            </Button>
+            <Button variant="ghost" size="md" href="/blog" internal>
+              Read my blog
+              <ChevronRight className="h-4 w-4 -ml-1" />
+            </Button>
+          </div>
+        </div>
+      </div>
+    </motion.section>
+  );
+}
