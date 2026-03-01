@@ -1,38 +1,190 @@
-# Copilot Instructions - Portfolio v3
+# Copilot Instructions - Portfolio v3  
+## AI Agent: Claude Opus 4.6 via VS Code Copilot
 
-## Stack
-React 19 + TanStack Router (file-based) + TanStack Query + HeroUI + Tailwind v4. Static portfolio data lives in `src/assets/portfolio-resources/data/*.json`.
+> **Owner:** Jhon Keneth Namias (PP Namias)  
+> **Domain:** https://namias.tech  
+> **Design Reference:** https://bryllim.com/ (modern resume-portfolio hybrid)  
+> **Model:** Always use **Claude Opus 4.6** for all development tasks  
+> **IDE:** VS Code with GitHub Copilot  
 
-## Core Architecture: Service Layer Pattern
+---
 
-**All data fetching follows Interface → Service → Hook → Component:**
+## 🏗 AGENT WORKFLOW — Autonomous Development Protocol
+
+Every task MUST follow this pipeline. The agent should execute these phases **autonomously** without waiting for user confirmation between steps (unless destructive).
+
+### Phase 1: ANALYZE
+1. Read this instructions file fully
+2. Identify which files are affected (use `grep_search` / `semantic_search`)
+3. Read all affected files to understand current state
+4. Check `src/services/core/types.ts` for data shapes
+5. Check related JSON data files in `src/assets/portfolio-resources/data/`
+
+### Phase 2: PLAN
+1. Create a detailed todo list using `manage_todo_list`
+2. Break work into atomic, independently verifiable steps
+3. Identify dependencies between steps (what must come first)
+4. Flag any destructive or irreversible actions for user confirmation
+
+### Phase 3: IMPLEMENT
+1. Mark each todo as `in-progress` before starting
+2. Make changes file-by-file, using `multi_replace_string_in_file` for batch edits
+3. Follow all architecture patterns below strictly
+4. Mark each todo as `completed` immediately after finishing
+
+### Phase 4: VALIDATE
+1. Run `npm run lint` — fix ALL lint errors before proceeding
+2. Run `npm run build` — fix ALL TypeScript/compilation errors
+3. If tests exist for the changed area, run `npm run test:run`
+4. Visually verify by checking the component renders correctly (read the output)
+
+### Phase 5: REPORT
+1. Summarize what was changed (files, lines, new components)
+2. List any remaining TODOs or known issues
+3. Generate the **Next Prompt** (see Prompt Chain section at bottom)
+
+---
+
+## 🎯 DESIGN VISION — bryllim.com-Inspired Resume Portfolio
+
+The portfolio follows a **split-panel resume layout** inspired by https://bryllim.com/:
+
+### Target Sections (mapped to current codebase)
+| bryllim.com Section | Current Implementation | Status |
+|---------------------|----------------------|--------|
+| Hero / Profile Card | `src/sections/main.tsx` + `src/components/partials/header.tsx` | ✅ Exists |
+| About / Summary | Part of `main.tsx` | ✅ Exists |
+| Experience Timeline | `src/sections/experiences.tsx` | ✅ Exists |
+| Tech Stack (categorized) | `src/sections/technologies.tsx` | ✅ Exists |
+| Projects (cards + links) | `src/sections/projects.tsx` | ✅ Exists |
+| Certifications | `src/sections/certifications.tsx` | ✅ Exists |
+| Recommendations / Testimonials | Not yet implemented | ❌ TODO |
+| Gallery | `src/sections/gallery.tsx` | ✅ Exists |
+| Contact / CTA | `src/sections/contact.tsx` | ✅ Exists |
+| Memberships / Affiliations | Not yet implemented | ❌ TODO |
+| Speaking / Availability | Not yet implemented | ❌ TODO |
+| GitHub Activity | `src/sections/github-stats.tsx` + `github-activity-calendar.tsx` | ✅ Exists |
+| Discord Presence | `src/components/features/discord/` | ✅ Exists |
+| Last.fm Music | `src/components/features/last-fm/` | ✅ Exists |
+| Resume PDF View/Download | `src/routes/resume-preview.tsx` | ✅ Exists |
+
+### Design Principles
+- **Split-panel layout**: Left sidebar (profile, stats, nav) + Right main content (tabbed sections)
+- **Dark/Light theme**: CSS variables in `globals.css` (`--custom-background`, `--custom-secondary`)
+- **Smooth animations**: Framer Motion for transitions and scroll reveals
+- **Mobile-first**: Stacks vertically on mobile, split-panel on `lg:` breakpoint
+- **Bento grid tiles**: Cards/tiles with consistent padding, rounded corners (`rounded-xl`)
+- **Micro-interactions**: Hover states, press feedback, smooth tab transitions
+
+---
+
+## 📂 PROJECT STRUCTURE
+
+```
+src/
+├── assets/portfolio-resources/
+│   ├── assets/documents/          # Resume PDF
+│   ├── assets/images/             # All image assets
+│   │   ├── certifications/
+│   │   ├── gallery/
+│   │   └── projects/
+│   └── data/                      # Static JSON data
+│       ├── certifications.json
+│       ├── experiences.json
+│       ├── gallery.json
+│       ├── profile.json
+│       ├── projects.json
+│       ├── socials.json
+│       └── technologies.json
+├── components/
+│   ├── common/                    # Shared business components
+│   ├── features/                  # Domain-specific components
+│   │   ├── certifications/
+│   │   ├── discord/
+│   │   ├── experiences/
+│   │   ├── gallery/
+│   │   ├── github/
+│   │   ├── last-fm/
+│   │   ├── projects/
+│   │   ├── resume/
+│   │   ├── socials/
+│   │   └── technologies/
+│   ├── partials/                  # Header, Footer
+│   └── ui/                        # Reusable primitives (LoadingTile, ErrorTile, etc.)
+├── constants/form-schemas/        # Zod/form schemas
+├── context/                       # React contexts (ThemeProvider)
+├── hooks/                         # Custom hooks (useCore, useGithub, useLastfm, etc.)
+├── routes/                        # TanStack Router file-based routes
+│   ├── __root.tsx
+│   ├── index.tsx                  # Main portfolio page
+│   └── resume-preview.tsx         # Full resume view
+├── sections/                      # Page-level section layouts
+├── services/                      # Service layer (Interface → Service → Hook)
+│   ├── contact/
+│   ├── core/                      # Main data service
+│   ├── github/
+│   ├── lastfm/
+│   └── likes/
+├── types/
+└── utilities/
+```
+
+---
+
+## 🏛 CORE ARCHITECTURE: Service Layer Pattern
+
+**MANDATORY: All data fetching follows Interface → Service → Hook → Component**
 
 ```typescript
-// 1. Interface (src/services/core/interface.ts)
-export interface ICoreService { getProjects(): Promise<Project[]>; }
+// 1. INTERFACE — src/services/core/interface.ts
+export interface ICoreService {
+  getProjects(): Promise<Project[]>;
+}
 
-// 2. Service (src/services/core/service.ts) - MUST bind methods in constructor
+// 2. SERVICE — src/services/core/service.ts
+// ⚠️ MUST bind ALL methods in constructor or TanStack Query will lose `this`
 export class CoreService implements ICoreService {
-  constructor() { this.getProjects = this.getProjects.bind(this); }
+  constructor() {
+    this.getProjects = this.getProjects.bind(this);
+  }
   async getProjects(): ReturnType<ICoreService["getProjects"]> {
     return projects as Project[];
   }
 }
 
-// 3. Hook (src/hooks/use-core.ts)
-const queryProjects = () => useQuery({ queryFn: coreService.getProjects, queryKey: ["projects"] });
+// 3. HOOK — src/hooks/use-core.ts
+const queryProjects = () => useQuery({
+  queryFn: coreService.getProjects,
+  queryKey: ["projects"],
+});
 
-// 4. Component usage
+// 4. COMPONENT — any section or feature component
 const { data, isLoading, error } = useCore().queryProjects();
 ```
 
-## Image Optimization (vite-imagetools)
+### Adding a New Data Type (e.g., Recommendations)
+1. Add JSON → `src/assets/portfolio-resources/data/recommendations.json`
+2. Add TypeScript type → `src/services/core/types.ts`
+3. Add to interface → `src/services/core/interface.ts`
+4. Implement in service → `src/services/core/service.ts` (bind in constructor!)
+5. Add query → `src/hooks/use-core.ts`
+6. Create section → `src/sections/recommendations.tsx`
+7. Create feature component → `src/components/features/recommendations/`
+8. Add to tab panel → `src/sections/tab-panel.tsx`
 
-Sections displaying images use `import.meta.glob` to auto-optimize. **All image globs MUST include all supported formats:**
+### Adding a New External API Service
+1. Create directory: `src/services/newapi/`
+2. Create files: `interface.ts`, `service.ts`, `types.ts`, `index.ts`
+3. Create hook: `src/hooks/use-newapi.ts`
+4. Bind all methods in service constructor
+
+---
+
+## 🖼 IMAGE OPTIMIZATION (vite-imagetools)
+
+**CRITICAL: All image glob patterns MUST include ALL supported formats:**
 
 ```typescript
-// Pattern used in projects.tsx, gallery.tsx, certifications.tsx
-// IMPORTANT: Include ALL image formats: png, jpg, jpeg, JPG, jfif, gif, webp
 const optimizedImages: Record<string, string> = import.meta.glob(
   "../assets/portfolio-resources/assets/images/projects/*.{png,jpg,jpeg,JPG,jfif,gif,webp}",
   { eager: true, import: "default", query: "?format=webp&meta" }
@@ -40,20 +192,14 @@ const optimizedImages: Record<string, string> = import.meta.glob(
 const imageKey = Object.keys(optimizedImages).find(key => key.includes(item.image));
 ```
 
-**Supported image formats:** `.png`, `.jpg`, `.jpeg`, `.JPG`, `.jfif`, `.gif`, `.webp`
+**Supported formats:** `.png`, `.jpg`, `.jpeg`, `.JPG`, `.jfif`, `.gif`, `.webp`  
+**PDF files:** Cannot use vite-imagetools — import directly or use fallback.
 
-**Note:** PDF files cannot be optimized with vite-imagetools. For PDF certificates, import them directly or use a fallback.
+---
 
-## Component Architecture
+## 🧩 COMPONENT PATTERNS
 
-| Directory | Purpose | Example |
-|-----------|---------|---------|
-| `src/sections/` | Page-level layouts | `projects.tsx`, `gallery.tsx` |
-| `src/components/features/` | Domain components | `projects/project-card.tsx` |
-| `src/components/ui/` | Reusable primitives | `LoadingTile`, `ErrorTile` |
-| `src/components/common/` | Shared business logic | `floating-action-button.tsx` |
-
-**Compound Component Pattern** (see `project-card.tsx`):
+### Compound Component Pattern
 ```tsx
 <ProjectCard>
   <ProjectCard.Body>
@@ -63,142 +209,387 @@ const imageKey = Object.keys(optimizedImages).find(key => key.includes(item.imag
 </ProjectCard>
 ```
 
-## Loading/Error States
-
-Always wrap async content:
+### Loading/Error States — ALWAYS wrap async content
 ```tsx
 if (isLoading) return <LoadingTile className="h-[280px]" />;
 if (error) return <ErrorTile className="h-[280px]" />;
 ```
 
-## Commands
+### Animation Pattern (Framer Motion)
+```tsx
+import { motion } from "framer-motion";
+
+<motion.div
+  initial={{ opacity: 0, y: 20 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={{ duration: 0.3, delay: index * 0.05 }}
+>
+  {/* content */}
+</motion.div>
+```
+
+---
+
+## 🔧 COMMANDS
 
 ```bash
-npm run dev      # Vite dev (localhost:5173)
-npm run build    # tsc + vite build
-npm run lint     # ESLint
+npm run dev          # Vite dev server (localhost:5173)
+npm run build        # TypeScript check + Vite build (MUST pass before commit)
+npm run lint         # ESLint (MUST pass before commit)
+npm run test:run     # Run all tests once
+npm run test         # Watch mode tests
 npx prettier --write .  # Format (Tailwind plugin auto-sorts classes)
 ```
 
-## Pre-Commit Checklist
+---
 
-**ALWAYS run these commands before committing:**
+## ✅ PRE-COMMIT CHECKLIST
+
+**ALWAYS run in this order before ANY commit:**
 
 ```bash
-# 1. Run linting to catch code quality issues
-npm run lint
-
-# 2. Build the project to ensure no TypeScript/compilation errors
-npm run build
-
-# 3. (Optional) Format code
-npx prettier --write .
+npm run lint         # 1. Fix all lint errors
+npm run build        # 2. Fix all TypeScript/build errors
+npx prettier --write .  # 3. Format code
 ```
 
-**Do NOT commit if:**
-- `npm run lint` reports errors
+**BLOCK COMMIT if:**
+- `npm run lint` has errors
 - `npm run build` fails
-- There are TypeScript type errors
+- TypeScript type errors exist
 
-## Adding New Features
+---
 
-**New JSON data type:**
-1. Add JSON to `src/assets/portfolio-resources/data/`
-2. Add type to `src/services/core/types.ts`
-3. Add to `ICoreService` interface → implement in `CoreService` (bind!) → add to `useCore()` hook
+## 🌐 EXTERNAL APIs
 
-**New external API:** Create `src/services/newapi/` with `interface.ts`, `service.ts`, `types.ts` + hook in `src/hooks/`
+| Service | Base URL | Hook | Auth |
+|---------|----------|------|------|
+| GitHub API | `api.github.com` | `useGithub()` | None |
+| GitHub Contributions | `github-contributions-api.jogruber.de` | `useGithub()` | None |
+| Last.fm | `ws.audioscrobbler.com` | `useLastfm()` | `VITE_LAST_FM_API_KEY` |
+| Contact (FormSubmit) | `formsubmit.co` | `useContact()` | None |
 
-## External APIs (no auth required)
-- GitHub: `api.github.com` + `github-contributions-api.jogruber.de` via `GithubService`
-- Last.fm: `LastFmService` for recent tracks
-- Contact: FormSubmit.co via `ContactService`
+---
 
-## Key Conventions
-- **Type imports**: `import type { ... }` for types only
-- **Path alias**: `@/` → `src/` (configured in vite.config.ts)
-- **Theming**: CSS vars `--custom-background`, `--custom-secondary` in globals.css
-- **Routing**: File-based in `src/routes/`, auto-generates `routeTree.gen.ts`
+## 📏 KEY CONVENTIONS
 
-## Gotchas
-- Service methods MUST be bound in constructor or TanStack Query fails
-- Image filenames in JSON must match actual files in `assets/images/`
-- **Image glob patterns MUST include ALL formats:** `*.{png,jpg,jpeg,JPG,jfif,gif,webp}` - missing formats will cause images not to display
-- Restart dev server if routes don't update (`routeTree.gen.ts` regeneration)
-- Always run `npm run build` before committing to catch TypeScript errors
+- **Type imports:** `import type { ... }` for type-only imports
+- **Path alias:** `@/` → `src/` (configured in `vite.config.ts`)
+- **Theming:** CSS variables `--custom-background`, `--custom-secondary` in `globals.css`
+- **Routing:** File-based in `src/routes/`, auto-generates `routeTree.gen.ts`
+- **UI Library:** HeroUI components (`@heroui/react`) — use these over custom implementations
+- **Icons:** `lucide-react` for all icons
+- **Animations:** `framer-motion` for all transitions and scroll reveals
+- **Date handling:** `dayjs` for date formatting and manipulation
 
-## Adding Gallery & Certifications Content
+---
 
-### Gallery Setup Guide
+## ⚠️ GOTCHAS
 
-1. **Add images to the gallery folder:**
-   ```
-   src/assets/portfolio-resources/assets/images/gallery/
-   ```
-   Supported formats: `.png`, `.jpg`, `.jpeg`, `.JPG`, `.jfif`, `.gif`, `.webp`
+1. **Service method binding:** MUST bind in constructor or TanStack Query loses `this` context
+2. **Image filenames:** JSON `image`/`media` fields must exactly match filenames in `assets/images/`
+3. **Image glob formats:** MUST include `*.{png,jpg,jpeg,JPG,jfif,gif,webp}` — missing formats = broken images
+4. **Route regeneration:** Restart dev server if routes don't update (`routeTree.gen.ts`)
+5. **Build before commit:** Always `npm run build` before committing
+6. **HeroUI imports:** Import from `@heroui/react` (not individual packages) unless tree-shaking specific components
+7. **Tailwind v4:** Uses CSS-based config, NOT `tailwind.config.js` for theme values. CSS vars in `globals.css`
 
-2. **Add entries to `gallery.json`:**
-   ```json
-   // src/assets/portfolio-resources/data/gallery.json
-   [
-     {
-       "title": "Image Title",
-       "mediaType": "image",
-       "media": "filename.jpg",
-       "tags": ["tag1", "tag2"],
-       "createdAt": "2025-01-15"
-     }
-   ]
-   ```
+---
 
-3. **GalleryItem type fields:**
-   | Field | Type | Required | Description |
-   |-------|------|----------|-------------|
-   | `title` | string | ✅ | Display title |
-   | `mediaType` | `"image"` \| `"video"` \| `"gif"` | ✅ | Media type |
-   | `media` | string | ✅ | Filename (must match file in gallery folder) |
-   | `tags` | string[] | ✅ | Tags for filtering |
-   | `createdAt` | string | ❌ | ISO date (YYYY-MM-DD) |
-   | `description` | string | ❌ | Optional description |
-   | `thumbnail` | string | ❌ | Thumbnail filename for videos |
+## 📸 CONTENT MANAGEMENT
 
-### Certifications Setup Guide
+### Adding Gallery Items
+1. Place image in `src/assets/portfolio-resources/assets/images/gallery/`
+2. Add entry to `src/assets/portfolio-resources/data/gallery.json`:
+```json
+{
+  "title": "Image Title",
+  "mediaType": "image",
+  "media": "filename.jpg",
+  "tags": ["tag1", "tag2"],
+  "createdAt": "2025-01-15"
+}
+```
 
-1. **Add certificate images to:**
-   ```
-   src/assets/portfolio-resources/assets/images/certifications/
-   ```
-   Supported formats: `.png`, `.jpg`, `.jpeg`, `.JPG`, `.jfif`, `.gif`, `.webp`
-   
-   **Note:** PDF certificates should be converted to images (jpg/png) for display.
+### Adding Certifications
+1. Place image in `src/assets/portfolio-resources/assets/images/certifications/`
+2. Add entry to `src/assets/portfolio-resources/data/certifications.json`:
+```json
+{
+  "title": "Certificate Title",
+  "image": "certificate-filename.jpg",
+  "issuer": "Issuing Organization",
+  "issuedAt": "2025-01-15",
+  "tags": ["skill1", "skill2"]
+}
+```
 
-2. **Add entries to `certifications.json`:**
-   ```json
-   // src/assets/portfolio-resources/data/certifications.json
-   [
-     {
-       "title": "Certificate Title",
-       "image": "certificate-filename.jpg",
-       "issuer": "Issuing Organization",
-       "issuedAt": "2025-01-15",
-       "tags": ["skill1", "skill2"]
-     }
-   ]
-   ```
+### Adding Projects
+1. Place screenshot in `src/assets/portfolio-resources/assets/images/projects/`
+2. Add entry to `src/assets/portfolio-resources/data/projects.json`
 
-3. **Certification type fields:**
-   | Field | Type | Required | Description |
-   |-------|------|----------|-------------|
-   | `title` | string | ✅ | Certificate title |
-   | `image` | string | ✅ | Filename (must match file in certifications folder) |
-   | `issuer` | string | ✅ | Issuing organization |
-   | `issuedAt` | string | ✅ | ISO date (YYYY-MM-DD) |
-   | `tags` | string[] | ✅ | Related skills/topics |
+### Adding Experiences
+Add entry to `src/assets/portfolio-resources/data/experiences.json`
 
-### Troubleshooting Images Not Displaying
+### Troubleshooting Missing Images
+1. Verify filename in JSON matches actual file exactly (case-sensitive)
+2. Verify file extension is in the glob pattern
+3. Restart dev server after adding new images
+4. Check browser console for 404s or vite-imagetools warnings
+5. Confirm image is in the correct subfolder
 
-1. **Check filename match:** The `image`/`media` field in JSON must exactly match the filename
-2. **Check file extension:** Ensure the extension is in the glob pattern
-3. **Restart dev server:** After adding new images, restart `npm run dev`
-4. **Check console:** Look for 404 errors or vite-imagetools warnings
-5. **Verify path:** Images must be in the correct subfolder (gallery/, certifications/, projects/)
+---
+
+## 🔗 PROMPT CHAIN SYSTEM — Automated Development Workflow
+
+This system enables **fully autonomous, iterative AI development**. After completing any task, the agent generates a **Next Prompt** that can be copy-pasted to continue the workflow.
+
+### Prompt Chain Template
+
+After completing each task, generate a prompt block in this format:
+
+```
+---
+📋 NEXT PROMPT (copy-paste this for the next session):
+---
+
+Context: [Brief description of what was just completed]
+Current State: [What exists now — new files, changed files, current build status]
+Remaining Work: [What's left from the original plan]
+
+Task: [Specific next action to take]
+
+Requirements:
+1. [Specific requirement 1]
+2. [Specific requirement 2]
+3. [Specific requirement 3]
+
+Acceptance Criteria:
+- [ ] npm run lint passes
+- [ ] npm run build passes
+- [ ] [Feature-specific check]
+- [ ] Responsive on mobile and desktop
+- [ ] Dark/light theme works
+
+Design Reference: https://bryllim.com/ — match the [specific section] visual style
+
+After completing this task, generate the next prompt in the chain.
+```
+
+### Master Prompt — Full Feature Implementation
+
+Use this prompt template when starting a **new feature from scratch**:
+
+```
+I need to add [FEATURE_NAME] to my portfolio (namias.tech).
+
+Design reference: https://bryllim.com/ — look at the [SECTION] section.
+
+Follow the copilot-instructions.md workflow:
+1. ANALYZE: Read all affected files first
+2. PLAN: Create a detailed todo list
+3. IMPLEMENT: Follow the Service Layer Pattern (types → interface → service → hook → section → component)
+4. VALIDATE: Run lint + build, fix all errors
+5. REPORT: Summarize changes and generate the next prompt
+
+Architecture requirements:
+- Add data type to src/services/core/types.ts
+- Add JSON data to src/assets/portfolio-resources/data/
+- Extend ICoreService interface
+- Implement in CoreService (bind methods!)
+- Add query to useCore hook
+- Create section in src/sections/
+- Create feature components in src/components/features/
+- Add tab or section to the page layout
+- Use HeroUI components + Tailwind v4
+- Add Framer Motion animations
+- Handle loading/error states with LoadingTile/ErrorTile
+- Support dark/light theme
+- Mobile-first responsive design
+
+After completing, generate the next prompt.
+```
+
+### Quick Fix Prompt
+
+```
+There's a bug: [DESCRIBE THE BUG]
+
+Follow copilot-instructions.md:
+1. Read the affected files
+2. Identify root cause
+3. Fix it
+4. Run npm run lint && npm run build
+5. Confirm the fix
+
+After fixing, generate the next prompt if there are related improvements.
+```
+
+### Iteration Improvement Prompt
+
+```
+Review the current state of [SECTION/COMPONENT] against the design reference (https://bryllim.com/).
+
+1. Read the current implementation
+2. Compare with the reference design
+3. List specific visual/functional gaps
+4. Create a prioritized improvement plan
+5. Implement the top 3 improvements
+6. Validate with lint + build
+
+Focus on:
+- Visual polish (spacing, typography, colors)
+- Animations and micro-interactions
+- Responsive behavior
+- Accessibility
+
+After completing, generate the next prompt for further refinements.
+```
+
+---
+
+## 📊 DEVELOPMENT ROADMAP
+
+### Phase 1: Core Polish (Current)
+- [x] Profile / Hero section
+- [x] Experience timeline
+- [x] Tech stack (categorized)
+- [x] Projects grid
+- [x] Certifications
+- [x] Gallery (masonry)
+- [x] Contact form
+- [x] GitHub stats + activity calendar
+- [x] Discord presence
+- [x] Last.fm integration
+- [x] Resume PDF viewer
+- [x] SEO / structured data
+- [x] Dark/light theme
+
+### Phase 2: bryllim.com Feature Parity
+- [ ] Recommendations / Testimonials section
+- [ ] Memberships / Affiliations section  
+- [ ] Speaking / Availability badge
+- [ ] Enhanced profile card (verified badge, achievement highlights)
+- [ ] "View All" sub-pages for projects, certifications
+- [ ] Blog integration (optional)
+- [ ] AI chatbot widget (optional)
+
+### Phase 3: Polish & Performance
+- [ ] Lighthouse score >95 across all metrics
+- [ ] Scroll-triggered animations on all sections
+- [ ] Skeleton loading states
+- [ ] Image lazy loading + blur placeholders
+- [ ] PWA manifest + service worker
+- [ ] Analytics integration
+
+---
+
+## 🤖 AGENT BEHAVIOR RULES
+
+1. **Always read before writing.** Never modify a file without reading it first.
+2. **Follow the Service Layer Pattern.** No exceptions — types → interface → service (bind!) → hook → component.
+3. **Batch edits efficiently.** Use `multi_replace_string_in_file` for multiple changes in the same operation.
+4. **Validate every change.** Run `npm run lint` and `npm run build` after implementation.
+5. **Never skip error handling.** All async components need `LoadingTile` / `ErrorTile` states.
+6. **Match the design reference.** When implementing UI, refer to https://bryllim.com/ for visual guidance.
+7. **Generate the Next Prompt.** Every completed task MUST end with a copy-pasteable prompt for continuation.
+8. **Stay minimal.** Don't add features, abstractions, or refactors beyond what was requested.
+9. **Track progress.** Use `manage_todo_list` for any multi-step work.
+10. **Respect the theme.** All UI must work in both dark and light mode using CSS variables.
+- Create feature components in src/components/features/
+- Add tab or section to the page layout
+- Use HeroUI components + Tailwind v4
+- Add Framer Motion animations
+- Handle loading/error states with LoadingTile/ErrorTile
+- Support dark/light theme
+- Mobile-first responsive design
+
+After completing, generate the next prompt.
+```
+
+### Quick Fix Prompt
+
+```
+There's a bug: [DESCRIBE THE BUG]
+
+Follow copilot-instructions.md:
+1. Read the affected files
+2. Identify root cause
+3. Fix it
+4. Run npm run lint && npm run build
+5. Confirm the fix
+
+After fixing, generate the next prompt if there are related improvements.
+```
+
+### Iteration Improvement Prompt
+
+```
+Review the current state of [SECTION/COMPONENT] against the design reference (https://bryllim.com/).
+
+1. Read the current implementation
+2. Compare with the reference design
+3. List specific visual/functional gaps
+4. Create a prioritized improvement plan
+5. Implement the top 3 improvements
+6. Validate with lint + build
+
+Focus on:
+- Visual polish (spacing, typography, colors)
+- Animations and micro-interactions
+- Responsive behavior
+- Accessibility
+
+After completing, generate the next prompt for further refinements.
+```
+
+---
+
+## 📊 DEVELOPMENT ROADMAP
+
+### Phase 1: Core Polish (Current)
+- [x] Profile / Hero section
+- [x] Experience timeline
+- [x] Tech stack (categorized)
+- [x] Projects grid
+- [x] Certifications
+- [x] Gallery (masonry)
+- [x] Contact form
+- [x] GitHub stats + activity calendar
+- [x] Discord presence
+- [x] Last.fm integration
+- [x] Resume PDF viewer
+- [x] SEO / structured data
+- [x] Dark/light theme
+
+### Phase 2: bryllim.com Feature Parity
+- [ ] Recommendations / Testimonials section
+- [ ] Memberships / Affiliations section  
+- [ ] Speaking / Availability badge
+- [ ] Enhanced profile card (verified badge, achievement highlights)
+- [ ] "View All" sub-pages for projects, certifications
+- [ ] Blog integration (optional)
+- [ ] AI chatbot widget (optional)
+
+### Phase 3: Polish & Performance
+- [ ] Lighthouse score >95 across all metrics
+- [ ] Scroll-triggered animations on all sections
+- [ ] Skeleton loading states
+- [ ] Image lazy loading + blur placeholders
+- [ ] PWA manifest + service worker
+- [ ] Analytics integration
+
+---
+
+## 🤖 AGENT BEHAVIOR RULES
+
+1. **Always read before writing.** Never modify a file without reading it first.
+2. **Follow the Service Layer Pattern.** No exceptions — types → interface → service (bind!) → hook → component.
+3. **Batch edits efficiently.** Use `multi_replace_string_in_file` for multiple changes in the same operation.
+4. **Validate every change.** Run `npm run lint` and `npm run build` after implementation.
+5. **Never skip error handling.** All async components need `LoadingTile` / `ErrorTile` states.
+6. **Match the design reference.** When implementing UI, refer to https://bryllim.com/ for visual guidance.
+7. **Generate the Next Prompt.** Every completed task MUST end with a copy-pasteable prompt for continuation.
+8. **Stay minimal.** Don't add features, abstractions, or refactors beyond what was requested.
+9. **Track progress.** Use `manage_todo_list` for any multi-step work.
+10. **Respect the theme.** All UI must work in both dark and light mode using CSS variables.

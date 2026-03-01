@@ -6,6 +6,7 @@ import projects from "@/assets/portfolio-resources/data/projects.json";
 import socials from "@/assets/portfolio-resources/data/socials.json";
 import technologies from "@/assets/portfolio-resources/data/technologies.json";
 import profile from "@/assets/portfolio-resources/data/profile.json";
+import recommendations from "@/assets/portfolio-resources/data/recommendations.json";
 import JsFileDownloader from "js-file-downloader";
 import type { ICoreService } from "./interface";
 import type {
@@ -13,6 +14,7 @@ import type {
   Experience,
   GalleryItem,
   Project,
+  Recommendation,
   Social,
   Technology,
   Profile,
@@ -27,6 +29,7 @@ export class CoreService implements ICoreService {
     this.getResumeUrl = this.getResumeUrl.bind(this);
     this.getSocials = this.getSocials.bind(this);
     this.getProfile = this.getProfile.bind(this);
+    this.getRecommendations = this.getRecommendations.bind(this);
   }
 
   async getTechnologies(): ReturnType<ICoreService["getTechnologies"]> {
@@ -67,5 +70,9 @@ export class CoreService implements ICoreService {
 
   async getProfile(): ReturnType<ICoreService["getProfile"]> {
     return profile as Profile;
+  }
+
+  async getRecommendations(): ReturnType<ICoreService["getRecommendations"]> {
+    return recommendations as Recommendation[];
   }
 }

@@ -52,6 +52,12 @@ export const useCore = () => {
       queryKey: ["profile"],
     });
 
+  const queryRecommendations = () =>
+    useQuery({
+      queryFn: coreService.getRecommendations,
+      queryKey: ["recommendations"],
+    });
+
   return {
     resumeUrl,
     queryProjects,
@@ -61,6 +67,7 @@ export const useCore = () => {
     queryCertifications,
     queryGallery,
     queryProfile,
+    queryRecommendations,
     downloadResumeMutation,
   };
 };

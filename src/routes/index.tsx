@@ -7,7 +7,7 @@ import { GithubActivityCalendar } from "@/sections/github-activity-calendar";
 import { GithubStats } from "@/sections/github-stats";
 import { TabPanel } from "@/sections/tab-panel";
 import Technologies from "@/sections/technologies";
-import { ScrollShadow } from "@heroui/scroll-shadow";
+import { ScrollShadow } from "@heroui/react";
 import { createFileRoute } from "@tanstack/react-router";
 import { Header } from "../components/partials/header";
 import { Main } from "../sections/main";

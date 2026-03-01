@@ -3,6 +3,7 @@ import type {
   Experience,
   GalleryItem,
   Project,
+  Recommendation,
   Social,
   Technology,
   Profile,
@@ -18,4 +19,5 @@ export interface ICoreService {
   getSocials(): Promise<Social[]>;
   downloadResume(): Promise<void>;
   getProfile(): Promise<Profile>;
+  getRecommendations(): Promise<Recommendation[]>;
 }

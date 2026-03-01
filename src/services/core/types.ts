@@ -88,6 +88,14 @@ export type ContactInfo = {
   linkedin: string;
 };
 
+export type Recommendation = {
+  quote: string;
+  name: string;
+  title: string;
+  company: string;
+  avatar?: string;
+};
+
 export type MediaType = "image" | "video" | "gif";
 
 export type GalleryItem = {
