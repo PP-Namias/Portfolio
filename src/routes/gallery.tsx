@@ -1,9 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import GallerySection from "@/sections/gallery";
-import { Button } from "@heroui/react";
 import { ArrowLeft } from "lucide-react";
 import { useSEO } from "@/hooks/use-seo";
 import { sectionMetadata } from "@/utilities/seo";
+import { motion } from "framer-motion";
 
 export const Route = createFileRoute("/gallery")({
   component: GalleryPage,
@@ -13,27 +13,30 @@ export function GalleryPage() {
   useSEO({ metadata: sectionMetadata.gallery });
 
   return (
-    <div className="bg-custom-background min-h-screen p-2 sm:p-4 lg:p-8">
-      <div className="mx-auto max-w-6xl space-y-4">
+    <div className="bg-grid min-h-screen p-2 sm:p-4 lg:p-8">
+      <motion.div
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, ease: "easeOut" }}
+        className="mx-auto max-w-6xl space-y-4"
+      >
         <div className="flex items-center gap-3">
-          <Button
-            as={Link}
+          <Link
             to="/"
-            size="sm"
-            variant="light"
-            className="text-foreground gap-1 font-semibold"
-            startContent={<ArrowLeft className="size-4" />}
+            className="text-foreground/60 hover:text-foreground hover:bg-custom-secondary/80 inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium transition-colors"
           >
-            Back
-          </Button>
-          <h1 className="text-foreground text-2xl font-bold sm:text-3xl">
+            <ArrowLeft className="size-4" />
+            Home
+          </Link>
+          <span className="text-foreground/20">/</span>
+          <h1 className="text-foreground text-xl font-bold sm:text-2xl">
             Gallery
           </h1>
         </div>
-        <div className="bg-background rounded-xl p-4">
+        <div className="bg-background/60 border-default rounded-xl border p-4 shadow-sm backdrop-blur-sm">
           <GallerySection />
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 }

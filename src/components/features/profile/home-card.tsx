@@ -13,6 +13,7 @@ import {
   BadgeCheck,
   Briefcase,
   Calendar,
+  ChevronDown,
   ChevronRight,
   ExternalLink,
   FolderOpen,
@@ -20,6 +21,7 @@ import {
   Share2,
 } from "lucide-react";
 import { motion } from "framer-motion";
+import { useState } from "react";
 
 const optimizedImages: Record<string, string> = import.meta.glob(
   "../../../assets/portfolio-resources/assets/images/*.{jpg,jpeg,JPG,png,webp}",
@@ -77,6 +79,7 @@ export const HomeCard = () => {
   const { data: githubUser } = queryBaseUserInformation();
   const personalImage = optimizedImages[personalImageKey];
 
+  const [bioExpanded, setBioExpanded] = useState(false);
   const isHireable = githubUser?.hireable ?? false;
 
   // Top 5 skills by proficiency
@@ -159,6 +162,30 @@ export const HomeCard = () => {
                 : "Committed full-time"}
             </span>
           </div>
+
+          {/* Bio / Summary */}
+          {profile?.summary && (
+            <div className="mt-3">
+              <p
+                className={`text-foreground/60 text-xs leading-relaxed ${
+                  !bioExpanded ? "line-clamp-2" : ""
+                }`}
+              >
+                {profile.summary}
+              </p>
+              <button
+                onClick={() => setBioExpanded(!bioExpanded)}
+                className="text-foreground/40 hover:text-foreground/60 mt-1 inline-flex items-center gap-0.5 text-[10px] font-medium transition-colors"
+              >
+                {bioExpanded ? "Show less" : "Read more"}
+                <ChevronDown
+                  className={`size-3 transition-transform ${
+                    bioExpanded ? "rotate-180" : ""
+                  }`}
+                />
+              </button>
+            </div>
+          )}
 
           {/* Philippine Time */}
           <div className="text-foreground/50 mt-2 text-xs">

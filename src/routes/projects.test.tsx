@@ -6,10 +6,16 @@ vi.mock("@tanstack/react-router", () => ({
   Link: ({
     children,
     to,
+    className,
   }: {
     children: React.ReactNode;
     to: string;
-  }) => <a href={to}>{children}</a>,
+    className?: string;
+  }) => (
+    <a href={to} className={className}>
+      {children}
+    </a>
+  ),
 }));
 
 vi.mock("@/hooks/use-seo", () => ({
@@ -26,16 +32,15 @@ vi.mock("@/sections/projects", () => ({
   Projects: () => <div data-testid="projects-section">Projects Content</div>,
 }));
 
-vi.mock("@heroui/react", () => ({
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  Button: (props: any) => {
-    const Component = props.as || "button";
-    return (
-      <Component {...props}>
-        {props.startContent}
-        {props.children}
-      </Component>
-    );
+vi.mock("framer-motion", () => ({
+  motion: {
+    div: ({
+      children,
+      ...props
+    }: {
+      children: React.ReactNode;
+      [key: string]: unknown;
+    }) => <div {...props}>{children}</div>,
   },
 }));
 
@@ -50,13 +55,13 @@ describe("ProjectsPage", () => {
     render(<ProjectsPage />);
     expect(
       screen.getByRole("heading", { level: 1 }),
-    ).toHaveTextContent("All Projects");
+    ).toHaveTextContent("Projects");
   });
 
-  it("renders the back button linking to home", () => {
+  it("renders the back link to home", () => {
     render(<ProjectsPage />);
-    expect(screen.getByText("Back")).toBeInTheDocument();
-    expect(screen.getByText("Back").closest("a")).toHaveAttribute("href", "/");
+    expect(screen.getByText("Home")).toBeInTheDocument();
+    expect(screen.getByText("Home").closest("a")).toHaveAttribute("href", "/");
   });
 
   it("renders the projects section component", () => {
@@ -64,7 +69,7 @@ describe("ProjectsPage", () => {
     expect(screen.getByTestId("projects-section")).toBeInTheDocument();
   });
 
-  it("renders the arrow left icon in back button", () => {
+  it("renders the arrow left icon in back link", () => {
     render(<ProjectsPage />);
     expect(screen.getByTestId("arrow-left-icon")).toBeInTheDocument();
   });
