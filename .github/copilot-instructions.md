@@ -408,7 +408,7 @@ npx prettier --write .  # 3. Format code
 6. **HeroUI imports:** Import from `@heroui/react` (not individual packages) unless tree-shaking specific components
 7. **Tailwind v4:** Uses CSS-based config, NOT `tailwind.config.js` for theme values. CSS vars in `globals.css`
 8. **Tailwind v4 shorthand:** Use `h-44` not `h-[11rem]`, `z-5` not `z-[5]`, `bg-linear-to-r` not `bg-gradient-to-r`, `mx-0.75` not `mx-[3px]`
-9. **Dead code:** `RecentExperienceTile`, `DiscordPresenceTile`, `GithubRecentCommitTile`, `EmploymentStatus` are unused — can be deleted
+9. **Dead code:** All dead components have been cleaned up (RecentExperienceTile, DiscordPresenceTile, GithubRecentCommitTile, EmploymentStatus deleted)
 
 ---
 
@@ -619,7 +619,7 @@ After completing, generate the next prompt for further refinements.
 - [ ] Image lazy loading + blur placeholders
 - [ ] Bundle size optimization (code splitting large chunks)
 - [ ] PWA manifest + service worker
-- [ ] Dead code cleanup (unused tiles/components)
+- [ ] Dead code cleanup (unused tiles/components) ✅ Done (4 files deleted)
 - [ ] Analytics integration
 - [ ] Blog integration (optional)
 - [ ] AI chatbot widget (optional)

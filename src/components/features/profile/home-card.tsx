@@ -6,7 +6,7 @@ import { DiscordPresenceCard } from "@/components/features/discord/discord-prese
 import { LastFmRecentTrackTile } from "@/components/features/last-fm/lastfm-recent-track-tile";
 import { useCore } from "@/hooks/use-core";
 import useGithub from "@/hooks/use-github";
-import { Button, Image, Modal, useDisclosure } from "@heroui/react";
+import { Button, Image, Modal, Tooltip, useDisclosure } from "@heroui/react";
 import { Link } from "@tanstack/react-router";
 import {
   Award,
@@ -110,8 +110,18 @@ export const HomeCard = () => {
         className="border-default bg-background/60 relative mx-auto w-full max-w-sm overflow-hidden rounded-2xl border shadow-xl backdrop-blur-md transition-shadow hover:shadow-2xl"
       >
         {/* Gradient Banner */}
-        <div className="relative flex h-28 items-end justify-start bg-linear-to-br from-indigo-600 via-indigo-700 to-purple-700 p-4">
+        <div className="relative flex h-28 items-end justify-start overflow-hidden bg-linear-to-br from-indigo-600 via-indigo-700 to-purple-700 p-4">
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(255,255,255,0.15),transparent_70%)]" />
+          <motion.div
+            className="absolute -top-10 -left-10 size-40 rounded-full bg-white/10 blur-2xl"
+            animate={{ x: [0, 60, 0], y: [0, 30, 0] }}
+            transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+          />
+          <motion.div
+            className="absolute -right-10 -bottom-10 size-32 rounded-full bg-purple-400/15 blur-2xl"
+            animate={{ x: [0, -40, 0], y: [0, -20, 0] }}
+            transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+          />
           <div className="absolute top-3 right-4 z-10">
             <ThemeToggle />
           </div>
@@ -139,7 +149,14 @@ export const HomeCard = () => {
             <h1 className="text-lg font-semibold tracking-tight">
               Jhon Keneth Namias
             </h1>
-            <BadgeCheck className="size-5 shrink-0 text-indigo-500" />
+            <Tooltip
+              content="Verified Developer Profile"
+              placement="top"
+              delay={300}
+              classNames={{ content: "text-xs px-2 py-1" }}
+            >
+              <BadgeCheck className="size-5 shrink-0 cursor-help text-indigo-500" />
+            </Tooltip>
           </div>
           <p className="text-foreground/60 text-sm">
             Full-Stack Developer &middot; DevOps &middot; QA
@@ -297,7 +314,7 @@ export const HomeCard = () => {
         </div>
 
         {/* Action Buttons */}
-        <div className="mt-5 flex flex-wrap gap-2 px-5 sm:flex-nowrap">
+        <div className="mt-5 flex gap-2 px-5">
           <Button
             size="sm"
             className="flex-1 bg-zinc-900 font-medium text-white shadow-sm dark:bg-zinc-100 dark:text-zinc-900"
