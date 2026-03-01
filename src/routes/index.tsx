@@ -5,6 +5,7 @@ import { Footer } from "@/components/partials/footer";
 import { FloatingActionButton } from "@/components/common/floating-action-button";
 import { GithubActivityCalendar } from "@/sections/github-activity-calendar";
 import { GithubStats } from "@/sections/github-stats";
+import { Memberships } from "@/sections/memberships";
 import { TabPanel } from "@/sections/tab-panel";
 import Technologies from "@/sections/technologies";
 import { ScrollShadow } from "@heroui/react";
@@ -52,6 +53,7 @@ function RouteComponent() {
           </div>
           <GithubStats />
           <GithubActivityCalendar />
+          <Memberships />
           <div className="hidden lg:block">
             <Footer />
           </div>

@@ -2,6 +2,7 @@ import type {
   Certification,
   Experience,
   GalleryItem,
+  Membership,
   Project,
   Recommendation,
   Social,
@@ -20,4 +21,5 @@ export interface ICoreService {
   downloadResume(): Promise<void>;
   getProfile(): Promise<Profile>;
   getRecommendations(): Promise<Recommendation[]>;
+  getMemberships(): Promise<Membership[]>;
 }

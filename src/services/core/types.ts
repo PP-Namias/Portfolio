@@ -96,6 +96,12 @@ export type Recommendation = {
   avatar?: string;
 };
 
+export type Membership = {
+  name: string;
+  url?: string;
+  joinedAt?: string;
+};
+
 export type MediaType = "image" | "video" | "gif";
 
 export type GalleryItem = {

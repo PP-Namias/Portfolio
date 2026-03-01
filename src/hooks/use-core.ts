@@ -58,6 +58,12 @@ export const useCore = () => {
       queryKey: ["recommendations"],
     });
 
+  const queryMemberships = () =>
+    useQuery({
+      queryFn: coreService.getMemberships,
+      queryKey: ["memberships"],
+    });
+
   return {
     resumeUrl,
     queryProjects,
@@ -68,6 +74,7 @@ export const useCore = () => {
     queryGallery,
     queryProfile,
     queryRecommendations,
+    queryMemberships,
     downloadResumeMutation,
   };
 };
