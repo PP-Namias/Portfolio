@@ -1,6 +1,6 @@
 import { ProjectCard } from "@/components/features/projects/project-card";
 import { ErrorTile } from "@/components/ui/error-tile";
-import { LoadingTile } from "@/components/ui/loading-tile";
+import { ProjectsSkeleton } from "@/components/ui/skeleton-loaders";
 import { useCore } from "@/hooks/use-core";
 import { usePageSEO } from "@/hooks/use-seo";
 import { sectionMetadata } from "@/utilities/seo";
@@ -10,9 +10,14 @@ const optimizedImages: Record<string, string> = import.meta.glob(
   { eager: true, import: "default", query: "?format=webp&meta" },
 );
 
-export const Projects = () => {
+interface ProjectsProps {
+  limit?: number;
+}
+
+export const Projects = ({ limit }: ProjectsProps) => {
   const { queryProjects } = useCore();
-  const { data, isLoading, error } = queryProjects();
+  const { data: _data, isLoading, error } = queryProjects();
+  const data = limit ? _data?.slice(0, limit) : _data;
 
   // Update SEO for Projects section
   usePageSEO(sectionMetadata.projects);
@@ -20,16 +25,7 @@ export const Projects = () => {
   if (isLoading)
     return (
       <>
-        <div className="space-y-4">
-          {Array(10)
-            .fill(0)
-            .map((_, index) => (
-              <LoadingTile
-                key={`ProjectCardLoadingComponent-${index}`}
-                className="h-[280px] rounded-xl"
-              />
-            ))}
-        </div>
+        <ProjectsSkeleton count={limit ?? 4} />
       </>
     );
 
@@ -42,7 +38,7 @@ export const Projects = () => {
             .map((_, index) => (
               <ErrorTile
                 key={`ProjectCardErrorComponent-${index}`}
-                className="h-[280px] rounded-xl"
+                className="h-70 rounded-xl"
               />
             ))}
         </div>

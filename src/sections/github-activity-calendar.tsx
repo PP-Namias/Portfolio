@@ -74,14 +74,14 @@ export const GithubActivityCalendar = memo(() => {
 
   if (isLoading)
     return (
-      <div className="bg-background h-[10.8rem] rounded-xl p-[3px]">
+      <div className="h-44 rounded-xl">
         <LoadingTile />
       </div>
     );
 
   if (error)
     return (
-      <div className="bg-background h-[10.8rem] rounded-xl p-[3px]">
+      <div className="h-44 rounded-xl">
         <ErrorTile />
       </div>
     );
@@ -90,7 +90,7 @@ export const GithubActivityCalendar = memo(() => {
     <>
       <div
         ref={scrollContainerRef}
-        className="bg-background relative flex h-[11rem] cursor-grab items-center overflow-x-scroll overflow-y-hidden rounded-xl p-4 active:cursor-grabbing [&::-webkit-scrollbar]:hidden"
+        className="bg-custom-secondary relative flex h-44 cursor-grab items-center overflow-x-scroll overflow-y-hidden rounded-xl p-4 active:cursor-grabbing [&::-webkit-scrollbar]:hidden"
         onMouseDown={handleMouseDown}
         onMouseLeave={handleMouseLeave}
         onMouseUp={handleMouseUp}

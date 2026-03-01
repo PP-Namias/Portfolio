@@ -10,11 +10,29 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ResumePreviewRouteImport } from './routes/resume-preview'
+import { Route as ProjectsRouteImport } from './routes/projects'
+import { Route as GalleryRouteImport } from './routes/gallery'
+import { Route as CertificationsRouteImport } from './routes/certifications'
 import { Route as IndexRouteImport } from './routes/index'
 
 const ResumePreviewRoute = ResumePreviewRouteImport.update({
   id: '/resume-preview',
   path: '/resume-preview',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProjectsRoute = ProjectsRouteImport.update({
+  id: '/projects',
+  path: '/projects',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GalleryRoute = GalleryRouteImport.update({
+  id: '/gallery',
+  path: '/gallery',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CertificationsRoute = CertificationsRouteImport.update({
+  id: '/certifications',
+  path: '/certifications',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -25,27 +43,50 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/certifications': typeof CertificationsRoute
+  '/gallery': typeof GalleryRoute
+  '/projects': typeof ProjectsRoute
   '/resume-preview': typeof ResumePreviewRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/certifications': typeof CertificationsRoute
+  '/gallery': typeof GalleryRoute
+  '/projects': typeof ProjectsRoute
   '/resume-preview': typeof ResumePreviewRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/certifications': typeof CertificationsRoute
+  '/gallery': typeof GalleryRoute
+  '/projects': typeof ProjectsRoute
   '/resume-preview': typeof ResumePreviewRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/resume-preview'
+  fullPaths:
+    | '/'
+    | '/certifications'
+    | '/gallery'
+    | '/projects'
+    | '/resume-preview'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/resume-preview'
-  id: '__root__' | '/' | '/resume-preview'
+  to: '/' | '/certifications' | '/gallery' | '/projects' | '/resume-preview'
+  id:
+    | '__root__'
+    | '/'
+    | '/certifications'
+    | '/gallery'
+    | '/projects'
+    | '/resume-preview'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  CertificationsRoute: typeof CertificationsRoute
+  GalleryRoute: typeof GalleryRoute
+  ProjectsRoute: typeof ProjectsRoute
   ResumePreviewRoute: typeof ResumePreviewRoute
 }
 
@@ -56,6 +97,27 @@ declare module '@tanstack/react-router' {
       path: '/resume-preview'
       fullPath: '/resume-preview'
       preLoaderRoute: typeof ResumePreviewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/projects': {
+      id: '/projects'
+      path: '/projects'
+      fullPath: '/projects'
+      preLoaderRoute: typeof ProjectsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/gallery': {
+      id: '/gallery'
+      path: '/gallery'
+      fullPath: '/gallery'
+      preLoaderRoute: typeof GalleryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/certifications': {
+      id: '/certifications'
+      path: '/certifications'
+      fullPath: '/certifications'
+      preLoaderRoute: typeof CertificationsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -70,6 +132,9 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  CertificationsRoute: CertificationsRoute,
+  GalleryRoute: GalleryRoute,
+  ProjectsRoute: ProjectsRoute,
   ResumePreviewRoute: ResumePreviewRoute,
 }
 export const routeTree = rootRouteImport

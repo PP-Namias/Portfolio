@@ -1,7 +1,7 @@
 import { CertificationCard } from "@/components/features/certifications/certification-card";
 import { CertificateListModalContent } from "@/components/features/certifications/certification-list-modal-content";
 import { ErrorTile } from "@/components/ui/error-tile";
-import { LoadingTile } from "@/components/ui/loading-tile";
+import { CertificationsSkeleton } from "@/components/ui/skeleton-loaders";
 import { useCore } from "@/hooks/use-core";
 import { Button, Modal, useDisclosure } from "@heroui/react";
 import { useMemo } from "react";
@@ -11,25 +11,20 @@ const optimizedImages: Record<string, string> = import.meta.glob(
   { eager: true, import: "default", query: "?format=webp&meta&quality=1" },
 );
 
-export default function Certifications() {
+interface CertificationsProps {
+  limit?: number;
+}
+
+export default function Certifications({ limit }: CertificationsProps) {
   const { queryCertifications } = useCore();
-  const { data: _data, isLoading, error } = queryCertifications();
-  const data = useMemo(() => _data, [_data]);
+  const { data: _rawData, isLoading, error } = queryCertifications();
+  const data = useMemo(() => (limit ? _rawData?.slice(0, limit) : _rawData), [_rawData, limit]);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   if (isLoading)
     return (
       <>
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
-          {Array(10)
-            .fill(0)
-            .map((_, index) => (
-              <LoadingTile
-                key={`CertificationCardLoadingComponent-${index}`}
-                className="h-[400px] rounded-xl lg:h-[300px] xl:h-[380px]"
-              />
-            ))}
-        </div>
+        <CertificationsSkeleton count={limit ?? 6} />
       </>
     );
 
@@ -42,7 +37,7 @@ export default function Certifications() {
             .map((_, index) => (
               <ErrorTile
                 key={`CertificationCardErrorComponent-${index}`}
-                className="h-[400px] rounded-xl lg:h-[300px] xl:h-[380px]"
+                className="h-100 rounded-xl lg:h-75 xl:h-95"
               />
             ))}
         </div>

@@ -45,36 +45,129 @@ Every task MUST follow this pipeline. The agent should execute these phases **au
 
 ---
 
-## 🎯 DESIGN VISION — bryllim.com-Inspired Resume Portfolio
+## 🎯 DESIGN VISION — Single-Page Scrollable Resume Portfolio
 
-The portfolio follows a **split-panel resume layout** inspired by https://bryllim.com/:
+> **REDESIGN IN PROGRESS**: Converting from split-panel + tabbed layout to a **single-page scrollable layout** where ALL data is visible at once, inspired by https://bryllim.com/.
 
-### Target Sections (mapped to current codebase)
-| bryllim.com Section | Current Implementation | Status |
-|---------------------|----------------------|--------|
-| Hero / Profile Card | `src/sections/main.tsx` + `src/components/partials/header.tsx` | ✅ Exists |
-| About / Summary | Part of `main.tsx` | ✅ Exists |
-| Experience Timeline | `src/sections/experiences.tsx` | ✅ Exists |
-| Tech Stack (categorized) | `src/sections/technologies.tsx` | ✅ Exists |
-| Projects (cards + links) | `src/sections/projects.tsx` | ✅ Exists |
-| Certifications | `src/sections/certifications.tsx` | ✅ Exists |
-| Recommendations / Testimonials | Not yet implemented | ❌ TODO |
-| Gallery | `src/sections/gallery.tsx` | ✅ Exists |
+### Layout Architecture: Single-Page Scrollable
+
+**Previous layout (DEPRECATED):** Split-panel with left sidebar (5/12) + right TabPanel (7/12) with 6 tabs. User could only see ONE section at a time.
+
+**New layout (TARGET):** Two-column layout where the left column is a **sticky profile card** and the right column is a **vertically scrollable stream of ALL sections**. Every section is visible on one page — no tabs.
+
+```
+┌──────────────────────────────────────────────────────────────┐
+│  ┌───────────────┐  ┌──────────────────────────────────────┐ │
+│  │               │  │  Experience Timeline                │ │
+│  │  Profile Card │  ├──────────────────────────────────────┤ │
+│  │  (sticky)     │  │  Tech Stack (marquee)               │ │
+│  │  (4/12 width) │  ├──────────────────────────────────────┤ │
+│  │               │  │  Recent Projects (4)  [View All →]  │ │
+│  │  - Avatar     │  ├──────────────────────────────────────┤ │
+│  │  - Name +     │  │  Recent Certs (4)    [View All →]   │ │
+│  │    Verified   │  ├──────────────────────────────────────┤ │
+│  │  - Title      │  │  GitHub Activity (stats + calendar) │ │
+│  │  - Avail.     │  ├──────────────────────────────────────┤ │
+│  │    Badge      │  │  Recommendations                    │ │
+│  │  - PH Time    │  ├──────────────────────────────────────┤ │
+│  │  - Bio        │  │  Memberships                        │ │
+│  │  - Socials    │  ├──────────────────────────────────────┤ │
+│  │  - Discord    │  │  Gallery (8)         [View All →]   │ │
+│  │  - Last.fm    │  ├──────────────────────────────────────┤ │
+│  │  - Resume btn │  │  Contact / CTA                      │ │
+│  │  - Calendly   │  └──────────────────────────────────────┘ │
+│  │               │                                           │
+│  │  Footer       │                                           │
+│  └───────────────┘                                           │
+└──────────────────────────────────────────────────────────────┘
+```
+
+### Section Order (top to bottom on right column)
+| # | Section | Preview Mode | View All Route | Components | Skeleton |
+|---|---------|-------------|----------------|------------|----------|
+| 1 | Experience Timeline | All items | — | `experiences.tsx` | `ExperiencesSkeleton` |
+| 2 | Tech Stack | Marquee | — | `technologies.tsx` | `TechStackSkeleton` |
+| 3 | Recent Projects | First 4 cards | `/projects` | `projects.tsx` | `ProjectsSkeleton` |
+| 4 | Recent Certifications | First 4 cards | `/certifications` | `certifications.tsx` | `CertificationsSkeleton` |
+| 5 | GitHub Activity | Stats + Calendar combined | — | `github-stats.tsx` + `github-activity-calendar.tsx` | `GithubStatsSkeleton` + `GithubCalendarSkeleton` |
+| 6 | Recommendations | All (usually few) | — | `recommendations.tsx` | `RecommendationsSkeleton` |
+| 7 | Memberships | All badges | — | `memberships.tsx` | `MembershipsSkeleton` |
+| 8 | Gallery | First 8 images | `/gallery` | `gallery.tsx` | `GallerySkeleton` |
+| 9 | Contact / CTA | Full form + links | — | `contact.tsx` | — |
+
+### "View All" Pattern
+Sections with many items show a **preview** (limited count) + a **"View All" button/link**:
+- The "View All" button navigates to a **dedicated sub-route** (e.g., `/projects`, `/certifications`, `/gallery`)
+- Sub-routes render the full list with its own layout and back button
+- Sub-routes are file-based: `src/routes/projects.tsx`, `src/routes/certifications.tsx`, `src/routes/gallery.tsx`
+- Each sub-route reuses the existing section component but passes a `showAll` prop or renders without limit
+
+### Left Column: Slim Sticky Profile Card (4/12 width)
+The left column is a **slim, focused profile card** (`lg:w-4/12 2xl:w-3/12`) containing ONLY:
+- Profile image + name + verified badge + title
+- Availability badge (from GitHub API commit activity)
+- Philippine time widget
+- Bio / summary text
+- Social icon links row
+- Discord presence (compact)
+- Last.fm now playing (compact)
+- Resume button + Calendly button
+- Theme toggle
+- Footer (hidden on mobile, shown below profile card on desktop)
+
+**NOT in left column** (moved to right column as proper sections):
+- ~~Technologies marquee~~ → Right column section #2
+- ~~GitHub stats + calendar~~ → Right column section #5
+- ~~Memberships~~ → Right column section #7
+- ~~RecentExperienceTile~~ → Removed (redundant with Experiences section)
+- ~~DiscordPresenceTile / GithubRecentCommitTile~~ → Removed (Discord already in ProfileCard)
+
+On mobile (`< lg:`), the profile card is **not sticky** and appears at the top, followed by all sections stacked vertically.
+
+Right column uses `lg:w-8/12 2xl:w-9/12` width.
+
+### Key Implementation Changes
+1. **~~Remove `src/sections/tab-panel.tsx`~~** — DONE (deleted)
+2. **~~Modify `src/routes/index.tsx`~~** — DONE (all sections stacked vertically in right column)
+3. **~~Add sub-routes~~** — DONE (`src/routes/projects.tsx`, `src/routes/certifications.tsx`, `src/routes/gallery.tsx`)
+4. **~~Add preview mode~~** — DONE (each section accepts a `limit` prop to show first N items)
+5. **~~Add section headers~~** — DONE (each section gets a `<SectionHeader title="..." viewAllHref="..." />` component)
+6. **~~Left column becomes sticky~~** — DONE (`lg:sticky lg:top-4 lg:self-start` on desktop)
+7. **~~Add AnimatedSection~~** — DONE (`<AnimatedSection id="..." />` wraps each right-column section with Framer Motion whileInView)
+8. **~~Slim left column~~** — DONE (only ProfileCard + Footer; Technologies, GithubStats, Calendar, Memberships moved to right column)
+9. **~~Content-shaped skeletons~~** — DONE (12 skeleton components in `skeleton-loaders.tsx`, replacing generic LoadingTile)
+
+### Section Status (mapped to current codebase)
+| Section | Current Implementation | Status |
+|---------|----------------------|--------|
+| Profile Card (sticky) | `src/components/features/profile/profile-card.tsx` (merged header + main) | ✅ Unified + Sticky on desktop |
+| Experience Timeline | `src/sections/experiences.tsx` | ✅ Right column + content-shaped skeleton |
+| Tech Stack (marquee) | `src/sections/technologies.tsx` | ✅ Right column + content-shaped skeleton |
+| Projects (cards + links) | `src/sections/projects.tsx` | ✅ Has `limit` prop + `/projects` sub-route + skeleton |
+| Certifications | `src/sections/certifications.tsx` | ✅ Has `limit` prop + `/certifications` sub-route + skeleton |
+| GitHub Activity | `src/sections/github-stats.tsx` + `github-activity-calendar.tsx` | ✅ Combined in right column |
+| Recommendations | `src/sections/recommendations.tsx` | ✅ Right column + content-shaped skeleton |
+| Memberships | `src/sections/memberships.tsx` | ✅ Right column (simplified, no wrapper) |
+| Gallery | `src/sections/gallery.tsx` | ✅ Has `limit` prop + `/gallery` sub-route + skeleton |
 | Contact / CTA | `src/sections/contact.tsx` | ✅ Exists |
-| Memberships / Affiliations | Not yet implemented | ❌ TODO |
-| Speaking / Availability | Not yet implemented | ❌ TODO |
-| GitHub Activity | `src/sections/github-stats.tsx` + `github-activity-calendar.tsx` | ✅ Exists |
-| Discord Presence | `src/components/features/discord/` | ✅ Exists |
-| Last.fm Music | `src/components/features/last-fm/` | ✅ Exists |
+| Discord Presence | `src/components/features/discord/` | ✅ Compact in ProfileCard |
+| Last.fm Music | `src/components/features/last-fm/` | ✅ Compact in ProfileCard |
 | Resume PDF View/Download | `src/routes/resume-preview.tsx` | ✅ Exists |
+| AnimatedSection | `src/components/common/animated-section.tsx` | ✅ Scroll animations |
+| SectionHeader | `src/components/common/section-header.tsx` | ✅ Title + View All |
+| ProfileCard | `src/components/features/profile/profile-card.tsx` | ✅ Unified profile + socials + Last.fm |
+| Skeleton Loaders | `src/components/ui/skeleton-loaders.tsx` | ✅ 12 content-shaped skeletons |
 
 ### Design Principles
-- **Split-panel layout**: Left sidebar (profile, stats, nav) + Right main content (tabbed sections)
+- **Single-page scrollable**: All content visible on one page — no tabs, no hidden sections
+- **Sticky profile card**: Left column stays visible while scrolling content on desktop
+- **"View All" sub-routes**: Sections with many items preview N items + link to dedicated page
 - **Dark/Light theme**: CSS variables in `globals.css` (`--custom-background`, `--custom-secondary`)
-- **Smooth animations**: Framer Motion for transitions and scroll reveals
-- **Mobile-first**: Stacks vertically on mobile, split-panel on `lg:` breakpoint
+- **Smooth animations**: Framer Motion for scroll-triggered reveals (viewport enter)
+- **Mobile-first**: Stacks vertically on mobile, two-column with sticky sidebar on `lg:` breakpoint
 - **Bento grid tiles**: Cards/tiles with consistent padding, rounded corners (`rounded-xl`)
-- **Micro-interactions**: Hover states, press feedback, smooth tab transitions
+- **Micro-interactions**: Hover states, press feedback, smooth section transitions
+- **Section anchors**: Each section has an `id` for anchor navigation from profile card links
 
 ---
 
@@ -105,6 +198,7 @@ src/
 │   │   ├── gallery/
 │   │   ├── github/
 │   │   ├── last-fm/
+│   │   ├── profile/
 │   │   ├── projects/
 │   │   ├── resume/
 │   │   ├── socials/
@@ -117,6 +211,9 @@ src/
 ├── routes/                        # TanStack Router file-based routes
 │   ├── __root.tsx
 │   ├── index.tsx                  # Main portfolio page
+│   ├── certifications.tsx         # View All certifications sub-route
+│   ├── gallery.tsx                # View All gallery sub-route
+│   ├── projects.tsx               # View All projects sub-route
 │   └── resume-preview.tsx         # Full resume view
 ├── sections/                      # Page-level section layouts
 ├── services/                      # Service layer (Interface → Service → Hook)
@@ -170,7 +267,8 @@ const { data, isLoading, error } = useCore().queryProjects();
 5. Add query → `src/hooks/use-core.ts`
 6. Create section → `src/sections/recommendations.tsx`
 7. Create feature component → `src/components/features/recommendations/`
-8. Add to tab panel → `src/sections/tab-panel.tsx`
+8. Add section to `src/routes/index.tsx` in the right column scroll area
+9. If section has many items: add `limit` prop + create a `/sectionname` sub-route for "View All"
 
 ### Adding a New External API Service
 1. Create directory: `src/services/newapi/`
@@ -210,9 +308,25 @@ const imageKey = Object.keys(optimizedImages).find(key => key.includes(item.imag
 ```
 
 ### Loading/Error States — ALWAYS wrap async content
+
+**Prefer content-shaped skeletons** over generic `LoadingTile` for better UX:
 ```tsx
-if (isLoading) return <LoadingTile className="h-[280px]" />;
-if (error) return <ErrorTile className="h-[280px]" />;
+import { ProjectsSkeleton } from "@/components/ui/skeleton-loaders";
+
+if (isLoading) return <ProjectsSkeleton count={limit ?? 4} />;
+if (error) return <ErrorTile className="h-70" />;
+```
+
+Available skeleton components (in `src/components/ui/skeleton-loaders.tsx`):
+- `ExperiencesSkeleton`, `ProjectsSkeleton`, `CertificationsSkeleton`
+- `GallerySkeleton`, `RecommendationsSkeleton`, `TechStackSkeleton`
+- `GithubStatsSkeleton`, `GithubCalendarSkeleton`, `MembershipsSkeleton`
+- `ProfileCardSkeleton`
+
+**Fallback** for sections without a custom skeleton:
+```tsx
+if (isLoading) return <LoadingTile className="h-70" />;
+if (error) return <ErrorTile className="h-70" />;
 ```
 
 ### Animation Pattern (Framer Motion)
@@ -293,6 +407,8 @@ npx prettier --write .  # 3. Format code
 5. **Build before commit:** Always `npm run build` before committing
 6. **HeroUI imports:** Import from `@heroui/react` (not individual packages) unless tree-shaking specific components
 7. **Tailwind v4:** Uses CSS-based config, NOT `tailwind.config.js` for theme values. CSS vars in `globals.css`
+8. **Tailwind v4 shorthand:** Use `h-44` not `h-[11rem]`, `z-5` not `z-[5]`, `bg-linear-to-r` not `bg-gradient-to-r`, `mx-0.75` not `mx-[3px]`
+9. **Dead code:** `RecentExperienceTile`, `DiscordPresenceTile`, `GithubRecentCommitTile`, `EmploymentStatus` are unused — can be deleted
 
 ---
 
@@ -400,7 +516,8 @@ Architecture requirements:
 - Add query to useCore hook
 - Create section in src/sections/
 - Create feature components in src/components/features/
-- Add tab or section to the page layout
+- Add section to the right column in src/routes/index.tsx
+- If section has many items: add limit prop + create View All sub-route
 - Use HeroUI components + Tailwind v4
 - Add Framer Motion animations
 - Handle loading/error states with LoadingTile/ErrorTile
@@ -450,7 +567,7 @@ After completing, generate the next prompt for further refinements.
 
 ## 📊 DEVELOPMENT ROADMAP
 
-### Phase 1: Core Polish (Current)
+### Phase 1: Core Polish (Completed)
 - [x] Profile / Hero section
 - [x] Experience timeline
 - [x] Tech stack (categorized)
@@ -464,23 +581,48 @@ After completing, generate the next prompt for further refinements.
 - [x] Resume PDF viewer
 - [x] SEO / structured data
 - [x] Dark/light theme
+- [x] Recommendations / Testimonials section
+- [x] Memberships / Affiliations section
 
-### Phase 2: bryllim.com Feature Parity
-- [ ] Recommendations / Testimonials section
-- [ ] Memberships / Affiliations section  
-- [ ] Speaking / Availability badge
-- [ ] Enhanced profile card (verified badge, achievement highlights)
-- [ ] "View All" sub-pages for projects, certifications
+### Phase 2: Single-Page Redesign (Completed)
+- [x] Remove TabPanel — replace with vertically scrolled sections
+- [x] Create `SectionHeader` component (title + optional "View All" link)
+- [x] Update `src/routes/index.tsx` — render all sections in right column
+- [x] Add `limit` prop to Projects, Certifications, Gallery sections
+- [x] Make left column a sticky profile card on desktop
+- [x] Create sub-routes: `/projects`, `/certifications`, `/gallery`
+- [x] Scroll-triggered Framer Motion animations on all sections
+- [x] Section anchor IDs for navigation
+- [x] Mobile-first stacked layout
+- [x] Create `AnimatedSection` component for reusable scroll animations
+
+### Phase 3: Enhanced Profile Card (Completed)
+- [x] Consolidate `header.tsx` + `main.tsx` into a single sticky profile card
+- [x] Verified badge / achievement highlights
+- [x] Speaking / Availability badge
+- [x] Compact Discord presence + Last.fm now playing in profile card
+- [x] Deleted unused `header.tsx` and `main.tsx`
+- [x] Social icon links row in profile card
+
+### Phase 4: Layout Refinement & Skeleton Loading (Completed)
+- [x] Slim left column to ProfileCard + Footer only (4/12 width)
+- [x] Move Technologies, GithubStats, GithubActivityCalendar, Memberships to right column
+- [x] Remove redundant tiles (RecentExperienceTile, DiscordPresenceTile, GithubRecentCommitTile)
+- [x] Combine GitHub stats + calendar into single "GitHub Activity" section
+- [x] 12 content-shaped skeleton loading components (`skeleton-loaders.tsx`)
+- [x] Replace generic `LoadingTile` with content-shaped skeletons in all sections
+- [x] Fix Tailwind v4 shorthand warnings (z-5, bg-linear-to-r, etc.)
+- [x] 480 unit tests passing (19 test files)
+
+### Phase 5: Polish & Performance (Current)
+- [ ] Lighthouse score >95 across all metrics
+- [ ] Image lazy loading + blur placeholders
+- [ ] Bundle size optimization (code splitting large chunks)
+- [ ] PWA manifest + service worker
+- [ ] Dead code cleanup (unused tiles/components)
+- [ ] Analytics integration
 - [ ] Blog integration (optional)
 - [ ] AI chatbot widget (optional)
-
-### Phase 3: Polish & Performance
-- [ ] Lighthouse score >95 across all metrics
-- [ ] Scroll-triggered animations on all sections
-- [ ] Skeleton loading states
-- [ ] Image lazy loading + blur placeholders
-- [ ] PWA manifest + service worker
-- [ ] Analytics integration
 
 ---
 
@@ -490,104 +632,7 @@ After completing, generate the next prompt for further refinements.
 2. **Follow the Service Layer Pattern.** No exceptions — types → interface → service (bind!) → hook → component.
 3. **Batch edits efficiently.** Use `multi_replace_string_in_file` for multiple changes in the same operation.
 4. **Validate every change.** Run `npm run lint` and `npm run build` after implementation.
-5. **Never skip error handling.** All async components need `LoadingTile` / `ErrorTile` states.
-6. **Match the design reference.** When implementing UI, refer to https://bryllim.com/ for visual guidance.
-7. **Generate the Next Prompt.** Every completed task MUST end with a copy-pasteable prompt for continuation.
-8. **Stay minimal.** Don't add features, abstractions, or refactors beyond what was requested.
-9. **Track progress.** Use `manage_todo_list` for any multi-step work.
-10. **Respect the theme.** All UI must work in both dark and light mode using CSS variables.
-- Create feature components in src/components/features/
-- Add tab or section to the page layout
-- Use HeroUI components + Tailwind v4
-- Add Framer Motion animations
-- Handle loading/error states with LoadingTile/ErrorTile
-- Support dark/light theme
-- Mobile-first responsive design
-
-After completing, generate the next prompt.
-```
-
-### Quick Fix Prompt
-
-```
-There's a bug: [DESCRIBE THE BUG]
-
-Follow copilot-instructions.md:
-1. Read the affected files
-2. Identify root cause
-3. Fix it
-4. Run npm run lint && npm run build
-5. Confirm the fix
-
-After fixing, generate the next prompt if there are related improvements.
-```
-
-### Iteration Improvement Prompt
-
-```
-Review the current state of [SECTION/COMPONENT] against the design reference (https://bryllim.com/).
-
-1. Read the current implementation
-2. Compare with the reference design
-3. List specific visual/functional gaps
-4. Create a prioritized improvement plan
-5. Implement the top 3 improvements
-6. Validate with lint + build
-
-Focus on:
-- Visual polish (spacing, typography, colors)
-- Animations and micro-interactions
-- Responsive behavior
-- Accessibility
-
-After completing, generate the next prompt for further refinements.
-```
-
----
-
-## 📊 DEVELOPMENT ROADMAP
-
-### Phase 1: Core Polish (Current)
-- [x] Profile / Hero section
-- [x] Experience timeline
-- [x] Tech stack (categorized)
-- [x] Projects grid
-- [x] Certifications
-- [x] Gallery (masonry)
-- [x] Contact form
-- [x] GitHub stats + activity calendar
-- [x] Discord presence
-- [x] Last.fm integration
-- [x] Resume PDF viewer
-- [x] SEO / structured data
-- [x] Dark/light theme
-
-### Phase 2: bryllim.com Feature Parity
-- [ ] Recommendations / Testimonials section
-- [ ] Memberships / Affiliations section  
-- [ ] Speaking / Availability badge
-- [ ] Enhanced profile card (verified badge, achievement highlights)
-- [ ] "View All" sub-pages for projects, certifications
-- [ ] Blog integration (optional)
-- [ ] AI chatbot widget (optional)
-
-### Phase 3: Polish & Performance
-- [ ] Lighthouse score >95 across all metrics
-- [ ] Scroll-triggered animations on all sections
-- [ ] Skeleton loading states
-- [ ] Image lazy loading + blur placeholders
-- [ ] PWA manifest + service worker
-- [ ] Analytics integration
-
----
-
-## 🤖 AGENT BEHAVIOR RULES
-
-1. **Always read before writing.** Never modify a file without reading it first.
-2. **Follow the Service Layer Pattern.** No exceptions — types → interface → service (bind!) → hook → component.
-3. **Batch edits efficiently.** Use `multi_replace_string_in_file` for multiple changes in the same operation.
-4. **Validate every change.** Run `npm run lint` and `npm run build` after implementation.
-5. **Never skip error handling.** All async components need `LoadingTile` / `ErrorTile` states.
+5. **Never skip error handling.** All async components need content-shaped skeletons (from `skeleton-loaders.tsx`) / `ErrorTile` states.
 6. **Match the design reference.** When implementing UI, refer to https://bryllim.com/ for visual guidance.
 7. **Generate the Next Prompt.** Every completed task MUST end with a copy-pasteable prompt for continuation.
 8. **Stay minimal.** Don't add features, abstractions, or refactors beyond what was requested.

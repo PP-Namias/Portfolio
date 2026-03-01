@@ -1,17 +1,19 @@
-import { RecentExperienceTile } from "@/components/features/experiences/recent-experience-tile";
-import { GithubRecentCommitTile } from "@/components/features/github/github-recent-commit-tile";
-import { DiscordPresenceTile } from "@/components/features/discord/discord-presence-tile";
 import { Footer } from "@/components/partials/footer";
 import { FloatingActionButton } from "@/components/common/floating-action-button";
+import { SectionHeader } from "@/components/common/section-header";
+import { AnimatedSection } from "@/components/common/animated-section";
 import { GithubActivityCalendar } from "@/sections/github-activity-calendar";
 import { GithubStats } from "@/sections/github-stats";
 import { Memberships } from "@/sections/memberships";
-import { TabPanel } from "@/sections/tab-panel";
+import { Experiences } from "@/sections/experiences";
+import { Projects } from "@/sections/projects";
+import Certifications from "@/sections/certifications";
+import Gallery from "@/sections/gallery";
+import { Recommendations } from "@/sections/recommendations";
+import { Contact } from "@/sections/contact";
 import Technologies from "@/sections/technologies";
-import { ScrollShadow } from "@heroui/react";
+import { ProfileCard } from "@/components/features/profile/profile-card";
 import { createFileRoute } from "@tanstack/react-router";
-import { Header } from "../components/partials/header";
-import { Main } from "../sections/main";
 import { useSEO } from "@/hooks/use-seo";
 import {
   sectionMetadata,
@@ -25,7 +27,6 @@ export const Route = createFileRoute("/")({
 });
 
 function RouteComponent() {
-  // Initialize SEO for homepage
   useSEO({
     metadata: sectionMetadata.home,
     schema: [
@@ -34,37 +35,125 @@ function RouteComponent() {
       generateProfileSchema(),
     ],
   });
+
   return (
-    <div className="bg-grid lg:absolute lg:inset-0 lg:flex lg:items-center lg:justify-center">
+    <div className="bg-grid min-h-screen">
       <FloatingActionButton />
-      <div className="bg-custom-background block h-full w-full space-y-2 p-2 sm:p-4 lg:flex lg:max-h-[1080px] lg:max-w-[1920px] lg:gap-4 lg:space-y-0 lg:rounded-xl">
-        <ScrollShadow
-          hideScrollBar
-          size={100}
-          className="space-y-2 scroll-smooth rounded-xl lg:w-5/12 lg:overflow-x-clip lg:overflow-y-auto 2xl:w-4/12"
-        >
-          <Header />
-          <Main />
-          <RecentExperienceTile />
-          <Technologies />
-          <div className="bg-background grid h-[5rem] grid-cols-2 gap-1 rounded-xl p-[3px] sm:hidden lg:grid xl:hidden">
-            <GithubRecentCommitTile />
-            <DiscordPresenceTile />
-          </div>
-          <GithubStats />
-          <GithubActivityCalendar />
-          <Memberships />
+      <div className="bg-custom-background mx-auto w-full max-w-480 p-2 sm:p-4 lg:flex lg:gap-4 lg:p-6">
+        {/* Left column — slim sticky profile card on desktop */}
+        <div className="space-y-2 lg:sticky lg:top-4 lg:w-4/12 lg:self-start 2xl:w-3/12">
+          <ProfileCard />
           <div className="hidden lg:block">
             <Footer />
           </div>
-        </ScrollShadow>
+        </div>
 
-        <div className="scroll-smooth rounded-xl lg:w-7/12 lg:overflow-x-clip lg:overflow-y-auto 2xl:w-8/12">
-          <div className="h-full space-y-2 rounded-xl lg:space-y-0">
-            <TabPanel />
-            <div className="block pb-4 lg:hidden">
-              <Footer />
+        {/* Right column — all sections stacked with scroll-triggered animations */}
+        <div className="mt-2 space-y-4 lg:mt-0 lg:w-8/12 2xl:w-9/12">
+          <AnimatedSection
+            id="experiences"
+            className="bg-background rounded-xl p-4"
+          >
+            <SectionHeader title="Career Snapshot" />
+            <div className="mt-3">
+              <Experiences />
             </div>
+          </AnimatedSection>
+
+          <AnimatedSection
+            id="technologies"
+            className="bg-background rounded-xl p-4"
+            delay={0.05}
+          >
+            <SectionHeader title="Tech Stack" />
+            <div className="mt-3">
+              <Technologies />
+            </div>
+          </AnimatedSection>
+
+          <AnimatedSection
+            id="projects"
+            className="bg-background rounded-xl p-4"
+            delay={0.05}
+          >
+            <SectionHeader title="Recent Projects" viewAllHref="/projects" />
+            <div className="mt-3">
+              <Projects limit={4} />
+            </div>
+          </AnimatedSection>
+
+          <AnimatedSection
+            id="certifications"
+            className="bg-background rounded-xl p-4"
+            delay={0.05}
+          >
+            <SectionHeader
+              title="Recent Certifications"
+              viewAllHref="/certifications"
+            />
+            <div className="mt-3">
+              <Certifications limit={4} />
+            </div>
+          </AnimatedSection>
+
+          <AnimatedSection
+            id="github"
+            className="bg-background rounded-xl p-4"
+            delay={0.05}
+          >
+            <SectionHeader title="GitHub Activity" />
+            <div className="mt-3 space-y-3">
+              <GithubStats />
+              <GithubActivityCalendar />
+            </div>
+          </AnimatedSection>
+
+          <AnimatedSection
+            id="recommendations"
+            className="bg-background rounded-xl p-4"
+            delay={0.05}
+          >
+            <SectionHeader title="Recommendations" />
+            <div className="mt-3">
+              <Recommendations />
+            </div>
+          </AnimatedSection>
+
+          <AnimatedSection
+            id="memberships"
+            className="bg-background rounded-xl p-4"
+            delay={0.05}
+          >
+            <SectionHeader title="Memberships" />
+            <div className="mt-3">
+              <Memberships />
+            </div>
+          </AnimatedSection>
+
+          <AnimatedSection
+            id="gallery"
+            className="bg-background rounded-xl p-4"
+            delay={0.05}
+          >
+            <SectionHeader title="Gallery" viewAllHref="/gallery" />
+            <div className="mt-3">
+              <Gallery limit={8} />
+            </div>
+          </AnimatedSection>
+
+          <AnimatedSection
+            id="contact"
+            className="bg-background rounded-xl p-4"
+            delay={0.05}
+          >
+            <SectionHeader title="Get in Touch" />
+            <div className="mt-3">
+              <Contact />
+            </div>
+          </AnimatedSection>
+
+          <div className="block pb-4 lg:hidden">
+            <Footer />
           </div>
         </div>
       </div>

@@ -1,7 +1,7 @@
 import { GalleryCard } from "@/components/features/gallery/gallery-card";
 import { GalleryModal } from "@/components/features/gallery/gallery-modal";
 import { ErrorTile } from "@/components/ui/error-tile";
-import { LoadingTile } from "@/components/ui/loading-tile";
+import { GallerySkeleton } from "@/components/ui/skeleton-loaders";
 import { useCore } from "@/hooks/use-core";
 import { usePageSEO } from "@/hooks/use-seo";
 import { sectionMetadata } from "@/utilities/seo";
@@ -26,10 +26,20 @@ const optimizedVideos: Record<string, string> = import.meta.glob(
   { eager: true, import: "default" },
 );
 
-export default function Gallery() {
+interface GalleryProps {
+  limit?: number;
+}
+
+export default function Gallery({ limit }: GalleryProps) {
   const { queryGallery } = useCore();
-  const { data: _data, isLoading, error } = queryGallery();
-  const data = useMemo(() => _data as GalleryItem[] | undefined, [_data]);
+  const { data: _rawData, isLoading, error } = queryGallery();
+  const data = useMemo(
+    () => {
+      const items = _rawData as GalleryItem[] | undefined;
+      return limit ? items?.slice(0, limit) : items;
+    },
+    [_rawData, limit],
+  );
 
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
 
@@ -66,22 +76,7 @@ export default function Gallery() {
   };
 
   if (isLoading)
-    return (
-      <Masonry
-        breakpointCols={breakpointColumns}
-        className="masonry-grid"
-        columnClassName="masonry-grid-column"
-      >
-        {Array(12)
-          .fill(0)
-          .map((_, index) => (
-            <LoadingTile
-              key={`GalleryCardLoadingComponent-${index}`}
-              className="h-[250px] rounded-lg"
-            />
-          ))}
-      </Masonry>
-    );
+    return <GallerySkeleton count={limit ?? 12} />;
 
   if (error)
     return (
@@ -95,7 +90,7 @@ export default function Gallery() {
           .map((_, index) => (
             <ErrorTile
               key={`GalleryCardErrorComponent-${index}`}
-              className="h-[250px] rounded-lg"
+              className="h-64 rounded-lg"
             />
           ))}
       </Masonry>

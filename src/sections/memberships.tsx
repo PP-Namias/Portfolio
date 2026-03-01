@@ -12,19 +12,14 @@ export const Memberships = () => {
   if (!memberships?.length) return null;
 
   return (
-    <div className="bg-background space-y-2 rounded-xl p-3">
-      <p className="text-foreground/50 text-xs font-semibold uppercase tracking-wider">
-        A member of
-      </p>
-      <div className="flex flex-wrap gap-2">
-        {memberships.map((membership, index) => (
-          <MembershipBadge
-            key={membership.name}
-            membership={membership}
-            index={index}
-          />
-        ))}
-      </div>
+    <div className="flex flex-wrap gap-2">
+      {memberships.map((membership, index) => (
+        <MembershipBadge
+          key={membership.name}
+          membership={membership}
+          index={index}
+        />
+      ))}
     </div>
   );
 };
