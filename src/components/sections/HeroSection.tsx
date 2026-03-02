@@ -27,7 +27,7 @@ export function HeroSection() {
         <div className="flex-shrink-0">
           <div className="h-[150px] w-[150px] rounded-2xl border border-border-light dark:border-border-dark overflow-hidden">
             <Image
-              src="/images/profile/me.jpg"
+              src="/images/profile/PP%20Namias.png"
               alt={profile.name}
               width={150}
               height={150}
