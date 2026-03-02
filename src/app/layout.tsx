@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { Providers } from './providers';
-import { ChatWidget } from '@/components/ui/ChatWidget';
+import { FloatingHub } from '@/components/ui/FloatingHub';
 import './globals.css';
 
 const inter = Inter({
@@ -91,7 +91,7 @@ export default function RootLayout({
       <body className="bg-background-light dark:bg-background-dark text-text-primary-light dark:text-text-primary-dark min-h-screen font-sans antialiased">
         <Providers>
           {children}
-          <ChatWidget />
+          <FloatingHub />
         </Providers>
       </body>
     </html>

@@ -114,3 +114,5 @@ export interface ChatMessage {
   content: string;
   timestamp: Date;
 }
+
+export type HubState = 'closed' | 'menu' | 'chat';
