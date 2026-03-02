@@ -24,8 +24,6 @@
 }
 
 * {
-  margin: 0;
-  padding: 0;
   box-sizing: border-box;
 }
 
@@ -34,7 +32,6 @@ html {
 }
 
 body {
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
   background-color: var(--background);
   color: var(--text-primary);
   transition: background-color 0.3s ease, color 0.3s ease;

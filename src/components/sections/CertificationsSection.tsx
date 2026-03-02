@@ -1,13 +1,21 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
 import { certifications } from '@/data/certifications';
 
 export function CertificationsSection() {
-  const [selectedCert, setSelectedCert] = useState<string | null>(null);
+  const [selectedCert, setSelectedCert] = useState<{ image: string; title: string } | null>(null);
+
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setSelectedCert(null);
+    };
+    if (selectedCert) document.addEventListener('keydown', handleEscape);
+    return () => document.removeEventListener('keydown', handleEscape);
+  }, [selectedCert]);
 
   return (
     <motion.section
@@ -29,7 +37,7 @@ export function CertificationsSection() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: index * 0.03, duration: 0.3 }}
-            onClick={() => setSelectedCert(cert.image)}
+            onClick={() => setSelectedCert({ image: cert.image, title: cert.title })}
           >
             <div className="flex-shrink-0 h-8 w-8 rounded-md overflow-hidden border border-border-light dark:border-border-dark bg-surface-light dark:bg-card-bg-dark">
               <Image
@@ -57,6 +65,9 @@ export function CertificationsSection() {
         {selectedCert && (
           <motion.div
             className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4"
+            role="dialog"
+            aria-modal="true"
+            aria-label={selectedCert.title}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -77,8 +88,8 @@ export function CertificationsSection() {
                 <X className="h-6 w-6" />
               </button>
               <Image
-                src={`/images/certifications/${selectedCert}`}
-                alt="Certificate"
+                src={`/images/certifications/${selectedCert.image}`}
+                alt={selectedCert.title}
                 width={800}
                 height={600}
                 className="w-full h-auto rounded-lg"

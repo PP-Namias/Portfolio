@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { motion } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import rehypeHighlight from 'rehype-highlight';
 import { ArrowLeft, Clock, Calendar, ChevronLeft, ChevronRight } from 'lucide-react';
 import { blogPosts } from '@/data/blogPosts';
 import { Card } from '@/components/ui/Card';
@@ -116,6 +117,7 @@ export default function BlogPostContent({ slug }: BlogPostContentProps) {
           <div className="prose-custom">
             <ReactMarkdown
               remarkPlugins={[remarkGfm]}
+              rehypePlugins={[rehypeHighlight]}
               components={{
                 h2: ({ children }) => (
                   <h2 className="text-lg font-semibold text-text-primary-light dark:text-text-primary-dark mt-8 mb-3">

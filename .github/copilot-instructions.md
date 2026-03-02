@@ -6,7 +6,7 @@
 > **Design Reference:** https://bryllim.com/ (modern resume-portfolio hybrid)  
 > **Model:** Always use **Claude Opus 4.6** for all development tasks  
 > **IDE:** VS Code with GitHub Copilot  
-> **Last audited:** 2026-03-02 (images, UI/UX, SEO, data quality, gallery lightbox, ConnectSection cleanup, SpeakingSection enhancement, favicon, blog architecture, react-markdown, LICENSE fix)
+> **Last audited:** 2026-03-02 (images, UI/UX, SEO, OG image, JSON-LD, data quality, gallery lightbox, ConnectSection cleanup, SpeakingSection enhancement, favicon, blog architecture, react-markdown, rehype-highlight, accessibility, dead file cleanup, LICENSE fix)
 
 ---
 
@@ -92,6 +92,7 @@ Every task MUST follow this pipeline:
 ├── public/                           # Next.js public static files
 │   ├── favicon.svg                    # SVG favicon (32x32, pink "JN" branding)
 │   ├── apple-touch-icon.svg          # Apple touch icon (180x180)
+│   ├── og-image.svg                  # OpenGraph image (1200x630, branded)
 │   ├── site.webmanifest              # PWA manifest (JN branding, pink theme)
 │   ├── resume.pdf                    # Downloadable resume (copied from portfolio-resources)
 │   └── images/                       # Served images (copied from portfolio-resources)
@@ -103,8 +104,8 @@ Every task MUST follow this pipeline:
 ├── src/
 │   ├── app/
 │   │   ├── globals.css               # Global styles + CSS custom properties
-│   │   ├── layout.tsx                # Root layout + metadata + Inter font + favicon SVG icons
-│   │   ├── page.tsx                  # Home page (main portfolio, 'use client')
+│   │   ├── layout.tsx                # Root layout + metadata + Inter font + favicon SVG icons + JSON-LD
+│   │   ├── page.tsx                  # Home page (main portfolio, server component)
 │   │   ├── providers.tsx             # ThemeProvider (dark default, class strategy)
 │   │   └── blog/
 │   │       ├── layout.tsx            # Blog layout with SEO metadata
@@ -510,7 +511,7 @@ Prioritized improvements organized by effort and impact. Reference this when the
 - [x] Display education dates, GPA, relevant courses in AboutSection
 - [x] Show experience achievements in expandable timeline
 - [x] Add favicon (SVG favicon + apple-touch-icon) to public/
-- [ ] Add OG images and structured data for full SEO
+- [x] Add OG images and structured data for full SEO
 - [x] Gallery lightbox (click-to-enlarge with AnimatePresence modal)
 - [x] Streamline ConnectSection (removed redundant "Get in Touch" and "Quick Links")
 - [x] Resume download uses `download` attribute instead of new tab
@@ -532,6 +533,7 @@ Prioritized improvements organized by effort and impact. Reference this when the
 10. **Standalone output:** `next.config.js` sets `output: 'standalone'` for AWS Amplify — don't remove
 11. **`react-markdown` installed:** Blog uses `react-markdown` + `remark-gfm` + `rehype-highlight` for proper markdown rendering
 12. **`tailwind.config.ts` content paths:** Only scans `src/components/**` and `src/app/**` — if adding components elsewhere, update the config
+13. **`rehype-highlight` wired up:** Blog uses `rehype-highlight` for syntax highlighting in code blocks — imported in BlogPostContent.tsx
 
 ---
 

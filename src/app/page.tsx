@@ -1,6 +1,3 @@
-'use client';
-
-import React from 'react';
 import { HeroSection } from '@/components/sections/HeroSection';
 import { AboutSection } from '@/components/sections/AboutSection';
 import { TechStackSection } from '@/components/sections/TechStackSection';

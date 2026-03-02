@@ -20,18 +20,58 @@ export const metadata: Metadata = {
       'Portfolio of Jhon Keneth Namias — Full Stack Developer based in Caloocan City, Philippines.',
     type: 'website',
     locale: 'en_US',
+    images: [
+      {
+        url: '/og-image.svg',
+        width: 1200,
+        height: 630,
+        alt: 'Jhon Keneth Namias — Full Stack Developer',
+      },
+    ],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Jhon Keneth Namias — Full Stack Developer',
     description:
       'Portfolio of Jhon Keneth Namias — Full Stack Developer based in Caloocan City, Philippines.',
+    images: ['/og-image.svg'],
   },
   icons: {
     icon: '/favicon.svg',
     apple: '/apple-touch-icon.svg',
   },
+};
 
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'WebSite',
+      '@id': 'https://namias.tech/#website',
+      url: 'https://namias.tech',
+      name: 'Jhon Keneth Namias — Portfolio',
+      description:
+        'Portfolio of Jhon Keneth Namias — Full Stack Developer based in Caloocan City, Philippines.',
+    },
+    {
+      '@type': 'Person',
+      '@id': 'https://namias.tech/#person',
+      name: 'Jhon Keneth Namias',
+      jobTitle: 'Full Stack Developer',
+      url: 'https://namias.tech',
+      email: 'pp.namias@gmail.com',
+      address: {
+        '@type': 'PostalAddress',
+        addressLocality: 'Caloocan City',
+        addressCountry: 'PH',
+      },
+      sameAs: [
+        'https://github.com/PP-Namias',
+        'https://www.linkedin.com/in/pp-namias/',
+      ],
+      knowsAbout: ['React', 'TypeScript', 'Node.js', 'Next.js', 'Python'],
+    },
+  ],
 };
 
 export default function RootLayout({
@@ -41,6 +81,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning className={inter.variable}>
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+      </head>
       <body className="bg-background-light dark:bg-background-dark text-text-primary-light dark:text-text-primary-dark min-h-screen font-sans antialiased">
         <Providers>{children}</Providers>
       </body>

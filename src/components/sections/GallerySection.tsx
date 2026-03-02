@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight, X } from 'lucide-react';
@@ -13,6 +13,14 @@ export function GallerySection() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [direction, setDirection] = useState(1);
   const [selectedImage, setSelectedImage] = useState<{ media: string; title: string } | null>(null);
+
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setSelectedImage(null);
+    };
+    if (selectedImage) document.addEventListener('keydown', handleEscape);
+    return () => document.removeEventListener('keydown', handleEscape);
+  }, [selectedImage]);
 
   const goNext = () => {
     if (currentSlide < totalSlides - 1) {
@@ -124,6 +132,9 @@ export function GallerySection() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4"
+            role="dialog"
+            aria-modal="true"
+            aria-label={selectedImage.title}
             onClick={() => setSelectedImage(null)}
           >
             <motion.div
