@@ -28,8 +28,10 @@ export const metadata: Metadata = {
       'Portfolio of Jhon Keneth Namias — Full Stack Developer based in Caloocan City, Philippines.',
   },
   icons: {
-    icon: '/favicon.ico',
+    icon: '/favicon.svg',
+    apple: '/apple-touch-icon.svg',
   },
+
 };
 
 export default function RootLayout({

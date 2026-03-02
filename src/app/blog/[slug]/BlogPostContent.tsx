@@ -4,6 +4,8 @@ import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import { ArrowLeft, Clock, Calendar, ChevronLeft, ChevronRight } from 'lucide-react';
 import { blogPosts } from '@/data/blogPosts';
 import { Card } from '@/components/ui/Card';
@@ -110,82 +112,85 @@ export default function BlogPostContent({ slug }: BlogPostContentProps) {
             </span>
           </div>
 
-          {/* Content */}
-          <div className="prose prose-sm dark:prose-invert max-w-none prose-headings:text-text-primary-light dark:prose-headings:text-text-primary-dark prose-p:text-text-secondary-light dark:prose-p:text-text-secondary-dark prose-a:text-accent-pink prose-strong:text-text-primary-light dark:prose-strong:text-text-primary-dark prose-code:text-accent-pink prose-code:bg-surface-light dark:prose-code:bg-surface-dark prose-code:px-1 prose-code:py-0.5 prose-code:rounded prose-pre:bg-surface-light dark:prose-pre:bg-surface-dark prose-pre:border prose-pre:border-border-light dark:prose-pre:border-border-dark">
-            {post.content.split('\n\n').map((block, i) => {
-              if (block.startsWith('## ')) {
-                return (
-                  <h2
-                    key={i}
-                    className="text-lg font-semibold text-text-primary-light dark:text-text-primary-dark mt-8 mb-3"
-                  >
-                    {block.replace('## ', '')}
+          {/* Content — rendered with react-markdown */}
+          <div className="prose-custom">
+            <ReactMarkdown
+              remarkPlugins={[remarkGfm]}
+              components={{
+                h2: ({ children }) => (
+                  <h2 className="text-lg font-semibold text-text-primary-light dark:text-text-primary-dark mt-8 mb-3">
+                    {children}
                   </h2>
-                );
-              }
-              if (block.startsWith('### ')) {
-                return (
-                  <h3
-                    key={i}
-                    className="text-base font-semibold text-text-primary-light dark:text-text-primary-dark mt-6 mb-2"
-                  >
-                    {block.replace('### ', '')}
+                ),
+                h3: ({ children }) => (
+                  <h3 className="text-base font-semibold text-text-primary-light dark:text-text-primary-dark mt-6 mb-2">
+                    {children}
                   </h3>
-                );
-              }
-              if (block.startsWith('```')) {
-                const lines = block.split('\n');
-                const code = lines.slice(1, -1).join('\n');
-                return (
-                  <pre
-                    key={i}
-                    className="bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark rounded-lg p-4 my-4 overflow-x-auto"
-                  >
-                    <code className="text-xs text-text-secondary-light dark:text-text-secondary-dark">
-                      {code}
-                    </code>
-                  </pre>
-                );
-              }
-              if (block.startsWith('1. ') || block.startsWith('- ')) {
-                const items = block.split('\n');
-                const isOrdered = block.startsWith('1. ');
-                const Tag = isOrdered ? 'ol' : 'ul';
-                return (
-                  <Tag
-                    key={i}
-                    className={`my-3 space-y-1.5 pl-5 ${isOrdered ? 'list-decimal' : 'list-disc'}`}
-                  >
-                    {items.map((item, j) => (
-                      <li
-                        key={j}
-                        className="text-sm text-text-secondary-light dark:text-text-secondary-dark leading-relaxed"
-                      >
-                        {item.replace(/^\d+\.\s|^-\s/, '')}
-                      </li>
-                    ))}
-                  </Tag>
-                );
-              }
-              if (block.startsWith('**') && block.endsWith('**')) {
-                return (
-                  <p
-                    key={i}
-                    className="text-sm font-semibold text-text-primary-light dark:text-text-primary-dark my-3"
-                  >
-                    {block.replace(/\*\*/g, '')}
+                ),
+                p: ({ children }) => (
+                  <p className="text-sm text-text-secondary-light dark:text-text-secondary-dark leading-relaxed my-3">
+                    {children}
                   </p>
-                );
-              }
-              return (
-                <p
-                  key={i}
-                  className="text-sm text-text-secondary-light dark:text-text-secondary-dark leading-relaxed my-3"
-                >
-                  {block}
-                </p>
-              );
-            })}
+                ),
+                ul: ({ children }) => (
+                  <ul className="my-3 space-y-1.5 pl-5 list-disc">
+                    {children}
+                  </ul>
+                ),
+                ol: ({ children }) => (
+                  <ol className="my-3 space-y-1.5 pl-5 list-decimal">
+                    {children}
+                  </ol>
+                ),
+                li: ({ children }) => (
+                  <li className="text-sm text-text-secondary-light dark:text-text-secondary-dark leading-relaxed">
+                    {children}
+                  </li>
+                ),
+                strong: ({ children }) => (
+                  <strong className="font-semibold text-text-primary-light dark:text-text-primary-dark">
+                    {children}
+                  </strong>
+                ),
+                a: ({ href, children }) => (
+                  <a
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-accent-pink hover:underline"
+                  >
+                    {children}
+                  </a>
+                ),
+                code: ({ className, children }) => {
+                  const isBlock = className?.includes('language-');
+                  if (isBlock) {
+                    return (
+                      <code className="text-xs text-text-secondary-light dark:text-text-secondary-dark">
+                        {children}
+                      </code>
+                    );
+                  }
+                  return (
+                    <code className="text-accent-pink bg-surface-light dark:bg-surface-dark px-1.5 py-0.5 rounded text-xs">
+                      {children}
+                    </code>
+                  );
+                },
+                pre: ({ children }) => (
+                  <pre className="bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark rounded-lg p-4 my-4 overflow-x-auto">
+                    {children}
+                  </pre>
+                ),
+                blockquote: ({ children }) => (
+                  <blockquote className="border-l-2 border-accent-pink pl-4 my-4 italic text-text-muted-light dark:text-text-muted-dark">
+                    {children}
+                  </blockquote>
+                ),
+              }}
+            >
+              {post.content}
+            </ReactMarkdown>
           </div>
         </Card>
 
@@ -198,7 +203,7 @@ export default function BlogPostContent({ slug }: BlogPostContentProps) {
                   <ChevronLeft className="h-3 w-3" />
                   Previous
                 </span>
-                <p className="text-sm font-medium text-text-primary-light dark:text-text-primary-dark group-hover:text-accent-pink transition-colors line-clamp-2">
+                <p className="text-sm font-medium text-text-primary-light dark:text-text-primary-dark group-hover:text-accent-pink transition-colors duration-200 line-clamp-1">
                   {prevPost.title}
                 </p>
               </Card>
@@ -213,7 +218,7 @@ export default function BlogPostContent({ slug }: BlogPostContentProps) {
                   Next
                   <ChevronRight className="h-3 w-3" />
                 </span>
-                <p className="text-sm font-medium text-text-primary-light dark:text-text-primary-dark group-hover:text-accent-pink transition-colors line-clamp-2">
+                <p className="text-sm font-medium text-text-primary-light dark:text-text-primary-dark group-hover:text-accent-pink transition-colors duration-200 line-clamp-1">
                   {nextPost.title}
                 </p>
               </Card>

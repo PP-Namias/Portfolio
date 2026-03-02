@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="400" viewBox="0 0 800 400">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1e3a5f"/>
+      <stop offset="100%" style="stop-color:#3178c6"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="400" fill="url(#bg)"/>
+  <text x="400" y="180" text-anchor="middle" fill="rgba(255,255,255,0.15)" font-family="system-ui" font-size="100" font-weight="700">TS</text>
+  <text x="400" y="280" text-anchor="middle" fill="white" font-family="system-ui" font-size="28" font-weight="600">TypeScript Design Patterns</text>
+  <text x="400" y="320" text-anchor="middle" fill="rgba(255,255,255,0.6)" font-family="system-ui" font-size="16">Essential Patterns for React Developers</text>
+</svg>

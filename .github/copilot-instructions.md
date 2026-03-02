@@ -6,7 +6,7 @@
 > **Design Reference:** https://bryllim.com/ (modern resume-portfolio hybrid)  
 > **Model:** Always use **Claude Opus 4.6** for all development tasks  
 > **IDE:** VS Code with GitHub Copilot  
-> **Last audited:** 2026-03-02 (images, UI/UX, SEO, data quality, gallery lightbox, ConnectSection cleanup)
+> **Last audited:** 2026-03-02 (images, UI/UX, SEO, data quality, gallery lightbox, ConnectSection cleanup, SpeakingSection enhancement, favicon, blog architecture, react-markdown, LICENSE fix)
 
 ---
 
@@ -22,6 +22,7 @@
 | Icons | Lucide React | ^0.468.0 | Consistent, tree-shakeable icon library |
 | Theming | next-themes | ^0.4.4 | Dark/light mode with `class` strategy |
 | Hosting | AWS Amplify | — | Serverless deployment with CI/CD |
+| Markdown | react-markdown + remark-gfm + rehype-highlight | ^9.x | Blog content rendering with GFM + syntax highlighting |
 | Static Assets | Local `portfolio-resources/` | — | Images, documents, JSON data |
 
 ---
@@ -78,6 +79,7 @@ Every task MUST follow this pipeline:
 │   │       ├── gallery/              # 22 gallery photos (.jpg, .jpeg, .JPG, .png)
 │   │       └── projects/             # 15 project screenshots (.png, .jpg)
 │   └── data/                         # Static JSON data
+│       ├── blog.json                 # 6 blog posts (migrated from hardcoded TS)
 │       ├── certifications.json       # 28 certifications (21 HackerRank + 7 others)
 │       ├── experiences.json          # 7 work experiences
 │       ├── gallery.json              # 22 gallery images
@@ -88,9 +90,12 @@ Every task MUST follow this pipeline:
 │       ├── socials.json              # 8 social links (real URLs)
 │       └── technologies.json         # 45 technologies across 6 categories
 ├── public/                           # Next.js public static files
-│   ├── site.webmanifest
+│   ├── favicon.svg                    # SVG favicon (32x32, pink "JN" branding)
+│   ├── apple-touch-icon.svg          # Apple touch icon (180x180)
+│   ├── site.webmanifest              # PWA manifest (JN branding, pink theme)
 │   ├── resume.pdf                    # Downloadable resume (copied from portfolio-resources)
 │   └── images/                       # Served images (copied from portfolio-resources)
+│       ├── blog/                     # 6 SVG blog cover images (gradient backgrounds)
 │       ├── gallery/                  # 22 gallery photos
 │       ├── projects/                 # 15 project screenshots
 │       ├── certifications/           # 28 certificate images
@@ -98,15 +103,16 @@ Every task MUST follow this pipeline:
 ├── src/
 │   ├── app/
 │   │   ├── globals.css               # Global styles + CSS custom properties
-│   │   ├── layout.tsx                # Root layout + metadata + Inter font
+│   │   ├── layout.tsx                # Root layout + metadata + Inter font + favicon SVG icons
 │   │   ├── page.tsx                  # Home page (main portfolio, 'use client')
 │   │   ├── providers.tsx             # ThemeProvider (dark default, class strategy)
 │   │   └── blog/
 │   │       ├── layout.tsx            # Blog layout with SEO metadata
-│   │       ├── page.tsx              # Blog listing ('use client')
+│   │       ├── page.tsx              # Blog listing (server component — renders BlogListClient)
+│   │       ├── BlogListClient.tsx    # Client component for animated blog grid (Framer Motion)
 │   │       └── [slug]/
 │   │           ├── page.tsx          # Blog post SSG page + generateStaticParams + generateMetadata
-│   │           └── BlogPostContent.tsx  # Client-side blog renderer
+│   │           └── BlogPostContent.tsx  # Client-side blog renderer (react-markdown + remark-gfm)
 │   ├── components/
 │   │   ├── layout/
 │   │   │   └── Footer.tsx            # Simple copyright footer
@@ -119,7 +125,7 @@ Every task MUST follow this pipeline:
 │   │   │   ├── ExperienceTimeline.tsx     # Timeline with expandable details
 │   │   │   ├── RecommendationsCarousel.tsx # Auto-advancing testimonials
 │   │   │   ├── MembershipsSection.tsx     # Org membership links
-│   │   │   ├── SpeakingSection.tsx        # Static speaking availability
+│   │   │   ├── SpeakingSection.tsx        # Speaking availability with Mic icon, topic pills from profile data
 │   │   │   ├── ConnectSection.tsx         # Social links (Connect card) + latest blog post card
 │   │   │   └── GallerySection.tsx         # Paginated image slider (5/slide) with title hover overlay + lightbox
 │   │   └── ui/                       # 6 reusable UI primitives
@@ -130,7 +136,7 @@ Every task MUST follow this pipeline:
 │   │       ├── TimelineItem.tsx      # Expandable experience timeline entry
 │   │       └── VerifiedBadge.tsx     # Pink checkmark next to name
 │   ├── data/                         # TS modules importing JSON → typed exports
-│   │   ├── blogPosts.ts             # ⚠️ HARDCODED blog data (not from JSON)
+│   │   ├── blogPosts.ts             # Sources from blog.json (same pattern as other data modules)
 │   │   ├── certifications.ts
 │   │   ├── experience.ts
 │   │   ├── gallery.ts
@@ -148,7 +154,7 @@ Every task MUST follow this pipeline:
 │   └── types/
 │       └── index.ts                  # All TypeScript interfaces
 ├── tailwind.config.ts                # Custom colors, fonts, darkMode: 'class'
-├── next.config.js                    # Standalone output, S3 remote patterns
+├── next.config.js                    # Standalone output only
 ├── amplify.yml                       # AWS Amplify CI/CD config
 └── package.json
 ```
@@ -231,6 +237,7 @@ This section documents the **actual content** from `portfolio-resources/data/` s
 - **Projects:** 15 screenshots available — **now mapped to correct filenames in projects.json and displayed in ProjectCard**
 - **Profile photos:** `me.jpg`, `Jhon Keneth Namias (2).jpg`, `Namias Profile White BG.png` — **me.jpg used in HeroSection**
 - **Resume:** PDF, DOCX, and LaTeX source available (PDF served at `/resume.pdf`)
+- **Blog covers:** 6 SVG images in `public/images/blog/` (ai-langchain.svg, aws-amplify.svg, ts-patterns.svg, codespaces.svg, gen-ai.svg, aws-s3.svg)
 
 ---
 
@@ -289,7 +296,7 @@ accent-pink: #db2777          accent-pink-hover: #be185d
 All real content lives in `portfolio-resources/data/*.json`.  
 The `src/data/*.ts` modules import this JSON and re-export with TypeScript types.
 
-**Exception:** `blogPosts.ts` is currently hardcoded with sample blog posts and does NOT follow this pattern. Blog data should eventually be migrated to `portfolio-resources/data/blog.json`.
+All 10 data modules now follow this pattern consistently, including `blogPosts.ts` which sources from `blog.json`.
 
 ### Data Flow
 ```
@@ -300,14 +307,14 @@ portfolio-resources/data/*.json  →  src/data/*.ts (typed)  →  Section Compon
 ```
 portfolio-resources/assets/images/  →  public/images/ (copied)  →  Next.js <Image> components
 ```
-Images from `portfolio-resources/` are copied to `public/images/` with subdirectories: `gallery/`, `projects/`, `certifications/`, `profile/`. All components reference `/images/{subfolder}/{filename}` paths. When adding new images, copy them to both locations.
+Images from `portfolio-resources/` are copied to `public/images/` with subdirectories: `blog/`, `gallery/`, `projects/`, `certifications/`, `profile/`. All components reference `/images/{subfolder}/{filename}` paths. When adding new images, copy them to both locations.
 
 ### Types (src/types/index.ts)
 All TypeScript interfaces for JSON data live here. `BlogPost` type is also in `src/types/index.ts`.
 
 | Type | Key Fields | JSON Source | Used Fields in UI | Unused Fields |
 |------|------------|-------------|-------------------|---------------|
-| `Profile` | name, title, email, phone, location, github, linkedin, summary, highlights, education | profile.json | name, title, email, location, github, summary, highlights.yearsExperience, highlights.projectsCompleted, education.degree, education.institution, education.location, education.honors, education.gpa, education.relevantCourses, education.startedAt | **phone, linkedin, highlights.primaryTechnologies, education.endedAt** |
+| `Profile` | name, title, email, phone, location, github, linkedin, summary, highlights, education | profile.json | name, title, email, location, github, summary, highlights.yearsExperience, highlights.projectsCompleted, highlights.primaryTechnologies (SpeakingSection topic pills), education.degree, education.institution, education.location, education.honors, education.gpa, education.relevantCourses, education.startedAt | **phone, linkedin, education.endedAt** |
 | `Experience` | company, position, summary, country, modality, type, startedAt, endedAt, technologies, highlights, achievements, relatedProjects | experiences.json | company, position, type, startedAt, endedAt, summary, technologies, highlights, achievements (expandable) | **country, modality, relatedProjects** |
 | `Project` | title, image, description, repositoryURL, liveURL, processURL, tags, year | projects.json | title, image, description, repositoryURL, liveURL, tags (first 3), year | **processURL** |
 | `Certification` | title, image, issuer, issuedAt, tags | certifications.json | title, image, issuer, issuedAt (with lightbox) | **tags** |
@@ -316,6 +323,7 @@ All TypeScript interfaces for JSON data live here. `BlogPost` type is also in `s
 | `Membership` | name, url, joinedAt | memberships.json | name, url, joinedAt | — |
 | `SocialLink` | name, icon, label, link, featured? | socials.json | name, icon, label, link, featured (accent style for featured links) | — |
 | `Recommendation` | quote, name, title, company | recommendations.json | All used | — |
+| `BlogPost` | id, slug, title, excerpt, content, date, readTime, tags, coverImage | blog.json | All used (listing grid + full post page) | — |
 
 ---
 
@@ -403,7 +411,7 @@ These are confirmed issues in the codebase as of 2026-03-02. Reference these whe
 
 3. **Recommendations are fake** — `recommendations.json` contains 2 placeholder testimonials from "Sample Recommender" and "Another Recommender" at fictional companies. Must be replaced with real quotes.
 
-4. **Blog data violates architecture** — `src/data/blogPosts.ts` hardcodes 6 blog posts instead of sourcing from `portfolio-resources/data/blog.json`. All cover images use external `picsum.photos` placeholder URLs.
+4. ~~**Blog data violates architecture** — `src/data/blogPosts.ts` hardcodes 6 blog posts instead of sourcing from `portfolio-resources/data/blog.json`. All cover images use external `picsum.photos` placeholder URLs. Fixed 2026-03-02: created `portfolio-resources/data/blog.json`, rewrote `blogPosts.ts` as JSON import, replaced picsum.photos with local SVG covers in `public/images/blog/`.~~
 
 5. ~~**`BlogPost` type not in `src/types/index.ts`** — Fixed 2026-03-02: moved to `src/types/index.ts`, `blogPosts.ts` now imports from `@/types`.~~
 
@@ -428,11 +436,11 @@ These are confirmed issues in the codebase as of 2026-03-02. Reference these whe
 
 13. ~~**Raw `<img>` tags everywhere** — Fixed 2026-03-02: GallerySection, ConnectSection, BlogPostContent, blog pages now use Next.js `<Image>`.~~
 
-14. **Blog listing is `'use client'`** — Prevents SSR/SSG, bad for SEO. Should be a server component.
+14. ~~**Blog listing is `'use client'`** — Prevents SSR/SSG, bad for SEO. Fixed 2026-03-02: split into server component `page.tsx` + client `BlogListClient.tsx`. First Load JS dropped from 7.51 kB to 1.61 kB.~~
 
 15. ~~**Blog posts lack `generateMetadata`** — Fixed 2026-03-02: added `generateMetadata` to `blog/[slug]/page.tsx` + blog layout with metadata.~~
 
-16. **Custom markdown renderer is naive** — `BlogPostContent.tsx` parses markdown manually (handles ##, ###, code blocks, lists, bold) but misses inline formatting, links, images, inline code, and nested elements. Should use `react-markdown` or similar.
+16. ~~**Custom markdown renderer is naive** — `BlogPostContent.tsx` parses markdown manually. Fixed 2026-03-02: installed `react-markdown` + `remark-gfm` + `rehype-highlight`, rewrote `BlogPostContent.tsx` with proper component mapping for headings, lists, code blocks, links, blockquotes.~~
 
 17. ~~**`ConnectSection` calls `.find()` twice** for calendly — Fixed 2026-03-02: cached as `calendlyLink` variable. Further streamlined: removed redundant "Get in Touch" and "Quick Links" sections that duplicated Social Links and Hero CTAs.~~
 
@@ -442,7 +450,7 @@ These are confirmed issues in the codebase as of 2026-03-02. Reference these whe
 
 20. ~~**`Button` ghost/outline variants are identical** — Fixed 2026-03-02: ghost is now borderless with subtle bg, outline has border with accent hover.~~
 
-21. **`next.config.js` has S3 remote patterns** but no S3 bucket is currently in use for the deployed site — images are local.
+21. ~~**`next.config.js` has S3 remote patterns** but no S3 bucket is currently in use. Fixed 2026-03-02: removed entire `images.remotePatterns` config. Config now just sets `output: 'standalone'`.~~
 
 22. ~~**Resume button opens new tab instead of downloading** — Fixed 2026-03-02: HeroSection resume uses `<a download>` attribute instead of Button with `target="_blank"`.~~
 
@@ -451,6 +459,14 @@ These are confirmed issues in the codebase as of 2026-03-02. Reference these whe
 24. ~~**Gallery section missing image count** — Fixed 2026-03-02: header now shows `Gallery (22)` count like Projects and Certifications.~~
 
 25. ~~**ConnectSection had redundant sections** — Fixed 2026-03-02: removed "Get in Touch" and "Quick Links" sections. Now shows single "Connect" card with all 8 social links + "Latest Post" card.~~
+
+26. ~~**SpeakingSection was too generic** — Fixed 2026-03-02: added Mic icon, real topic pills from `profile.highlights.primaryTechnologies`, improved description, mailto subject prefill.~~
+
+27. ~~**Dead favicon.ico reference in layout.tsx** — Fixed 2026-03-02: removed `icons: { icon: '/favicon.ico' }` from metadata since the file doesn't exist.~~
+
+28. ~~**LICENSE had wrong copyright name** — Fixed 2026-03-02: changed from "Karen Pearl V. Pabilando" to "Jhon Keneth Namias".~~
+
+29. ~~**No favicon** — Fixed 2026-03-02: created `public/favicon.svg` (32x32, pink rounded rect with "JN") and `public/apple-touch-icon.svg` (180x180). Added to `layout.tsx` metadata. Updated `site.webmanifest` with name, colors, and icon entries.~~
 
 ---
 
@@ -469,6 +485,9 @@ Prioritized improvements organized by effort and impact. Reference this when the
 - [x] Remove unused `Badge.tsx` component
 - [x] Cache calendly link lookup in ConnectSection
 - [x] Fix RecommendationsCarousel prevIndex auto-advance sync
+- [x] Enhance SpeakingSection with Mic icon and topic pills from profile data
+- [x] Remove dead favicon.ico reference from layout.tsx metadata
+- [x] Fix LICENSE copyright name (was wrong person)
 
 ### Medium Effort (1–3 hours)
 - [x] Solve image serving: copy `portfolio-resources/assets/images/` to `public/images/`
@@ -478,18 +497,19 @@ Prioritized improvements organized by effort and impact. Reference this when the
 - [x] Show experience details (summary, technologies, highlights) in expanded timeline
 - [x] Replace `<img>` with Next.js `<Image>` throughout
 - [x] Move `BlogPost` type to `src/types/index.ts`
-- [ ] Create `portfolio-resources/data/blog.json` and source blog data from it
+- [x] Create `portfolio-resources/data/blog.json` and source blog data from it
 
 ### Larger Features (3+ hours)
 - [ ] Get real recommendations and replace placeholder data
-- [ ] Implement proper markdown rendering (react-markdown + rehype plugins)
+- [x] Implement proper markdown rendering (react-markdown + remark-gfm + rehype-highlight)
 - [x] Add SEO: `generateMetadata` for blog pages + blog layout metadata
-- [ ] Make blog listing a server component for SSG
+- [x] Make blog listing a server component for SSG
 - [x] Show gallery image title on hover overlay
 - [x] Add resume download button in HeroSection using `public/resume.pdf`
 - [x] Leverage `SocialLink.featured` for prominent accent display in ConnectSection
 - [x] Display education dates, GPA, relevant courses in AboutSection
 - [x] Show experience achievements in expandable timeline
+- [x] Add favicon (SVG favicon + apple-touch-icon) to public/
 - [ ] Add OG images and structured data for full SEO
 - [x] Gallery lightbox (click-to-enlarge with AnimatePresence modal)
 - [x] Streamline ConnectSection (removed redundant "Get in Touch" and "Quick Links")
@@ -505,12 +525,12 @@ Prioritized improvements organized by effort and impact. Reference this when the
 3. **Social links:** From `socials.json` — never hardcode URLs (8 links: calendly, github, email, linkedin, facebook, discord, x, instagram)
 4. **Metadata:** Real name "Jhon Keneth Namias", real domain "namias.tech", real email `pp.namias@gmail.com`
 5. **CSS transitions on `*`:** Avoid — causes performance issues on theme switch. Only transition specific properties on body
-6. **`'use client'`:** Only for interactive components — blog listing should be server component
+6. **`'use client'`:** Only for interactive components — blog listing is now a server component with `BlogListClient` for animations
 7. **Image paths:** Images live in `portfolio-resources/assets/images/` and are copied to `public/images/`. Components reference `/images/{subfolder}/{filename}`. When adding new images, copy them to both locations.
 8. **Filenames with spaces:** Gallery and cert images have spaces in filenames (e.g., `Birthday Picture 2024 (1).JPG`, `HackForGov 2025 (1).jpeg`) — must URL-encode when referencing
 9. **Mixed file extensions:** Gallery uses `.JPG`, `.jpg`, `.jpeg`, `.png` — ensure case-sensitive handling
 10. **Standalone output:** `next.config.js` sets `output: 'standalone'` for AWS Amplify — don't remove
-11. **No `react-markdown`:** Blog content rendering is hand-rolled — adding a markdown library requires updating `package.json`
+11. **`react-markdown` installed:** Blog uses `react-markdown` + `remark-gfm` + `rehype-highlight` for proper markdown rendering
 12. **`tailwind.config.ts` content paths:** Only scans `src/components/**` and `src/app/**` — if adding components elsewhere, update the config
 
 ---

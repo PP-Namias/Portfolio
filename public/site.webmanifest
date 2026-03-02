@@ -1,8 +1,19 @@
 {
-  "name": "Portfolio",
-  "short_name": "Portfolio",
-  "icons": [],
-  "theme_color": "#14b8a6",
-  "background_color": "#0f172a",
+  "name": "Jhon Keneth Namias — Portfolio",
+  "short_name": "JN Portfolio",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "type": "image/svg+xml",
+      "sizes": "any"
+    },
+    {
+      "src": "/apple-touch-icon.svg",
+      "type": "image/svg+xml",
+      "sizes": "180x180"
+    }
+  ],
+  "theme_color": "#db2777",
+  "background_color": "#000000",
   "display": "standalone"
 }
