@@ -26,7 +26,7 @@ export function Button({
 
   const variants = {
     primary:
-      'bg-accent-pink text-white hover:bg-accent-pink-hover active:bg-pink-800 shadow-sm',
+      'bg-accent-pink text-white hover:bg-accent-pink-hover active:bg-accent-pink-hover shadow-sm',
     ghost:
       'text-text-primary-light dark:text-text-primary-dark bg-surface-light/50 dark:bg-card-bg-dark/50 hover:bg-surface-light dark:hover:bg-card-bg-dark',
     outline:

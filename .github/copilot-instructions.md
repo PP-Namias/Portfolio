@@ -6,7 +6,7 @@
 > **Design Reference:** https://bryllim.com/ (modern resume-portfolio hybrid)  
 > **Model:** Always use **Claude Opus 4.6** for all development tasks  
 > **IDE:** VS Code with GitHub Copilot  
-> **Last audited:** 2026-03-02 (images, UI/UX, SEO, OG image, JSON-LD, data quality, gallery lightbox, ConnectSection cleanup, SpeakingSection enhancement, favicon, blog architecture, react-markdown, rehype-highlight, accessibility, dead file cleanup, LICENSE fix)
+> **Last audited:** 2026-03-03 (V6 mega upgrade: Navbar, Hero redesign, Footer upgrade, error pages, reading progress, project filters, stats counters, SEO sitemap/robots, blog structured data)
 
 ---
 
@@ -94,6 +94,7 @@ Every task MUST follow this pipeline:
 │   ├── favicon.svg                    # SVG favicon (32x32, pink "JN" branding)
 │   ├── apple-touch-icon.svg          # Apple touch icon (180x180)
 │   ├── og-image.svg                  # OpenGraph image (1200x630, branded)
+│   ├── robots.txt                    # SEO robots.txt (Allow all, sitemap link)
 │   ├── site.webmanifest              # PWA manifest (JN branding, pink theme)
 │   ├── resume.pdf                    # Downloadable resume (copied from portfolio-resources)
 │   └── images/                       # Served images (copied from portfolio-resources)
@@ -106,9 +107,12 @@ Every task MUST follow this pipeline:
 ├── src/
 │   ├── app/
 │   │   ├── globals.css               # Global styles + CSS custom properties
-│   │   ├── layout.tsx                # Root layout + metadata + Inter font + favicon SVG icons + JSON-LD
-│   │   ├── page.tsx                  # Home page (main portfolio, server component)
+│   │   ├── layout.tsx                # Root layout + metadata + Inter font + Navbar + favicon SVG icons + JSON-LD
+│   │   ├── page.tsx                  # Home page (main portfolio, server component, section IDs for nav)
 │   │   ├── providers.tsx             # ThemeProvider (dark default, class strategy)
+│   │   ├── sitemap.ts                # Dynamic sitemap.xml generation (Next.js built-in)
+│   │   ├── not-found.tsx             # Branded 404 page (pink gradient "404")
+│   │   ├── error.tsx                 # Branded error boundary ('use client', reset button)
 │   │   ├── experience/
 │   │   │   ├── page.tsx              # Experience page (server component + SEO metadata)
 │   │   │   └── ExperiencePageClient.tsx  # Client component with scroll-driven Timeline
@@ -120,16 +124,17 @@ Every task MUST follow this pipeline:
 │   │       ├── page.tsx              # Blog listing (server component — renders BlogListClient)
 │   │       ├── BlogListClient.tsx    # Client component for animated blog grid (Framer Motion)
 │   │       └── [slug]/
-│   │           ├── page.tsx          # Blog post SSG page + generateStaticParams + generateMetadata
-│   │           └── BlogPostContent.tsx  # Client-side blog renderer (react-markdown + remark-gfm)
+│   │           ├── page.tsx          # Blog post SSG page + generateStaticParams + generateMetadata + Article JSON-LD
+│   │           └── BlogPostContent.tsx  # Client-side blog renderer (react-markdown + remark-gfm + ReadingProgress)
 │   ├── components/
 │   │   ├── layout/
-│   │   │   └── Footer.tsx            # Simple copyright footer
+│   │   │   ├── Navbar.tsx             # Sticky glass-morphism nav bar (section links, ThemeToggle, mobile hamburger, active section highlighting)
+│   │   │   └── Footer.tsx            # Multi-column footer (Quick Links, Connect socials, Contact info, Back to Top)
 │   │   ├── sections/                 # 11 section components (all 'use client')
-│   │   │   ├── HeroSection.tsx       # Name, real photo, CTA buttons + resume download (download attr)
-│   │   │   ├── AboutSection.tsx      # Summary, education (dates, GPA, courses), highlights stats
+│   │   │   ├── HeroSection.tsx       # Animated photo ring, role text rotation, availability badge, social icons, CTA buttons
+│   │   │   ├── AboutSection.tsx      # Summary, education, animated stat counters (years, projects, technologies)
 │   │   │   ├── TechStackSection.tsx  # Tech stack grouped by category with proficiency
-│   │   │   ├── ProjectsSection.tsx   # Project cards grid (all 7, with toggle)
+│   │   │   ├── ProjectsSection.tsx   # Project cards grid with tag filtering (all 7, with toggle)
 │   │   │   ├── CertificationsSection.tsx  # Scrollable cert list with images + lightbox
 │   │   │   ├── ExperienceTimeline.tsx     # Timeline with expandable details + "View Full Experience" link
 │   │   │   ├── RecommendationsCarousel.tsx # Auto-advancing testimonials
@@ -137,10 +142,11 @@ Every task MUST follow this pipeline:
 │   │   │   ├── SpeakingSection.tsx        # Speaking availability with Mic icon, topic pills from profile data
 │   │   │   ├── ConnectSection.tsx         # Social links (Connect card) + latest blog post card
 │   │   │   └── GallerySection.tsx         # Paginated image slider (5/slide) with title hover overlay + lightbox
-│   │   └── ui/                       # 11 reusable UI primitives
+│   │   └── ui/                       # 12 reusable UI primitives
 │   │       ├── Button.tsx            # Primary/ghost/outline with href support
-│   │       ├── Card.tsx              # Bordered card wrapper with hover option
+│   │       ├── Card.tsx              # Bordered card wrapper with hover option + optional id prop
 │   │       ├── ProjectCard.tsx       # Project card with screenshot + links
+│   │       ├── ReadingProgress.tsx   # Blog reading progress bar (fixed top, pink gradient, framer-motion useScroll)
 │   │       ├── FloatingHub.tsx       # Main floating hub container (FAB + 3-state machine + panel wrapper)
 │   │       ├── HubMenu.tsx           # Hub menu panel with 6 quick action items
 │   │       ├── HubMenuItem.tsx       # Reusable action row component (icon + label + subtitle)
@@ -567,6 +573,15 @@ Prioritized improvements organized by effort and impact. Reference this when the
 - [x] Surface technology logos in TechStackSection
 - [x] Move experience images to data (experiences.json `images` field)
 - [x] Print stylesheet (`@media print` in globals.css)
+- [x] Sticky navigation bar with section anchoring, active highlights, mobile hamburger
+- [x] Hero redesign: animated gradient ring on photo, role text rotation, availability badge, social icons row
+- [x] Multi-column footer with Quick Links, Connect socials, Contact info, Back to Top
+- [x] Branded 404 page and error boundary
+- [x] Blog reading progress bar (framer-motion useScroll)
+- [x] Project tag filtering (similar to certifications)
+- [x] About section animated stat counters (years, projects, technologies) with icons
+- [x] SEO sitemap.xml (Next.js built-in) + robots.txt
+- [x] Article JSON-LD structured data on blog posts
 - [ ] Contact form (instead of just mailto links)
 - [ ] Privacy-respecting analytics (Plausible or Umami)
 

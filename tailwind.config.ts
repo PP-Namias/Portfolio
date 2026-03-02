@@ -38,9 +38,9 @@ const config: Config = {
           dark: '#1f1f1f',
         },
         accent: {
-          pink: '#db2777',
-          'pink-hover': '#be185d',
-          'pink-hover-dark': '#f472b6',
+          pink: 'rgb(var(--accent) / <alpha-value>)',
+          'pink-hover': 'rgb(var(--accent-hover) / <alpha-value>)',
+          'pink-hover-dark': 'rgb(var(--accent-hover-dark) / <alpha-value>)',
         },
       },
       fontFamily: {
@@ -48,6 +48,9 @@ const config: Config = {
       },
       maxWidth: {
         container: '860px',
+      },
+      animation: {
+        'spin-slow': 'spin 8s linear infinite',
       },
     },
   },

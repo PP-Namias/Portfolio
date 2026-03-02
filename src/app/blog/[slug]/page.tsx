@@ -27,5 +27,33 @@ export function generateMetadata({ params }: { params: { slug: string } }): Meta
 }
 
 export default function BlogPostPage({ params }: { params: { slug: string } }) {
-  return <BlogPostContent slug={params.slug} />;
+  const post = blogPosts.find((p) => p.slug === params.slug);
+
+  const jsonLd = post
+    ? {
+        '@context': 'https://schema.org',
+        '@type': 'Article',
+        headline: post.title,
+        description: post.excerpt,
+        datePublished: post.date,
+        author: {
+          '@type': 'Person',
+          name: 'Jhon Keneth Ryan Namias',
+          url: 'https://namias.tech',
+        },
+        image: post.coverImage ? `https://namias.tech${post.coverImage}` : undefined,
+      }
+    : null;
+
+  return (
+    <>
+      {jsonLd && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+      )}
+      <BlogPostContent slug={params.slug} />
+    </>
+  );
 }

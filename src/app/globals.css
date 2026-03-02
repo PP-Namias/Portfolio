@@ -10,7 +10,9 @@
   --text-primary: #111827;
   --text-secondary: #4b5563;
   --text-muted: #6b7280;
-  --accent-pink: #db2777;
+  --accent: 219 39 119;
+  --accent-hover: 190 24 93;
+  --accent-hover-dark: 244 114 182;
 }
 
 .dark {
@@ -67,7 +69,7 @@ body {
 
 /* Custom selection color */
 ::selection {
-  background-color: rgba(219, 39, 119, 0.2);
+  background-color: rgb(var(--accent) / 0.2);
   color: inherit;
 }
 

@@ -1,9 +1,41 @@
 'use client';
 
-import React from 'react';
-import { motion } from 'framer-motion';
-import { GraduationCap } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { motion, useInView } from 'framer-motion';
+import { GraduationCap, Briefcase, Code, Layers } from 'lucide-react';
 import { profile } from '@/data/profile';
+import { technologies } from '@/data/techStack';
+
+function AnimatedCounter({ target, label, icon: Icon }: { target: number; label: string; icon: React.ComponentType<{ className?: string }> }) {
+  const [count, setCount] = useState(0);
+  const ref = useRef<HTMLDivElement>(null);
+  const inView = useInView(ref, { once: true });
+
+  useEffect(() => {
+    if (!inView) return;
+    let start = 0;
+    const duration = 1500;
+    const step = Math.ceil(target / (duration / 16));
+    const timer = setInterval(() => {
+      start += step;
+      if (start >= target) {
+        setCount(target);
+        clearInterval(timer);
+      } else {
+        setCount(start);
+      }
+    }, 16);
+    return () => clearInterval(timer);
+  }, [inView, target]);
+
+  return (
+    <div ref={ref} className="text-center">
+      <Icon className="h-4 w-4 text-accent-pink mx-auto mb-1" />
+      <p className="text-lg font-bold text-accent-pink">{count}+</p>
+      <p className="text-[10px] text-text-muted-light dark:text-text-muted-dark">{label}</p>
+    </div>
+  );
+}
 
 export function AboutSection() {
   return (
@@ -83,22 +115,17 @@ export function AboutSection() {
           );
         })}
 
-        {/* Highlights */}
+        {/* Animated Stats */}
         <motion.div
-          className="flex flex-wrap gap-4 mt-3"
+          className="flex flex-wrap gap-6 mt-3"
           initial={{ opacity: 0, y: 10 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ delay: 0.2, duration: 0.3 }}
         >
-          <div className="text-center">
-            <p className="text-lg font-bold text-accent-pink">{profile.highlights.yearsExperience}+</p>
-            <p className="text-[10px] text-text-muted-light dark:text-text-muted-dark">Years Exp.</p>
-          </div>
-          <div className="text-center">
-            <p className="text-lg font-bold text-accent-pink">{profile.highlights.projectsCompleted}+</p>
-            <p className="text-[10px] text-text-muted-light dark:text-text-muted-dark">Projects</p>
-          </div>
+          <AnimatedCounter target={profile.highlights.yearsExperience} label="Years Exp." icon={Briefcase} />
+          <AnimatedCounter target={profile.highlights.projectsCompleted} label="Projects" icon={Code} />
+          <AnimatedCounter target={technologies.length} label="Technologies" icon={Layers} />
         </motion.div>
       </div>
     </motion.section>

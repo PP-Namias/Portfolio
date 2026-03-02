@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://namias.tech/sitemap.xml

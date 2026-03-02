@@ -11,6 +11,7 @@ import { ArrowLeft, Clock, Calendar, ChevronLeft, ChevronRight } from 'lucide-re
 import { blogPosts } from '@/data/blogPosts';
 import { Card } from '@/components/ui/Card';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
+import { ReadingProgress } from '@/components/ui/ReadingProgress';
 
 interface BlogPostContentProps {
   slug: string;
@@ -50,6 +51,8 @@ export default function BlogPostContent({ slug }: BlogPostContentProps) {
 
   return (
     <main className="mx-auto max-w-container px-4 sm:px-6 pt-8 lg:pt-12 pb-16">
+      <ReadingProgress />
+
       {/* Header */}
       <div className="flex items-center justify-between mb-8">
         <Link

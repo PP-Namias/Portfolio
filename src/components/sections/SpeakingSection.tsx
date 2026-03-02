@@ -39,7 +39,7 @@ export function SpeakingSection() {
       )}
       <a
         href={`mailto:${profile.email}?subject=Speaking%20Inquiry`}
-        className="inline-flex items-center gap-1 text-sm text-accent-pink hover:text-pink-600 dark:hover:text-pink-400 transition-colors duration-200 font-medium"
+        className="inline-flex items-center gap-1 text-sm text-accent-pink hover:text-accent-pink-hover dark:hover:text-accent-pink-hover-dark transition-colors duration-200 font-medium"
       >
         Get in touch
         <ChevronRight className="h-4 w-4" />

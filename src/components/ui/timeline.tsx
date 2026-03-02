@@ -66,7 +66,7 @@ export function Timeline({ data }: { data: TimelineEntry[] }) {
               height: heightTransform,
               opacity: opacityTransform,
             }}
-            className="absolute inset-x-0 top-0 w-[2px] bg-gradient-to-t from-[#db2777] via-[#f472b6] to-transparent from-[0%] via-[10%] rounded-full"
+            className="absolute inset-x-0 top-0 w-[2px] bg-gradient-to-t from-accent-pink via-accent-pink-hover-dark to-transparent from-[0%] via-[10%] rounded-full"
           />
         </div>
       </div>
