@@ -1,13 +1,21 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
 import { certifications } from '@/data/certifications';
 
+const ISSUERS = ['All', ...Array.from(new Set(certifications.map((c) => c.issuer)))];
+
 export function CertificationsSection() {
   const [selectedCert, setSelectedCert] = useState<{ image: string; title: string } | null>(null);
+  const [activeIssuer, setActiveIssuer] = useState('All');
+
+  const filtered = useMemo(
+    () => activeIssuer === 'All' ? certifications : certifications.filter((c) => c.issuer === activeIssuer),
+    [activeIssuer]
+  );
 
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
@@ -25,11 +33,29 @@ export function CertificationsSection() {
       viewport={{ once: true }}
       transition={{ duration: 0.4 }}
     >
-      <h2 className="text-lg font-semibold text-text-primary-light dark:text-text-primary-dark mb-4">
+      <h2 className="text-lg font-semibold text-text-primary-light dark:text-text-primary-dark mb-2">
         Certifications ({certifications.length})
       </h2>
+
+      {/* Issuer filter tabs */}
+      <div className="flex flex-wrap gap-1.5 mb-3">
+        {ISSUERS.map((issuer) => (
+          <button
+            key={issuer}
+            onClick={() => setActiveIssuer(issuer)}
+            className={`text-[10px] font-medium px-2 py-0.5 rounded-full transition-colors ${
+              activeIssuer === issuer
+                ? 'bg-accent-pink text-white'
+                : 'bg-accent-pink/10 text-accent-pink hover:bg-accent-pink/20'
+            }`}
+          >
+            {issuer === 'All' ? `All (${certifications.length})` : issuer}
+          </button>
+        ))}
+      </div>
+
       <div className="space-y-3 max-h-[300px] overflow-y-auto scrollbar-hide">
-        {certifications.map((cert, index) => (
+        {filtered.map((cert, index) => (
           <motion.div
             key={`${cert.title}-${cert.issuer}`}
             className="group flex items-center gap-3 cursor-pointer"
@@ -92,6 +118,7 @@ export function CertificationsSection() {
                 alt={selectedCert.title}
                 width={800}
                 height={600}
+                sizes="(max-width: 768px) 100vw, 672px"
                 className="w-full h-auto rounded-lg"
               />
             </motion.div>

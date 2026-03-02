@@ -51,13 +51,23 @@ export function TimelineItem({ item, index, isLast }: TimelineItemProps) {
           <p className="text-xs text-text-muted-light dark:text-text-muted-dark mt-0.5">
             {item.company}
           </p>
-          <div className="flex items-center gap-2 mt-1">
+          <div className="flex items-center gap-2 mt-1 flex-wrap">
             <span className="text-[10px] text-text-muted-light dark:text-text-muted-dark">
               {dateLabel}
             </span>
             <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-accent-pink/10 text-accent-pink">
               {item.type}
             </span>
+            {item.modality && (
+              <span className="text-[10px] px-1.5 py-0.5 rounded-full border border-border-light dark:border-border-dark text-text-muted-light dark:text-text-muted-dark">
+                {item.modality}
+              </span>
+            )}
+            {item.country && (
+              <span className="text-[10px] text-text-muted-light dark:text-text-muted-dark">
+                {item.country}
+              </span>
+            )}
           </div>
         </div>
 

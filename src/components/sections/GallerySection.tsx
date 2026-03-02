@@ -1,18 +1,29 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight, X } from 'lucide-react';
 import { galleryImages } from '@/data/gallery';
 
 const IMAGES_PER_SLIDE = 5;
+const FILTER_TAGS = ['All', ...Array.from(new Set(galleryImages.flatMap((img) => img.tags.filter((t) => !/^\d{4}$/.test(t))).sort()))];
 
 export function GallerySection() {
-  const totalSlides = Math.ceil(galleryImages.length / IMAGES_PER_SLIDE);
+  const [activeTag, setActiveTag] = useState('All');
+  const filtered = useMemo(
+    () => activeTag === 'All' ? galleryImages : galleryImages.filter((img) => img.tags.includes(activeTag)),
+    [activeTag]
+  );
+  const totalSlides = Math.ceil(filtered.length / IMAGES_PER_SLIDE);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [direction, setDirection] = useState(1);
-  const [selectedImage, setSelectedImage] = useState<{ media: string; title: string } | null>(null);
+  const [selectedImage, setSelectedImage] = useState<{ media: string; title: string; createdAt?: string } | null>(null);
+
+  // Reset slide when filter changes
+  useEffect(() => {
+    setCurrentSlide(0);
+  }, [activeTag]);
 
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
@@ -36,7 +47,7 @@ export function GallerySection() {
     }
   };
 
-  const currentImages = galleryImages.slice(
+  const currentImages = filtered.slice(
     currentSlide * IMAGES_PER_SLIDE,
     (currentSlide + 1) * IMAGES_PER_SLIDE
   );
@@ -55,7 +66,7 @@ export function GallerySection() {
       viewport={{ once: true }}
       transition={{ duration: 0.4 }}
     >
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center justify-between mb-2">
         <h2 className="text-lg font-semibold text-text-primary-light dark:text-text-primary-dark">
           Gallery{' '}
           <span className="text-xs font-normal text-text-muted-light dark:text-text-muted-dark">
@@ -87,6 +98,23 @@ export function GallerySection() {
         )}
       </div>
 
+      {/* Tag filter */}
+      <div className="flex flex-wrap gap-1.5 mb-3">
+        {FILTER_TAGS.map((tag) => (
+          <button
+            key={tag}
+            onClick={() => setActiveTag(tag)}
+            className={`text-[10px] font-medium px-2 py-0.5 rounded-full transition-colors ${
+              activeTag === tag
+                ? 'bg-accent-pink text-white'
+                : 'bg-accent-pink/10 text-accent-pink hover:bg-accent-pink/20'
+            }`}
+          >
+            {tag}
+          </button>
+        ))}
+      </div>
+
       <div className="relative overflow-hidden">
         <AnimatePresence mode="wait" custom={direction}>
           <motion.div
@@ -103,7 +131,7 @@ export function GallerySection() {
               <button
                 key={image.media}
                 type="button"
-                onClick={() => setSelectedImage(image)}
+                onClick={() => setSelectedImage({ media: image.media, title: image.title, createdAt: image.createdAt })}
                 className="aspect-square rounded-lg overflow-hidden border border-border-light dark:border-border-dark bg-surface-light dark:bg-card-bg-dark group relative cursor-pointer"
               >
                 <Image
@@ -111,9 +139,10 @@ export function GallerySection() {
                   alt={image.title}
                   width={200}
                   height={200}
+                  sizes="(max-width: 640px) 33vw, 20vw"
                   className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-300"
                 />
-                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/50 transition-colors duration-300 flex items-end p-1.5">
+                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/50 transition-colors duration-300 flex flex-col justify-end p-1.5">
                   <span className="text-[9px] text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 leading-tight line-clamp-2">
                     {image.title}
                   </span>
@@ -157,10 +186,16 @@ export function GallerySection() {
                 alt={selectedImage.title}
                 width={800}
                 height={600}
+                sizes="(max-width: 768px) 100vw, 800px"
                 className="w-full h-auto max-h-[80vh] object-contain rounded-lg"
               />
               <p className="text-center text-sm text-white/80 mt-3">
                 {selectedImage.title}
+                {selectedImage.createdAt && (
+                  <span className="text-white/50 ml-2 text-xs">
+                    {new Date(selectedImage.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                  </span>
+                )}
               </p>
             </motion.div>
           </motion.div>

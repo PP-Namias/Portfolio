@@ -2,8 +2,16 @@
 
 import React, { useRef, useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { MessageSquare } from 'lucide-react';
 import { recommendations } from '@/data/recommendations';
 import { useCarousel } from '@/hooks/useCarousel';
+
+const PLACEHOLDER_NAMES = ['Sample Recommender', 'Another Recommender'];
+
+function isPlaceholderData() {
+  return recommendations.length === 0 ||
+    recommendations.every((r) => PLACEHOLDER_NAMES.includes(r.name));
+}
 
 export function RecommendationsCarousel() {
   const { currentIndex, goTo, setIsHovered } = useCarousel({
@@ -13,7 +21,6 @@ export function RecommendationsCarousel() {
   const [direction, setDirection] = useState(1);
   const prevIndex = useRef(0);
 
-  // Keep prevIndex synced with currentIndex (including auto-advance)
   useEffect(() => {
     setDirection(currentIndex > prevIndex.current ? 1 : -1);
     prevIndex.current = currentIndex;
@@ -24,6 +31,30 @@ export function RecommendationsCarousel() {
     prevIndex.current = index;
     goTo(index);
   };
+
+  if (isPlaceholderData()) {
+    return (
+      <motion.section
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.4 }}
+      >
+        <h2 className="text-lg font-semibold text-text-primary-light dark:text-text-primary-dark mb-4">
+          Recommendations
+        </h2>
+        <div className="flex flex-col items-center justify-center min-h-[140px] text-center">
+          <MessageSquare className="h-8 w-8 text-text-muted-light dark:text-text-muted-dark mb-3 opacity-40" />
+          <p className="text-sm text-text-muted-light dark:text-text-muted-dark">
+            Testimonials coming soon
+          </p>
+          <p className="text-xs text-text-muted-light dark:text-text-muted-dark mt-1 opacity-60">
+            Real recommendations from colleagues and managers
+          </p>
+        </div>
+      </motion.section>
+    );
+  }
 
   const current = recommendations[currentIndex];
 
@@ -43,12 +74,9 @@ export function RecommendationsCarousel() {
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <h2 className="text-lg font-semibold text-text-primary-light dark:text-text-primary-dark mb-1">
+      <h2 className="text-lg font-semibold text-text-primary-light dark:text-text-primary-dark mb-4">
         Recommendations
       </h2>
-      <p className="text-[11px] text-text-muted-light dark:text-text-muted-dark mb-4">
-        Sample testimonials — real recommendations coming soon
-      </p>
 
       <div className="relative overflow-hidden min-h-[140px]">
         <AnimatePresence mode="wait" custom={direction}>
@@ -76,7 +104,6 @@ export function RecommendationsCarousel() {
         </AnimatePresence>
       </div>
 
-      {/* Pagination dots */}
       {recommendations.length > 1 && (
         <div className="flex items-center gap-1.5 mt-4">
           {recommendations.map((_, index) => (

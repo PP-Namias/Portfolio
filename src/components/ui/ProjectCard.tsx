@@ -31,7 +31,8 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
               src={`/images/projects/${project.image}`}
               alt={project.title}
               width={400}
-              height={200}
+              height={128}
+              sizes="(max-width: 768px) 100vw, 400px"
               className="w-full h-32 object-cover"
             />
           </div>

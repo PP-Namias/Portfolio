@@ -75,6 +75,7 @@ export default function BlogPostContent({ slug }: BlogPostContentProps) {
               alt={post.title}
               width={800}
               height={320}
+              sizes="(max-width: 768px) 100vw, 800px"
               className="w-full h-48 sm:h-64 object-cover"
               priority
             />

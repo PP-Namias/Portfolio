@@ -83,6 +83,7 @@ export function ConnectSection() {
                 alt={latestPost.title}
                 width={400}
                 height={128}
+                sizes="(max-width: 640px) 100vw, 400px"
                 className="w-full h-32 object-cover rounded-lg group-hover:scale-105 transition-transform duration-300"
               />
             </div>

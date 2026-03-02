@@ -14,7 +14,7 @@ import { Card } from '@/components/ui/Card';
 
 export default function Home() {
   return (
-    <main className="mx-auto max-w-container px-4 sm:px-6 pt-8 lg:pt-12">
+    <main id="main-content" className="mx-auto max-w-container px-4 sm:px-6 pt-8 lg:pt-12">
       {/* Hero spans full container width */}
       <Card className="mb-4">
         <HeroSection />

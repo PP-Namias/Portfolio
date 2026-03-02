@@ -31,6 +31,7 @@ export default function BlogListClient({ posts }: BlogListClientProps) {
                   alt={post.title}
                   width={400}
                   height={160}
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                   className="w-full h-40 object-cover transition-transform duration-300 group-hover:scale-105"
                 />
               </div>
