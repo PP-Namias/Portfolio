@@ -2,12 +2,14 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { experiences } from '@/data/experience';
 import { TimelineItem } from '@/components/ui/TimelineItem';
+import { useModal } from '@/hooks/useModal';
 
 export function ExperienceTimeline() {
+  const { openModal } = useModal();
+
   return (
     <motion.section
       initial={{ opacity: 0, y: 20 }}
@@ -23,13 +25,13 @@ export function ExperienceTimeline() {
           <TimelineItem key={`${exp.company}-${exp.position}`} item={exp} index={index} isLast={index === experiences.length - 1} />
         ))}
       </div>
-      <Link
-        href="/experience"
+      <button
+        onClick={() => openModal('experience')}
         className="mt-3 inline-flex items-center gap-1.5 text-xs font-medium text-accent-pink hover:text-accent-pink-hover dark:hover:text-accent-pink-hover-dark transition-colors"
       >
         View Full Experience
         <ArrowRight className="h-3.5 w-3.5" />
-      </Link>
+      </button>
     </motion.section>
   );
 }

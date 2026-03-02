@@ -18,6 +18,7 @@ import {
 import { HubMenuItem } from './HubMenuItem';
 import { socialLinks } from '@/data/socials';
 import { profile } from '@/data/profile';
+import { useModal } from '@/hooks/useModal';
 
 interface HubMenuProps {
   onClose: () => void;
@@ -35,6 +36,7 @@ const socialIconMap: Record<string, typeof Github> = {
 
 export function HubMenu({ onClose, onOpenChat }: HubMenuProps) {
   const [connectExpanded, setConnectExpanded] = useState(false);
+  const { openModal } = useModal();
 
   const calendlyLink = socialLinks.find((s) => s.name === 'calendly');
   const connectLinks = socialLinks.filter((s) =>
@@ -72,11 +74,10 @@ export function HubMenu({ onClose, onOpenChat }: HubMenuProps) {
 
         <HubMenuItem
           icon={FileDown}
-          label="Download Resume"
-          subtitle="Get my latest CV (PDF)"
+          label="View Resume"
+          subtitle="View & download my CV"
           index={1}
-          href="/resume.pdf"
-          download
+          onClick={() => { openModal('resume'); onClose(); }}
         />
 
         {calendlyLink && (

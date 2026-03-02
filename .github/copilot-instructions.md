@@ -6,7 +6,7 @@
 > **Design Reference:** https://bryllim.com/ (modern resume-portfolio hybrid)  
 > **Model:** Always use **Claude Opus 4.6** for all development tasks  
 > **IDE:** VS Code with GitHub Copilot  
-> **Last audited:** 2026-03-03 (V6 mega upgrade: Navbar, Hero redesign, Footer upgrade, error pages, reading progress, project filters, stats counters, SEO sitemap/robots, blog structured data)
+> **Last audited:** 2026-03-03 (V7: Modal-first architecture, minimal routes, resume/experience modals, removed /resume and /experience pages, ModalProvider context, autocommit rules)
 
 ---
 
@@ -21,6 +21,8 @@
 | Animations | Framer Motion | ^11.15.0 | Scroll-triggered, page transitions, hover effects |
 | Icons | Lucide React | ^0.468.0 | Consistent, tree-shakeable icon library |
 | Theming | next-themes | ^0.4.4 | Dark/light mode with `class` strategy |
+| Smooth Scroll | Lenis | ^1.3.18-dev.0 | Smooth scroll via ReactLenis (lerp: 0.1, duration: 1.2) |
+| Accent Colors | AccentColorProvider | — | 8-color scheme picker with CSS vars + localStorage |
 | Hosting | AWS Amplify | — | Serverless deployment with CI/CD |
 | Markdown | react-markdown + remark-gfm + rehype-highlight | ^9.x | Blog content rendering with GFM + syntax highlighting |
 | AI Chatbot | @google/generative-ai (Gemini 2.0 Flash) | ^0.x | AI portfolio assistant via /api/chat route |
@@ -60,6 +62,101 @@ Every task MUST follow this pipeline:
 1. Summarize what was changed
 2. List any remaining TODOs or known issues
 3. Update this instructions file if the change affects architecture, data shapes, or project structure
+
+---
+
+## 🚀 MODAL-FIRST ARCHITECTURE (CRITICAL)
+
+### Core Principle: Minimal Routes, Maximum Modals
+This portfolio uses a **modal-first** approach. Content that expands on what's shown on the homepage (e.g., "View All", "View Resume", "View Full Experience") MUST open in an **overlay modal**, NOT navigate to a separate page.
+
+### Route Minimization Rules
+1. **Only create a new route when the content is SEO-critical or standalone** (e.g., blog posts need their own URLs for indexing).
+2. **"View more" actions MUST use modals** — never create a page just to show expanded content from the homepage.
+3. **Resume viewing is a modal** — the PDF is embedded in a fullscreen `<Modal>` with a download button, NOT a separate page.
+4. **Experience details are a modal** — "View Full Experience" opens an `<ExperienceModal>`, NOT a `/experience` page.
+5. **Any future "detail view" or "expanded view" MUST be a modal** unless it requires its own SEO-indexable URL.
+
+### Current Routes (ONLY these should exist)
+| Route | Type | Purpose |
+|-------|------|---------|
+| `/` | Page | Main portfolio (all sections, single page) |
+| `/blog` | Page | Blog listing (SEO-critical, server component) |
+| `/blog/[slug]` | Page | Individual blog posts (SEO-critical, SSG) |
+| `/api/chat` | API | Gemini AI chatbot endpoint |
+
+**Deleted routes (now modals):**
+- ~~`/resume`~~ → `ResumeModal` (opened via Hero button, HubMenu)
+- ~~`/experience`~~ → `ExperienceModal` (opened via "View Full Experience" button)
+
+### ModalProvider Pattern
+All modals are managed by `ModalProvider` in `src/hooks/useModal.tsx`:
+```tsx
+// Usage in any component:
+const { openModal } = useModal();
+openModal('resume');     // Opens resume PDF viewer modal
+openModal('experience'); // Opens full experience modal
+```
+
+Provider hierarchy: `ThemeProvider > AccentColorProvider > ModalProvider > ReactLenis > children`
+
+The `ModalProvider` renders all modal components at the top level and controls which one is active. This allows any component (HeroSection, HubMenu, ExperienceTimeline, etc.) to trigger modals without prop drilling.
+
+### When to Add a New Modal
+If the user asks to add a "view more" or "detail view" for any content:
+1. Create a `{Name}Modal.tsx` in `src/components/ui/`
+2. Register it in `ModalProvider` (`src/hooks/useModal.tsx`) — add the modal name to the `ModalName` type union and render the component
+3. Use `useModal().openModal('{name}')` from any triggering component
+4. Use the reusable `<Modal>` component (`src/components/ui/Modal.tsx`) as the wrapper
+
+### Modal Component (`src/components/ui/Modal.tsx`)
+Reusable modal with:
+- Backdrop click to close
+- Escape key to close
+- Focus trap (Tab key cycling)
+- Body scroll lock
+- Framer Motion enter/exit animations
+- `fullScreen` prop for large content (resume, experience)
+- Optional `title` prop (shows header bar with close button)
+
+---
+
+## 📋 AUTOCOMMIT RULES
+
+### When the Agent Should Commit
+After every completed task that passes validation (`npm run lint` + `npm run build`), the agent should prepare a commit. The commit flow:
+
+1. **Stage all changes:** `git add -A`
+2. **Commit with a descriptive message** using conventional commit format:
+   - `feat:` for new features (e.g., `feat: add resume modal viewer`)
+   - `fix:` for bug fixes (e.g., `fix: correct accent color ring style`)
+   - `refactor:` for restructuring (e.g., `refactor: convert /resume route to modal`)
+   - `chore:` for maintenance (e.g., `chore: update copilot-instructions.md`)
+   - `style:` for visual-only changes (e.g., `style: adjust modal backdrop blur`)
+   - `docs:` for documentation (e.g., `docs: add modal-first architecture rules`)
+3. **Do NOT push automatically** — only commit locally. The user will push when ready.
+4. **One commit per logical change** — don't bundle unrelated changes. If a task involves multiple logical changes (e.g., "create modal + delete old route + update references"), commit them together as one coherent change.
+5. **Always validate before committing** — never commit code that fails lint or build.
+6. **Commit message body (optional):** For larger changes, add a brief body explaining what was changed and why.
+
+### Commit Message Examples
+```
+feat: add resume modal with embedded PDF viewer
+
+- Created Modal.tsx reusable component with focus trap and scroll lock
+- Created ResumeModal.tsx with embedded PDF and download button
+- Updated HeroSection and HubMenu to open modal instead of navigating
+- Removed /resume route (now modal-based)
+```
+
+```
+refactor: convert experience page to modal
+
+- Created ExperienceModal.tsx with full experience timeline
+- Updated ExperienceTimeline "View Full Experience" to open modal
+- Removed /experience route and ExperiencePageClient.tsx
+- Removed unused timeline.tsx component
+```
 
 ---
 
@@ -103,19 +200,16 @@ Every task MUST follow this pipeline:
 │       ├── gallery/                  # 22 gallery photos
 │       ├── projects/                 # 15 project screenshots
 │       ├── certifications/           # 28 certificate images
-│       └── profile/                  # Profile photos (me.jpg, etc.)
+│       └── profile/                  # Profile photos (PP Namias.png, etc.)
 ├── src/
 │   ├── app/
-│   │   ├── globals.css               # Global styles + CSS custom properties
-│   │   ├── layout.tsx                # Root layout + metadata + Inter font + Navbar + favicon SVG icons + JSON-LD
-│   │   ├── page.tsx                  # Home page (main portfolio, server component, section IDs for nav)
-│   │   ├── providers.tsx             # ThemeProvider (dark default, class strategy)
+│   │   ├── globals.css               # Global styles + CSS custom properties + accent color vars
+│   │   ├── layout.tsx                # Root layout + metadata + Inter font + favicon SVG icons + JSON-LD (NO Navbar)
+│   │   ├── page.tsx                  # Home page (main portfolio, server component, all sections)
+│   │   ├── providers.tsx             # ThemeProvider > AccentColorProvider > ModalProvider > ReactLenis
 │   │   ├── sitemap.ts                # Dynamic sitemap.xml generation (Next.js built-in)
 │   │   ├── not-found.tsx             # Branded 404 page (pink gradient "404")
 │   │   ├── error.tsx                 # Branded error boundary ('use client', reset button)
-│   │   ├── experience/
-│   │   │   ├── page.tsx              # Experience page (server component + SEO metadata)
-│   │   │   └── ExperiencePageClient.tsx  # Client component with scroll-driven Timeline
 │   │   ├── api/
 │   │   │   └── chat/
 │   │   │       └── route.ts          # POST /api/chat — Gemini AI chatbot (rate-limited, sanitized)
@@ -128,34 +222,36 @@ Every task MUST follow this pipeline:
 │   │           └── BlogPostContent.tsx  # Client-side blog renderer (react-markdown + remark-gfm + ReadingProgress)
 │   ├── components/
 │   │   ├── layout/
-│   │   │   ├── Navbar.tsx             # Sticky glass-morphism nav bar (section links, ThemeToggle, mobile hamburger, active section highlighting)
-│   │   │   └── Footer.tsx            # Multi-column footer (Quick Links, Connect socials, Contact info, Back to Top)
+│   │   │   └── Footer.tsx            # Minimal copyright line (no multi-column layout)
 │   │   ├── sections/                 # 11 section components (all 'use client')
-│   │   │   ├── HeroSection.tsx       # Animated photo ring, role text rotation, availability badge, social icons, CTA buttons
+│   │   │   ├── HeroSection.tsx       # Animated photo ring, role text rotation, availability badge, social icons, CTA buttons, ColorSchemePicker + ThemeToggle
 │   │   │   ├── AboutSection.tsx      # Summary, education, animated stat counters (years, projects, technologies)
 │   │   │   ├── TechStackSection.tsx  # Tech stack grouped by category with proficiency
 │   │   │   ├── ProjectsSection.tsx   # Project cards grid with tag filtering (all 7, with toggle)
 │   │   │   ├── CertificationsSection.tsx  # Scrollable cert list with images + lightbox
-│   │   │   ├── ExperienceTimeline.tsx     # Timeline with expandable details + "View Full Experience" link
+│   │   │   ├── ExperienceTimeline.tsx     # Timeline with expandable details + "View Full Experience" modal trigger
 │   │   │   ├── RecommendationsCarousel.tsx # Auto-advancing testimonials
 │   │   │   ├── MembershipsSection.tsx     # Org membership links
 │   │   │   ├── SpeakingSection.tsx        # Speaking availability with Mic icon, topic pills from profile data
 │   │   │   ├── ConnectSection.tsx         # Social links (Connect card) + latest blog post card
 │   │   │   └── GallerySection.tsx         # Paginated image slider (5/slide) with title hover overlay + lightbox
-│   │   └── ui/                       # 12 reusable UI primitives
-│   │       ├── Button.tsx            # Primary/ghost/outline with href support
+│   │   └── ui/                       # Reusable UI primitives
+│   │       ├── Button.tsx            # Primary/ghost/outline with href support + onClick
 │   │       ├── Card.tsx              # Bordered card wrapper with hover option + optional id prop
+│   │       ├── Modal.tsx             # Reusable modal (backdrop, ESC close, focus trap, scroll lock, Framer Motion)
+│   │       ├── ResumeModal.tsx       # Resume PDF viewer modal (embedded <object> + download button)
+│   │       ├── ExperienceModal.tsx   # Full experience details modal (all roles, highlights, achievements, images)
 │   │       ├── ProjectCard.tsx       # Project card with screenshot + links
-│   │       ├── ReadingProgress.tsx   # Blog reading progress bar (fixed top, pink gradient, framer-motion useScroll)
+│   │       ├── ReadingProgress.tsx   # Blog reading progress bar (fixed top, accent gradient, framer-motion useScroll)
 │   │       ├── FloatingHub.tsx       # Main floating hub container (FAB + 3-state machine + panel wrapper)
-│   │       ├── HubMenu.tsx           # Hub menu panel with 6 quick action items
+│   │       ├── HubMenu.tsx           # Hub menu panel with 6 quick action items (resume opens modal)
 │   │       ├── HubMenuItem.tsx       # Reusable action row component (icon + label + subtitle)
 │   │       ├── ChatPanel.tsx         # Chat-only panel (refactored from ChatWidget, receives messages as props)
 │   │       ├── ChatMessage.tsx       # Chat message bubble component (user/assistant styling)
 │   │       ├── ThemeToggle.tsx       # Dark/light mode toggle button
-│   │       ├── timeline.tsx           # Scroll-driven Aceternity-style timeline (framer-motion)
+│   │       ├── ColorSchemePicker.tsx # 8-color accent scheme picker (circle buttons with ring indicator)
 │   │       ├── TimelineItem.tsx      # Expandable experience timeline entry
-│   │       └── VerifiedBadge.tsx     # Pink checkmark next to name
+│   │       └── VerifiedBadge.tsx     # Accent checkmark next to name
 │   ├── data/                         # TS modules importing JSON → typed exports
 │   │   ├── blogPosts.ts             # Sources from blog.json (same pattern as other data modules)
 │   │   ├── certifications.ts
@@ -168,13 +264,15 @@ Every task MUST follow this pipeline:
 │   │   ├── socials.ts
 │   │   └── techStack.ts             # Also exports techCategories (grouped)
 │   ├── hooks/
+│   │   ├── useAccentColor.tsx        # AccentColorProvider + useAccentColor hook (8 color schemes, localStorage, CSS vars)
 │   │   ├── useCarousel.ts           # Auto-advance & hover-pause carousel
+│   │   ├── useModal.tsx             # ModalProvider + useModal hook (manages resume/experience modals globally)
 │   │   └── useTheme.ts              # Wrapper around next-themes
 │   ├── lib/
 │   │   └── utils.ts                 # cn() — simple class concatenation
 │   └── types/
-│       └── index.ts                  # All TypeScript interfaces
-├── tailwind.config.ts                # Custom colors, fonts, darkMode: 'class'
+│       └── index.ts                  # All TypeScript interfaces (includes HubState, ModalName)
+├── tailwind.config.ts                # Custom colors (CSS var-based accent), fonts, darkMode: 'class'
 ├── next.config.js                    # Standalone output only
 ├── amplify.yml                       # AWS Amplify CI/CD config
 └── package.json
@@ -295,10 +393,12 @@ This section documents the **actual content** from `portfolio-resources/data/` s
 - **Dark/Light theme**: CSS custom properties in `globals.css`, `next-themes` with `class` strategy, default: dark
 - **Smooth animations**: Framer Motion `whileInView` scroll reveals staggered per section
 - **Mobile-first**: Stacks vertically on mobile, two-column layout on `lg:` breakpoint
-- **Accent color**: Pink `#db2777` (`accent-pink` in Tailwind config)
+- **Accent color**: User-selectable via `ColorSchemePicker` (8 presets), stored in `localStorage`, applied via CSS vars `--accent`, `--accent-hover`, `--accent-hover-dark`
 - **Typography**: Inter via `next/font/google` loaded as `--font-inter` CSS variable
 - **Max width**: 860px container (`max-w-container`)
 - **Spacing**: Consistent `gap-4` between cards, `p-5` card padding
+- **No Navbar**: Intentionally removed — avoids generic AI-generated website feel
+- **Minimal footer**: Single-line copyright, no multi-column sections
 
 ### Tailwind Custom Colors (tailwind.config.ts)
 ```
@@ -582,6 +682,9 @@ Prioritized improvements organized by effort and impact. Reference this when the
 - [x] About section animated stat counters (years, projects, technologies) with icons
 - [x] SEO sitemap.xml (Next.js built-in) + robots.txt
 - [x] Article JSON-LD structured data on blog posts
+- [x] Modal-first architecture: ResumeModal, ExperienceModal, ModalProvider
+- [x] Removed /resume and /experience routes (now modals)
+- [x] Reusable Modal component with focus trap, scroll lock, animations
 - [ ] Contact form (instead of just mailto links)
 - [ ] Privacy-respecting analytics (Plausible or Umami)
 
@@ -617,3 +720,28 @@ Prioritized improvements organized by effort and impact. Reference this when the
 8. **No dead code.** Remove unused imports, components, and files.
 9. **Types in one place.** All TypeScript interfaces go in `src/types/index.ts`.
 10. **Update this file.** When making structural changes (new components, new data files, new types, resolved issues), update this instructions file accordingly.
+11. **Modal-first.** Never create a new page/route for "view more" or "detail view" content. Always use modals via `ModalProvider`. Only create routes for SEO-critical content (blog posts).
+12. **Autocommit after validation.** After every task that passes `npm run lint` + `npm run build`, stage and commit with a conventional commit message. Never push automatically.
+13. **UX before UI.** Prioritize user experience (interaction flow, accessibility, responsiveness, loading states) over visual polish. Every feature should feel smooth and intuitive before it looks pretty.
+
+---
+
+## 🤖 AI AGENT CONTINUATION PROMPT
+
+Use this prompt to continue autonomous development in a new session. Copy-paste it into the chat to pick up where you left off:
+
+```
+Read the copilot-instructions.md file at .github/copilot-instructions.md fully. This is your complete context for the portfolio project.
+
+Then:
+1. Run `npm run build` to verify the current build state
+2. Review the KNOWN ISSUES section for any unresolved P0/P1 issues
+3. Review the IMPROVEMENT ROADMAP for unchecked items
+4. Identify the highest-impact unchecked item and implement it
+5. After implementation, run `npm run lint` and `npm run build` to validate
+6. If validation passes, stage and commit with a conventional commit message (`git add -A` then `git commit -m "type: description"`)
+7. Update copilot-instructions.md if the change affects architecture, data shapes, or project structure
+8. Report what was done and suggest the next highest-impact task
+
+Follow all rules in the instructions file — especially modal-first architecture, autocommit rules, and UX-first design principles.
+```
