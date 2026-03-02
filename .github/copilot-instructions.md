@@ -137,11 +137,14 @@ Every task MUST follow this pipeline:
 │   │   │   ├── SpeakingSection.tsx        # Speaking availability with Mic icon, topic pills from profile data
 │   │   │   ├── ConnectSection.tsx         # Social links (Connect card) + latest blog post card
 │   │   │   └── GallerySection.tsx         # Paginated image slider (5/slide) with title hover overlay + lightbox
-│   │   └── ui/                       # 7 reusable UI primitives
+│   │   └── ui/                       # 11 reusable UI primitives
 │   │       ├── Button.tsx            # Primary/ghost/outline with href support
 │   │       ├── Card.tsx              # Bordered card wrapper with hover option
 │   │       ├── ProjectCard.tsx       # Project card with screenshot + links
-│   │       ├── ChatWidget.tsx        # Floating AI chatbot widget (FAB + panel, Framer Motion)
+│   │       ├── FloatingHub.tsx       # Main floating hub container (FAB + 3-state machine + panel wrapper)
+│   │       ├── HubMenu.tsx           # Hub menu panel with 6 quick action items
+│   │       ├── HubMenuItem.tsx       # Reusable action row component (icon + label + subtitle)
+│   │       ├── ChatPanel.tsx         # Chat-only panel (refactored from ChatWidget, receives messages as props)
 │   │       ├── ChatMessage.tsx       # Chat message bubble component (user/assistant styling)
 │   │       ├── ThemeToggle.tsx       # Dark/light mode toggle button
 │   │       ├── timeline.tsx           # Scroll-driven Aceternity-style timeline (framer-motion)
@@ -336,7 +339,7 @@ All TypeScript interfaces for JSON data live here. `BlogPost` type is also in `s
 | `SocialLink` | name, icon, label, link, featured? | socials.json | name, icon, label, link, featured (accent style for featured links) | — |
 | `Recommendation` | quote, name, title, company | recommendations.json | All used | — |
 | `BlogPost` | id, slug, title, excerpt, content, date, readTime, tags, coverImage | blog.json | All used (listing grid + full post page) | — |
-| `ChatMessage` | id, role, content, timestamp | — (client state) | ChatWidget/ChatMessage components | — |
+| `ChatMessage` | id, role, content, timestamp | — (client state) | FloatingHub/ChatPanel/ChatMessage components | — |
 
 ---
 
@@ -405,6 +408,23 @@ linkedin → Linkedin, facebook → Facebook,
 message-square → MessageSquare, twitter → Twitter, instagram → Instagram
 ```
 Unmapped icons fall back to `ExternalLink`.
+
+### Floating Hub Pattern (FloatingHub.tsx)
+The floating hub is a 3-state widget replacing the old single-purpose chat FAB:
+```
+HubState: 'closed' → 'menu' → 'chat'
+```
+- **closed**: Pink FAB (Sparkles icon) in bottom-right corner
+- **menu**: Panel with 6 quick actions (Ask AI, Download Resume, Schedule Meeting, Send Email, Connect socials, Read Blog)
+- **chat**: Full AI chat panel with back-to-menu button
+
+Key architecture:
+- Messages lifted to `FloatingHub` for persistence across panel switches
+- Escape key cascade: chat → menu → closed
+- Click-outside-to-close on desktop (sm: breakpoint and up)
+- FAB pulse animation for first-time visitors (sessionStorage-backed)
+- Panel: `AnimatePresence mode="wait"` with `key={hubState}` for smooth transitions
+- Data sourced from `@/data/socials` and `@/data/profile` — no hardcoded URLs
 
 ---
 
@@ -481,6 +501,8 @@ These are confirmed issues in the codebase as of 2026-03-02. Reference these whe
 
 29. ~~**No favicon** — Fixed 2026-03-02: created `public/favicon.svg` (32x32, pink rounded rect with "JN") and `public/apple-touch-icon.svg` (180x180). Added to `layout.tsx` metadata. Updated `site.webmanifest` with name, colors, and icon entries.~~
 
+30. ~~**Single-purpose chat FAB** — ChatWidget was only for AI chat. Fixed 2026-03-02: Replaced with multi-purpose FloatingHub (6 actions: AI chat, resume, Calendly, email, social connect, blog). Old ChatWidget.tsx deleted.~~
+
 ---
 
 ## 🗺 IMPROVEMENT ROADMAP
@@ -528,6 +550,9 @@ Prioritized improvements organized by effort and impact. Reference this when the
 - [x] Streamline ConnectSection (removed redundant "Get in Touch" and "Quick Links")
 - [x] Resume download uses `download` attribute instead of new tab
 - [x] Gallery shows image count in header
+- [x] Replace single-purpose chat FAB with multi-purpose floating hub widget
+- [x] Delete old `ChatWidget.tsx` (dead code)
+- [x] FloatingHub accessibility: focus trap, click-outside-to-close, FAB pulse animation
 
 ---
 

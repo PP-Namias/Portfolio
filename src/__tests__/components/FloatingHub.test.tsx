@@ -1,23 +1,34 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import React from 'react';
 import { FloatingHub } from '@/components/ui/FloatingHub';
 
-// Mock framer-motion
-vi.mock('framer-motion', () => ({
-  motion: {
-    button: ({ children, className, onClick, whileHover, whileTap, ...props }: Record<string, unknown>) => (
-      <button className={className as string} onClick={onClick as React.MouseEventHandler} {...(props as React.ButtonHTMLAttributes<HTMLButtonElement>)}>{children as React.ReactNode}</button>
-    ),
-    div: ({ children, className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
-      <div className={className} {...props}>{children}</div>
-    ),
-    a: ({ children, className, onClick, href, download, target, rel, ...props }: Record<string, unknown>) => (
-      <a className={className as string} onClick={onClick as React.MouseEventHandler} href={href as string} download={download as string} target={target as string} rel={rel as string} {...(props as React.AnchorHTMLAttributes<HTMLAnchorElement>)}>{children as React.ReactNode}</a>
-    ),
-  },
-  AnimatePresence: ({ children }: { children: React.ReactNode }) => <>{children}</>,
-}));
+// Mock framer-motion — must define forwardRef inside factory since vi.mock is hoisted
+vi.mock('framer-motion', () => {
+  const R = require('react');
+  const MockButton = R.forwardRef(function MockMotionButton(
+    { children, className, onClick, whileHover, whileTap, ...props }: Record<string, unknown>,
+    ref: React.Ref<HTMLButtonElement>
+  ) {
+    return R.createElement('button', { ref, className, onClick, ...props }, children);
+  });
+  const MockDiv = R.forwardRef(function MockMotionDiv(
+    { children, className, ...props }: Record<string, unknown>,
+    ref: React.Ref<HTMLDivElement>
+  ) {
+    return R.createElement('div', { ref, className, ...props }, children);
+  });
+  return {
+    motion: {
+      button: MockButton,
+      div: MockDiv,
+      a: ({ children, className, onClick, href, download, target, rel, ...props }: Record<string, unknown>) =>
+        R.createElement('a', { className, onClick, href, download, target, rel, ...props }, children),
+    },
+    AnimatePresence: ({ children }: { children: React.ReactNode }) => children,
+  };
+});
 
 // Mock ChatMessage
 vi.mock('@/components/ui/ChatMessage', () => ({
@@ -224,5 +235,36 @@ describe('FloatingHub', () => {
 
     const dialog = screen.getByRole('dialog');
     expect(dialog).toHaveAttribute('aria-label', "Chat with Keneth's AI");
+  });
+
+  it('shows pulse ring initially and hides after first click', () => {
+    sessionStorage.clear();
+    render(<FloatingHub />);
+
+    // Pulse ring visible
+    expect(screen.getByTestId('pulse-ring')).toBeInTheDocument();
+
+    // Click FAB
+    fireEvent.click(screen.getByLabelText('Open quick actions'));
+    expect(screen.getByText('Quick Actions')).toBeInTheDocument();
+
+    // Close menu
+    fireEvent.click(screen.getByLabelText('Close menu'));
+
+    // Pulse ring should be gone
+    expect(screen.queryByTestId('pulse-ring')).not.toBeInTheDocument();
+  });
+
+  it('hides pulse ring when sessionStorage flag is set', () => {
+    sessionStorage.setItem('hub_interacted', '1');
+    render(<FloatingHub />);
+    expect(screen.queryByTestId('pulse-ring')).not.toBeInTheDocument();
+  });
+
+  it('panel has tabIndex for programmatic focus', () => {
+    render(<FloatingHub />);
+    fireEvent.click(screen.getByLabelText('Open quick actions'));
+    const dialog = screen.getByRole('dialog');
+    expect(dialog).toHaveAttribute('tabindex', '-1');
   });
 });

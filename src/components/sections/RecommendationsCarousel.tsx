@@ -43,9 +43,12 @@ export function RecommendationsCarousel() {
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <h2 className="text-lg font-semibold text-text-primary-light dark:text-text-primary-dark mb-4">
+      <h2 className="text-lg font-semibold text-text-primary-light dark:text-text-primary-dark mb-1">
         Recommendations
       </h2>
+      <p className="text-[11px] text-text-muted-light dark:text-text-muted-dark mb-4">
+        Sample testimonials — real recommendations coming soon
+      </p>
 
       <div className="relative overflow-hidden min-h-[140px]">
         <AnimatePresence mode="wait" custom={direction}>
