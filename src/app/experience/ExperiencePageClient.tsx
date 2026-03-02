@@ -15,25 +15,6 @@ import {
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
-const experienceImages: Record<string, string[]> = {
-  'MASH - Mushroom Automation': ['/images/experience/mash.svg'],
-  'PhoneCraft Cellphone Repair': ['/images/experience/phonecraft.svg'],
-  'Ucc-Ingo': [
-    '/images/projects/UCC_Student_Portal.png',
-    '/images/projects/UCC%20Login%20Portal.png',
-    '/images/projects/UCC%20Access%20Module.png',
-  ],
-  'Aeternitas Chapels & Columbarium': [
-    '/images/experience/aeternitas.svg',
-    '/images/gallery/Random%20OJT%20Pic.jpg',
-  ],
-  'Wilshire Financial Network': ['/images/experience/wilshire.svg'],
-  'JIMIRENE Clinic Management System': ['/images/experience/jimirene.svg'],
-  "J'5 Pharmacy": ['/images/experience/j5pharmacy.svg'],
-  'Legal Workflow Manager (CaseMaster)': ['/images/experience/casemaster.svg'],
-  'University of Caloocan City': ['/images/experience/ucc-volunteer.svg'],
-};
-
 const imageShadow =
   'shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]';
 
@@ -47,7 +28,7 @@ export function ExperiencePageClient() {
       startYear === Number(endLabel)
         ? `${startYear}`
         : `${startYear} – ${endLabel}`;
-    const images = experienceImages[exp.company] || [];
+    const images = exp.images || [];
 
     return {
       title: dateLabel,

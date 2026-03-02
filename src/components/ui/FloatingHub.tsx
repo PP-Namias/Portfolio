@@ -84,7 +84,7 @@ export function FloatingHub() {
   }, [hubState]);
 
   return (
-    <>
+    <div className="print:hidden">
       {/* Floating Action Button */}
       <AnimatePresence>
         {hubState === 'closed' && (
@@ -139,6 +139,6 @@ export function FloatingHub() {
           </motion.div>
         )}
       </AnimatePresence>
-    </>
+    </div>
   );
 }

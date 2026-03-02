@@ -4,6 +4,20 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { techCategories } from '@/data/techStack';
 
+// Map JSON logo slugs to Simple Icons slugs where they differ
+const LOGO_SLUG_MAP: Record<string, string> = {
+  sharp: 'csharp',
+  css: 'css3',
+  nextjs: 'nextdotjs',
+  sklearn: 'scikitlearn',
+  photoshop: 'adobephotoshop',
+};
+
+function getLogoUrl(logo: string): string {
+  const slug = LOGO_SLUG_MAP[logo] || logo;
+  return `https://cdn.simpleicons.org/${encodeURIComponent(slug)}`;
+}
+
 export function TechStackSection() {
   return (
     <motion.section
@@ -32,8 +46,20 @@ export function TechStackSection() {
               {techs.map((tech) => (
                 <span
                   key={tech.name}
-                  className="group relative text-xs px-2.5 py-1 rounded-full border border-border-light dark:border-border-dark text-text-secondary-light dark:text-text-secondary-dark hover:text-accent-pink hover:border-accent-pink dark:hover:text-accent-pink dark:hover:border-accent-pink transition-colors duration-200"
+                  className="group relative inline-flex items-center text-xs px-2.5 py-1 rounded-full border border-border-light dark:border-border-dark text-text-secondary-light dark:text-text-secondary-dark hover:text-accent-pink hover:border-accent-pink dark:hover:text-accent-pink dark:hover:border-accent-pink transition-colors duration-200"
                 >
+                  {tech.logo && (
+                    /* eslint-disable-next-line @next/next/no-img-element */
+                    <img
+                      src={getLogoUrl(tech.logo)}
+                      alt=""
+                      width={14}
+                      height={14}
+                      className="mr-1.5 opacity-50 group-hover:opacity-80 dark:invert transition-opacity"
+                      loading="lazy"
+                      onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
+                    />
+                  )}
                   {tech.name}
                   <span className="ml-1 text-[9px] text-text-muted-light dark:text-text-muted-dark opacity-0 group-hover:opacity-100 transition-opacity">
                     {tech.proficiency}%

@@ -39,6 +39,7 @@ export interface Experience {
   highlights: string[];
   achievements: string[];
   relatedProjects: string[];
+  images: string[];
 }
 
 export interface Project {

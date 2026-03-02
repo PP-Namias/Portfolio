@@ -23,7 +23,8 @@
       "Oversee system architecture and quality assurance, maintaining high standards for code performance and scalability."
     ],
     "achievements": ["Cross-functional Team Lead", "Automation Product Suite", "Sprint Management"],
-    "relatedProjects": []
+    "relatedProjects": [],
+    "images": ["/images/experience/mash.svg"]
   },
   {
     "company": "PhoneCraft Cellphone Repair",
@@ -50,7 +51,8 @@
       "Maintained quality standards achieving 95% customer satisfaction rate across 1000+ repairs."
     ],
     "achievements": ["95% Customer Satisfaction", "1000+ Repairs", "Team Lead"],
-    "relatedProjects": []
+    "relatedProjects": [],
+    "images": ["/images/experience/phonecraft.svg"]
   },
   {
     "company": "Ucc-Ingo",
@@ -77,7 +79,8 @@
       "Maintained 99.8% uptime and optimized course access, reducing load times by 30%."
     ],
     "achievements": ["99.8% Uptime", "1000+ Students", "9-Person Team Lead"],
-    "relatedProjects": []
+    "relatedProjects": [],
+    "images": ["/images/projects/UCC_Student_Portal.png", "/images/projects/UCC%20Login%20Portal.png", "/images/projects/UCC%20Access%20Module.png"]
   },
   {
     "company": "Aeternitas Chapels & Columbarium",
@@ -103,7 +106,8 @@
       "Optimized database queries and API endpoints, reducing server latency during peak usage hours."
     ],
     "achievements": ["System Reliability", "Reduced Server Latency", "UX Improvements"],
-    "relatedProjects": []
+    "relatedProjects": [],
+    "images": ["/images/experience/aeternitas.svg", "/images/gallery/Random%20OJT%20Pic.jpg"]
   },
   {
     "company": "Wilshire Financial Network",
@@ -130,7 +134,8 @@
       "Integrated AI-driven voice technology to convert calls into actionable meeting data, significantly improving lead tracking and follow-up speed."
     ],
     "achievements": ["AI Automation Tools", "Social Media Automation", "Voice-to-Data Integration"],
-    "relatedProjects": []
+    "relatedProjects": [],
+    "images": ["/images/experience/wilshire.svg"]
   },
   {
     "company": "JIMIRENE Clinic Management System",
@@ -159,7 +164,8 @@
       "Reduced staff manual workload by 60% and improved patient processing speed by 45%."
     ],
     "achievements": ["HIPAA Compliant", "1000+ Patients", "60% Workload Reduction", "45% Faster Processing"],
-    "relatedProjects": []
+    "relatedProjects": [],
+    "images": ["/images/experience/jimirene.svg"]
   },
   {
     "company": "J'5 Pharmacy",
@@ -187,7 +193,8 @@
       "Enabled automated restocking and price comparison across a centralized platform."
     ],
     "achievements": ["50+ Vendors", "Secure Payments", "Real-time Inventory"],
-    "relatedProjects": []
+    "relatedProjects": [],
+    "images": ["/images/experience/j5pharmacy.svg"]
   },
   {
     "company": "Legal Workflow Manager (CaseMaster)",
@@ -214,7 +221,8 @@
       "Achieved 35% improvement in case access speed through data synchronization."
     ],
     "achievements": ["35% Faster Access", "Supreme Court", "MS 365 Integration"],
-    "relatedProjects": []
+    "relatedProjects": [],
+    "images": ["/images/experience/casemaster.svg"]
   },
   {
     "company": "University of Caloocan City",
@@ -239,7 +247,8 @@
       "Managed hardware and software configurations under high-pressure live event environments."
     ],
     "achievements": ["Event Delivery", "Registration Systems", "Technical Leadership"],
-    "relatedProjects": []
+    "relatedProjects": [],
+    "images": ["/images/experience/ucc-volunteer.svg"]
   },
   {
     "company": "University of Caloocan City",
@@ -262,6 +271,7 @@
       "Contributed to technical troubleshooting during live events."
     ],
     "achievements": ["Event Planning", "Technical Support"],
-    "relatedProjects": []
+    "relatedProjects": [],
+    "images": ["/images/experience/ucc-volunteer.svg"]
   }
 ]

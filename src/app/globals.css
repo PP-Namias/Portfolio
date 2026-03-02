@@ -67,3 +67,68 @@ body {
   0% { transform: scale(1); opacity: 0.5; }
   100% { transform: scale(1.5); opacity: 0; }
 }
+
+/* Print stylesheet — clean printable view */
+@media print {
+  /* Force light theme colors */
+  :root {
+    --background: #ffffff;
+    --surface: #ffffff;
+    --card-bg: #ffffff;
+    --card-border: #d1d5db;
+    --text-primary: #111827;
+    --text-secondary: #4b5563;
+    --text-muted: #6b7280;
+  }
+
+  body {
+    background: white !important;
+    color: #111827 !important;
+    font-size: 12pt;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* Remove transitions and animations */
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  /* Hide interactive and non-essential elements */
+  .floating-hub,
+  [data-floating-hub],
+  button[aria-label="Open menu"],
+  .sr-only {
+    display: none !important;
+  }
+
+  /* Ensure cards have visible borders in print */
+  [class*="border-border"] {
+    border-color: #d1d5db !important;
+  }
+
+  /* Prevent page breaks inside cards */
+  section, article {
+    break-inside: avoid;
+  }
+
+  /* Make links show their URL */
+  a[href^="http"]:not([href*="namias.tech"])::after {
+    content: " (" attr(href) ")";
+    font-size: 9pt;
+    color: #6b7280;
+    word-break: break-all;
+  }
+
+  /* Remove dark mode overrides */
+  .dark {
+    --background: #ffffff;
+    --surface: #ffffff;
+    --card-bg: #ffffff;
+    --card-border: #d1d5db;
+    --text-primary: #111827;
+    --text-secondary: #4b5563;
+    --text-muted: #6b7280;
+  }
+}
