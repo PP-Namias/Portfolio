@@ -458,8 +458,8 @@ These are confirmed issues in the codebase as of 2026-03-02. Reference these whe
 
 ### P2 — Medium (Unused Data / Missing Features)
 
-8. ~~**Massive unused data** — Many JSON fields were never rendered. Fixed 2026-03-02: Experience now shows summary/technologies/highlights (expandable), certifications show images with lightbox, projects show screenshots, tech stack shows proficiency on hover, memberships show joinedAt.~~
-   Remaining unused: Experience country/modality/relatedProjects, Certification tags, Technology logos, Gallery tags/dates/mediaType, Profile phone/linkedin.
+8. ~~**Massive unused data** — Many JSON fields were never rendered. Fixed 2026-03-02: Experience now shows summary/technologies/highlights (expandable), certifications show images with lightbox, projects show screenshots, tech stack shows proficiency on hover, memberships show joinedAt. Further fixed 2026-03-02: Experience country/modality surfaced as pills in TimelineItem, certifications filterable by issuer, gallery filterable by tags with dates in lightbox.~~
+   Remaining unused: Experience relatedProjects (all empty), Certification tags (65 unique — issuer filter used instead), Technology logos, Gallery mediaType (all "image"), Profile phone/linkedin.
 
 9. ~~**Only 4 of 7 projects displayed** — Fixed 2026-03-02: ProjectsSection now shows all 7 with "View all projects" toggle.~~
 
@@ -557,6 +557,16 @@ Prioritized improvements organized by effort and impact. Reference this when the
 - [x] Replace single-purpose chat FAB with multi-purpose floating hub widget
 - [x] Delete old `ChatWidget.tsx` (dead code)
 - [x] FloatingHub accessibility: focus trap, click-outside-to-close, FAB pulse animation
+- [x] RecommendationsCarousel: auto-detect placeholder data, show "coming soon" state
+- [x] Surface experience country/modality in TimelineItem pills
+- [x] Certification issuer-based filter tabs
+- [x] Gallery tag-based filter with slide reset + dates in lightbox
+- [x] Skip-to-main-content link for screen reader accessibility
+- [x] Image optimization: `sizes` attribute on 7 responsive `<Image>` components
+- [ ] Write real blog post content (currently placeholder markdown)
+- [ ] Surface technology logos in TechStackSection
+- [ ] Contact form (instead of just mailto links)
+- [ ] Privacy-respecting analytics (Plausible or Umami)
 
 ---
 
