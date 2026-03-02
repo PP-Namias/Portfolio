@@ -1,0 +1,209 @@
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+
+// Mock @google/generative-ai before importing route
+const mockSendMessage = vi.fn();
+const mockStartChat = vi.fn(() => ({
+  sendMessage: mockSendMessage,
+}));
+const mockGetGenerativeModel = vi.fn(() => ({
+  startChat: mockStartChat,
+}));
+
+vi.mock('@google/generative-ai', () => ({
+  GoogleGenerativeAI: vi.fn(() => ({
+    getGenerativeModel: mockGetGenerativeModel,
+  })),
+}));
+
+// Mock portfolio JSON data
+vi.mock('../../../../portfolio-resources/data/profile.json', () => ({
+  default: { name: 'Jhon Keneth Namias', title: 'Full Stack Developer' },
+}));
+vi.mock('../../../../portfolio-resources/data/experiences.json', () => ({
+  default: [{ company: 'Test Co', position: 'Dev' }],
+}));
+vi.mock('../../../../portfolio-resources/data/projects.json', () => ({
+  default: [{ title: 'Test Project' }],
+}));
+vi.mock('../../../../portfolio-resources/data/technologies.json', () => ({
+  default: [{ name: 'TypeScript', category: 'Languages' }],
+}));
+vi.mock('../../../../portfolio-resources/data/certifications.json', () => ({
+  default: [{ title: 'Test Cert', issuer: 'Test Org', issuedAt: '2025' }],
+}));
+vi.mock('../../../../portfolio-resources/data/memberships.json', () => ({
+  default: [{ name: 'PSIA' }],
+}));
+vi.mock('../../../../portfolio-resources/data/socials.json', () => ({
+  default: [{ name: 'GitHub', link: 'https://github.com/PP-Namias' }],
+}));
+
+import { POST } from '@/app/api/chat/route';
+import { NextRequest } from 'next/server';
+
+function createRequest(body: unknown, headers?: Record<string, string>): NextRequest {
+  const req = new NextRequest('http://localhost:3000/api/chat', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      ...headers,
+    },
+    body: JSON.stringify(body),
+  });
+  return req;
+}
+
+describe('/api/chat route', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    // Set API key for each test
+    vi.stubEnv('GOOGLE_GEMINI_API_KEY', 'test-api-key');
+    mockSendMessage.mockResolvedValue({
+      response: { text: () => 'Hello! I can help you learn about Keneth.' },
+    });
+  });
+
+  // --- Input Validation ---
+  
+  it('returns 400 when message is missing', async () => {
+    const req = createRequest({});
+    const res = await POST(req);
+    expect(res.status).toBe(400);
+    const data = await res.json();
+    expect(data.error).toBe('Message is required.');
+  });
+
+  it('returns 400 when message is not a string', async () => {
+    const req = createRequest({ message: 123 });
+    const res = await POST(req);
+    expect(res.status).toBe(400);
+    const data = await res.json();
+    expect(data.error).toBe('Message is required.');
+  });
+
+  it('returns 400 when message is empty after trimming', async () => {
+    const req = createRequest({ message: '   ' });
+    const res = await POST(req);
+    expect(res.status).toBe(400);
+    const data = await res.json();
+    expect(data.error).toBe('Message cannot be empty.');
+  });
+
+  it('returns 400 when message exceeds 500 characters', async () => {
+    const longMsg = 'a'.repeat(501);
+    const req = createRequest({ message: longMsg });
+    const res = await POST(req);
+    expect(res.status).toBe(400);
+    const data = await res.json();
+    expect(data.error).toBe('Message is too long. Maximum 500 characters.');
+  });
+
+  it('strips HTML tags from message', async () => {
+    const req = createRequest({ message: '<script>alert("xss")</script>Hello' });
+    const res = await POST(req);
+    // Should succeed after stripping - "alert("xss")Hello" is the sanitized text
+    expect(res.status).toBe(200);
+    expect(mockSendMessage).toHaveBeenCalledWith('alert("xss")Hello');
+  });
+
+  it('returns 400 when body is invalid JSON', async () => {
+    const req = new NextRequest('http://localhost:3000/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: 'not json',
+    });
+    const res = await POST(req);
+    expect(res.status).toBe(400);
+  });
+
+  // --- Successful Response ---
+  
+  it('returns 200 with AI response for valid message', async () => {
+    const req = createRequest({ message: 'What tech stack do you use?' });
+    const res = await POST(req);
+    expect(res.status).toBe(200);
+    const data = await res.json();
+    expect(data.message).toBe('Hello! I can help you learn about Keneth.');
+  });
+
+  it('passes conversation history to Gemini', async () => {
+    const req = createRequest({
+      message: 'Tell me more',
+      history: [
+        { role: 'user', content: 'What projects have you built?' },
+        { role: 'assistant', content: 'Keneth has 7 projects...' },
+      ],
+    });
+    const res = await POST(req);
+    expect(res.status).toBe(200);
+    // Verify startChat was called with history
+    expect(mockStartChat).toHaveBeenCalled();
+    const callArgs = mockStartChat.mock.calls[0][0];
+    // Should have system prompt pair + 2 history messages
+    expect(callArgs.history.length).toBe(4);
+  });
+
+  it('limits history to last 10 messages', async () => {
+    const history = Array.from({ length: 15 }, (_, i) => ({
+      role: i % 2 === 0 ? 'user' : 'assistant',
+      content: `Message ${i}`,
+    }));
+    const req = createRequest({ message: 'Latest question', history });
+    const res = await POST(req);
+    expect(res.status).toBe(200);
+    const callArgs = mockStartChat.mock.calls[0][0];
+    // 2 (system prompt pair) + 10 (capped history) = 12
+    expect(callArgs.history.length).toBe(12);
+  });
+
+  // --- API Key ---
+  
+  it('returns 503 when API key is not configured', async () => {
+    vi.stubEnv('GOOGLE_GEMINI_API_KEY', '');
+    const req = createRequest({ message: 'Hello' });
+    const res = await POST(req);
+    expect(res.status).toBe(503);
+    const data = await res.json();
+    expect(data.error).toBe('Chat service is not configured.');
+  });
+
+  // --- Error Handling ---
+  
+  it('returns 500 with generic error when Gemini API fails', async () => {
+    mockSendMessage.mockRejectedValueOnce(new Error('API quota exceeded'));
+    const req = createRequest({ message: 'Hello' });
+    const res = await POST(req);
+    expect(res.status).toBe(500);
+    const data = await res.json();
+    expect(data.error).toBe('Something went wrong. Please try again.');
+    // Should NOT expose internal error
+    expect(JSON.stringify(data)).not.toContain('quota');
+  });
+
+  // --- Rate Limiting ---
+  
+  it('returns 429 after exceeding rate limit', async () => {
+    // Use a unique IP for this test to avoid cross-test contamination
+    const testIp = `rate-limit-test-${Date.now()}`;
+    
+    // Send 10 requests (should all succeed)
+    for (let i = 0; i < 10; i++) {
+      const req = createRequest(
+        { message: `Request ${i}` },
+        { 'x-forwarded-for': testIp }
+      );
+      const res = await POST(req);
+      expect(res.status).toBe(200);
+    }
+
+    // 11th request should be rate-limited
+    const req = createRequest(
+      { message: 'One more' },
+      { 'x-forwarded-for': testIp }
+    );
+    const res = await POST(req);
+    expect(res.status).toBe(429);
+    const data = await res.json();
+    expect(data.error).toContain('Too many requests');
+  });
+});
