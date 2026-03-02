@@ -334,7 +334,7 @@ All TypeScript interfaces for JSON data live here. `BlogPost` type is also in `s
 | Type | Key Fields | JSON Source | Used Fields in UI | Unused Fields |
 |------|------------|-------------|-------------------|---------------|
 | `Profile` | name, title, email, phone, location, github, linkedin, summary, highlights, education | profile.json | name, title, email, location, github, summary, highlights.yearsExperience, highlights.projectsCompleted, highlights.primaryTechnologies (SpeakingSection topic pills), education.degree, education.institution, education.location, education.honors, education.gpa, education.relevantCourses, education.startedAt | **phone, linkedin, education.endedAt** |
-| `Experience` | company, position, summary, country, modality, type, startedAt, endedAt, technologies, highlights, achievements, relatedProjects | experiences.json | company, position, type, startedAt, endedAt, summary, technologies, highlights, achievements (expandable) | **country, modality, relatedProjects** |
+| `Experience` | company, position, summary, country, modality, type, startedAt, endedAt, technologies, highlights, achievements, relatedProjects, images | experiences.json | company, position, type, startedAt, endedAt, summary, technologies, highlights, achievements (expandable), country, modality, images | **relatedProjects** |
 | `Project` | title, image, description, repositoryURL, liveURL, processURL, tags, year | projects.json | title, image, description, repositoryURL, liveURL, tags (first 3), year | **processURL** |
 | `Certification` | title, image, issuer, issuedAt, tags | certifications.json | title, image, issuer, issuedAt (with lightbox) | **tags** |
 | `Technology` | name, logo, category, proficiency | technologies.json | name, category, proficiency (hover reveal) | **logo** |
@@ -458,8 +458,8 @@ These are confirmed issues in the codebase as of 2026-03-02. Reference these whe
 
 ### P2 — Medium (Unused Data / Missing Features)
 
-8. ~~**Massive unused data** — Many JSON fields were never rendered. Fixed 2026-03-02: Experience now shows summary/technologies/highlights (expandable), certifications show images with lightbox, projects show screenshots, tech stack shows proficiency on hover, memberships show joinedAt. Further fixed 2026-03-02: Experience country/modality surfaced as pills in TimelineItem, certifications filterable by issuer, gallery filterable by tags with dates in lightbox.~~
-   Remaining unused: Experience relatedProjects (all empty), Certification tags (65 unique — issuer filter used instead), Technology logos, Gallery mediaType (all "image"), Profile phone/linkedin.
+8. ~~**Massive unused data** — Many JSON fields were never rendered. Fixed 2026-03-02: Experience now shows summary/technologies/highlights (expandable), certifications show images with lightbox, projects show screenshots, tech stack shows proficiency on hover, memberships show joinedAt. Further fixed 2026-03-02: Experience country/modality surfaced as pills in TimelineItem, certifications filterable by issuer, gallery filterable by tags with dates in lightbox. Technology logos surfaced via Simple Icons CDN in TechStackSection.~~
+   Remaining unused: Experience relatedProjects (all empty), Certification tags (65 unique — issuer filter used instead), Gallery mediaType (all "image"), Profile phone/linkedin.
 
 9. ~~**Only 4 of 7 projects displayed** — Fixed 2026-03-02: ProjectsSection now shows all 7 with "View all projects" toggle.~~
 
@@ -564,7 +564,9 @@ Prioritized improvements organized by effort and impact. Reference this when the
 - [x] Skip-to-main-content link for screen reader accessibility
 - [x] Image optimization: `sizes` attribute on 7 responsive `<Image>` components
 - [ ] Write real blog post content (currently placeholder markdown)
-- [ ] Surface technology logos in TechStackSection
+- [x] Surface technology logos in TechStackSection
+- [x] Move experience images to data (experiences.json `images` field)
+- [x] Print stylesheet (`@media print` in globals.css)
 - [ ] Contact form (instead of just mailto links)
 - [ ] Privacy-respecting analytics (Plausible or Umami)
 
