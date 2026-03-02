@@ -6,7 +6,7 @@
 > **Design Reference:** https://bryllim.com/ (modern resume-portfolio hybrid)  
 > **Model:** Always use **Claude Opus 4.6** for all development tasks  
 > **IDE:** VS Code with GitHub Copilot  
-> **Last audited:** 2026-03-02 (images & UI/UX update)
+> **Last audited:** 2026-03-02 (images, UI/UX, SEO, data quality, gallery lightbox, ConnectSection cleanup)
 
 ---
 
@@ -89,6 +89,7 @@ Every task MUST follow this pipeline:
 │       └── technologies.json         # 45 technologies across 6 categories
 ├── public/                           # Next.js public static files
 │   ├── site.webmanifest
+│   ├── resume.pdf                    # Downloadable resume (copied from portfolio-resources)
 │   └── images/                       # Served images (copied from portfolio-resources)
 │       ├── gallery/                  # 22 gallery photos
 │       ├── projects/                 # 15 project screenshots
@@ -101,16 +102,17 @@ Every task MUST follow this pipeline:
 │   │   ├── page.tsx                  # Home page (main portfolio, 'use client')
 │   │   ├── providers.tsx             # ThemeProvider (dark default, class strategy)
 │   │   └── blog/
+│   │       ├── layout.tsx            # Blog layout with SEO metadata
 │   │       ├── page.tsx              # Blog listing ('use client')
 │   │       └── [slug]/
-│   │           ├── page.tsx          # Blog post SSG page + generateStaticParams
+│   │           ├── page.tsx          # Blog post SSG page + generateStaticParams + generateMetadata
 │   │           └── BlogPostContent.tsx  # Client-side blog renderer
 │   ├── components/
 │   │   ├── layout/
 │   │   │   └── Footer.tsx            # Simple copyright footer
 │   │   ├── sections/                 # 11 section components (all 'use client')
-│   │   │   ├── HeroSection.tsx       # Name, real photo, CTA buttons
-│   │   │   ├── AboutSection.tsx      # Summary, education, highlights stats
+│   │   │   ├── HeroSection.tsx       # Name, real photo, CTA buttons + resume download (download attr)
+│   │   │   ├── AboutSection.tsx      # Summary, education (dates, GPA, courses), highlights stats
 │   │   │   ├── TechStackSection.tsx  # Tech stack grouped by category with proficiency
 │   │   │   ├── ProjectsSection.tsx   # Project cards grid (all 7, with toggle)
 │   │   │   ├── CertificationsSection.tsx  # Scrollable cert list with images + lightbox
@@ -118,8 +120,8 @@ Every task MUST follow this pipeline:
 │   │   │   ├── RecommendationsCarousel.tsx # Auto-advancing testimonials
 │   │   │   ├── MembershipsSection.tsx     # Org membership links
 │   │   │   ├── SpeakingSection.tsx        # Static speaking availability
-│   │   │   ├── ConnectSection.tsx         # Social links + latest blog post
-│   │   │   └── GallerySection.tsx         # Paginated image slider (5/slide)
+│   │   │   ├── ConnectSection.tsx         # Social links (Connect card) + latest blog post card
+│   │   │   └── GallerySection.tsx         # Paginated image slider (5/slide) with title hover overlay + lightbox
 │   │   └── ui/                       # 6 reusable UI primitives
 │   │       ├── Button.tsx            # Primary/ghost/outline with href support
 │   │       ├── Card.tsx              # Bordered card wrapper with hover option
@@ -161,7 +163,7 @@ This section documents the **actual content** from `portfolio-resources/data/` s
 - **Name:** Jhon Keneth Namias
 - **Alias:** PP Namias (GitHub: PP-Namias)
 - **Title:** Full Stack Developer
-- **Email:** jhonamiasss@gmail.com (profile.json) / pp.namias@gmail.com (socials.json)
+- **Email:** pp.namias@gmail.com (consistent across profile.json and socials.json)
 - **Location:** Caloocan City, Philippines
 - **GitHub:** https://github.com/PP-Namias
 - **LinkedIn:** https://www.linkedin.com/in/pp-namias/
@@ -228,7 +230,7 @@ This section documents the **actual content** from `portfolio-resources/data/` s
 - **Gallery:** 22 images (all present, matching JSON)
 - **Projects:** 15 screenshots available — **now mapped to correct filenames in projects.json and displayed in ProjectCard**
 - **Profile photos:** `me.jpg`, `Jhon Keneth Namias (2).jpg`, `Namias Profile White BG.png` — **me.jpg used in HeroSection**
-- **Resume:** PDF, DOCX, and LaTeX source available
+- **Resume:** PDF, DOCX, and LaTeX source available (PDF served at `/resume.pdf`)
 
 ---
 
@@ -301,18 +303,18 @@ portfolio-resources/assets/images/  →  public/images/ (copied)  →  Next.js <
 Images from `portfolio-resources/` are copied to `public/images/` with subdirectories: `gallery/`, `projects/`, `certifications/`, `profile/`. All components reference `/images/{subfolder}/{filename}` paths. When adding new images, copy them to both locations.
 
 ### Types (src/types/index.ts)
-All TypeScript interfaces for JSON data live here. **One exception:** `BlogPost` type is defined in `src/data/blogPosts.ts` instead.
+All TypeScript interfaces for JSON data live here. `BlogPost` type is also in `src/types/index.ts`.
 
 | Type | Key Fields | JSON Source | Used Fields in UI | Unused Fields |
 |------|------------|-------------|-------------------|---------------|
-| `Profile` | name, title, email, phone, location, github, linkedin, summary, highlights, education | profile.json | name, title, email, location, github, summary, highlights.yearsExperience, highlights.projectsCompleted, education.degree, education.institution, education.location, education.honors | **phone, linkedin, highlights.primaryTechnologies, education.gpa, education.relevantCourses, education.startedAt, education.endedAt** |
-| `Experience` | company, position, summary, country, modality, type, startedAt, endedAt, technologies, highlights, achievements, relatedProjects | experiences.json | company, position, type, startedAt, endedAt, summary, technologies, highlights (expandable) | **country, modality, achievements, relatedProjects** |
+| `Profile` | name, title, email, phone, location, github, linkedin, summary, highlights, education | profile.json | name, title, email, location, github, summary, highlights.yearsExperience, highlights.projectsCompleted, education.degree, education.institution, education.location, education.honors, education.gpa, education.relevantCourses, education.startedAt | **phone, linkedin, highlights.primaryTechnologies, education.endedAt** |
+| `Experience` | company, position, summary, country, modality, type, startedAt, endedAt, technologies, highlights, achievements, relatedProjects | experiences.json | company, position, type, startedAt, endedAt, summary, technologies, highlights, achievements (expandable) | **country, modality, relatedProjects** |
 | `Project` | title, image, description, repositoryURL, liveURL, processURL, tags, year | projects.json | title, image, description, repositoryURL, liveURL, tags (first 3), year | **processURL** |
 | `Certification` | title, image, issuer, issuedAt, tags | certifications.json | title, image, issuer, issuedAt (with lightbox) | **tags** |
 | `Technology` | name, logo, category, proficiency | technologies.json | name, category, proficiency (hover reveal) | **logo** |
-| `GalleryItem` | title, mediaType, media, tags, createdAt | gallery.json | title, media | **mediaType, tags, createdAt** |
+| `GalleryItem` | title, mediaType, media, tags, createdAt | gallery.json | title, media (title shown on hover overlay) | **mediaType, tags, createdAt** |
 | `Membership` | name, url, joinedAt | memberships.json | name, url, joinedAt | — |
-| `SocialLink` | name, icon, label, link, featured? | socials.json | name, icon, label, link | **featured** |
+| `SocialLink` | name, icon, label, link, featured? | socials.json | name, icon, label, link, featured (accent style for featured links) | — |
 | `Recommendation` | quote, name, title, company | recommendations.json | All used | — |
 
 ---
@@ -401,24 +403,24 @@ These are confirmed issues in the codebase as of 2026-03-02. Reference these whe
 
 3. **Recommendations are fake** — `recommendations.json` contains 2 placeholder testimonials from "Sample Recommender" and "Another Recommender" at fictional companies. Must be replaced with real quotes.
 
-4. **Blog data violates architecture** — `src/data/blogPosts.ts` hardcodes 6 blog posts with `BlogPost` type defined inline, instead of sourcing from `portfolio-resources/data/blog.json`. All cover images use external `picsum.photos` placeholder URLs.
+4. **Blog data violates architecture** — `src/data/blogPosts.ts` hardcodes 6 blog posts instead of sourcing from `portfolio-resources/data/blog.json`. All cover images use external `picsum.photos` placeholder URLs.
 
-5. **`BlogPost` type not in `src/types/index.ts`** — Defined in `src/data/blogPosts.ts` instead, breaking the single-type-registry pattern.
+5. ~~**`BlogPost` type not in `src/types/index.ts`** — Fixed 2026-03-02: moved to `src/types/index.ts`, `blogPosts.ts` now imports from `@/types`.~~
 
 6. ~~**Profile photo is initials placeholder** — `HeroSection.tsx` renders initials in a gradient box instead of using actual photos. Fixed 2026-03-02: now uses `me.jpg` via Next.js `<Image>`.~~
 
-7. **Two different email addresses** — `profile.json` has `jhonamiasss@gmail.com`, `socials.json` has `pp.namias@gmail.com`. Should be consistent.
+7. ~~**Two different email addresses** — Fixed 2026-03-02: both profile.json and socials.json now use `pp.namias@gmail.com`. LinkedIn URL also fixed to `pp-namias`.~~
 
 ### P2 — Medium (Unused Data / Missing Features)
 
 8. ~~**Massive unused data** — Many JSON fields were never rendered. Fixed 2026-03-02: Experience now shows summary/technologies/highlights (expandable), certifications show images with lightbox, projects show screenshots, tech stack shows proficiency on hover, memberships show joinedAt.~~
-   Remaining unused: Experience country/modality/achievements/relatedProjects, Certification tags, Technology logos, Gallery tags/dates/mediaType, Profile phone/linkedin/GPA/courses/education dates.
+   Remaining unused: Experience country/modality/relatedProjects, Certification tags, Technology logos, Gallery tags/dates/mediaType, Profile phone/linkedin.
 
 9. ~~**Only 4 of 7 projects displayed** — Fixed 2026-03-02: ProjectsSection now shows all 7 with "View all projects" toggle.~~
 
 10. ~~**`Badge` component is unused** — Removed 2026-03-02.~~
 
-11. **`SocialLink.featured` field unused** — Calendly is marked `featured: true` but this flag is never used for filtering or special display.
+11. ~~**`SocialLink.featured` field unused** — Fixed 2026-03-02: featured social links now display with accent pink background + white text in ConnectSection.~~
 
 12. ~~**HeroSection uses `profile.github`** which points to `https://github.com/jhonmamias` — Fixed 2026-03-02: profile.json updated to `https://github.com/PP-Namias`.~~
 
@@ -428,19 +430,27 @@ These are confirmed issues in the codebase as of 2026-03-02. Reference these whe
 
 14. **Blog listing is `'use client'`** — Prevents SSR/SSG, bad for SEO. Should be a server component.
 
-15. **Blog posts lack `generateMetadata`** — No per-page SEO titles/descriptions for blog post pages.
+15. ~~**Blog posts lack `generateMetadata`** — Fixed 2026-03-02: added `generateMetadata` to `blog/[slug]/page.tsx` + blog layout with metadata.~~
 
 16. **Custom markdown renderer is naive** — `BlogPostContent.tsx` parses markdown manually (handles ##, ###, code blocks, lists, bold) but misses inline formatting, links, images, inline code, and nested elements. Should use `react-markdown` or similar.
 
-17. ~~**`ConnectSection` calls `.find()` twice** for calendly — Fixed 2026-03-02: cached as `calendlyLink` variable.~~
+17. ~~**`ConnectSection` calls `.find()` twice** for calendly — Fixed 2026-03-02: cached as `calendlyLink` variable. Further streamlined: removed redundant "Get in Touch" and "Quick Links" sections that duplicated Social Links and Hero CTAs.~~
 
-18. ~~**`RecommendationsCarousel` direction bug** — Fixed 2026-03-02: `prevIndex` ref now synced via `useEffect` on `currentIndex`.~~
+18. ~~**`RecommendationsCarousel` direction bug** — Fixed 2026-03-02: `prevIndex` ref now synced via `useEffect` on `currentIndex`. Import consistency also fixed (unified `React.useEffect` → named `useEffect` import).~~
 
 19. ~~**Footer copyright year hardcoded** — Fixed 2026-03-02: now uses `new Date().getFullYear()`.~~
 
-20. **`Button` ghost/outline variants are identical** — Both have border + same hover style; should differentiate or consolidate.
+20. ~~**`Button` ghost/outline variants are identical** — Fixed 2026-03-02: ghost is now borderless with subtle bg, outline has border with accent hover.~~
 
 21. **`next.config.js` has S3 remote patterns** but no S3 bucket is currently in use for the deployed site — images are local.
+
+22. ~~**Resume button opens new tab instead of downloading** — Fixed 2026-03-02: HeroSection resume uses `<a download>` attribute instead of Button with `target="_blank"`.~~
+
+23. ~~**Gallery images not clickable** — Fixed 2026-03-02: GallerySection now has click-to-enlarge lightbox (AnimatePresence modal, X close, backdrop click close) matching CertificationsSection pattern.~~
+
+24. ~~**Gallery section missing image count** — Fixed 2026-03-02: header now shows `Gallery (22)` count like Projects and Certifications.~~
+
+25. ~~**ConnectSection had redundant sections** — Fixed 2026-03-02: removed "Get in Touch" and "Quick Links" sections. Now shows single "Connect" card with all 8 social links + "Latest Post" card.~~
 
 ---
 
@@ -451,7 +461,7 @@ Prioritized improvements organized by effort and impact. Reference this when the
 ### Quick Wins (< 30 min each)
 - [x] Fix `projects.json` image fields — map to actual filenames from `portfolio-resources/assets/images/projects/`
 - [x] Fix `profile.json` GitHub URL — change `jhonmamias` → `PP-Namias`
-- [ ] Resolve email inconsistency between profile.json and socials.json
+- [x] Resolve email inconsistency between profile.json and socials.json
 - [x] Use profile photo in HeroSection instead of initials
 - [x] Show all 7 projects (or add "View all" toggle)
 - [x] Display `membership.joinedAt` in MembershipsSection
@@ -467,19 +477,24 @@ Prioritized improvements organized by effort and impact. Reference this when the
 - [x] Display project screenshots in ProjectCard
 - [x] Show experience details (summary, technologies, highlights) in expanded timeline
 - [x] Replace `<img>` with Next.js `<Image>` throughout
-- [ ] Move `BlogPost` type to `src/types/index.ts`
+- [x] Move `BlogPost` type to `src/types/index.ts`
 - [ ] Create `portfolio-resources/data/blog.json` and source blog data from it
 
 ### Larger Features (3+ hours)
 - [ ] Get real recommendations and replace placeholder data
 - [ ] Implement proper markdown rendering (react-markdown + rehype plugins)
-- [ ] Add SEO: `generateMetadata` for all pages, OG images, structured data
+- [x] Add SEO: `generateMetadata` for blog pages + blog layout metadata
 - [ ] Make blog listing a server component for SSG
-- [ ] Show gallery metadata (tags, dates) with filter/sort capabilities
-- [ ] Add resume download button using `portfolio-resources/assets/documents/resume.pdf`
-- [ ] Leverage `SocialLink.featured` for prominent display
-- [ ] Display education dates, GPA, relevant courses, and phone in appropriate sections
-- [ ] Add experience detail expansion (click to see full highlights/achievements)
+- [x] Show gallery image title on hover overlay
+- [x] Add resume download button in HeroSection using `public/resume.pdf`
+- [x] Leverage `SocialLink.featured` for prominent accent display in ConnectSection
+- [x] Display education dates, GPA, relevant courses in AboutSection
+- [x] Show experience achievements in expandable timeline
+- [ ] Add OG images and structured data for full SEO
+- [x] Gallery lightbox (click-to-enlarge with AnimatePresence modal)
+- [x] Streamline ConnectSection (removed redundant "Get in Touch" and "Quick Links")
+- [x] Resume download uses `download` attribute instead of new tab
+- [x] Gallery shows image count in header
 
 ---
 
@@ -488,7 +503,7 @@ Prioritized improvements organized by effort and impact. Reference this when the
 1. **Font loading:** Use `next/font/google` ONLY — do NOT also `@import` from CSS (Inter is loaded in `layout.tsx` as `--font-inter`)
 2. **Real data:** All content from `portfolio-resources/data/` — no placeholders, no hardcoded content
 3. **Social links:** From `socials.json` — never hardcode URLs (8 links: calendly, github, email, linkedin, facebook, discord, x, instagram)
-4. **Metadata:** Real name "Jhon Keneth Namias", real domain "namias.tech", real email
+4. **Metadata:** Real name "Jhon Keneth Namias", real domain "namias.tech", real email `pp.namias@gmail.com`
 5. **CSS transitions on `*`:** Avoid — causes performance issues on theme switch. Only transition specific properties on body
 6. **`'use client'`:** Only for interactive components — blog listing should be server component
 7. **Image paths:** Images live in `portfolio-resources/assets/images/` and are copied to `public/images/`. Components reference `/images/{subfolder}/{filename}`. When adding new images, copy them to both locations.

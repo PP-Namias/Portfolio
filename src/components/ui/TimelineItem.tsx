@@ -16,7 +16,7 @@ export function TimelineItem({ item, index, isLast }: TimelineItemProps) {
   const startYear = new Date(item.startedAt).getFullYear();
   const endLabel = item.endedAt ? new Date(item.endedAt).getFullYear().toString() : 'Present';
   const dateLabel = startYear === Number(endLabel) ? `${startYear}` : `${startYear} – ${endLabel}`;
-  const hasDetails = item.summary || item.technologies.length > 0 || item.highlights.length > 0;
+  const hasDetails = item.summary || item.technologies.length > 0 || item.highlights.length > 0 || item.achievements.length > 0;
 
   return (
     <motion.div
@@ -98,6 +98,19 @@ export function TimelineItem({ item, index, isLast }: TimelineItemProps) {
                       </li>
                     ))}
                   </ul>
+                )}
+                {item.achievements.length > 0 && (
+                  <div>
+                    <p className="text-[10px] font-medium text-text-secondary-light dark:text-text-secondary-dark uppercase tracking-wider mb-0.5">Achievements</p>
+                    <ul className="space-y-0.5">
+                      {item.achievements.map((achievement, i) => (
+                        <li key={i} className="text-[11px] text-text-muted-light dark:text-text-muted-dark flex gap-1.5">
+                          <span className="text-accent-pink mt-0.5">★</span>
+                          <span>{achievement}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
                 )}
               </div>
             </motion.div>

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { recommendations } from '@/data/recommendations';
 import { useCarousel } from '@/hooks/useCarousel';
@@ -14,7 +14,7 @@ export function RecommendationsCarousel() {
   const prevIndex = useRef(0);
 
   // Keep prevIndex synced with currentIndex (including auto-advance)
-  React.useEffect(() => {
+  useEffect(() => {
     setDirection(currentIndex > prevIndex.current ? 1 : -1);
     prevIndex.current = currentIndex;
   }, [currentIndex]);

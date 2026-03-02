@@ -5,10 +5,9 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 import {
-  Mail, Calendar, FileText, ChevronRight, Clock, ExternalLink,
+  Mail, Calendar, ChevronRight, Clock, ExternalLink,
   Github, Instagram, Linkedin, Facebook, Twitter, MessageSquare,
 } from 'lucide-react';
-import { profile } from '@/data/profile';
 import { socialLinks } from '@/data/socials';
 import { blogPosts } from '@/data/blogPosts';
 import { Card } from '@/components/ui/Card';
@@ -26,7 +25,6 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
 
 export function ConnectSection() {
   const latestPost = blogPosts[0];
-  const calendlyLink = socialLinks.find((s) => s.name === 'calendly');
 
   return (
     <motion.section
@@ -38,11 +36,10 @@ export function ConnectSection() {
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {/* Card 1: Connect */}
         <Card>
-          {/* Social Links */}
-          <h3 className="text-sm font-semibold text-text-primary-light dark:text-text-primary-dark mb-2.5">
-            Social Links
+          <h3 className="text-sm font-semibold text-text-primary-light dark:text-text-primary-dark mb-3">
+            Connect
           </h3>
-          <div className="flex flex-wrap items-center gap-2 mb-4">
+          <div className="flex flex-wrap items-center gap-2">
             {socialLinks.map((link) => {
               const Icon = iconMap[link.icon] || ExternalLink;
               return (
@@ -51,68 +48,17 @@ export function ConnectSection() {
                   href={link.link}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-full border border-border-light dark:border-border-dark text-text-secondary-light dark:text-text-secondary-dark hover:text-accent-pink hover:border-accent-pink dark:hover:text-accent-pink dark:hover:border-accent-pink transition-colors duration-200 group"
+                  className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-full transition-colors duration-200 group ${
+                    link.featured
+                      ? 'bg-accent-pink text-white hover:bg-accent-pink-hover border border-accent-pink'
+                      : 'border border-border-light dark:border-border-dark text-text-secondary-light dark:text-text-secondary-dark hover:text-accent-pink hover:border-accent-pink dark:hover:text-accent-pink dark:hover:border-accent-pink'
+                  }`}
                 >
                   <Icon className="h-3.5 w-3.5" />
                   <span>{link.label}</span>
                 </a>
               );
             })}
-          </div>
-
-          {/* Get in Touch */}
-          <h3 className="text-sm font-semibold text-text-primary-light dark:text-text-primary-dark mb-2.5">
-            Get in Touch
-          </h3>
-          <div className="flex flex-wrap items-center gap-3 mb-4">
-            <a
-              href={`mailto:${profile.email}`}
-              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-full border border-border-light dark:border-border-dark text-text-secondary-light dark:text-text-secondary-dark hover:text-accent-pink hover:border-accent-pink dark:hover:text-accent-pink dark:hover:border-accent-pink transition-colors duration-200"
-            >
-              <Mail className="h-3.5 w-3.5" />
-              <span>{profile.email}</span>
-            </a>
-            {calendlyLink && (
-              <a
-                href={calendlyLink.link}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-full border border-border-light dark:border-border-dark text-text-secondary-light dark:text-text-secondary-dark hover:text-accent-pink hover:border-accent-pink dark:hover:text-accent-pink dark:hover:border-accent-pink transition-colors duration-200"
-              >
-                <Calendar className="h-3.5 w-3.5" />
-                <span>Schedule a Call</span>
-              </a>
-            )}
-            <Link
-              href="/blog"
-              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-full border border-border-light dark:border-border-dark text-text-secondary-light dark:text-text-secondary-dark hover:text-accent-pink hover:border-accent-pink dark:hover:text-accent-pink dark:hover:border-accent-pink transition-colors duration-200"
-            >
-              <FileText className="h-3.5 w-3.5" />
-              <span>Blog</span>
-            </Link>
-          </div>
-
-          {/* Quick Links */}
-          <h3 className="text-sm font-semibold text-text-primary-light dark:text-text-primary-dark mb-2.5">
-            Quick Links
-          </h3>
-          <div className="flex flex-wrap items-center gap-2.5">
-            <a
-              href={profile.github}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold rounded-lg bg-accent-pink text-white hover:bg-accent-pink-hover transition-colors duration-200"
-            >
-              View GitHub
-              <ExternalLink className="h-3 w-3" />
-            </a>
-            <a
-              href={`mailto:${profile.email}`}
-              className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold rounded-lg border border-border-light dark:border-border-dark text-text-secondary-light dark:text-text-secondary-dark hover:text-accent-pink hover:border-accent-pink dark:hover:text-accent-pink dark:hover:border-accent-pink transition-colors duration-200"
-            >
-              <Mail className="h-3 w-3" />
-              Send Email
-            </a>
           </div>
         </Card>
 
@@ -131,7 +77,6 @@ export function ConnectSection() {
             </Link>
           </div>
           <Link href={`/blog/${latestPost.slug}`} className="block group">
-            {/* Thumbnail */}
             <div className="rounded-lg overflow-hidden mb-3">
               <Image
                 src={latestPost.coverImage}
@@ -141,7 +86,6 @@ export function ConnectSection() {
                 className="w-full h-32 object-cover rounded-lg group-hover:scale-105 transition-transform duration-300"
               />
             </div>
-            {/* Details */}
             <h4 className="text-sm font-medium text-text-primary-light dark:text-text-primary-dark group-hover:text-accent-pink transition-colors duration-200 line-clamp-2 leading-snug">
               {latestPost.title}
             </h4>

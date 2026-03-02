@@ -3,7 +3,7 @@
 import React from 'react';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
-import { MapPin, Mail, ChevronRight, ExternalLink } from 'lucide-react';
+import { MapPin, Mail, ChevronRight, ExternalLink, Download } from 'lucide-react';
 import { profile } from '@/data/profile';
 import { Button } from '@/components/ui/Button';
 import { VerifiedBadge } from '@/components/ui/VerifiedBadge';
@@ -64,6 +64,14 @@ export function HeroSection() {
               View GitHub
               <ExternalLink className="h-3.5 w-3.5" />
             </Button>
+            <a
+              href="/resume.pdf"
+              download
+              className="inline-flex items-center justify-center gap-2 rounded-lg font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-accent-pink focus:ring-offset-2 dark:focus:ring-offset-background-dark text-text-primary-light dark:text-text-primary-dark bg-surface-light/50 dark:bg-card-bg-dark/50 hover:bg-surface-light dark:hover:bg-card-bg-dark px-4 py-2 text-sm"
+            >
+              <Download className="h-4 w-4" />
+              Resume
+            </a>
             <Button variant="ghost" size="md" href={`mailto:${profile.email}`}>
               <Mail className="h-4 w-4" />
               Send Email

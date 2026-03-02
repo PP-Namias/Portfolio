@@ -95,3 +95,15 @@ export interface SocialLink {
   link: string;
   featured?: boolean;
 }
+
+export interface BlogPost {
+  id: string;
+  slug: string;
+  title: string;
+  excerpt: string;
+  content: string;
+  date: string;
+  readTime: string;
+  tags: string[];
+  coverImage: string;
+}

@@ -28,9 +28,9 @@ export function Button({
     primary:
       'bg-accent-pink text-white hover:bg-accent-pink-hover active:bg-pink-800 shadow-sm',
     ghost:
-      'text-text-primary-light dark:text-text-primary-dark hover:bg-surface-light dark:hover:bg-card-bg-dark border border-border-light dark:border-border-dark',
+      'text-text-primary-light dark:text-text-primary-dark bg-surface-light/50 dark:bg-card-bg-dark/50 hover:bg-surface-light dark:hover:bg-card-bg-dark',
     outline:
-      'border border-border-light dark:border-border-dark text-text-primary-light dark:text-text-primary-dark hover:bg-surface-light dark:hover:bg-card-bg-dark',
+      'border border-border-light dark:border-border-dark text-text-primary-light dark:text-text-primary-dark hover:border-accent-pink hover:text-accent-pink dark:hover:border-accent-pink dark:hover:text-accent-pink',
   };
 
   const sizes = {
