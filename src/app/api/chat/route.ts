@@ -1,13 +1,13 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { NextRequest, NextResponse } from 'next/server';
 
-import profileData from '../../../../../portfolio-resources/data/profile.json';
-import experiencesData from '../../../../../portfolio-resources/data/experiences.json';
-import projectsData from '../../../../../portfolio-resources/data/projects.json';
-import technologiesData from '../../../../../portfolio-resources/data/technologies.json';
-import certificationsData from '../../../../../portfolio-resources/data/certifications.json';
-import membershipsData from '../../../../../portfolio-resources/data/memberships.json';
-import socialsData from '../../../../../portfolio-resources/data/socials.json';
+import profileData from '../../../../portfolio-resources/data/profile.json';
+import experiencesData from '../../../../portfolio-resources/data/experiences.json';
+import projectsData from '../../../../portfolio-resources/data/projects.json';
+import technologiesData from '../../../../portfolio-resources/data/technologies.json';
+import certificationsData from '../../../../portfolio-resources/data/certifications.json';
+import membershipsData from '../../../../portfolio-resources/data/memberships.json';
+import socialsData from '../../../../portfolio-resources/data/socials.json';
 
 // --- Rate Limiting ---
 const rateLimitMap = new Map<string, { count: number; resetAt: number }>();

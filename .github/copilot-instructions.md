@@ -23,6 +23,7 @@
 | Theming | next-themes | ^0.4.4 | Dark/light mode with `class` strategy |
 | Hosting | AWS Amplify | — | Serverless deployment with CI/CD |
 | Markdown | react-markdown + remark-gfm + rehype-highlight | ^9.x | Blog content rendering with GFM + syntax highlighting |
+| AI Chatbot | @google/generative-ai (Gemini 2.0 Flash) | ^0.x | AI portfolio assistant via /api/chat route |
 | Static Assets | Local `portfolio-resources/` | — | Images, documents, JSON data |
 
 ---
@@ -111,6 +112,9 @@ Every task MUST follow this pipeline:
 │   │   ├── experience/
 │   │   │   ├── page.tsx              # Experience page (server component + SEO metadata)
 │   │   │   └── ExperiencePageClient.tsx  # Client component with scroll-driven Timeline
+│   │   ├── api/
+│   │   │   └── chat/
+│   │   │       └── route.ts          # POST /api/chat — Gemini AI chatbot (rate-limited, sanitized)
 │   │   └── blog/
 │   │       ├── layout.tsx            # Blog layout with SEO metadata
 │   │       ├── page.tsx              # Blog listing (server component — renders BlogListClient)
@@ -137,6 +141,8 @@ Every task MUST follow this pipeline:
 │   │       ├── Button.tsx            # Primary/ghost/outline with href support
 │   │       ├── Card.tsx              # Bordered card wrapper with hover option
 │   │       ├── ProjectCard.tsx       # Project card with screenshot + links
+│   │       ├── ChatWidget.tsx        # Floating AI chatbot widget (FAB + panel, Framer Motion)
+│   │       ├── ChatMessage.tsx       # Chat message bubble component (user/assistant styling)
 │   │       ├── ThemeToggle.tsx       # Dark/light mode toggle button
 │   │       ├── timeline.tsx           # Scroll-driven Aceternity-style timeline (framer-motion)
 │   │       ├── TimelineItem.tsx      # Expandable experience timeline entry
@@ -330,6 +336,7 @@ All TypeScript interfaces for JSON data live here. `BlogPost` type is also in `s
 | `SocialLink` | name, icon, label, link, featured? | socials.json | name, icon, label, link, featured (accent style for featured links) | — |
 | `Recommendation` | quote, name, title, company | recommendations.json | All used | — |
 | `BlogPost` | id, slug, title, excerpt, content, date, readTime, tags, coverImage | blog.json | All used (listing grid + full post page) | — |
+| `ChatMessage` | id, role, content, timestamp | — (client state) | ChatWidget/ChatMessage components | — |
 
 ---
 
