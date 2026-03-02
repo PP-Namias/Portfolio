@@ -1,9 +1,9 @@
 [
   {
-    "name": "calendly",
+    "name": "cal",
     "icon": "calendar",
     "label": "Schedule a Meeting",
-    "link": "https://calendly.com/pp-namias/15-minute-meeting",
+    "link": "https://cal.com/pp-namias",
     "featured": true
   },
   {

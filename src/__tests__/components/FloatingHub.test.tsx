@@ -40,7 +40,7 @@ vi.mock('@/components/ui/ChatMessage', () => ({
 // Mock data modules
 vi.mock('@/data/socials', () => ({
   socialLinks: [
-    { name: 'calendly', icon: 'calendar', label: 'Schedule a Meeting', link: 'https://calendly.com/pp-namias/15-minute-meeting', featured: true },
+    { name: 'cal', icon: 'calendar', label: 'Schedule a Meeting', link: 'https://cal.com/pp-namias', featured: true },
     { name: 'github', icon: 'github', label: 'PP-Namias', link: 'https://github.com/PP-Namias' },
     { name: 'email', icon: 'mail', label: 'Gmail', link: 'mailto:pp.namias@gmail.com' },
     { name: 'linkedin', icon: 'linkedin', label: 'LinkedIn', link: 'https://www.linkedin.com/in/pp-namias/' },
@@ -54,6 +54,15 @@ vi.mock('@/data/profile', () => ({
     name: 'Jhon Keneth Ryan Namias',
     email: 'pp.namias@gmail.com',
   },
+}));
+
+// Mock useModal hook
+const mockOpenModal = vi.fn();
+vi.mock('@/hooks/useModal', () => ({
+  useModal: () => ({
+    openModal: mockOpenModal,
+    closeModal: vi.fn(),
+  }),
 }));
 
 // Mock fetch
@@ -85,7 +94,7 @@ describe('FloatingHub', () => {
     fireEvent.click(screen.getByLabelText('Open quick actions'));
 
     expect(screen.getByText('Ask AI Assistant')).toBeInTheDocument();
-    expect(screen.getByText('Download Resume')).toBeInTheDocument();
+    expect(screen.getByText('View Resume')).toBeInTheDocument();
     expect(screen.getByText('Schedule a Meeting')).toBeInTheDocument();
     expect(screen.getByText('Send Email')).toBeInTheDocument();
     expect(screen.getByText('Connect')).toBeInTheDocument();
@@ -101,23 +110,20 @@ describe('FloatingHub', () => {
     expect(screen.getByLabelText('Back to menu')).toBeInTheDocument();
   });
 
-  it('has download link for resume', () => {
+  it('opens resume modal when View Resume is clicked', () => {
     render(<FloatingHub />);
     fireEvent.click(screen.getByLabelText('Open quick actions'));
+    fireEvent.click(screen.getByText('View Resume'));
 
-    const resumeLink = screen.getByText('Download Resume').closest('a');
-    expect(resumeLink).toHaveAttribute('href', '/resume.pdf');
-    expect(resumeLink).toHaveAttribute('download');
+    expect(mockOpenModal).toHaveBeenCalledWith('resume');
   });
 
-  it('has external link for Calendly', () => {
+  it('opens booking modal when Schedule a Meeting is clicked', () => {
     render(<FloatingHub />);
     fireEvent.click(screen.getByLabelText('Open quick actions'));
+    fireEvent.click(screen.getByText('Schedule a Meeting'));
 
-    const calendlyLink = screen.getByText('Schedule a Meeting').closest('a');
-    expect(calendlyLink).toHaveAttribute('href', 'https://calendly.com/pp-namias/15-minute-meeting');
-    expect(calendlyLink).toHaveAttribute('target', '_blank');
-    expect(calendlyLink).toHaveAttribute('rel', 'noopener noreferrer');
+    expect(mockOpenModal).toHaveBeenCalledWith('booking');
   });
 
   it('has mailto link for email', () => {

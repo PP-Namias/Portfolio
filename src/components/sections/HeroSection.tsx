@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MapPin, Mail, ChevronRight, ExternalLink, Download, Github, Linkedin, Twitter, Instagram } from 'lucide-react';
+import { MapPin, Mail, ChevronRight, ExternalLink, Download, Calendar, Github, Linkedin, Twitter, Instagram } from 'lucide-react';
 import { profile } from '@/data/profile';
 import { socialLinks } from '@/data/socials';
 import { Button } from '@/components/ui/Button';
@@ -120,6 +120,10 @@ export function HeroSection() {
             <Button variant="ghost" size="md" onClick={() => openModal('resume')}>
               <Download className="h-4 w-4" />
               Resume
+            </Button>
+            <Button variant="ghost" size="md" onClick={() => openModal('booking')}>
+              <Calendar className="h-4 w-4" />
+              Book a Call
             </Button>
             <Button variant="ghost" size="md" href={`mailto:${profile.email}`}>
               <Mail className="h-4 w-4" />

@@ -6,7 +6,7 @@
 > **Design Reference:** https://bryllim.com/ (modern resume-portfolio hybrid)  
 > **Model:** Always use **Claude Opus 4.6** for all development tasks  
 > **IDE:** VS Code with GitHub Copilot  
-> **Last audited:** 2026-03-03 (V7: Modal-first architecture, minimal routes, resume/experience modals, removed /resume and /experience pages, ModalProvider context, autocommit rules)
+> **Last audited:** 2026-03-03 (V7: Modal-first architecture, minimal routes, resume/experience modals, removed /resume and /experience pages, ModalProvider context, autocommit rules, Cal.com BookingModal integration)
 
 ---
 
@@ -22,6 +22,7 @@
 | Icons | Lucide React | ^0.468.0 | Consistent, tree-shakeable icon library |
 | Theming | next-themes | ^0.4.4 | Dark/light mode with `class` strategy |
 | Smooth Scroll | Lenis | ^1.3.18-dev.0 | Smooth scroll via ReactLenis (lerp: 0.1, duration: 1.2) |
+| Scheduling | Cal.com | — | Embedded scheduling via iframe in BookingModal (cal.com/pp-namias) |
 | Accent Colors | AccentColorProvider | — | 8-color scheme picker with CSS vars + localStorage |
 | Hosting | AWS Amplify | — | Serverless deployment with CI/CD |
 | Markdown | react-markdown + remark-gfm + rehype-highlight | ^9.x | Blog content rendering with GFM + syntax highlighting |
@@ -96,6 +97,7 @@ All modals are managed by `ModalProvider` in `src/hooks/useModal.tsx`:
 const { openModal } = useModal();
 openModal('resume');     // Opens resume PDF viewer modal
 openModal('experience'); // Opens full experience modal
+openModal('booking');    // Opens Cal.com scheduling modal
 ```
 
 Provider hierarchy: `ThemeProvider > AccentColorProvider > ModalProvider > ReactLenis > children`
@@ -241,6 +243,7 @@ refactor: convert experience page to modal
 │   │       ├── Modal.tsx             # Reusable modal (backdrop, ESC close, focus trap, scroll lock, Framer Motion)
 │   │       ├── ResumeModal.tsx       # Resume PDF viewer modal (embedded <object> + download button)
 │   │       ├── ExperienceModal.tsx   # Full experience details modal (all roles, highlights, achievements, images)
+│   │       ├── BookingModal.tsx      # Cal.com scheduling embed modal (15min/30min event types, iframe embed)
 │   │       ├── ProjectCard.tsx       # Project card with screenshot + links
 │   │       ├── ReadingProgress.tsx   # Blog reading progress bar (fixed top, accent gradient, framer-motion useScroll)
 │   │       ├── FloatingHub.tsx       # Main floating hub container (FAB + 3-state machine + panel wrapper)
@@ -266,7 +269,7 @@ refactor: convert experience page to modal
 │   ├── hooks/
 │   │   ├── useAccentColor.tsx        # AccentColorProvider + useAccentColor hook (8 color schemes, localStorage, CSS vars)
 │   │   ├── useCarousel.ts           # Auto-advance & hover-pause carousel
-│   │   ├── useModal.tsx             # ModalProvider + useModal hook (manages resume/experience modals globally)
+│   │   ├── useModal.tsx             # ModalProvider + useModal hook (manages resume/experience/booking modals globally)
 │   │   └── useTheme.ts              # Wrapper around next-themes
 │   ├── lib/
 │   │   └── utils.ts                 # cn() — simple class concatenation
@@ -292,7 +295,7 @@ This section documents the **actual content** from `portfolio-resources/data/` s
 - **Location:** National Capital Region, Philippines
 - **GitHub:** https://github.com/PP-Namias
 - **LinkedIn:** https://www.linkedin.com/in/pp-namias/
-- **Calendly:** https://calendly.com/pp-namias/15-minute-meeting
+- **Cal.com:** https://cal.com/pp-namias
 - **Current Roles:** Project Manager @ MASH, Head of Technical Committee @ UCC
 
 ### Education
@@ -349,7 +352,7 @@ This section documents the **actual content** from `portfolio-resources/data/` s
 ⚠️ **Both recommendations in `recommendations.json` are generic placeholders** ("Sample Recommender" at "Tech Company", "Another Recommender" at "Digital Agency"). These need to be replaced with **real testimonials** from actual colleagues/managers.
 
 ### Social Links (8)
-- Calendly (featured), GitHub, Email (pp.namias@gmail.com), LinkedIn, Facebook, Discord, X/Twitter, Instagram
+- Cal.com (featured), GitHub, Email (pp.namias@gmail.com), LinkedIn, Facebook, Discord, X/Twitter, Instagram
 
 ### Gallery (22 images)
 - 9 Birthday 2024 photos, 1 Dream PC setup, 1 Friend group 2025, 6 HackForGov 2025 hackathon photos, 2 personal portraits, 1 MASH Team, 1 professional headshot (white BG), 1 OJT pic
@@ -450,6 +453,7 @@ All TypeScript interfaces for JSON data live here. `BlogPost` type is also in `s
 | `Recommendation` | quote, name, title, company | recommendations.json | All used | — |
 | `BlogPost` | id, slug, title, excerpt, content, date, readTime, tags, coverImage | blog.json | All used (listing grid + full post page) | — |
 | `ChatMessage` | id, role, content, timestamp | — (client state) | FloatingHub/ChatPanel/ChatMessage components | — |
+| `ModalName` | 'resume' \| 'experience' \| 'booking' \| null | — (type union) | ModalProvider, useModal hook | — |
 
 ---
 
@@ -525,7 +529,7 @@ The floating hub is a 3-state widget replacing the old single-purpose chat FAB:
 HubState: 'closed' → 'menu' → 'chat'
 ```
 - **closed**: Pink FAB (Sparkles icon) in bottom-right corner
-- **menu**: Panel with 6 quick actions (Ask AI, Download Resume, Schedule Meeting, Send Email, Connect socials, Read Blog)
+- **menu**: Panel with 6 quick actions (Ask AI, View Resume, Schedule Meeting via Cal.com, Send Email, Connect socials, Read Blog)
 - **chat**: Full AI chat panel with back-to-menu button
 
 Key architecture:
@@ -585,7 +589,7 @@ These are confirmed issues in the codebase as of 2026-03-02. Reference these whe
 
 16. ~~**Custom markdown renderer is naive** — `BlogPostContent.tsx` parses markdown manually. Fixed 2026-03-02: installed `react-markdown` + `remark-gfm` + `rehype-highlight`, rewrote `BlogPostContent.tsx` with proper component mapping for headings, lists, code blocks, links, blockquotes.~~
 
-17. ~~**`ConnectSection` calls `.find()` twice** for calendly — Fixed 2026-03-02: cached as `calendlyLink` variable. Further streamlined: removed redundant "Get in Touch" and "Quick Links" sections that duplicated Social Links and Hero CTAs.~~
+17. ~~**`ConnectSection` calls `.find()` twice** for calendly — Fixed 2026-03-02: cached as `calLink` variable. Further streamlined: removed redundant "Get in Touch" and "Quick Links" sections that duplicated Social Links and Hero CTAs. Updated 2026-03-03: Calendly→Cal.com, link opens BookingModal instead of external page.~~
 
 18. ~~**`RecommendationsCarousel` direction bug** — Fixed 2026-03-02: `prevIndex` ref now synced via `useEffect` on `currentIndex`. Import consistency also fixed (unified `React.useEffect` → named `useEffect` import).~~
 
@@ -611,7 +615,7 @@ These are confirmed issues in the codebase as of 2026-03-02. Reference these whe
 
 29. ~~**No favicon** — Fixed 2026-03-02: created `public/favicon.svg` (32x32, pink rounded rect with "JN") and `public/apple-touch-icon.svg` (180x180). Added to `layout.tsx` metadata. Updated `site.webmanifest` with name, colors, and icon entries.~~
 
-30. ~~**Single-purpose chat FAB** — ChatWidget was only for AI chat. Fixed 2026-03-02: Replaced with multi-purpose FloatingHub (6 actions: AI chat, resume, Calendly, email, social connect, blog). Old ChatWidget.tsx deleted.~~
+30. ~~**Single-purpose chat FAB** — ChatWidget was only for AI chat. Fixed 2026-03-02: Replaced with multi-purpose FloatingHub (6 actions: AI chat, resume, Cal.com, email, social connect, blog). Old ChatWidget.tsx deleted.~~
 
 ---
 
@@ -628,7 +632,7 @@ Prioritized improvements organized by effort and impact. Reference this when the
 - [x] Display `membership.joinedAt` in MembershipsSection
 - [x] Make Footer copyright year dynamic
 - [x] Remove unused `Badge.tsx` component
-- [x] Cache calendly link lookup in ConnectSection
+- [x] Cache cal link lookup in ConnectSection
 - [x] Fix RecommendationsCarousel prevIndex auto-advance sync
 - [x] Enhance SpeakingSection with Mic icon and topic pills from profile data
 - [x] Remove dead favicon.ico reference from layout.tsx metadata
@@ -685,6 +689,9 @@ Prioritized improvements organized by effort and impact. Reference this when the
 - [x] Modal-first architecture: ResumeModal, ExperienceModal, ModalProvider
 - [x] Removed /resume and /experience routes (now modals)
 - [x] Reusable Modal component with focus trap, scroll lock, animations
+- [x] Cal.com integration: BookingModal with iframe embed, replaced Calendly across codebase
+- [x] BookingModal: event type selector (15min/30min), Cal.com embed, external link
+- [x] Unit tests: 94 tests across 10 files (BookingModal, Modal, ResumeModal, HubMenu, HubMenuItem, useModal)
 - [ ] Contact form (instead of just mailto links)
 - [ ] Privacy-respecting analytics (Plausible or Umami)
 
@@ -694,7 +701,7 @@ Prioritized improvements organized by effort and impact. Reference this when the
 
 1. **Font loading:** Use `next/font/google` ONLY — do NOT also `@import` from CSS (Inter is loaded in `layout.tsx` as `--font-inter`)
 2. **Real data:** All content from `portfolio-resources/data/` — no placeholders, no hardcoded content
-3. **Social links:** From `socials.json` — never hardcode URLs (8 links: calendly, github, email, linkedin, facebook, discord, x, instagram)
+3. **Social links:** From `socials.json` — never hardcode URLs (8 links: cal, github, email, linkedin, facebook, discord, x, instagram)
 4. **Metadata:** Real name "Jhon Keneth Ryan Namias", real domain "namias.tech", real email `pp.namias@gmail.com`
 5. **CSS transitions on `*`:** Avoid — causes performance issues on theme switch. Only transition specific properties on body
 6. **`'use client'`:** Only for interactive components — blog listing is now a server component with `BlogListClient` for animations

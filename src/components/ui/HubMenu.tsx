@@ -38,7 +38,7 @@ export function HubMenu({ onClose, onOpenChat }: HubMenuProps) {
   const [connectExpanded, setConnectExpanded] = useState(false);
   const { openModal } = useModal();
 
-  const calendlyLink = socialLinks.find((s) => s.name === 'calendly');
+  const calLink = socialLinks.find((s) => s.name === 'cal');
   const connectLinks = socialLinks.filter((s) =>
     CONNECT_SOCIALS.includes(s.name as (typeof CONNECT_SOCIALS)[number])
   );
@@ -80,14 +80,13 @@ export function HubMenu({ onClose, onOpenChat }: HubMenuProps) {
           onClick={() => { openModal('resume'); onClose(); }}
         />
 
-        {calendlyLink && (
+        {calLink && (
           <HubMenuItem
             icon={Calendar}
             label="Schedule a Meeting"
-            subtitle="Book 15 min on Calendly"
+            subtitle="Book on Cal.com"
             index={2}
-            href={calendlyLink.link}
-            external
+            onClick={() => { openModal('booking'); onClose(); }}
           />
         )}
 

@@ -11,6 +11,7 @@ import {
 import { socialLinks } from '@/data/socials';
 import { blogPosts } from '@/data/blogPosts';
 import { Card } from '@/components/ui/Card';
+import { useModal } from '@/hooks/useModal';
 
 const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   calendar: Calendar,
@@ -25,6 +26,7 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
 
 export function ConnectSection() {
   const latestPost = blogPosts[0];
+  const { openModal } = useModal();
 
   return (
     <motion.section
@@ -42,6 +44,19 @@ export function ConnectSection() {
           <div className="flex flex-wrap items-center gap-2">
             {socialLinks.map((link) => {
               const Icon = iconMap[link.icon] || ExternalLink;
+              // Cal.com link opens booking modal instead of navigating
+              if (link.name === 'cal') {
+                return (
+                  <button
+                    key={link.name}
+                    onClick={() => openModal('booking')}
+                    className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-full transition-colors duration-200 group bg-accent-pink text-white hover:bg-accent-pink-hover border border-accent-pink"
+                  >
+                    <Icon className="h-3.5 w-3.5" />
+                    <span>{link.label}</span>
+                  </button>
+                );
+              }
               return (
                 <a
                   key={link.name}

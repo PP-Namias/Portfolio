@@ -118,4 +118,4 @@ export interface ChatMessage {
 
 export type HubState = 'closed' | 'menu' | 'chat';
 
-export type ModalName = 'resume' | 'experience' | null;
+export type ModalName = 'resume' | 'experience' | 'booking' | null;

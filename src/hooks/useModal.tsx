@@ -3,11 +3,12 @@
 import React, { createContext, useContext, useState, useCallback, useMemo } from 'react';
 import { ResumeModal } from '@/components/ui/ResumeModal';
 import { ExperienceModal } from '@/components/ui/ExperienceModal';
+import { BookingModal } from '@/components/ui/BookingModal';
 
-type ModalName = 'resume' | 'experience' | null;
+type ModalName = 'resume' | 'experience' | 'booking' | null;
 
 interface ModalContextValue {
-  openModal: (name: 'resume' | 'experience') => void;
+  openModal: (name: 'resume' | 'experience' | 'booking') => void;
   closeModal: () => void;
 }
 
@@ -23,7 +24,7 @@ export function useModal() {
 export function ModalProvider({ children }: { children: React.ReactNode }) {
   const [activeModal, setActiveModal] = useState<ModalName>(null);
 
-  const openModal = useCallback((name: 'resume' | 'experience') => {
+  const openModal = useCallback((name: 'resume' | 'experience' | 'booking') => {
     setActiveModal(name);
   }, []);
 
@@ -38,6 +39,7 @@ export function ModalProvider({ children }: { children: React.ReactNode }) {
       {children}
       <ResumeModal open={activeModal === 'resume'} onClose={closeModal} />
       <ExperienceModal open={activeModal === 'experience'} onClose={closeModal} />
+      <BookingModal open={activeModal === 'booking'} onClose={closeModal} />
     </ModalContext.Provider>
   );
 }
