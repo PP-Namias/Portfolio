@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { ExternalLink, Github } from 'lucide-react';
 import { Project } from '@/types';
@@ -23,6 +24,18 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
       transition={{ delay: index * 0.1, duration: 0.4 }}
     >
       <Card hover className="h-full flex flex-col">
+        {/* Project Screenshot */}
+        {project.image && project.image !== 'placeholder.png' && (
+          <div className="relative -mx-5 -mt-5 mb-3 rounded-t-xl overflow-hidden">
+            <Image
+              src={`/images/projects/${project.image}`}
+              alt={project.title}
+              width={400}
+              height={200}
+              className="w-full h-32 object-cover"
+            />
+          </div>
+        )}
         <div className="flex items-start justify-between gap-2">
           <h3 className="text-sm font-semibold text-text-primary-light dark:text-text-primary-dark leading-snug">
             {project.title}

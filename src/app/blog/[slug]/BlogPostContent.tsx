@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Clock, Calendar, ChevronLeft, ChevronRight } from 'lucide-react';
 import { blogPosts } from '@/data/blogPosts';
@@ -66,10 +67,13 @@ export default function BlogPostContent({ slug }: BlogPostContentProps) {
         <Card>
           {/* Cover Image */}
           <div className="-mx-5 -mt-5 mb-6 rounded-t-xl overflow-hidden">
-            <img
+            <Image
               src={post.coverImage}
               alt={post.title}
+              width={800}
+              height={320}
               className="w-full h-48 sm:h-64 object-cover"
+              priority
             />
           </div>
 

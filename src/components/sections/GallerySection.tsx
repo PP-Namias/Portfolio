@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { galleryImages } from '@/data/gallery';
@@ -91,11 +92,12 @@ export function GallerySection() {
                 key={image.media}
                 className="aspect-square rounded-lg overflow-hidden border border-border-light dark:border-border-dark bg-surface-light dark:bg-card-bg-dark group"
               >
-                <img
-                  src={`/portfolio-resources/assets/images/gallery/${image.media}`}
+                <Image
+                  src={`/images/gallery/${image.media}`}
                   alt={image.title}
+                  width={200}
+                  height={200}
                   className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-300"
-                  loading="lazy"
                 />
               </div>
             ))}

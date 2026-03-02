@@ -31,7 +31,12 @@ export function MembershipsSection() {
             transition={{ delay: index * 0.1, duration: 0.3 }}
           >
             <ExternalLink className="h-3.5 w-3.5 mt-0.5 flex-shrink-0 opacity-60 group-hover:opacity-100 transition-opacity" />
-            <span className="leading-snug">{membership.name}</span>
+            <div>
+              <span className="leading-snug">{membership.name}</span>
+              <p className="text-[10px] text-text-muted-light dark:text-text-muted-dark mt-0.5">
+                Since {new Date(membership.joinedAt).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
+              </p>
+            </div>
           </motion.a>
         ))}
       </div>

@@ -1,7 +1,7 @@
 [
   {
     "title": "Story Adaptive Game Engine - Software Engineering Project",
-    "image": "placeholder.png",
+    "image": "PP Namias Portfolio.png",
     "description": "Built GPT-integrated text adventure platform with dynamic narrative generation algorithms. Implemented Stable Diffusion API for real-time visual content based on user choices. Delivered adaptive storytelling system processing 1000+ user interactions.",
     "repositoryURL": null,
     "liveURL": "https://text-adventure-six.vercel.app/",
@@ -31,7 +31,7 @@
   },
   {
     "title": "Java Rice - Interactive Food Ordering System",
-    "image": "placeholder.png",
+    "image": "Java Rice.jpg",
     "description": "Built comprehensive Java GUI application for restaurant food ordering with QR code integration. Implemented admin panel for menu management, sales reports, order tracking, and customer analytics. Developed secure payment gateway integration with promotional discount system and voucher support.",
     "repositoryURL": "https://github.com/PP-Namias/Java-Rice",
     "liveURL": null,
@@ -61,7 +61,7 @@
   },
   {
     "title": "Student Attendance Management System",
-    "image": "placeholder.png",
+    "image": "Student Attendance Management System.png",
     "description": "Built comprehensive C# WPF application with barcode/QR scanning for attendance tracking automation. Implemented Material Design UI with PostgreSQL database and role-based authentication system. Developed desktop integration, offline sync capabilities, and comprehensive reporting analytics.",
     "repositoryURL": "https://github.com/PP-Namias/Student-Attendance-Management-System",
     "liveURL": null,
@@ -91,7 +91,7 @@
   },
   {
     "title": "Galaxy Animation - Interactive Solar System",
-    "image": "placeholder.png",
+    "image": "Galaxy Animation.png",
     "description": "Created mesmerizing galaxy animation showcasing complete solar system using pure HTML, CSS, and JavaScript. Implemented realistic planetary orbits, celestial mechanics, and educational content with detailed astronomical data. Added galaxy gallery images for enhanced visual experience and comprehensive astronomical visualization.",
     "repositoryURL": "https://github.com/PP-Namias/Galaxy-Animation",
     "liveURL": "https://pp-namias.github.io/Galaxy-Animation/",
@@ -121,7 +121,7 @@
   },
   {
     "title": "CSS3 Robot Animation - Web Art & Educational Platform",
-    "image": "placeholder.png",
+    "image": "CSS3 Robot Web Art.png",
     "description": "Designed cute robot character using pure CSS3 animations without external libraries or frameworks. Created step-by-step tutorials and educational resources for CSS design learning and web art appreciation. Implemented minimalist, user-friendly interface with smooth animations for enhanced user experience.",
     "repositoryURL": "https://github.com/PP-Namias/CSS3-Robot-Animation",
     "liveURL": "https://pp-namias.github.io/CSS3-Robot-Animation/",
@@ -151,7 +151,7 @@
   },
   {
     "title": "Car Dealership Management System",
-    "image": "placeholder.png",
+    "image": "Car Dealership Management Program.png",
     "description": "Built comprehensive C++ console application for car dealership operations with file handling system. Implemented role-based authentication with Admin, Employee, and Guest access levels. Developed employee management, inventory control, order processing, and comprehensive logging features.",
     "repositoryURL": "https://github.com/PP-Namias/Car-Dealership-Management-Program",
     "liveURL": null,
@@ -181,7 +181,7 @@
   },
   {
     "title": "Pre-enrollment Management System",
-    "image": "placeholder.png",
+    "image": "Pre-enrollment Management System.png",
     "description": "Built comprehensive VB.NET desktop application for student enrollment data processing and management. Implemented role-based access control with Super Admin, Admin, Teacher, and Guest user levels. Developed real-time attendance logging with photo identification verification system.",
     "repositoryURL": "https://github.com/PP-Namias/Pre-enrollment-Management-System",
     "liveURL": null,

@@ -15,7 +15,7 @@ export function Footer() {
     >
       <div className="text-center">
         <p className="text-xs text-text-muted-light dark:text-text-muted-dark">
-          &copy; 2026 {profile.name}. All rights reserved.
+          &copy; {new Date().getFullYear()} {profile.name}. All rights reserved.
         </p>
       </div>
     </motion.footer>

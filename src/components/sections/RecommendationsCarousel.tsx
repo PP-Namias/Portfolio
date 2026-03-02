@@ -13,6 +13,12 @@ export function RecommendationsCarousel() {
   const [direction, setDirection] = useState(1);
   const prevIndex = useRef(0);
 
+  // Keep prevIndex synced with currentIndex (including auto-advance)
+  React.useEffect(() => {
+    setDirection(currentIndex > prevIndex.current ? 1 : -1);
+    prevIndex.current = currentIndex;
+  }, [currentIndex]);
+
   const handleDotClick = (index: number) => {
     setDirection(index > prevIndex.current ? 1 : -1);
     prevIndex.current = index;

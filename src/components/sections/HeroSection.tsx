@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { MapPin, Mail, ChevronRight, ExternalLink } from 'lucide-react';
 import { profile } from '@/data/profile';
@@ -9,11 +10,6 @@ import { VerifiedBadge } from '@/components/ui/VerifiedBadge';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
 
 export function HeroSection() {
-  const initials = profile.name
-    .split(' ')
-    .map((n) => n[0])
-    .join('');
-
   return (
     <motion.section
       className="relative"
@@ -29,8 +25,15 @@ export function HeroSection() {
       <div className="flex flex-col sm:flex-row items-start gap-5">
         {/* Profile Photo */}
         <div className="flex-shrink-0">
-          <div className="h-[150px] w-[150px] rounded-2xl bg-gradient-to-br from-accent-pink/20 to-accent-pink/5 dark:from-accent-pink/10 dark:to-accent-pink/5 border border-border-light dark:border-border-dark overflow-hidden flex items-center justify-center">
-            <span className="text-4xl text-accent-pink font-bold">{initials}</span>
+          <div className="h-[150px] w-[150px] rounded-2xl border border-border-light dark:border-border-dark overflow-hidden">
+            <Image
+              src="/images/profile/me.jpg"
+              alt={profile.name}
+              width={150}
+              height={150}
+              className="h-full w-full object-cover"
+              priority
+            />
           </div>
         </div>
 

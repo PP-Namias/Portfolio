@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Clock, Calendar, ChevronRight } from 'lucide-react';
 import { blogPosts } from '@/data/blogPosts';
@@ -51,11 +52,12 @@ export default function BlogPage() {
               <Card hover className="h-full flex flex-col cursor-pointer group">
                 {/* Cover Image */}
                 <div className="relative -mx-5 -mt-5 mb-4 rounded-t-xl overflow-hidden">
-                  <img
+                  <Image
                     src={post.coverImage}
                     alt={post.title}
+                    width={400}
+                    height={160}
                     className="w-full h-40 object-cover transition-transform duration-300 group-hover:scale-105"
-                    loading="lazy"
                   />
                 </div>
 

@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { motion } from 'framer-motion';
 import {
   Mail, Calendar, FileText, ChevronRight, Clock, ExternalLink,
@@ -25,6 +26,7 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
 
 export function ConnectSection() {
   const latestPost = blogPosts[0];
+  const calendlyLink = socialLinks.find((s) => s.name === 'calendly');
 
   return (
     <motion.section
@@ -70,9 +72,9 @@ export function ConnectSection() {
               <Mail className="h-3.5 w-3.5" />
               <span>{profile.email}</span>
             </a>
-            {socialLinks.find((s) => s.name === 'calendly') && (
+            {calendlyLink && (
               <a
-                href={socialLinks.find((s) => s.name === 'calendly')!.link}
+                href={calendlyLink.link}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-full border border-border-light dark:border-border-dark text-text-secondary-light dark:text-text-secondary-dark hover:text-accent-pink hover:border-accent-pink dark:hover:text-accent-pink dark:hover:border-accent-pink transition-colors duration-200"
@@ -131,9 +133,11 @@ export function ConnectSection() {
           <Link href={`/blog/${latestPost.slug}`} className="block group">
             {/* Thumbnail */}
             <div className="rounded-lg overflow-hidden mb-3">
-              <img
+              <Image
                 src={latestPost.coverImage}
                 alt={latestPost.title}
+                width={400}
+                height={128}
                 className="w-full h-32 object-cover rounded-lg group-hover:scale-105 transition-transform duration-300"
               />
             </div>

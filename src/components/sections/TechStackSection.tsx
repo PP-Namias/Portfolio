@@ -32,9 +32,12 @@ export function TechStackSection() {
               {techs.map((tech) => (
                 <span
                   key={tech.name}
-                  className="text-xs px-2.5 py-1 rounded-full border border-border-light dark:border-border-dark text-text-secondary-light dark:text-text-secondary-dark hover:text-accent-pink hover:border-accent-pink dark:hover:text-accent-pink dark:hover:border-accent-pink transition-colors duration-200"
+                  className="group relative text-xs px-2.5 py-1 rounded-full border border-border-light dark:border-border-dark text-text-secondary-light dark:text-text-secondary-dark hover:text-accent-pink hover:border-accent-pink dark:hover:text-accent-pink dark:hover:border-accent-pink transition-colors duration-200"
                 >
                   {tech.name}
+                  <span className="ml-1 text-[9px] text-text-muted-light dark:text-text-muted-dark opacity-0 group-hover:opacity-100 transition-opacity">
+                    {tech.proficiency}%
+                  </span>
                 </span>
               ))}
             </div>
