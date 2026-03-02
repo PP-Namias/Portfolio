@@ -51,7 +51,7 @@ vi.mock('@/data/socials', () => ({
 
 vi.mock('@/data/profile', () => ({
   profile: {
-    name: 'Jhon Keneth Namias',
+    name: 'Jhon Keneth Ryan Namias',
     email: 'pp.namias@gmail.com',
   },
 }));

@@ -1,5 +1,31 @@
 [
   {
+    "company": "MASH - Mushroom Automation",
+    "position": "Project Manager",
+    "summary": "Lead cross-functional development teams in the delivery of automation-focused software projects, ensuring all milestones are met within scope and budget. Bridge the gap between technical execution and business goals, translating complex requirements into actionable development sprints. Oversee system architecture and quality assurance, maintaining high standards for code performance and scalability across the MASH product suite.",
+    "country": "Philippines",
+    "modality": "Hybrid",
+    "type": "Full-time",
+    "startedAt": "2025-09",
+    "endedAt": null,
+    "technologies": [
+      "Project Management",
+      "Software Development",
+      "Automation",
+      "System Architecture",
+      "Quality Assurance",
+      "Agile",
+      "Cross-functional Leadership"
+    ],
+    "highlights": [
+      "Lead cross-functional development teams in the delivery of automation-focused software projects.",
+      "Bridge the gap between technical execution and business goals, translating complex requirements into actionable development sprints.",
+      "Oversee system architecture and quality assurance, maintaining high standards for code performance and scalability."
+    ],
+    "achievements": ["Cross-functional Team Lead", "Automation Product Suite", "Sprint Management"],
+    "relatedProjects": []
+  },
+  {
     "company": "PhoneCraft Cellphone Repair",
     "position": "Head Technician",
     "summary": "Performed precision diagnostics: BGA rework, IC reballing, micro-soldering on mobile devices. Managed repair operations, inventory systems, technical support workflows for high-volume facility. Maintained quality standards achieving 95% customer satisfaction rate across 1000+ repairs.",
@@ -55,61 +81,56 @@
   },
   {
     "company": "Aeternitas Chapels & Columbarium",
-    "position": "Software Engineer Intern",
-    "summary": "Led 7-engineer team building enterprise HRIS: React-TypeScript, Electron, Express, PostgreSQL stack. Architected employee management platform handling payroll, time tracking, analytics for 500+ users. Established CI/CD pipeline achieving 99.9% uptime, reduced deployment time 80%.",
+    "position": "Software Engineer",
+    "summary": "Architected and maintained server-side programming for internal management systems, improving data retrieval speeds and system reliability. Collaborated on front-end enhancements using modern frameworks to provide a more intuitive user experience for administrative staff. Optimized database queries and API endpoints, reducing server latency during peak usage hours.",
     "country": "Philippines",
-    "modality": "On-site",
+    "modality": "Hybrid",
     "type": "Internship",
-    "startedAt": "2025-01",
-    "endedAt": "2025-12",
+    "startedAt": "2025-06",
+    "endedAt": "2025-09",
     "technologies": [
-      "React",
-      "TypeScript",
-      "Electron",
-      "Express.js",
-      "PostgreSQL",
-      "HRIS",
-      "Payroll",
-      "Time Tracking",
-      "Analytics",
-      "CI/CD",
-      "Team Leadership",
-      "Enterprise Software"
+      "Server-side Programming",
+      "Software Development",
+      "Modern Frameworks",
+      "Database Optimization",
+      "API Development",
+      "Management Systems",
+      "UX Enhancement"
     ],
     "highlights": [
-      "Led 7-engineer team building enterprise HRIS using React-TypeScript, Electron, Express, and PostgreSQL.",
-      "Architected employee management platform handling payroll, time tracking, and analytics for 500+ users.",
-      "Established CI/CD pipeline achieving 99.9% uptime and reduced deployment time by 80%."
+      "Architected and maintained server-side programming for internal management systems, improving data retrieval speeds and system reliability.",
+      "Collaborated on front-end enhancements using modern frameworks to provide a more intuitive user experience for administrative staff.",
+      "Optimized database queries and API endpoints, reducing server latency during peak usage hours."
     ],
-    "achievements": ["99.9% Uptime", "500+ Users", "80% Faster Deployment", "7-Person Team Lead"],
+    "achievements": ["System Reliability", "Reduced Server Latency", "UX Improvements"],
     "relatedProjects": []
   },
   {
     "company": "Wilshire Financial Network",
-    "position": "Artificial Intelligence Consultant Trainee",
-    "summary": "Built GPT-powered automation reducing social media workflow overhead 40%. Deployed custom AI agents optimizing internal processes for consulting teams. Delivered production AI integrations for 3 client-facing applications.",
-    "country": "Philippines",
+    "position": "Automation Engineer Trainee",
+    "summary": "Engineered custom AI automation tools using Eleven Labs and LLM prompt engineering to transform manual sales processes into streamlined, automated workflows. Developed social media automation systems that increased posting efficiency for internal teams. Integrated AI-driven voice technology to convert calls into actionable meeting data, significantly improving lead tracking and follow-up speed.",
+    "country": "United States",
     "modality": "Remote",
     "type": "Internship",
-    "startedAt": "2025-01",
-    "endedAt": "2025-12",
+    "startedAt": "2025-06",
+    "endedAt": "2025-09",
     "technologies": [
-      "GPT",
-      "AI Agents",
-      "Automation",
-      "Social Media",
-      "AI Integration",
-      "Workflow Optimization",
-      "Custom AI",
-      "Production Deployment"
+      "Eleven Labs",
+      "LLM",
+      "Prompt Engineering",
+      "AI Automation",
+      "Social Media Automation",
+      "Voice Technology",
+      "Lead Tracking",
+      "Workflow Automation"
     ],
     "highlights": [
-      "Built GPT-powered automation reducing social media workflow overhead by 40%.",
-      "Deployed custom AI agents optimizing internal processes for consulting teams.",
-      "Delivered production AI integrations for 3 client-facing applications."
+      "Engineered custom AI automation tools using Eleven Labs and LLM prompt engineering to transform manual sales processes into streamlined, automated workflows.",
+      "Developed social media automation systems that increased posting efficiency for internal teams by reducing manual content preparation time.",
+      "Integrated AI-driven voice technology to convert calls into actionable meeting data, significantly improving lead tracking and follow-up speed."
     ],
-    "achievements": ["40% Workflow Reduction", "3 AI Integrations", "Production Deployed"],
-    "relatedProjects": ["Story Adaptive Game Engine - Software Engineering Project"]
+    "achievements": ["AI Automation Tools", "Social Media Automation", "Voice-to-Data Integration"],
+    "relatedProjects": []
   },
   {
     "company": "JIMIRENE Clinic Management System",
@@ -193,6 +214,54 @@
       "Achieved 35% improvement in case access speed through data synchronization."
     ],
     "achievements": ["35% Faster Access", "Supreme Court", "MS 365 Integration"],
+    "relatedProjects": []
+  },
+  {
+    "company": "University of Caloocan City",
+    "position": "Head of Technical Committee",
+    "summary": "Collaborated on the planning and execution of departmental programs, ensuring all technical requirements were met for successful event delivery. Assisted in the development of event landing pages and registration systems to streamline student participation. Contributed to technical troubleshooting during live events, managing hardware and software configurations under high-pressure environments.",
+    "country": "Philippines",
+    "modality": "On-site",
+    "type": "Volunteer",
+    "startedAt": "2025-01",
+    "endedAt": null,
+    "technologies": [
+      "Event Planning",
+      "Landing Pages",
+      "Registration Systems",
+      "Technical Troubleshooting",
+      "Hardware Configuration",
+      "Software Configuration"
+    ],
+    "highlights": [
+      "Collaborated on the planning and execution of departmental programs, ensuring all technical requirements were met.",
+      "Developed event landing pages and registration systems to streamline student participation.",
+      "Managed hardware and software configurations under high-pressure live event environments."
+    ],
+    "achievements": ["Event Delivery", "Registration Systems", "Technical Leadership"],
+    "relatedProjects": []
+  },
+  {
+    "company": "University of Caloocan City",
+    "position": "Program Committee Member",
+    "summary": "Collaborated on the planning and execution of departmental programs, ensuring all technical requirements were met for successful event delivery. Assisted in the development of event landing pages and registration systems to streamline student participation.",
+    "country": "Philippines",
+    "modality": "On-site",
+    "type": "Volunteer",
+    "startedAt": "2024-01",
+    "endedAt": "2025-01",
+    "technologies": [
+      "Event Planning",
+      "Landing Pages",
+      "Registration Systems",
+      "Technical Support"
+    ],
+    "highlights": [
+      "Collaborated on the planning and execution of departmental programs.",
+      "Assisted in the development of event landing pages and registration systems.",
+      "Contributed to technical troubleshooting during live events."
+    ],
+    "achievements": ["Event Planning", "Technical Support"],
     "relatedProjects": []
   }
 ]

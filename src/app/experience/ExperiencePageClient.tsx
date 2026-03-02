@@ -16,6 +16,7 @@ import {
 import { motion } from 'framer-motion';
 
 const experienceImages: Record<string, string[]> = {
+  'MASH - Mushroom Automation': ['/images/experience/mash.svg'],
   'PhoneCraft Cellphone Repair': ['/images/experience/phonecraft.svg'],
   'Ucc-Ingo': [
     '/images/projects/UCC_Student_Portal.png',
@@ -23,13 +24,14 @@ const experienceImages: Record<string, string[]> = {
     '/images/projects/UCC%20Access%20Module.png',
   ],
   'Aeternitas Chapels & Columbarium': [
+    '/images/experience/aeternitas.svg',
     '/images/gallery/Random%20OJT%20Pic.jpg',
-    '/images/gallery/MASH%20Team.jpeg',
   ],
   'Wilshire Financial Network': ['/images/experience/wilshire.svg'],
   'JIMIRENE Clinic Management System': ['/images/experience/jimirene.svg'],
   "J'5 Pharmacy": ['/images/experience/j5pharmacy.svg'],
   'Legal Workflow Manager (CaseMaster)': ['/images/experience/casemaster.svg'],
+  'University of Caloocan City': ['/images/experience/ucc-volunteer.svg'],
 };
 
 const imageShadow =

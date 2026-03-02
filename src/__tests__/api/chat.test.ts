@@ -17,7 +17,7 @@ vi.mock('@google/generative-ai', () => ({
 
 // Mock portfolio JSON data
 vi.mock('../../../../portfolio-resources/data/profile.json', () => ({
-  default: { name: 'Jhon Keneth Namias', title: 'Full Stack Developer' },
+  default: { name: 'Jhon Keneth Ryan Namias', title: 'Full Stack Engineer & AI Automation Specialist' },
 }));
 vi.mock('../../../../portfolio-resources/data/experiences.json', () => ({
   default: [{ company: 'Test Co', position: 'Dev' }],

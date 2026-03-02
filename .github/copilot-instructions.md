@@ -1,7 +1,7 @@
 # Copilot Instructions — Portfolio (Next.js 14)
 ## AI Agent: Claude Opus 4.6 via VS Code Copilot
 
-> **Owner:** Jhon Keneth Namias (PP Namias)  
+> **Owner:** Jhon Keneth Ryan Namias (PP Namias)  
 > **Domain:** https://namias.tech  
 > **Design Reference:** https://bryllim.com/ (modern resume-portfolio hybrid)  
 > **Model:** Always use **Claude Opus 4.6** for all development tasks  
@@ -85,7 +85,7 @@ Every task MUST follow this pipeline:
 │       ├── experiences.json          # 7 work experiences
 │       ├── gallery.json              # 22 gallery images
 │       ├── memberships.json          # 2 memberships (PSIA, AAAP)
-│       ├── profile.json              # Profile: Jhon Keneth Namias
+│       ├── profile.json              # Profile: Jhon Keneth Ryan Namias
 │       ├── projects.json             # 7 projects
 │       ├── recommendations.json      # 2 recommendations (PLACEHOLDER — needs real data)
 │       ├── socials.json              # 8 social links (real URLs)
@@ -98,7 +98,7 @@ Every task MUST follow this pipeline:
 │   ├── resume.pdf                    # Downloadable resume (copied from portfolio-resources)
 │   └── images/                       # Served images (copied from portfolio-resources)
 │       ├── blog/                     # 6 SVG blog cover images (gradient backgrounds)
-│       ├── experience/              # 5 branded SVG covers for experience entries
+│       ├── experience/              # 8 branded SVG covers for experience entries
 │       ├── gallery/                  # 22 gallery photos
 │       ├── projects/                 # 15 project screenshots
 │       ├── certifications/           # 28 certificate images
@@ -181,30 +181,34 @@ Every task MUST follow this pipeline:
 This section documents the **actual content** from `portfolio-resources/data/` so the agent always has context about who the portfolio belongs to and what data is available. **Never use placeholder data — always reference this.**
 
 ### Identity
-- **Name:** Jhon Keneth Namias
+- **Name:** Jhon Keneth Ryan Namias
 - **Alias:** PP Namias (GitHub: PP-Namias)
-- **Title:** Full Stack Developer
+- **Title:** Full Stack Engineer & AI Automation Specialist
 - **Email:** pp.namias@gmail.com (consistent across profile.json and socials.json)
-- **Location:** Caloocan City, Philippines
+- **Location:** National Capital Region, Philippines
 - **GitHub:** https://github.com/PP-Namias
 - **LinkedIn:** https://www.linkedin.com/in/pp-namias/
 - **Calendly:** https://calendly.com/pp-namias/15-minute-meeting
+- **Current Roles:** Project Manager @ MASH, Head of Technical Committee @ UCC
 
 ### Education
 - **BS Computer Science** — University of Caloocan City (2021–present)
 - GPA: 3.8 | Honors: Dean's List, Academic Excellence Award
 - Courses: DSA, Software Engineering, DBMS, Web Development, Mobile Development, AI
 
-### Experience Summary (7 roles)
+### Experience Summary (10 roles)
 | # | Company | Role | Type | Period |
 |---|---------|------|------|--------|
-| 1 | PhoneCraft Cellphone Repair | Head Technician | Full-time | 2020–Present |
-| 2 | Ucc-Ingo | Website Administrator | Full-time | 2025–Present |
-| 3 | Aeternitas Chapels & Columbarium | Software Engineer Intern | Internship | 2025–2025 |
-| 4 | Wilshire Financial Network | AI Consultant Trainee | Internship | 2025–2025 |
-| 5 | JIMIRENE Clinic Management System | Full Stack Developer | Full-time | 2025–2025 |
-| 6 | J'5 Pharmacy | Full Stack Web Developer | Full-time | 2025–2025 |
-| 7 | Legal Workflow Manager (CaseMaster) | System Analyst | Full-time | 2024–2024 |
+| 1 | MASH - Mushroom Automation | Project Manager | Full-time | Sep 2025–Present |
+| 2 | PhoneCraft Cellphone Repair | Head Technician | Full-time | 2020–Present |
+| 3 | Ucc-Ingo | Website Administrator | Full-time | 2025–Present |
+| 4 | Aeternitas Chapels & Columbarium | Software Engineer | Internship | Jun–Sep 2025 |
+| 5 | Wilshire Financial Network | Automation Engineer Trainee | Internship | Jun–Sep 2025 |
+| 6 | JIMIRENE Clinic Management System | Full Stack Developer | Full-time | 2025–2025 |
+| 7 | J'5 Pharmacy | Full Stack Web Developer | Full-time | 2025–2025 |
+| 8 | Legal Workflow Manager (CaseMaster) | System Analyst | Full-time | 2024–2024 |
+| 9 | University of Caloocan City | Head of Technical Committee | Volunteer | 2025–Present |
+| 10 | University of Caloocan City | Program Committee Member | Volunteer | 2024–2025 |
 
 ### Projects (7 projects)
 | # | Title | Year | Live | Repo | Stack |
@@ -561,7 +565,7 @@ Prioritized improvements organized by effort and impact. Reference this when the
 1. **Font loading:** Use `next/font/google` ONLY — do NOT also `@import` from CSS (Inter is loaded in `layout.tsx` as `--font-inter`)
 2. **Real data:** All content from `portfolio-resources/data/` — no placeholders, no hardcoded content
 3. **Social links:** From `socials.json` — never hardcode URLs (8 links: calendly, github, email, linkedin, facebook, discord, x, instagram)
-4. **Metadata:** Real name "Jhon Keneth Namias", real domain "namias.tech", real email `pp.namias@gmail.com`
+4. **Metadata:** Real name "Jhon Keneth Ryan Namias", real domain "namias.tech", real email `pp.namias@gmail.com`
 5. **CSS transitions on `*`:** Avoid — causes performance issues on theme switch. Only transition specific properties on body
 6. **`'use client'`:** Only for interactive components — blog listing is now a server component with `BlogListClient` for animations
 7. **Image paths:** Images live in `portfolio-resources/assets/images/` and are copied to `public/images/`. Components reference `/images/{subfolder}/{filename}`. When adding new images, copy them to both locations.

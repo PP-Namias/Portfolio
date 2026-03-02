@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="300" viewBox="0 0 600 300">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1a2e1a"/>
+      <stop offset="100%" stop-color="#2d4a2d"/>
+    </linearGradient>
+  </defs>
+  <rect width="600" height="300" rx="12" fill="url(#bg)"/>
+  <rect width="60" height="3" rx="1.5" x="40" y="40" fill="#db2777"/>
+  <text x="40" y="90" fill="white" font-size="24" font-weight="700" font-family="Inter, system-ui, sans-serif">MASH</text>
+  <text x="40" y="115" fill="white" font-size="16" font-weight="500" font-family="Inter, system-ui, sans-serif" opacity="0.7">Mushroom Automation</text>
+  <text x="40" y="155" fill="white" font-size="13" font-family="Inter, system-ui, sans-serif" opacity="0.5">Project Manager · Full-time</text>
+  <text x="40" y="175" fill="white" font-size="13" font-family="Inter, system-ui, sans-serif" opacity="0.5">2025 – Present · Hybrid</text>
+  <text x="40" y="220" fill="#db2777" font-size="14" font-weight="600" font-family="Inter, system-ui, sans-serif">Cross-functional Teams</text>
+  <text x="40" y="242" fill="white" font-size="12" font-family="Inter, system-ui, sans-serif" opacity="0.5">Automation Product Suite</text>
+  <!-- Gear decoration -->
+  <circle cx="480" cy="100" r="40" fill="none" stroke="#db2777" stroke-width="1.5" opacity="0.2"/>
+  <circle cx="480" cy="100" r="25" fill="none" stroke="#db2777" stroke-width="1" opacity="0.15"/>
+  <circle cx="480" cy="100" r="8" fill="#db2777" opacity="0.1"/>
+  <circle cx="530" cy="160" r="25" fill="none" stroke="#db2777" stroke-width="1" opacity="0.15"/>
+  <circle cx="530" cy="160" r="15" fill="none" stroke="#db2777" stroke-width="0.8" opacity="0.1"/>
+  <line x1="505" y1="120" x2="515" y2="145" stroke="#db2777" stroke-width="0.8" opacity="0.15"/>
+  <rect x="460" y="200" width="100" height="60" rx="8" fill="#db2777" opacity="0.06"/>
+  <text x="510" y="238" fill="#db2777" font-size="28" font-weight="700" font-family="Inter, system-ui, sans-serif" text-anchor="middle" opacity="0.4">🍄</text>
+</svg>

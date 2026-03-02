@@ -11,14 +11,14 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: 'Jhon Keneth Namias — Full Stack Developer',
+  title: 'Jhon Keneth Ryan Namias — Full Stack Engineer & AI Automation Specialist',
   description:
-    'Portfolio of Jhon Keneth Namias — Full Stack Developer based in Caloocan City, Philippines. Specialized in React, TypeScript, and Node.js.',
+    'Portfolio of Jhon Keneth Ryan Namias — Full Stack Engineer & AI Automation Specialist based in the Philippines. Specialized in React, TypeScript, Node.js, and AI-driven workflows.',
   metadataBase: new URL('https://namias.tech'),
   openGraph: {
-    title: 'Jhon Keneth Namias — Full Stack Developer',
+    title: 'Jhon Keneth Ryan Namias — Full Stack Engineer & AI Automation Specialist',
     description:
-      'Portfolio of Jhon Keneth Namias — Full Stack Developer based in Caloocan City, Philippines.',
+      'Portfolio of Jhon Keneth Ryan Namias — Full Stack Engineer & AI Automation Specialist based in the Philippines.',
     type: 'website',
     locale: 'en_US',
     images: [
@@ -26,15 +26,15 @@ export const metadata: Metadata = {
         url: '/og-image.svg',
         width: 1200,
         height: 630,
-        alt: 'Jhon Keneth Namias — Full Stack Developer',
+        alt: 'Jhon Keneth Ryan Namias — Full Stack Engineer & AI Automation Specialist',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Jhon Keneth Namias — Full Stack Developer',
+    title: 'Jhon Keneth Ryan Namias — Full Stack Engineer & AI Automation Specialist',
     description:
-      'Portfolio of Jhon Keneth Namias — Full Stack Developer based in Caloocan City, Philippines.',
+      'Portfolio of Jhon Keneth Ryan Namias — Full Stack Engineer & AI Automation Specialist based in the Philippines.',
     images: ['/og-image.svg'],
   },
   icons: {
@@ -50,15 +50,15 @@ const jsonLd = {
       '@type': 'WebSite',
       '@id': 'https://namias.tech/#website',
       url: 'https://namias.tech',
-      name: 'Jhon Keneth Namias — Portfolio',
+      name: 'Jhon Keneth Ryan Namias — Portfolio',
       description:
-        'Portfolio of Jhon Keneth Namias — Full Stack Developer based in Caloocan City, Philippines.',
+        'Portfolio of Jhon Keneth Ryan Namias — Full Stack Engineer & AI Automation Specialist based in the Philippines.',
     },
     {
       '@type': 'Person',
       '@id': 'https://namias.tech/#person',
-      name: 'Jhon Keneth Namias',
-      jobTitle: 'Full Stack Developer',
+      name: 'Jhon Keneth Ryan Namias',
+      jobTitle: 'Full Stack Engineer & AI Automation Specialist',
       url: 'https://namias.tech',
       email: 'pp.namias@gmail.com',
       address: {
@@ -70,7 +70,7 @@ const jsonLd = {
         'https://github.com/PP-Namias',
         'https://www.linkedin.com/in/pp-namias/',
       ],
-      knowsAbout: ['React', 'TypeScript', 'Node.js', 'Next.js', 'Python'],
+      knowsAbout: ['React', 'TypeScript', 'Node.js', 'Next.js', 'Python', 'AI Automation', 'Prompt Engineering'],
     },
   ],
 };

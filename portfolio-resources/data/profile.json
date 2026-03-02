@@ -1,16 +1,16 @@
 {
-  "name": "Jhon Keneth Namias",
-  "title": "Full Stack Developer",
+  "name": "Jhon Keneth Ryan Namias",
+  "title": "Full Stack Engineer & AI Automation Specialist",
   "email": "pp.namias@gmail.com",
   "phone": "+63 912 345 6789",
-  "location": "Caloocan City, Philippines",
+  "location": "National Capital Region, Philippines",
   "github": "https://github.com/PP-Namias",
   "linkedin": "https://www.linkedin.com/in/pp-namias/",
-  "summary": "Passionate Full Stack Developer with 3+ years of experience building scalable web applications. Specialized in React, TypeScript, and Node.js with a proven track record of delivering high-impact projects. Strong focus on clean code, performance optimization, and user experience. Currently pursuing Bachelor of Science in Computer Science at the University of Caloocan City.",
+  "summary": "Full Stack Engineer and AI Automation Specialist dedicated to building intelligent systems that drive efficiency. I specialize in bridging the gap between robust software architecture and the next generation of AI-driven workflows. My expertise is rooted in full-stack development, prompt engineering, and end-to-end automation. Currently serving as the Project Manager at MASH and the Head of the Technical Committee at the University of Caloocan City, where I lead technical strategy and cross-functional teams. My experience ranges from engineering automation tools for global firms like Wilshire Financial Network to building scalable backend systems. I am particularly passionate about the intersection of AI and productivity, having developed custom solutions using Eleven Labs and LLM integration to transform manual operations into streamlined, automated processes.",
   "highlights": {
-    "yearsExperience": 3,
+    "yearsExperience": 4,
     "projectsCompleted": 25,
-    "primaryTechnologies": ["React", "TypeScript", "Node.js"]
+    "primaryTechnologies": ["React", "TypeScript", "Node.js", "AI Automation", "Prompt Engineering"]
   },
   "education": [
     {

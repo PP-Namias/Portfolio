@@ -1,10 +1,10 @@
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Blog | Jhon Keneth Namias',
-  description: 'Thoughts on AI, software engineering, cloud development, and more by Jhon Keneth Namias.',
+  title: 'Blog | Jhon Keneth Ryan Namias',
+  description: 'Thoughts on AI, software engineering, cloud development, and more by Jhon Keneth Ryan Namias.',
   openGraph: {
-    title: 'Blog | Jhon Keneth Namias',
+    title: 'Blog | Jhon Keneth Ryan Namias',
     description: 'Thoughts on AI, software engineering, cloud development, and more.',
   },
 };

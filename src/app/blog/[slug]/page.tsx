@@ -11,10 +11,10 @@ export function generateStaticParams() {
 export function generateMetadata({ params }: { params: { slug: string } }): Metadata {
   const post = blogPosts.find((p) => p.slug === params.slug);
   if (!post) {
-    return { title: 'Post Not Found | Jhon Keneth Namias' };
+    return { title: 'Post Not Found | Jhon Keneth Ryan Namias' };
   }
   return {
-    title: `${post.title} | Jhon Keneth Namias`,
+    title: `${post.title} | Jhon Keneth Ryan Namias`,
     description: post.excerpt,
     openGraph: {
       title: post.title,

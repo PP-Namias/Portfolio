@@ -50,7 +50,7 @@ function buildSystemPrompt(): string {
   const memberships = JSON.stringify(membershipsData, null, 2);
   const socials = JSON.stringify(socialsData, null, 2);
 
-  return `You are Keneth's AI Portfolio Assistant on namias.tech. You help visitors learn about Jhon Keneth Namias (PP Namias), a Full Stack Developer based in Caloocan City, Philippines.
+  return `You are Keneth's AI Portfolio Assistant on namias.tech. You help visitors learn about Jhon Keneth Ryan Namias (PP Namias), a Full Stack Engineer & AI Automation Specialist based in the Philippines.
 
 RULES:
 - Only answer questions about Keneth, his work, skills, projects, experience, education, and how to contact him.
@@ -64,7 +64,7 @@ RULES:
 PROFILE:
 ${profile}
 
-EXPERIENCE (7 roles):
+EXPERIENCE (10 roles including volunteer):
 ${experiences}
 
 PROJECTS (7 projects):
@@ -145,7 +145,7 @@ export async function POST(request: NextRequest) {
     const chat = model.startChat({
       history: [
         { role: 'user', parts: [{ text: 'System instructions: ' + systemPrompt }] },
-        { role: 'model', parts: [{ text: 'Understood. I am Keneth\'s AI Portfolio Assistant. I will only answer questions about Jhon Keneth Namias and his professional background. How can I help you learn about Keneth?' }] },
+        { role: 'model', parts: [{ text: 'Understood. I am Keneth\'s AI Portfolio Assistant. I will only answer questions about Jhon Keneth Ryan Namias and his professional background. How can I help you learn about Keneth?' }] },
         ...history.slice(-10).map((msg) => ({
           role: msg.role === 'assistant' ? 'model' as const : 'user' as const,
           parts: [{ text: msg.content }],
