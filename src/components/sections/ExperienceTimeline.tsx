@@ -2,6 +2,8 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
+import Link from 'next/link';
+import { ArrowRight } from 'lucide-react';
 import { experiences } from '@/data/experience';
 import { TimelineItem } from '@/components/ui/TimelineItem';
 
@@ -21,6 +23,13 @@ export function ExperienceTimeline() {
           <TimelineItem key={`${exp.company}-${exp.position}`} item={exp} index={index} isLast={index === experiences.length - 1} />
         ))}
       </div>
+      <Link
+        href="/experience"
+        className="mt-3 inline-flex items-center gap-1.5 text-xs font-medium text-accent-pink hover:text-accent-pink-hover dark:hover:text-accent-pink-hover-dark transition-colors"
+      >
+        View Full Experience
+        <ArrowRight className="h-3.5 w-3.5" />
+      </Link>
     </motion.section>
   );
 }

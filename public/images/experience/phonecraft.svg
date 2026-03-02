@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="300" viewBox="0 0 600 300">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#1e293b"/>
+    </linearGradient>
+  </defs>
+  <rect width="600" height="300" rx="12" fill="url(#bg)"/>
+  <rect width="60" height="3" rx="1.5" x="40" y="40" fill="#db2777"/>
+  <text x="40" y="90" fill="white" font-size="24" font-weight="700" font-family="Inter, system-ui, sans-serif">PhoneCraft</text>
+  <text x="40" y="115" fill="white" font-size="16" font-weight="500" font-family="Inter, system-ui, sans-serif" opacity="0.7">Cellphone Repair</text>
+  <text x="40" y="155" fill="white" font-size="13" font-family="Inter, system-ui, sans-serif" opacity="0.5">Head Technician · Full-time</text>
+  <text x="40" y="175" fill="white" font-size="13" font-family="Inter, system-ui, sans-serif" opacity="0.5">2020 – Present</text>
+  <text x="40" y="220" fill="#db2777" font-size="28" font-weight="700" font-family="Inter, system-ui, sans-serif">1000+</text>
+  <text x="40" y="242" fill="white" font-size="12" font-family="Inter, system-ui, sans-serif" opacity="0.5">Repairs Completed</text>
+  <text x="200" y="220" fill="#db2777" font-size="28" font-weight="700" font-family="Inter, system-ui, sans-serif">95%</text>
+  <text x="200" y="242" fill="white" font-size="12" font-family="Inter, system-ui, sans-serif" opacity="0.5">Satisfaction Rate</text>
+  <!-- Decorative circuit lines -->
+  <line x1="420" y1="60" x2="560" y2="60" stroke="#db2777" stroke-width="1" opacity="0.2"/>
+  <line x1="440" y1="80" x2="560" y2="80" stroke="#db2777" stroke-width="1" opacity="0.15"/>
+  <line x1="460" y1="100" x2="560" y2="100" stroke="#db2777" stroke-width="1" opacity="0.1"/>
+  <circle cx="560" cy="60" r="3" fill="#db2777" opacity="0.3"/>
+  <circle cx="560" cy="80" r="3" fill="#db2777" opacity="0.25"/>
+  <circle cx="560" cy="100" r="3" fill="#db2777" opacity="0.2"/>
+  <rect x="480" y="180" width="80" height="80" rx="8" fill="#db2777" opacity="0.08"/>
+  <text x="520" y="228" fill="#db2777" font-size="28" font-weight="700" font-family="Inter, system-ui, sans-serif" text-anchor="middle" opacity="0.4">🔧</text>
+</svg>

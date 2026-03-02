@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="300" viewBox="0 0 600 300">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#052e16"/>
+      <stop offset="100%" stop-color="#14532d"/>
+    </linearGradient>
+  </defs>
+  <rect width="600" height="300" rx="12" fill="url(#bg)"/>
+  <rect width="60" height="3" rx="1.5" x="40" y="40" fill="#db2777"/>
+  <text x="40" y="90" fill="white" font-size="24" font-weight="700" font-family="Inter, system-ui, sans-serif">J&apos;5 Pharmacy</text>
+  <text x="40" y="115" fill="white" font-size="16" font-weight="500" font-family="Inter, system-ui, sans-serif" opacity="0.7">B2B Ordering Platform</text>
+  <text x="40" y="155" fill="white" font-size="13" font-family="Inter, system-ui, sans-serif" opacity="0.5">Full Stack Web Developer · Full-time</text>
+  <text x="40" y="175" fill="white" font-size="13" font-family="Inter, system-ui, sans-serif" opacity="0.5">2025 · Remote</text>
+  <text x="40" y="220" fill="#4ade80" font-size="28" font-weight="700" font-family="Inter, system-ui, sans-serif">50+</text>
+  <text x="40" y="242" fill="white" font-size="12" font-family="Inter, system-ui, sans-serif" opacity="0.5">Vendors Connected</text>
+  <text x="200" y="220" fill="#4ade80" font-size="28" font-weight="700" font-family="Inter, system-ui, sans-serif">Real-time</text>
+  <text x="200" y="242" fill="white" font-size="12" font-family="Inter, system-ui, sans-serif" opacity="0.5">Inventory System</text>
+  <!-- Pill capsule decoration -->
+  <rect x="490" y="60" width="50" height="22" rx="11" fill="none" stroke="#4ade80" stroke-width="1" opacity="0.2"/>
+  <line x1="515" y1="60" x2="515" y2="82" stroke="#4ade80" stroke-width="0.5" opacity="0.2"/>
+  <rect x="480" y="190" width="80" height="80" rx="8" fill="#4ade80" opacity="0.06"/>
+  <text x="520" y="238" fill="#4ade80" font-size="28" font-weight="700" font-family="Inter, system-ui, sans-serif" text-anchor="middle" opacity="0.4">💊</text>
+</svg>

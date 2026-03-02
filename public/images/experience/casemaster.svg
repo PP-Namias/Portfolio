@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="300" viewBox="0 0 600 300">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e1b4b"/>
+      <stop offset="100%" stop-color="#312e81"/>
+    </linearGradient>
+  </defs>
+  <rect width="600" height="300" rx="12" fill="url(#bg)"/>
+  <rect width="60" height="3" rx="1.5" x="40" y="40" fill="#db2777"/>
+  <text x="40" y="90" fill="white" font-size="24" font-weight="700" font-family="Inter, system-ui, sans-serif">CaseMaster</text>
+  <text x="40" y="115" fill="white" font-size="16" font-weight="500" font-family="Inter, system-ui, sans-serif" opacity="0.7">Legal Workflow Manager</text>
+  <text x="40" y="155" fill="white" font-size="13" font-family="Inter, system-ui, sans-serif" opacity="0.5">System Analyst · Full-time</text>
+  <text x="40" y="175" fill="white" font-size="13" font-family="Inter, system-ui, sans-serif" opacity="0.5">2024 · Remote</text>
+  <text x="40" y="220" fill="#a78bfa" font-size="28" font-weight="700" font-family="Inter, system-ui, sans-serif">35%</text>
+  <text x="40" y="242" fill="white" font-size="12" font-family="Inter, system-ui, sans-serif" opacity="0.5">Faster Case Access</text>
+  <text x="200" y="220" fill="#a78bfa" font-size="28" font-weight="700" font-family="Inter, system-ui, sans-serif">MS 365</text>
+  <text x="200" y="242" fill="white" font-size="12" font-family="Inter, system-ui, sans-serif" opacity="0.5">API Integration</text>
+  <!-- Scale of justice decoration -->
+  <line x1="510" y1="50" x2="510" y2="90" stroke="#a78bfa" stroke-width="1" opacity="0.2"/>
+  <line x1="480" y1="60" x2="540" y2="60" stroke="#a78bfa" stroke-width="1" opacity="0.2"/>
+  <circle cx="480" cy="70" r="8" fill="none" stroke="#a78bfa" stroke-width="0.5" opacity="0.2"/>
+  <circle cx="540" cy="70" r="8" fill="none" stroke="#a78bfa" stroke-width="0.5" opacity="0.2"/>
+  <rect x="480" y="190" width="80" height="80" rx="8" fill="#a78bfa" opacity="0.06"/>
+  <text x="520" y="238" fill="#a78bfa" font-size="28" font-weight="700" font-family="Inter, system-ui, sans-serif" text-anchor="middle" opacity="0.4">⚖️</text>
+</svg>

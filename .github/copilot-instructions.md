@@ -97,6 +97,7 @@ Every task MUST follow this pipeline:
 │   ├── resume.pdf                    # Downloadable resume (copied from portfolio-resources)
 │   └── images/                       # Served images (copied from portfolio-resources)
 │       ├── blog/                     # 6 SVG blog cover images (gradient backgrounds)
+│       ├── experience/              # 5 branded SVG covers for experience entries
 │       ├── gallery/                  # 22 gallery photos
 │       ├── projects/                 # 15 project screenshots
 │       ├── certifications/           # 28 certificate images
@@ -107,6 +108,9 @@ Every task MUST follow this pipeline:
 │   │   ├── layout.tsx                # Root layout + metadata + Inter font + favicon SVG icons + JSON-LD
 │   │   ├── page.tsx                  # Home page (main portfolio, server component)
 │   │   ├── providers.tsx             # ThemeProvider (dark default, class strategy)
+│   │   ├── experience/
+│   │   │   ├── page.tsx              # Experience page (server component + SEO metadata)
+│   │   │   └── ExperiencePageClient.tsx  # Client component with scroll-driven Timeline
 │   │   └── blog/
 │   │       ├── layout.tsx            # Blog layout with SEO metadata
 │   │       ├── page.tsx              # Blog listing (server component — renders BlogListClient)
@@ -123,17 +127,18 @@ Every task MUST follow this pipeline:
 │   │   │   ├── TechStackSection.tsx  # Tech stack grouped by category with proficiency
 │   │   │   ├── ProjectsSection.tsx   # Project cards grid (all 7, with toggle)
 │   │   │   ├── CertificationsSection.tsx  # Scrollable cert list with images + lightbox
-│   │   │   ├── ExperienceTimeline.tsx     # Timeline with expandable details
+│   │   │   ├── ExperienceTimeline.tsx     # Timeline with expandable details + "View Full Experience" link
 │   │   │   ├── RecommendationsCarousel.tsx # Auto-advancing testimonials
 │   │   │   ├── MembershipsSection.tsx     # Org membership links
 │   │   │   ├── SpeakingSection.tsx        # Speaking availability with Mic icon, topic pills from profile data
 │   │   │   ├── ConnectSection.tsx         # Social links (Connect card) + latest blog post card
 │   │   │   └── GallerySection.tsx         # Paginated image slider (5/slide) with title hover overlay + lightbox
-│   │   └── ui/                       # 6 reusable UI primitives
+│   │   └── ui/                       # 7 reusable UI primitives
 │   │       ├── Button.tsx            # Primary/ghost/outline with href support
 │   │       ├── Card.tsx              # Bordered card wrapper with hover option
 │   │       ├── ProjectCard.tsx       # Project card with screenshot + links
 │   │       ├── ThemeToggle.tsx       # Dark/light mode toggle button
+│   │       ├── timeline.tsx           # Scroll-driven Aceternity-style timeline (framer-motion)
 │   │       ├── TimelineItem.tsx      # Expandable experience timeline entry
 │   │       └── VerifiedBadge.tsx     # Pink checkmark next to name
 │   ├── data/                         # TS modules importing JSON → typed exports
