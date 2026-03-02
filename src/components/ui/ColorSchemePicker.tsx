@@ -31,7 +31,7 @@ export function ColorSchemePicker() {
           )}
           style={{
             backgroundColor: s.preview,
-            ...(scheme.name === s.name ? { ringColor: s.preview } : {}),
+            ...(scheme.name === s.name ? { '--tw-ring-color': s.preview } as React.CSSProperties : {}),
           }}
           role="radio"
           aria-checked={scheme.name === s.name}

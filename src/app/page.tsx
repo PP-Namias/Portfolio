@@ -9,7 +9,6 @@ import { MembershipsSection } from '@/components/sections/MembershipsSection';
 import { SpeakingSection } from '@/components/sections/SpeakingSection';
 import { ConnectSection } from '@/components/sections/ConnectSection';
 import { GallerySection } from '@/components/sections/GallerySection';
-import { Footer } from '@/components/layout/Footer';
 import { Card } from '@/components/ui/Card';
 
 export default function Home() {
@@ -71,8 +70,12 @@ export default function Home() {
         <GallerySection />
       </Card>
 
-      {/* Footer */}
-      <Footer />
+      {/* Minimal copyright */}
+      <footer className="mt-8 pb-6 pt-3">
+        <p className="text-center text-[11px] text-text-muted-light dark:text-text-muted-dark">
+          &copy; {new Date().getFullYear()} Jhon Keneth Ryan Namias
+        </p>
+      </footer>
     </main>
   );
 }
