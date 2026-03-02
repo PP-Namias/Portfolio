@@ -10,9 +10,9 @@ const mockGetGenerativeModel = vi.fn(() => ({
 }));
 
 vi.mock('@google/generative-ai', () => ({
-  GoogleGenerativeAI: vi.fn(() => ({
-    getGenerativeModel: mockGetGenerativeModel,
-  })),
+  GoogleGenerativeAI: vi.fn(function () {
+    return { getGenerativeModel: mockGetGenerativeModel };
+  }),
 }));
 
 // Mock portfolio JSON data
@@ -41,11 +41,16 @@ vi.mock('../../../../portfolio-resources/data/socials.json', () => ({
 import { POST } from '@/app/api/chat/route';
 import { NextRequest } from 'next/server';
 
+let testCounter = 0;
+
 function createRequest(body: unknown, headers?: Record<string, string>): NextRequest {
+  // Use unique IP per request to avoid rate-limit cross-contamination
+  testCounter++;
   const req = new NextRequest('http://localhost:3000/api/chat', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
+      'x-forwarded-for': `test-ip-${testCounter}`,
       ...headers,
     },
     body: JSON.stringify(body),
