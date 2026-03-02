@@ -2,8 +2,7 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { ChevronRight } from 'lucide-react';
-import { techStack } from '@/data/techStack';
+import { techCategories } from '@/data/techStack';
 
 export function TechStackSection() {
   return (
@@ -14,33 +13,31 @@ export function TechStackSection() {
       viewport={{ once: true }}
       transition={{ duration: 0.4 }}
     >
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-lg font-semibold text-text-primary-light dark:text-text-primary-dark">
-          Tech Stack
-        </h2>
-        <a
-          href="#"
-          className="flex items-center gap-1 text-xs text-text-muted-light dark:text-text-muted-dark hover:text-accent-pink dark:hover:text-accent-pink transition-colors duration-200"
-        >
-          View All
-          <ChevronRight className="h-3.5 w-3.5" />
-        </a>
-      </div>
+      <h2 className="text-lg font-semibold text-text-primary-light dark:text-text-primary-dark mb-4">
+        Tech Stack
+      </h2>
       <div className="space-y-3">
-        {techStack.map((category, catIndex) => (
+        {Object.entries(techCategories).map(([category, techs], catIndex) => (
           <motion.div
-            key={category.category}
+            key={category}
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: catIndex * 0.1, duration: 0.3 }}
           >
             <h3 className="text-xs font-medium text-text-muted-light dark:text-text-muted-dark uppercase tracking-wider mb-1.5">
-              {category.category}
+              {category}
             </h3>
-            <p className="text-sm text-text-primary-light dark:text-text-primary-dark leading-relaxed">
-              {category.technologies.join(', ')}
-            </p>
+            <div className="flex flex-wrap gap-1.5">
+              {techs.map((tech) => (
+                <span
+                  key={tech.name}
+                  className="text-xs px-2.5 py-1 rounded-full border border-border-light dark:border-border-dark text-text-secondary-light dark:text-text-secondary-dark hover:text-accent-pink hover:border-accent-pink dark:hover:text-accent-pink dark:hover:border-accent-pink transition-colors duration-200"
+                >
+                  {tech.name}
+                </span>
+              ))}
+            </div>
           </motion.div>
         ))}
       </div>

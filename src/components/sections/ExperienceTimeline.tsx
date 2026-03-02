@@ -18,7 +18,7 @@ export function ExperienceTimeline() {
       </h2>
       <div>
         {experiences.map((exp, index) => (
-          <TimelineItem key={exp.id} item={exp} index={index} isLast={index === experiences.length - 1} />
+          <TimelineItem key={`${exp.company}-${exp.position}`} item={exp} index={index} isLast={index === experiences.length - 1} />
         ))}
       </div>
     </motion.section>

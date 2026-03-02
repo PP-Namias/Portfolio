@@ -1,20 +1,13 @@
-import { TechCategory } from '@/types';
+import { Technology } from '@/types';
+import techData from '../../portfolio-resources/data/technologies.json';
 
-export const techStack: TechCategory[] = [
-  {
-    category: 'Languages',
-    technologies: ['TypeScript', 'Python', 'Go', 'Java', 'SQL', 'Bash'],
-  },
-  {
-    category: 'Backend & Data',
-    technologies: ['Node.js', 'Express', 'FastAPI', 'PostgreSQL', 'Redis', 'GraphQL'],
-  },
-  {
-    category: 'Cloud & Infrastructure',
-    technologies: ['AWS', 'GCP', 'Terraform', 'Docker', 'Kubernetes', 'Helm'],
-  },
-  {
-    category: 'DevOps & Observability',
-    technologies: ['GitHub Actions', 'ArgoCD', 'Prometheus', 'Grafana', 'Datadog', 'Jenkins'],
-  },
-];
+export const technologies: Technology[] = techData;
+
+// Group technologies by category
+export const techCategories = technologies.reduce<Record<string, Technology[]>>((acc, tech) => {
+  if (!acc[tech.category]) {
+    acc[tech.category] = [];
+  }
+  acc[tech.category].push(tech);
+  return acc;
+}, {});

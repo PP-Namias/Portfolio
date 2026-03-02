@@ -44,7 +44,7 @@ export function RecommendationsCarousel() {
       <div className="relative overflow-hidden min-h-[140px]">
         <AnimatePresence mode="wait" custom={direction}>
           <motion.div
-            key={current.id}
+            key={currentIndex}
             custom={direction}
             variants={variants}
             initial="enter"
@@ -68,20 +68,22 @@ export function RecommendationsCarousel() {
       </div>
 
       {/* Pagination dots */}
-      <div className="flex items-center gap-1.5 mt-4">
-        {recommendations.map((_, index) => (
-          <button
-            key={index}
-            onClick={() => handleDotClick(index)}
-            className={`h-1.5 rounded-full transition-all duration-300 ${
-              index === currentIndex
-                ? 'w-6 bg-accent-pink'
-                : 'w-1.5 bg-border-light dark:bg-border-dark hover:bg-text-muted-light dark:hover:bg-text-muted-dark'
-            }`}
-            aria-label={`Go to recommendation ${index + 1}`}
-          />
-        ))}
-      </div>
+      {recommendations.length > 1 && (
+        <div className="flex items-center gap-1.5 mt-4">
+          {recommendations.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => handleDotClick(index)}
+              className={`h-1.5 rounded-full transition-all duration-300 ${
+                index === currentIndex
+                  ? 'w-6 bg-accent-pink'
+                  : 'w-1.5 bg-border-light dark:bg-border-dark hover:bg-text-muted-light dark:hover:bg-text-muted-dark'
+              }`}
+              aria-label={`Go to recommendation ${index + 1}`}
+            />
+          ))}
+        </div>
+      )}
     </motion.section>
   );
 }

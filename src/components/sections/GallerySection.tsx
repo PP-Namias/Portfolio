@@ -59,6 +59,9 @@ export function GallerySection() {
             >
               <ChevronLeft className="h-4 w-4" />
             </button>
+            <span className="text-[10px] text-text-muted-light dark:text-text-muted-dark">
+              {currentSlide + 1} / {totalSlides}
+            </span>
             <button
               onClick={goNext}
               disabled={currentSlide === totalSlides - 1}
@@ -85,13 +88,13 @@ export function GallerySection() {
           >
             {currentImages.map((image) => (
               <div
-                key={image.id}
-                className="aspect-square rounded-lg overflow-hidden border border-border-light dark:border-border-dark bg-surface-light dark:bg-card-bg-dark"
+                key={image.media}
+                className="aspect-square rounded-lg overflow-hidden border border-border-light dark:border-border-dark bg-surface-light dark:bg-card-bg-dark group"
               >
                 <img
-                  src={image.src}
-                  alt={image.alt}
-                  className="h-full w-full object-cover"
+                  src={`/portfolio-resources/assets/images/gallery/${image.media}`}
+                  alt={image.title}
+                  className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-300"
                   loading="lazy"
                 />
               </div>

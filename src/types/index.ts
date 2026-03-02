@@ -1,52 +1,73 @@
+export interface Education {
+  degree: string;
+  institution: string;
+  location: string;
+  startedAt: string;
+  endedAt: string | null;
+  gpa: string;
+  honors: string[];
+  relevantCourses: string[];
+}
+
 export interface Profile {
   name: string;
   title: string;
-  location: string;
-  tagline: string;
-  roles: string[];
   email: string;
-  profilePhoto: string;
-  ogImage: string;
-  resumeUrl: string;
-  scheduleCallUrl: string;
-  blogUrl: string;
-  achievementBadge: {
-    text: string;
-    icon: string;
+  phone: string;
+  location: string;
+  github: string;
+  linkedin: string;
+  summary: string;
+  highlights: {
+    yearsExperience: number;
+    projectsCompleted: number;
+    primaryTechnologies: string[];
   };
-  bio: string[];
+  education: Education[];
 }
 
 export interface Experience {
-  id: string;
-  role: string;
-  organization: string;
-  year: string;
-  type: 'work' | 'education' | 'milestone';
-  emoji?: string;
+  company: string;
+  position: string;
+  summary: string;
+  country: string;
+  modality: string;
+  type: string;
+  startedAt: string;
+  endedAt: string | null;
+  technologies: string[];
+  highlights: string[];
+  achievements: string[];
+  relatedProjects: string[];
 }
 
 export interface Project {
-  id: string;
-  name: string;
+  title: string;
+  image: string;
   description: string;
-  url: string;
-  thumbnail?: string;
+  repositoryURL: string | null;
+  liveURL: string | null;
+  processURL: string | null;
+  tags: string[];
+  year: number;
 }
 
 export interface Certification {
-  id: string;
-  name: string;
+  title: string;
+  image: string;
   issuer: string;
+  issuedAt: string;
+  tags: string[];
 }
 
-export interface TechCategory {
+export interface Technology {
+  name: string;
+  logo: string;
   category: string;
-  technologies: string[];
+  proficiency: number;
 }
 
 export interface Recommendation {
-  id: string;
   quote: string;
   name: string;
   title: string;
@@ -54,20 +75,23 @@ export interface Recommendation {
 }
 
 export interface Membership {
-  id: string;
   name: string;
   url: string;
+  joinedAt: string;
 }
 
-export interface GalleryImage {
-  id: string;
-  src: string;
-  alt: string;
+export interface GalleryItem {
+  title: string;
+  mediaType: string;
+  media: string;
+  tags: string[];
+  createdAt: string;
 }
 
 export interface SocialLink {
-  id: string;
-  platform: string;
-  url: string;
+  name: string;
   icon: string;
+  label: string;
+  link: string;
+  featured?: boolean;
 }

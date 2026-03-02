@@ -1,4 +1,4 @@
-# Copilot Instructions - Portfolio v3  
+# Copilot Instructions — Portfolio (Next.js 14)
 ## AI Agent: Claude Opus 4.6 via VS Code Copilot
 
 > **Owner:** Jhon Keneth Namias (PP Namias)  
@@ -6,635 +6,513 @@
 > **Design Reference:** https://bryllim.com/ (modern resume-portfolio hybrid)  
 > **Model:** Always use **Claude Opus 4.6** for all development tasks  
 > **IDE:** VS Code with GitHub Copilot  
+> **Last audited:** 2026-03-02  
+
+---
+
+## 🏗 TECH STACK
+
+| Layer | Technology | Version | Purpose |
+|-------|------------|---------|---------|
+| Framework | Next.js 14 (App Router) | 14.2.21 | SSR, SSG, routing |
+| Language | TypeScript (strict) | ^5.7.3 | Type safety |
+| Runtime | React | ^18.3.1 | UI rendering |
+| Styling | Tailwind CSS v3 | ^3.4.17 | Utility-first styling with custom design tokens |
+| Animations | Framer Motion | ^11.15.0 | Scroll-triggered, page transitions, hover effects |
+| Icons | Lucide React | ^0.468.0 | Consistent, tree-shakeable icon library |
+| Theming | next-themes | ^0.4.4 | Dark/light mode with `class` strategy |
+| Hosting | AWS Amplify | — | Serverless deployment with CI/CD |
+| Static Assets | Local `portfolio-resources/` | — | Images, documents, JSON data |
 
 ---
 
 ## 🏗 AGENT WORKFLOW — Autonomous Development Protocol
 
-Every task MUST follow this pipeline. The agent should execute these phases **autonomously** without waiting for user confirmation between steps (unless destructive).
+Every task MUST follow this pipeline:
 
 ### Phase 1: ANALYZE
 1. Read this instructions file fully
 2. Identify which files are affected (use `grep_search` / `semantic_search`)
 3. Read all affected files to understand current state
-4. Check `src/services/core/types.ts` for data shapes
-5. Check related JSON data files in `src/assets/portfolio-resources/data/`
+4. Check `src/types/index.ts` for data shapes
+5. Check related JSON data files in `portfolio-resources/data/`
+6. Review the **KNOWN ISSUES** section below for context on existing problems
 
 ### Phase 2: PLAN
 1. Create a detailed todo list using `manage_todo_list`
 2. Break work into atomic, independently verifiable steps
-3. Identify dependencies between steps (what must come first)
-4. Flag any destructive or irreversible actions for user confirmation
+3. Identify dependencies between steps
+4. Cross-reference work against the **IMPROVEMENT ROADMAP** to avoid duplicating future work
 
 ### Phase 3: IMPLEMENT
 1. Mark each todo as `in-progress` before starting
-2. Make changes file-by-file, using `multi_replace_string_in_file` for batch edits
+2. Make changes file-by-file
 3. Follow all architecture patterns below strictly
 4. Mark each todo as `completed` immediately after finishing
 
 ### Phase 4: VALIDATE
-1. Run `npm run lint` — fix ALL lint errors before proceeding
+1. Run `npm run lint` — fix ALL lint errors
 2. Run `npm run build` — fix ALL TypeScript/compilation errors
-3. If tests exist for the changed area, run `npm run test:run`
-4. Visually verify by checking the component renders correctly (read the output)
 
 ### Phase 5: REPORT
-1. Summarize what was changed (files, lines, new components)
+1. Summarize what was changed
 2. List any remaining TODOs or known issues
-3. Generate the **Next Prompt** (see Prompt Chain section at bottom)
-
----
-
-## 🎯 DESIGN VISION — Single-Page Scrollable Resume Portfolio
-
-> **REDESIGN IN PROGRESS**: Converting from split-panel + tabbed layout to a **single-page scrollable layout** where ALL data is visible at once, inspired by https://bryllim.com/.
-
-### Layout Architecture: Single-Page Scrollable
-
-**Previous layout (DEPRECATED):** Split-panel with left sidebar (5/12) + right TabPanel (7/12) with 6 tabs. User could only see ONE section at a time.
-
-**New layout (TARGET):** Two-column layout where the left column is a **sticky profile card** and the right column is a **vertically scrollable stream of ALL sections**. Every section is visible on one page — no tabs.
-
-```
-┌──────────────────────────────────────────────────────────────┐
-│  ┌───────────────┐  ┌──────────────────────────────────────┐ │
-│  │               │  │  Experience Timeline                │ │
-│  │  Profile Card │  ├──────────────────────────────────────┤ │
-│  │  (sticky)     │  │  Tech Stack (marquee)               │ │
-│  │  (4/12 width) │  ├──────────────────────────────────────┤ │
-│  │               │  │  Recent Projects (4)  [View All →]  │ │
-│  │  - Avatar     │  ├──────────────────────────────────────┤ │
-│  │  - Name +     │  │  Recent Certs (4)    [View All →]   │ │
-│  │    Verified   │  ├──────────────────────────────────────┤ │
-│  │  - Title      │  │  GitHub Activity (stats + calendar) │ │
-│  │  - Avail.     │  ├──────────────────────────────────────┤ │
-│  │    Badge      │  │  Recommendations                    │ │
-│  │  - PH Time    │  ├──────────────────────────────────────┤ │
-│  │  - Bio        │  │  Memberships                        │ │
-│  │  - Socials    │  ├──────────────────────────────────────┤ │
-│  │  - Discord    │  │  Gallery (8)         [View All →]   │ │
-│  │  - Last.fm    │  ├──────────────────────────────────────┤ │
-│  │  - Resume btn │  │  Contact / CTA                      │ │
-│  │  - Calendly   │  └──────────────────────────────────────┘ │
-│  │               │                                           │
-│  │  Footer       │                                           │
-│  └───────────────┘                                           │
-└──────────────────────────────────────────────────────────────┘
-```
-
-### Section Order (top to bottom on right column)
-| # | Section | Preview Mode | View All Route | Components | Skeleton |
-|---|---------|-------------|----------------|------------|----------|
-| 1 | Experience Timeline | All items | — | `experiences.tsx` | `ExperiencesSkeleton` |
-| 2 | Tech Stack | Marquee | — | `technologies.tsx` | `TechStackSkeleton` |
-| 3 | Recent Projects | First 4 cards | `/projects` | `projects.tsx` | `ProjectsSkeleton` |
-| 4 | Recent Certifications | First 4 cards | `/certifications` | `certifications.tsx` | `CertificationsSkeleton` |
-| 5 | GitHub Activity | Stats + Calendar combined | — | `github-stats.tsx` + `github-activity-calendar.tsx` | `GithubStatsSkeleton` + `GithubCalendarSkeleton` |
-| 6 | Recommendations | All (usually few) | — | `recommendations.tsx` | `RecommendationsSkeleton` |
-| 7 | Memberships | All badges | — | `memberships.tsx` | `MembershipsSkeleton` |
-| 8 | Gallery | First 8 images | `/gallery` | `gallery.tsx` | `GallerySkeleton` |
-| 9 | Contact / CTA | Full form + links | — | `contact.tsx` | — |
-
-### "View All" Pattern
-Sections with many items show a **preview** (limited count) + a **"View All" button/link**:
-- The "View All" button navigates to a **dedicated sub-route** (e.g., `/projects`, `/certifications`, `/gallery`)
-- Sub-routes render the full list with its own layout and back button
-- Sub-routes are file-based: `src/routes/projects.tsx`, `src/routes/certifications.tsx`, `src/routes/gallery.tsx`
-- Each sub-route reuses the existing section component but passes a `showAll` prop or renders without limit
-
-### Left Column: Slim Sticky Profile Card (4/12 width)
-The left column is a **slim, focused profile card** (`lg:w-4/12 2xl:w-3/12`) containing ONLY:
-- Profile image + name + verified badge + title
-- Availability badge (from GitHub API commit activity)
-- Philippine time widget
-- Bio / summary text
-- Social icon links row
-- Discord presence (compact)
-- Last.fm now playing (compact)
-- Resume button + Calendly button
-- Theme toggle
-- Footer (hidden on mobile, shown below profile card on desktop)
-
-**NOT in left column** (moved to right column as proper sections):
-- ~~Technologies marquee~~ → Right column section #2
-- ~~GitHub stats + calendar~~ → Right column section #5
-- ~~Memberships~~ → Right column section #7
-- ~~RecentExperienceTile~~ → Removed (redundant with Experiences section)
-- ~~DiscordPresenceTile / GithubRecentCommitTile~~ → Removed (Discord already in ProfileCard)
-
-On mobile (`< lg:`), the profile card is **not sticky** and appears at the top, followed by all sections stacked vertically.
-
-Right column uses `lg:w-8/12 2xl:w-9/12` width.
-
-### Key Implementation Changes
-1. **~~Remove `src/sections/tab-panel.tsx`~~** — DONE (deleted)
-2. **~~Modify `src/routes/index.tsx`~~** — DONE (all sections stacked vertically in right column)
-3. **~~Add sub-routes~~** — DONE (`src/routes/projects.tsx`, `src/routes/certifications.tsx`, `src/routes/gallery.tsx`)
-4. **~~Add preview mode~~** — DONE (each section accepts a `limit` prop to show first N items)
-5. **~~Add section headers~~** — DONE (each section gets a `<SectionHeader title="..." viewAllHref="..." />` component)
-6. **~~Left column becomes sticky~~** — DONE (`lg:sticky lg:top-4 lg:self-start` on desktop)
-7. **~~Add AnimatedSection~~** — DONE (`<AnimatedSection id="..." />` wraps each right-column section with Framer Motion whileInView)
-8. **~~Slim left column~~** — DONE (only ProfileCard + Footer; Technologies, GithubStats, Calendar, Memberships moved to right column)
-9. **~~Content-shaped skeletons~~** — DONE (12 skeleton components in `skeleton-loaders.tsx`, replacing generic LoadingTile)
-
-### Section Status (mapped to current codebase)
-| Section | Current Implementation | Status |
-|---------|----------------------|--------|
-| Profile Card (sticky) | `src/components/features/profile/profile-card.tsx` (merged header + main) | ✅ Unified + Sticky on desktop |
-| Experience Timeline | `src/sections/experiences.tsx` | ✅ Right column + content-shaped skeleton |
-| Tech Stack (marquee) | `src/sections/technologies.tsx` | ✅ Right column + content-shaped skeleton |
-| Projects (cards + links) | `src/sections/projects.tsx` | ✅ Has `limit` prop + `/projects` sub-route + skeleton |
-| Certifications | `src/sections/certifications.tsx` | ✅ Has `limit` prop + `/certifications` sub-route + skeleton |
-| GitHub Activity | `src/sections/github-stats.tsx` + `github-activity-calendar.tsx` | ✅ Combined in right column |
-| Recommendations | `src/sections/recommendations.tsx` | ✅ Right column + content-shaped skeleton |
-| Memberships | `src/sections/memberships.tsx` | ✅ Right column (simplified, no wrapper) |
-| Gallery | `src/sections/gallery.tsx` | ✅ Has `limit` prop + `/gallery` sub-route + skeleton |
-| Contact / CTA | `src/sections/contact.tsx` | ✅ Exists |
-| Discord Presence | `src/components/features/discord/` | ✅ Compact in ProfileCard |
-| Last.fm Music | `src/components/features/last-fm/` | ✅ Compact in ProfileCard |
-| Resume PDF View/Download | `src/routes/resume-preview.tsx` | ✅ Exists |
-| AnimatedSection | `src/components/common/animated-section.tsx` | ✅ Scroll animations |
-| SectionHeader | `src/components/common/section-header.tsx` | ✅ Title + View All |
-| ProfileCard | `src/components/features/profile/profile-card.tsx` | ✅ Unified profile + socials + Last.fm |
-| Skeleton Loaders | `src/components/ui/skeleton-loaders.tsx` | ✅ 12 content-shaped skeletons |
-
-### Design Principles
-- **Single-page scrollable**: All content visible on one page — no tabs, no hidden sections
-- **Sticky profile card**: Left column stays visible while scrolling content on desktop
-- **"View All" sub-routes**: Sections with many items preview N items + link to dedicated page
-- **Dark/Light theme**: CSS variables in `globals.css` (`--custom-background`, `--custom-secondary`)
-- **Smooth animations**: Framer Motion for scroll-triggered reveals (viewport enter)
-- **Mobile-first**: Stacks vertically on mobile, two-column with sticky sidebar on `lg:` breakpoint
-- **Bento grid tiles**: Cards/tiles with consistent padding, rounded corners (`rounded-xl`)
-- **Micro-interactions**: Hover states, press feedback, smooth section transitions
-- **Section anchors**: Each section has an `id` for anchor navigation from profile card links
+3. Update this instructions file if the change affects architecture, data shapes, or project structure
 
 ---
 
 ## 📂 PROJECT STRUCTURE
 
 ```
-src/
-├── assets/portfolio-resources/
-│   ├── assets/documents/          # Resume PDF
-│   ├── assets/images/             # All image assets
-│   │   ├── certifications/
-│   │   ├── gallery/
-│   │   └── projects/
-│   └── data/                      # Static JSON data
-│       ├── certifications.json
-│       ├── experiences.json
-│       ├── gallery.json
-│       ├── profile.json
-│       ├── projects.json
-│       ├── socials.json
-│       └── technologies.json
-├── components/
-│   ├── common/                    # Shared business components
-│   ├── features/                  # Domain-specific components
-│   │   ├── certifications/
-│   │   ├── discord/
-│   │   ├── experiences/
-│   │   ├── gallery/
-│   │   ├── github/
-│   │   ├── last-fm/
-│   │   ├── profile/
-│   │   ├── projects/
-│   │   ├── resume/
-│   │   ├── socials/
-│   │   └── technologies/
-│   ├── partials/                  # Header, Footer
-│   └── ui/                        # Reusable primitives (LoadingTile, ErrorTile, etc.)
-├── constants/form-schemas/        # Zod/form schemas
-├── context/                       # React contexts (ThemeProvider)
-├── hooks/                         # Custom hooks (useCore, useGithub, useLastfm, etc.)
-├── routes/                        # TanStack Router file-based routes
-│   ├── __root.tsx
-│   ├── index.tsx                  # Main portfolio page
-│   ├── certifications.tsx         # View All certifications sub-route
-│   ├── gallery.tsx                # View All gallery sub-route
-│   ├── projects.tsx               # View All projects sub-route
-│   └── resume-preview.tsx         # Full resume view
-├── sections/                      # Page-level section layouts
-├── services/                      # Service layer (Interface → Service → Hook)
-│   ├── contact/
-│   ├── core/                      # Main data service
-│   ├── github/
-│   ├── lastfm/
-│   └── likes/
-├── types/
-└── utilities/
+├── .github/
+│   └── copilot-instructions.md      # THIS FILE — agent context & rules
+├── portfolio-resources/              # Real content data & assets (SOURCE OF TRUTH)
+│   ├── assets/
+│   │   ├── documents/
+│   │   │   ├── resume.pdf            # Downloadable resume
+│   │   │   ├── resume.docx           # Editable resume
+│   │   │   ├── resume.tex            # LaTeX source
+│   │   │   └── configs/              # Resume builder configs
+│   │   └── images/
+│   │       ├── certifications/       # 28 certificate images (.png, .jpg)
+│   │       ├── gallery/              # 22 gallery photos (.jpg, .jpeg, .JPG, .png)
+│   │       └── projects/             # 15 project screenshots (.png, .jpg)
+│   └── data/                         # Static JSON data
+│       ├── certifications.json       # 28 certifications (21 HackerRank + 7 others)
+│       ├── experiences.json          # 7 work experiences
+│       ├── gallery.json              # 22 gallery images
+│       ├── memberships.json          # 2 memberships (PSIA, AAAP)
+│       ├── profile.json              # Profile: Jhon Keneth Namias
+│       ├── projects.json             # 7 projects
+│       ├── recommendations.json      # 2 recommendations (PLACEHOLDER — needs real data)
+│       ├── socials.json              # 8 social links (real URLs)
+│       └── technologies.json         # 45 technologies across 6 categories
+├── public/                           # Next.js public static files
+│   └── site.webmanifest
+├── src/
+│   ├── app/
+│   │   ├── globals.css               # Global styles + CSS custom properties
+│   │   ├── layout.tsx                # Root layout + metadata + Inter font
+│   │   ├── page.tsx                  # Home page (main portfolio, 'use client')
+│   │   ├── providers.tsx             # ThemeProvider (dark default, class strategy)
+│   │   └── blog/
+│   │       ├── page.tsx              # Blog listing ('use client')
+│   │       └── [slug]/
+│   │           ├── page.tsx          # Blog post SSG page + generateStaticParams
+│   │           └── BlogPostContent.tsx  # Client-side blog renderer
+│   ├── components/
+│   │   ├── layout/
+│   │   │   └── Footer.tsx            # Simple copyright footer
+│   │   ├── sections/                 # 11 section components (all 'use client')
+│   │   │   ├── HeroSection.tsx       # Name, location, title, CTA buttons
+│   │   │   ├── AboutSection.tsx      # Summary, education, highlights stats
+│   │   │   ├── TechStackSection.tsx  # Tech stack grouped by category
+│   │   │   ├── ProjectsSection.tsx   # Project cards grid (first 4 only)
+│   │   │   ├── CertificationsSection.tsx  # Scrollable cert list
+│   │   │   ├── ExperienceTimeline.tsx     # Timeline with dot indicators
+│   │   │   ├── RecommendationsCarousel.tsx # Auto-advancing testimonials
+│   │   │   ├── MembershipsSection.tsx     # Org membership links
+│   │   │   ├── SpeakingSection.tsx        # Static speaking availability
+│   │   │   ├── ConnectSection.tsx         # Social links + latest blog post
+│   │   │   └── GallerySection.tsx         # Paginated image slider (5/slide)
+│   │   └── ui/                       # 7 reusable UI primitives
+│   │       ├── Badge.tsx             # ⚠️ UNUSED — not imported anywhere
+│   │       ├── Button.tsx            # Primary/ghost/outline with href support
+│   │       ├── Card.tsx              # Bordered card wrapper with hover option
+│   │       ├── ProjectCard.tsx       # Project card with links
+│   │       ├── ThemeToggle.tsx       # Dark/light mode toggle button
+│   │       ├── TimelineItem.tsx      # Experience timeline entry
+│   │       └── VerifiedBadge.tsx     # Pink checkmark next to name
+│   ├── data/                         # TS modules importing JSON → typed exports
+│   │   ├── blogPosts.ts             # ⚠️ HARDCODED blog data (not from JSON)
+│   │   ├── certifications.ts
+│   │   ├── experience.ts
+│   │   ├── gallery.ts
+│   │   ├── memberships.ts
+│   │   ├── profile.ts
+│   │   ├── projects.ts
+│   │   ├── recommendations.ts
+│   │   ├── socials.ts
+│   │   └── techStack.ts             # Also exports techCategories (grouped)
+│   ├── hooks/
+│   │   ├── useCarousel.ts           # Auto-advance & hover-pause carousel
+│   │   └── useTheme.ts              # Wrapper around next-themes
+│   ├── lib/
+│   │   └── utils.ts                 # cn() — simple class concatenation
+│   └── types/
+│       └── index.ts                  # All TypeScript interfaces
+├── tailwind.config.ts                # Custom colors, fonts, darkMode: 'class'
+├── next.config.js                    # Standalone output, S3 remote patterns
+├── amplify.yml                       # AWS Amplify CI/CD config
+└── package.json
 ```
 
 ---
 
-## 🏛 CORE ARCHITECTURE: Service Layer Pattern
+## 👤 OWNER PROFILE — Real Content Reference
 
-**MANDATORY: All data fetching follows Interface → Service → Hook → Component**
+This section documents the **actual content** from `portfolio-resources/data/` so the agent always has context about who the portfolio belongs to and what data is available. **Never use placeholder data — always reference this.**
 
-```typescript
-// 1. INTERFACE — src/services/core/interface.ts
-export interface ICoreService {
-  getProjects(): Promise<Project[]>;
-}
+### Identity
+- **Name:** Jhon Keneth Namias
+- **Alias:** PP Namias (GitHub: PP-Namias)
+- **Title:** Full Stack Developer
+- **Email:** jhonamiasss@gmail.com (profile.json) / pp.namias@gmail.com (socials.json)
+- **Location:** Caloocan City, Philippines
+- **GitHub:** https://github.com/PP-Namias
+- **LinkedIn:** https://www.linkedin.com/in/pp-namias/
+- **Calendly:** https://calendly.com/pp-namias/15-minute-meeting
 
-// 2. SERVICE — src/services/core/service.ts
-// ⚠️ MUST bind ALL methods in constructor or TanStack Query will lose `this`
-export class CoreService implements ICoreService {
-  constructor() {
-    this.getProjects = this.getProjects.bind(this);
-  }
-  async getProjects(): ReturnType<ICoreService["getProjects"]> {
-    return projects as Project[];
-  }
-}
+### Education
+- **BS Computer Science** — University of Caloocan City (2021–present)
+- GPA: 3.8 | Honors: Dean's List, Academic Excellence Award
+- Courses: DSA, Software Engineering, DBMS, Web Development, Mobile Development, AI
 
-// 3. HOOK — src/hooks/use-core.ts
-const queryProjects = () => useQuery({
-  queryFn: coreService.getProjects,
-  queryKey: ["projects"],
-});
+### Experience Summary (7 roles)
+| # | Company | Role | Type | Period |
+|---|---------|------|------|--------|
+| 1 | PhoneCraft Cellphone Repair | Head Technician | Full-time | 2020–Present |
+| 2 | Ucc-Ingo | Website Administrator | Full-time | 2025–Present |
+| 3 | Aeternitas Chapels & Columbarium | Software Engineer Intern | Internship | 2025–2025 |
+| 4 | Wilshire Financial Network | AI Consultant Trainee | Internship | 2025–2025 |
+| 5 | JIMIRENE Clinic Management System | Full Stack Developer | Full-time | 2025–2025 |
+| 6 | J'5 Pharmacy | Full Stack Web Developer | Full-time | 2025–2025 |
+| 7 | Legal Workflow Manager (CaseMaster) | System Analyst | Full-time | 2024–2024 |
 
-// 4. COMPONENT — any section or feature component
-const { data, isLoading, error } = useCore().queryProjects();
-```
+### Projects (7 projects)
+| # | Title | Year | Live | Repo | Stack |
+|---|-------|------|------|------|-------|
+| 1 | Story Adaptive Game Engine | 2025 | Vercel | — | JS/TS, GPT, Stable Diffusion |
+| 2 | Java Rice - Food Ordering | 2024 | — | GitHub | Java, Swing, QR, Payments |
+| 3 | Student Attendance System | 2023 | — | GitHub | C#, WPF, PostgreSQL, Barcode |
+| 4 | Galaxy Animation - Solar System | 2023 | GH Pages | GitHub | HTML, CSS, JS |
+| 5 | CSS3 Robot Animation | 2023 | GH Pages | GitHub | CSS3, Pure CSS |
+| 6 | Car Dealership Management | 2022 | — | GitHub | C++, Console, File I/O |
+| 7 | Pre-enrollment Management | 2022 | — | GitHub | VB.NET, Desktop, RBAC |
 
-### Adding a New Data Type (e.g., Recommendations)
-1. Add JSON → `src/assets/portfolio-resources/data/recommendations.json`
-2. Add TypeScript type → `src/services/core/types.ts`
-3. Add to interface → `src/services/core/interface.ts`
-4. Implement in service → `src/services/core/service.ts` (bind in constructor!)
-5. Add query → `src/hooks/use-core.ts`
-6. Create section → `src/sections/recommendations.tsx`
-7. Create feature component → `src/components/features/recommendations/`
-8. Add section to `src/routes/index.tsx` in the right column scroll area
-9. If section has many items: add `limit` prop + create a `/sectionname` sub-route for "View All"
+### Technology Stack (45 technologies, 6 categories)
+- **Languages (10):** TypeScript 90%, JavaScript 92%, Python 80%, Java 75%, C# 70%, PHP 72%, HTML5 95%, CSS3 90%, Bash 68%, R 60%
+- **Frontend (8):** React 92%, Next.js 88%, TailwindCSS 95%, HeroUI 85%, ShadcnUI 80%, Bootstrap 85%, Flutter 70%, JavaFX 65%
+- **Backend (6):** Node.js 85%, FastAPI 82%, Flask 80%, Laravel 72%, CodeIgniter 70%, Swagger 78%
+- **Databases (5):** PostgreSQL 82%, MySQL 85%, Supabase 80%, PocketBase 75%, InfluxDB 65%
+- **Tools (10):** Docker 78%, Git 90%, GitHub 92%, VS Code 95%, Neovim 70%, Jenkins 65%, Grafana 68%, n8n 75%, Jupyter 80%, Photoshop 70%
+- **Data Science (6):** NumPy 75%, Pandas 78%, Scikit-learn 70%, Plotly 72%, Seaborn 68%, Streamlit 75%
 
-### Adding a New External API Service
-1. Create directory: `src/services/newapi/`
-2. Create files: `interface.ts`, `service.ts`, `types.ts`, `index.ts`
-3. Create hook: `src/hooks/use-newapi.ts`
-4. Bind all methods in service constructor
+### Certifications (28 total)
+- **21 HackerRank certificates** (Software Engineer, Frontend React, Angular, REST API, SQL Advanced/Intermediate/Basic, React, R, Python, Problem Solving, Node.js, JavaScript, Java, CSS, C#)
+- **2nd Place Programming Competition** — University of Caloocan City (2025)
+- **CS Council Member** — University of Caloocan City (2025)
+- **Cybersecurity Fundamentals** — IBM (2025)
+- **3 Google Developer Student Club workshops** (Firebase Deployment, React Native Google Maps, Google Auth)
+- **How to Navigate the Database Universe** — AWS (2024)
+
+### Memberships (2)
+- Philippine Software Industry Association (PSIA) — since 2024
+- Analytics & AI Association of the Philippines (AAAP) — since 2024
+
+### Recommendations (2 — PLACEHOLDER DATA)
+⚠️ **Both recommendations in `recommendations.json` are generic placeholders** ("Sample Recommender" at "Tech Company", "Another Recommender" at "Digital Agency"). These need to be replaced with **real testimonials** from actual colleagues/managers.
+
+### Social Links (8)
+- Calendly (featured), GitHub, Email (pp.namias@gmail.com), LinkedIn, Facebook, Discord, X/Twitter, Instagram
+
+### Gallery (22 images)
+- 9 Birthday 2024 photos, 1 Dream PC setup, 1 Friend group 2025, 6 HackForGov 2025 hackathon photos, 2 personal portraits, 1 MASH Team, 1 professional headshot (white BG), 1 OJT pic
+
+### Available Image Assets
+- **Certifications:** 28 images (all present, matching JSON)
+- **Gallery:** 22 images (all present, matching JSON)
+- **Projects:** 15 screenshots available BUT **project images are NOT used** in the UI — projects.json has `"placeholder.png"` for all `image` fields
+- **Profile photos:** `me.jpg`, `Jhon Keneth Namias (2).jpg`, `Namias Profile White BG.png` in gallery/
+- **Resume:** PDF, DOCX, and LaTeX source available
 
 ---
 
-## 🖼 IMAGE OPTIMIZATION (vite-imagetools)
+## 🎯 DESIGN VISION — Two-Column Card-Based Portfolio
 
-**CRITICAL: All image glob patterns MUST include ALL supported formats:**
-
-```typescript
-const optimizedImages: Record<string, string> = import.meta.glob(
-  "../assets/portfolio-resources/assets/images/projects/*.{png,jpg,jpeg,JPG,jfif,gif,webp}",
-  { eager: true, import: "default", query: "?format=webp&meta" }
-);
-const imageKey = Object.keys(optimizedImages).find(key => key.includes(item.image));
+### Layout Architecture (page.tsx)
+```
+┌──────────────────────────────────────────────────────────┐
+│  Hero Section (full width) — Name, photo, CTA buttons    │
+├──────────────────────────────────────────────────────────┤
+│  ┌─────────────────────┐  ┌──────────────────────────┐  │
+│  │  Main (62%)         │  │  Sidebar (38%, sticky)   │  │
+│  │  - About            │  │  - Experience Timeline   │  │
+│  │  - Tech Stack       │  │  - Memberships           │  │
+│  │  - Projects         │  │  - Speaking              │  │
+│  └─────────────────────┘  └──────────────────────────┘  │
+├──────────────────────────────────────────────────────────┤
+│  Certifications (50%) │ Recommendations Carousel (50%)   │
+├──────────────────────────────────────────────────────────┤
+│  Connect + Social Links  │  Latest Blog Post             │
+├──────────────────────────────────────────────────────────┤
+│  Gallery (paginated slider, full width)                   │
+├──────────────────────────────────────────────────────────┤
+│  Footer                                                   │
+└──────────────────────────────────────────────────────────┘
 ```
 
-**Supported formats:** `.png`, `.jpg`, `.jpeg`, `.JPG`, `.jfif`, `.gif`, `.webp`  
-**PDF files:** Cannot use vite-imagetools — import directly or use fallback.
+### Design Principles
+- **Card-based**: All sections in bordered `<Card>` components
+- **Dark/Light theme**: CSS custom properties in `globals.css`, `next-themes` with `class` strategy, default: dark
+- **Smooth animations**: Framer Motion `whileInView` scroll reveals staggered per section
+- **Mobile-first**: Stacks vertically on mobile, two-column layout on `lg:` breakpoint
+- **Accent color**: Pink `#db2777` (`accent-pink` in Tailwind config)
+- **Typography**: Inter via `next/font/google` loaded as `--font-inter` CSS variable
+- **Max width**: 860px container (`max-w-container`)
+- **Spacing**: Consistent `gap-4` between cards, `p-5` card padding
+
+### Tailwind Custom Colors (tailwind.config.ts)
+```
+background-light: #ffffff     background-dark: #000000
+surface-light: #ffffff        surface-dark: #0a0a0a
+card-bg-light: #ffffff        card-bg-dark: #111111
+text-primary-light: #111827   text-primary-dark: #ffffff
+text-secondary-light: #4b5563 text-secondary-dark: #d1d5db
+text-muted-light: #6b7280     text-muted-dark: #9ca3af
+border-light: #e5e7eb         border-dark: #1f1f1f
+accent-pink: #db2777          accent-pink-hover: #be185d
+                               accent-pink-hover-dark: #f472b6
+```
 
 ---
 
-## 🧩 COMPONENT PATTERNS
+## 📊 DATA ARCHITECTURE
 
-### Compound Component Pattern
-```tsx
-<ProjectCard>
-  <ProjectCard.Body>
-    <ProjectCard.Image imageUrl={img} />
-    <ProjectCard.Title title={t} year={y} />
-  </ProjectCard.Body>
-</ProjectCard>
+### Source of Truth
+All real content lives in `portfolio-resources/data/*.json`.  
+The `src/data/*.ts` modules import this JSON and re-export with TypeScript types.
+
+**Exception:** `blogPosts.ts` is currently hardcoded with sample blog posts and does NOT follow this pattern. Blog data should eventually be migrated to `portfolio-resources/data/blog.json`.
+
+### Data Flow
+```
+portfolio-resources/data/*.json  →  src/data/*.ts (typed)  →  Section Components
 ```
 
-### Loading/Error States — ALWAYS wrap async content
-
-**Prefer content-shaped skeletons** over generic `LoadingTile` for better UX:
-```tsx
-import { ProjectsSkeleton } from "@/components/ui/skeleton-loaders";
-
-if (isLoading) return <ProjectsSkeleton count={limit ?? 4} />;
-if (error) return <ErrorTile className="h-70" />;
+### Image Asset Flow
 ```
-
-Available skeleton components (in `src/components/ui/skeleton-loaders.tsx`):
-- `ExperiencesSkeleton`, `ProjectsSkeleton`, `CertificationsSkeleton`
-- `GallerySkeleton`, `RecommendationsSkeleton`, `TechStackSkeleton`
-- `GithubStatsSkeleton`, `GithubCalendarSkeleton`, `MembershipsSkeleton`
-- `ProfileCardSkeleton`
-
-**Fallback** for sections without a custom skeleton:
-```tsx
-if (isLoading) return <LoadingTile className="h-70" />;
-if (error) return <ErrorTile className="h-70" />;
+portfolio-resources/assets/images/  →  ⚠️ NOT served by Next.js (not in public/)
 ```
+Images in `portfolio-resources/` are NOT in the `public/` directory, meaning **Next.js cannot serve them directly**. The gallery section references `/portfolio-resources/assets/images/gallery/` which will 404 unless:
+- Images are copied/symlinked to `public/`
+- Or served from an external CDN (S3)
+- Or use Next.js rewrites in `next.config.js`
 
-### Animation Pattern (Framer Motion)
-```tsx
-import { motion } from "framer-motion";
+### Types (src/types/index.ts)
+All TypeScript interfaces for JSON data live here. **One exception:** `BlogPost` type is defined in `src/data/blogPosts.ts` instead.
 
-<motion.div
-  initial={{ opacity: 0, y: 20 }}
-  animate={{ opacity: 1, y: 0 }}
-  transition={{ duration: 0.3, delay: index * 0.05 }}
->
-  {/* content */}
-</motion.div>
-```
+| Type | Key Fields | JSON Source | Used Fields in UI | Unused Fields |
+|------|------------|-------------|-------------------|---------------|
+| `Profile` | name, title, email, phone, location, github, linkedin, summary, highlights, education | profile.json | name, title, email, location, github, summary, highlights.yearsExperience, highlights.projectsCompleted, education.degree, education.institution, education.location, education.honors | **phone, linkedin, highlights.primaryTechnologies, education.gpa, education.relevantCourses, education.startedAt, education.endedAt** |
+| `Experience` | company, position, summary, country, modality, type, startedAt, endedAt, technologies, highlights, achievements, relatedProjects | experiences.json | company, position, type, startedAt, endedAt | **summary, country, modality, technologies, highlights, achievements, relatedProjects** |
+| `Project` | title, image, description, repositoryURL, liveURL, processURL, tags, year | projects.json | title, description, repositoryURL, liveURL, tags (first 3), year | **image, processURL** |
+| `Certification` | title, image, issuer, issuedAt, tags | certifications.json | title, issuer, issuedAt | **image, tags** |
+| `Technology` | name, logo, category, proficiency | technologies.json | name, category | **logo, proficiency** |
+| `GalleryItem` | title, mediaType, media, tags, createdAt | gallery.json | title, media | **mediaType, tags, createdAt** |
+| `Membership` | name, url, joinedAt | memberships.json | name, url | **joinedAt** |
+| `SocialLink` | name, icon, label, link, featured? | socials.json | name, icon, label, link | **featured** |
+| `Recommendation` | quote, name, title, company | recommendations.json | All used | — |
 
 ---
 
 ## 🔧 COMMANDS
 
 ```bash
-npm run dev          # Vite dev server (localhost:5173)
-npm run build        # TypeScript check + Vite build (MUST pass before commit)
-npm run lint         # ESLint (MUST pass before commit)
-npm run test:run     # Run all tests once
-npm run test         # Watch mode tests
-npx prettier --write .  # Format (Tailwind plugin auto-sorts classes)
+npm run dev          # Next.js dev server (localhost:3000)
+npm run build        # Production build (MUST pass before commit)
+npm run lint         # ESLint with next/core-web-vitals
+npm run start        # Start production server
 ```
 
 ---
 
-## ✅ PRE-COMMIT CHECKLIST
+## 🧩 COMPONENT PATTERNS
 
-**ALWAYS run in this order before ANY commit:**
-
-```bash
-npm run lint         # 1. Fix all lint errors
-npm run build        # 2. Fix all TypeScript/build errors
-npx prettier --write .  # 3. Format code
+### Animation Pattern (standard for all sections)
+```tsx
+<motion.div
+  initial={{ opacity: 0, y: 20 }}
+  whileInView={{ opacity: 1, y: 0 }}
+  viewport={{ once: true }}
+  transition={{ duration: 0.4 }}
+/>
 ```
 
-**BLOCK COMMIT if:**
-- `npm run lint` has errors
-- `npm run build` fails
-- TypeScript type errors exist
+### Staggered Children Pattern
+```tsx
+<motion.div
+  initial={{ opacity: 0, y: 10 }}
+  whileInView={{ opacity: 1, y: 0 }}
+  viewport={{ once: true }}
+  transition={{ delay: index * 0.1, duration: 0.3 }}
+/>
+```
+
+### Theme Classes (MANDATORY for all visible elements)
+```tsx
+className="text-text-primary-light dark:text-text-primary-dark"
+className="text-text-secondary-light dark:text-text-secondary-dark"
+className="text-text-muted-light dark:text-text-muted-dark"
+className="bg-surface-light dark:bg-surface-dark"
+className="bg-white dark:bg-card-bg-dark"
+className="border-border-light dark:border-border-dark"
+```
+
+### Accent Tag/Pill Pattern (used in About honors, ProjectCard tags, Certifications, Blog tags)
+```tsx
+<span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-accent-pink/10 text-accent-pink">
+  {label}
+</span>
+```
+
+### Card Wrapper
+All sections must be wrapped in `<Card>` from `src/components/ui/Card.tsx`:
+```tsx
+<Card>           // Standard card
+<Card hover>     // Card with hover lift effect + pink border accent
+```
+
+### Social Icon Mapping (ConnectSection.tsx)
+The `iconMap` maps `socials.json` icon strings to Lucide components:
+```
+calendar → Calendar, github → Github, mail → Mail,
+linkedin → Linkedin, facebook → Facebook,
+message-square → MessageSquare, twitter → Twitter, instagram → Instagram
+```
+Unmapped icons fall back to `ExternalLink`.
 
 ---
 
-## 🌐 EXTERNAL APIs
+## 🚨 KNOWN ISSUES — Current State Audit
 
-| Service | Base URL | Hook | Auth |
-|---------|----------|------|------|
-| GitHub API | `api.github.com` | `useGithub()` | None |
-| GitHub Contributions | `github-contributions-api.jogruber.de` | `useGithub()` | None |
-| Last.fm | `ws.audioscrobbler.com` | `useLastfm()` | `VITE_LAST_FM_API_KEY` |
-| Contact (FormSubmit) | `formsubmit.co` | `useContact()` | None |
+These are confirmed issues in the codebase as of 2026-03-02. Reference these when planning work.
+
+### P0 — Critical (Broken Functionality)
+
+1. **Gallery images 404** — `GallerySection.tsx` references `/portfolio-resources/assets/images/gallery/{filename}` but `portfolio-resources/` is NOT in `public/`. Images won't load at all.
+
+2. **Project images all placeholder** — Every project in `projects.json` has `"image": "placeholder.png"` despite 15 real project screenshots existing in `portfolio-resources/assets/images/projects/` (ATM System.png, Car Dealership Management Program.png, CSS3 Robot Web Art.png, Galaxy Animation.png, Java Rice.jpg, etc.).
+
+3. ~~**Build-breaking import paths** — All 9 `src/data/*.ts` modules used `../../../portfolio-resources/` (3 levels up) instead of `../../portfolio-resources/` (2 levels up, correct path from `src/data/` to project root). Fixed 2026-03-02.~~
+
+### P1 — High (Data Quality / Architecture Violations)
+
+3. **Recommendations are fake** — `recommendations.json` contains 2 placeholder testimonials from "Sample Recommender" and "Another Recommender" at fictional companies. Must be replaced with real quotes.
+
+4. **Blog data violates architecture** — `src/data/blogPosts.ts` hardcodes 6 blog posts with `BlogPost` type defined inline, instead of sourcing from `portfolio-resources/data/blog.json`. All cover images use external `picsum.photos` placeholder URLs.
+
+5. **`BlogPost` type not in `src/types/index.ts`** — Defined in `src/data/blogPosts.ts` instead, breaking the single-type-registry pattern.
+
+6. **Profile photo is initials placeholder** — `HeroSection.tsx` renders initials in a gradient box instead of using actual photos from gallery (me.jpg, Namias Profile White BG.png, Jhon Keneth Namias (2).jpg).
+
+7. **Two different email addresses** — `profile.json` has `jhonamiasss@gmail.com`, `socials.json` has `pp.namias@gmail.com`. Should be consistent.
+
+### P2 — Medium (Unused Data / Missing Features)
+
+8. **Massive unused data** — Many JSON fields are never rendered in the UI (see DATA ARCHITECTURE table above). Key losses:
+   - Experience: summary, technologies, highlights, achievements never shown (only position/company/date/type displayed)
+   - Certifications: images and tags never shown (only title/issuer/date)
+   - Technologies: logos and proficiency percentages never shown (only names)
+   - Projects: images never shown, processURL never used
+   - Gallery: tags, dates, mediaType never shown
+   - Profile: phone, linkedin URL, GPA, courses, primaryTechnologies, education dates never shown
+
+9. **Only 4 of 7 projects displayed** — `ProjectsSection.tsx` uses `projects.slice(0, 4)` with no "View all" mechanism.
+
+10. **`Badge` component is unused** — `src/components/ui/Badge.tsx` is never imported anywhere. Also has misleading variant names (`teal`/`sky` that render pink).
+
+11. **`SocialLink.featured` field unused** — Calendly is marked `featured: true` but this flag is never used for filtering or special display.
+
+12. **HeroSection uses `profile.github`** which points to `https://github.com/jhonmamias` (possible typo — should be `https://github.com/PP-Namias` per socials.json).
+
+### P3 — Low (Code Quality / Polish)
+
+13. **Raw `<img>` tags everywhere** — `GallerySection`, `ConnectSection`, `BlogPostContent`, and blog pages use `<img>` instead of Next.js `<Image>` (no optimization, no lazy loading benefits).
+
+14. **Blog listing is `'use client'`** — Prevents SSR/SSG, bad for SEO. Should be a server component.
+
+15. **Blog posts lack `generateMetadata`** — No per-page SEO titles/descriptions for blog post pages.
+
+16. **Custom markdown renderer is naive** — `BlogPostContent.tsx` parses markdown manually (handles ##, ###, code blocks, lists, bold) but misses inline formatting, links, images, inline code, and nested elements. Should use `react-markdown` or similar.
+
+17. **`ConnectSection` calls `.find()` twice** for calendly — `socialLinks.find((s) => s.name === 'calendly')` is computed twice instead of cached.
+
+18. **`RecommendationsCarousel` direction bug** — `prevIndex` ref is not synced when auto-advance fires, so manual dot-click direction animation can be wrong after auto-advance.
+
+19. **Footer copyright year hardcoded** — `Footer.tsx` has `&copy; 2026` instead of `new Date().getFullYear()`.
+
+20. **`Button` ghost/outline variants are identical** — Both have border + same hover style; should differentiate or consolidate.
+
+21. **`next.config.js` has S3 remote patterns** but no S3 bucket is currently in use for the deployed site — images are local.
 
 ---
 
-## 📏 KEY CONVENTIONS
+## 🗺 IMPROVEMENT ROADMAP
 
-- **Type imports:** `import type { ... }` for type-only imports
-- **Path alias:** `@/` → `src/` (configured in `vite.config.ts`)
-- **Theming:** CSS variables `--custom-background`, `--custom-secondary` in `globals.css`
-- **Routing:** File-based in `src/routes/`, auto-generates `routeTree.gen.ts`
-- **UI Library:** HeroUI components (`@heroui/react`) — use these over custom implementations
-- **Icons:** `lucide-react` for all icons
-- **Animations:** `framer-motion` for all transitions and scroll reveals
-- **Date handling:** `dayjs` for date formatting and manipulation
+Prioritized improvements organized by effort and impact. Reference this when the user asks for improvements.
+
+### Quick Wins (< 30 min each)
+- [ ] Fix `projects.json` image fields — map to actual filenames from `portfolio-resources/assets/images/projects/`
+- [ ] Fix `profile.json` GitHub URL — change `jhonmamias` → `PP-Namias`
+- [ ] Resolve email inconsistency between profile.json and socials.json
+- [ ] Use profile photo in HeroSection instead of initials
+- [ ] Show all 7 projects (or add "View all" toggle)
+- [ ] Display `membership.joinedAt` in MembershipsSection
+- [ ] Make Footer copyright year dynamic
+- [ ] Remove unused `Badge.tsx` component
+- [ ] Cache calendly link lookup in ConnectSection
+- [ ] Fix RecommendationsCarousel prevIndex auto-advance sync
+
+### Medium Effort (1–3 hours)
+- [ ] Solve image serving: copy/symlink `portfolio-resources/assets/images/` to `public/images/` or configure Next.js rewrites
+- [ ] Display certification images in CertificationsSection
+- [ ] Display technology logos and proficiency bars in TechStackSection
+- [ ] Display project screenshots in ProjectCard
+- [ ] Show experience details (summary, technologies, achievements) in expanded timeline
+- [ ] Replace `<img>` with Next.js `<Image>` throughout
+- [ ] Move `BlogPost` type to `src/types/index.ts`
+- [ ] Create `portfolio-resources/data/blog.json` and source blog data from it
+
+### Larger Features (3+ hours)
+- [ ] Get real recommendations and replace placeholder data
+- [ ] Implement proper markdown rendering (react-markdown + rehype plugins)
+- [ ] Add SEO: `generateMetadata` for all pages, OG images, structured data
+- [ ] Make blog listing a server component for SSG
+- [ ] Show gallery metadata (tags, dates) with filter/sort capabilities
+- [ ] Add resume download button using `portfolio-resources/assets/documents/resume.pdf`
+- [ ] Leverage `SocialLink.featured` for prominent display
+- [ ] Display education dates, GPA, relevant courses, and phone in appropriate sections
+- [ ] Add experience detail expansion (click to see full highlights/achievements)
 
 ---
 
 ## ⚠️ GOTCHAS
 
-1. **Service method binding:** MUST bind in constructor or TanStack Query loses `this` context
-2. **Image filenames:** JSON `image`/`media` fields must exactly match filenames in `assets/images/`
-3. **Image glob formats:** MUST include `*.{png,jpg,jpeg,JPG,jfif,gif,webp}` — missing formats = broken images
-4. **Route regeneration:** Restart dev server if routes don't update (`routeTree.gen.ts`)
-5. **Build before commit:** Always `npm run build` before committing
-6. **HeroUI imports:** Import from `@heroui/react` (not individual packages) unless tree-shaking specific components
-7. **Tailwind v4:** Uses CSS-based config, NOT `tailwind.config.js` for theme values. CSS vars in `globals.css`
-8. **Tailwind v4 shorthand:** Use `h-44` not `h-[11rem]`, `z-5` not `z-[5]`, `bg-linear-to-r` not `bg-gradient-to-r`, `mx-0.75` not `mx-[3px]`
-9. **Dead code:** All dead components have been cleaned up (RecentExperienceTile, DiscordPresenceTile, GithubRecentCommitTile, EmploymentStatus deleted)
-
----
-
-## 📸 CONTENT MANAGEMENT
-
-### Adding Gallery Items
-1. Place image in `src/assets/portfolio-resources/assets/images/gallery/`
-2. Add entry to `src/assets/portfolio-resources/data/gallery.json`:
-```json
-{
-  "title": "Image Title",
-  "mediaType": "image",
-  "media": "filename.jpg",
-  "tags": ["tag1", "tag2"],
-  "createdAt": "2025-01-15"
-}
-```
-
-### Adding Certifications
-1. Place image in `src/assets/portfolio-resources/assets/images/certifications/`
-2. Add entry to `src/assets/portfolio-resources/data/certifications.json`:
-```json
-{
-  "title": "Certificate Title",
-  "image": "certificate-filename.jpg",
-  "issuer": "Issuing Organization",
-  "issuedAt": "2025-01-15",
-  "tags": ["skill1", "skill2"]
-}
-```
-
-### Adding Projects
-1. Place screenshot in `src/assets/portfolio-resources/assets/images/projects/`
-2. Add entry to `src/assets/portfolio-resources/data/projects.json`
-
-### Adding Experiences
-Add entry to `src/assets/portfolio-resources/data/experiences.json`
-
-### Troubleshooting Missing Images
-1. Verify filename in JSON matches actual file exactly (case-sensitive)
-2. Verify file extension is in the glob pattern
-3. Restart dev server after adding new images
-4. Check browser console for 404s or vite-imagetools warnings
-5. Confirm image is in the correct subfolder
-
----
-
-## 🔗 PROMPT CHAIN SYSTEM — Automated Development Workflow
-
-This system enables **fully autonomous, iterative AI development**. After completing any task, the agent generates a **Next Prompt** that can be copy-pasted to continue the workflow.
-
-### Prompt Chain Template
-
-After completing each task, generate a prompt block in this format:
-
-```
----
-📋 NEXT PROMPT (copy-paste this for the next session):
----
-
-Context: [Brief description of what was just completed]
-Current State: [What exists now — new files, changed files, current build status]
-Remaining Work: [What's left from the original plan]
-
-Task: [Specific next action to take]
-
-Requirements:
-1. [Specific requirement 1]
-2. [Specific requirement 2]
-3. [Specific requirement 3]
-
-Acceptance Criteria:
-- [ ] npm run lint passes
-- [ ] npm run build passes
-- [ ] [Feature-specific check]
-- [ ] Responsive on mobile and desktop
-- [ ] Dark/light theme works
-
-Design Reference: https://bryllim.com/ — match the [specific section] visual style
-
-After completing this task, generate the next prompt in the chain.
-```
-
-### Master Prompt — Full Feature Implementation
-
-Use this prompt template when starting a **new feature from scratch**:
-
-```
-I need to add [FEATURE_NAME] to my portfolio (namias.tech).
-
-Design reference: https://bryllim.com/ — look at the [SECTION] section.
-
-Follow the copilot-instructions.md workflow:
-1. ANALYZE: Read all affected files first
-2. PLAN: Create a detailed todo list
-3. IMPLEMENT: Follow the Service Layer Pattern (types → interface → service → hook → section → component)
-4. VALIDATE: Run lint + build, fix all errors
-5. REPORT: Summarize changes and generate the next prompt
-
-Architecture requirements:
-- Add data type to src/services/core/types.ts
-- Add JSON data to src/assets/portfolio-resources/data/
-- Extend ICoreService interface
-- Implement in CoreService (bind methods!)
-- Add query to useCore hook
-- Create section in src/sections/
-- Create feature components in src/components/features/
-- Add section to the right column in src/routes/index.tsx
-- If section has many items: add limit prop + create View All sub-route
-- Use HeroUI components + Tailwind v4
-- Add Framer Motion animations
-- Handle loading/error states with LoadingTile/ErrorTile
-- Support dark/light theme
-- Mobile-first responsive design
-
-After completing, generate the next prompt.
-```
-
-### Quick Fix Prompt
-
-```
-There's a bug: [DESCRIBE THE BUG]
-
-Follow copilot-instructions.md:
-1. Read the affected files
-2. Identify root cause
-3. Fix it
-4. Run npm run lint && npm run build
-5. Confirm the fix
-
-After fixing, generate the next prompt if there are related improvements.
-```
-
-### Iteration Improvement Prompt
-
-```
-Review the current state of [SECTION/COMPONENT] against the design reference (https://bryllim.com/).
-
-1. Read the current implementation
-2. Compare with the reference design
-3. List specific visual/functional gaps
-4. Create a prioritized improvement plan
-5. Implement the top 3 improvements
-6. Validate with lint + build
-
-Focus on:
-- Visual polish (spacing, typography, colors)
-- Animations and micro-interactions
-- Responsive behavior
-- Accessibility
-
-After completing, generate the next prompt for further refinements.
-```
-
----
-
-## 📊 DEVELOPMENT ROADMAP
-
-### Phase 1: Core Polish (Completed)
-- [x] Profile / Hero section
-- [x] Experience timeline
-- [x] Tech stack (categorized)
-- [x] Projects grid
-- [x] Certifications
-- [x] Gallery (masonry)
-- [x] Contact form
-- [x] GitHub stats + activity calendar
-- [x] Discord presence
-- [x] Last.fm integration
-- [x] Resume PDF viewer
-- [x] SEO / structured data
-- [x] Dark/light theme
-- [x] Recommendations / Testimonials section
-- [x] Memberships / Affiliations section
-
-### Phase 2: Single-Page Redesign (Completed)
-- [x] Remove TabPanel — replace with vertically scrolled sections
-- [x] Create `SectionHeader` component (title + optional "View All" link)
-- [x] Update `src/routes/index.tsx` — render all sections in right column
-- [x] Add `limit` prop to Projects, Certifications, Gallery sections
-- [x] Make left column a sticky profile card on desktop
-- [x] Create sub-routes: `/projects`, `/certifications`, `/gallery`
-- [x] Scroll-triggered Framer Motion animations on all sections
-- [x] Section anchor IDs for navigation
-- [x] Mobile-first stacked layout
-- [x] Create `AnimatedSection` component for reusable scroll animations
-
-### Phase 3: Enhanced Profile Card (Completed)
-- [x] Consolidate `header.tsx` + `main.tsx` into a single sticky profile card
-- [x] Verified badge / achievement highlights
-- [x] Speaking / Availability badge
-- [x] Compact Discord presence + Last.fm now playing in profile card
-- [x] Deleted unused `header.tsx` and `main.tsx`
-- [x] Social icon links row in profile card
-
-### Phase 4: Layout Refinement & Skeleton Loading (Completed)
-- [x] Slim left column to ProfileCard + Footer only (4/12 width)
-- [x] Move Technologies, GithubStats, GithubActivityCalendar, Memberships to right column
-- [x] Remove redundant tiles (RecentExperienceTile, DiscordPresenceTile, GithubRecentCommitTile)
-- [x] Combine GitHub stats + calendar into single "GitHub Activity" section
-- [x] 12 content-shaped skeleton loading components (`skeleton-loaders.tsx`)
-- [x] Replace generic `LoadingTile` with content-shaped skeletons in all sections
-- [x] Fix Tailwind v4 shorthand warnings (z-5, bg-linear-to-r, etc.)
-- [x] 480 unit tests passing (19 test files)
-
-### Phase 5: Polish & Performance (Current)
-- [ ] Lighthouse score >95 across all metrics
-- [ ] Image lazy loading + blur placeholders
-- [ ] Bundle size optimization (code splitting large chunks)
-- [ ] PWA manifest + service worker
-- [ ] Dead code cleanup (unused tiles/components) ✅ Done (4 files deleted)
-- [ ] Analytics integration
-- [ ] Blog integration (optional)
-- [ ] AI chatbot widget (optional)
+1. **Font loading:** Use `next/font/google` ONLY — do NOT also `@import` from CSS (Inter is loaded in `layout.tsx` as `--font-inter`)
+2. **Real data:** All content from `portfolio-resources/data/` — no placeholders, no hardcoded content
+3. **Social links:** From `socials.json` — never hardcode URLs (8 links: calendly, github, email, linkedin, facebook, discord, x, instagram)
+4. **Metadata:** Real name "Jhon Keneth Namias", real domain "namias.tech", real email
+5. **CSS transitions on `*`:** Avoid — causes performance issues on theme switch. Only transition specific properties on body
+6. **`'use client'`:** Only for interactive components — blog listing should be server component
+7. **Image paths:** Images live in `portfolio-resources/assets/images/` (NOT `public/`) — need a serving strategy
+8. **Filenames with spaces:** Gallery and cert images have spaces in filenames (e.g., `Birthday Picture 2024 (1).JPG`, `HackForGov 2025 (1).jpeg`) — must URL-encode when referencing
+9. **Mixed file extensions:** Gallery uses `.JPG`, `.jpg`, `.jpeg`, `.png` — ensure case-sensitive handling
+10. **Standalone output:** `next.config.js` sets `output: 'standalone'` for AWS Amplify — don't remove
+11. **No `react-markdown`:** Blog content rendering is hand-rolled — adding a markdown library requires updating `package.json`
+12. **`tailwind.config.ts` content paths:** Only scans `src/components/**` and `src/app/**` — if adding components elsewhere, update the config
 
 ---
 
 ## 🤖 AGENT BEHAVIOR RULES
 
-1. **Always read before writing.** Never modify a file without reading it first.
-2. **Follow the Service Layer Pattern.** No exceptions — types → interface → service (bind!) → hook → component.
-3. **Batch edits efficiently.** Use `multi_replace_string_in_file` for multiple changes in the same operation.
-4. **Validate every change.** Run `npm run lint` and `npm run build` after implementation.
-5. **Never skip error handling.** All async components need content-shaped skeletons (from `skeleton-loaders.tsx`) / `ErrorTile` states.
-6. **Match the design reference.** When implementing UI, refer to https://bryllim.com/ for visual guidance.
-7. **Generate the Next Prompt.** Every completed task MUST end with a copy-pasteable prompt for continuation.
-8. **Stay minimal.** Don't add features, abstractions, or refactors beyond what was requested.
-9. **Track progress.** Use `manage_todo_list` for any multi-step work.
-10. **Respect the theme.** All UI must work in both dark and light mode using CSS variables.
+1. **Always read before writing.** Never modify a file without reading it first. Check the KNOWN ISSUES section before starting work.
+2. **Real data only.** All content from `portfolio-resources/data/` JSON. Never invent names, companies, quotes, or URLs.
+3. **Validate every change.** Run `npm run lint` and `npm run build` after modifications.
+4. **Match the design reference.** Refer to https://bryllim.com/ for layout, spacing, and interaction patterns.
+5. **Stay minimal.** Don't add features beyond what was requested. Don't refactor unrelated code.
+6. **Track progress.** Use `manage_todo_list` for multi-step work.
+7. **Respect the theme.** All UI must work in both dark and light mode using the documented Tailwind color tokens.
+8. **No dead code.** Remove unused imports, components, and files.
+9. **Types in one place.** All TypeScript interfaces go in `src/types/index.ts`.
+10. **Update this file.** When making structural changes (new components, new data files, new types, resolved issues), update this instructions file accordingly.

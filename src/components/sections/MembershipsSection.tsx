@@ -20,7 +20,7 @@ export function MembershipsSection() {
       <div className="space-y-2.5">
         {memberships.map((membership, index) => (
           <motion.a
-            key={membership.id}
+            key={membership.name}
             href={membership.url}
             target="_blank"
             rel="noopener noreferrer"

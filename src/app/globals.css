@@ -2,8 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
-
 :root {
   --background: #ffffff;
   --surface: #ffffff;
@@ -60,20 +58,7 @@ body {
   color: inherit;
 }
 
-/* Smooth transitions for theme switching */
-*,
-*::before,
-*::after {
-  transition-property: background-color, border-color, color, fill, stroke;
-  transition-duration: 0.2s;
-  transition-timing-function: ease;
-}
 
-/* Override transition for elements that shouldn't animate */
-.no-transition,
-.no-transition * {
-  transition: none !important;
-}
 
 @layer utilities {
   .text-balance {

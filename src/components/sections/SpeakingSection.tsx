@@ -2,7 +2,8 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { ChevronRight, Mic } from 'lucide-react';
+import { ChevronRight } from 'lucide-react';
+import { profile } from '@/data/profile';
 
 export function SpeakingSection() {
   return (
@@ -20,7 +21,7 @@ export function SpeakingSection() {
         Available for speaking at events about software development and emerging technologies.
       </p>
       <a
-        href="mailto:hello@janedoe.dev"
+        href={`mailto:${profile.email}`}
         className="inline-flex items-center gap-1 mt-2.5 text-sm text-accent-pink hover:text-pink-600 dark:hover:text-pink-400 transition-colors duration-200 font-medium"
       >
         Get in touch

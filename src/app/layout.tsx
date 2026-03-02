@@ -10,22 +10,22 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: 'Jane Doe — Software Engineer \\ Cloud Engineer',
+  title: 'Jhon Keneth Namias — Full Stack Developer',
   description:
-    'Portfolio of Jane Doe — Software Engineer and Cloud Engineer based in San Francisco.',
-  metadataBase: new URL('https://janedoe.dev'),
+    'Portfolio of Jhon Keneth Namias — Full Stack Developer based in Caloocan City, Philippines. Specialized in React, TypeScript, and Node.js.',
+  metadataBase: new URL('https://namias.tech'),
   openGraph: {
-    title: 'Jane Doe — Software Engineer \\ Cloud Engineer',
+    title: 'Jhon Keneth Namias — Full Stack Developer',
     description:
-      'Portfolio of Jane Doe — Software Engineer and Cloud Engineer based in San Francisco.',
+      'Portfolio of Jhon Keneth Namias — Full Stack Developer based in Caloocan City, Philippines.',
     type: 'website',
     locale: 'en_US',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Jane Doe — Software Engineer \\ Cloud Engineer',
+    title: 'Jhon Keneth Namias — Full Stack Developer',
     description:
-      'Portfolio of Jane Doe — Software Engineer and Cloud Engineer based in San Francisco.',
+      'Portfolio of Jhon Keneth Namias — Full Stack Developer based in Caloocan City, Philippines.',
   },
   icons: {
     icon: '/favicon.ico',

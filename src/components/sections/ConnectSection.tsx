@@ -3,16 +3,25 @@
 import React from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { Mail, Calendar, FileText, ChevronRight, Clock, ExternalLink, Linkedin, Github, Instagram } from 'lucide-react';
+import {
+  Mail, Calendar, FileText, ChevronRight, Clock, ExternalLink,
+  Github, Instagram, Linkedin, Facebook, Twitter, MessageSquare,
+} from 'lucide-react';
 import { profile } from '@/data/profile';
+import { socialLinks } from '@/data/socials';
 import { blogPosts } from '@/data/blogPosts';
 import { Card } from '@/components/ui/Card';
 
-const socialLinks = [
-  { platform: 'LinkedIn', url: 'https://linkedin.com', icon: Linkedin },
-  { platform: 'GitHub', url: 'https://github.com', icon: Github },
-  { platform: 'Instagram', url: 'https://instagram.com', icon: Instagram },
-];
+const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
+  calendar: Calendar,
+  github: Github,
+  mail: Mail,
+  linkedin: Linkedin,
+  facebook: Facebook,
+  'message-square': MessageSquare,
+  twitter: Twitter,
+  instagram: Instagram,
+};
 
 export function ConnectSection() {
   const latestPost = blogPosts[0];
@@ -27,29 +36,29 @@ export function ConnectSection() {
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {/* Card 1: Connect */}
         <Card>
-          {/* Social Links — horizontal */}
+          {/* Social Links */}
           <h3 className="text-sm font-semibold text-text-primary-light dark:text-text-primary-dark mb-2.5">
             Social Links
           </h3>
-          <div className="flex flex-wrap items-center gap-3 mb-4">
+          <div className="flex flex-wrap items-center gap-2 mb-4">
             {socialLinks.map((link) => {
-              const Icon = link.icon;
+              const Icon = iconMap[link.icon] || ExternalLink;
               return (
                 <a
-                  key={link.platform}
-                  href={link.url}
+                  key={link.name}
+                  href={link.link}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-full border border-border-light dark:border-border-dark text-text-secondary-light dark:text-text-secondary-dark hover:text-accent-pink hover:border-accent-pink dark:hover:text-accent-pink dark:hover:border-accent-pink transition-colors duration-200 group"
                 >
                   <Icon className="h-3.5 w-3.5" />
-                  <span>{link.platform}</span>
+                  <span>{link.label}</span>
                 </a>
               );
             })}
           </div>
 
-          {/* Get in Touch — horizontal */}
+          {/* Get in Touch */}
           <h3 className="text-sm font-semibold text-text-primary-light dark:text-text-primary-dark mb-2.5">
             Get in Touch
           </h3>
@@ -61,15 +70,17 @@ export function ConnectSection() {
               <Mail className="h-3.5 w-3.5" />
               <span>{profile.email}</span>
             </a>
-            <a
-              href={profile.scheduleCallUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-full border border-border-light dark:border-border-dark text-text-secondary-light dark:text-text-secondary-dark hover:text-accent-pink hover:border-accent-pink dark:hover:text-accent-pink dark:hover:border-accent-pink transition-colors duration-200"
-            >
-              <Calendar className="h-3.5 w-3.5" />
-              <span>Schedule a Call</span>
-            </a>
+            {socialLinks.find((s) => s.name === 'calendly') && (
+              <a
+                href={socialLinks.find((s) => s.name === 'calendly')!.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-full border border-border-light dark:border-border-dark text-text-secondary-light dark:text-text-secondary-dark hover:text-accent-pink hover:border-accent-pink dark:hover:text-accent-pink dark:hover:border-accent-pink transition-colors duration-200"
+              >
+                <Calendar className="h-3.5 w-3.5" />
+                <span>Schedule a Call</span>
+              </a>
+            )}
             <Link
               href="/blog"
               className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-full border border-border-light dark:border-border-dark text-text-secondary-light dark:text-text-secondary-dark hover:text-accent-pink hover:border-accent-pink dark:hover:text-accent-pink dark:hover:border-accent-pink transition-colors duration-200"
@@ -79,18 +90,18 @@ export function ConnectSection() {
             </Link>
           </div>
 
-          {/* Quick Links — action buttons */}
+          {/* Quick Links */}
           <h3 className="text-sm font-semibold text-text-primary-light dark:text-text-primary-dark mb-2.5">
             Quick Links
           </h3>
           <div className="flex flex-wrap items-center gap-2.5">
             <a
-              href={profile.resumeUrl}
+              href={profile.github}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold rounded-lg bg-accent-pink text-white hover:bg-accent-pink-hover transition-colors duration-200"
             >
-              View Resume
+              View GitHub
               <ExternalLink className="h-3 w-3" />
             </a>
             <a

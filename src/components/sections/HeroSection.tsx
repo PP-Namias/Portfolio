@@ -29,21 +29,8 @@ export function HeroSection() {
       <div className="flex flex-col sm:flex-row items-start gap-5">
         {/* Profile Photo */}
         <div className="flex-shrink-0">
-          <div className="h-[150px] w-[150px] rounded-2xl bg-gradient-to-br from-accent-pink/20 to-accent-pink/5 dark:from-accent-pink/10 dark:to-accent-pink/5 border border-border-light dark:border-border-dark overflow-hidden">
-            <img
-              src={profile.profilePhoto || '/placeholder-profile.jpg'}
-              alt={profile.name}
-              className="h-full w-full object-cover"
-              loading="eager"
-              onError={(e) => {
-                const target = e.currentTarget;
-                target.style.display = 'none';
-                const parent = target.parentElement;
-                if (parent) {
-                  parent.innerHTML = `<div class="h-full w-full flex items-center justify-center text-4xl text-accent-pink font-bold bg-gradient-to-br from-accent-pink/20 to-accent-pink/5 dark:from-accent-pink/10 dark:to-accent-pink/5">${initials}</div>`;
-                }
-              }}
-            />
+          <div className="h-[150px] w-[150px] rounded-2xl bg-gradient-to-br from-accent-pink/20 to-accent-pink/5 dark:from-accent-pink/10 dark:to-accent-pink/5 border border-border-light dark:border-border-dark overflow-hidden flex items-center justify-center">
+            <span className="text-4xl text-accent-pink font-bold">{initials}</span>
           </div>
         </div>
 
@@ -63,15 +50,15 @@ export function HeroSection() {
             </span>
           </div>
 
-          {/* Tagline / Roles */}
+          {/* Title */}
           <p className="mt-2 text-base font-medium text-text-primary-light dark:text-text-primary-dark">
-            {profile.roles.join(' \\ ')}
+            {profile.title}
           </p>
 
           {/* CTA Buttons */}
           <div className="flex flex-wrap items-center gap-2.5 mt-4">
-            <Button variant="primary" size="md" href={profile.resumeUrl}>
-              View Resume
+            <Button variant="primary" size="md" href={profile.github}>
+              View GitHub
               <ExternalLink className="h-3.5 w-3.5" />
             </Button>
             <Button variant="ghost" size="md" href={`mailto:${profile.email}`}>
