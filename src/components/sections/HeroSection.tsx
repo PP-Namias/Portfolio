@@ -55,19 +55,19 @@ export function HeroSection() {
 
       <div className="flex flex-col items-center text-center sm:text-left sm:flex-row sm:items-start gap-6">
         {/* Profile Photo with animated gradient ring */}
-        <div className="flex-shrink-0">
-          <div className="relative h-[120px] w-[120px]">
+        <div className="flex-shrink-0 self-center sm:self-start">
+          <div className="relative h-[120px] w-[120px] rounded-full">
             {/* Animated gradient ring */}
-            <div className="absolute inset-0 rounded-full bg-gradient-to-r from-accent-pink via-accent-pink-hover-dark to-accent-pink animate-spin-slow" style={{ padding: '3px' }}>
-              <div className="h-full w-full rounded-full bg-white dark:bg-background-dark" />
-            </div>
+            <div className="absolute inset-0 rounded-full bg-gradient-to-r from-accent-pink via-accent-pink-hover-dark to-accent-pink animate-spin-slow" />
+            {/* Background fill to mask the ring under the photo */}
+            <div className="absolute inset-[3px] rounded-full bg-white dark:bg-background-dark z-[1]" />
             {/* Photo */}
             <Image
               src="/images/profile/PP%20Namias.png"
               alt={profile.name}
-              width={120}
-              height={120}
-              className="absolute inset-[3px] rounded-full object-cover z-10"
+              width={114}
+              height={114}
+              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[114px] w-[114px] rounded-full object-cover z-[2]"
               priority
             />
           </div>
