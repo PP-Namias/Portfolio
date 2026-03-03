@@ -4,7 +4,7 @@ import { TechStackSection } from '@/components/sections/TechStackSection';
 import { ProjectsSection } from '@/components/sections/ProjectsSection';
 import { CertificationsSection } from '@/components/sections/CertificationsSection';
 import { ExperienceTimeline } from '@/components/sections/ExperienceTimeline';
-// import { RecommendationsCarousel } from '@/components/sections/RecommendationsCarousel';
+import { RecommendationsCarousel } from '@/components/sections/RecommendationsCarousel';
 import { MembershipsSection } from '@/components/sections/MembershipsSection';
 import { SpeakingSection } from '@/components/sections/SpeakingSection';
 import { ConnectSection } from '@/components/sections/ConnectSection';
@@ -50,10 +50,15 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Certifications — full width */}
-      <Card className="mt-4">
-        <CertificationsSection />
-      </Card>
+      {/* Certs and Recommendations side by side — full width */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+        <Card>
+          <CertificationsSection />
+        </Card>
+        <Card>
+          <RecommendationsCarousel />
+        </Card>
+      </div>
 
       {/* Social Links + Contact card | Latest Blog card — side by side */}
       <div className="mt-4">
