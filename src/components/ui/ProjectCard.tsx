@@ -49,7 +49,7 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
           {project.description}
         </p>
         <div className="flex flex-wrap gap-1 mt-2">
-          {project.tags.slice(0, 3).map((tag) => (
+          {project.tags.slice(0, 2).map((tag) => (
             <span
               key={tag}
               className="text-[9px] font-medium px-1.5 py-0.5 rounded-full bg-accent-pink/10 text-accent-pink"
@@ -57,6 +57,11 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
               {tag}
             </span>
           ))}
+          {project.tags.length > 2 && (
+            <span className="text-[9px] font-medium px-1.5 py-0.5 rounded-full bg-accent-pink/10 text-accent-pink">
+              +{project.tags.length - 2}
+            </span>
+          )}
         </div>
         {projectUrl && (
           <div className="flex items-center gap-2 mt-2.5">
