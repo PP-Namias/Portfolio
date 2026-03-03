@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { Providers } from './providers';
 import { FloatingHub } from '@/components/ui/FloatingHub';
+import { ScrollToTop } from '@/components/ui/ScrollToTop';
 import './globals.css';
 
 const inter = Inter({
@@ -98,6 +99,7 @@ export default function RootLayout({
         <Providers>
           {children}
           <FloatingHub />
+          <ScrollToTop />
         </Providers>
       </body>
     </html>
