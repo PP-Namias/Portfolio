@@ -210,8 +210,8 @@ refactor: convert experience page to modal
 │   │   ├── page.tsx                  # Home page (main portfolio, server component, all sections)
 │   │   ├── providers.tsx             # ThemeProvider > AccentColorProvider > ModalProvider > ReactLenis
 │   │   ├── sitemap.ts                # Dynamic sitemap.xml generation (Next.js built-in)
-│   │   ├── not-found.tsx             # Branded 404 page (pink gradient "404")
-│   │   ├── error.tsx                 # Branded error boundary ('use client', reset button)
+│   │   ├── not-found.tsx             # Animated 404 page (glitch effect, floating particles, suggestion cards, Framer Motion)
+│   │   ├── error.tsx                 # Animated error boundary (AlertTriangle icon, glow effect, Try Again + Go Home buttons)
 │   │   ├── api/
 │   │   │   └── chat/
 │   │   │       └── route.ts          # POST /api/chat — Gemini AI chatbot (rate-limited, sanitized)
@@ -680,7 +680,7 @@ Prioritized improvements organized by effort and impact. Reference this when the
 - [x] Sticky navigation bar with section anchoring, active highlights, mobile hamburger
 - [x] Hero redesign: animated gradient ring on photo, role text rotation, availability badge, social icons row
 - [x] Multi-column footer with Quick Links, Connect socials, Contact info, Back to Top
-- [x] Branded 404 page and error boundary
+- [x] Branded 404 page and error boundary (upgraded: glitch text, floating particles, suggestion cards, animated error page)
 - [x] Blog reading progress bar (framer-motion useScroll)
 - [x] Project tag filtering (similar to certifications)
 - [x] About section animated stat counters (years, projects, technologies) with icons
