@@ -53,10 +53,10 @@ export function HeroSection() {
         <ThemeToggle />
       </div>
 
-      <div className="flex flex-col sm:flex-row items-start gap-5">
+      <div className="flex flex-col items-center text-center sm:text-left sm:flex-row sm:items-start gap-6">
         {/* Profile Photo with animated gradient ring */}
         <div className="flex-shrink-0">
-          <div className="relative h-[130px] w-[130px]">
+          <div className="relative h-[120px] w-[120px]">
             {/* Animated gradient ring */}
             <div className="absolute inset-0 rounded-full bg-gradient-to-r from-accent-pink via-accent-pink-hover-dark to-accent-pink animate-spin-slow" style={{ padding: '3px' }}>
               <div className="h-full w-full rounded-full bg-white dark:bg-background-dark" />
@@ -65,8 +65,8 @@ export function HeroSection() {
             <Image
               src="/images/profile/PP%20Namias.png"
               alt={profile.name}
-              width={130}
-              height={130}
+              width={120}
+              height={120}
               className="absolute inset-[3px] rounded-full object-cover z-10"
               priority
             />
@@ -74,19 +74,19 @@ export function HeroSection() {
         </div>
 
         {/* Profile Info */}
-        <div className="flex-1 min-w-0 pt-1">
+        <div className="flex-1 min-w-0">
           {/* Name */}
-          <h1 className="text-2xl font-bold text-text-primary-light dark:text-text-primary-dark flex items-center flex-wrap">
+          <h1 className="text-[1.65rem] font-bold text-text-primary-light dark:text-text-primary-dark inline-flex items-center flex-wrap justify-center sm:justify-start leading-tight">
             {profile.name}
             <VerifiedBadge />
           </h1>
 
           {/* Animated role text */}
-          <div className="h-6 mt-1 overflow-hidden">
+          <div className="h-6 mt-1.5 overflow-hidden">
             <AnimatePresence mode="wait">
               <motion.p
                 key={roleIndex}
-                className="text-base font-medium text-accent-pink"
+                className="text-[15px] font-medium text-accent-pink"
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
@@ -98,10 +98,10 @@ export function HeroSection() {
           </div>
 
           {/* Location + Availability */}
-          <div className="flex items-center gap-3 mt-1.5">
+          <div className="flex items-center justify-center sm:justify-start gap-3 mt-2">
             <div className="flex items-center gap-1.5">
               <MapPin className="h-3.5 w-3.5 text-text-muted-light dark:text-text-muted-dark" />
-              <span className="text-sm text-text-muted-light dark:text-text-muted-dark">
+              <span className="text-[13px] text-text-muted-light dark:text-text-muted-dark">
                 {profile.location}
               </span>
             </div>
@@ -111,8 +111,8 @@ export function HeroSection() {
             </span>
           </div>
 
-          {/* CTA Buttons */}
-          <div className="flex flex-wrap items-center gap-2.5 mt-4">
+          {/* Primary CTA */}
+          <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2.5 mt-5">
             <Button variant="primary" size="md" href={profile.github}>
               View GitHub
               <ExternalLink className="h-3.5 w-3.5" />
@@ -129,30 +129,40 @@ export function HeroSection() {
               <Mail className="h-4 w-4" />
               Send Email
             </Button>
-            <Button variant="ghost" size="md" href="/blog" internal>
-              Read my blog
-              <ChevronRight className="h-4 w-4 -ml-1" />
-            </Button>
           </div>
 
-          {/* Social icons row */}
-          <div className="flex items-center gap-2 mt-3">
-            {displayedSocials.map((link) => {
-              const Icon = socialIconMap[link.name];
-              if (!Icon) return null;
-              return (
-                <a
-                  key={link.name}
-                  href={link.link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="h-8 w-8 rounded-full border border-border-light dark:border-border-dark flex items-center justify-center text-text-muted-light dark:text-text-muted-dark hover:border-accent-pink hover:text-accent-pink transition-colors"
-                  aria-label={link.label}
-                >
-                  <Icon className="h-4 w-4" />
-                </a>
-              );
-            })}
+          {/* Divider */}
+          <div className="my-4 border-t border-border-light dark:border-border-dark" />
+
+          {/* Bottom row: blog link + social icons */}
+          <div className="flex items-center justify-center sm:justify-between gap-4">
+            <a
+              href="/blog"
+              className="inline-flex items-center gap-1 text-[13px] font-medium text-text-secondary-light dark:text-text-secondary-dark hover:text-accent-pink dark:hover:text-accent-pink transition-colors"
+            >
+              Read my blog
+              <ChevronRight className="h-3.5 w-3.5" />
+            </a>
+
+            {/* Social icons */}
+            <div className="flex items-center gap-1.5">
+              {displayedSocials.map((link) => {
+                const Icon = socialIconMap[link.name];
+                if (!Icon) return null;
+                return (
+                  <a
+                    key={link.name}
+                    href={link.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="h-8 w-8 rounded-lg border border-border-light dark:border-border-dark flex items-center justify-center text-text-muted-light dark:text-text-muted-dark hover:border-accent-pink hover:text-accent-pink transition-colors"
+                    aria-label={link.label}
+                  >
+                    <Icon className="h-3.5 w-3.5" />
+                  </a>
+                );
+              })}
+            </div>
           </div>
         </div>
       </div>
