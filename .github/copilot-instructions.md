@@ -228,7 +228,7 @@ refactor: convert experience page to modal
 │   │   ├── sections/                 # 11 section components (all 'use client')
 │   │   │   ├── HeroSection.tsx       # Animated photo ring, role text rotation, availability badge, social icons, CTA buttons, ColorSchemePicker + ThemeToggle
 │   │   │   ├── AboutSection.tsx      # Summary, education, animated stat counters (years, projects, technologies)
-│   │   │   ├── TechStackSection.tsx  # Tech stack grouped by category with proficiency
+│   │   │   ├── TechStackSection.tsx  # Tech stack with category filter tabs, animated proficiency bars, skill levels, logo grid
 │   │   │   ├── ProjectsSection.tsx   # Project cards grid with tag filtering (all 7, with toggle)
 │   │   │   ├── CertificationsSection.tsx  # Scrollable cert list with images + lightbox
 │   │   │   ├── ExperienceTimeline.tsx     # Timeline with expandable details + "View Full Experience" modal trigger
