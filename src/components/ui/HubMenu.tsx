@@ -91,10 +91,11 @@ export function HubMenu({ onClose, onOpenChat }: HubMenuProps) {
       {/* Menu Items */}
       <div
         ref={menuRef}
-        className="py-2 overflow-y-auto"
+        className="py-2 overflow-y-auto chat-scrollbar"
         role="menu"
         aria-label="Quick actions menu"
         onKeyDown={handleKeyDown}
+        data-lenis-prevent
       >
         <HubMenuItem
           icon={Bot}

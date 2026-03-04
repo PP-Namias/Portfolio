@@ -45,6 +45,12 @@ html.lenis, html.lenis body {
   overscroll-behavior: contain;
 }
 
+/* Ensure nested scrollable containers work inside floating panels */
+[data-lenis-prevent] {
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
 .lenis.lenis-stopped {
   overflow: hidden;
 }
@@ -65,6 +71,29 @@ body {
 .scrollbar-hide {
   -ms-overflow-style: none;
   scrollbar-width: none;
+}
+
+/* Chat panel thin scrollbar */
+.chat-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+
+.chat-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.chat-scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgb(var(--accent) / 0.2);
+  border-radius: 4px;
+}
+
+.chat-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: rgb(var(--accent) / 0.4);
+}
+
+.chat-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgb(var(--accent) / 0.2) transparent;
 }
 
 /* Custom selection color */

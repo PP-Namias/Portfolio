@@ -86,15 +86,15 @@ describe('ChatPanel', () => {
   it('renders suggested questions when chat is empty', () => {
     renderChatPanel();
     expect(screen.getByText('What are your top skills?')).toBeInTheDocument();
-    expect(screen.getByText('Tell me about your AI automation work')).toBeInTheDocument();
-    expect(screen.getByText('What projects have you shipped?')).toBeInTheDocument();
-    expect(screen.getByText("I'd like to schedule a meeting")).toBeInTheDocument();
+    expect(screen.getByText('Tell me about your experience')).toBeInTheDocument();
+    expect(screen.getByText('What projects have you built?')).toBeInTheDocument();
+    expect(screen.getByText('How can I schedule a meeting?')).toBeInTheDocument();
   });
 
   it('sends a message and calls fetch', async () => {
     renderChatPanel();
 
-    const input = screen.getByPlaceholderText('Type a message...');
+    const input = screen.getByPlaceholderText('Ask about skills, projects, experience...');
     await userEvent.type(input, 'Hello');
     fireEvent.click(screen.getByLabelText('Send message'));
 
@@ -122,7 +122,7 @@ describe('ChatPanel', () => {
     mockFetch.mockRejectedValueOnce(new Error('Network error'));
 
     renderChatPanel();
-    const input = screen.getByPlaceholderText('Type a message...');
+    const input = screen.getByPlaceholderText('Ask about skills, projects, experience...');
     await userEvent.type(input, 'Hello');
     fireEvent.click(screen.getByLabelText('Send message'));
 
@@ -140,7 +140,7 @@ describe('ChatPanel', () => {
     });
 
     renderChatPanel();
-    const input = screen.getByPlaceholderText('Type a message...');
+    const input = screen.getByPlaceholderText('Ask about skills, projects, experience...');
     await userEvent.type(input, 'Hello');
     fireEvent.click(screen.getByLabelText('Send message'));
 

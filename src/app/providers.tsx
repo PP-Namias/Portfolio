@@ -18,9 +18,11 @@ export function Providers({ children }: ProvidersProps) {
           <ReactLenis
             root
             options={{
-              lerp: 0.1,
+              lerp: 0.12,
               duration: 1.2,
               smoothWheel: true,
+              touchMultiplier: 1.5,
+              wheelMultiplier: 1,
             }}
           >
             {children}
