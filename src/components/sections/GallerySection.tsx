@@ -1,113 +1,107 @@
 'use client';
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronLeft, ChevronRight, X } from 'lucide-react';
+import { ChevronLeft, ChevronRight, X, ImageIcon, ChevronDown, ChevronUp } from 'lucide-react';
 import { galleryImages } from '@/data/gallery';
 
-const IMAGES_PER_SLIDE = 5;
+const INITIAL_COUNT = 8;
 const FILTER_TAGS = ['All', ...Array.from(new Set(galleryImages.flatMap((img) => img.tags.filter((t) => !/^\d{4}$/.test(t))).sort()))];
+
+// Assigns masonry span classes based on position for visual variety
+function getSpanClass(index: number, total: number): string {
+  if (total <= 4) return '';
+  // First image and every 7th get a large span (2x2)
+  if (index === 0 || (index > 0 && index % 7 === 0)) return 'col-span-2 row-span-2';
+  // Every 5th gets a wide span
+  if (index % 5 === 3) return 'col-span-2';
+  return '';
+}
 
 export function GallerySection() {
   const [activeTag, setActiveTag] = useState('All');
+  const [expanded, setExpanded] = useState(false);
+  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+
   const filtered = useMemo(
     () => activeTag === 'All' ? galleryImages : galleryImages.filter((img) => img.tags.includes(activeTag)),
     [activeTag]
   );
-  const totalSlides = Math.ceil(filtered.length / IMAGES_PER_SLIDE);
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const [direction, setDirection] = useState(1);
-  const [selectedImage, setSelectedImage] = useState<{ media: string; title: string; createdAt?: string } | null>(null);
 
-  // Reset slide when filter changes
+  const visibleImages = expanded ? filtered : filtered.slice(0, INITIAL_COUNT);
+  const hasMore = filtered.length > INITIAL_COUNT;
+
+  // Reset expansion when filter changes
   useEffect(() => {
-    setCurrentSlide(0);
+    setExpanded(false);
   }, [activeTag]);
 
+  // Lightbox navigation
+  const goToNext = useCallback(() => {
+    if (selectedIndex === null) return;
+    setSelectedIndex((prev) => (prev !== null && prev < filtered.length - 1) ? prev + 1 : 0);
+  }, [selectedIndex, filtered.length]);
+
+  const goToPrev = useCallback(() => {
+    if (selectedIndex === null) return;
+    setSelectedIndex((prev) => (prev !== null && prev > 0) ? prev - 1 : filtered.length - 1);
+  }, [selectedIndex, filtered.length]);
+
+  // Keyboard navigation for lightbox
   useEffect(() => {
-    const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setSelectedImage(null);
+    if (selectedIndex === null) return;
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setSelectedIndex(null);
+      if (e.key === 'ArrowRight') goToNext();
+      if (e.key === 'ArrowLeft') goToPrev();
     };
-    if (selectedImage) document.addEventListener('keydown', handleEscape);
-    return () => document.removeEventListener('keydown', handleEscape);
-  }, [selectedImage]);
+    document.addEventListener('keydown', handleKey);
+    return () => document.removeEventListener('keydown', handleKey);
+  }, [selectedIndex, goToNext, goToPrev]);
 
-  const goNext = () => {
-    if (currentSlide < totalSlides - 1) {
-      setDirection(1);
-      setCurrentSlide((prev) => prev + 1);
+  // Lock body scroll when lightbox is open
+  useEffect(() => {
+    if (selectedIndex !== null) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
     }
-  };
+    return () => { document.body.style.overflow = ''; };
+  }, [selectedIndex]);
 
-  const goPrev = () => {
-    if (currentSlide > 0) {
-      setDirection(-1);
-      setCurrentSlide((prev) => prev - 1);
-    }
-  };
-
-  const currentImages = filtered.slice(
-    currentSlide * IMAGES_PER_SLIDE,
-    (currentSlide + 1) * IMAGES_PER_SLIDE
-  );
-
-  const variants = {
-    enter: (dir: number) => ({ opacity: 0, x: dir > 0 ? 60 : -60 }),
-    center: { opacity: 1, x: 0 },
-    exit: (dir: number) => ({ opacity: 0, x: dir > 0 ? -60 : 60 }),
-  };
+  const selectedImage = selectedIndex !== null ? filtered[selectedIndex] : null;
 
   return (
     <motion.section
-      className=""
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-50px' }}
       transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
     >
-      <div className="flex items-center justify-between mb-2">
-        <h2 className="text-lg font-semibold text-text-primary-light dark:text-text-primary-dark">
-          Gallery{' '}
-          <span className="text-xs font-normal text-text-muted-light dark:text-text-muted-dark">
-            ({galleryImages.length})
+      {/* Header */}
+      <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center gap-2">
+          <ImageIcon className="h-4 w-4 text-accent-pink" />
+          <h2 className="text-lg font-semibold text-text-primary-light dark:text-text-primary-dark">
+            Gallery
+          </h2>
+          <span className="text-[11px] font-medium px-1.5 py-0.5 rounded-md bg-accent-pink/10 text-accent-pink">
+            {filtered.length}
           </span>
-        </h2>
-        {totalSlides > 1 && (
-          <div className="flex items-center gap-1.5">
-            <button
-              onClick={goPrev}
-              disabled={currentSlide === 0}
-              className="rounded-lg p-1.5 transition-colors duration-200 hover:bg-surface-light dark:hover:bg-surface-dark text-text-muted-light dark:text-text-muted-dark disabled:opacity-30 disabled:cursor-not-allowed"
-              aria-label="Previous gallery slide"
-            >
-              <ChevronLeft className="h-4 w-4" />
-            </button>
-            <span className="text-[10px] text-text-muted-light dark:text-text-muted-dark">
-              {currentSlide + 1} / {totalSlides}
-            </span>
-            <button
-              onClick={goNext}
-              disabled={currentSlide === totalSlides - 1}
-              className="rounded-lg p-1.5 transition-colors duration-200 hover:bg-surface-light dark:hover:bg-surface-dark text-text-muted-light dark:text-text-muted-dark disabled:opacity-30 disabled:cursor-not-allowed"
-              aria-label="Next gallery slide"
-            >
-              <ChevronRight className="h-4 w-4" />
-            </button>
-          </div>
-        )}
+        </div>
       </div>
 
       {/* Tag filter */}
-      <div className="flex flex-wrap gap-1.5 mb-3">
+      <div className="flex flex-wrap gap-1.5 mb-4">
         {FILTER_TAGS.map((tag) => (
           <button
             key={tag}
             onClick={() => setActiveTag(tag)}
-            className={`text-[10px] font-medium px-2 py-0.5 rounded-full transition-colors ${
+            className={`text-[11px] font-medium px-2.5 py-1 rounded-full transition-all duration-200 ${
               activeTag === tag
-                ? 'bg-accent-pink text-white'
-                : 'bg-accent-pink/10 text-accent-pink hover:bg-accent-pink/20'
+                ? 'bg-accent-pink text-white shadow-sm shadow-accent-pink/25'
+                : 'bg-surface-light dark:bg-surface-dark text-text-secondary-light dark:text-text-secondary-dark hover:bg-accent-pink/10 hover:text-accent-pink border border-border-light dark:border-border-dark'
             }`}
           >
             {tag}
@@ -115,88 +109,144 @@ export function GallerySection() {
         ))}
       </div>
 
-      <div className="relative overflow-hidden">
-        <AnimatePresence mode="wait" custom={direction}>
-          <motion.div
-            key={currentSlide}
-            custom={direction}
-            variants={variants}
-            initial="enter"
-            animate="center"
-            exit="exit"
-            transition={{ duration: 0.3, ease: 'easeInOut' }}
-            className="grid grid-cols-3 sm:grid-cols-5 gap-2"
-          >
-            {currentImages.map((image) => (
-              <button
+      {/* Masonry-style grid */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 auto-rows-[140px] sm:auto-rows-[160px]">
+        <AnimatePresence mode="popLayout">
+          {visibleImages.map((image, index) => {
+            const globalIndex = filtered.indexOf(image);
+            const spanClass = getSpanClass(index, visibleImages.length);
+            return (
+              <motion.button
                 key={image.media}
+                layout
                 type="button"
-                onClick={() => setSelectedImage({ media: image.media, title: image.title, createdAt: image.createdAt })}
-                className="aspect-square rounded-lg overflow-hidden border border-border-light dark:border-border-dark bg-surface-light dark:bg-card-bg-dark group relative cursor-pointer"
+                onClick={() => setSelectedIndex(globalIndex)}
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.9 }}
+                transition={{ duration: 0.3, delay: index * 0.04 }}
+                className={`relative rounded-xl overflow-hidden group cursor-pointer focus:outline-none focus:ring-2 focus:ring-accent-pink focus:ring-offset-2 dark:focus:ring-offset-background-dark ${spanClass}`}
               >
                 <Image
                   src={`/images/gallery/${image.media}`}
                   alt={image.title}
-                  width={200}
-                  height={200}
-                  sizes="(max-width: 640px) 33vw, 20vw"
-                  className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  fill
+                  sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, 25vw"
+                  className="object-cover group-hover:scale-110 transition-transform duration-500 ease-out"
                 />
-                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/50 transition-colors duration-300 flex flex-col justify-end p-1.5">
-                  <span className="text-[9px] text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 leading-tight line-clamp-2">
+                {/* Hover overlay with gradient */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/0 to-black/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-3">
+                  <span className="text-[12px] font-medium text-white leading-snug line-clamp-2 drop-shadow-sm">
                     {image.title}
                   </span>
+                  {image.createdAt && (
+                    <span className="text-[10px] text-white/70 mt-0.5">
+                      {new Date(image.createdAt).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
+                    </span>
+                  )}
                 </div>
-              </button>
-            ))}
-          </motion.div>
+              </motion.button>
+            );
+          })}
         </AnimatePresence>
       </div>
 
-      {/* Lightbox */}
+      {/* Expand / Collapse button */}
+      {hasMore && (
+        <motion.div
+          className="flex justify-center mt-4"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.3 }}
+        >
+          <button
+            onClick={() => setExpanded((prev) => !prev)}
+            className="inline-flex items-center gap-1.5 text-[12px] font-medium px-4 py-2 rounded-full border border-border-light dark:border-border-dark text-text-secondary-light dark:text-text-secondary-dark hover:border-accent-pink hover:text-accent-pink transition-colors duration-200"
+          >
+            {expanded ? (
+              <>Show Less <ChevronUp className="h-3.5 w-3.5" /></>
+            ) : (
+              <>View all {filtered.length} photos <ChevronDown className="h-3.5 w-3.5" /></>
+            )}
+          </button>
+        </motion.div>
+      )}
+
+      {/* Lightbox with prev/next navigation */}
       <AnimatePresence>
-        {selectedImage && (
+        {selectedImage && selectedIndex !== null && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4"
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm"
             role="dialog"
             aria-modal="true"
             aria-label={selectedImage.title}
-            onClick={() => setSelectedImage(null)}
+            onClick={() => setSelectedIndex(null)}
           >
+            {/* Close button */}
+            <button
+              onClick={() => setSelectedIndex(null)}
+              className="absolute top-4 right-4 z-10 p-2 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors"
+              aria-label="Close lightbox"
+            >
+              <X className="h-5 w-5" />
+            </button>
+
+            {/* Counter */}
+            <div className="absolute top-5 left-1/2 -translate-x-1/2 text-[12px] text-white/60 font-medium">
+              {selectedIndex + 1} / {filtered.length}
+            </div>
+
+            {/* Previous button */}
+            <button
+              onClick={(e) => { e.stopPropagation(); goToPrev(); }}
+              className="absolute left-2 sm:left-4 z-10 p-2 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors"
+              aria-label="Previous image"
+            >
+              <ChevronLeft className="h-5 w-5 sm:h-6 sm:w-6" />
+            </button>
+
+            {/* Next button */}
+            <button
+              onClick={(e) => { e.stopPropagation(); goToNext(); }}
+              className="absolute right-2 sm:right-4 z-10 p-2 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors"
+              aria-label="Next image"
+            >
+              <ChevronRight className="h-5 w-5 sm:h-6 sm:w-6" />
+            </button>
+
+            {/* Image + caption */}
             <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
+              key={selectedImage.media}
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
               transition={{ duration: 0.2 }}
-              className="relative max-w-3xl w-full"
+              className="relative max-w-4xl w-full px-12 sm:px-16"
               onClick={(e) => e.stopPropagation()}
             >
-              <button
-                onClick={() => setSelectedImage(null)}
-                className="absolute -top-10 right-0 text-white/80 hover:text-white transition-colors"
-                aria-label="Close lightbox"
-              >
-                <X className="h-6 w-6" />
-              </button>
               <Image
                 src={`/images/gallery/${selectedImage.media}`}
                 alt={selectedImage.title}
-                width={800}
-                height={600}
-                sizes="(max-width: 768px) 100vw, 800px"
+                width={1200}
+                height={800}
+                sizes="(max-width: 768px) 100vw, 900px"
                 className="w-full h-auto max-h-[80vh] object-contain rounded-lg"
+                priority
               />
-              <p className="text-center text-sm text-white/80 mt-3">
-                {selectedImage.title}
+              <div className="text-center mt-4">
+                <p className="text-sm font-medium text-white/90">
+                  {selectedImage.title}
+                </p>
                 {selectedImage.createdAt && (
-                  <span className="text-white/50 ml-2 text-xs">
-                    {new Date(selectedImage.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
-                  </span>
+                  <p className="text-xs text-white/50 mt-1">
+                    {new Date(selectedImage.createdAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+                  </p>
                 )}
-              </p>
+              </div>
             </motion.div>
           </motion.div>
         )}
