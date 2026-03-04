@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { ExternalLink, Users } from 'lucide-react';
+import { ExternalLink } from 'lucide-react';
 import { memberships } from '@/data/memberships';
 
 export function MembershipsSection() {
@@ -14,12 +14,9 @@ export function MembershipsSection() {
       viewport={{ once: true, margin: '-50px' }}
       transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
     >
-      <div className="flex items-center gap-2 mb-4">
-        <Users className="h-4 w-4 text-accent-pink" />
-        <h2 className="text-lg font-semibold text-text-primary-light dark:text-text-primary-dark">
-          A member of
-        </h2>
-      </div>
+      <h2 className="text-lg font-semibold text-text-primary-light dark:text-text-primary-dark mb-4">
+        A member of
+      </h2>
       <div className="space-y-2.5">
         {memberships.map((membership, index) => (
           <motion.a

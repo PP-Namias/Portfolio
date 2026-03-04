@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Award, X, ChevronDown, ChevronUp } from 'lucide-react';
+import { X, ChevronDown, ChevronUp } from 'lucide-react';
 import { certifications } from '@/data/certifications';
 
 const ISSUERS = ['All', ...Array.from(new Set(certifications.map((c) => c.issuer)))];
@@ -41,15 +41,12 @@ export function CertificationsSection() {
       viewport={{ once: true, margin: '-50px' }}
       transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
     >
-      <div className="flex items-center gap-2 mb-3">
-        <Award className="h-4 w-4 text-accent-pink" />
-        <h2 className="text-lg font-semibold text-text-primary-light dark:text-text-primary-dark">
-          Certifications
-        </h2>
-        <span className="text-[11px] font-medium px-1.5 py-0.5 rounded-md bg-accent-pink/10 text-accent-pink">
+      <h2 className="text-lg font-semibold text-text-primary-light dark:text-text-primary-dark mb-3">
+        Certifications
+        <span className="text-[11px] font-medium px-1.5 py-0.5 rounded-md bg-accent-pink/10 text-accent-pink ml-2 align-middle">
           {certifications.length}
         </span>
-      </div>
+      </h2>
 
       {/* Issuer filter tabs */}
       <div className="flex flex-wrap gap-1.5 mb-3">
@@ -68,33 +65,34 @@ export function CertificationsSection() {
         ))}
       </div>
 
-      <div className="space-y-2.5">
+      <div className="grid grid-cols-2 gap-2">
         {visibleCerts.map((cert, index) => (
           <motion.div
             key={`${cert.title}-${cert.issuer}`}
-            className="group flex items-center gap-3 cursor-pointer p-2 -mx-2 rounded-lg hover:bg-accent-pink/5 transition-colors"
-            initial={{ opacity: 0, y: 10 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            className="group relative cursor-pointer rounded-lg overflow-hidden border border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark"
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
             transition={{ delay: index * 0.03, duration: 0.3 }}
             onClick={() => setSelectedCert({ image: cert.image, title: cert.title })}
           >
-            <div className="flex-shrink-0 h-9 w-9 rounded-lg overflow-hidden border border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark">
+            <div className="aspect-[4/3] relative">
               <Image
                 src={`/images/certifications/${cert.image}`}
                 alt={cert.title}
-                width={36}
-                height={36}
-                className="h-full w-full object-cover"
+                fill
+                sizes="(max-width: 640px) 45vw, 200px"
+                className="object-cover transition-transform duration-300 group-hover:scale-105"
               />
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-text-primary-light dark:text-text-primary-dark truncate group-hover:text-accent-pink transition-colors">
-                {cert.title}
-              </p>
-              <p className="text-xs text-text-muted-light dark:text-text-muted-dark mt-0.5">
-                {cert.issuer} · {new Date(cert.issuedAt).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
-              </p>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
+              <div className="absolute bottom-0 left-0 right-0 p-2">
+                <p className="text-[10px] font-medium text-white leading-tight line-clamp-2">
+                  {cert.title}
+                </p>
+                <p className="text-[9px] text-white/70 mt-0.5">
+                  {cert.issuer}
+                </p>
+              </div>
             </div>
           </motion.div>
         ))}

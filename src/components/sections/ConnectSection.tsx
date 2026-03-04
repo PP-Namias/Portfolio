@@ -3,7 +3,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import {
-  Mail, Calendar, ExternalLink, Handshake,
+  Mail, Calendar, ExternalLink,
   Github, Instagram, Linkedin, Facebook, Twitter, MessageSquare,
 } from 'lucide-react';
 import { socialLinks } from '@/data/socials';
@@ -30,12 +30,9 @@ export function ConnectSection() {
       viewport={{ once: true, margin: '-50px' }}
       transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
     >
-      <div className="flex items-center gap-2 mb-2">
-        <Handshake className="h-4 w-4 text-accent-pink" />
-        <h3 className="text-lg font-semibold text-text-primary-light dark:text-text-primary-dark">
-          Connect
-        </h3>
-      </div>
+      <h3 className="text-lg font-semibold text-text-primary-light dark:text-text-primary-dark mb-2">
+        Connect
+      </h3>
       <p className="text-sm text-text-muted-light dark:text-text-muted-dark mb-4 leading-relaxed">
         Open for collaborations, freelance work, and interesting conversations. Let&apos;s build something together.
       </p>

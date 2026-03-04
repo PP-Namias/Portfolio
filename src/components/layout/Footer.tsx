@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Github, Linkedin, Twitter, Instagram, Heart } from 'lucide-react';
+import { Github, Linkedin, Twitter, Instagram } from 'lucide-react';
 import { profile } from '@/data/profile';
 import { socialLinks } from '@/data/socials';
 
@@ -41,9 +41,6 @@ export function Footer() {
             );
           })}
         </div>
-        <p className="text-[11px] text-text-muted-light dark:text-text-muted-dark flex items-center gap-1">
-          Built with <Heart className="h-3 w-3 text-accent-pink" /> using Next.js & Tailwind
-        </p>
       </div>
     </footer>
   );

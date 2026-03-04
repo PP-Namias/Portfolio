@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronLeft, ChevronRight, X, ImageIcon, ChevronDown, ChevronUp } from 'lucide-react';
+import { ChevronLeft, ChevronRight, X, ChevronDown, ChevronUp } from 'lucide-react';
 import { galleryImages } from '@/data/gallery';
 
 const INITIAL_COUNT = 9;
@@ -77,17 +77,12 @@ export function GallerySection() {
       transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
     >
       {/* Header */}
-      <div className="flex items-center justify-between mb-3">
-        <div className="flex items-center gap-2">
-          <ImageIcon className="h-4 w-4 text-accent-pink" />
-          <h2 className="text-lg font-semibold text-text-primary-light dark:text-text-primary-dark">
-            Gallery
-          </h2>
-          <span className="text-[11px] font-medium px-1.5 py-0.5 rounded-md bg-accent-pink/10 text-accent-pink">
-            {filtered.length}
-          </span>
-        </div>
-      </div>
+      <h2 className="text-lg font-semibold text-text-primary-light dark:text-text-primary-dark mb-3">
+        Gallery
+        <span className="text-[11px] font-medium px-1.5 py-0.5 rounded-md bg-accent-pink/10 text-accent-pink ml-2 align-middle">
+          {filtered.length}
+        </span>
+      </h2>
 
       {/* Tag filter */}
       <div className="flex flex-wrap gap-1.5 mb-4">

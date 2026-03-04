@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown, ChevronUp, ExternalLink, Github, FolderOpen } from 'lucide-react';
+import { ChevronDown, ChevronUp, ExternalLink, Github } from 'lucide-react';
 import { projects } from '@/data/projects';
 
 export function ProjectsSection() {
@@ -18,15 +18,12 @@ export function ProjectsSection() {
       viewport={{ once: true, margin: '-50px' }}
       transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
     >
-      <div className="flex items-center gap-2 mb-4">
-        <FolderOpen className="h-4 w-4 text-accent-pink" />
-        <h2 className="text-lg font-semibold text-text-primary-light dark:text-text-primary-dark">
-          Projects
-        </h2>
-        <span className="text-[11px] font-medium px-1.5 py-0.5 rounded-md bg-accent-pink/10 text-accent-pink">
+      <h2 className="text-lg font-semibold text-text-primary-light dark:text-text-primary-dark mb-4">
+        Projects
+        <span className="text-[11px] font-medium px-1.5 py-0.5 rounded-md bg-accent-pink/10 text-accent-pink ml-2 align-middle">
           {projects.length}
         </span>
-      </div>
+      </h2>
 
       {/* Featured project — large card */}
       {featured && featured.image && featured.image !== 'placeholder.png' && (

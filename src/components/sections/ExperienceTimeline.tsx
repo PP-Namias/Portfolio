@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { ArrowRight, Briefcase } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { experiences } from '@/data/experience';
 import { TimelineItem } from '@/components/ui/TimelineItem';
 import { useModal } from '@/hooks/useModal';
@@ -17,12 +17,9 @@ export function ExperienceTimeline() {
       viewport={{ once: true, margin: '-50px' }}
       transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
     >
-      <div className="flex items-center gap-2 mb-4">
-        <Briefcase className="h-4 w-4 text-accent-pink" />
-        <h2 className="text-lg font-semibold text-text-primary-light dark:text-text-primary-dark">
-          Experience
-        </h2>
-      </div>
+      <h2 className="text-lg font-semibold text-text-primary-light dark:text-text-primary-dark mb-4">
+        Experience
+      </h2>
       <div>
         {experiences.map((exp, index) => (
           <TimelineItem key={`${exp.company}-${exp.position}`} item={exp} index={index} isLast={index === experiences.length - 1} />

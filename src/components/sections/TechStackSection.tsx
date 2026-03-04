@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Cpu, ChevronDown, ChevronUp } from 'lucide-react';
+import { ChevronDown, ChevronUp } from 'lucide-react';
 import { techCategories } from '@/data/techStack';
 import { technologies } from '@/data/techStack';
 
@@ -20,15 +20,12 @@ export function TechStackSection() {
       viewport={{ once: true, margin: '-50px' }}
       transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
     >
-      <div className="flex items-center gap-2 mb-4">
-        <Cpu className="h-4 w-4 text-accent-pink" />
-        <h2 className="text-lg font-semibold text-text-primary-light dark:text-text-primary-dark">
-          Tech Stack
-        </h2>
-        <span className="text-[11px] font-medium px-1.5 py-0.5 rounded-md bg-accent-pink/10 text-accent-pink">
+      <h2 className="text-lg font-semibold text-text-primary-light dark:text-text-primary-dark mb-4">
+        Tech Stack
+        <span className="text-[11px] font-medium px-1.5 py-0.5 rounded-md bg-accent-pink/10 text-accent-pink ml-2 align-middle">
           {technologies.length}
         </span>
-      </div>
+      </h2>
 
       <div className="space-y-3">
         <AnimatePresence mode="popLayout">
