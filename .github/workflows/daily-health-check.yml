@@ -2,15 +2,20 @@ name: Daily Health Check
 
 on:
   schedule:
-    # Run daily at 6 AM UTC
     - cron: '0 6 * * *'
   workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+env:
+  NODE_VERSION: '22'
 
 jobs:
   health-check:
     name: 🏥 Daily Health Check
     runs-on: ubuntu-latest
-    
     steps:
       - name: 📥 Checkout Repository
         uses: actions/checkout@v4
@@ -18,80 +23,57 @@ jobs:
       - name: 📦 Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
-
-      - name: 📦 Setup pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: '8'
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
 
       - name: 📦 Install Dependencies
-        run: pnpm install --frozen-lockfile
+        run: npm ci
 
-      - name: 🔍 Run Code Quality Check
-        run: |
-          echo "Running daily code quality check..."
-          pnpm run lint
+      - name: 🔍 Run ESLint
+        run: npm run lint
 
       - name: 🔧 TypeScript Check
-        run: |
-          echo "Running TypeScript type check..."
-          pnpm exec tsc --noEmit
+        run: npx tsc --noEmit
 
       - name: 🔒 Security Audit
-        run: |
-          echo "Running security audit..."
-          pnpm audit --audit-level moderate || echo "Security audit completed with warnings"
-
-      - name: 📊 Check Dependencies
-        run: |
-          echo "Checking for outdated dependencies..."
-          pnpm outdated || echo "Some dependencies may need updates"
+        run: npm audit --audit-level moderate || echo "Security audit completed with warnings"
 
       - name: 🏗️ Build Test
-        run: |
-          echo "Testing build process..."
-          pnpm run build
+        run: npm run build
+
+      - name: 🧪 Run Tests
+        run: npm test
 
       - name: 📈 Generate Health Report
+        if: always()
         run: |
           echo "## 🏥 Daily Health Check Report" >> $GITHUB_STEP_SUMMARY
           echo "- **Date**: $(date)" >> $GITHUB_STEP_SUMMARY
-          echo "- **Repository Health**: ✅ Good" >> $GITHUB_STEP_SUMMARY
-          echo "- **Build Status**: ✅ Success" >> $GITHUB_STEP_SUMMARY
-          echo "- **Security**: ✅ No critical vulnerabilities" >> $GITHUB_STEP_SUMMARY
-          echo "- **Dependencies**: ⚠️ Check outdated packages" >> $GITHUB_STEP_SUMMARY
+          echo "- **Node Version**: ${{ env.NODE_VERSION }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Status**: Completed" >> $GITHUB_STEP_SUMMARY
 
       - name: 🚨 Create Issue on Failure
         if: failure()
-        uses: actions/github-script@v6
+        uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const title = `🚨 Daily Health Check Failed - ${new Date().toDateString()}`;
-            const body = `
-            ## Daily Health Check Failure
-            
-            The automated daily health check has detected issues with the repository.
-            
+            const body = `## Daily Health Check Failure
+
+            The automated daily health check has detected issues.
+
             **Date**: ${new Date().toISOString()}
-            **Workflow Run**: [#${{ github.run_id }}](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
-            
-            ### Potential Issues
-            - Build failure
-            - Security vulnerabilities
-            - Dependency issues
-            - Code quality problems
-            
-            Please review the workflow logs and address any issues found.
-            
-            *This issue was automatically created by the daily health check.*
-            `;
-            
+            **Run**: [#${{ github.run_id }}](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
+
+            Please review the workflow logs and fix any issues.
+
+            *Automatically created by the daily health check.*`;
+
             github.rest.issues.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
               title: title,
               body: body,
-              labels: ['health-check', 'automated-issue', 'maintenance']
+              labels: ['health-check', 'automated']
             });
