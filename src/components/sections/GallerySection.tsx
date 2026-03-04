@@ -6,16 +6,13 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight, X, ImageIcon, ChevronDown, ChevronUp } from 'lucide-react';
 import { galleryImages } from '@/data/gallery';
 
-const INITIAL_COUNT = 8;
+const INITIAL_COUNT = 9;
 const FILTER_TAGS = ['All', ...Array.from(new Set(galleryImages.flatMap((img) => img.tags.filter((t) => !/^\d{4}$/.test(t))).sort()))];
 
-// Assigns masonry span classes based on position for visual variety
-function getSpanClass(index: number, total: number): string {
-  if (total <= 4) return '';
-  // First image and every 7th get a large span (2x2)
-  if (index === 0 || (index > 0 && index % 7 === 0)) return 'col-span-2 row-span-2';
-  // Every 5th gets a wide span
-  if (index % 5 === 3) return 'col-span-2';
+// Assigns span classes for visual variety — only the first image gets 2x2, rest are 1x1
+// This avoids gaps in the dense grid while still giving a hero treatment
+function getSpanClass(index: number): string {
+  if (index === 0) return 'col-span-2 row-span-2';
   return '';
 }
 
@@ -110,11 +107,11 @@ export function GallerySection() {
       </div>
 
       {/* Masonry-style grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 auto-rows-[140px] sm:auto-rows-[160px]">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-1.5 auto-rows-[130px] sm:auto-rows-[150px]" style={{ gridAutoFlow: 'dense' }}>
         <AnimatePresence mode="popLayout">
           {visibleImages.map((image, index) => {
             const globalIndex = filtered.indexOf(image);
-            const spanClass = getSpanClass(index, visibleImages.length);
+            const spanClass = getSpanClass(index);
             return (
               <motion.button
                 key={image.media}
