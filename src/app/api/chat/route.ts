@@ -139,25 +139,60 @@ export async function POST(request: NextRequest) {
     }
 
     const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
 
-    // Build conversation for Gemini
-    const chat = model.startChat({
-      history: [
-        { role: 'user', parts: [{ text: 'System instructions: ' + systemPrompt }] },
-        { role: 'model', parts: [{ text: 'Understood. I am Keneth\'s AI Portfolio Assistant. I will only answer questions about Jhon Keneth Ryan Namias and his professional background. How can I help you learn about Keneth?' }] },
-        ...history.slice(-10).map((msg) => ({
-          role: msg.role === 'assistant' ? 'model' as const : 'user' as const,
-          parts: [{ text: msg.content }],
-        })),
-      ],
-    });
+    // Try models in order of preference; fall back if quota is exhausted
+    const MODELS = ['gemini-2.0-flash', 'gemini-2.0-flash-lite', 'gemini-1.5-flash'];
+    let lastError: unknown = null;
 
-    const result = await chat.sendMessage(message);
-    const response = result.response.text();
+    for (const modelName of MODELS) {
+      try {
+        const model = genAI.getGenerativeModel({ model: modelName });
 
-    return NextResponse.json({ message: response });
-  } catch {
+        const chat = model.startChat({
+          history: [
+            { role: 'user', parts: [{ text: 'System instructions: ' + systemPrompt }] },
+            { role: 'model', parts: [{ text: 'Understood. I am Keneth\'s AI Portfolio Assistant. I will only answer questions about Jhon Keneth Ryan Namias and his professional background. How can I help you learn about Keneth?' }] },
+            ...history.slice(-10).map((msg) => ({
+              role: msg.role === 'assistant' ? 'model' as const : 'user' as const,
+              parts: [{ text: msg.content }],
+            })),
+          ],
+        });
+
+        const result = await chat.sendMessage(message);
+        const response = result.response.text();
+
+        return NextResponse.json({ message: response });
+      } catch (modelError) {
+        lastError = modelError;
+        // If it's a quota/rate-limit error (429), try next model
+        const errMsg = modelError instanceof Error ? modelError.message : String(modelError);
+        if (errMsg.includes('429') || errMsg.includes('quota') || errMsg.includes('Too Many Requests')) {
+          console.warn(`[Chat API] ${modelName} quota exceeded, trying next model...`);
+          continue;
+        }
+        // For non-quota errors, break immediately
+        break;
+      }
+    }
+
+    // All models failed — return appropriate error
+    const errMsg = lastError instanceof Error ? lastError.message : String(lastError);
+    console.error('[Chat API Error]', errMsg);
+
+    if (errMsg.includes('429') || errMsg.includes('quota') || errMsg.includes('Too Many Requests')) {
+      return NextResponse.json(
+        { error: 'AI service is temporarily at capacity. Please try again in a minute.' },
+        { status: 429 }
+      );
+    }
+
+    return NextResponse.json(
+      { error: 'Something went wrong. Please try again.' },
+      { status: 500 }
+    );
+  } catch (error) {
+    console.error('[Chat API Error]', error instanceof Error ? error.message : error);
     return NextResponse.json(
       { error: 'Something went wrong. Please try again.' },
       { status: 500 }

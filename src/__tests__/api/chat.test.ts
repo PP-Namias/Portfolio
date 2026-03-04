@@ -174,15 +174,35 @@ describe('/api/chat route', () => {
 
   // --- Error Handling ---
   
-  it('returns 500 with generic error when Gemini API fails', async () => {
-    mockSendMessage.mockRejectedValueOnce(new Error('API quota exceeded'));
+  it('returns 500 with generic error when Gemini API fails with non-quota error', async () => {
+    mockSendMessage.mockRejectedValue(new Error('Network connection failed'));
     const req = createRequest({ message: 'Hello' });
     const res = await POST(req);
     expect(res.status).toBe(500);
     const data = await res.json();
     expect(data.error).toBe('Something went wrong. Please try again.');
-    // Should NOT expose internal error
-    expect(JSON.stringify(data)).not.toContain('quota');
+  });
+
+  it('returns 429 when all models hit quota limit', async () => {
+    mockSendMessage.mockRejectedValue(new Error('429 Too Many Requests: Quota exceeded'));
+    const req = createRequest({ message: 'Hello' });
+    const res = await POST(req);
+    expect(res.status).toBe(429);
+    const data = await res.json();
+    expect(data.error).toContain('temporarily at capacity');
+  });
+
+  it('falls back to next model when first model quota is exhausted', async () => {
+    mockSendMessage
+      .mockRejectedValueOnce(new Error('429 quota exceeded'))
+      .mockResolvedValueOnce({
+        response: { text: () => 'Fallback model response' },
+      });
+    const req = createRequest({ message: 'Hello' });
+    const res = await POST(req);
+    expect(res.status).toBe(200);
+    const data = await res.json();
+    expect(data.message).toBe('Fallback model response');
   });
 
   // --- Rate Limiting ---
