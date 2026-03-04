@@ -3,7 +3,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import {
-  Mail, Calendar, ExternalLink,
+  Mail, Calendar, ExternalLink, Handshake,
   Github, Instagram, Linkedin, Facebook, Twitter, MessageSquare,
 } from 'lucide-react';
 import { socialLinks } from '@/data/socials';
@@ -30,39 +30,53 @@ export function ConnectSection() {
       viewport={{ once: true, margin: '-50px' }}
       transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
     >
-      <h3 className="text-sm font-semibold text-text-primary-light dark:text-text-primary-dark mb-3">
-        Connect
-      </h3>
+      <div className="flex items-center gap-2 mb-2">
+        <Handshake className="h-4 w-4 text-accent-pink" />
+        <h3 className="text-lg font-semibold text-text-primary-light dark:text-text-primary-dark">
+          Connect
+        </h3>
+      </div>
+      <p className="text-sm text-text-muted-light dark:text-text-muted-dark mb-4 leading-relaxed">
+        Open for collaborations, freelance work, and interesting conversations. Let&apos;s build something together.
+      </p>
       <div className="flex flex-wrap items-center gap-2">
-        {socialLinks.map((link) => {
+        {socialLinks.map((link, index) => {
           const Icon = iconMap[link.icon] || ExternalLink;
           if (link.name === 'cal') {
             return (
-              <button
+              <motion.button
                 key={link.name}
                 onClick={() => openModal('booking')}
-                className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-full transition-colors duration-200 group bg-accent-pink text-white hover:bg-accent-pink-hover border border-accent-pink"
+                initial={{ opacity: 0, y: 10 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.05, duration: 0.3 }}
+                className="flex items-center gap-1.5 px-3.5 py-2 text-xs font-medium rounded-lg transition-colors duration-200 group bg-accent-pink text-white hover:bg-accent-pink-hover"
               >
                 <Icon className="h-3.5 w-3.5" />
                 <span>{link.label}</span>
-              </button>
+              </motion.button>
             );
           }
           return (
-            <a
+            <motion.a
               key={link.name}
               href={link.link}
               target="_blank"
               rel="noopener noreferrer"
-              className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-full transition-colors duration-200 group ${
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: index * 0.05, duration: 0.3 }}
+              className={`flex items-center gap-1.5 px-3.5 py-2 text-xs font-medium rounded-lg transition-colors duration-200 group ${
                 link.featured
-                  ? 'bg-accent-pink text-white hover:bg-accent-pink-hover border border-accent-pink'
+                  ? 'bg-accent-pink text-white hover:bg-accent-pink-hover'
                   : 'border border-border-light dark:border-border-dark text-text-secondary-light dark:text-text-secondary-dark hover:text-accent-pink hover:border-accent-pink dark:hover:text-accent-pink dark:hover:border-accent-pink'
               }`}
             >
               <Icon className="h-3.5 w-3.5" />
               <span>{link.label}</span>
-            </a>
+            </motion.a>
           );
         })}
       </div>

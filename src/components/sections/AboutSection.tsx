@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
-import { GraduationCap, Briefcase, Code, Layers } from 'lucide-react';
+import { GraduationCap, Briefcase, Code, Layers, User } from 'lucide-react';
 import { profile } from '@/data/profile';
 import { technologies } from '@/data/techStack';
 
@@ -46,9 +46,12 @@ export function AboutSection() {
       viewport={{ once: true, margin: '-50px' }}
       transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
     >
-      <h2 className="text-lg font-semibold text-text-primary-light dark:text-text-primary-dark mb-4">
-        About
-      </h2>
+      <div className="flex items-center gap-2 mb-4">
+        <User className="h-4 w-4 text-accent-pink" />
+        <h2 className="text-lg font-semibold text-text-primary-light dark:text-text-primary-dark">
+          About
+        </h2>
+      </div>
       <div className="space-y-4">
         <motion.div
           className="space-y-3"

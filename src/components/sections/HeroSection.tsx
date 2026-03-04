@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MapPin, Mail, ChevronRight, ExternalLink, Download, Calendar, Github, Linkedin, Twitter, Instagram } from 'lucide-react';
+import { MapPin, Mail, ExternalLink, Download, Calendar, Github, Linkedin, Twitter, Instagram, BookOpen } from 'lucide-react';
 import { profile } from '@/data/profile';
 import { socialLinks } from '@/data/socials';
 import { Button } from '@/components/ui/Button';
@@ -138,10 +138,10 @@ export function HeroSection() {
           <div className="flex items-center justify-center sm:justify-between gap-4">
             <a
               href="/blog"
-              className="inline-flex items-center gap-1 text-[13px] font-medium text-text-secondary-light dark:text-text-secondary-dark hover:text-accent-pink dark:hover:text-accent-pink transition-colors"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-[13px] font-medium rounded-lg border border-border-light dark:border-border-dark text-text-secondary-light dark:text-text-secondary-dark hover:text-accent-pink hover:border-accent-pink dark:hover:text-accent-pink dark:hover:border-accent-pink transition-colors"
             >
+              <BookOpen className="h-3.5 w-3.5" />
               Read my blog
-              <ChevronRight className="h-3.5 w-3.5" />
             </a>
 
             {/* Social icons */}

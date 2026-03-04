@@ -16,17 +16,19 @@ export function SpeakingSection() {
       viewport={{ once: true, margin: '-50px' }}
       transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
     >
-      <h2 className="text-lg font-semibold text-text-primary-light dark:text-text-primary-dark mb-3">
-        Speaking
-      </h2>
+      <div className="flex items-center gap-2 mb-3">
+        <Mic className="h-4 w-4 text-accent-pink" />
+        <h2 className="text-lg font-semibold text-text-primary-light dark:text-text-primary-dark">
+          Speaking
+        </h2>
+      </div>
       <div className="flex items-start gap-2 mb-2">
-        <Mic className="h-3.5 w-3.5 text-accent-pink mt-0.5 flex-shrink-0" />
         <p className="text-sm text-text-muted-light dark:text-text-muted-dark leading-relaxed">
           Available for talks and workshops on full-stack development, cloud architecture, and modern web technologies.
         </p>
       </div>
       {topics.length > 0 && (
-        <div className="flex flex-wrap gap-1 mb-3 ml-5">
+        <div className="flex flex-wrap gap-1 mb-3">
           {topics.map((topic) => (
             <span
               key={topic}

@@ -107,7 +107,7 @@ export function GallerySection() {
       </div>
 
       {/* Masonry-style grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-1.5 auto-rows-[130px] sm:auto-rows-[150px]" style={{ gridAutoFlow: 'dense' }}>
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 auto-rows-[150px] sm:auto-rows-[170px]" style={{ gridAutoFlow: 'dense' }}>
         <AnimatePresence mode="popLayout">
           {visibleImages.map((image, index) => {
             const globalIndex = filtered.indexOf(image);
@@ -129,10 +129,10 @@ export function GallerySection() {
                   alt={image.title}
                   fill
                   sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, 25vw"
-                  className="object-cover group-hover:scale-110 transition-transform duration-500 ease-out"
+                  className="object-cover group-hover:scale-105 transition-transform duration-500 ease-out brightness-[0.95] group-hover:brightness-100"
                 />
                 {/* Hover overlay with gradient */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/0 to-black/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-3">
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-3">
                   <span className="text-[12px] font-medium text-white leading-snug line-clamp-2 drop-shadow-sm">
                     {image.title}
                   </span>
