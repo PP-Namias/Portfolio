@@ -131,6 +131,20 @@ describe('/api/chat route', () => {
     expect(data.message).toBe('Hello! I can help you learn about Keneth.');
   });
 
+  it('passes generationConfig to Gemini model', async () => {
+    const req = createRequest({ message: 'Hello' });
+    await POST(req);
+    expect(mockGetGenerativeModel).toHaveBeenCalledWith(
+      expect.objectContaining({
+        generationConfig: expect.objectContaining({
+          temperature: 0.7,
+          topP: 0.9,
+          maxOutputTokens: 1024,
+        }),
+      })
+    );
+  });
+
   it('passes conversation history to Gemini', async () => {
     const req = createRequest({
       message: 'Tell me more',

@@ -154,4 +154,46 @@ describe('ChatPanel', () => {
     const sendBtn = screen.getByLabelText('Send message');
     expect(sendBtn).toBeDisabled();
   });
+
+  it('shows clear chat button when messages exist', () => {
+    const messages: ChatMessageType[] = [
+      { id: '1', role: 'user', content: 'Hello', timestamp: new Date() },
+      { id: '2', role: 'assistant', content: 'Hi there!', timestamp: new Date() },
+    ];
+    renderChatPanel(messages);
+    expect(screen.getByLabelText('Clear chat history')).toBeInTheDocument();
+  });
+
+  it('does not show clear chat button when chat is empty', () => {
+    renderChatPanel();
+    expect(screen.queryByLabelText('Clear chat history')).not.toBeInTheDocument();
+  });
+
+  it('calls setMessages to clear when clear button is clicked', () => {
+    const messages: ChatMessageType[] = [
+      { id: '1', role: 'user', content: 'Hello', timestamp: new Date() },
+      { id: '2', role: 'assistant', content: 'Hi!', timestamp: new Date() },
+    ];
+    const { setMessages } = renderChatPanel(messages);
+    fireEvent.click(screen.getByLabelText('Clear chat history'));
+    expect(setMessages).toHaveBeenCalledWith([]);
+  });
+
+  it('shows follow-up suggestion chips after assistant response', () => {
+    const messages: ChatMessageType[] = [
+      { id: '1', role: 'user', content: 'Hello', timestamp: new Date() },
+      { id: '2', role: 'assistant', content: 'Hi there!', timestamp: new Date() },
+    ];
+    renderChatPanel(messages);
+    // Should show some follow-up suggestions (up to 3)
+    expect(screen.getByText('What certifications do you have?')).toBeInTheDocument();
+  });
+
+  it('does not show follow-up chips when last message is from user', () => {
+    const messages: ChatMessageType[] = [
+      { id: '1', role: 'user', content: 'Hello', timestamp: new Date() },
+    ];
+    renderChatPanel(messages);
+    expect(screen.queryByText('What certifications do you have?')).not.toBeInTheDocument();
+  });
 });

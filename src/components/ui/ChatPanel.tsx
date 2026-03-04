@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import { MessageCircle, X, Send, RotateCcw, ArrowLeft } from 'lucide-react';
+import { MessageCircle, X, Send, RotateCcw, ArrowLeft, Trash2 } from 'lucide-react';
 import { ChatMessage } from './ChatMessage';
 import { useModal } from '@/hooks/useModal';
 import type { ChatMessage as ChatMessageType } from '@/types';
@@ -12,6 +12,15 @@ const SUGGESTED_QUESTIONS = [
   'Tell me about your AI automation work',
   'What projects have you shipped?',
   'I\'d like to schedule a meeting',
+];
+
+const FOLLOW_UP_SUGGESTIONS = [
+  'What certifications do you have?',
+  'Tell me about your education',
+  'What companies have you worked with?',
+  'Can I see your resume?',
+  'How can I contact Keneth?',
+  'What tech stack do you specialize in?',
 ];
 
 function TypingIndicator() {
@@ -59,6 +68,11 @@ export function ChatPanel({ onBack, onClose, messages, setMessages }: ChatPanelP
       window.open('mailto:pp.namias@gmail.com', '_blank');
     }
   }, [openModal]);
+
+  const handleClearChat = useCallback(() => {
+    setMessages([]);
+    setError(null);
+  }, [setMessages]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -150,13 +164,25 @@ export function ChatPanel({ onBack, onClose, messages, setMessages }: ChatPanelP
             </p>
           </div>
         </div>
-        <button
-          onClick={onClose}
-          className="h-8 w-8 rounded-full flex items-center justify-center text-text-muted-light dark:text-text-muted-dark hover:bg-surface-light dark:hover:bg-surface-dark transition-colors"
-          aria-label="Close chat"
-        >
-          <X className="h-4 w-4" />
-        </button>
+        <div className="flex items-center gap-1">
+          {messages.length > 0 && (
+            <button
+              onClick={handleClearChat}
+              className="h-8 w-8 rounded-full flex items-center justify-center text-text-muted-light dark:text-text-muted-dark hover:bg-surface-light dark:hover:bg-surface-dark hover:text-red-500 transition-colors"
+              aria-label="Clear chat history"
+              title="Clear chat"
+            >
+              <Trash2 className="h-4 w-4" />
+            </button>
+          )}
+          <button
+            onClick={onClose}
+            className="h-8 w-8 rounded-full flex items-center justify-center text-text-muted-light dark:text-text-muted-dark hover:bg-surface-light dark:hover:bg-surface-dark transition-colors"
+            aria-label="Close chat"
+          >
+            <X className="h-4 w-4" />
+          </button>
+        </div>
       </div>
 
       {/* Pink accent bar */}
@@ -191,6 +217,24 @@ export function ChatPanel({ onBack, onClose, messages, setMessages }: ChatPanelP
         {messages.map((msg) => (
           <ChatMessage key={msg.id} message={msg} onAction={handleAction} />
         ))}
+
+        {/* Follow-up suggestion chips after AI response */}
+        {messages.length > 0 && !isLoading && messages[messages.length - 1].role === 'assistant' && (
+          <div className="flex flex-wrap gap-1.5 mb-3 mt-1">
+            {FOLLOW_UP_SUGGESTIONS
+              .filter((q) => !messages.some((m) => m.role === 'user' && m.content === q))
+              .slice(0, 3)
+              .map((q) => (
+                <button
+                  key={q}
+                  onClick={() => sendMessage(q)}
+                  className="text-[11px] px-2.5 py-1 rounded-full border border-border-light dark:border-border-dark text-text-secondary-light dark:text-text-secondary-dark hover:border-accent-pink hover:text-accent-pink transition-colors"
+                >
+                  {q}
+                </button>
+              ))}
+          </div>
+        )}
 
         {isLoading && <TypingIndicator />}
 
