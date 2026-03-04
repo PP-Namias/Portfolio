@@ -20,23 +20,17 @@ export default function Home() {
       </Card>
 
       {/* Two-column layout: Main + Sidebar */}
-      <div className="flex flex-col lg:flex-row gap-4 mt-0">
-        {/* Main content */}
-        <div className="w-full lg:w-[62%] space-y-4">
+      {/* Mobile: About → Experience → Memberships → Speaking → TechStack → Projects */}
+      {/* Desktop: Left (About, TechStack, Projects) | Right sticky (Experience, Memberships, Speaking) */}
+      <div className="grid grid-cols-1 lg:grid-cols-[62%_1fr] gap-4 mt-0">
+        <div className="order-1 lg:order-none lg:col-start-1">
           <Card>
             <AboutSection />
           </Card>
-          <Card>
-            <TechStackSection />
-          </Card>
-          <Card>
-            <ProjectsSection />
-          </Card>
         </div>
 
-        {/* Sidebar: Experience, Memberships, Speaking only */}
-        <div className="w-full lg:w-[38%] space-y-4">
-          <aside className="lg:sticky lg:top-8 lg:self-start space-y-4">
+        <div className="order-2 lg:order-none lg:col-start-2 lg:row-start-1 lg:row-span-3">
+          <aside className="lg:sticky lg:top-8 space-y-4">
             <Card>
               <ExperienceTimeline />
             </Card>
@@ -47,6 +41,18 @@ export default function Home() {
               <SpeakingSection />
             </Card>
           </aside>
+        </div>
+
+        <div className="order-3 lg:order-none lg:col-start-1">
+          <Card>
+            <TechStackSection />
+          </Card>
+        </div>
+
+        <div className="order-4 lg:order-none lg:col-start-1">
+          <Card>
+            <ProjectsSection />
+          </Card>
         </div>
       </div>
 
