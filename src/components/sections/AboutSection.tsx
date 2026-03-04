@@ -83,7 +83,7 @@ export function AboutSection() {
                     {edu.institution} — {edu.location}
                   </p>
                   <p className="text-[10px] text-text-muted-light dark:text-text-muted-dark mt-0.5">
-                    {startYear} – {endLabel} · GPA: {edu.gpa}
+                    {startYear} – {endLabel} · GWA: {edu.gpa}
                   </p>
                 </div>
               </div>
@@ -99,18 +99,7 @@ export function AboutSection() {
                   ))}
                 </div>
               )}
-              {edu.relevantCourses.length > 0 && (
-                <div className="flex flex-wrap gap-1 mt-2 ml-6">
-                  {edu.relevantCourses.map((course) => (
-                    <span
-                      key={course}
-                      className="text-[9px] px-1.5 py-0.5 rounded-full border border-border-light dark:border-border-dark text-text-muted-light dark:text-text-muted-dark"
-                    >
-                      {course}
-                    </span>
-                  ))}
-                </div>
-              )}
+
             </motion.div>
           );
         })}
