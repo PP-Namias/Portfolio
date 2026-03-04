@@ -279,7 +279,7 @@ export async function POST(request: NextRequest) {
     const genAI = new GoogleGenerativeAI(apiKey);
 
     // Try models in order of preference; fall back if quota is exhausted
-    const MODELS = ['gemini-2.0-flash', 'gemini-2.0-flash-lite', 'gemini-2.5-flash-preview-04-17'];
+    const MODELS = ['gemini-2.0-flash', 'gemini-2.0-flash-lite', 'gemini-1.5-flash'];
     let lastError: unknown = null;
 
     for (const modelName of MODELS) {
@@ -288,8 +288,8 @@ export async function POST(request: NextRequest) {
           model: modelName,
           systemInstruction: systemPrompt,
           generationConfig: {
-            temperature: 0.7,
-            topP: 0.9,
+            temperature: 0.6,
+            topP: 0.85,
             maxOutputTokens: 1024,
           },
         });

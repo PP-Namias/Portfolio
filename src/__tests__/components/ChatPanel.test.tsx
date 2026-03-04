@@ -85,10 +85,10 @@ describe('ChatPanel', () => {
 
   it('renders suggested questions when chat is empty', () => {
     renderChatPanel();
-    expect(screen.getByText('What are your top skills?')).toBeInTheDocument();
-    expect(screen.getByText('Tell me about your experience')).toBeInTheDocument();
-    expect(screen.getByText('What projects have you built?')).toBeInTheDocument();
-    expect(screen.getByText('How can I schedule a meeting?')).toBeInTheDocument();
+    expect(screen.getByText('About Keneth')).toBeInTheDocument();
+    expect(screen.getByText('Skills & Tech')).toBeInTheDocument();
+    expect(screen.getByText('Experience')).toBeInTheDocument();
+    expect(screen.getByText('Schedule Call')).toBeInTheDocument();
   });
 
   it('sends a message and calls fetch', async () => {
@@ -109,7 +109,7 @@ describe('ChatPanel', () => {
 
   it('sends suggested question on chip click', async () => {
     renderChatPanel();
-    fireEvent.click(screen.getByText('What are your top skills?'));
+    fireEvent.click(screen.getByText('About Keneth'));
 
     await waitFor(() => {
       expect(mockFetch).toHaveBeenCalledWith('/api/chat', expect.objectContaining({

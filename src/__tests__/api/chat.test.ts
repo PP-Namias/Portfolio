@@ -137,8 +137,8 @@ describe('/api/chat route', () => {
     expect(mockGetGenerativeModel).toHaveBeenCalledWith(
       expect.objectContaining({
         generationConfig: expect.objectContaining({
-          temperature: 0.7,
-          topP: 0.9,
+          temperature: 0.6,
+          topP: 0.85,
           maxOutputTokens: 1024,
         }),
       })

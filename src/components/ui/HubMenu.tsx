@@ -14,6 +14,7 @@ import {
   Linkedin,
   Twitter,
   Instagram,
+  Sparkles,
 } from 'lucide-react';
 import { HubMenuItem } from './HubMenuItem';
 import { socialLinks } from '@/data/socials';
@@ -71,32 +72,56 @@ export function HubMenu({ onClose, onOpenChat }: HubMenuProps) {
 
   return (
     <>
-      {/* Header */}
-      <div className="flex items-center justify-between px-4 py-3 border-b border-border-light dark:border-border-dark bg-white dark:bg-card-bg-dark">
-        <p className="text-sm font-semibold text-text-primary-light dark:text-text-primary-dark">
-          Quick Actions
-        </p>
-        <button
-          onClick={onClose}
-          className="h-8 w-8 rounded-full flex items-center justify-center text-text-muted-light dark:text-text-muted-dark hover:bg-surface-light dark:hover:bg-surface-dark transition-colors"
-          aria-label="Close menu"
-        >
-          <X className="h-4 w-4" />
-        </button>
+      {/* Profile Header */}
+      <div className="px-4 pt-4 pb-3 bg-white dark:bg-card-bg-dark">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="relative">
+              <div className="h-10 w-10 rounded-full bg-gradient-to-br from-accent-pink to-accent-pink-hover-dark flex items-center justify-center">
+                <span className="text-sm font-bold text-white">
+                  {profile.name.split(' ').map(n => n[0]).slice(0, 2).join('')}
+                </span>
+              </div>
+              <div className="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full bg-emerald-400 border-2 border-white dark:border-card-bg-dark" />
+            </div>
+            <div className="min-w-0">
+              <p className="text-sm font-semibold text-text-primary-light dark:text-text-primary-dark truncate">
+                {profile.name}
+              </p>
+              <p className="text-[11px] text-text-muted-light dark:text-text-muted-dark truncate">
+                {profile.title}
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={onClose}
+            className="h-7 w-7 rounded-full flex items-center justify-center text-text-muted-light dark:text-text-muted-dark hover:bg-surface-light dark:hover:bg-surface-dark transition-colors flex-shrink-0"
+            aria-label="Close menu"
+          >
+            <X className="h-3.5 w-3.5" />
+          </button>
+        </div>
       </div>
 
-      {/* Accent bar */}
-      <div className="h-0.5 bg-gradient-to-r from-accent-pink via-accent-pink-hover-dark to-accent-pink" />
+      {/* Gradient divider */}
+      <div className="h-px bg-gradient-to-r from-transparent via-accent-pink/30 to-transparent" />
 
       {/* Menu Items */}
       <div
         ref={menuRef}
-        className="py-2 overflow-y-auto chat-scrollbar"
+        className="py-1.5 overflow-y-auto chat-scrollbar flex-1 touch-pan-y"
         role="menu"
         aria-label="Quick actions menu"
         onKeyDown={handleKeyDown}
         data-lenis-prevent
       >
+        {/* Section label */}
+        <div className="px-5 pt-1.5 pb-1">
+          <p className="text-[10px] font-medium text-text-muted-light dark:text-text-muted-dark uppercase tracking-wider">
+            Quick Actions
+          </p>
+        </div>
+
         <HubMenuItem
           icon={Bot}
           label="Ask AI Assistant"
@@ -128,6 +153,9 @@ export function HubMenu({ onClose, onOpenChat }: HubMenuProps) {
             iconBgClass="bg-emerald-500/10"
           />
         )}
+
+        {/* Divider */}
+        <div className="h-px mx-4 my-1.5 bg-border-light dark:bg-border-dark" />
 
         <HubMenuItem
           icon={Mail}
@@ -192,10 +220,13 @@ export function HubMenu({ onClose, onOpenChat }: HubMenuProps) {
       </div>
 
       {/* Footer */}
-      <div className="px-4 py-2 border-t border-border-light dark:border-border-dark">
-        <p className="text-[10px] text-text-muted-light dark:text-text-muted-dark text-center">
-          Powered by Gemini AI
-        </p>
+      <div className="px-4 py-2.5 border-t border-border-light dark:border-border-dark bg-white dark:bg-card-bg-dark">
+        <div className="flex items-center justify-center gap-1.5">
+          <Sparkles className="h-3 w-3 text-accent-pink opacity-60" />
+          <span className="text-[10px] text-text-muted-light dark:text-text-muted-dark">
+            Powered by Gemini AI
+          </span>
+        </div>
       </div>
     </>
   );

@@ -2,18 +2,18 @@
 
 import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MessageCircle, X, Send, RotateCcw, ArrowLeft, Trash2, Sparkles } from 'lucide-react';
+import { X, Send, RotateCcw, ArrowLeft, Trash2, Sparkles, User, Code2, Briefcase, FolderOpen, CalendarDays, Award } from 'lucide-react';
 import { ChatMessage } from './ChatMessage';
 import { useModal } from '@/hooks/useModal';
 import type { ChatMessage as ChatMessageType } from '@/types';
 
-const SUGGESTED_QUESTIONS = [
-  'What are your top skills?',
-  'Tell me about your experience',
-  'What projects have you built?',
-  'How can I schedule a meeting?',
-  'Tell me about your AI work',
-  'What certifications do you have?',
+const ACTION_CARDS = [
+  { icon: User, label: 'About Keneth', question: 'Who is Keneth? Tell me about him.', color: 'text-blue-500', bg: 'bg-blue-500/10' },
+  { icon: Code2, label: 'Skills & Tech', question: 'What are Keneth\'s top skills and technologies?', color: 'text-emerald-500', bg: 'bg-emerald-500/10' },
+  { icon: Briefcase, label: 'Experience', question: 'Tell me about Keneth\'s work experience and roles', color: 'text-amber-500', bg: 'bg-amber-500/10' },
+  { icon: FolderOpen, label: 'Projects', question: 'What projects has Keneth built?', color: 'text-violet-500', bg: 'bg-violet-500/10' },
+  { icon: CalendarDays, label: 'Schedule Call', question: 'How can I schedule a meeting with Keneth?', color: 'text-teal-500', bg: 'bg-teal-500/10' },
+  { icon: Award, label: 'Certifications', question: 'What certifications does Keneth have?', color: 'text-rose-500', bg: 'bg-rose-500/10' },
 ];
 
 const FOLLOW_UP_POOL = [
@@ -190,11 +190,12 @@ export function ChatPanel({ onBack, onClose, messages, setMessages }: ChatPanelP
           {messages.length > 0 && (
             <button
               onClick={handleClearChat}
-              className="h-8 w-8 rounded-full flex items-center justify-center text-text-muted-light dark:text-text-muted-dark hover:bg-red-500/10 hover:text-red-500 transition-colors"
+              className="flex items-center gap-1 h-7 px-2 rounded-full text-text-muted-light dark:text-text-muted-dark hover:bg-red-500/10 hover:text-red-500 transition-colors"
               aria-label="Clear chat history"
               title="Clear chat"
             >
-              <Trash2 className="h-3.5 w-3.5" />
+              <Trash2 className="h-3 w-3" />
+              <span className="text-[10px] font-medium">Clear</span>
             </button>
           )}
           <button
@@ -211,7 +212,7 @@ export function ChatPanel({ onBack, onClose, messages, setMessages }: ChatPanelP
       <div
         ref={messagesContainerRef}
         data-lenis-prevent
-        className="flex-1 overflow-y-auto overscroll-contain px-4 py-4 chat-scrollbar"
+        className="flex-1 overflow-y-auto overscroll-contain px-4 py-4 chat-scrollbar touch-pan-y"
       >
         <AnimatePresence mode="wait">
           {messages.length === 0 && !isLoading && (
@@ -220,29 +221,35 @@ export function ChatPanel({ onBack, onClose, messages, setMessages }: ChatPanelP
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="flex flex-col items-center justify-center h-full gap-3"
+              className="flex flex-col items-center justify-center h-full"
             >
-              <div className="h-14 w-14 rounded-full bg-accent-pink/10 flex items-center justify-center">
-                <Sparkles className="h-7 w-7 text-accent-pink" />
+              <div className="h-12 w-12 rounded-full bg-accent-pink/10 flex items-center justify-center mb-3">
+                <Sparkles className="h-6 w-6 text-accent-pink" />
               </div>
-              <div className="text-center">
-                <p className="text-sm font-medium text-text-primary-light dark:text-text-primary-dark">
-                  Hi! I&apos;m Keneth&apos;s AI
-                </p>
-                <p className="text-xs text-text-muted-light dark:text-text-muted-dark mt-1">
-                  Ask me about his skills, projects, experience, or anything else.
-                </p>
-              </div>
-              <div className="flex flex-wrap justify-center gap-2 mt-3 max-w-[320px]">
-                {SUGGESTED_QUESTIONS.map((q) => (
-                  <button
-                    key={q}
-                    onClick={() => sendMessage(q)}
-                    className="text-xs px-3 py-1.5 rounded-full border border-border-light dark:border-border-dark text-text-secondary-light dark:text-text-secondary-dark hover:border-accent-pink hover:text-accent-pink transition-all hover:shadow-sm"
-                  >
-                    {q}
-                  </button>
-                ))}
+              <p className="text-sm font-medium text-text-primary-light dark:text-text-primary-dark">
+                Hi! I&apos;m Keneth&apos;s AI
+              </p>
+              <p className="text-xs text-text-muted-light dark:text-text-muted-dark mt-1 mb-4">
+                What would you like to know?
+              </p>
+              <div className="grid grid-cols-2 gap-2 w-full max-w-[300px]">
+                {ACTION_CARDS.map((card) => {
+                  const Icon = card.icon;
+                  return (
+                    <button
+                      key={card.label}
+                      onClick={() => sendMessage(card.question)}
+                      className="flex items-center gap-2.5 p-2.5 rounded-xl border border-border-light dark:border-border-dark hover:border-accent-pink/40 hover:bg-accent-pink/5 transition-all text-left group"
+                    >
+                      <div className={`h-8 w-8 rounded-lg ${card.bg} flex items-center justify-center flex-shrink-0`}>
+                        <Icon className={`h-4 w-4 ${card.color}`} />
+                      </div>
+                      <span className="text-xs font-medium text-text-secondary-light dark:text-text-secondary-dark group-hover:text-text-primary-light dark:group-hover:text-text-primary-dark transition-colors">
+                        {card.label}
+                      </span>
+                    </button>
+                  );
+                })}
               </div>
             </motion.div>
           )}
@@ -329,9 +336,12 @@ export function ChatPanel({ onBack, onClose, messages, setMessages }: ChatPanelP
             <Send className="h-4 w-4" />
           </button>
         </form>
-        <p className="text-[9px] text-text-muted-light dark:text-text-muted-dark text-center pb-2 -mt-0.5">
-          Powered by Gemini AI
-        </p>
+        <div className="flex items-center justify-center gap-1 pb-2 -mt-0.5">
+          <Sparkles className="h-2.5 w-2.5 text-accent-pink opacity-60" />
+          <span className="text-[9px] text-text-muted-light dark:text-text-muted-dark">
+            Powered by Gemini AI
+          </span>
+        </div>
       </div>
     </>
   );

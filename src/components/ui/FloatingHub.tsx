@@ -123,6 +123,7 @@ export function FloatingHub() {
             aria-modal="true"
             aria-label={hubState === 'menu' ? 'Quick Actions' : "Chat with Keneth's AI"}
             tabIndex={-1}
+            data-lenis-prevent
             className="fixed z-50 bottom-0 right-0 sm:bottom-6 sm:right-6 w-full h-full sm:w-96 sm:h-[560px] sm:rounded-2xl flex flex-col overflow-hidden border border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark shadow-2xl"
           >
             {hubState === 'menu' && (

@@ -49,6 +49,13 @@ html.lenis, html.lenis body {
 [data-lenis-prevent] {
   overscroll-behavior: contain;
   -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
+}
+
+/* Smooth scroll containers inside hub panels */
+[data-lenis-prevent] .chat-scrollbar,
+[data-lenis-prevent].chat-scrollbar {
+  scroll-behavior: smooth;
 }
 
 .lenis.lenis-stopped {
