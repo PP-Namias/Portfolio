@@ -48,7 +48,7 @@ export function HeroSection() {
       transition={{ duration: 0.5 }}
     >
       {/* Controls row: color picker + theme toggle */}
-      <div className="absolute top-0 right-0 flex items-center gap-3">
+      <div className="flex items-center justify-center gap-3 mb-4 sm:absolute sm:top-0 sm:right-0 sm:mb-0">
         <ColorSchemePicker />
         <ThemeToggle />
       </div>
@@ -98,7 +98,7 @@ export function HeroSection() {
           </div>
 
           {/* Location + Availability */}
-          <div className="flex items-center justify-center sm:justify-start gap-3 mt-2">
+          <div className="flex flex-wrap items-center justify-center sm:justify-start gap-3 mt-2">
             <div className="flex items-center gap-1.5">
               <MapPin className="h-3.5 w-3.5 text-text-muted-light dark:text-text-muted-dark" />
               <span className="text-[13px] text-text-muted-light dark:text-text-muted-dark">
