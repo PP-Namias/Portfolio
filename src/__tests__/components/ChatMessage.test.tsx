@@ -1,5 +1,6 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { ChatMessage } from '@/components/ui/ChatMessage';
 import type { ChatMessage as ChatMessageType } from '@/types';
 
@@ -58,5 +59,37 @@ describe('ChatMessage', () => {
     const bubble = container.querySelector('.whitespace-pre-wrap');
     expect(bubble).toBeInTheDocument();
     expect(bubble?.textContent).toBe('Line 1\nLine 2');
+  });
+
+  it('renders action buttons for assistant messages with action tags', () => {
+    const msg = createMessage({
+      role: 'assistant',
+      content: 'You can book a meeting with Keneth!\n[ACTION:booking]',
+    });
+    render(<ChatMessage message={msg} onAction={vi.fn()} />);
+    expect(screen.getByText('Schedule a Meeting')).toBeInTheDocument();
+    expect(screen.getByText(/You can book a meeting/)).toBeInTheDocument();
+    // action tag should not appear in the visible text
+    expect(screen.queryByText('[ACTION:booking]')).not.toBeInTheDocument();
+  });
+
+  it('calls onAction when action button is clicked', async () => {
+    const onAction = vi.fn();
+    const msg = createMessage({
+      role: 'assistant',
+      content: 'Check out the resume [ACTION:resume]',
+    });
+    render(<ChatMessage message={msg} onAction={onAction} />);
+    await userEvent.click(screen.getByText('View Resume'));
+    expect(onAction).toHaveBeenCalledWith('resume');
+  });
+
+  it('does not render action buttons for user messages', () => {
+    const msg = createMessage({
+      role: 'user',
+      content: '[ACTION:booking]',
+    });
+    render(<ChatMessage message={msg} />);
+    expect(screen.queryByText('Schedule a Meeting')).not.toBeInTheDocument();
   });
 });

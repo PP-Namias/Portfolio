@@ -24,6 +24,12 @@ vi.mock('@/components/ui/ChatMessage', () => ({
   ),
 }));
 
+// Mock useModal
+const mockOpenModal = vi.fn();
+vi.mock('@/hooks/useModal', () => ({
+  useModal: () => ({ openModal: mockOpenModal, closeModal: vi.fn(), activeModal: null }),
+}));
+
 // Mock fetch
 const mockFetch = vi.fn();
 global.fetch = mockFetch;
@@ -79,10 +85,10 @@ describe('ChatPanel', () => {
 
   it('renders suggested questions when chat is empty', () => {
     renderChatPanel();
-    expect(screen.getByText('What tech stack do you use?')).toBeInTheDocument();
-    expect(screen.getByText('Tell me about your experience')).toBeInTheDocument();
-    expect(screen.getByText('What projects have you built?')).toBeInTheDocument();
-    expect(screen.getByText('How can I contact you?')).toBeInTheDocument();
+    expect(screen.getByText('What are your top skills?')).toBeInTheDocument();
+    expect(screen.getByText('Tell me about your AI automation work')).toBeInTheDocument();
+    expect(screen.getByText('What projects have you shipped?')).toBeInTheDocument();
+    expect(screen.getByText("I'd like to schedule a meeting")).toBeInTheDocument();
   });
 
   it('sends a message and calls fetch', async () => {
@@ -103,7 +109,7 @@ describe('ChatPanel', () => {
 
   it('sends suggested question on chip click', async () => {
     renderChatPanel();
-    fireEvent.click(screen.getByText('What tech stack do you use?'));
+    fireEvent.click(screen.getByText('What are your top skills?'));
 
     await waitFor(() => {
       expect(mockFetch).toHaveBeenCalledWith('/api/chat', expect.objectContaining({

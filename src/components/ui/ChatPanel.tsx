@@ -4,13 +4,14 @@ import { useState, useRef, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { MessageCircle, X, Send, RotateCcw, ArrowLeft } from 'lucide-react';
 import { ChatMessage } from './ChatMessage';
+import { useModal } from '@/hooks/useModal';
 import type { ChatMessage as ChatMessageType } from '@/types';
 
 const SUGGESTED_QUESTIONS = [
-  'What tech stack do you use?',
-  'Tell me about your experience',
-  'What projects have you built?',
-  'How can I contact you?',
+  'What are your top skills?',
+  'Tell me about your AI automation work',
+  'What projects have you shipped?',
+  'I\'d like to schedule a meeting',
 ];
 
 function TypingIndicator() {
@@ -47,6 +48,17 @@ export function ChatPanel({ onBack, onClose, messages, setMessages }: ChatPanelP
   const [error, setError] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const { openModal } = useModal();
+
+  const handleAction = useCallback((action: string) => {
+    if (action === 'booking') {
+      openModal('booking');
+    } else if (action === 'resume') {
+      openModal('resume');
+    } else if (action === 'email') {
+      window.open('mailto:pp.namias@gmail.com', '_blank');
+    }
+  }, [openModal]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -177,7 +189,7 @@ export function ChatPanel({ onBack, onClose, messages, setMessages }: ChatPanelP
         )}
 
         {messages.map((msg) => (
-          <ChatMessage key={msg.id} message={msg} />
+          <ChatMessage key={msg.id} message={msg} onAction={handleAction} />
         ))}
 
         {isLoading && <TypingIndicator />}

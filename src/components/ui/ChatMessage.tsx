@@ -1,14 +1,45 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import { Calendar, FileText, Mail } from 'lucide-react';
 import type { ChatMessage as ChatMessageType } from '@/types';
+
+// Action tags the AI can include in responses
+const ACTION_PATTERNS: Array<{
+  tag: string;
+  label: string;
+  icon: typeof Calendar;
+  action: string;
+}> = [
+  { tag: '[ACTION:booking]', label: 'Schedule a Meeting', icon: Calendar, action: 'booking' },
+  { tag: '[ACTION:resume]', label: 'View Resume', icon: FileText, action: 'resume' },
+  { tag: '[ACTION:email]', label: 'Send Email', icon: Mail, action: 'email' },
+];
+
+function parseActions(content: string) {
+  let cleanContent = content;
+  const actions: typeof ACTION_PATTERNS = [];
+
+  for (const pattern of ACTION_PATTERNS) {
+    if (cleanContent.includes(pattern.tag)) {
+      cleanContent = cleanContent.replace(pattern.tag, '').trim();
+      actions.push(pattern);
+    }
+  }
+
+  return { cleanContent, actions };
+}
 
 interface ChatMessageProps {
   message: ChatMessageType;
+  onAction?: (action: string) => void;
 }
 
-export function ChatMessage({ message }: ChatMessageProps) {
+export function ChatMessage({ message, onAction }: ChatMessageProps) {
   const isUser = message.role === 'user';
+  const { cleanContent, actions } = isUser
+    ? { cleanContent: message.content, actions: [] }
+    : parseActions(message.content);
 
   return (
     <motion.div
@@ -18,13 +49,32 @@ export function ChatMessage({ message }: ChatMessageProps) {
       className={`flex ${isUser ? 'justify-end' : 'justify-start'} mb-3`}
     >
       <div
-        className={`max-w-[80%] px-3.5 py-2.5 text-sm leading-relaxed whitespace-pre-wrap ${
+        className={`max-w-[80%] ${
           isUser
             ? 'bg-accent-pink text-white rounded-2xl rounded-br-md'
             : 'bg-white dark:bg-card-bg-dark border border-border-light dark:border-border-dark text-text-primary-light dark:text-text-primary-dark rounded-2xl rounded-bl-md'
         }`}
       >
-        {message.content}
+        <div className="px-3.5 py-2.5 text-sm leading-relaxed whitespace-pre-wrap">
+          {cleanContent}
+        </div>
+        {actions.length > 0 && (
+          <div className="flex flex-wrap gap-2 px-3.5 pb-2.5">
+            {actions.map((a) => {
+              const Icon = a.icon;
+              return (
+                <button
+                  key={a.action}
+                  onClick={() => onAction?.(a.action)}
+                  className="inline-flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-full bg-accent-pink/10 text-accent-pink hover:bg-accent-pink/20 transition-colors"
+                >
+                  <Icon className="h-3.5 w-3.5" />
+                  {a.label}
+                </button>
+              );
+            })}
+          </div>
+        )}
       </div>
     </motion.div>
   );

@@ -144,8 +144,8 @@ describe('/api/chat route', () => {
     // Verify startChat was called with history
     expect(mockStartChat).toHaveBeenCalled();
     const callArgs = mockStartChat.mock.calls[0][0];
-    // Should have system prompt pair + 2 history messages
-    expect(callArgs.history.length).toBe(4);
+    // Should have 2 history messages (no system prompt pair — uses systemInstruction now)
+    expect(callArgs.history.length).toBe(2);
   });
 
   it('limits history to last 10 messages', async () => {
@@ -157,8 +157,8 @@ describe('/api/chat route', () => {
     const res = await POST(req);
     expect(res.status).toBe(200);
     const callArgs = mockStartChat.mock.calls[0][0];
-    // 2 (system prompt pair) + 10 (capped history) = 12
-    expect(callArgs.history.length).toBe(12);
+    // 10 (capped history) — no system prompt pair anymore
+    expect(callArgs.history.length).toBe(10);
   });
 
   // --- API Key ---
