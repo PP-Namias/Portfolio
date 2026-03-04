@@ -141,7 +141,7 @@ export async function POST(request: NextRequest) {
     const genAI = new GoogleGenerativeAI(apiKey);
 
     // Try models in order of preference; fall back if quota is exhausted
-    const MODELS = ['gemini-2.0-flash', 'gemini-2.0-flash-lite', 'gemini-1.5-flash'];
+    const MODELS = ['gemini-2.0-flash', 'gemini-2.0-flash-lite', 'gemini-2.5-flash-preview-04-17'];
     let lastError: unknown = null;
 
     for (const modelName of MODELS) {
@@ -171,7 +171,11 @@ export async function POST(request: NextRequest) {
           console.warn(`[Chat API] ${modelName} quota exceeded, trying next model...`);
           continue;
         }
-        // For non-quota errors, break immediately
+        if (errMsg.includes('404') || errMsg.includes('not found') || errMsg.includes('Not Found')) {
+          console.warn(`[Chat API] ${modelName} not available, trying next model...`);
+          continue;
+        }
+        // For non-recoverable errors, break immediately
         break;
       }
     }
