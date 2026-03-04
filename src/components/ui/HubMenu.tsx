@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Bot,
@@ -37,11 +37,37 @@ const socialIconMap: Record<string, typeof Github> = {
 export function HubMenu({ onClose, onOpenChat }: HubMenuProps) {
   const [connectExpanded, setConnectExpanded] = useState(false);
   const { openModal } = useModal();
+  const menuRef = useRef<HTMLDivElement>(null);
 
   const calLink = socialLinks.find((s) => s.name === 'cal');
   const connectLinks = socialLinks.filter((s) =>
     CONNECT_SOCIALS.includes(s.name as (typeof CONNECT_SOCIALS)[number])
   );
+
+  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
+    if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return;
+    e.preventDefault();
+    const items = menuRef.current?.querySelectorAll<HTMLElement>('[role="menuitem"]');
+    if (!items || items.length === 0) return;
+    const current = document.activeElement as HTMLElement;
+    const idx = Array.from(items).indexOf(current);
+    let next: number;
+    if (e.key === 'ArrowDown') {
+      next = idx < items.length - 1 ? idx + 1 : 0;
+    } else {
+      next = idx > 0 ? idx - 1 : items.length - 1;
+    }
+    items[next].focus();
+  }, []);
+
+  useEffect(() => {
+    // Auto-focus first menu item when menu opens
+    const timer = setTimeout(() => {
+      const firstItem = menuRef.current?.querySelector<HTMLElement>('[role="menuitem"]');
+      firstItem?.focus();
+    }, 100);
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
     <>
@@ -59,17 +85,25 @@ export function HubMenu({ onClose, onOpenChat }: HubMenuProps) {
         </button>
       </div>
 
-      {/* Pink accent bar */}
+      {/* Accent bar */}
       <div className="h-0.5 bg-gradient-to-r from-accent-pink via-accent-pink-hover-dark to-accent-pink" />
 
       {/* Menu Items */}
-      <div className="py-2 overflow-y-auto">
+      <div
+        ref={menuRef}
+        className="py-2 overflow-y-auto"
+        role="menu"
+        aria-label="Quick actions menu"
+        onKeyDown={handleKeyDown}
+      >
         <HubMenuItem
           icon={Bot}
           label="Ask AI Assistant"
           subtitle="Chat with Keneth's AI"
           index={0}
           onClick={onOpenChat}
+          iconColorClass="text-violet-500"
+          iconBgClass="bg-violet-500/10"
         />
 
         <HubMenuItem
@@ -78,6 +112,8 @@ export function HubMenu({ onClose, onOpenChat }: HubMenuProps) {
           subtitle="View & download my CV"
           index={1}
           onClick={() => { openModal('resume'); onClose(); }}
+          iconColorClass="text-blue-500"
+          iconBgClass="bg-blue-500/10"
         />
 
         {calLink && (
@@ -87,6 +123,8 @@ export function HubMenu({ onClose, onOpenChat }: HubMenuProps) {
             subtitle="Book on Cal.com"
             index={2}
             onClick={() => { openModal('booking'); onClose(); }}
+            iconColorClass="text-emerald-500"
+            iconBgClass="bg-emerald-500/10"
           />
         )}
 
@@ -96,6 +134,8 @@ export function HubMenu({ onClose, onOpenChat }: HubMenuProps) {
           subtitle={profile.email}
           index={3}
           href={`mailto:${profile.email}`}
+          iconColorClass="text-amber-500"
+          iconBgClass="bg-amber-500/10"
         />
 
         {/* Connect — expandable */}
@@ -105,6 +145,8 @@ export function HubMenu({ onClose, onOpenChat }: HubMenuProps) {
           subtitle="GitHub · LinkedIn · X"
           index={4}
           onClick={() => setConnectExpanded((prev) => !prev)}
+          iconColorClass="text-teal-500"
+          iconBgClass="bg-teal-500/10"
         />
 
         <AnimatePresence>
@@ -143,6 +185,8 @@ export function HubMenu({ onClose, onOpenChat }: HubMenuProps) {
           subtitle="Latest articles & tutorials"
           index={5}
           href="/blog"
+          iconColorClass="text-indigo-500"
+          iconBgClass="bg-indigo-500/10"
         />
       </div>
 

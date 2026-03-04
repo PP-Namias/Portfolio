@@ -9,10 +9,10 @@ vi.mock('framer-motion', () => {
   return {
     motion: {
       button: R.forwardRef(function MockButton(
-        { children, className, onClick, ...props }: Record<string, unknown>,
+        { children, className, onClick, role, tabIndex, ...props }: Record<string, unknown>,
         ref: React.Ref<HTMLButtonElement>
       ) {
-        return R.createElement('button', { ref, className, onClick, ...props }, children);
+        return R.createElement('button', { ref, className, onClick, role, tabIndex, ...props }, children);
       }),
       div: R.forwardRef(function MockDiv(
         { children, className, ...props }: Record<string, unknown>,
@@ -20,8 +20,8 @@ vi.mock('framer-motion', () => {
       ) {
         return R.createElement('div', { ref, className, ...props }, children);
       }),
-      a: ({ children, className, onClick, href, download, target, rel, ...props }: Record<string, unknown>) =>
-        R.createElement('a', { className, onClick, href, download, target, rel, ...props }, children),
+      a: ({ children, className, onClick, href, download, target, rel, role, tabIndex, ...props }: Record<string, unknown>) =>
+        R.createElement('a', { className, onClick, href, download, target, rel, role, tabIndex, ...props }, children),
     },
     AnimatePresence: ({ children }: { children: React.ReactNode }) => children,
   };
@@ -126,5 +126,121 @@ describe('HubMenu', () => {
   it('shows Cal.com subtitle for Schedule a Meeting', () => {
     render(<HubMenu onClose={mockOnClose} onOpenChat={mockOnOpenChat} />);
     expect(screen.getByText('Book on Cal.com')).toBeInTheDocument();
+  });
+
+  // --- New tests ---
+
+  it('renders menu container with role="menu"', () => {
+    render(<HubMenu onClose={mockOnClose} onOpenChat={mockOnOpenChat} />);
+    const menu = screen.getByRole('menu');
+    expect(menu).toBeInTheDocument();
+    expect(menu).toHaveAttribute('aria-label', 'Quick actions menu');
+  });
+
+  it('renders all items with role="menuitem"', () => {
+    render(<HubMenu onClose={mockOnClose} onOpenChat={mockOnOpenChat} />);
+    const items = screen.getAllByRole('menuitem');
+    expect(items.length).toBe(6);
+  });
+
+  it('collapses connect section on second click', () => {
+    render(<HubMenu onClose={mockOnClose} onOpenChat={mockOnOpenChat} />);
+    const connectBtn = screen.getByText('Connect').closest('button')!;
+
+    // Expand
+    fireEvent.click(connectBtn);
+    expect(screen.getByLabelText('PP-Namias')).toBeInTheDocument();
+
+    // Collapse
+    fireEvent.click(connectBtn);
+    expect(screen.queryByLabelText('PP-Namias')).not.toBeInTheDocument();
+  });
+
+  it('connect social links have correct hrefs', () => {
+    render(<HubMenu onClose={mockOnClose} onOpenChat={mockOnOpenChat} />);
+    fireEvent.click(screen.getByText('Connect'));
+
+    const github = screen.getByLabelText('PP-Namias');
+    expect(github).toHaveAttribute('href', 'https://github.com/PP-Namias');
+    expect(github).toHaveAttribute('target', '_blank');
+    expect(github).toHaveAttribute('rel', 'noopener noreferrer');
+
+    const linkedin = screen.getByLabelText('LinkedIn');
+    expect(linkedin).toHaveAttribute('href', 'https://www.linkedin.com/in/pp-namias/');
+
+    const x = screen.getByLabelText('@PP_Namias');
+    expect(x).toHaveAttribute('href', 'https://x.com/PP_Namias');
+
+    const instagram = screen.getByLabelText('@pp_namias');
+    expect(instagram).toHaveAttribute('href', 'https://www.instagram.com/pp_namias/');
+  });
+
+  it('shows "Powered by Gemini AI" footer', () => {
+    render(<HubMenu onClose={mockOnClose} onOpenChat={mockOnOpenChat} />);
+    expect(screen.getByText('Powered by Gemini AI')).toBeInTheDocument();
+  });
+
+  it('shows correct subtitles for all items', () => {
+    render(<HubMenu onClose={mockOnClose} onOpenChat={mockOnOpenChat} />);
+    expect(screen.getByText("Chat with Keneth's AI")).toBeInTheDocument();
+    expect(screen.getByText('View & download my CV')).toBeInTheDocument();
+    expect(screen.getByText('Book on Cal.com')).toBeInTheDocument();
+    expect(screen.getByText('pp.namias@gmail.com')).toBeInTheDocument();
+    expect(screen.getByText('GitHub · LinkedIn · X')).toBeInTheDocument();
+    expect(screen.getByText('Latest articles & tutorials')).toBeInTheDocument();
+  });
+
+  it('navigates down with ArrowDown key', () => {
+    render(<HubMenu onClose={mockOnClose} onOpenChat={mockOnOpenChat} />);
+    const menu = screen.getByRole('menu');
+    const items = screen.getAllByRole('menuitem');
+
+    // Focus first item
+    items[0].focus();
+    expect(document.activeElement).toBe(items[0]);
+
+    // ArrowDown moves to second item
+    fireEvent.keyDown(menu, { key: 'ArrowDown' });
+    expect(document.activeElement).toBe(items[1]);
+  });
+
+  it('navigates up with ArrowUp key', () => {
+    render(<HubMenu onClose={mockOnClose} onOpenChat={mockOnOpenChat} />);
+    const menu = screen.getByRole('menu');
+    const items = screen.getAllByRole('menuitem');
+
+    // Focus second item
+    items[1].focus();
+    expect(document.activeElement).toBe(items[1]);
+
+    // ArrowUp moves to first item
+    fireEvent.keyDown(menu, { key: 'ArrowUp' });
+    expect(document.activeElement).toBe(items[0]);
+  });
+
+  it('wraps ArrowDown from last item to first', () => {
+    render(<HubMenu onClose={mockOnClose} onOpenChat={mockOnOpenChat} />);
+    const menu = screen.getByRole('menu');
+    const items = screen.getAllByRole('menuitem');
+
+    // Focus last item
+    items[items.length - 1].focus();
+
+    // ArrowDown wraps to first
+    fireEvent.keyDown(menu, { key: 'ArrowDown' });
+    expect(document.activeElement).toBe(items[0]);
+  });
+
+  it('wraps ArrowUp from first item to last', () => {
+    render(<HubMenu onClose={mockOnClose} onOpenChat={mockOnOpenChat} />);
+    const menu = screen.getByRole('menu');
+    const items = screen.getAllByRole('menuitem');
+
+    // Focus first item
+    items[0].focus();
+
+    // ArrowUp wraps to last
+    fireEvent.keyDown(menu, { key: 'ArrowUp' });
+    expect(document.activeElement).toBe(items[items.length - 1]);
   });
 });

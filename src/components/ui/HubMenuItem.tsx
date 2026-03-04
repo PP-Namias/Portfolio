@@ -12,6 +12,8 @@ interface HubMenuItemProps {
   href?: string;
   download?: boolean;
   external?: boolean;
+  iconColorClass?: string;
+  iconBgClass?: string;
 }
 
 export function HubMenuItem({
@@ -23,11 +25,13 @@ export function HubMenuItem({
   href,
   download,
   external,
+  iconColorClass = 'text-accent-pink',
+  iconBgClass = 'bg-accent-pink/10',
 }: HubMenuItemProps) {
   const content = (
     <>
-      <div className="h-10 w-10 rounded-lg bg-accent-pink/10 flex items-center justify-center flex-shrink-0">
-        <Icon className="h-5 w-5 text-accent-pink" />
+      <div className={`h-10 w-10 rounded-lg ${iconBgClass} flex items-center justify-center flex-shrink-0`}>
+        <Icon className={`h-5 w-5 ${iconColorClass}`} />
       </div>
       <div className="min-w-0">
         <p className="text-sm font-medium text-text-primary-light dark:text-text-primary-dark">
@@ -41,7 +45,7 @@ export function HubMenuItem({
   );
 
   const className =
-    'flex items-center gap-3 w-full px-4 py-2.5 rounded-lg hover:bg-surface-light dark:hover:bg-surface-dark transition-colors text-left group';
+    'flex items-center gap-3 w-full px-4 py-2.5 rounded-lg hover:bg-surface-light dark:hover:bg-surface-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-pink/50 focus-visible:bg-surface-light dark:focus-visible:bg-surface-dark transition-colors text-left group';
 
   if (href) {
     return (
@@ -55,6 +59,8 @@ export function HubMenuItem({
         transition={{ delay: index * 0.05, duration: 0.15 }}
         className={className}
         onClick={onClick}
+        role="menuitem"
+        tabIndex={0}
       >
         {content}
       </motion.a>
@@ -68,6 +74,8 @@ export function HubMenuItem({
       transition={{ delay: index * 0.05, duration: 0.15 }}
       onClick={onClick}
       className={className}
+      role="menuitem"
+      tabIndex={0}
     >
       {content}
     </motion.button>

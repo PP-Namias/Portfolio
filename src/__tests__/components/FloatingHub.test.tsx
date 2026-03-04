@@ -8,23 +8,23 @@ import { FloatingHub } from '@/components/ui/FloatingHub';
 vi.mock('framer-motion', () => {
   const R = require('react');
   const MockButton = R.forwardRef(function MockMotionButton(
-    { children, className, onClick, whileHover, whileTap, ...props }: Record<string, unknown>,
+    { children, className, onClick, whileHover, whileTap, role, tabIndex, ...props }: Record<string, unknown>,
     ref: React.Ref<HTMLButtonElement>
   ) {
-    return R.createElement('button', { ref, className, onClick, ...props }, children);
+    return R.createElement('button', { ref, className, onClick, role, tabIndex, ...props }, children);
   });
   const MockDiv = R.forwardRef(function MockMotionDiv(
-    { children, className, ...props }: Record<string, unknown>,
+    { children, className, role, ...props }: Record<string, unknown>,
     ref: React.Ref<HTMLDivElement>
   ) {
-    return R.createElement('div', { ref, className, ...props }, children);
+    return R.createElement('div', { ref, className, role, ...props }, children);
   });
   return {
     motion: {
       button: MockButton,
       div: MockDiv,
-      a: ({ children, className, onClick, href, download, target, rel, ...props }: Record<string, unknown>) =>
-        R.createElement('a', { className, onClick, href, download, target, rel, ...props }, children),
+      a: ({ children, className, onClick, href, download, target, rel, role, tabIndex, ...props }: Record<string, unknown>) =>
+        R.createElement('a', { className, onClick, href, download, target, rel, role, tabIndex, ...props }, children),
     },
     AnimatePresence: ({ children }: { children: React.ReactNode }) => children,
   };
@@ -272,5 +272,67 @@ describe('FloatingHub', () => {
     fireEvent.click(screen.getByLabelText('Open quick actions'));
     const dialog = screen.getByRole('dialog');
     expect(dialog).toHaveAttribute('tabindex', '-1');
+  });
+
+  it('menu has role="menu" with aria-label', () => {
+    render(<FloatingHub />);
+    fireEvent.click(screen.getByLabelText('Open quick actions'));
+    const menu = screen.getByRole('menu');
+    expect(menu).toHaveAttribute('aria-label', 'Quick actions menu');
+  });
+
+  it('all menu items have role="menuitem"', () => {
+    render(<FloatingHub />);
+    fireEvent.click(screen.getByLabelText('Open quick actions'));
+    const items = screen.getAllByRole('menuitem');
+    expect(items.length).toBe(6);
+  });
+
+  it('shows Powered by Gemini AI footer in menu', () => {
+    render(<FloatingHub />);
+    fireEvent.click(screen.getByLabelText('Open quick actions'));
+    expect(screen.getByText('Powered by Gemini AI')).toBeInTheDocument();
+  });
+
+  it('connect section collapses on second click', () => {
+    render(<FloatingHub />);
+    fireEvent.click(screen.getByLabelText('Open quick actions'));
+
+    // Expand
+    fireEvent.click(screen.getByText('Connect'));
+    expect(screen.getByLabelText('PP-Namias')).toBeInTheDocument();
+
+    // Collapse
+    fireEvent.click(screen.getByText('Connect'));
+    expect(screen.queryByLabelText('PP-Namias')).not.toBeInTheDocument();
+  });
+
+  it('connect social links open in new tab', () => {
+    render(<FloatingHub />);
+    fireEvent.click(screen.getByLabelText('Open quick actions'));
+    fireEvent.click(screen.getByText('Connect'));
+
+    const github = screen.getByLabelText('PP-Namias');
+    expect(github).toHaveAttribute('target', '_blank');
+    expect(github).toHaveAttribute('rel', 'noopener noreferrer');
+  });
+
+  it('non-Escape keys do not change hub state', () => {
+    render(<FloatingHub />);
+    fireEvent.click(screen.getByLabelText('Open quick actions'));
+    expect(screen.getByText('Quick Actions')).toBeInTheDocument();
+
+    fireEvent.keyDown(document, { key: 'Enter' });
+    expect(screen.getByText('Quick Actions')).toBeInTheDocument();
+
+    fireEvent.keyDown(document, { key: 'a' });
+    expect(screen.getByText('Quick Actions')).toBeInTheDocument();
+  });
+
+  it('FAB has correct aria-label', () => {
+    render(<FloatingHub />);
+    const fab = screen.getByLabelText('Open quick actions');
+    expect(fab).toBeInTheDocument();
+    expect(fab.tagName).toBe('BUTTON');
   });
 });
