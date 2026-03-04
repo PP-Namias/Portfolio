@@ -50,15 +50,22 @@ export function AboutSection() {
         About
       </h2>
       <div className="space-y-4">
-        <motion.p
-          className="text-sm text-text-secondary-light dark:text-text-secondary-dark leading-relaxed"
+        <motion.div
+          className="space-y-3"
           initial={{ opacity: 0, y: 10 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.3 }}
         >
-          {profile.summary}
-        </motion.p>
+          {profile.summary.split('\n\n').map((paragraph, i) => (
+            <p
+              key={i}
+              className="text-sm text-text-secondary-light dark:text-text-secondary-dark leading-relaxed text-justify"
+            >
+              {paragraph}
+            </p>
+          ))}
+        </motion.div>
 
         {/* Education */}
         {profile.education.map((edu, index) => {
