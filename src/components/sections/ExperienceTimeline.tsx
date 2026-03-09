@@ -21,8 +21,8 @@ export function ExperienceTimeline() {
         Experience
       </h2>
       <div>
-        {experiences.map((exp, index) => (
-          <TimelineItem key={`${exp.company}-${exp.position}`} item={exp} index={index} isLast={index === experiences.length - 1} />
+        {experiences.slice(0, 5).map((exp, index) => (
+          <TimelineItem key={`${exp.company}-${exp.position}`} item={exp} index={index} isLast={index === 4} />
         ))}
       </div>
       <button

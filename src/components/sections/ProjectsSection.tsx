@@ -20,7 +20,7 @@ export function ProjectsSection() {
     >
       <h2 className="text-lg font-semibold text-text-primary-light dark:text-text-primary-dark mb-4">
         Projects
-        <span className="text-[11px] font-medium px-1.5 py-0.5 rounded-md bg-accent-pink/10 text-accent-pink ml-2 align-middle">
+        <span className="text-xs font-medium px-1.5 py-0.5 rounded-md bg-accent-pink/10 text-accent-pink ml-2 align-middle">
           {projects.length}
         </span>
       </h2>
@@ -34,7 +34,7 @@ export function ProjectsSection() {
           viewport={{ once: true }}
           transition={{ duration: 0.4 }}
         >
-          <div className="relative rounded-xl overflow-hidden border border-border-light dark:border-border-dark">
+          <div className="relative rounded-xl overflow-hidden -mx-5 -mt-5 mb-4">
             <Image
               src={`/images/projects/${featured.image}`}
               alt={featured.title}
@@ -49,20 +49,20 @@ export function ProjectsSection() {
                 <h3 className="text-sm font-semibold text-white leading-snug">
                   {featured.title}
                 </h3>
-                <span className="text-[10px] text-white/60 flex-shrink-0">{featured.year}</span>
+                <span className="text-[11px] text-white/60 flex-shrink-0">{featured.year}</span>
               </div>
               <p className="text-xs text-white/70 mt-1 line-clamp-2 leading-relaxed">
                 {featured.description}
               </p>
-              <div className="flex items-center gap-3 mt-2">
+              <div className="flex items-center gap-3 mt-2.5">
                 <div className="flex flex-wrap gap-1">
                   {featured.tags.slice(0, 3).map((tag) => (
-                    <span key={tag} className="text-[9px] font-medium px-1.5 py-0.5 rounded-full bg-white/15 text-white/90">
+                    <span key={tag} className="text-[11px] font-medium px-2 py-0.5 rounded-full bg-white/15 text-white/90">
                       {tag}
                     </span>
                   ))}
                   {featured.tags.length > 3 && (
-                    <span className="text-[9px] font-medium px-1.5 py-0.5 rounded-full bg-white/15 text-white/90">
+                    <span className="text-[11px] font-medium px-2 py-0.5 rounded-full bg-white/15 text-white/90">
                       +{featured.tags.length - 3}
                     </span>
                   )}
@@ -117,14 +117,14 @@ export function ProjectsSection() {
                     <p className="text-sm font-medium text-text-primary-light dark:text-text-primary-dark truncate group-hover:text-accent-pink transition-colors">
                       {project.title}
                     </p>
-                    <span className="text-[10px] text-text-muted-light dark:text-text-muted-dark flex-shrink-0">
+                    <span className="text-xs text-text-muted-light dark:text-text-muted-dark flex-shrink-0">
                       {project.year}
                     </span>
                   </div>
                   <div className="flex items-center gap-2 mt-0.5">
                     <div className="flex flex-wrap gap-1 flex-1 min-w-0">
                       {project.tags.slice(0, 2).map((tag) => (
-                        <span key={tag} className="text-[9px] font-medium px-1.5 py-0.5 rounded-full bg-accent-pink/10 text-accent-pink">
+                        <span key={tag} className="text-[11px] font-medium px-1.5 py-0.5 rounded-full bg-accent-pink/10 text-accent-pink">
                           {tag}
                         </span>
                       ))}

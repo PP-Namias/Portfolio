@@ -15,7 +15,7 @@ export function MembershipsSection() {
       transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
     >
       <h2 className="text-lg font-semibold text-text-primary-light dark:text-text-primary-dark mb-4">
-        A member of
+        Memberships
       </h2>
       <div className="space-y-2.5">
         {memberships.map((membership, index) => (
@@ -33,7 +33,7 @@ export function MembershipsSection() {
             <ExternalLink className="h-3.5 w-3.5 mt-0.5 flex-shrink-0 opacity-60 group-hover:opacity-100 transition-opacity" />
             <div>
               <span className="leading-snug">{membership.name}</span>
-              <p className="text-[10px] text-text-muted-light dark:text-text-muted-dark mt-0.5">
+              <p className="text-xs text-text-muted-light dark:text-text-muted-dark mt-0.5">
                 Since {new Date(membership.joinedAt).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
               </p>
             </div>

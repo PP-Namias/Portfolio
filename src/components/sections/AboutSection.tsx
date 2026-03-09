@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
-import { GraduationCap, Briefcase, Code, Layers } from 'lucide-react';
+import { GraduationCap, Briefcase, Code, Layers, ChevronDown, ChevronUp } from 'lucide-react';
 import { profile } from '@/data/profile';
 import { technologies } from '@/data/techStack';
 
@@ -29,15 +29,18 @@ function AnimatedCounter({ target, label, icon: Icon }: { target: number; label:
   }, [inView, target]);
 
   return (
-    <div ref={ref} className="text-center">
-      <Icon className="h-4 w-4 text-accent-pink mx-auto mb-1" />
-      <p className="text-lg font-bold text-accent-pink">{count}+</p>
-      <p className="text-[10px] text-text-muted-light dark:text-text-muted-dark">{label}</p>
+    <div ref={ref} className="text-center px-2">
+      <Icon className="h-4 w-4 text-accent-pink mx-auto mb-1.5" />
+      <p className="text-xl font-bold text-accent-pink tabular-nums">{count}+</p>
+      <p className="text-xs text-text-muted-light dark:text-text-muted-dark">{label}</p>
     </div>
   );
 }
 
 export function AboutSection() {
+  const [showMore, setShowMore] = useState(false);
+  const paragraphs = profile.summary.split('\n\n');
+
   return (
     <motion.section
       className=""
@@ -50,6 +53,20 @@ export function AboutSection() {
         About
       </h2>
       <div className="space-y-4">
+        {/* Animated Stats — visual hook first */}
+        <motion.div
+          className="flex flex-wrap gap-8 justify-center sm:justify-start"
+          initial={{ opacity: 0, y: 10 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.3 }}
+        >
+          <AnimatedCounter target={profile.highlights.yearsExperience} label="Years Exp." icon={Briefcase} />
+          <AnimatedCounter target={profile.highlights.projectsCompleted} label="Projects" icon={Code} />
+          <AnimatedCounter target={technologies.length} label="Technologies" icon={Layers} />
+        </motion.div>
+
+        {/* Summary text — capped at 2 paragraphs with Read more */}
         <motion.div
           className="space-y-3"
           initial={{ opacity: 0, y: 10 }}
@@ -57,15 +74,28 @@ export function AboutSection() {
           viewport={{ once: true }}
           transition={{ duration: 0.3 }}
         >
-          {profile.summary.split('\n\n').map((paragraph, i) => (
+          {(showMore ? paragraphs : paragraphs.slice(0, 2)).map((paragraph, i) => (
             <p
               key={i}
-              className="text-sm text-text-secondary-light dark:text-text-secondary-dark leading-relaxed text-justify"
+              className="text-sm text-text-secondary-light dark:text-text-secondary-dark leading-[1.7]"
             >
               {paragraph}
             </p>
           ))}
         </motion.div>
+
+        {paragraphs.length > 2 && (
+          <button
+            onClick={() => setShowMore(!showMore)}
+            className="flex items-center gap-1 text-xs font-medium text-text-muted-light dark:text-text-muted-dark hover:text-accent-pink dark:hover:text-accent-pink transition-colors"
+          >
+            {showMore ? (
+              <>Show less <ChevronUp className="h-3.5 w-3.5" /></>
+            ) : (
+              <>Read more <ChevronDown className="h-3.5 w-3.5" /></>
+            )}
+          </button>
+        )}
 
         {/* Education */}
         {profile.education.map((edu, index) => {
@@ -89,7 +119,7 @@ export function AboutSection() {
                   <p className="text-xs text-text-muted-light dark:text-text-muted-dark">
                     {edu.institution} — {edu.location}
                   </p>
-                  <p className="text-[10px] text-text-muted-light dark:text-text-muted-dark mt-0.5">
+                  <p className="text-xs text-text-muted-light dark:text-text-muted-dark mt-0.5">
                     {startYear} – {endLabel} · GWA: {edu.gpa}
                   </p>
                 </div>
@@ -99,7 +129,7 @@ export function AboutSection() {
                   {edu.honors.map((honor) => (
                     <span
                       key={honor}
-                      className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-accent-pink/10 text-accent-pink"
+                      className="text-xs font-medium px-2 py-0.5 rounded-full bg-accent-pink/10 text-accent-pink"
                     >
                       {honor}
                     </span>
@@ -110,19 +140,6 @@ export function AboutSection() {
             </motion.div>
           );
         })}
-
-        {/* Animated Stats */}
-        <motion.div
-          className="flex flex-wrap gap-6 mt-3"
-          initial={{ opacity: 0, y: 10 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.2, duration: 0.3 }}
-        >
-          <AnimatedCounter target={profile.highlights.yearsExperience} label="Years Exp." icon={Briefcase} />
-          <AnimatedCounter target={profile.highlights.projectsCompleted} label="Projects" icon={Code} />
-          <AnimatedCounter target={technologies.length} label="Technologies" icon={Layers} />
-        </motion.div>
       </div>
     </motion.section>
   );

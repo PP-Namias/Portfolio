@@ -77,9 +77,9 @@ export function GallerySection() {
       transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
     >
       {/* Header */}
-      <h2 className="text-lg font-semibold text-text-primary-light dark:text-text-primary-dark mb-3">
+      <h2 className="text-lg font-semibold text-text-primary-light dark:text-text-primary-dark mb-4">
         Gallery
-        <span className="text-[11px] font-medium px-1.5 py-0.5 rounded-md bg-accent-pink/10 text-accent-pink ml-2 align-middle">
+        <span className="text-xs font-medium px-1.5 py-0.5 rounded-md bg-accent-pink/10 text-accent-pink ml-2 align-middle">
           {filtered.length}
         </span>
       </h2>
@@ -90,7 +90,7 @@ export function GallerySection() {
           <button
             key={tag}
             onClick={() => setActiveTag(tag)}
-            className={`text-[11px] font-medium px-2.5 py-1 rounded-full transition-all duration-200 ${
+            className={`text-xs font-medium px-2.5 py-1 rounded-full transition-all duration-200 ${
               activeTag === tag
                 ? 'bg-accent-pink text-white shadow-sm shadow-accent-pink/25'
                 : 'bg-surface-light dark:bg-surface-dark text-text-secondary-light dark:text-text-secondary-dark hover:bg-accent-pink/10 hover:text-accent-pink border border-border-light dark:border-border-dark'
@@ -128,11 +128,11 @@ export function GallerySection() {
                 />
                 {/* Hover overlay with gradient */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-3">
-                  <span className="text-[12px] font-medium text-white leading-snug line-clamp-2 drop-shadow-sm">
+                  <span className="text-xs font-medium text-white leading-snug line-clamp-2 drop-shadow-sm">
                     {image.title}
                   </span>
                   {image.createdAt && (
-                    <span className="text-[10px] text-white/70 mt-0.5">
+                    <span className="text-[11px] text-white/70 mt-0.5">
                       {new Date(image.createdAt).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
                     </span>
                   )}
@@ -153,7 +153,7 @@ export function GallerySection() {
         >
           <button
             onClick={() => setExpanded((prev) => !prev)}
-            className="inline-flex items-center gap-1.5 text-[12px] font-medium px-4 py-2 rounded-full border border-border-light dark:border-border-dark text-text-secondary-light dark:text-text-secondary-dark hover:border-accent-pink hover:text-accent-pink transition-colors duration-200"
+            className="flex items-center gap-1 text-xs font-medium text-text-muted-light dark:text-text-muted-dark hover:text-accent-pink dark:hover:text-accent-pink transition-colors"
           >
             {expanded ? (
               <>Show Less <ChevronUp className="h-3.5 w-3.5" /></>

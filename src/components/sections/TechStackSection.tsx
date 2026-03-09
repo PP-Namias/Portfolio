@@ -22,7 +22,7 @@ export function TechStackSection() {
     >
       <h2 className="text-lg font-semibold text-text-primary-light dark:text-text-primary-dark mb-4">
         Tech Stack
-        <span className="text-[11px] font-medium px-1.5 py-0.5 rounded-md bg-accent-pink/10 text-accent-pink ml-2 align-middle">
+        <span className="text-xs font-medium px-1.5 py-0.5 rounded-md bg-accent-pink/10 text-accent-pink ml-2 align-middle">
           {technologies.length}
         </span>
       </h2>
@@ -38,14 +38,14 @@ export function TechStackSection() {
               exit={{ opacity: 0, y: -10 }}
               transition={{ delay: catIndex * 0.05, duration: 0.3 }}
             >
-              <h3 className="text-[11px] font-medium text-text-muted-light dark:text-text-muted-dark mb-1.5 uppercase tracking-wider">
+              <h3 className="text-xs font-semibold text-text-muted-light dark:text-text-muted-dark mb-2 uppercase tracking-wider">
                 {category}
               </h3>
               <div className="flex flex-wrap gap-1.5">
                 {techs.map((tech) => (
                   <span
                     key={tech.name}
-                    className="text-[11px] font-medium px-2 py-0.5 rounded-md bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark text-text-secondary-light dark:text-text-secondary-dark hover:border-accent-pink/40 hover:text-accent-pink transition-colors"
+                    className="text-xs font-medium px-2.5 py-1 rounded-lg bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark text-text-secondary-light dark:text-text-secondary-dark hover:border-accent-pink/40 hover:text-accent-pink transition-colors cursor-default"
                   >
                     {tech.name}
                   </span>

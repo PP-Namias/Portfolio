@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MapPin, Mail, ExternalLink, Download, Calendar, Github, Linkedin, Twitter, Instagram, BookOpen } from 'lucide-react';
+import { MapPin, Mail, Download, Calendar, Github, Linkedin, Twitter, Instagram, BookOpen } from 'lucide-react';
 import { profile } from '@/data/profile';
 import { socialLinks } from '@/data/socials';
 import { Button } from '@/components/ui/Button';
@@ -82,11 +82,11 @@ export function HeroSection() {
           </h1>
 
           {/* Animated role text */}
-          <div className="h-6 mt-1.5 overflow-hidden">
+          <div className="h-7 mt-1.5 overflow-hidden">
             <AnimatePresence mode="wait">
               <motion.p
                 key={roleIndex}
-                className="text-[15px] font-medium text-accent-pink"
+                className="text-base font-medium text-accent-pink"
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
@@ -105,29 +105,32 @@ export function HeroSection() {
                 {profile.location}
               </span>
             </div>
-            <span className="inline-flex items-center gap-1.5 text-[10px] font-medium px-2 py-0.5 rounded-full bg-green-500/10 text-green-600 dark:text-green-400 border border-green-500/20">
+            <span className="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full bg-green-500/15 text-green-600 dark:text-green-400 border border-green-500/25">
               <span className="h-1.5 w-1.5 rounded-full bg-green-500 animate-pulse" />
               Open to opportunities
             </span>
           </div>
 
-          {/* Primary CTA */}
+          {/* Primary CTAs — Resume is the #1 recruiter action, visually elevated */}
           <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2.5 mt-5">
-            <Button variant="primary" size="md" href={profile.github}>
-              View GitHub
-              <ExternalLink className="h-3.5 w-3.5" />
-            </Button>
-            <Button variant="ghost" size="md" onClick={() => openModal('resume')}>
+            <Button variant="primary" size="lg" onClick={() => openModal('resume')} className="shadow-md shadow-accent-pink/20">
               <Download className="h-4 w-4" />
-              Resume
+              Download Resume
             </Button>
-            <Button variant="ghost" size="md" onClick={() => openModal('booking')}>
+            <Button variant="outline" size="md" onClick={() => openModal('booking')}>
               <Calendar className="h-4 w-4" />
               Book a Call
             </Button>
-            <Button variant="ghost" size="md" href={`mailto:${profile.email}`}>
-              <Mail className="h-4 w-4" />
-              Send Email
+          </div>
+          {/* Secondary actions — lower visual weight */}
+          <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2 mt-3">
+            <Button variant="ghost" size="sm" href={profile.github}>
+              <Github className="h-3.5 w-3.5" />
+              GitHub
+            </Button>
+            <Button variant="ghost" size="sm" href={`mailto:${profile.email}`}>
+              <Mail className="h-3.5 w-3.5" />
+              Email
             </Button>
           </div>
 

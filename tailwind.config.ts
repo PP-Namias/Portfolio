@@ -23,15 +23,15 @@ const config: Config = {
         },
         'text-primary': {
           light: '#111827',
-          dark: '#ffffff',
+          dark: '#f5f5f5',
         },
         'text-secondary': {
           light: '#4b5563',
-          dark: '#d1d5db',
+          dark: '#d4d4d4',
         },
         'text-muted': {
           light: '#6b7280',
-          dark: '#9ca3af',
+          dark: '#a3a3a3',
         },
         border: {
           light: '#e5e7eb',

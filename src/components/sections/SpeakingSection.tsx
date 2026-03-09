@@ -29,7 +29,7 @@ export function SpeakingSection() {
           {topics.map((topic) => (
             <span
               key={topic}
-              className="text-[9px] px-1.5 py-0.5 rounded-full border border-border-light dark:border-border-dark text-text-muted-light dark:text-text-muted-dark"
+              className="text-xs px-2 py-0.5 rounded-full border border-border-light dark:border-border-dark text-text-secondary-light dark:text-text-secondary-dark"
             >
               {topic}
             </span>

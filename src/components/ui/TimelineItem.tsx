@@ -52,19 +52,19 @@ export function TimelineItem({ item, index, isLast }: TimelineItemProps) {
             {item.company}
           </p>
           <div className="flex items-center gap-2 mt-1 flex-wrap">
-            <span className="text-[10px] text-text-muted-light dark:text-text-muted-dark">
+            <span className="text-xs text-text-muted-light dark:text-text-muted-dark">
               {dateLabel}
             </span>
-            <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-accent-pink/10 text-accent-pink">
+            <span className="text-xs px-1.5 py-0.5 rounded-full bg-accent-pink/10 text-accent-pink">
               {item.type}
             </span>
             {item.modality && (
-              <span className="text-[10px] px-1.5 py-0.5 rounded-full border border-border-light dark:border-border-dark text-text-muted-light dark:text-text-muted-dark">
+              <span className="text-xs px-1.5 py-0.5 rounded-full border border-border-light dark:border-border-dark text-text-muted-light dark:text-text-muted-dark">
                 {item.modality}
               </span>
             )}
             {item.country && (
-              <span className="text-[10px] text-text-muted-light dark:text-text-muted-dark">
+              <span className="text-xs text-text-muted-light dark:text-text-muted-dark">
                 {item.country}
               </span>
             )}
@@ -92,7 +92,7 @@ export function TimelineItem({ item, index, isLast }: TimelineItemProps) {
                     {item.technologies.map((tech) => (
                       <span
                         key={tech}
-                        className="text-[9px] px-1.5 py-0.5 rounded-full border border-border-light dark:border-border-dark text-text-muted-light dark:text-text-muted-dark"
+                        className="text-[11px] px-1.5 py-0.5 rounded-full border border-border-light dark:border-border-dark text-text-secondary-light dark:text-text-secondary-dark"
                       >
                         {tech}
                       </span>
@@ -102,7 +102,7 @@ export function TimelineItem({ item, index, isLast }: TimelineItemProps) {
                 {item.highlights.length > 0 && (
                   <ul className="space-y-0.5">
                     {item.highlights.map((highlight, i) => (
-                      <li key={i} className="text-[11px] text-text-muted-light dark:text-text-muted-dark flex gap-1.5">
+                      <li key={i} className="text-xs text-text-muted-light dark:text-text-muted-dark flex gap-1.5">
                         <span className="text-accent-pink mt-0.5">•</span>
                         <span>{highlight}</span>
                       </li>
@@ -111,10 +111,10 @@ export function TimelineItem({ item, index, isLast }: TimelineItemProps) {
                 )}
                 {item.achievements.length > 0 && (
                   <div>
-                    <p className="text-[10px] font-medium text-text-secondary-light dark:text-text-secondary-dark uppercase tracking-wider mb-0.5">Achievements</p>
+                    <p className="text-xs font-medium text-text-secondary-light dark:text-text-secondary-dark uppercase tracking-wider mb-0.5">Achievements</p>
                     <ul className="space-y-0.5">
                       {item.achievements.map((achievement, i) => (
-                        <li key={i} className="text-[11px] text-text-muted-light dark:text-text-muted-dark flex gap-1.5">
+                        <li key={i} className="text-xs text-text-muted-light dark:text-text-muted-dark flex gap-1.5">
                           <span className="text-accent-pink mt-0.5">★</span>
                           <span>{achievement}</span>
                         </li>

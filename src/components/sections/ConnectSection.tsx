@@ -7,6 +7,9 @@ import {
   Github, Instagram, Linkedin, Facebook, Twitter, MessageSquare,
 } from 'lucide-react';
 import { socialLinks } from '@/data/socials';
+import { experiences } from '@/data/experience';
+import { certifications } from '@/data/certifications';
+import { technologies } from '@/data/techStack';
 import { useModal } from '@/hooks/useModal';
 
 const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
@@ -30,31 +33,52 @@ export function ConnectSection() {
       viewport={{ once: true, margin: '-50px' }}
       transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
     >
-      <h3 className="text-lg font-semibold text-text-primary-light dark:text-text-primary-dark mb-2">
+      <h2 className="text-lg font-semibold text-text-primary-light dark:text-text-primary-dark mb-2">
         Connect
-      </h3>
-      <p className="text-sm text-text-muted-light dark:text-text-muted-dark mb-4 leading-relaxed">
+      </h2>
+      <p className="text-sm text-text-secondary-light dark:text-text-secondary-dark mb-2 leading-relaxed">
         Open for collaborations, freelance work, and interesting conversations. Let&apos;s build something together.
       </p>
-      <div className="flex flex-wrap items-center gap-2">
-        {socialLinks.map((link, index) => {
+      <p className="text-xs text-text-muted-light dark:text-text-muted-dark mb-5">
+        {experiences.length} companies &middot; {certifications.length} certifications &middot; {technologies.length} technologies
+      </p>
+
+      {/* Primary CTA — elevated above social links */}
+      <div className="flex flex-wrap items-center gap-2 mb-4">
+        {socialLinks.filter(link => link.name === 'cal').map((link, index) => {
           const Icon = iconMap[link.icon] || ExternalLink;
-          if (link.name === 'cal') {
-            return (
-              <motion.button
-                key={link.name}
-                onClick={() => openModal('booking')}
-                initial={{ opacity: 0, y: 10 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.05, duration: 0.3 }}
-                className="flex items-center gap-1.5 px-3.5 py-2 text-xs font-medium rounded-lg transition-colors duration-200 group bg-accent-pink text-white hover:bg-accent-pink-hover"
-              >
-                <Icon className="h-3.5 w-3.5" />
-                <span>{link.label}</span>
-              </motion.button>
-            );
-          }
+          return (
+            <motion.button
+              key={link.name}
+              onClick={() => openModal('booking')}
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: index * 0.05, duration: 0.3 }}
+              className="flex items-center gap-1.5 px-4 py-2.5 text-sm font-medium rounded-lg transition-colors duration-200 group bg-accent-pink text-white hover:bg-accent-pink-hover shadow-sm shadow-accent-pink/20"
+            >
+              <Icon className="h-4 w-4" />
+              <span>{link.label}</span>
+            </motion.button>
+          );
+        })}
+        <motion.a
+          href={`mailto:${socialLinks.find(s => s.name === 'email')?.link?.replace('mailto:', '') || 'pp.namias@gmail.com'}`}
+          initial={{ opacity: 0, y: 10 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.05, duration: 0.3 }}
+          className="flex items-center gap-1.5 px-4 py-2.5 text-sm font-medium rounded-lg transition-colors duration-200 group border-2 border-accent-pink/30 text-accent-pink hover:bg-accent-pink/10"
+        >
+          <Mail className="h-4 w-4" />
+          <span>Send Email</span>
+        </motion.a>
+      </div>
+
+      {/* Secondary social links — lower visual weight */}
+      <div className="flex flex-wrap items-center gap-2">
+        {socialLinks.filter(link => link.name !== 'cal').map((link, index) => {
+          const Icon = iconMap[link.icon] || ExternalLink;
           return (
             <motion.a
               key={link.name}
@@ -65,11 +89,7 @@ export function ConnectSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: index * 0.05, duration: 0.3 }}
-              className={`flex items-center gap-1.5 px-3.5 py-2 text-xs font-medium rounded-lg transition-colors duration-200 group ${
-                link.featured
-                  ? 'bg-accent-pink text-white hover:bg-accent-pink-hover'
-                  : 'border border-border-light dark:border-border-dark text-text-secondary-light dark:text-text-secondary-dark hover:text-accent-pink hover:border-accent-pink dark:hover:text-accent-pink dark:hover:border-accent-pink'
-              }`}
+              className="flex items-center gap-1.5 px-3 py-2 text-xs font-medium rounded-lg transition-colors duration-200 group border border-border-light dark:border-border-dark text-text-secondary-light dark:text-text-secondary-dark hover:text-accent-pink hover:border-accent-pink dark:hover:text-accent-pink dark:hover:border-accent-pink"
             >
               <Icon className="h-3.5 w-3.5" />
               <span>{link.label}</span>

@@ -30,7 +30,7 @@ export default function Home() {
         </div>
 
         <div className="order-2 lg:order-none lg:col-start-2 lg:row-start-1 lg:row-span-3">
-          <aside className="lg:sticky lg:top-8 space-y-4">
+          <aside className="lg:sticky lg:top-8 space-y-4 lg:max-h-[calc(100vh-4rem)] lg:overflow-y-auto scrollbar-hide">
             <Card>
               <ExperienceTimeline />
             </Card>
@@ -57,7 +57,7 @@ export default function Home() {
       </div>
 
       {/* Certifications + Connect side by side */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+      <div className="grid grid-cols-1 sm:grid-cols-[1.5fr_1fr] gap-4 mt-4">
         <Card>
           <CertificationsSection />
         </Card>
