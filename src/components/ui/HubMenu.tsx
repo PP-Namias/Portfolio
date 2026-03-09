@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useRef, useCallback, useEffect } from 'react';
+import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Bot,
@@ -92,10 +93,15 @@ export function HubMenu({ onClose, onOpenChat }: HubMenuProps) {
               transition={{ type: 'spring', stiffness: 200, damping: 15, delay: 0.1 }}
             >
               <div className="h-11 w-11 rounded-full bg-gradient-to-br from-accent-pink via-accent-pink-hover-dark to-accent-pink-hover p-[2px]">
-                <div className="h-full w-full rounded-full bg-white dark:bg-card-bg-dark flex items-center justify-center">
-                  <span className="text-sm font-bold bg-gradient-to-br from-accent-pink to-accent-pink-hover-dark bg-clip-text text-transparent">
-                    {profile.name.split(' ').map(n => n[0]).slice(0, 2).join('')}
-                  </span>
+                <div className="h-full w-full rounded-full overflow-hidden">
+                  <Image
+                    src="/images/profile/PP%20Namias.png"
+                    alt={profile.name}
+                    width={44}
+                    height={44}
+                    className="h-full w-full object-cover"
+                    priority
+                  />
                 </div>
               </div>
               <motion.div
@@ -251,6 +257,7 @@ export function HubMenu({ onClose, onOpenChat }: HubMenuProps) {
           subtitle="Latest articles & tutorials"
           index={5}
           href="/blog"
+          onClick={onClose}
           iconColorClass="text-indigo-500"
           iconBgClass="bg-indigo-500/10"
         />
