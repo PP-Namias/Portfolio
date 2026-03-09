@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence, useMotionValue, useSpring } from 'framer-motion';
-import { MapPin, Mail, Download, Calendar, Github, Linkedin, Twitter, Instagram, BookOpen, ArrowUpRight } from 'lucide-react';
+import { MapPin, Mail, Download, Calendar, Github, Linkedin, Twitter, Instagram, ArrowUpRight } from 'lucide-react';
 import { profile } from '@/data/profile';
 import { socialLinks } from '@/data/socials';
 import { Button } from '@/components/ui/Button';
@@ -30,12 +30,12 @@ const containerVariants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
-    transition: { staggerChildren: 0.08, delayChildren: 0.1 },
+    transition: { staggerChildren: 0.07, delayChildren: 0.1 },
   },
 };
 
 const itemVariants = {
-  hidden: { opacity: 0, y: 16 },
+  hidden: { opacity: 0, y: 14 },
   visible: {
     opacity: 1,
     y: 0,
@@ -44,7 +44,7 @@ const itemVariants = {
 };
 
 const photoVariants = {
-  hidden: { opacity: 0, scale: 0.8 },
+  hidden: { opacity: 0, scale: 0.85 },
   visible: {
     opacity: 1,
     scale: 1,
@@ -74,15 +74,14 @@ export function HeroSection() {
     ['github', 'linkedin', 'x', 'instagram'].includes(s.name)
   );
 
-  /* Handle 3D tilt on profile photo based on cursor position */
   const handlePhotoMouseMove = useCallback(
     (e: React.MouseEvent<HTMLDivElement>) => {
       const el = photoRef.current;
       if (!el) return;
       const rect = el.getBoundingClientRect();
-      const x = (e.clientX - rect.left) / rect.width - 0.5; // -0.5 to 0.5
+      const x = (e.clientX - rect.left) / rect.width - 0.5;
       const y = (e.clientY - rect.top) / rect.height - 0.5;
-      rotateY.set(x * 16); // ±8 degrees
+      rotateY.set(x * 16);
       rotateX.set(y * -16);
     },
     [rotateX, rotateY]
@@ -100,22 +99,22 @@ export function HeroSection() {
       initial="hidden"
       animate="visible"
     >
-      {/* Ambient accent glow — background decoration */}
-      <div className="pointer-events-none absolute -top-20 -right-20 h-64 w-64 rounded-full bg-accent-pink/[0.04] blur-3xl dark:bg-accent-pink/[0.06]" />
-      <div className="pointer-events-none absolute -bottom-16 -left-16 h-48 w-48 rounded-full bg-accent-pink/[0.03] blur-3xl dark:bg-accent-pink/[0.05]" />
+      {/* Ambient accent glow */}
+      <div className="pointer-events-none absolute -top-24 -right-24 h-72 w-72 rounded-full bg-accent-pink/[0.04] blur-3xl dark:bg-accent-pink/[0.06]" />
+      <div className="pointer-events-none absolute -bottom-20 -left-20 h-56 w-56 rounded-full bg-accent-pink/[0.03] blur-3xl dark:bg-accent-pink/[0.05]" />
 
-      {/* Controls row: color picker + theme toggle */}
+      {/* Controls — top-right corner */}
       <motion.div
-        className="flex items-center justify-center gap-3 mb-5 sm:absolute sm:top-0 sm:right-0 sm:mb-0 sm:z-10"
+        className="flex items-center justify-center gap-2 mb-4 sm:absolute sm:top-0 sm:right-0 sm:mb-0 sm:z-10"
         variants={itemVariants}
       >
         <ColorSchemePicker />
         <ThemeToggle />
       </motion.div>
 
-      <div className="flex flex-col items-center text-center sm:text-left sm:flex-row sm:items-start gap-7">
-        {/* Profile Photo — 160px with 3D tilt + gradient ring + hover effects */}
-        <motion.div className="flex-shrink-0 self-center sm:self-start" variants={photoVariants}>
+      <div className="flex flex-col items-center text-center sm:text-left sm:flex-row sm:items-center gap-7">
+        {/* Profile Photo — 160px with 3D tilt + gradient ring */}
+        <motion.div className="flex-shrink-0" variants={photoVariants}>
           <div style={{ perspective: 600 }}>
             <motion.div
               ref={photoRef}
@@ -126,11 +125,11 @@ export function HeroSection() {
               onMouseMove={handlePhotoMouseMove}
               onMouseLeave={handlePhotoMouseLeave}
             >
-              {/* Outer glow pulse on hover */}
+              {/* Outer glow on hover */}
               <div className="absolute -inset-3 rounded-full bg-accent-pink/0 group-hover:bg-accent-pink/10 blur-2xl transition-all duration-500 pointer-events-none" />
-              {/* Animated gradient ring — speeds up on hover */}
+              {/* Gradient ring */}
               <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-accent-pink via-accent-pink-hover-dark to-accent-pink animate-spin-slow group-hover:[animation-duration:3s] transition-shadow duration-300 group-hover:shadow-[0_0_30px_rgba(var(--accent)/0.35)]" />
-              {/* Mask ring — thickens on hover */}
+              {/* Mask */}
               <div className="absolute inset-[3px] group-hover:inset-[2px] rounded-full bg-white dark:bg-background-dark z-[1] transition-all duration-300" />
               {/* Photo */}
               <Image
@@ -145,105 +144,57 @@ export function HeroSection() {
           </div>
         </motion.div>
 
-        {/* Profile Info */}
-        <div className="flex-1 min-w-0">
-          {/* Name */}
-          <motion.h1
-            className="text-2xl sm:text-[1.75rem] font-bold text-text-primary-light dark:text-text-primary-dark inline-flex items-center flex-wrap justify-center sm:justify-start leading-tight tracking-tight"
-            variants={itemVariants}
-          >
-            {profile.name}
-            <VerifiedBadge />
-          </motion.h1>
+        {/* Identity + Actions */}
+        <div className="flex-1 min-w-0 space-y-4">
+          {/* Name + Role block */}
+          <div>
+            <motion.h1
+              className="text-2xl sm:text-[1.8rem] font-bold text-text-primary-light dark:text-text-primary-dark inline-flex items-center flex-wrap justify-center sm:justify-start leading-tight tracking-tight"
+              variants={itemVariants}
+            >
+              {profile.name}
+              <VerifiedBadge />
+            </motion.h1>
 
-          {/* Animated role text */}
-          <motion.div className="h-8 mt-1.5 overflow-hidden" variants={itemVariants}>
-            <AnimatePresence mode="wait">
-              <motion.p
-                key={roleIndex}
-                className="text-[15px] sm:text-base font-semibold text-accent-pink"
-                initial={{ opacity: 0, y: 12, filter: 'blur(4px)' }}
-                animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-                exit={{ opacity: 0, y: -12, filter: 'blur(4px)' }}
-                transition={{ duration: 0.35 }}
-              >
-                {roles[roleIndex]}
-              </motion.p>
-            </AnimatePresence>
-          </motion.div>
+            <motion.div className="h-7 mt-1 overflow-hidden" variants={itemVariants}>
+              <AnimatePresence mode="wait">
+                <motion.p
+                  key={roleIndex}
+                  className="text-[15px] font-semibold text-accent-pink"
+                  initial={{ opacity: 0, y: 12, filter: 'blur(4px)' }}
+                  animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+                  exit={{ opacity: 0, y: -12, filter: 'blur(4px)' }}
+                  transition={{ duration: 0.35 }}
+                >
+                  {roles[roleIndex]}
+                </motion.p>
+              </AnimatePresence>
+            </motion.div>
+          </div>
 
-          {/* Location + Availability */}
+          {/* Location + Availability + Socials — one dense info row */}
           <motion.div
-            className="flex flex-wrap items-center justify-center sm:justify-start gap-3 mt-2.5"
+            className="flex flex-col items-center sm:items-start gap-3"
             variants={itemVariants}
           >
-            <div className="flex items-center gap-1.5">
-              <MapPin className="h-3.5 w-3.5 text-text-muted-light dark:text-text-muted-dark" />
-              <span className="text-[13px] text-text-muted-light dark:text-text-muted-dark">
-                {profile.location}
+            <div className="flex flex-wrap items-center justify-center sm:justify-start gap-3">
+              <div className="flex items-center gap-1.5">
+                <MapPin className="h-3.5 w-3.5 text-text-muted-light dark:text-text-muted-dark" />
+                <span className="text-[13px] text-text-muted-light dark:text-text-muted-dark">
+                  {profile.location}
+                </span>
+              </div>
+              <span className="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-0.5 rounded-full bg-green-500/15 text-green-600 dark:text-green-400 border border-green-500/25">
+                <span className="relative flex h-1.5 w-1.5">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75" />
+                  <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-green-500" />
+                </span>
+                Available
               </span>
             </div>
-            <span className="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full bg-green-500/15 text-green-600 dark:text-green-400 border border-green-500/25">
-              <span className="relative flex h-2 w-2">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75" />
-                <span className="relative inline-flex h-2 w-2 rounded-full bg-green-500" />
-              </span>
-              Open to opportunities
-            </span>
-          </motion.div>
 
-          {/* Primary CTAs */}
-          <motion.div
-            className="flex flex-wrap items-center justify-center sm:justify-start gap-2.5 mt-6"
-            variants={itemVariants}
-          >
-            <Button variant="primary" size="lg" onClick={() => openModal('resume')} className="shadow-lg shadow-accent-pink/25 hover:shadow-xl hover:shadow-accent-pink/30 transition-shadow">
-              <Download className="h-4 w-4" />
-              Download Resume
-            </Button>
-            <Button variant="outline" size="md" onClick={() => openModal('booking')}>
-              <Calendar className="h-4 w-4" />
-              Book a Call
-            </Button>
-          </motion.div>
-
-          {/* Secondary actions */}
-          <motion.div
-            className="flex flex-wrap items-center justify-center sm:justify-start gap-2 mt-3"
-            variants={itemVariants}
-          >
-            <Button variant="ghost" size="sm" href={profile.github}>
-              <Github className="h-3.5 w-3.5" />
-              GitHub
-            </Button>
-            <Button variant="ghost" size="sm" href={`mailto:${profile.email}`}>
-              <Mail className="h-3.5 w-3.5" />
-              Email
-            </Button>
-          </motion.div>
-
-          {/* Divider */}
-          <motion.div
-            className="my-4 border-t border-border-light dark:border-border-dark"
-            variants={itemVariants}
-          />
-
-          {/* Bottom row: blog link + social icons */}
-          <motion.div
-            className="flex items-center justify-center sm:justify-between gap-4"
-            variants={itemVariants}
-          >
-            <a
-              href="/blog"
-              className="group/blog inline-flex items-center gap-1.5 px-3 py-1.5 text-[13px] font-medium rounded-lg border border-border-light dark:border-border-dark text-text-secondary-light dark:text-text-secondary-dark hover:text-accent-pink hover:border-accent-pink dark:hover:text-accent-pink dark:hover:border-accent-pink transition-colors"
-            >
-              <BookOpen className="h-3.5 w-3.5" />
-              Read my blog
-              <ArrowUpRight className="h-3 w-3 opacity-0 -translate-x-1 group-hover/blog:opacity-100 group-hover/blog:translate-x-0 transition-all duration-200" />
-            </a>
-
-            {/* Social icons */}
-            <div className="flex items-center gap-1.5">
+            {/* Social icons — compact row */}
+            <div className="flex items-center gap-1">
               {displayedSocials.map((link, i) => {
                 const Icon = socialIconMap[link.name];
                 if (!Icon) return null;
@@ -253,18 +204,49 @@ export function HeroSection() {
                     href={link.link}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="h-8 w-8 rounded-lg border border-border-light dark:border-border-dark flex items-center justify-center text-text-muted-light dark:text-text-muted-dark hover:border-accent-pink hover:text-accent-pink hover:bg-accent-pink/5 transition-colors"
+                    className="h-7 w-7 rounded-md flex items-center justify-center text-text-muted-light dark:text-text-muted-dark hover:text-accent-pink hover:bg-accent-pink/5 transition-colors"
                     aria-label={link.label}
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: 0.6 + i * 0.05, type: 'spring', stiffness: 300, damping: 20 }}
-                    whileHover={{ y: -2 }}
+                    transition={{ delay: 0.5 + i * 0.04, type: 'spring', stiffness: 300, damping: 20 }}
+                    whileHover={{ y: -1 }}
                   >
-                    <Icon className="h-3.5 w-3.5" />
+                    <Icon className="h-[15px] w-[15px]" />
                   </motion.a>
                 );
               })}
+              <span className="mx-1 h-3.5 w-px bg-border-light dark:bg-border-dark" />
+              <motion.a
+                href="/blog"
+                className="group/blog h-7 rounded-md px-2 flex items-center gap-1 text-[12px] font-medium text-text-muted-light dark:text-text-muted-dark hover:text-accent-pink hover:bg-accent-pink/5 transition-colors"
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.68, type: 'spring', stiffness: 300, damping: 20 }}
+                whileHover={{ y: -1 }}
+              >
+                Blog
+                <ArrowUpRight className="h-3 w-3 opacity-0 -translate-x-0.5 group-hover/blog:opacity-100 group-hover/blog:translate-x-0 transition-all duration-150" />
+              </motion.a>
             </div>
+          </motion.div>
+
+          {/* CTAs — single row, clear hierarchy */}
+          <motion.div
+            className="flex flex-wrap items-center justify-center sm:justify-start gap-2.5"
+            variants={itemVariants}
+          >
+            <Button variant="primary" size="lg" onClick={() => openModal('resume')} className="shadow-lg shadow-accent-pink/25 hover:shadow-xl hover:shadow-accent-pink/30 transition-shadow">
+              <Download className="h-4 w-4" />
+              Resume
+            </Button>
+            <Button variant="outline" size="md" onClick={() => openModal('booking')}>
+              <Calendar className="h-4 w-4" />
+              Book a Call
+            </Button>
+            <Button variant="ghost" size="sm" href={`mailto:${profile.email}`}>
+              <Mail className="h-3.5 w-3.5" />
+              Email
+            </Button>
           </motion.div>
         </div>
       </div>
