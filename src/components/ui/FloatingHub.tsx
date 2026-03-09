@@ -89,13 +89,14 @@ export function FloatingHub() {
       <AnimatePresence>
         {hubState === 'closed' && (
           <motion.button
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            exit={{ scale: 0 }}
+            initial={{ scale: 0, rotate: -180 }}
+            animate={{ scale: 1, rotate: 0 }}
+            exit={{ scale: 0, rotate: 180 }}
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
+            transition={{ type: 'spring', stiffness: 200, damping: 15 }}
             onClick={openMenu}
-            className="fixed bottom-6 right-6 z-50 h-12 w-12 rounded-full bg-accent-pink text-white shadow-lg flex items-center justify-center hover:bg-accent-pink-hover transition-colors"
+            className="fixed bottom-6 right-6 z-50 h-13 w-13 rounded-full bg-gradient-to-br from-accent-pink to-accent-pink-hover text-white shadow-lg shadow-accent-pink/25 flex items-center justify-center hover:shadow-xl hover:shadow-accent-pink/30 transition-shadow"
             aria-label="Open quick actions"
           >
             {!hasInteracted && (
@@ -115,16 +116,16 @@ export function FloatingHub() {
           <motion.div
             ref={panelRef}
             key={hubState}
-            initial={{ opacity: 0, y: 20, scale: 0.95 }}
+            initial={{ opacity: 0, y: 24, scale: 0.92 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 20, scale: 0.95 }}
-            transition={{ duration: 0.2 }}
+            exit={{ opacity: 0, y: 24, scale: 0.92 }}
+            transition={{ type: 'spring', stiffness: 300, damping: 25 }}
             role="dialog"
             aria-modal="true"
             aria-label={hubState === 'menu' ? 'Quick Actions' : "Chat with Keneth's AI"}
             tabIndex={-1}
             data-lenis-prevent
-            className="fixed z-50 bottom-0 right-0 sm:bottom-6 sm:right-6 w-full h-full sm:w-96 sm:h-[560px] sm:rounded-2xl flex flex-col overflow-hidden border border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark shadow-2xl"
+            className="fixed z-50 bottom-0 right-0 sm:bottom-6 sm:right-6 w-full h-full sm:w-96 sm:h-[560px] sm:rounded-2xl flex flex-col overflow-hidden border border-border-light dark:border-border-dark bg-white dark:bg-card-bg-dark shadow-2xl"
           >
             {hubState === 'menu' && (
               <HubMenu onClose={close} onOpenChat={openChat} />

@@ -288,10 +288,10 @@ describe('FloatingHub', () => {
     expect(items.length).toBe(6);
   });
 
-  it('shows Powered by Gemini AI footer in menu', () => {
+  it('shows Available for hire footer in menu', () => {
     render(<FloatingHub />);
     fireEvent.click(screen.getByLabelText('Open quick actions'));
-    expect(screen.getByText('Powered by Gemini AI')).toBeInTheDocument();
+    expect(screen.getByText('Available for hire')).toBeInTheDocument();
   });
 
   it('connect section collapses on second click', () => {

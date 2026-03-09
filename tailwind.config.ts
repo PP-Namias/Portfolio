@@ -49,6 +49,9 @@ const config: Config = {
       maxWidth: {
         container: '860px',
       },
+      spacing: {
+        '13': '3.25rem',
+      },
       animation: {
         'spin-slow': 'spin 8s linear infinite',
       },

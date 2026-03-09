@@ -14,7 +14,7 @@ import {
   Linkedin,
   Twitter,
   Instagram,
-  Sparkles,
+  ArrowUpRight,
 } from 'lucide-react';
 import { HubMenuItem } from './HubMenuItem';
 import { socialLinks } from '@/data/socials';
@@ -72,55 +72,89 @@ export function HubMenu({ onClose, onOpenChat }: HubMenuProps) {
 
   return (
     <>
-      {/* Profile Header */}
-      <div className="px-4 pt-4 pb-3 bg-white dark:bg-card-bg-dark">
-        <div className="flex items-center justify-between">
+      {/* Profile Header — elevated with gradient accent */}
+      <motion.div
+        className="relative px-5 pt-5 pb-4 overflow-hidden"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.3 }}
+      >
+        {/* Animated gradient background glow */}
+        <div className="absolute inset-0 bg-gradient-to-br from-accent-pink/5 via-transparent to-accent-pink/3 dark:from-accent-pink/10 dark:via-transparent dark:to-accent-pink/5" />
+
+        <div className="relative flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="relative">
-              <div className="h-10 w-10 rounded-full bg-gradient-to-br from-accent-pink to-accent-pink-hover-dark flex items-center justify-center">
-                <span className="text-sm font-bold text-white">
-                  {profile.name.split(' ').map(n => n[0]).slice(0, 2).join('')}
-                </span>
+            {/* Profile avatar with animated ring */}
+            <motion.div
+              className="relative"
+              initial={{ scale: 0, rotate: -180 }}
+              animate={{ scale: 1, rotate: 0 }}
+              transition={{ type: 'spring', stiffness: 200, damping: 15, delay: 0.1 }}
+            >
+              <div className="h-11 w-11 rounded-full bg-gradient-to-br from-accent-pink via-accent-pink-hover-dark to-accent-pink-hover p-[2px]">
+                <div className="h-full w-full rounded-full bg-white dark:bg-card-bg-dark flex items-center justify-center">
+                  <span className="text-sm font-bold bg-gradient-to-br from-accent-pink to-accent-pink-hover-dark bg-clip-text text-transparent">
+                    {profile.name.split(' ').map(n => n[0]).slice(0, 2).join('')}
+                  </span>
+                </div>
               </div>
-              <div className="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full bg-emerald-400 border-2 border-white dark:border-card-bg-dark" />
-            </div>
-            <div className="min-w-0">
+              <motion.div
+                className="absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full bg-emerald-400 border-2 border-white dark:border-card-bg-dark"
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ delay: 0.4, type: 'spring', stiffness: 300 }}
+              />
+            </motion.div>
+            <motion.div
+              className="min-w-0"
+              initial={{ opacity: 0, x: -10 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.15, duration: 0.3 }}
+            >
               <p className="text-sm font-semibold text-text-primary-light dark:text-text-primary-dark truncate">
                 {profile.name}
               </p>
-              <p className="text-[11px] text-text-muted-light dark:text-text-muted-dark truncate">
+              <p className="text-xs text-text-muted-light dark:text-text-muted-dark truncate">
                 {profile.title}
               </p>
-            </div>
+            </motion.div>
           </div>
-          <button
+          <motion.button
             onClick={onClose}
-            className="h-7 w-7 rounded-full flex items-center justify-center text-text-muted-light dark:text-text-muted-dark hover:bg-surface-light dark:hover:bg-surface-dark transition-colors flex-shrink-0"
+            className="h-8 w-8 rounded-full flex items-center justify-center text-text-muted-light dark:text-text-muted-dark hover:bg-black/5 dark:hover:bg-white/5 hover:text-text-primary-light dark:hover:text-text-primary-dark transition-all flex-shrink-0"
             aria-label="Close menu"
+            whileHover={{ rotate: 90 }}
+            whileTap={{ scale: 0.85 }}
+            transition={{ duration: 0.2 }}
           >
-            <X className="h-3.5 w-3.5" />
-          </button>
+            <X className="h-4 w-4" />
+          </motion.button>
         </div>
-      </div>
+      </motion.div>
 
       {/* Gradient divider */}
-      <div className="h-px bg-gradient-to-r from-transparent via-accent-pink/30 to-transparent" />
+      <div className="h-px bg-gradient-to-r from-transparent via-accent-pink/20 to-transparent" />
 
       {/* Menu Items */}
       <div
         ref={menuRef}
-        className="py-1.5 overflow-y-auto chat-scrollbar flex-1 touch-pan-y"
+        className="py-2 overflow-y-auto chat-scrollbar flex-1 touch-pan-y"
         role="menu"
         aria-label="Quick actions menu"
         onKeyDown={handleKeyDown}
         data-lenis-prevent
       >
         {/* Section label */}
-        <div className="px-5 pt-1.5 pb-1">
-          <p className="text-[10px] font-medium text-text-muted-light dark:text-text-muted-dark uppercase tracking-wider">
+        <motion.div
+          className="px-5 pt-1 pb-2"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.2 }}
+        >
+          <p className="text-[10px] font-semibold text-text-muted-light dark:text-text-muted-dark uppercase tracking-widest">
             Quick Actions
           </p>
-        </div>
+        </motion.div>
 
         <HubMenuItem
           icon={Bot}
@@ -155,7 +189,7 @@ export function HubMenu({ onClose, onOpenChat }: HubMenuProps) {
         )}
 
         {/* Divider */}
-        <div className="h-px mx-4 my-1.5 bg-border-light dark:bg-border-dark" />
+        <div className="h-px mx-5 my-1.5 bg-border-light/50 dark:bg-border-dark/50" />
 
         <HubMenuItem
           icon={Mail}
@@ -184,23 +218,26 @@ export function HubMenu({ onClose, onOpenChat }: HubMenuProps) {
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: 'auto', opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
-              transition={{ duration: 0.15 }}
-              className="overflow-hidden px-4"
+              transition={{ duration: 0.2, ease: [0.25, 0.1, 0.25, 1] }}
+              className="overflow-hidden px-5"
             >
-              <div className="flex items-center gap-2 py-2 pl-[52px]">
-                {connectLinks.map((link) => {
+              <div className="flex items-center gap-2 py-2.5 pl-[48px]">
+                {connectLinks.map((link, i) => {
                   const Icon = socialIconMap[link.name] || Share2;
                   return (
-                    <a
+                    <motion.a
                       key={link.name}
                       href={link.link}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="h-9 w-9 rounded-lg bg-accent-pink/10 flex items-center justify-center text-accent-pink hover:bg-accent-pink hover:text-white transition-colors"
+                      className="h-9 w-9 rounded-xl bg-accent-pink/8 dark:bg-accent-pink/10 flex items-center justify-center text-accent-pink hover:bg-accent-pink hover:text-white transition-all duration-200 hover:shadow-md hover:shadow-accent-pink/20 hover:scale-110"
                       aria-label={link.label}
+                      initial={{ opacity: 0, scale: 0.5 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ delay: i * 0.05, type: 'spring', stiffness: 300, damping: 15 }}
                     >
                       <Icon className="h-4 w-4" />
-                    </a>
+                    </motion.a>
                   );
                 })}
               </div>
@@ -219,15 +256,24 @@ export function HubMenu({ onClose, onOpenChat }: HubMenuProps) {
         />
       </div>
 
-      {/* Footer */}
-      <div className="px-4 py-2.5 border-t border-border-light dark:border-border-dark bg-white dark:bg-card-bg-dark">
-        <div className="flex items-center justify-center gap-1.5">
-          <Sparkles className="h-3 w-3 text-accent-pink opacity-60" />
-          <span className="text-[10px] text-text-muted-light dark:text-text-muted-dark">
-            Powered by Gemini AI
+      {/* Footer — minimal status */}
+      <motion.div
+        className="px-5 py-3 border-t border-border-light/50 dark:border-border-dark/50"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.4 }}
+      >
+        <a
+          href={`mailto:${profile.email}`}
+          className="flex items-center justify-center gap-1.5 text-xs text-text-muted-light dark:text-text-muted-dark hover:text-accent-pink transition-colors group"
+        >
+          <span className="inline-flex items-center gap-1.5">
+            <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
+            Available for hire
           </span>
-        </div>
-      </div>
+          <ArrowUpRight className="h-3 w-3 opacity-0 -translate-y-0.5 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-200" />
+        </a>
+      </motion.div>
     </>
   );
 }

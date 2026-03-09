@@ -175,9 +175,9 @@ describe('HubMenu', () => {
     expect(instagram).toHaveAttribute('href', 'https://www.instagram.com/pp_namias/');
   });
 
-  it('shows "Powered by Gemini AI" footer', () => {
+  it('shows "Available for hire" footer instead of Gemini branding', () => {
     render(<HubMenu onClose={mockOnClose} onOpenChat={mockOnOpenChat} />);
-    expect(screen.getByText('Powered by Gemini AI')).toBeInTheDocument();
+    expect(screen.getByText('Available for hire')).toBeInTheDocument();
   });
 
   it('shows correct subtitles for all items', () => {
