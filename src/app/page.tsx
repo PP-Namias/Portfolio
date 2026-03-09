@@ -4,8 +4,6 @@ import { TechStackSection } from '@/components/sections/TechStackSection';
 import { ProjectsSection } from '@/components/sections/ProjectsSection';
 import { CertificationsSection } from '@/components/sections/CertificationsSection';
 import { ExperienceTimeline } from '@/components/sections/ExperienceTimeline';
-import { MembershipsSection } from '@/components/sections/MembershipsSection';
-import { SpeakingSection } from '@/components/sections/SpeakingSection';
 import { ConnectSection } from '@/components/sections/ConnectSection';
 import { GallerySection } from '@/components/sections/GallerySection';
 import { Footer } from '@/components/layout/Footer';
@@ -20,8 +18,8 @@ export default function Home() {
       </Card>
 
       {/* Two-column layout: Main + Sidebar */}
-      {/* Mobile: About → Experience → Memberships → Speaking → TechStack → Projects */}
-      {/* Desktop: Left (About, TechStack, Projects) | Right sticky (Experience, Memberships, Speaking) */}
+      {/* Mobile: About → Experience + Connect → TechStack → Projects */}
+      {/* Desktop: Left (About, TechStack, Projects) | Right sticky (Experience, Connect) */}
       <div className="grid grid-cols-1 lg:grid-cols-[62%_1fr] gap-4 mt-0">
         <div className="order-1 lg:order-none lg:col-start-1">
           <Card>
@@ -35,10 +33,7 @@ export default function Home() {
               <ExperienceTimeline />
             </Card>
             <Card>
-              <MembershipsSection />
-            </Card>
-            <Card>
-              <SpeakingSection />
+              <ConnectSection />
             </Card>
           </aside>
         </div>
@@ -56,15 +51,10 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Certifications + Connect side by side */}
-      <div className="grid grid-cols-1 sm:grid-cols-[1.5fr_1fr] gap-4 mt-4">
-        <Card>
-          <CertificationsSection />
-        </Card>
-        <Card>
-          <ConnectSection />
-        </Card>
-      </div>
+      {/* Certifications — full width */}
+      <Card className="mt-4">
+        <CertificationsSection />
+      </Card>
 
       {/* Full-width gallery */}
       <Card className="mt-4">
