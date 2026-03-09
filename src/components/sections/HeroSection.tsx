@@ -1,9 +1,9 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import Image from 'next/image';
-import { motion, AnimatePresence } from 'framer-motion';
-import { MapPin, Mail, Download, Calendar, Github, Linkedin, Twitter, Instagram, BookOpen } from 'lucide-react';
+import { motion, AnimatePresence, useMotionValue, useSpring } from 'framer-motion';
+import { MapPin, Mail, Download, Calendar, Github, Linkedin, Twitter, Instagram, BookOpen, ArrowUpRight } from 'lucide-react';
 import { profile } from '@/data/profile';
 import { socialLinks } from '@/data/socials';
 import { Button } from '@/components/ui/Button';
@@ -25,9 +25,43 @@ const socialIconMap: Record<string, React.ComponentType<{ className?: string }>>
   instagram: Instagram,
 };
 
+/* Staggered entrance variants */
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.08, delayChildren: 0.1 },
+  },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 16 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { type: 'spring', stiffness: 300, damping: 24 },
+  },
+};
+
+const photoVariants = {
+  hidden: { opacity: 0, scale: 0.8 },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    transition: { type: 'spring', stiffness: 200, damping: 20, delay: 0.05 },
+  },
+};
+
 export function HeroSection() {
   const [roleIndex, setRoleIndex] = useState(0);
   const { openModal } = useModal();
+  const photoRef = useRef<HTMLDivElement>(null);
+
+  /* 3D tilt motion values */
+  const rotateX = useMotionValue(0);
+  const rotateY = useMotionValue(0);
+  const smoothRotateX = useSpring(rotateX, { stiffness: 200, damping: 20 });
+  const smoothRotateY = useSpring(rotateY, { stiffness: 200, damping: 20 });
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -40,71 +74,109 @@ export function HeroSection() {
     ['github', 'linkedin', 'x', 'instagram'].includes(s.name)
   );
 
+  /* Handle 3D tilt on profile photo based on cursor position */
+  const handlePhotoMouseMove = useCallback(
+    (e: React.MouseEvent<HTMLDivElement>) => {
+      const el = photoRef.current;
+      if (!el) return;
+      const rect = el.getBoundingClientRect();
+      const x = (e.clientX - rect.left) / rect.width - 0.5; // -0.5 to 0.5
+      const y = (e.clientY - rect.top) / rect.height - 0.5;
+      rotateY.set(x * 16); // ±8 degrees
+      rotateX.set(y * -16);
+    },
+    [rotateX, rotateY]
+  );
+
+  const handlePhotoMouseLeave = useCallback(() => {
+    rotateX.set(0);
+    rotateY.set(0);
+  }, [rotateX, rotateY]);
+
   return (
     <motion.section
-      className="relative"
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
+      className="relative overflow-hidden"
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
     >
+      {/* Ambient accent glow — background decoration */}
+      <div className="pointer-events-none absolute -top-20 -right-20 h-64 w-64 rounded-full bg-accent-pink/[0.04] blur-3xl dark:bg-accent-pink/[0.06]" />
+      <div className="pointer-events-none absolute -bottom-16 -left-16 h-48 w-48 rounded-full bg-accent-pink/[0.03] blur-3xl dark:bg-accent-pink/[0.05]" />
+
       {/* Controls row: color picker + theme toggle */}
-      <div className="flex items-center justify-center gap-3 mb-4 sm:absolute sm:top-0 sm:right-0 sm:mb-0">
+      <motion.div
+        className="flex items-center justify-center gap-3 mb-5 sm:absolute sm:top-0 sm:right-0 sm:mb-0 sm:z-10"
+        variants={itemVariants}
+      >
         <ColorSchemePicker />
         <ThemeToggle />
-      </div>
+      </motion.div>
 
-      <div className="flex flex-col items-center text-center sm:text-left sm:flex-row sm:items-start gap-6">
-        {/* Profile Photo with animated gradient ring + hover effects */}
-        <div className="flex-shrink-0 self-center sm:self-start">
-          <motion.div
-            className="group relative h-[120px] w-[120px] rounded-full cursor-pointer"
-            whileHover={{ scale: 1.08 }}
-            transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-          >
-            {/* Outer glow on hover */}
-            <div className="absolute -inset-2 rounded-full bg-accent-pink/0 group-hover:bg-accent-pink/10 blur-xl transition-all duration-300 pointer-events-none" />
-            {/* Animated gradient ring — speeds up on hover */}
-            <div className="absolute inset-0 rounded-full bg-gradient-to-r from-accent-pink via-accent-pink-hover-dark to-accent-pink animate-spin-slow group-hover:[animation-duration:3s] transition-shadow duration-300 group-hover:shadow-[0_0_25px_rgba(var(--accent)/0.3)]" />
-            {/* Background fill to mask the ring under the photo — expands ring on hover */}
-            <div className="absolute inset-[3px] group-hover:inset-[2.5px] rounded-full bg-white dark:bg-background-dark z-[1] transition-all duration-300" />
-            {/* Photo — brightens on hover */}
-            <Image
-              src="/images/profile/PP%20Namias.png"
-              alt={profile.name}
-              width={114}
-              height={114}
-              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[114px] w-[114px] rounded-full object-cover z-[2] brightness-100 group-hover:brightness-105 transition-[filter] duration-300"
-              priority
-            />
-          </motion.div>
-        </div>
+      <div className="flex flex-col items-center text-center sm:text-left sm:flex-row sm:items-start gap-7">
+        {/* Profile Photo — 160px with 3D tilt + gradient ring + hover effects */}
+        <motion.div className="flex-shrink-0 self-center sm:self-start" variants={photoVariants}>
+          <div style={{ perspective: 600 }}>
+            <motion.div
+              ref={photoRef}
+              className="group relative h-[160px] w-[160px] rounded-full cursor-pointer"
+              style={{ rotateX: smoothRotateX, rotateY: smoothRotateY }}
+              whileHover={{ scale: 1.06 }}
+              transition={{ type: 'spring', stiffness: 260, damping: 20 }}
+              onMouseMove={handlePhotoMouseMove}
+              onMouseLeave={handlePhotoMouseLeave}
+            >
+              {/* Outer glow pulse on hover */}
+              <div className="absolute -inset-3 rounded-full bg-accent-pink/0 group-hover:bg-accent-pink/10 blur-2xl transition-all duration-500 pointer-events-none" />
+              {/* Animated gradient ring — speeds up on hover */}
+              <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-accent-pink via-accent-pink-hover-dark to-accent-pink animate-spin-slow group-hover:[animation-duration:3s] transition-shadow duration-300 group-hover:shadow-[0_0_30px_rgba(var(--accent)/0.35)]" />
+              {/* Mask ring — thickens on hover */}
+              <div className="absolute inset-[3px] group-hover:inset-[2px] rounded-full bg-white dark:bg-background-dark z-[1] transition-all duration-300" />
+              {/* Photo */}
+              <Image
+                src="/images/profile/PP%20Namias.png"
+                alt={profile.name}
+                width={152}
+                height={152}
+                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[152px] w-[152px] rounded-full object-cover z-[2] brightness-100 group-hover:brightness-105 transition-[filter] duration-300"
+                priority
+              />
+            </motion.div>
+          </div>
+        </motion.div>
 
         {/* Profile Info */}
         <div className="flex-1 min-w-0">
           {/* Name */}
-          <h1 className="text-[1.65rem] font-bold text-text-primary-light dark:text-text-primary-dark inline-flex items-center flex-wrap justify-center sm:justify-start leading-tight">
+          <motion.h1
+            className="text-2xl sm:text-[1.75rem] font-bold text-text-primary-light dark:text-text-primary-dark inline-flex items-center flex-wrap justify-center sm:justify-start leading-tight tracking-tight"
+            variants={itemVariants}
+          >
             {profile.name}
             <VerifiedBadge />
-          </h1>
+          </motion.h1>
 
           {/* Animated role text */}
-          <div className="h-7 mt-1.5 overflow-hidden">
+          <motion.div className="h-8 mt-1.5 overflow-hidden" variants={itemVariants}>
             <AnimatePresence mode="wait">
               <motion.p
                 key={roleIndex}
-                className="text-base font-medium text-accent-pink"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.3 }}
+                className="text-[15px] sm:text-base font-semibold text-accent-pink"
+                initial={{ opacity: 0, y: 12, filter: 'blur(4px)' }}
+                animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+                exit={{ opacity: 0, y: -12, filter: 'blur(4px)' }}
+                transition={{ duration: 0.35 }}
               >
                 {roles[roleIndex]}
               </motion.p>
             </AnimatePresence>
-          </div>
+          </motion.div>
 
           {/* Location + Availability */}
-          <div className="flex flex-wrap items-center justify-center sm:justify-start gap-3 mt-2">
+          <motion.div
+            className="flex flex-wrap items-center justify-center sm:justify-start gap-3 mt-2.5"
+            variants={itemVariants}
+          >
             <div className="flex items-center gap-1.5">
               <MapPin className="h-3.5 w-3.5 text-text-muted-light dark:text-text-muted-dark" />
               <span className="text-[13px] text-text-muted-light dark:text-text-muted-dark">
@@ -112,14 +184,20 @@ export function HeroSection() {
               </span>
             </div>
             <span className="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full bg-green-500/15 text-green-600 dark:text-green-400 border border-green-500/25">
-              <span className="h-1.5 w-1.5 rounded-full bg-green-500 animate-pulse" />
+              <span className="relative flex h-2 w-2">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-green-500" />
+              </span>
               Open to opportunities
             </span>
-          </div>
+          </motion.div>
 
-          {/* Primary CTAs — Resume is the #1 recruiter action, visually elevated */}
-          <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2.5 mt-5">
-            <Button variant="primary" size="lg" onClick={() => openModal('resume')} className="shadow-md shadow-accent-pink/20">
+          {/* Primary CTAs */}
+          <motion.div
+            className="flex flex-wrap items-center justify-center sm:justify-start gap-2.5 mt-6"
+            variants={itemVariants}
+          >
+            <Button variant="primary" size="lg" onClick={() => openModal('resume')} className="shadow-lg shadow-accent-pink/25 hover:shadow-xl hover:shadow-accent-pink/30 transition-shadow">
               <Download className="h-4 w-4" />
               Download Resume
             </Button>
@@ -127,9 +205,13 @@ export function HeroSection() {
               <Calendar className="h-4 w-4" />
               Book a Call
             </Button>
-          </div>
-          {/* Secondary actions — lower visual weight */}
-          <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2 mt-3">
+          </motion.div>
+
+          {/* Secondary actions */}
+          <motion.div
+            className="flex flex-wrap items-center justify-center sm:justify-start gap-2 mt-3"
+            variants={itemVariants}
+          >
             <Button variant="ghost" size="sm" href={profile.github}>
               <Github className="h-3.5 w-3.5" />
               GitHub
@@ -138,41 +220,52 @@ export function HeroSection() {
               <Mail className="h-3.5 w-3.5" />
               Email
             </Button>
-          </div>
+          </motion.div>
 
           {/* Divider */}
-          <div className="my-4 border-t border-border-light dark:border-border-dark" />
+          <motion.div
+            className="my-4 border-t border-border-light dark:border-border-dark"
+            variants={itemVariants}
+          />
 
           {/* Bottom row: blog link + social icons */}
-          <div className="flex items-center justify-center sm:justify-between gap-4">
+          <motion.div
+            className="flex items-center justify-center sm:justify-between gap-4"
+            variants={itemVariants}
+          >
             <a
               href="/blog"
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-[13px] font-medium rounded-lg border border-border-light dark:border-border-dark text-text-secondary-light dark:text-text-secondary-dark hover:text-accent-pink hover:border-accent-pink dark:hover:text-accent-pink dark:hover:border-accent-pink transition-colors"
+              className="group/blog inline-flex items-center gap-1.5 px-3 py-1.5 text-[13px] font-medium rounded-lg border border-border-light dark:border-border-dark text-text-secondary-light dark:text-text-secondary-dark hover:text-accent-pink hover:border-accent-pink dark:hover:text-accent-pink dark:hover:border-accent-pink transition-colors"
             >
               <BookOpen className="h-3.5 w-3.5" />
               Read my blog
+              <ArrowUpRight className="h-3 w-3 opacity-0 -translate-x-1 group-hover/blog:opacity-100 group-hover/blog:translate-x-0 transition-all duration-200" />
             </a>
 
             {/* Social icons */}
             <div className="flex items-center gap-1.5">
-              {displayedSocials.map((link) => {
+              {displayedSocials.map((link, i) => {
                 const Icon = socialIconMap[link.name];
                 if (!Icon) return null;
                 return (
-                  <a
+                  <motion.a
                     key={link.name}
                     href={link.link}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="h-8 w-8 rounded-lg border border-border-light dark:border-border-dark flex items-center justify-center text-text-muted-light dark:text-text-muted-dark hover:border-accent-pink hover:text-accent-pink transition-colors"
+                    className="h-8 w-8 rounded-lg border border-border-light dark:border-border-dark flex items-center justify-center text-text-muted-light dark:text-text-muted-dark hover:border-accent-pink hover:text-accent-pink hover:bg-accent-pink/5 transition-colors"
                     aria-label={link.label}
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.6 + i * 0.05, type: 'spring', stiffness: 300, damping: 20 }}
+                    whileHover={{ y: -2 }}
                   >
                     <Icon className="h-3.5 w-3.5" />
-                  </a>
+                  </motion.a>
                 );
               })}
             </div>
-          </div>
+          </motion.div>
         </div>
       </div>
     </motion.section>
