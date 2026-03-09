@@ -54,23 +54,29 @@ export function HeroSection() {
       </div>
 
       <div className="flex flex-col items-center text-center sm:text-left sm:flex-row sm:items-start gap-6">
-        {/* Profile Photo with animated gradient ring */}
+        {/* Profile Photo with animated gradient ring + hover effects */}
         <div className="flex-shrink-0 self-center sm:self-start">
-          <div className="relative h-[120px] w-[120px] rounded-full">
-            {/* Animated gradient ring */}
-            <div className="absolute inset-0 rounded-full bg-gradient-to-r from-accent-pink via-accent-pink-hover-dark to-accent-pink animate-spin-slow" />
-            {/* Background fill to mask the ring under the photo */}
-            <div className="absolute inset-[3px] rounded-full bg-white dark:bg-background-dark z-[1]" />
-            {/* Photo */}
+          <motion.div
+            className="group relative h-[120px] w-[120px] rounded-full cursor-pointer"
+            whileHover={{ scale: 1.08 }}
+            transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+          >
+            {/* Outer glow on hover */}
+            <div className="absolute -inset-2 rounded-full bg-accent-pink/0 group-hover:bg-accent-pink/10 blur-xl transition-all duration-300 pointer-events-none" />
+            {/* Animated gradient ring — speeds up on hover */}
+            <div className="absolute inset-0 rounded-full bg-gradient-to-r from-accent-pink via-accent-pink-hover-dark to-accent-pink animate-spin-slow group-hover:[animation-duration:3s] transition-shadow duration-300 group-hover:shadow-[0_0_25px_rgba(var(--accent)/0.3)]" />
+            {/* Background fill to mask the ring under the photo — expands ring on hover */}
+            <div className="absolute inset-[3px] group-hover:inset-[2.5px] rounded-full bg-white dark:bg-background-dark z-[1] transition-all duration-300" />
+            {/* Photo — brightens on hover */}
             <Image
               src="/images/profile/PP%20Namias.png"
               alt={profile.name}
               width={114}
               height={114}
-              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[114px] w-[114px] rounded-full object-cover z-[2]"
+              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[114px] w-[114px] rounded-full object-cover z-[2] brightness-100 group-hover:brightness-105 transition-[filter] duration-300"
               priority
             />
-          </div>
+          </motion.div>
         </div>
 
         {/* Profile Info */}
