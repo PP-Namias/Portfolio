@@ -36,15 +36,15 @@ export function ConnectSection() {
       <h2 className="text-lg font-semibold text-text-primary-light dark:text-text-primary-dark mb-2">
         Connect
       </h2>
-      <p className="text-sm text-text-secondary-light dark:text-text-secondary-dark mb-2 leading-relaxed">
+      <p className="text-sm text-text-secondary-light dark:text-text-secondary-dark mb-1.5 leading-relaxed">
         Open for collaborations, freelance work, and interesting conversations. Let&apos;s build something together.
       </p>
-      <p className="text-xs text-text-muted-light dark:text-text-muted-dark mb-5">
+      <p className="text-xs text-text-muted-light dark:text-text-muted-dark mb-3">
         {experiences.length} companies &middot; {certifications.length} certifications &middot; {technologies.length} technologies
       </p>
 
       {/* Primary CTA — elevated above social links */}
-      <div className="flex flex-wrap items-center gap-2 mb-4">
+      <div className="flex flex-wrap items-center gap-2 mb-3">
         {socialLinks.filter(link => link.name === 'cal').map((link, index) => {
           const Icon = iconMap[link.icon] || ExternalLink;
           return (

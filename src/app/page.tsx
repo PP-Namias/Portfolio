@@ -28,7 +28,7 @@ export default function Home() {
         </div>
 
         <div className="order-2 lg:order-none lg:col-start-2 lg:row-start-1 lg:row-span-3">
-          <aside className="lg:sticky lg:top-8 space-y-4 lg:max-h-[calc(100vh-4rem)] lg:overflow-y-auto scrollbar-hide">
+          <aside className="lg:sticky lg:top-4 space-y-4">
             <Card>
               <ExperienceTimeline />
             </Card>
