@@ -103,6 +103,19 @@ body {
   scrollbar-color: rgb(var(--accent) / 0.2) transparent;
 }
 
+/* Glassmorphism header */
+.header-glass {
+  background-color: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border-bottom: 1px solid rgba(229, 231, 235, 0.5);
+}
+
+.dark .header-glass {
+  background-color: rgba(0, 0, 0, 0.72);
+  border-bottom-color: rgba(31, 31, 31, 0.5);
+}
+
 /* Custom selection color */
 ::selection {
   background-color: rgb(var(--accent) / 0.2);

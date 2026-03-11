@@ -11,7 +11,7 @@ import { Card } from '@/components/ui/Card';
 
 export default function Home() {
   return (
-    <main id="main-content" className="mx-auto max-w-container px-4 sm:px-6 pt-8 lg:pt-12">
+    <main id="main-content" className="mx-auto max-w-container px-4 sm:px-6 pt-20 lg:pt-24">
       {/* Hero spans full container width */}
       <Card className="mb-4">
         <HeroSection />
@@ -21,17 +21,19 @@ export default function Home() {
       {/* Mobile: About → Experience + Connect → TechStack → Projects */}
       {/* Desktop: Left (About, TechStack, Projects) | Right sticky (Experience, Connect) */}
       <div className="grid grid-cols-1 lg:grid-cols-[62%_1fr] gap-4 mt-0">
-        <div className="order-1 lg:order-none lg:col-start-1">
+        <div id="about" className="order-1 lg:order-none lg:col-start-1 scroll-mt-20">
           <Card>
             <AboutSection />
           </Card>
         </div>
 
         <div className="order-2 lg:order-none lg:col-start-2 lg:row-start-1 lg:row-span-3">
-          <aside className="lg:sticky lg:top-4 space-y-4">
-            <Card>
-              <ExperienceTimeline />
-            </Card>
+          <aside className="lg:sticky lg:top-20 space-y-4">
+            <div id="experience" className="scroll-mt-20">
+              <Card>
+                <ExperienceTimeline />
+              </Card>
+            </div>
             <Card>
               <ConnectSection />
             </Card>
@@ -44,7 +46,7 @@ export default function Home() {
           </Card>
         </div>
 
-        <div className="order-4 lg:order-none lg:col-start-1">
+        <div id="projects" className="order-4 lg:order-none lg:col-start-1 scroll-mt-20">
           <Card>
             <ProjectsSection />
           </Card>
@@ -52,9 +54,11 @@ export default function Home() {
       </div>
 
       {/* Certifications — full width */}
-      <Card className="mt-4">
-        <CertificationsSection />
-      </Card>
+      <div id="certifications" className="scroll-mt-20">
+        <Card className="mt-4">
+          <CertificationsSection />
+        </Card>
+      </div>
 
       {/* Full-width gallery */}
       <Card className="mt-4">
