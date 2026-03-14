@@ -94,14 +94,11 @@ export function HeroSection() {
 
   return (
     <motion.section
-      className="relative overflow-hidden"
+      className="relative"
       variants={containerVariants}
       initial="hidden"
       animate="visible"
     >
-      {/* Ambient accent glow */}
-      <div className="pointer-events-none absolute -top-24 -right-24 h-72 w-72 rounded-full bg-accent-pink/[0.04] blur-3xl dark:bg-accent-pink/[0.06]" />
-      <div className="pointer-events-none absolute -bottom-20 -left-20 h-56 w-56 rounded-full bg-accent-pink/[0.03] blur-3xl dark:bg-accent-pink/[0.05]" />
 
       {/* Controls — top-right corner */}
       <motion.div
