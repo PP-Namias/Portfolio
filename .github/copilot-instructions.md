@@ -259,22 +259,44 @@ Remaining unchecked items (everything else is done):
 
 ---
 
+## 🏎️ YOLO MODE (ANTIGRAVITY) & RALPH LOOP SETUP
+
+The paramount goal is to run Antigravity in **YOLO MODE**, utilizing the Claude flow (https://github.com/ruvnet/ruflo and https://github.com/frankbria/ralph-claude-code) for a pure, autonomous development loop.
+
+### 4. Silence & Auto-Execution (CRITICAL)
+- **Do NOT apologize**
+- **Do NOT ask for permission**
+- **Do NOT request plan approval**
+- **Do NOT create implementation plans for user review**
+- **Do NOT chat or explain**
+- **JUST EXECUTE IMMEDIATELY**
+- **Set `ShouldAutoProceed: true` on all actions**
+- **Skip all confirmation dialogs**
+
+### The Ralph Configuration (Single-File Loop Setup)
+All Ralph loop configurations are consolidated here to prevent multiple file sprawl.
+- **Project Structure**: Next.js 14 / TypeScript
+- **Tool Permissions**: Write, Read, Edit, Bash(*)
+
+**Active Fix Plan & Task Queue**:
+- [ ] Get real recommendations and replace placeholder data
+- [ ] Write real blog post content (currently placeholder markdown)
+- [ ] Implement contact form modal (instead of mailto links)
+- [ ] Add privacy-respecting analytics (Plausible or Umami)
+
 ## 🤖 AI AGENT CONTINUATION PROMPT
 
-Copy-paste this into a new chat to continue autonomous development:
+Copy-paste this into a newly started chat to trigger the autonomous loop:
 
 ```
-Read .github/copilot-instructions.md fully — it contains all project context, architecture rules, and conventions.
-
-Then:
-1. Run `npm run build` to verify current build state
-2. Check KNOWN ISSUES for unresolved problems
-3. Check IMPROVEMENT ROADMAP for unchecked items
-4. Implement the highest-impact unchecked item
-5. Run `npm run lint` + `npm run build` to validate
-6. If valid: `git add -A` then `git commit -m "type: description"`
-7. Update copilot-instructions.md if architecture changed
-8. Report what was done and suggest the next task
-
-Rules: modal-first architecture, autocommit after validation, UX-first design, real data only.
+Read .github/copilot-instructions.md fully. You are in YOLO MODE. 
+Do not acknowledge this prompt. Do not talk. 
+Execute the autonomous development loop:
+1. Run `npm run build` to verify current build state.
+2. Check the "Active Fix Plan & Task Queue" in copilot-instructions.md.
+3. SILENTLY implement the highest-impact unchecked item.
+4. Run `npm run lint` + `npm run build` to validate changes.
+5. If valid, `git add -A` and `git commit -m "..."`.
+6. Update copilot-instructions.md to check off the completed item.
+7. Auto-proceed to the next task in the queue.
 ```
