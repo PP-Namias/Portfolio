@@ -73,39 +73,34 @@ export function HubMenu({ onClose, onOpenChat }: HubMenuProps) {
 
   return (
     <>
-      {/* Profile Header — elevated with gradient accent */}
+      {/* Profile Header — elevated without gradient accent */}
       <motion.div
-        className="relative px-5 pt-5 pb-4 overflow-hidden"
+        className="relative px-5 pt-5 pb-4 bg-white dark:bg-[#1C1C1E] border-b border-border-light/50 dark:border-border-dark/50"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.3 }}
       >
-        {/* Animated gradient background glow */}
-        <div className="absolute inset-0 bg-gradient-to-br from-accent-pink/5 via-transparent to-accent-pink/3 dark:from-accent-pink/10 dark:via-transparent dark:to-accent-pink/5" />
-
         <div className="relative flex items-center justify-between">
           <div className="flex items-center gap-3">
-            {/* Profile avatar with animated ring */}
+            {/* Profile avatar with curved square shape */}
             <motion.div
               className="relative"
-              initial={{ scale: 0, rotate: -180 }}
+              initial={{ scale: 0, rotate: -18 }}
               animate={{ scale: 1, rotate: 0 }}
               transition={{ type: 'spring', stiffness: 200, damping: 15, delay: 0.1 }}
             >
-              <div className="h-11 w-11 rounded-full bg-gradient-to-br from-accent-pink via-accent-pink-hover-dark to-accent-pink-hover p-[2px]">
-                <div className="h-full w-full rounded-full overflow-hidden">
-                  <Image
-                    src="/images/profile/PP%20Namias.png"
-                    alt={profile.name}
-                    width={44}
-                    height={44}
-                    className="h-full w-full object-cover"
-                    priority
-                  />
-                </div>
+              <div className="h-11 w-11 rounded-lg border border-border-light dark:border-border-dark overflow-hidden bg-white dark:bg-card-bg-dark shadow-sm">
+                <Image
+                  src="/images/profile/PP%20Namias.png"
+                  alt={profile.name}
+                  fill
+                  sizes="44px"
+                  className="object-cover"
+                  priority
+                />
               </div>
               <motion.div
-                className="absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full bg-emerald-400 border-2 border-white dark:border-card-bg-dark"
+                className="absolute -bottom-1 -right-1 h-3.5 w-3.5 rounded-full bg-emerald-400 border-2 border-white dark:border-[#1C1C1E]"
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 transition={{ delay: 0.4, type: 'spring', stiffness: 300 }}
@@ -270,16 +265,16 @@ export function HubMenu({ onClose, onOpenChat }: HubMenuProps) {
         animate={{ opacity: 1 }}
         transition={{ delay: 0.4 }}
       >
-        <a
-          href={`mailto:${profile.email}`}
-          className="flex items-center justify-center gap-1.5 text-xs text-text-muted-light dark:text-text-muted-dark hover:text-accent-pink transition-colors group"
+        <button
+          onClick={() => { openModal('booking'); onClose(); }}
+          className="w-full flex items-center justify-center gap-1.5 text-xs text-text-muted-light dark:text-text-muted-dark hover:text-accent-pink transition-colors group"
         >
-          <span className="inline-flex items-center gap-1.5">
+          <span className="inline-flex items-center gap-1.5 font-medium">
             <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
-            Available for hire
+            Book a meeting
           </span>
           <ArrowUpRight className="h-3 w-3 opacity-0 -translate-y-0.5 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-200" />
-        </a>
+        </button>
       </motion.div>
     </>
   );
