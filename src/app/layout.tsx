@@ -3,7 +3,6 @@ import { Inter } from 'next/font/google';
 import { Providers } from './providers';
 import { FloatingHub } from '@/components/ui/FloatingHub';
 import { ScrollToTop } from '@/components/ui/ScrollToTop';
-import { Header } from '@/components/layout/Header';
 import './globals.css';
 
 const inter = Inter({
@@ -98,7 +97,6 @@ export default function RootLayout({
           Skip to main content
         </a>
         <Providers>
-          <Header />
           {children}
           <FloatingHub />
           <ScrollToTop />

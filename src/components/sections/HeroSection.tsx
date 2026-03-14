@@ -8,6 +8,8 @@ import { profile } from '@/data/profile';
 import { socialLinks } from '@/data/socials';
 import { Button } from '@/components/ui/Button';
 import { VerifiedBadge } from '@/components/ui/VerifiedBadge';
+import { ThemeToggle } from '@/components/ui/ThemeToggle';
+import { ColorSchemePicker } from '@/components/ui/ColorSchemePicker';
 import { useModal } from '@/hooks/useModal';
 
 const roles = [
@@ -100,6 +102,15 @@ export function HeroSection() {
       {/* Ambient accent glow */}
       <div className="pointer-events-none absolute -top-24 -right-24 h-72 w-72 rounded-full bg-accent-pink/[0.04] blur-3xl dark:bg-accent-pink/[0.06]" />
       <div className="pointer-events-none absolute -bottom-20 -left-20 h-56 w-56 rounded-full bg-accent-pink/[0.03] blur-3xl dark:bg-accent-pink/[0.05]" />
+
+      {/* Controls — top-right corner */}
+      <motion.div
+        className="flex items-center justify-center gap-2 mb-4 sm:absolute sm:top-0 sm:right-0 sm:mb-0 sm:z-10"
+        variants={itemVariants}
+      >
+        <ColorSchemePicker />
+        <ThemeToggle />
+      </motion.div>
 
       <div className="flex flex-col items-center text-center sm:text-left sm:flex-row sm:items-center gap-7">
         {/* Profile Photo — 160px with 3D tilt + gradient ring */}
