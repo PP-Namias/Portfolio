@@ -127,8 +127,8 @@ export function HeroSection() {
             >
               {/* Outer glow on hover */}
               <div className="absolute -inset-3 rounded-full bg-accent-pink/0 group-hover:bg-accent-pink/10 blur-2xl transition-all duration-500 pointer-events-none" />
-              {/* Gradient ring */}
-              <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-accent-pink via-accent-pink-hover-dark to-accent-pink animate-spin-slow group-hover:[animation-duration:3s] transition-shadow duration-300 group-hover:shadow-[0_0_30px_rgba(var(--accent)/0.35)]" />
+              {/* Solid ring */}
+              <div className="absolute inset-0 rounded-full bg-accent-pink animate-spin-slow group-hover:[animation-duration:3s] transition-shadow duration-300 group-hover:shadow-[0_0_30px_rgba(var(--accent)/0.35)]" />
               {/* Mask */}
               <div className="absolute inset-[3px] group-hover:inset-[2px] rounded-full bg-white dark:bg-background-dark z-[1] transition-all duration-300" />
               {/* Photo */}

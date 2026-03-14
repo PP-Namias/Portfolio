@@ -174,9 +174,10 @@ Hero (full width) → Main (62%) + Sidebar (38%, sticky) → Certs + Recommendat
 ```
 
 ### Key Design Rules
+- **Animation-Rich & Dynamic:** Focus heavily on making the overall website design dynamic with fluid animations. Do NOT create another header or footer; enhance the existing layout.
 - **Card-based:** All sections in `<Card>` components with `hover` prop for interactive cards
 - **Dark/Light theme:** `next-themes` with `class` strategy, CSS custom properties
-- **Framer Motion animations:** `whileInView` scroll reveals, staggered children (`delay: index * 0.1`)
+- **Framer Motion animations:** `whileInView` scroll reveals, staggered children (`delay: index * 0.1`), micro-interactions, and hover effects
 - **Mobile-first:** Stack vertically on mobile, two-column on `lg:` breakpoint
 - **Accent colors:** 8 presets via `ColorSchemePicker`, CSS vars `--accent`, `--accent-hover`, `--accent-hover-dark`
 - **Max width:** 860px (`max-w-container`) | **Spacing:** `gap-4` cards, `p-5` padding
@@ -220,6 +221,7 @@ npm run test         # Vitest (94 tests across 10 files)
 
 Remaining unchecked items (everything else is done):
 
+- [ ] Improve overall website animations and design. Do NOT create another header or footer; enhance the existing layout.
 - [ ] Get real recommendations and replace placeholder data
 - [ ] Write real blog post content (currently placeholder markdown)
 - [ ] Contact form modal (instead of just mailto links)
@@ -279,6 +281,7 @@ All Ralph loop configurations are consolidated here to prevent multiple file spr
 - **Tool Permissions**: Write, Read, Edit, Bash(*)
 
 **Active Fix Plan & Task Queue**:
+- [ ] Improve overall website animations and design. Do NOT create another header or footer; enhance the existing layout.
 - [ ] Get real recommendations and replace placeholder data
 - [ ] Write real blog post content (currently placeholder markdown)
 - [ ] Implement contact form modal (instead of mailto links)
