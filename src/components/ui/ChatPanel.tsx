@@ -2,18 +2,20 @@
 
 import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Send, RotateCcw, ArrowLeft, Trash2, Sparkles, User, Code2, Briefcase, FolderOpen, CalendarDays, Award } from 'lucide-react';
+import { X, Send, RotateCcw, ArrowLeft, Trash2, Sparkles, UserCircle, Terminal, Briefcase, Layers, CalendarCheck, Medal, Bot } from 'lucide-react';
 import { ChatMessage } from './ChatMessage';
 import { useModal } from '@/hooks/useModal';
 import type { ChatMessage as ChatMessageType } from '@/types';
+import Image from 'next/image';
+import { profile } from '@/data/profile';
 
 const ACTION_CARDS = [
-  { icon: User, label: 'About Keneth', question: 'Who is Keneth? Tell me about him.', color: 'text-blue-500', bg: 'bg-blue-500/10' },
-  { icon: Code2, label: 'Skills & Tech', question: 'What are Keneth\'s top skills and technologies?', color: 'text-emerald-500', bg: 'bg-emerald-500/10' },
+  { icon: UserCircle, label: 'About Keneth', question: 'Who is Keneth? Tell me about him.', color: 'text-blue-500', bg: 'bg-blue-500/10' },
+  { icon: Terminal, label: 'Skills & Tech', question: 'What are Keneth\'s top skills and technologies?', color: 'text-emerald-500', bg: 'bg-emerald-500/10' },
   { icon: Briefcase, label: 'Experience', question: 'Tell me about Keneth\'s work experience and roles', color: 'text-amber-500', bg: 'bg-amber-500/10' },
-  { icon: FolderOpen, label: 'Projects', question: 'What projects has Keneth built?', color: 'text-violet-500', bg: 'bg-violet-500/10' },
-  { icon: CalendarDays, label: 'Schedule Call', question: 'How can I schedule a meeting with Keneth?', color: 'text-teal-500', bg: 'bg-teal-500/10' },
-  { icon: Award, label: 'Certifications', question: 'What certifications does Keneth have?', color: 'text-rose-500', bg: 'bg-rose-500/10' },
+  { icon: Layers, label: 'Projects', question: 'What projects has Keneth built?', color: 'text-violet-500', bg: 'bg-violet-500/10' },
+  { icon: CalendarCheck, label: 'Schedule Call', question: 'How can I schedule a meeting with Keneth?', color: 'text-teal-500', bg: 'bg-teal-500/10' },
+  { icon: Medal, label: 'Certifications', question: 'What certifications does Keneth have?', color: 'text-rose-500', bg: 'bg-rose-500/10' },
 ];
 
 const FOLLOW_UP_POOL = [
@@ -171,17 +173,32 @@ export function ChatPanel({ onBack, onClose, messages, setMessages }: ChatPanelP
           >
             <ArrowLeft className="h-4 w-4" />
           </button>
-          <div className="relative">
-            <div className="h-8 w-8 rounded-full bg-accent-pink flex items-center justify-center">
-              <Sparkles className="h-4 w-4 text-white" />
+          <div className="relative flex-shrink-0">
+            {/* Custom Avatar container */}
+            <div className="h-[38px] w-[38px] rounded-full overflow-hidden border border-border-light dark:border-border-dark bg-surface-light dark:bg-card-bg-dark shadow-sm">
+              <Image
+                src="/images/profile/PP%20Namias.png"
+                alt={profile.name}
+                width={38}
+                height={38}
+                className="object-cover h-full w-full"
+                priority
+              />
             </div>
-            <div className="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full bg-emerald-400 border-2 border-white dark:border-card-bg-dark" />
+            {/* Small AI Bot sub-badge */}
+            <div className="absolute -bottom-1 -right-1 h-[18px] w-[18px] rounded-full bg-accent-pink flex items-center justify-center border-2 border-white dark:border-card-bg-dark shadow-sm">
+              <Sparkles className="h-[9px] w-[9px] text-white" />
+            </div>
           </div>
-          <div>
-            <p className="text-sm font-semibold text-text-primary-light dark:text-text-primary-dark">
+          <div className="ml-0.5">
+            <p className="text-[13px] font-semibold text-text-primary-light dark:text-text-primary-dark tracking-tight leading-tight">
               Keneth&apos;s AI
             </p>
-            <p className="text-[10px] text-text-muted-light dark:text-text-muted-dark">
+            <p className="text-[10px] text-text-muted-light dark:text-text-muted-dark flex items-center gap-1.5 mt-0.5">
+              <span className="relative flex h-1.5 w-1.5">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+                <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500" />
+              </span>
               Online • Ask me anything
             </p>
           </div>
@@ -223,10 +240,23 @@ export function ChatPanel({ onBack, onClose, messages, setMessages }: ChatPanelP
               exit={{ opacity: 0 }}
               className="flex flex-col items-center justify-center h-full"
             >
-              <div className="h-12 w-12 rounded-full bg-accent-pink/10 flex items-center justify-center mb-3">
-                <Sparkles className="h-6 w-6 text-accent-pink" />
+              <div className="relative mb-3">
+                <div className="h-14 w-14 rounded-full overflow-hidden border border-border-light dark:border-border-dark bg-white dark:bg-card-bg-dark shadow-sm">
+                  <Image
+                    src="/images/profile/PP%20Namias.png"
+                    alt={profile.name}
+                    width={56}
+                    height={56}
+                    className="object-cover h-full w-full opacity-90"
+                    priority
+                  />
+                </div>
+                {/* AI Badge for Chat Empty state */}
+                <div className="absolute -bottom-1 -right-1 h-6 w-6 rounded-full bg-accent-pink flex items-center justify-center border-[2.5px] border-white dark:border-[#1A1A1C] shadow-sm">
+                  <Sparkles className="h-3 w-3 text-white" />
+                </div>
               </div>
-              <p className="text-sm font-medium text-text-primary-light dark:text-text-primary-dark">
+              <p className="text-[15px] font-bold tracking-tight text-text-primary-light dark:text-text-primary-dark">
                 Hi! I&apos;m Keneth&apos;s AI
               </p>
               <p className="text-xs text-text-muted-light dark:text-text-muted-dark mt-1 mb-4">
