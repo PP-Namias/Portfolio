@@ -118,26 +118,20 @@ export function HeroSection() {
           <div style={{ perspective: 600 }}>
             <motion.div
               ref={photoRef}
-              className="group relative h-[160px] w-[160px] rounded-full cursor-pointer"
+              className="group relative h-[160px] w-[160px] cursor-pointer rounded-2xl overflow-hidden shadow-lg border border-border-light dark:border-border-dark"
               style={{ rotateX: smoothRotateX, rotateY: smoothRotateY }}
               whileHover={{ scale: 1.06 }}
               transition={{ type: 'spring', stiffness: 260, damping: 20 }}
               onMouseMove={handlePhotoMouseMove}
               onMouseLeave={handlePhotoMouseLeave}
             >
-              {/* Outer glow on hover */}
-              <div className="absolute -inset-3 rounded-full bg-accent-pink/0 group-hover:bg-accent-pink/10 blur-2xl transition-all duration-500 pointer-events-none" />
-              {/* Solid ring */}
-              <div className="absolute inset-0 rounded-full bg-accent-pink animate-spin-slow group-hover:[animation-duration:3s] transition-shadow duration-300 group-hover:shadow-[0_0_30px_rgba(var(--accent)/0.35)]" />
-              {/* Mask */}
-              <div className="absolute inset-[3px] group-hover:inset-[2px] rounded-full bg-white dark:bg-background-dark z-[1] transition-all duration-300" />
               {/* Photo */}
               <Image
                 src="/images/profile/PP%20Namias.png"
                 alt={profile.name}
-                width={152}
-                height={152}
-                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[152px] w-[152px] rounded-full object-cover z-[2] brightness-100 group-hover:brightness-105 transition-[filter] duration-300"
+                fill
+                sizes="(max-width: 640px) 160px, 160px"
+                className="object-cover brightness-100 group-hover:brightness-105 transition-[filter] duration-300"
                 priority
               />
             </motion.div>
