@@ -118,22 +118,24 @@ export function HeroSection() {
           <div style={{ perspective: 600 }}>
             <motion.div
               ref={photoRef}
-              className="group relative h-[160px] w-[160px] cursor-pointer rounded-2xl overflow-hidden shadow-lg border border-border-light dark:border-border-dark"
+              className="group relative h-[160px] w-[160px] cursor-pointer shadow-lg border border-border-light dark:border-border-dark rounded-2xl"
               style={{ rotateX: smoothRotateX, rotateY: smoothRotateY }}
               whileHover={{ scale: 1.06 }}
               transition={{ type: 'spring', stiffness: 260, damping: 20 }}
               onMouseMove={handlePhotoMouseMove}
               onMouseLeave={handlePhotoMouseLeave}
             >
-              {/* Photo */}
-              <Image
-                src="/images/profile/PP%20Namias.png"
-                alt={profile.name}
-                fill
-                sizes="(max-width: 640px) 160px, 160px"
-                className="object-cover brightness-100 group-hover:brightness-105 transition-[filter] duration-300"
-                priority
-              />
+              <div className="absolute inset-0 rounded-2xl overflow-hidden">
+                {/* Photo */}
+                <Image
+                  src="/images/profile/PP%20Namias.png"
+                  alt={profile.name}
+                  fill
+                  sizes="(max-width: 640px) 160px, 160px"
+                  className="object-cover brightness-100 group-hover:brightness-105 transition-[filter] duration-300"
+                  priority
+                />
+              </div>
             </motion.div>
           </div>
         </motion.div>
