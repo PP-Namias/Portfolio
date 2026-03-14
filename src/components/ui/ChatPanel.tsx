@@ -336,12 +336,6 @@ export function ChatPanel({ onBack, onClose, messages, setMessages }: ChatPanelP
             <Send className="h-4 w-4" />
           </button>
         </form>
-        <div className="flex items-center justify-center gap-1 pb-2 -mt-0.5">
-          <Sparkles className="h-2.5 w-2.5 text-accent-pink opacity-60" />
-          <span className="text-[9px] text-text-muted-light dark:text-text-muted-dark">
-            Powered by Gemini AI
-          </span>
-        </div>
       </div>
     </>
   );
