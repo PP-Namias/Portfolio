@@ -102,7 +102,7 @@ export function HeroSection() {
 
       {/* Controls — top-right corner */}
       <motion.div
-        className="flex items-center justify-center gap-2 mb-4 sm:absolute sm:top-0 sm:right-0 sm:mb-0 sm:z-10"
+        className="mb-4 flex w-full items-center justify-center gap-2 sm:justify-end md:absolute md:right-0 md:top-0 md:z-10 md:mb-0 md:w-auto"
         variants={itemVariants}
       >
         <ColorSchemePicker />
