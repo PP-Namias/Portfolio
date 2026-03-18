@@ -24,7 +24,9 @@ export function Footer() {
         <p className="text-sm text-text-secondary-light dark:text-text-secondary-dark text-center">
           Interested in working together?{' '}
           <a
-            href={`mailto:${profile.email}`}
+            href="https://www.linkedin.com/in/pp-namias/"
+            target="_blank"
+            rel="noopener noreferrer"
             className="text-accent-pink hover:text-accent-pink-hover dark:hover:text-accent-pink-hover-dark font-medium transition-colors"
           >
             Let&apos;s connect
