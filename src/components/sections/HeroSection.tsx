@@ -103,14 +103,14 @@ export function HeroSection() {
 
       {/* Controls — top-right corner */}
       <motion.div
-        className="mb-4 flex w-full items-center justify-center gap-2 sm:justify-end lg:absolute lg:right-0 lg:top-0 lg:z-10 lg:mb-0 lg:w-auto"
+        className="mb-4 flex w-full items-center justify-end gap-2 md:absolute md:right-0 md:top-1 md:z-10 md:mb-0 md:w-auto"
         variants={itemVariants}
       >
         <ColorSchemePicker />
         <ThemeToggle />
       </motion.div>
 
-      <div className="flex flex-col items-center text-center sm:text-left sm:flex-row sm:items-center gap-7">
+      <div className="flex flex-col items-center text-center sm:text-left sm:flex-row sm:items-center gap-7 md:pt-2 lg:pt-0">
         {/* Profile Photo — 160px with 3D tilt + gradient ring */}
         <motion.div className="flex-shrink-0" variants={photoVariants}>
           <div style={{ perspective: 600 }}>
