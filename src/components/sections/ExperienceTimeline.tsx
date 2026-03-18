@@ -1,12 +1,20 @@
 'use client';
 
-import React from 'react';
+import React, { useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
+import { ChevronDown, ChevronUp } from 'lucide-react';
 import { experiences } from '@/data/experience';
 import { TimelineItem } from '@/components/ui/TimelineItem';
 
 export function ExperienceTimeline() {
-  const previewExperiences = experiences.slice(0, 3);
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  const visibleExperiences = useMemo(
+    () => (isExpanded ? experiences : experiences.slice(0, 3)),
+    [isExpanded]
+  );
+
+  const isExpandable = experiences.length > 3;
 
   return (
     <motion.section
@@ -18,16 +26,29 @@ export function ExperienceTimeline() {
       <h2 className="text-lg font-semibold text-text-primary-light dark:text-text-primary-dark mb-4">
         Experience
       </h2>
-      <div>
-        {previewExperiences.map((exp, index) => (
+      <motion.div layout>
+        {visibleExperiences.map((exp, index) => (
           <TimelineItem
             key={`${exp.company}-${exp.position}`}
             item={exp}
             index={index}
-            isLast={index === previewExperiences.length - 1}
+            isLast={index === visibleExperiences.length - 1}
           />
         ))}
-      </div>
+
+        {isExpandable && (
+          <motion.button
+            layout
+            type="button"
+            onClick={() => setIsExpanded((prev) => !prev)}
+            className="mt-3 inline-flex items-center gap-1.5 text-xs font-medium text-accent-pink hover:text-accent-pink-hover dark:hover:text-accent-pink-hover-dark transition-colors"
+            aria-expanded={isExpanded}
+          >
+            {isExpanded ? 'Show Less' : 'View Full Experience'}
+            {isExpanded ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
+          </motion.button>
+        )}
+      </motion.div>
     </motion.section>
   );
 }
