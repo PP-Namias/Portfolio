@@ -1,54 +1,58 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
-import { Palette } from 'lucide-react';
+import React, { useEffect, useRef, useState } from 'react';
+import { Check, ChevronDown, Palette } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAccentColor, ACCENT_SCHEMES } from '@/hooks/useAccentColor';
 
 export function ColorSchemePicker() {
   const { scheme, setScheme, mounted } = useAccentColor();
-  const [isCompact, setIsCompact] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const pickerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!mounted) return;
-
-    const mediaQuery = window.matchMedia('(max-width: 960px)');
-    const syncCompactState = (matches: boolean) => {
-      setIsCompact(matches);
+    const onClickOutside = (event: MouseEvent) => {
+      if (!pickerRef.current?.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
     };
 
-    syncCompactState(mediaQuery.matches);
-
-    const handleChange = (event: MediaQueryListEvent) => {
-      syncCompactState(event.matches);
+    const onEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setIsOpen(false);
+      }
     };
 
-    mediaQuery.addEventListener('change', handleChange);
-    return () => mediaQuery.removeEventListener('change', handleChange);
+    document.addEventListener('mousedown', onClickOutside);
+    document.addEventListener('keydown', onEscape);
+
+    return () => {
+      document.removeEventListener('mousedown', onClickOutside);
+      document.removeEventListener('keydown', onEscape);
+    };
   }, [mounted]);
 
   if (!mounted) {
     return (
-      <div className="flex items-center gap-1.5">
-        {ACCENT_SCHEMES.map((s) => (
-          <div key={s.name} className="h-4 w-4 rounded-full bg-surface-light dark:bg-card-bg-dark" />
-        ))}
+      <div className="inline-flex h-8 items-center gap-1.5 rounded-full border border-border-light bg-surface-light px-2.5 text-xs font-medium text-text-muted-light dark:border-border-dark dark:bg-card-bg-dark dark:text-text-muted-dark">
+        <Palette className="h-3.5 w-3.5" aria-hidden="true" />
+        <div className="h-3 w-3 rounded-full bg-border-light dark:bg-border-dark" />
+        <ChevronDown className="h-3 w-3 opacity-60" aria-hidden="true" />
       </div>
     );
   }
 
-  if (isCompact) {
-    const currentIndex = ACCENT_SCHEMES.findIndex((s) => s.name === scheme.name);
-    const nextScheme = ACCENT_SCHEMES[(currentIndex + 1) % ACCENT_SCHEMES.length];
-
-    return (
+  return (
+    <div className="relative" ref={pickerRef}>
       <div className="flex items-center">
         <button
           type="button"
-          onClick={() => setScheme(nextScheme)}
+          onClick={() => setIsOpen((prev) => !prev)}
           className="inline-flex h-8 items-center gap-1.5 rounded-full border border-border-light bg-surface-light px-2.5 text-xs font-medium text-text-muted-light transition-colors hover:text-text-primary-light dark:border-border-dark dark:bg-card-bg-dark dark:text-text-muted-dark dark:hover:text-text-primary-dark"
-          aria-label={`Change accent color, current ${scheme.label}`}
-          title={`Accent: ${scheme.label} (tap to cycle)`}
+          aria-label={`Select accent color, current ${scheme.label}`}
+          aria-expanded={isOpen}
+          aria-haspopup="listbox"
+          title={`Accent: ${scheme.label}`}
         >
           <Palette className="h-3.5 w-3.5" aria-hidden="true" />
           <span
@@ -56,34 +60,48 @@ export function ColorSchemePicker() {
             style={{ backgroundColor: scheme.preview }}
             aria-hidden="true"
           />
+          <ChevronDown
+            className={cn('h-3 w-3 opacity-70 transition-transform duration-150', isOpen && 'rotate-180')}
+            aria-hidden="true"
+          />
         </button>
       </div>
-    );
-  }
 
-  return (
-    <div className="flex items-center gap-1.5" role="radiogroup" aria-label="Accent color">
-      {ACCENT_SCHEMES.map((s) => (
-        <button
-          key={s.name}
-          type="button"
-          onClick={() => setScheme(s)}
-          className={cn(
-            'h-4 w-4 rounded-full transition-all duration-200 flex-shrink-0',
-            scheme.name === s.name
-              ? 'ring-2 ring-offset-2 ring-offset-white dark:ring-offset-black scale-110'
-              : 'hover:scale-110 opacity-70 hover:opacity-100'
-          )}
-          style={{
-            backgroundColor: s.preview,
-            ...(scheme.name === s.name ? { '--tw-ring-color': s.preview } as React.CSSProperties : {}),
-          }}
-          role="radio"
-          aria-checked={scheme.name === s.name}
-          aria-label={s.label}
-          title={s.label}
-        />
-      ))}
+      {isOpen && (
+        <div
+          className="absolute right-0 top-10 z-30 w-44 rounded-xl border border-border-light bg-white p-1.5 shadow-lg dark:border-border-dark dark:bg-card-bg-dark"
+          role="listbox"
+          aria-label="Accent color options"
+        >
+          {ACCENT_SCHEMES.map((s) => (
+            <button
+              key={s.name}
+              type="button"
+              onClick={() => {
+                setScheme(s);
+                setIsOpen(false);
+              }}
+              className={cn(
+                'flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-left text-xs transition-colors',
+                scheme.name === s.name
+                  ? 'bg-surface-light text-text-primary-light dark:bg-surface-dark dark:text-text-primary-dark'
+                  : 'text-text-muted-light hover:bg-surface-light hover:text-text-primary-light dark:text-text-muted-dark dark:hover:bg-surface-dark dark:hover:text-text-primary-dark'
+              )}
+              role="option"
+              aria-selected={scheme.name === s.name}
+              title={s.label}
+            >
+              <span
+                className="h-3 w-3 rounded-full"
+                style={{ backgroundColor: s.preview }}
+                aria-hidden="true"
+              />
+              <span className="flex-1">{s.label}</span>
+              {scheme.name === s.name && <Check className="h-3.5 w-3.5" aria-hidden="true" />}
+            </button>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
