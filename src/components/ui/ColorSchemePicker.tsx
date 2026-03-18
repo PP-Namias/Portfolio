@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import { useRef } from 'react';
 import { ChevronDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAccentColor, ACCENT_SCHEMES } from '@/hooks/useAccentColor';
@@ -9,11 +10,12 @@ export function ColorSchemePicker() {
   const { scheme, setScheme, mounted } = useAccentColor();
   const [isCompact, setIsCompact] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
+  const rootRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!mounted) return;
 
-    const mediaQuery = window.matchMedia('(max-width: 430px)');
+    const mediaQuery = window.matchMedia('(max-width: 640px)');
     const syncCompactState = (matches: boolean) => {
       setIsCompact(matches);
       setIsExpanded(false);
@@ -29,6 +31,30 @@ export function ColorSchemePicker() {
     return () => mediaQuery.removeEventListener('change', handleChange);
   }, [mounted]);
 
+  useEffect(() => {
+    if (!isExpanded) return;
+
+    const handleDocumentClick = (event: MouseEvent) => {
+      if (!rootRef.current?.contains(event.target as Node)) {
+        setIsExpanded(false);
+      }
+    };
+
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setIsExpanded(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleDocumentClick);
+    document.addEventListener('keydown', handleEscape);
+
+    return () => {
+      document.removeEventListener('mousedown', handleDocumentClick);
+      document.removeEventListener('keydown', handleEscape);
+    };
+  }, [isExpanded]);
+
   if (!mounted) {
     return (
       <div className="flex items-center gap-1.5">
@@ -43,7 +69,7 @@ export function ColorSchemePicker() {
 
   if (isCompact) {
     return (
-      <div className="flex flex-col items-end gap-2">
+      <div ref={rootRef} className="flex flex-col items-end gap-2">
         <button
           type="button"
           onClick={() => setIsExpanded((prev) => !prev)}
