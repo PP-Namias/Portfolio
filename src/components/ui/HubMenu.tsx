@@ -9,7 +9,6 @@ import {
   Calendar,
   Mail,
   Share2,
-  PenLine,
   X,
   Github,
   Linkedin,
@@ -21,6 +20,7 @@ import { HubMenuItem } from './HubMenuItem';
 import { socialLinks } from '@/data/socials';
 import { profile } from '@/data/profile';
 import { useModal } from '@/hooks/useModal';
+import { IS_BLOG_VISIBLE } from '@/lib/features';
 
 interface HubMenuProps {
   onClose: () => void;
@@ -246,16 +246,18 @@ export function HubMenu({ onClose, onOpenChat }: HubMenuProps) {
           )}
         </AnimatePresence>
 
-        <HubMenuItem
-          icon={PenLine}
-          label="Read Blog"
-          subtitle="Latest articles & tutorials"
-          index={5}
-          href="/blog"
-          onClick={onClose}
-          iconColorClass="text-indigo-500"
-          iconBgClass="bg-indigo-500/10"
-        />
+        {IS_BLOG_VISIBLE && (
+          <HubMenuItem
+            icon={ArrowUpRight}
+            label="Read Blog"
+            subtitle="Latest articles & tutorials"
+            index={5}
+            href="/blog"
+            onClick={onClose}
+            iconColorClass="text-indigo-500"
+            iconBgClass="bg-indigo-500/10"
+          />
+        )}
       </div>
 
       {/* Footer — minimal status */}

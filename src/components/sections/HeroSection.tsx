@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence, useMotionValue, useSpring } from 'framer-motion';
-import { MapPin, Mail, Download, Calendar, Github, Linkedin, Twitter, Instagram, ArrowUpRight } from 'lucide-react';
+import { MapPin, Mail, Download, Calendar, Github, Linkedin, Twitter, Instagram } from 'lucide-react';
 import { profile } from '@/data/profile';
 import { socialLinks } from '@/data/socials';
 import { Button } from '@/components/ui/Button';
@@ -11,6 +11,7 @@ import { VerifiedBadge } from '@/components/ui/VerifiedBadge';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import { ColorSchemePicker } from '@/components/ui/ColorSchemePicker';
 import { useModal } from '@/hooks/useModal';
+import { IS_BLOG_VISIBLE } from '@/lib/features';
 
 const roles = [
   'Full Stack Engineer',
@@ -208,18 +209,21 @@ export function HeroSection() {
                   </motion.a>
                 );
               })}
-              <span className="mx-1 h-3.5 w-px bg-border-light dark:bg-border-dark" />
-              <motion.a
-                href="/blog"
-                className="group/blog h-7 rounded-md px-2 flex items-center gap-1 text-[12px] font-medium text-text-muted-light dark:text-text-muted-dark hover:text-accent-pink hover:bg-accent-pink/5 transition-colors"
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.68, type: 'spring', stiffness: 300, damping: 20 }}
-                whileHover={{ y: -1 }}
-              >
-                Blog
-                <ArrowUpRight className="h-3 w-3 opacity-0 -translate-x-0.5 group-hover/blog:opacity-100 group-hover/blog:translate-x-0 transition-all duration-150" />
-              </motion.a>
+              {IS_BLOG_VISIBLE && (
+                <>
+                  <span className="mx-1 h-3.5 w-px bg-border-light dark:bg-border-dark" />
+                  <motion.a
+                    href="/blog"
+                    className="h-7 rounded-md px-2 flex items-center gap-1 text-[12px] font-medium text-text-muted-light dark:text-text-muted-dark hover:text-accent-pink hover:bg-accent-pink/5 transition-colors"
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.68, type: 'spring', stiffness: 300, damping: 20 }}
+                    whileHover={{ y: -1 }}
+                  >
+                    Blog
+                  </motion.a>
+                </>
+              )}
             </div>
           </motion.div>
 

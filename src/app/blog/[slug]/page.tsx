@@ -1,8 +1,14 @@
 import { Metadata } from 'next';
+import { notFound } from 'next/navigation';
 import { blogPosts } from '@/data/blogPosts';
+import { IS_BLOG_VISIBLE } from '@/lib/features';
 import BlogPostContent from './BlogPostContent';
 
 export function generateStaticParams() {
+  if (!IS_BLOG_VISIBLE) {
+    return [];
+  }
+
   return blogPosts.map((post) => ({
     slug: post.slug,
   }));
@@ -27,6 +33,10 @@ export function generateMetadata({ params }: { params: { slug: string } }): Meta
 }
 
 export default function BlogPostPage({ params }: { params: { slug: string } }) {
+  if (!IS_BLOG_VISIBLE) {
+    notFound();
+  }
+
   const post = blogPosts.find((p) => p.slug === params.slug);
 
   const jsonLd = post

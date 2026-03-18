@@ -1,10 +1,16 @@
 import Link from 'next/link';
+import { notFound } from 'next/navigation';
 import { ArrowLeft } from 'lucide-react';
 import { blogPosts } from '@/data/blogPosts';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
+import { IS_BLOG_VISIBLE } from '@/lib/features';
 import BlogListClient from './BlogListClient';
 
 export default function BlogPage() {
+  if (!IS_BLOG_VISIBLE) {
+    notFound();
+  }
+
   return (
     <main className="mx-auto max-w-container px-4 sm:px-6 pt-8 lg:pt-12 pb-16">
       {/* Header */}
