@@ -12,31 +12,29 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: 'Jhon Keneth Ryan Namias — Full Stack Engineer & AI Automation Specialist',
-  description:
-    'Portfolio of Jhon Keneth Ryan Namias — Full Stack Engineer & AI Automation Specialist based in the Philippines. Specialized in React, TypeScript, Node.js, and AI-driven workflows.',
+  title: 'Jhon Keneth Namias | Portfolio king of stuff',
+  description: 'Personal portfolio of Jhon Keneth Namias.',
   metadataBase: new URL('https://namias.tech'),
   openGraph: {
-    title: 'Jhon Keneth Ryan Namias — Full Stack Engineer & AI Automation Specialist',
-    description:
-      'Portfolio of Jhon Keneth Ryan Namias — Full Stack Engineer & AI Automation Specialist based in the Philippines.',
+    title: 'Jhon Keneth Namias | Portfolio king of stuff',
+    description: 'Personal portfolio of Jhon Keneth Namias.',
+    siteName: 'Jhon Keneth Namias Portfolio',
     type: 'website',
     locale: 'en_US',
     images: [
       {
-        url: '/og-image.svg',
+        url: '/opengraph-image',
         width: 1200,
         height: 630,
-        alt: 'Jhon Keneth Ryan Namias — Full Stack Engineer & AI Automation Specialist',
+        alt: 'Jhon Keneth Namias portfolio preview',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Jhon Keneth Ryan Namias — Full Stack Engineer & AI Automation Specialist',
-    description:
-      'Portfolio of Jhon Keneth Ryan Namias — Full Stack Engineer & AI Automation Specialist based in the Philippines.',
-    images: ['/og-image.svg'],
+    title: 'Jhon Keneth Namias | Portfolio king of stuff',
+    description: 'Personal portfolio of Jhon Keneth Namias.',
+    images: ['/twitter-image'],
   },
   icons: {
     icon: '/favicon.svg',
