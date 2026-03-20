@@ -2,14 +2,7 @@
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import Image from 'next/image';
-import {
-  motion,
-  AnimatePresence,
-  useMotionValue,
-  useSpring,
-  useMotionTemplate,
-  useAnimationFrame,
-} from 'framer-motion';
+import { motion, AnimatePresence, useMotionValue, useSpring } from 'framer-motion';
 import { MapPin, Mail, Download, Calendar, Github, Linkedin, Twitter, Instagram } from 'lucide-react';
 import { profile } from '@/data/profile';
 import { socialLinks } from '@/data/socials';
@@ -17,7 +10,6 @@ import { Button } from '@/components/ui/Button';
 import { VerifiedBadge } from '@/components/ui/VerifiedBadge';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import { ColorSchemePicker } from '@/components/ui/ColorSchemePicker';
-import { useMousePositionRef } from '@/components/ui/use-mouse-position-ref';
 import { useModal } from '@/hooks/useModal';
 import { IS_BLOG_VISIBLE } from '@/lib/features';
 
@@ -65,24 +57,12 @@ export function HeroSection() {
   const [roleIndex, setRoleIndex] = useState(0);
   const { openModal } = useModal();
   const photoRef = useRef<HTMLDivElement>(null);
-  const sectionRef = useRef<HTMLElement>(null);
-  const pointerRef = useMousePositionRef(sectionRef);
-
-  const spotlightX = useMotionValue(-9999);
-  const spotlightY = useMotionValue(-9999);
-  const spotlightBackground = useMotionTemplate`radial-gradient(280px circle at ${spotlightX}px ${spotlightY}px, rgb(var(--accent) / 0.17), transparent 65%)`;
 
   /* 3D tilt motion values */
   const rotateX = useMotionValue(0);
   const rotateY = useMotionValue(0);
   const smoothRotateX = useSpring(rotateX, { stiffness: 200, damping: 20 });
   const smoothRotateY = useSpring(rotateY, { stiffness: 200, damping: 20 });
-
-  useAnimationFrame(() => {
-    const { x, y } = pointerRef.current;
-    spotlightX.set(x);
-    spotlightY.set(y);
-  });
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -115,19 +95,11 @@ export function HeroSection() {
 
   return (
     <motion.section
-      ref={sectionRef}
       className="relative"
       variants={containerVariants}
       initial="hidden"
       animate="visible"
     >
-      <motion.div
-        className="pointer-events-none absolute inset-0"
-        style={{ background: spotlightBackground }}
-        aria-hidden="true"
-      />
-
-      <div className="relative z-[1]">
 
       {/* Controls — top-right corner */}
       <motion.div
@@ -274,7 +246,6 @@ export function HeroSection() {
             </Button>
           </motion.div>
         </div>
-      </div>
       </div>
     </motion.section>
   );
