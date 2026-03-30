@@ -1,41 +1,9 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
-import { motion, useInView } from 'framer-motion';
-import { GraduationCap, Briefcase, Code, Layers, ChevronDown, ChevronUp } from 'lucide-react';
+import React, { useState } from 'react';
+import { motion } from 'framer-motion';
+import { GraduationCap, ChevronDown, ChevronUp } from 'lucide-react';
 import { profile } from '@/data/profile';
-import { technologies } from '@/data/techStack';
-
-function AnimatedCounter({ target, label, icon: Icon }: { target: number; label: string; icon: React.ComponentType<{ className?: string }> }) {
-  const [count, setCount] = useState(0);
-  const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { once: true });
-
-  useEffect(() => {
-    if (!inView) return;
-    let start = 0;
-    const duration = 1500;
-    const step = Math.ceil(target / (duration / 16));
-    const timer = setInterval(() => {
-      start += step;
-      if (start >= target) {
-        setCount(target);
-        clearInterval(timer);
-      } else {
-        setCount(start);
-      }
-    }, 16);
-    return () => clearInterval(timer);
-  }, [inView, target]);
-
-  return (
-    <div ref={ref} className="text-center px-2">
-      <Icon className="h-4 w-4 text-accent-pink mx-auto mb-1.5" />
-      <p className="text-xl font-bold text-accent-pink tabular-nums">{count}+</p>
-      <p className="text-xs text-text-muted-light dark:text-text-muted-dark">{label}</p>
-    </div>
-  );
-}
 
 export function AboutSection() {
   const [showMore, setShowMore] = useState(false);
@@ -53,19 +21,6 @@ export function AboutSection() {
         About
       </h2>
       <div className="space-y-4">
-        {/* Animated Stats — visual hook first */}
-        <motion.div
-          className="flex flex-wrap gap-8 justify-center sm:justify-start"
-          initial={{ opacity: 0, y: 10 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.3 }}
-        >
-          <AnimatedCounter target={profile.highlights.yearsExperience} label="Years Exp." icon={Briefcase} />
-          <AnimatedCounter target={profile.highlights.projectsCompleted} label="Projects" icon={Code} />
-          <AnimatedCounter target={technologies.length} label="Technologies" icon={Layers} />
-        </motion.div>
-
         {/* Summary text — capped at 2 paragraphs with Read more */}
         <motion.div
           className="space-y-3"
