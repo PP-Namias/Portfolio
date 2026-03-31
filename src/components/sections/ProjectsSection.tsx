@@ -28,57 +28,85 @@ export function ProjectsSection() {
       {/* Featured project — large card */}
       {featured && featured.image && featured.image !== 'placeholder.png' && (
         <motion.div
-          className="mb-4 group"
+          className="mb-4"
           initial={{ opacity: 0, y: 10 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.4 }}
         >
-          <div className="relative rounded-xl overflow-hidden -mx-5 -mt-5 mb-4">
-            <Image
-              src={`/images/projects/${featured.image}`}
-              alt={featured.title}
-              width={800}
-              height={400}
-              sizes="(max-width: 768px) 100vw, 500px"
-              className="w-full h-48 sm:h-56 object-cover group-hover:scale-105 transition-transform duration-500"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-            <div className="absolute bottom-0 left-0 right-0 p-4">
+          <div className="rounded-xl border border-border-light dark:border-border-dark bg-white dark:bg-card-bg-dark overflow-hidden group shadow-sm">
+            <div className="relative h-48 sm:h-56">
+              <Image
+                src={`/images/projects/${featured.image}`}
+                alt={featured.title}
+                fill
+                sizes="(max-width: 768px) 100vw, 500px"
+                className="object-cover group-hover:scale-105 transition-transform duration-500"
+                priority
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+              <div className="absolute top-3 left-3 text-[11px] font-semibold px-2 py-0.5 rounded-full bg-white/90 text-text-primary-light">
+                Featured
+              </div>
+            </div>
+            <div className="p-4">
               <div className="flex items-start justify-between gap-2">
-                <h3 className="text-sm font-semibold text-white leading-snug">
+                <h3 className="text-sm font-semibold text-text-primary-light dark:text-text-primary-dark leading-snug">
                   {featured.title}
                 </h3>
-                <span className="text-[11px] text-white/60 flex-shrink-0">{featured.year}</span>
+                <span className="text-xs text-text-muted-light dark:text-text-muted-dark flex-shrink-0">
+                  {featured.year}
+                </span>
               </div>
-              <p className="text-xs text-white/70 mt-1 line-clamp-2 leading-relaxed">
+              <p className="text-xs text-text-secondary-light dark:text-text-secondary-dark mt-1.5 line-clamp-3 leading-relaxed">
                 {featured.description}
               </p>
-              <div className="flex items-center gap-3 mt-2.5">
-                <div className="flex flex-wrap gap-1">
-                  {featured.tags.slice(0, 3).map((tag) => (
-                    <span key={tag} className="text-[11px] font-medium px-2 py-0.5 rounded-full bg-white/15 text-white/90">
-                      {tag}
-                    </span>
-                  ))}
-                  {featured.tags.length > 3 && (
-                    <span className="text-[11px] font-medium px-2 py-0.5 rounded-full bg-white/15 text-white/90">
-                      +{featured.tags.length - 3}
-                    </span>
-                  )}
-                </div>
-                <div className="flex items-center gap-2 ml-auto">
-                  {featured.repositoryURL && (
-                    <a href={featured.repositoryURL} target="_blank" rel="noopener noreferrer" className="text-white/70 hover:text-white transition-colors" onClick={(e) => e.stopPropagation()}>
-                      <Github className="h-3.5 w-3.5" />
-                    </a>
-                  )}
-                  {featured.liveURL && (
-                    <a href={featured.liveURL} target="_blank" rel="noopener noreferrer" className="text-white/70 hover:text-white transition-colors" onClick={(e) => e.stopPropagation()}>
-                      <ExternalLink className="h-3.5 w-3.5" />
-                    </a>
-                  )}
-                </div>
+              <div className="flex flex-wrap gap-1.5 mt-3">
+                {featured.tags.slice(0, 5).map((tag) => (
+                  <span key={tag} className="text-[11px] font-medium px-2 py-0.5 rounded-full bg-accent-pink/10 text-accent-pink">
+                    {tag}
+                  </span>
+                ))}
+                {featured.tags.length > 5 && (
+                  <span className="text-[11px] font-medium px-2 py-0.5 rounded-full bg-accent-pink/10 text-accent-pink">
+                    +{featured.tags.length - 5}
+                  </span>
+                )}
+              </div>
+              <div className="flex flex-wrap items-center gap-2 mt-3">
+                {featured.repositoryURL && (
+                  <a
+                    href={featured.repositoryURL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="View repository"
+                    className="inline-flex items-center gap-1 rounded-md border border-border-light dark:border-border-dark px-2.5 py-1 text-xs font-medium text-text-secondary-light dark:text-text-secondary-dark hover:text-accent-pink hover:border-accent-pink/40 transition-colors"
+                  >
+                    <Github className="h-3.5 w-3.5" /> Code
+                  </a>
+                )}
+                {featured.liveURL && (
+                  <a
+                    href={featured.liveURL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="View live project"
+                    className="inline-flex items-center gap-1 rounded-md bg-accent-pink text-white px-2.5 py-1 text-xs font-medium hover:bg-accent-pink/90 transition-colors"
+                  >
+                    <ExternalLink className="h-3.5 w-3.5" /> Live
+                  </a>
+                )}
+                {featured.processURL && (
+                  <a
+                    href={featured.processURL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="View project process"
+                    className="inline-flex items-center gap-1 rounded-md border border-border-light dark:border-border-dark px-2.5 py-1 text-xs font-medium text-text-secondary-light dark:text-text-secondary-dark hover:text-accent-pink hover:border-accent-pink/40 transition-colors"
+                  >
+                    <ExternalLink className="h-3.5 w-3.5" /> Process
+                  </a>
+                )}
               </div>
             </div>
           </div>
@@ -86,7 +114,7 @@ export function ProjectsSection() {
       )}
 
       {/* Compact list for remaining projects */}
-      <div className="space-y-2">
+      <div className="space-y-3">
         <AnimatePresence mode="popLayout">
           {rest.map((project, index) => {
             const url = project.liveURL || project.repositoryURL;
@@ -94,52 +122,96 @@ export function ProjectsSection() {
               <motion.div
                 key={project.title}
                 layout
-                className="group flex items-center gap-3 p-2 -mx-2 rounded-lg hover:bg-accent-pink/5 transition-colors"
+                className="group rounded-lg border border-border-light dark:border-border-dark bg-white dark:bg-card-bg-dark p-3 hover:border-accent-pink/40 hover:-translate-y-0.5 transition-all"
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
                 transition={{ delay: index * 0.05, duration: 0.3 }}
               >
-                {/* Project thumbnail */}
-                {project.image && project.image !== 'placeholder.png' && (
-                  <div className="flex-shrink-0 h-10 w-14 rounded-md overflow-hidden border border-border-light dark:border-border-dark">
-                    <Image
-                      src={`/images/projects/${project.image}`}
-                      alt={project.title}
-                      width={56}
-                      height={40}
-                      className="h-full w-full object-cover"
-                    />
-                  </div>
-                )}
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between gap-2">
-                    <p className="text-sm font-medium text-text-primary-light dark:text-text-primary-dark truncate group-hover:text-accent-pink transition-colors">
-                      {project.title}
-                    </p>
-                    <span className="text-xs text-text-muted-light dark:text-text-muted-dark flex-shrink-0">
-                      {project.year}
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-2 mt-0.5">
-                    <div className="flex flex-wrap gap-1 flex-1 min-w-0">
-                      {project.tags.slice(0, 2).map((tag) => (
-                        <span key={tag} className="text-[11px] font-medium px-1.5 py-0.5 rounded-full bg-accent-pink/10 text-accent-pink">
-                          {tag}
-                        </span>
-                      ))}
+                <div className="flex items-start gap-3">
+                  {/* Project thumbnail */}
+                  {project.image && project.image !== 'placeholder.png' && (
+                    <div className="flex-shrink-0 h-12 w-16 rounded-md overflow-hidden border border-border-light dark:border-border-dark">
+                      <Image
+                        src={`/images/projects/${project.image}`}
+                        alt={project.title}
+                        width={64}
+                        height={48}
+                        className="h-full w-full object-cover"
+                      />
                     </div>
-                    <div className="flex items-center gap-1.5 flex-shrink-0">
-                      {project.repositoryURL && (
-                        <a href={project.repositoryURL} target="_blank" rel="noopener noreferrer" className="text-text-muted-light dark:text-text-muted-dark hover:text-accent-pink transition-colors">
-                          <Github className="h-3 w-3" />
+                  )}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-start justify-between gap-2">
+                      {url ? (
+                        <a
+                          href={url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-sm font-medium text-text-primary-light dark:text-text-primary-dark truncate group-hover:text-accent-pink transition-colors"
+                        >
+                          {project.title}
                         </a>
+                      ) : (
+                        <p className="text-sm font-medium text-text-primary-light dark:text-text-primary-dark truncate">
+                          {project.title}
+                        </p>
                       )}
-                      {project.liveURL && (
-                        <a href={project.liveURL} target="_blank" rel="noopener noreferrer" className="text-text-muted-light dark:text-text-muted-dark hover:text-accent-pink transition-colors">
-                          <ExternalLink className="h-3 w-3" />
-                        </a>
-                      )}
+                      <span className="text-xs text-text-muted-light dark:text-text-muted-dark flex-shrink-0">
+                        {project.year}
+                      </span>
+                    </div>
+                    <p className="text-xs text-text-secondary-light dark:text-text-secondary-dark mt-1 line-clamp-2">
+                      {project.description}
+                    </p>
+                    <div className="flex items-center gap-2 mt-2">
+                      <div className="flex flex-wrap gap-1 flex-1 min-w-0">
+                        {project.tags.slice(0, 3).map((tag) => (
+                          <span key={tag} className="text-[11px] font-medium px-1.5 py-0.5 rounded-full bg-accent-pink/10 text-accent-pink">
+                            {tag}
+                          </span>
+                        ))}
+                        {project.tags.length > 3 && (
+                          <span className="text-[11px] font-medium px-1.5 py-0.5 rounded-full bg-accent-pink/10 text-accent-pink">
+                            +{project.tags.length - 3}
+                          </span>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-1.5 flex-shrink-0">
+                        {project.repositoryURL && (
+                          <a
+                            href={project.repositoryURL}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            aria-label="View repository"
+                            className="text-text-muted-light dark:text-text-muted-dark hover:text-accent-pink transition-colors"
+                          >
+                            <Github className="h-3.5 w-3.5" />
+                          </a>
+                        )}
+                        {project.liveURL && (
+                          <a
+                            href={project.liveURL}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            aria-label="View live project"
+                            className="text-text-muted-light dark:text-text-muted-dark hover:text-accent-pink transition-colors"
+                          >
+                            <ExternalLink className="h-3.5 w-3.5" />
+                          </a>
+                        )}
+                        {project.processURL && (
+                          <a
+                            href={project.processURL}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            aria-label="View project process"
+                            className="text-text-muted-light dark:text-text-muted-dark hover:text-accent-pink transition-colors"
+                          >
+                            <ExternalLink className="h-3.5 w-3.5" />
+                          </a>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>
