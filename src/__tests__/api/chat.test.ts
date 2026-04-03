@@ -104,11 +104,11 @@ describe('/api/chat route', () => {
   });
 
   it('strips HTML tags from message', async () => {
-    const req = createRequest({ message: '<script>alert("xss")</script>Hello' });
+    const req = createRequest({ message: '<script>alert("xss")</script>Can you explain your decision-making process?' });
     const res = await POST(req);
-    // Should succeed after stripping - "alert("xss")Hello" is the sanitized text
+    // Should succeed after stripping and still call Gemini for non-preset intent
     expect(res.status).toBe(200);
-    expect(mockSendMessage).toHaveBeenCalledWith('alert("xss")Hello');
+    expect(mockSendMessage).toHaveBeenCalledWith('alert("xss")Can you explain your decision-making process?');
   });
 
   it('returns 400 when body is invalid JSON', async () => {
@@ -124,7 +124,7 @@ describe('/api/chat route', () => {
   // --- Successful Response ---
   
   it('returns 200 with AI response for valid message', async () => {
-    const req = createRequest({ message: 'What tech stack do you use?' });
+    const req = createRequest({ message: 'Can you explain your decision-making process?' });
     const res = await POST(req);
     expect(res.status).toBe(200);
     const data = await res.json();
@@ -133,7 +133,7 @@ describe('/api/chat route', () => {
   });
 
   it('passes generationConfig to Gemini model', async () => {
-    const req = createRequest({ message: 'Hello' });
+    const req = createRequest({ message: 'Please discuss your approach to solving ambiguous problems.' });
     await POST(req);
     expect(mockGetGenerativeModel).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -180,7 +180,7 @@ describe('/api/chat route', () => {
   
   it('returns fallback response when API key is not configured', async () => {
     vi.stubEnv('GOOGLE_GEMINI_API_KEY', '');
-    const req = createRequest({ message: 'Hello' });
+    const req = createRequest({ message: 'Can you explain your decision-making process?' });
     const res = await POST(req);
     expect(res.status).toBe(200);
     const data = await res.json();
@@ -192,7 +192,7 @@ describe('/api/chat route', () => {
   
   it('returns fallback response when Gemini API fails with non-quota error', async () => {
     mockSendMessage.mockRejectedValue(new Error('Network connection failed'));
-    const req = createRequest({ message: 'Hello' });
+    const req = createRequest({ message: 'Can you explain your decision-making process?' });
     const res = await POST(req);
     expect(res.status).toBe(200);
     const data = await res.json();
@@ -202,7 +202,7 @@ describe('/api/chat route', () => {
 
   it('returns fallback response when all models hit quota limit', async () => {
     mockSendMessage.mockRejectedValue(new Error('429 Too Many Requests: Quota exceeded'));
-    const req = createRequest({ message: 'Hello' });
+    const req = createRequest({ message: 'Can you explain your decision-making process?' });
     const res = await POST(req);
     expect(res.status).toBe(200);
     const data = await res.json();
@@ -210,14 +210,16 @@ describe('/api/chat route', () => {
     expect(data.message).toContain('backup mode');
   });
 
-  it('includes action tag in fallback when resume is requested', async () => {
-    mockSendMessage.mockRejectedValue(new Error('Gemini unavailable'));
+  it('returns preset response and skips Gemini for common intents', async () => {
     const req = createRequest({ message: 'Can I get your resume?' });
     const res = await POST(req);
     expect(res.status).toBe(200);
     const data = await res.json();
-    expect(data.fallback).toBe(true);
+    expect(data.preset).toBe(true);
+    expect(data.fallback).toBe(false);
     expect(data.message).toContain('[ACTION:resume]');
+    expect(mockGetGenerativeModel).not.toHaveBeenCalled();
+    expect(mockSendMessage).not.toHaveBeenCalled();
   });
 
   it('falls back to next model when first model quota is exhausted', async () => {
@@ -226,7 +228,7 @@ describe('/api/chat route', () => {
       .mockResolvedValueOnce({
         response: { text: () => 'Fallback model response' },
       });
-    const req = createRequest({ message: 'Hello' });
+    const req = createRequest({ message: 'Can you explain your decision-making process?' });
     const res = await POST(req);
     expect(res.status).toBe(200);
     const data = await res.json();

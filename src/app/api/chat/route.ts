@@ -107,11 +107,59 @@ function hasAnyKeyword(text: string, keywords: string[]): boolean {
   return keywords.some((keyword) => text.includes(keyword));
 }
 
+const FALLBACK_NOTICE =
+  "Keneth's AI backup mode is active right now, but I can still answer from his verified portfolio data.";
+
+function isGreetingIntent(rawMessage: string): boolean {
+  return /(^|\s)(hi|hello|hey)([!,.?\s]|$)/i.test(rawMessage.trim());
+}
+
+function isProfileIntroIntent(message: string): boolean {
+  return (
+    message.includes('who is keneth') ||
+    message.includes('tell me about keneth') ||
+    message.includes('tell me about yourself') ||
+    message.includes('who are you')
+  );
+}
+
+function isPresetIntent(rawMessage: string): boolean {
+  const message = rawMessage.toLowerCase();
+
+  return (
+    hasAnyKeyword(message, ['resume', 'cv']) ||
+    hasAnyKeyword(message, ['schedule', 'book', 'meeting', 'call', 'hire', 'collaborat']) ||
+    hasAnyKeyword(message, ['email', 'contact', 'reach', 'linkedin', 'github', 'social']) ||
+    hasAnyKeyword(message, ['skill', 'tech', 'stack', 'language', 'framework']) ||
+    hasAnyKeyword(message, ['project', 'portfolio', 'built', 'build']) ||
+    hasAnyKeyword(message, ['experience', 'career', 'role', 'company']) ||
+    hasAnyKeyword(message, ['certification', 'certificate', 'award', 'hackerrank']) ||
+    hasAnyKeyword(message, ['education', 'school', 'university', 'college', 'gpa']) ||
+    isProfileIntroIntent(message) ||
+    isGreetingIntent(rawMessage)
+  );
+}
+
 function findSocialLink(name: string): string | null {
   const social = (socialsData as SocialData[]).find(
     (item) => item.name?.toLowerCase() === name.toLowerCase()
   );
   return social?.link || null;
+}
+
+function buildPresetResponse(rawMessage: string): string | null {
+  if (!isPresetIntent(rawMessage)) {
+    return null;
+  }
+
+  const withFallbackLead = buildFallbackResponse(rawMessage);
+  const leadPrefix = `${FALLBACK_NOTICE}\n\n`;
+
+  if (withFallbackLead.startsWith(leadPrefix)) {
+    return withFallbackLead.slice(leadPrefix.length);
+  }
+
+  return withFallbackLead.replace(FALLBACK_NOTICE, '').trimStart();
 }
 
 function buildFallbackResponse(rawMessage: string): string {
@@ -166,50 +214,47 @@ function buildFallbackResponse(rawMessage: string): string {
 
   const education = Array.isArray(profile.education) ? profile.education[0] : undefined;
 
-  const backupLead =
-    "Keneth's AI backup mode is active right now, but I can still answer from his verified portfolio data.";
-
   if (hasAnyKeyword(message, ['resume', 'cv'])) {
-    return `${backupLead}\n\nI've attached Keneth's resume for you to view or download:\n[ACTION:resume]`;
+    return `${FALLBACK_NOTICE}\n\nI've attached Keneth's resume for you to view or download:\n[ACTION:resume]`;
   }
 
   if (hasAnyKeyword(message, ['schedule', 'book', 'meeting', 'call', 'hire', 'collaborat'])) {
-    return `${backupLead}\n\nYou can book time with Keneth here: ${cal}\n\nHe offers 15-minute and 30-minute slots for project discussions, consulting, and collaboration.\n[ACTION:booking]`;
+    return `${FALLBACK_NOTICE}\n\nYou can book time with Keneth here: ${cal}\n\nHe offers 15-minute and 30-minute slots for project discussions, consulting, and collaboration.\n[ACTION:booking]`;
   }
 
   if (hasAnyKeyword(message, ['email', 'contact', 'reach', 'linkedin', 'github', 'social'])) {
-    return `${backupLead}\n\nHere are the best ways to reach Keneth:\n• Email: ${email}\n• LinkedIn: ${linkedin}\n• GitHub: ${github}\n• Schedule: ${cal}\n[ACTION:email]`;
+    return `${FALLBACK_NOTICE}\n\nHere are the best ways to reach Keneth:\n• Email: ${email}\n• LinkedIn: ${linkedin}\n• GitHub: ${github}\n• Schedule: ${cal}\n[ACTION:email]`;
   }
 
   if (hasAnyKeyword(message, ['skill', 'tech', 'stack', 'language', 'framework'])) {
-    return `${backupLead}\n\nKeneth's strongest technologies include:\n${topTechnologies}\n\nHe has ${years}+ years of hands-on engineering and AI automation experience.`;
+    return `${FALLBACK_NOTICE}\n\nKeneth's strongest technologies include:\n${topTechnologies}\n\nHe has ${years}+ years of hands-on engineering and AI automation experience.`;
   }
 
   if (hasAnyKeyword(message, ['project', 'portfolio', 'built', 'build'])) {
-    return `${backupLead}\n\nHere are some featured projects by Keneth:\n${latestProjects}\n\nIf you want, I can also break down a specific project's tech stack and impact.`;
+    return `${FALLBACK_NOTICE}\n\nHere are some featured projects by Keneth:\n${latestProjects}\n\nIf you want, I can also break down a specific project's tech stack and impact.`;
   }
 
   if (hasAnyKeyword(message, ['experience', 'work', 'career', 'role', 'company'])) {
-    return `${backupLead}\n\nKeneth's recent roles include:\n${latestExperience}\n\nHe has worked across full-stack engineering, AI automation, and technical leadership.`;
+    return `${FALLBACK_NOTICE}\n\nKeneth's recent roles include:\n${latestExperience}\n\nHe has worked across full-stack engineering, AI automation, and technical leadership.`;
   }
 
   if (hasAnyKeyword(message, ['certification', 'certificate', 'award', 'hackerrank'])) {
-    return `${backupLead}\n\nKeneth has ${certifications.length} certifications. Some examples:\n${topCertifications}`;
+    return `${FALLBACK_NOTICE}\n\nKeneth has ${certifications.length} certifications. Some examples:\n${topCertifications}`;
   }
 
   if (hasAnyKeyword(message, ['education', 'school', 'university', 'college', 'gpa'])) {
     if (!education) {
-      return `${backupLead}\n\nKeneth is currently based in ${location} and actively building production-grade software and AI automation solutions.`;
+      return `${FALLBACK_NOTICE}\n\nKeneth is currently based in ${location} and actively building production-grade software and AI automation solutions.`;
     }
 
-    return `${backupLead}\n\nEducation:\n• ${education.degree || 'BS Computer Science'}\n• ${education.institution || 'University of Caloocan City'} (${education.startedAt || '2022'} - ${education.endedAt || 'Present'})\n• GPA: ${education.gpa || '1.40'}`;
+    return `${FALLBACK_NOTICE}\n\nEducation:\n• ${education.degree || 'BS Computer Science'}\n• ${education.institution || 'University of Caloocan City'} (${education.startedAt || '2022'} - ${education.endedAt || 'Present'})\n• GPA: ${education.gpa || '1.40'}`;
   }
 
-  if (hasAnyKeyword(message, ['who is', 'about', 'yourself', 'hello', 'hi', 'hey'])) {
-    return `${backupLead}\n\n${name} is a ${title} based in ${location}. He focuses on full-stack product engineering and AI automation, with ${years}+ years of experience and 25+ completed projects.\n\nYou can ask me about his skills, projects, experience, certifications, or how to contact him.`;
+  if (isProfileIntroIntent(message) || isGreetingIntent(rawMessage)) {
+    return `${FALLBACK_NOTICE}\n\n${name} is a ${title} based in ${location}. He focuses on full-stack product engineering and AI automation, with ${years}+ years of experience and 25+ completed projects.\n\nYou can ask me about his skills, projects, experience, certifications, or how to contact him.`;
   }
 
-  return `${backupLead}\n\n${name} is a ${title} with ${years}+ years of experience in web engineering and AI automation.\n\nI can help with:\n• Technical skills and stack\n• Featured projects\n• Work experience\n• Certifications\n• Contact and scheduling`;
+  return `${FALLBACK_NOTICE}\n\n${name} is a ${title} with ${years}+ years of experience in web engineering and AI automation.\n\nI can help with:\n• Technical skills and stack\n• Featured projects\n• Work experience\n• Certifications\n• Contact and scheduling`;
 }
 
 // --- Helper: Format experience entries ---
@@ -464,6 +509,12 @@ export async function POST(request: NextRequest) {
         { error: 'Message is too long. Maximum 500 characters.' },
         { status: 400 }
       );
+    }
+
+    // Serve deterministic preset responses for common intents to reduce Gemini usage.
+    const presetResponse = buildPresetResponse(message);
+    if (presetResponse) {
+      return NextResponse.json({ message: presetResponse, preset: true, fallback: false });
     }
 
     // Conversation history (optional, for context)
