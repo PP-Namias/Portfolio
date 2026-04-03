@@ -55,32 +55,30 @@
     "images": ["/images/experience/phonecraft.svg"]
   },
   {
-    "company": "Ucc-Ingo",
-    "position": "Website Administrator",
-    "summary": "Managed Next.js platform with headless CMS serving 1000+ students. Led 9-engineer team launching gallery feature for academic project showcase. Maintained 99.8% uptime, optimized course access reducing load times 30%.",
+    "company": "University of Caloocan City",
+    "position": "Head of Technical Committee",
+    "summary": "Collaborated on the planning and execution of departmental programs, ensuring all technical requirements were met for successful event delivery. Assisted in the development of event landing pages and registration systems to streamline student participation. Contributed to technical troubleshooting during live events, managing hardware and software configurations under high-pressure environments.",
     "country": "Philippines",
     "modality": "On-site",
-    "type": "Full-time",
+    "type": "Volunteer",
     "startedAt": "2025-01",
     "endedAt": null,
     "technologies": [
-      "Next.js",
-      "Headless CMS",
-      "Team Leadership",
-      "Performance Optimization",
-      "Uptime Management",
-      "Course Access",
-      "Gallery Feature",
-      "Academic Platform"
+      "Event Planning",
+      "Landing Pages",
+      "Registration Systems",
+      "Technical Troubleshooting",
+      "Hardware Configuration",
+      "Software Configuration"
     ],
     "highlights": [
-      "Managed Next.js platform with headless CMS serving 1000+ students.",
-      "Led 9-engineer team launching gallery feature for academic project showcase.",
-      "Maintained 99.8% uptime and optimized course access, reducing load times by 30%."
+      "Collaborated on the planning and execution of departmental programs, ensuring all technical requirements were met.",
+      "Developed event landing pages and registration systems to streamline student participation.",
+      "Managed hardware and software configurations under high-pressure live event environments."
     ],
-    "achievements": ["99.8% Uptime", "1000+ Students", "9-Person Team Lead"],
+    "achievements": ["Event Delivery", "Registration Systems", "Technical Leadership"],
     "relatedProjects": [],
-    "images": ["/images/projects/UCC_Student_Portal.png", "/images/projects/UCC%20Login%20Portal.png", "/images/projects/UCC%20Access%20Module.png"]
+    "images": ["/images/experience/ucc-volunteer.svg"]
   },
   {
     "company": "Aeternitas Chapels & Columbarium",
@@ -225,30 +223,32 @@
     "images": ["/images/experience/casemaster.svg"]
   },
   {
-    "company": "University of Caloocan City",
-    "position": "Head of Technical Committee",
-    "summary": "Collaborated on the planning and execution of departmental programs, ensuring all technical requirements were met for successful event delivery. Assisted in the development of event landing pages and registration systems to streamline student participation. Contributed to technical troubleshooting during live events, managing hardware and software configurations under high-pressure environments.",
+    "company": "Ucc-Ingo",
+    "position": "Website Administrator",
+    "summary": "Managed Next.js platform with headless CMS serving 1000+ students. Led 9-engineer team launching gallery feature for academic project showcase. Maintained 99.8% uptime, optimized course access reducing load times 30%.",
     "country": "Philippines",
     "modality": "On-site",
-    "type": "Volunteer",
+    "type": "Full-time",
     "startedAt": "2025-01",
     "endedAt": null,
     "technologies": [
-      "Event Planning",
-      "Landing Pages",
-      "Registration Systems",
-      "Technical Troubleshooting",
-      "Hardware Configuration",
-      "Software Configuration"
+      "Next.js",
+      "Headless CMS",
+      "Team Leadership",
+      "Performance Optimization",
+      "Uptime Management",
+      "Course Access",
+      "Gallery Feature",
+      "Academic Platform"
     ],
     "highlights": [
-      "Collaborated on the planning and execution of departmental programs, ensuring all technical requirements were met.",
-      "Developed event landing pages and registration systems to streamline student participation.",
-      "Managed hardware and software configurations under high-pressure live event environments."
+      "Managed Next.js platform with headless CMS serving 1000+ students.",
+      "Led 9-engineer team launching gallery feature for academic project showcase.",
+      "Maintained 99.8% uptime and optimized course access, reducing load times by 30%."
     ],
-    "achievements": ["Event Delivery", "Registration Systems", "Technical Leadership"],
+    "achievements": ["99.8% Uptime", "1000+ Students", "9-Person Team Lead"],
     "relatedProjects": [],
-    "images": ["/images/experience/ucc-volunteer.svg"]
+    "images": ["/images/projects/UCC_Student_Portal.png", "/images/projects/UCC%20Login%20Portal.png", "/images/projects/UCC%20Access%20Module.png"]
   },
   {
     "company": "University of Caloocan City",
