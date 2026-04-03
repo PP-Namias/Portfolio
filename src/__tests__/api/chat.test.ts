@@ -129,6 +129,7 @@ describe('/api/chat route', () => {
     expect(res.status).toBe(200);
     const data = await res.json();
     expect(data.message).toBe('Hello! I can help you learn about Keneth.');
+    expect(data.fallback).toBe(false);
   });
 
   it('passes generationConfig to Gemini model', async () => {
@@ -177,33 +178,46 @@ describe('/api/chat route', () => {
 
   // --- API Key ---
   
-  it('returns 503 when API key is not configured', async () => {
+  it('returns fallback response when API key is not configured', async () => {
     vi.stubEnv('GOOGLE_GEMINI_API_KEY', '');
     const req = createRequest({ message: 'Hello' });
     const res = await POST(req);
-    expect(res.status).toBe(503);
+    expect(res.status).toBe(200);
     const data = await res.json();
-    expect(data.error).toBe('Chat service is not configured.');
+    expect(data.fallback).toBe(true);
+    expect(data.message).toContain('backup mode');
   });
 
   // --- Error Handling ---
   
-  it('returns 500 with generic error when Gemini API fails with non-quota error', async () => {
+  it('returns fallback response when Gemini API fails with non-quota error', async () => {
     mockSendMessage.mockRejectedValue(new Error('Network connection failed'));
     const req = createRequest({ message: 'Hello' });
     const res = await POST(req);
-    expect(res.status).toBe(500);
+    expect(res.status).toBe(200);
     const data = await res.json();
-    expect(data.error).toBe('Something went wrong. Please try again.');
+    expect(data.fallback).toBe(true);
+    expect(data.message).toContain('backup mode');
   });
 
-  it('returns 429 when all models hit quota limit', async () => {
+  it('returns fallback response when all models hit quota limit', async () => {
     mockSendMessage.mockRejectedValue(new Error('429 Too Many Requests: Quota exceeded'));
     const req = createRequest({ message: 'Hello' });
     const res = await POST(req);
-    expect(res.status).toBe(429);
+    expect(res.status).toBe(200);
     const data = await res.json();
-    expect(data.error).toContain('temporarily at capacity');
+    expect(data.fallback).toBe(true);
+    expect(data.message).toContain('backup mode');
+  });
+
+  it('includes action tag in fallback when resume is requested', async () => {
+    mockSendMessage.mockRejectedValue(new Error('Gemini unavailable'));
+    const req = createRequest({ message: 'Can I get your resume?' });
+    const res = await POST(req);
+    expect(res.status).toBe(200);
+    const data = await res.json();
+    expect(data.fallback).toBe(true);
+    expect(data.message).toContain('[ACTION:resume]');
   });
 
   it('falls back to next model when first model quota is exhausted', async () => {

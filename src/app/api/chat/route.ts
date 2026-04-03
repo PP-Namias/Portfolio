@@ -9,6 +9,77 @@ import certificationsData from '../../../../portfolio-resources/data/certificati
 import membershipsData from '../../../../portfolio-resources/data/memberships.json';
 import socialsData from '../../../../portfolio-resources/data/socials.json';
 
+interface ProfileData {
+  name?: string;
+  title?: string;
+  email?: string;
+  location?: string;
+  github?: string;
+  linkedin?: string;
+  summary?: string;
+  highlights?: {
+    yearsExperience?: number;
+    projectsCompleted?: number;
+    primaryTechnologies?: string[];
+  };
+  education?: Array<{
+    degree?: string;
+    institution?: string;
+    location?: string;
+    startedAt?: string;
+    endedAt?: string | null;
+    gpa?: string;
+    honors?: string[];
+    relevantCourses?: string[];
+  }>;
+}
+
+interface ExperienceData {
+  company?: string;
+  position?: string;
+  summary?: string;
+  country?: string;
+  modality?: string;
+  type?: string;
+  startedAt?: string;
+  endedAt?: string | null;
+  technologies?: string[];
+  achievements?: string[];
+}
+
+interface ProjectData {
+  title?: string;
+  description?: string;
+  year?: number;
+  repositoryURL?: string | null;
+  liveURL?: string | null;
+  tags?: string[];
+}
+
+interface TechnologyData {
+  name?: string;
+  category?: string;
+  proficiency?: number;
+}
+
+interface CertificationData {
+  title?: string;
+  issuer?: string;
+  issuedAt?: string;
+}
+
+interface SocialData {
+  name?: string;
+  label?: string;
+  link?: string;
+}
+
+interface MembershipData {
+  name?: string;
+  url?: string;
+  joinedAt?: string;
+}
+
 // --- Rate Limiting ---
 const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
 const RATE_LIMIT = 10;
@@ -32,34 +103,146 @@ function stripHtml(str: string): string {
   return str.replace(/<[^>]*>/g, '');
 }
 
+function hasAnyKeyword(text: string, keywords: string[]): boolean {
+  return keywords.some((keyword) => text.includes(keyword));
+}
+
+function findSocialLink(name: string): string | null {
+  const social = (socialsData as SocialData[]).find(
+    (item) => item.name?.toLowerCase() === name.toLowerCase()
+  );
+  return social?.link || null;
+}
+
+function buildFallbackResponse(rawMessage: string): string {
+  const profile = profileData as ProfileData;
+  const experiences = experiencesData as ExperienceData[];
+  const projects = projectsData as ProjectData[];
+  const technologies = technologiesData as TechnologyData[];
+  const certifications = certificationsData as CertificationData[];
+
+  const message = rawMessage.toLowerCase();
+
+  const name = profile.name || 'Jhon Keneth Ryan Namias';
+  const title = profile.title || 'Full Stack Engineer & AI Automation Specialist';
+  const email = profile.email || 'pp.namias@gmail.com';
+  const location = profile.location || 'Manila, Philippines';
+  const github = profile.github || findSocialLink('github') || 'https://github.com/PP-Namias';
+  const linkedin = profile.linkedin || findSocialLink('linkedin') || 'https://www.linkedin.com/in/pp-namias/';
+  const cal = findSocialLink('cal') || 'https://cal.com/pp-namias';
+  const years = profile.highlights?.yearsExperience ?? 4;
+
+  const topTechnologies = [...technologies]
+    .filter((tech) => tech.name)
+    .sort((a, b) => (b.proficiency ?? 0) - (a.proficiency ?? 0))
+    .slice(0, 8)
+    .map((tech) => `• ${tech.name} (${tech.proficiency ?? 0}%)`)
+    .join('\n');
+
+  const latestProjects = [...projects]
+    .filter((project) => project.title)
+    .slice(0, 3)
+    .map((project) => {
+      const links = [project.liveURL, project.repositoryURL].filter(Boolean).join(' | ');
+      return `• ${project.title}${project.year ? ` (${project.year})` : ''}${links ? `\n  ${links}` : ''}`;
+    })
+    .join('\n');
+
+  const latestExperience = [...experiences]
+    .filter((experience) => experience.position && experience.company)
+    .sort((a, b) => (b.startedAt || '').localeCompare(a.startedAt || ''))
+    .slice(0, 3)
+    .map((experience) => {
+      const end = experience.endedAt || 'Present';
+      return `• ${experience.position} at ${experience.company} (${experience.startedAt || 'N/A'} - ${end})`;
+    })
+    .join('\n');
+
+  const topCertifications = certifications
+    .filter((cert) => cert.title && cert.issuer)
+    .slice(0, 5)
+    .map((cert) => `• ${cert.title} - ${cert.issuer}`)
+    .join('\n');
+
+  const education = Array.isArray(profile.education) ? profile.education[0] : undefined;
+
+  const backupLead =
+    "Keneth's AI backup mode is active right now, but I can still answer from his verified portfolio data.";
+
+  if (hasAnyKeyword(message, ['resume', 'cv'])) {
+    return `${backupLead}\n\nI've attached Keneth's resume for you to view or download:\n[ACTION:resume]`;
+  }
+
+  if (hasAnyKeyword(message, ['schedule', 'book', 'meeting', 'call', 'hire', 'collaborat'])) {
+    return `${backupLead}\n\nYou can book time with Keneth here: ${cal}\n\nHe offers 15-minute and 30-minute slots for project discussions, consulting, and collaboration.\n[ACTION:booking]`;
+  }
+
+  if (hasAnyKeyword(message, ['email', 'contact', 'reach', 'linkedin', 'github', 'social'])) {
+    return `${backupLead}\n\nHere are the best ways to reach Keneth:\n• Email: ${email}\n• LinkedIn: ${linkedin}\n• GitHub: ${github}\n• Schedule: ${cal}\n[ACTION:email]`;
+  }
+
+  if (hasAnyKeyword(message, ['skill', 'tech', 'stack', 'language', 'framework'])) {
+    return `${backupLead}\n\nKeneth's strongest technologies include:\n${topTechnologies}\n\nHe has ${years}+ years of hands-on engineering and AI automation experience.`;
+  }
+
+  if (hasAnyKeyword(message, ['project', 'portfolio', 'built', 'build'])) {
+    return `${backupLead}\n\nHere are some featured projects by Keneth:\n${latestProjects}\n\nIf you want, I can also break down a specific project's tech stack and impact.`;
+  }
+
+  if (hasAnyKeyword(message, ['experience', 'work', 'career', 'role', 'company'])) {
+    return `${backupLead}\n\nKeneth's recent roles include:\n${latestExperience}\n\nHe has worked across full-stack engineering, AI automation, and technical leadership.`;
+  }
+
+  if (hasAnyKeyword(message, ['certification', 'certificate', 'award', 'hackerrank'])) {
+    return `${backupLead}\n\nKeneth has ${certifications.length} certifications. Some examples:\n${topCertifications}`;
+  }
+
+  if (hasAnyKeyword(message, ['education', 'school', 'university', 'college', 'gpa'])) {
+    if (!education) {
+      return `${backupLead}\n\nKeneth is currently based in ${location} and actively building production-grade software and AI automation solutions.`;
+    }
+
+    return `${backupLead}\n\nEducation:\n• ${education.degree || 'BS Computer Science'}\n• ${education.institution || 'University of Caloocan City'} (${education.startedAt || '2022'} - ${education.endedAt || 'Present'})\n• GPA: ${education.gpa || '1.40'}`;
+  }
+
+  if (hasAnyKeyword(message, ['who is', 'about', 'yourself', 'hello', 'hi', 'hey'])) {
+    return `${backupLead}\n\n${name} is a ${title} based in ${location}. He focuses on full-stack product engineering and AI automation, with ${years}+ years of experience and 25+ completed projects.\n\nYou can ask me about his skills, projects, experience, certifications, or how to contact him.`;
+  }
+
+  return `${backupLead}\n\n${name} is a ${title} with ${years}+ years of experience in web engineering and AI automation.\n\nI can help with:\n• Technical skills and stack\n• Featured projects\n• Work experience\n• Certifications\n• Contact and scheduling`;
+}
+
 // --- Helper: Format experience entries ---
 function formatExperiences(): string {
-  return (experiencesData as Array<{
-    company: string; position: string; summary: string; country: string;
-    modality: string; type: string; startedAt: string; endedAt: string | null;
-    technologies: string[]; highlights: string[]; achievements: string[];
-  }>).map((exp) => {
+  const entries = (experiencesData as ExperienceData[]) || [];
+  return entries.map((exp) => {
     const end = exp.endedAt || 'Present';
-    return `• ${exp.position} at ${exp.company} (${exp.startedAt} – ${end}, ${exp.type}, ${exp.modality}, ${exp.country})
-  ${exp.summary}
-  Key achievements: ${exp.achievements.join(', ')}
-  Technologies: ${exp.technologies.join(', ')}`;
+    const achievements = Array.isArray(exp.achievements) && exp.achievements.length > 0
+      ? exp.achievements.join(', ')
+      : 'N/A';
+    const technologies = Array.isArray(exp.technologies) && exp.technologies.length > 0
+      ? exp.technologies.join(', ')
+      : 'N/A';
+
+    return `• ${exp.position || 'Role'} at ${exp.company || 'Company'} (${exp.startedAt || 'N/A'} – ${end}, ${exp.type || 'N/A'}, ${exp.modality || 'N/A'}, ${exp.country || 'N/A'})
+  ${exp.summary || 'No summary available.'}
+  Key achievements: ${achievements}
+  Technologies: ${technologies}`;
   }).join('\n\n');
 }
 
 // --- Helper: Format projects ---
 function formatProjects(): string {
-  return (projectsData as Array<{
-    title: string; description: string; year: number;
-    repositoryURL: string | null; liveURL: string | null; tags: string[];
-  }>).map((p) => {
+  const entries = (projectsData as ProjectData[]) || [];
+  return entries.map((p) => {
+    const tags = Array.isArray(p.tags) ? p.tags : [];
     const links = [
       p.liveURL ? `Live: ${p.liveURL}` : null,
       p.repositoryURL ? `GitHub: ${p.repositoryURL}` : null,
     ].filter(Boolean).join(' | ');
-    return `• ${p.title} (${p.year})
-  ${p.description}
-  Tech: ${p.tags.slice(0, 8).join(', ')}
+    return `• ${p.title || 'Untitled Project'}${p.year ? ` (${p.year})` : ''}
+  ${p.description || 'No description available.'}
+  Tech: ${tags.slice(0, 8).join(', ') || 'N/A'}
   ${links || 'No public links'}`;
   }).join('\n\n');
 }
@@ -67,9 +250,10 @@ function formatProjects(): string {
 // --- Helper: Format technologies by category ---
 function formatTechnologies(): string {
   const byCategory: Record<string, Array<{ name: string; proficiency: number }>> = {};
-  (technologiesData as Array<{ name: string; category: string; proficiency: number }>).forEach((t) => {
-    if (!byCategory[t.category]) byCategory[t.category] = [];
-    byCategory[t.category].push({ name: t.name, proficiency: t.proficiency });
+  (technologiesData as TechnologyData[]).forEach((t) => {
+    const category = t.category || 'General';
+    if (!byCategory[category]) byCategory[category] = [];
+    byCategory[category].push({ name: t.name || 'Unknown', proficiency: t.proficiency ?? 0 });
   });
   return Object.entries(byCategory).map(([cat, techs]) => {
     const list = techs.map((t) => `${t.name} (${t.proficiency}%)`).join(', ');
@@ -93,21 +277,36 @@ function formatSocials(): string {
 
 // --- System Prompt ---
 function buildSystemPrompt(): string {
-  const profile = profileData as {
-    name: string; title: string; email: string; location: string;
-    github: string; linkedin: string; summary: string;
-    highlights: { yearsExperience: number; projectsCompleted: number; primaryTechnologies: string[] };
-    education: Array<{
-      degree: string; institution: string; location: string;
-      startedAt: string; endedAt: string | null; gpa: string;
-      honors: string[]; relevantCourses: string[];
-    }>;
-  };
+  const profile = profileData as ProfileData;
+  const highlights = profile.highlights || {};
+  const education = Array.isArray(profile.education) ? profile.education[0] : undefined;
 
-  const edu = profile.education[0];
-  const memberships = (membershipsData as Array<{ name: string; url: string; joinedAt: string }>)
-    .map((m) => `• ${m.name} (since ${m.joinedAt}) — ${m.url}`)
+  const memberships = (membershipsData as MembershipData[])
+    .map((m) => `• ${m.name || 'Membership'} (since ${m.joinedAt || 'N/A'}) — ${m.url || 'N/A'}`)
     .join('\n');
+
+  const yearsExperience = highlights.yearsExperience ?? 4;
+  const projectsCompleted = highlights.projectsCompleted ?? (projectsData as ProjectData[]).length;
+  const profileName = profile.name || 'Jhon Keneth Ryan Namias';
+  const profileTitle = profile.title || 'Full Stack Engineer & AI Automation Specialist';
+  const profileEmail = profile.email || 'pp.namias@gmail.com';
+  const profileLocation = profile.location || 'Manila, Philippines';
+  const profileGithub = profile.github || 'https://github.com/PP-Namias';
+  const profileLinkedIn = profile.linkedin || 'https://www.linkedin.com/in/pp-namias/';
+  const profileSummary = profile.summary || 'Full-stack engineer and AI automation specialist focused on high-impact systems.';
+  const primaryTechnologies =
+    highlights.primaryTechnologies && highlights.primaryTechnologies.length > 0
+      ? highlights.primaryTechnologies
+      : ['React', 'TypeScript', 'Node.js', 'AI Automation'];
+
+  const educationDegree = education?.degree || 'Bachelor of Science in Computer Science';
+  const educationInstitution = education?.institution || 'University of Caloocan City';
+  const educationLocation = education?.location || 'Caloocan City, Philippines';
+  const educationStarted = education?.startedAt || '2022-08';
+  const educationEnded = education?.endedAt || 'Currently enrolled';
+  const educationGpa = education?.gpa || '1.40';
+  const educationHonors = education?.honors?.length ? education.honors.join(', ') : 'N/A';
+  const educationCourses = education?.relevantCourses?.length ? education.relevantCourses.join(', ') : 'N/A';
 
   return `You are Keneth's AI Portfolio Assistant on namias.tech. You MUST answer every question using ONLY the profile data provided below. You know everything about Keneth because his full professional profile is loaded into your context.
 
@@ -118,7 +317,7 @@ CRITICAL RULES:
 1. ALWAYS reference specific facts from Keneth's profile data below — names, companies, dates, technologies, numbers
 2. NEVER say "I don't have information about that" when the answer IS in the data below — search the data carefully
 3. Be DIRECT — lead with the answer, then add relevant context. Don't hedge or qualify unnecessarily
-4. Use specific numbers: "${profile.highlights.yearsExperience}+ years experience", "${projectsData.length} projects", "${technologiesData.length} technologies", "${certificationsData.length} certifications"
+4. Use specific numbers: "${yearsExperience}+ years experience", "${projectsData.length} projects", "${technologiesData.length} technologies", "${certificationsData.length} certifications"
 5. When asked about skills, list actual technologies with proficiency levels from the data
 6. When asked about experience, cite specific companies, roles, and achievements
 7. When asked about projects, describe them with their actual tech stacks and URLs
@@ -158,29 +357,29 @@ NEVER:
 
 === KENETH'S PROFILE ===
 
-Full Name: ${profile.name}
-Title: ${profile.title}
-Email: ${profile.email}
-Location: ${profile.location}
-GitHub: ${profile.github}
-LinkedIn: ${profile.linkedin}
+Full Name: ${profileName}
+Title: ${profileTitle}
+Email: ${profileEmail}
+Location: ${profileLocation}
+GitHub: ${profileGithub}
+LinkedIn: ${profileLinkedIn}
 Portfolio: https://namias.tech
 Cal.com (Scheduling): https://cal.com/pp-namias
 
-Summary: ${profile.summary}
+Summary: ${profileSummary}
 
 Key Stats:
-• ${profile.highlights.yearsExperience}+ years of experience
-• ${profile.highlights.projectsCompleted}+ projects completed
-• Primary technologies: ${profile.highlights.primaryTechnologies.join(', ')}
+• ${yearsExperience}+ years of experience
+• ${projectsCompleted}+ projects completed
+• Primary technologies: ${primaryTechnologies.join(', ')}
 
 === EDUCATION ===
 
-${edu.degree} at ${edu.institution}, ${edu.location}
-• Started: ${edu.startedAt} | Status: ${edu.endedAt || 'Currently enrolled'}
-• GPA: ${edu.gpa} (Philippine grading: 1.0 is highest, 5.0 is lowest — ${edu.gpa} is excellent)
-• Honors: ${edu.honors.join(', ')}
-• Courses: ${edu.relevantCourses.join(', ')}
+${educationDegree} at ${educationInstitution}, ${educationLocation}
+• Started: ${educationStarted} | Status: ${educationEnded}
+• GPA: ${educationGpa} (Philippine grading: 1.0 is highest, 5.0 is lowest — ${educationGpa} is excellent)
+• Honors: ${educationHonors}
+• Courses: ${educationCourses}
 
 === WORK EXPERIENCE (${experiencesData.length} roles) ===
 
@@ -207,8 +406,8 @@ ${memberships}
 ${formatSocials()}
 
 Scheduling: Visitors can book a 15-min or 30-min meeting at https://cal.com/pp-namias
-Email: ${profile.email}
-GitHub: ${profile.github}
+Email: ${profileEmail}
+GitHub: ${profileGithub}
 
 === NOTABLE HIGHLIGHTS ===
 
@@ -225,6 +424,8 @@ const systemPrompt = buildSystemPrompt();
 
 // --- Route Handler ---
 export async function POST(request: NextRequest) {
+  let fallbackUserMessage = '';
+
   try {
     // Rate limit by IP
     const ip =
@@ -249,6 +450,7 @@ export async function POST(request: NextRequest) {
     }
 
     const message = stripHtml(body.message).trim();
+    fallbackUserMessage = message;
 
     if (message.length === 0) {
       return NextResponse.json(
@@ -270,15 +472,16 @@ export async function POST(request: NextRequest) {
     // Gemini API call
     const apiKey = process.env.GOOGLE_GEMINI_API_KEY;
     if (!apiKey) {
-      return NextResponse.json(
-        { error: 'Chat service is not configured.' },
-        { status: 503 }
-      );
+      console.warn('[Chat API] GOOGLE_GEMINI_API_KEY is missing. Serving fallback response.');
+      return NextResponse.json({
+        message: buildFallbackResponse(message),
+        fallback: true,
+      });
     }
 
     const genAI = new GoogleGenerativeAI(apiKey);
 
-    // Try models in order of preference; fall back if quota is exhausted
+    // Try models in order of preference; fall back to deterministic response if all fail
     const MODELS = ['gemini-2.0-flash', 'gemini-2.0-flash-lite', 'gemini-1.5-flash'];
     let lastError: unknown = null;
 
@@ -304,43 +507,39 @@ export async function POST(request: NextRequest) {
         });
 
         const result = await chat.sendMessage(message);
-        const response = result.response.text();
+        const response = result.response.text().trim();
 
-        return NextResponse.json({ message: response });
+        if (!response) {
+          throw new Error('Gemini returned an empty response.');
+        }
+
+        return NextResponse.json({ message: response, fallback: false });
       } catch (modelError) {
         lastError = modelError;
-        // If it's a quota/rate-limit error (429), try next model
         const errMsg = modelError instanceof Error ? modelError.message : String(modelError);
-        if (errMsg.includes('429') || errMsg.includes('quota') || errMsg.includes('Too Many Requests')) {
-          console.warn(`[Chat API] ${modelName} quota exceeded, trying next model...`);
-          continue;
-        }
-        if (errMsg.includes('404') || errMsg.includes('not found') || errMsg.includes('Not Found')) {
-          console.warn(`[Chat API] ${modelName} not available, trying next model...`);
-          continue;
-        }
-        // For non-recoverable errors, break immediately
-        break;
+        console.warn(`[Chat API] ${modelName} failed, trying next model...`, errMsg);
+        continue;
       }
     }
 
-    // All models failed — return appropriate error
+    // All models failed. Serve deterministic fallback instead of hard-failing.
     const errMsg = lastError instanceof Error ? lastError.message : String(lastError);
     console.error('[Chat API Error]', errMsg);
 
-    if (errMsg.includes('429') || errMsg.includes('quota') || errMsg.includes('Too Many Requests')) {
-      return NextResponse.json(
-        { error: 'AI service is temporarily at capacity. Please try again in a minute.' },
-        { status: 429 }
-      );
-    }
-
-    return NextResponse.json(
-      { error: 'Something went wrong. Please try again.' },
-      { status: 500 }
-    );
+    return NextResponse.json({
+      message: buildFallbackResponse(message),
+      fallback: true,
+    });
   } catch (error) {
     console.error('[Chat API Error]', error instanceof Error ? error.message : error);
+
+    if (fallbackUserMessage) {
+      return NextResponse.json({
+        message: buildFallbackResponse(fallbackUserMessage),
+        fallback: true,
+      });
+    }
+
     return NextResponse.json(
       { error: 'Something went wrong. Please try again.' },
       { status: 500 }
