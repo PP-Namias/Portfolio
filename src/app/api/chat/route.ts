@@ -66,6 +66,7 @@ interface CertificationData {
   title?: string;
   issuer?: string;
   issuedAt?: string;
+  tags?: string[];
 }
 
 interface SocialData {
@@ -123,6 +124,45 @@ function isProfileIntroIntent(message: string): boolean {
   );
 }
 
+function isAchievementsIntent(message: string): boolean {
+  return hasAnyKeyword(message, [
+    'achievement',
+    'accomplishment',
+    'milestone',
+    'highlights',
+    'standout',
+    'impact',
+  ]);
+}
+
+function getCertificationImpactScore(cert: CertificationData): number {
+  const title = cert.title?.toLowerCase() || '';
+  const issuer = cert.issuer?.toLowerCase() || '';
+  const tags = Array.isArray(cert.tags) ? cert.tags.map((tag) => tag.toLowerCase()) : [];
+
+  let score = 0;
+
+  if (title.includes('software engineer')) score += 10;
+  if (title.includes('frontend developer')) score += 8;
+  if (title.includes('rest api')) score += 7;
+  if (title.includes('sql (advanced)')) score += 7;
+  if (title.includes('cybersecurity')) score += 7;
+  if (title.includes('problem solving (intermediate)')) score += 6;
+  if (title.includes('2nd place') || title.includes('competition')) score += 6;
+  if (title.includes('(intermediate)')) score += 4;
+  if (title.includes('(advanced)')) score += 4;
+
+  if (issuer.includes('hackerrank')) score += 3;
+  if (issuer.includes('ibm')) score += 3;
+  if (issuer.includes('aws') || issuer.includes('google')) score += 2;
+
+  if (tags.some((tag) => ['software engineering', 'algorithms', 'problem solving', 'security', 'award', 'achievement'].includes(tag))) {
+    score += 2;
+  }
+
+  return score;
+}
+
 function isPresetIntent(rawMessage: string): boolean {
   const message = rawMessage.toLowerCase();
 
@@ -134,7 +174,8 @@ function isPresetIntent(rawMessage: string): boolean {
     hasAnyKeyword(message, ['project', 'portfolio', 'built', 'build']) ||
     hasAnyKeyword(message, ['experience', 'career', 'role', 'company']) ||
     hasAnyKeyword(message, ['certification', 'certificate', 'award', 'hackerrank']) ||
-    hasAnyKeyword(message, ['education', 'school', 'university', 'college', 'gpa']) ||
+    hasAnyKeyword(message, ['education', 'school', 'university', 'college', 'gpa', 'gwa']) ||
+    isAchievementsIntent(message) ||
     isProfileIntroIntent(message) ||
     isGreetingIntent(rawMessage)
   );
@@ -180,12 +221,27 @@ function buildFallbackResponse(rawMessage: string): string {
   const cal = findSocialLink('cal') || 'https://cal.com/pp-namias';
   const years = profile.highlights?.yearsExperience ?? 4;
 
-  const topTechnologies = [...technologies]
+  const topByCategory = (category: string, limit: number): string[] => {
+    return [...technologies]
+      .filter((tech) => tech.category === category && tech.name)
+      .sort((a, b) => (b.proficiency ?? 0) - (a.proficiency ?? 0))
+      .slice(0, limit)
+      .map((tech) => tech.name as string);
+  };
+
+  const coreStack = [...technologies]
     .filter((tech) => tech.name)
     .sort((a, b) => (b.proficiency ?? 0) - (a.proficiency ?? 0))
-    .slice(0, 8)
-    .map((tech) => `• ${tech.name} (${tech.proficiency ?? 0}%)`)
-    .join('\n');
+    .slice(0, 6)
+    .map((tech) => tech.name as string)
+    .join(', ');
+
+  const frontendStack = topByCategory('Frontend', 4).join(', ');
+  const backendStack = topByCategory('Backend', 4).join(', ');
+  const dataStack = [
+    ...topByCategory('Databases', 3),
+    ...topByCategory('Data Science', 2),
+  ].join(', ');
 
   const latestProjects = [...projects]
     .filter((project) => project.title)
@@ -206,10 +262,11 @@ function buildFallbackResponse(rawMessage: string): string {
     })
     .join('\n');
 
-  const topCertifications = certifications
+  const topImpactCertifications = [...certifications]
     .filter((cert) => cert.title && cert.issuer)
+    .sort((a, b) => getCertificationImpactScore(b) - getCertificationImpactScore(a))
     .slice(0, 5)
-    .map((cert) => `• ${cert.title} - ${cert.issuer}`)
+    .map((cert) => `• ${cert.title} - ${cert.issuer}${cert.issuedAt ? ` (${cert.issuedAt})` : ''}`)
     .join('\n');
 
   const education = Array.isArray(profile.education) ? profile.education[0] : undefined;
@@ -223,38 +280,42 @@ function buildFallbackResponse(rawMessage: string): string {
   }
 
   if (hasAnyKeyword(message, ['email', 'contact', 'reach', 'linkedin', 'github', 'social'])) {
-    return `${FALLBACK_NOTICE}\n\nHere are the best ways to reach Keneth:\n• Email: ${email}\n• LinkedIn: ${linkedin}\n• GitHub: ${github}\n• Schedule: ${cal}\n[ACTION:email]`;
+    return `${FALLBACK_NOTICE}\n\nHere are the best ways to reach Keneth:\n• Email: ${email}\n• LinkedIn: ${linkedin}\n• GitHub: ${github}\n• Schedule: ${cal}\n\nUse the quick actions below to open each channel directly.\n[ACTION:email]\n[ACTION:linkedin]\n[ACTION:github]\n[ACTION:booking]`;
   }
 
   if (hasAnyKeyword(message, ['skill', 'tech', 'stack', 'language', 'framework'])) {
-    return `${FALLBACK_NOTICE}\n\nKeneth's strongest technologies include:\n${topTechnologies}\n\nHe has ${years}+ years of hands-on engineering and AI automation experience.`;
+    return `${FALLBACK_NOTICE}\n\nKeneth specializes in a modern full-stack and AI automation stack:\n• Core engineering: ${coreStack || 'React, TypeScript, Node.js, Next.js, JavaScript, TailwindCSS'}\n• Frontend: ${frontendStack || 'React, Next.js, TailwindCSS, Bootstrap'}\n• Backend & APIs: ${backendStack || 'Node.js, FastAPI, Flask, Laravel'}\n• Data & databases: ${dataStack || 'MySQL, PostgreSQL, Supabase, Pandas, NumPy'}\n\nHe focuses on production-grade web systems and AI-powered automation workflows for real business operations.\n[ACTION:projects]\n[ACTION:experience]`;
   }
 
   if (hasAnyKeyword(message, ['project', 'portfolio', 'built', 'build'])) {
-    return `${FALLBACK_NOTICE}\n\nHere are some featured projects by Keneth:\n${latestProjects}\n\nIf you want, I can also break down a specific project's tech stack and impact.`;
+    return `${FALLBACK_NOTICE}\n\nHere are some featured projects by Keneth:\n${latestProjects}\n\nIf you want, I can also break down a specific project's tech stack and impact.\n[ACTION:experience]\n[ACTION:contact]`;
   }
 
   if (hasAnyKeyword(message, ['experience', 'work', 'career', 'role', 'company'])) {
-    return `${FALLBACK_NOTICE}\n\nKeneth's recent roles include:\n${latestExperience}\n\nHe has worked across full-stack engineering, AI automation, and technical leadership.`;
+    return `${FALLBACK_NOTICE}\n\nKeneth's recent roles include:\n${latestExperience}\n\nHe has worked across full-stack engineering, AI automation, and technical leadership.\n[ACTION:projects]\n[ACTION:contact]`;
   }
 
   if (hasAnyKeyword(message, ['certification', 'certificate', 'award', 'hackerrank'])) {
-    return `${FALLBACK_NOTICE}\n\nKeneth has ${certifications.length} certifications. Some examples:\n${topCertifications}`;
+    return `${FALLBACK_NOTICE}\n\nKeneth has ${certifications.length} certifications. Most impactful highlights:\n${topImpactCertifications}\n\nThese certifications highlight verified strength in software engineering, React/frontend, backend APIs, databases, and cybersecurity foundations.`;
   }
 
-  if (hasAnyKeyword(message, ['education', 'school', 'university', 'college', 'gpa'])) {
+  if (hasAnyKeyword(message, ['education', 'school', 'university', 'college', 'gpa', 'gwa'])) {
     if (!education) {
       return `${FALLBACK_NOTICE}\n\nKeneth is currently based in ${location} and actively building production-grade software and AI automation solutions.`;
     }
 
-    return `${FALLBACK_NOTICE}\n\nEducation:\n• ${education.degree || 'BS Computer Science'}\n• ${education.institution || 'University of Caloocan City'} (${education.startedAt || '2022'} - ${education.endedAt || 'Present'})\n• GPA: ${education.gpa || '1.40'}`;
+    return `${FALLBACK_NOTICE}\n\nEducation:\n• ${education.degree || 'BS Computer Science'}\n• ${education.institution || 'University of Caloocan City'} (${education.startedAt || '2022'} - ${education.endedAt || 'Present'})\n• GWA: ${education.gpa || '1.40'} (Philippine grading system: 1.0 is highest, 5.0 is lowest)\n• Honors: ${education.honors?.join(', ') || 'N/A'}`;
+  }
+
+  if (isAchievementsIntent(message)) {
+    return `${FALLBACK_NOTICE}\n\nKeneth's key achievements include:\n• Led a 9-engineer team building a student platform used by 1000+ students with 99.8% uptime\n• Built a HIPAA-compliant clinic system for 1000+ patients, reducing manual workload by 60%\n• Delivered AI automation for a US financial network using Eleven Labs + LLM workflows\n• Built legal workflow software with a Supreme Court attorney and improved case access speed by 35%\n• Earned 2nd Place in a university programming competition and completed ${certifications.length} certifications\n\nIf you want, I can break these down by technical scope, business impact, or leadership impact.`;
   }
 
   if (isProfileIntroIntent(message) || isGreetingIntent(rawMessage)) {
-    return `${FALLBACK_NOTICE}\n\n${name} is a ${title} based in ${location}. He focuses on full-stack product engineering and AI automation, with ${years}+ years of experience and 25+ completed projects.\n\nYou can ask me about his skills, projects, experience, certifications, or how to contact him.`;
+    return `${FALLBACK_NOTICE}\n\n${name} is a ${title} based in ${location}. He focuses on full-stack product engineering and AI automation, with ${years}+ years of experience and 25+ completed projects.\n\nQuick actions you can explore now:\n• Skills and tech stack\n• Featured projects\n• Work experience\n• Certifications\n• Contact channels\n[ACTION:skills]\n[ACTION:projects]\n[ACTION:experience]\n[ACTION:certifications]\n[ACTION:contact]`;
   }
 
-  return `${FALLBACK_NOTICE}\n\n${name} is a ${title} with ${years}+ years of experience in web engineering and AI automation.\n\nI can help with:\n• Technical skills and stack\n• Featured projects\n• Work experience\n• Certifications\n• Contact and scheduling`;
+  return `${FALLBACK_NOTICE}\n\n${name} is a ${title} with ${years}+ years of experience in web engineering and AI automation.\n\nI can help with:\n• Technical skills and stack\n• Featured projects\n• Work experience\n• Certifications\n• Contact and scheduling\n[ACTION:skills]\n[ACTION:projects]\n[ACTION:experience]\n[ACTION:certifications]\n[ACTION:contact]`;
 }
 
 // --- Helper: Format experience entries ---
@@ -349,7 +410,7 @@ function buildSystemPrompt(): string {
   const educationLocation = education?.location || 'Caloocan City, Philippines';
   const educationStarted = education?.startedAt || '2022-08';
   const educationEnded = education?.endedAt || 'Currently enrolled';
-  const educationGpa = education?.gpa || '1.40';
+  const educationGwa = education?.gpa || '1.40';
   const educationHonors = education?.honors?.length ? education.honors.join(', ') : 'N/A';
   const educationCourses = education?.relevantCourses?.length ? education.relevantCourses.join(', ') : 'N/A';
 
@@ -367,6 +428,7 @@ CRITICAL RULES:
 6. When asked about experience, cite specific companies, roles, and achievements
 7. When asked about projects, describe them with their actual tech stacks and URLs
 8. When greeting or asked "who is Keneth" / "tell me about yourself", give a strong 3-sentence summary of who Keneth is, what he does, and what makes him stand out — then suggest what the visitor might want to explore
+9. Always use the term "GWA" (never "GPA") when referring to Philippine academic grades
 
 PERSONALITY:
 - Confident, direct, and knowledgeable — you know Keneth's background inside and out
@@ -422,7 +484,7 @@ Key Stats:
 
 ${educationDegree} at ${educationInstitution}, ${educationLocation}
 • Started: ${educationStarted} | Status: ${educationEnded}
-• GPA: ${educationGpa} (Philippine grading: 1.0 is highest, 5.0 is lowest — ${educationGpa} is excellent)
+• GWA: ${educationGwa} (Philippine grading system: 1.0 is highest, 5.0 is lowest)
 • Honors: ${educationHonors}
 • Courses: ${educationCourses}
 

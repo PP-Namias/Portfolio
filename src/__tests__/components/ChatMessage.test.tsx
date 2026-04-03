@@ -84,6 +84,35 @@ describe('ChatMessage', () => {
     expect(onAction).toHaveBeenCalledWith('resume');
   });
 
+  it('renders newly supported social and navigation actions', () => {
+    const msg = createMessage({
+      role: 'assistant',
+      content:
+        'Use these actions for quick navigation.\n[ACTION:skills]\n[ACTION:projects]\n[ACTION:linkedin]\n[ACTION:github]',
+    });
+
+    render(<ChatMessage message={msg} onAction={vi.fn()} />);
+
+    expect(screen.getByText('Explore Skills')).toBeInTheDocument();
+    expect(screen.getByText('View Projects')).toBeInTheDocument();
+    expect(screen.getByText('Open LinkedIn')).toBeInTheDocument();
+    expect(screen.getByText('Open GitHub')).toBeInTheDocument();
+    expect(screen.queryByText('[ACTION:linkedin]')).not.toBeInTheDocument();
+  });
+
+  it('calls onAction for social action clicks', async () => {
+    const onAction = vi.fn();
+    const msg = createMessage({
+      role: 'assistant',
+      content: 'Open Keneth\'s LinkedIn profile.\n[ACTION:linkedin]',
+    });
+
+    render(<ChatMessage message={msg} onAction={onAction} />);
+    await userEvent.click(screen.getByText('Open LinkedIn'));
+
+    expect(onAction).toHaveBeenCalledWith('linkedin');
+  });
+
   it('does not render action buttons for user messages', () => {
     const msg = createMessage({
       role: 'user',

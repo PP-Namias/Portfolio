@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Send, RotateCcw, ArrowLeft, Trash2, Sparkles, UserCircle, Terminal, Briefcase, Layers, CalendarCheck, Medal, Bot } from 'lucide-react';
+import { X, Send, RotateCcw, ArrowLeft, Trash2, Sparkles, UserCircle, Terminal, Briefcase, Layers, CalendarCheck, Medal } from 'lucide-react';
 import { ChatMessage } from './ChatMessage';
 import { useModal } from '@/hooks/useModal';
 import type { ChatMessage as ChatMessageType } from '@/types';
@@ -30,6 +30,16 @@ const FOLLOW_UP_POOL = [
   'What are your key achievements?',
   'Where is Keneth based?',
 ];
+
+const ACTION_QUESTION_MAP: Record<string, string> = {
+  skills: 'What tech stack do you specialize in?',
+  projects: 'Tell me about your projects',
+  experience: 'Tell me about Keneth\'s work experience and roles',
+  certifications: 'What certifications do you have?',
+  contact: 'How can I contact Keneth?',
+  achievements: 'What are your key achievements?',
+  education: 'Tell me about your education',
+};
 
 function TypingIndicator() {
   return (
@@ -72,16 +82,6 @@ export function ChatPanel({ onBack, onClose, messages, setMessages }: ChatPanelP
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const { openModal } = useModal();
-
-  const handleAction = useCallback((action: string) => {
-    if (action === 'booking') {
-      openModal('booking');
-    } else if (action === 'resume') {
-      openModal('resume');
-    } else if (action === 'email') {
-      window.open('mailto:pp.namias@gmail.com', '_blank');
-    }
-  }, [openModal]);
 
   const handleClearChat = useCallback(() => {
     setMessages([]);
@@ -155,6 +155,38 @@ export function ChatPanel({ onBack, onClose, messages, setMessages }: ChatPanelP
     },
     [isLoading, messages, setMessages]
   );
+
+  const handleAction = useCallback((action: string) => {
+    if (action === 'booking') {
+      openModal('booking');
+      return;
+    }
+
+    if (action === 'resume') {
+      openModal('resume');
+      return;
+    }
+
+    if (action === 'email') {
+      window.open('mailto:pp.namias@gmail.com', '_blank');
+      return;
+    }
+
+    if (action === 'linkedin') {
+      window.open('https://www.linkedin.com/in/pp-namias/', '_blank');
+      return;
+    }
+
+    if (action === 'github') {
+      window.open('https://github.com/PP-Namias', '_blank');
+      return;
+    }
+
+    const followUpQuestion = ACTION_QUESTION_MAP[action];
+    if (followUpQuestion) {
+      sendMessage(followUpQuestion);
+    }
+  }, [openModal, sendMessage]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

@@ -1,7 +1,20 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Calendar, FileText, Mail } from 'lucide-react';
+import {
+  Briefcase,
+  Calendar,
+  FileText,
+  Github,
+  GraduationCap,
+  Layers,
+  Linkedin,
+  Mail,
+  Medal,
+  Sparkles,
+  Terminal,
+  Trophy,
+} from 'lucide-react';
 import type { ChatMessage as ChatMessageType } from '@/types';
 
 // Action tags the AI can include in responses
@@ -11,6 +24,15 @@ const ACTION_PATTERNS: Array<{
   icon: typeof Calendar;
   action: string;
 }> = [
+  { tag: '[ACTION:skills]', label: 'Explore Skills', icon: Terminal, action: 'skills' },
+  { tag: '[ACTION:projects]', label: 'View Projects', icon: Layers, action: 'projects' },
+  { tag: '[ACTION:experience]', label: 'View Experience', icon: Briefcase, action: 'experience' },
+  { tag: '[ACTION:certifications]', label: 'View Certifications', icon: Medal, action: 'certifications' },
+  { tag: '[ACTION:contact]', label: 'Contact Options', icon: Sparkles, action: 'contact' },
+  { tag: '[ACTION:achievements]', label: 'Key Achievements', icon: Trophy, action: 'achievements' },
+  { tag: '[ACTION:education]', label: 'Education Details', icon: GraduationCap, action: 'education' },
+  { tag: '[ACTION:linkedin]', label: 'Open LinkedIn', icon: Linkedin, action: 'linkedin' },
+  { tag: '[ACTION:github]', label: 'Open GitHub', icon: Github, action: 'github' },
   { tag: '[ACTION:booking]', label: 'Schedule a Meeting', icon: Calendar, action: 'booking' },
   { tag: '[ACTION:resume]', label: 'View Resume', icon: FileText, action: 'resume' },
   { tag: '[ACTION:email]', label: 'Send Email', icon: Mail, action: 'email' },

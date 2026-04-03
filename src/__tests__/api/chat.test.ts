@@ -222,6 +222,44 @@ describe('/api/chat route', () => {
     expect(mockSendMessage).not.toHaveBeenCalled();
   });
 
+  it('returns richer contact preset response with direct action tags', async () => {
+    const req = createRequest({ message: 'How can I contact Keneth?' });
+    const res = await POST(req);
+    expect(res.status).toBe(200);
+    const data = await res.json();
+
+    expect(data.preset).toBe(true);
+    expect(data.message).toContain('[ACTION:email]');
+    expect(data.message).toContain('[ACTION:linkedin]');
+    expect(data.message).toContain('[ACTION:github]');
+    expect(data.message).toContain('[ACTION:booking]');
+    expect(mockGetGenerativeModel).not.toHaveBeenCalled();
+  });
+
+  it('returns achievements preset response and skips Gemini', async () => {
+    const req = createRequest({ message: 'What are your key achievements?' });
+    const res = await POST(req);
+    expect(res.status).toBe(200);
+    const data = await res.json();
+
+    expect(data.preset).toBe(true);
+    expect(data.message).toContain('key achievements');
+    expect(data.message).toContain('9-engineer team');
+    expect(mockGetGenerativeModel).not.toHaveBeenCalled();
+  });
+
+  it('uses GWA wording for education responses', async () => {
+    const req = createRequest({ message: 'Tell me about your education' });
+    const res = await POST(req);
+    expect(res.status).toBe(200);
+    const data = await res.json();
+
+    expect(data.preset).toBe(true);
+    expect(data.message).toContain('GWA');
+    expect(data.message).not.toContain('GPA');
+    expect(mockGetGenerativeModel).not.toHaveBeenCalled();
+  });
+
   it('falls back to next model when first model quota is exhausted', async () => {
     mockSendMessage
       .mockRejectedValueOnce(new Error('429 quota exceeded'))

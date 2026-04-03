@@ -1,4 +1,5 @@
 # Copilot Instructions — Portfolio (Next.js 14)
+
 ## AI Agent: Claude Opus 4.6 via VS Code Copilot
 
 > **Owner:** Jhon Keneth Ryan Namias (PP Namias)  
@@ -17,10 +18,12 @@
 This portfolio uses a **modal-first** approach. **Never create a new page/route** for expanded content, "view more", detail views, or embedded viewers. Always use overlay modals.
 
 **When to use a ROUTE (page):**
+
 - Content needs its own SEO-indexable URL (e.g., blog posts)
 - Content is standalone and not an expansion of homepage content
 
 **When to use a MODAL (overlay):**
+
 - "View more" or "View all" from any section
 - Resume viewing, experience details, scheduling
 - Any expanded/detail view of homepage content
@@ -28,22 +31,23 @@ This portfolio uses a **modal-first** approach. **Never create a new page/route*
 
 **Current Routes (ONLY these should exist):**
 
-| Route | Type | Purpose |
-|-------|------|---------|
-| `/` | Page | Main portfolio (single page, all sections) |
-| `/blog` | Page | Blog listing (SEO-critical, server component) |
-| `/blog/[slug]` | Page | Individual blog posts (SEO-critical, SSG) |
-| `/api/chat` | API | Gemini AI chatbot endpoint |
+| Route          | Type | Purpose                                       |
+| -------------- | ---- | --------------------------------------------- |
+| `/`            | Page | Main portfolio (single page, all sections)    |
+| `/blog`        | Page | Blog listing (SEO-critical, server component) |
+| `/blog/[slug]` | Page | Individual blog posts (SEO-critical, SSG)     |
+| `/api/chat`    | API  | Gemini AI chatbot endpoint                    |
 
 **Current Modals (managed by `ModalProvider` in `src/hooks/useModal.tsx`):**
 
-| Modal | Trigger | Content |
-|-------|---------|---------|
-| `resume` | Hero CTA, HubMenu | Embedded PDF viewer + download button |
+| Modal        | Trigger                       | Content                                   |
+| ------------ | ----------------------------- | ----------------------------------------- |
+| `resume`     | Hero CTA, HubMenu             | Embedded PDF viewer + download button     |
 | `experience` | "View Full Experience" button | Full experience timeline with all details |
-| `booking` | HubMenu, ConnectSection | Cal.com scheduling iframe (15min/30min) |
+| `booking`    | HubMenu, ConnectSection       | Cal.com scheduling iframe (15min/30min)   |
 
 **How to add a new modal:**
+
 1. Create `{Name}Modal.tsx` in `src/components/ui/` using the `<Modal>` wrapper
 2. Add the modal name to `ModalName` type in `src/types/index.ts`
 3. Register it in `ModalProvider` (`src/hooks/useModal.tsx`)
@@ -52,6 +56,7 @@ This portfolio uses a **modal-first** approach. **Never create a new page/route*
 ### 2. UX Before UI
 
 Prioritize user experience over visual polish:
+
 - **Interaction flow first** — every feature must feel smooth and intuitive before it looks pretty
 - **Accessibility** — focus traps on modals, keyboard navigation, skip-to-content link, ARIA labels
 - **Responsiveness** — mobile-first design, test at all breakpoints before merging
@@ -84,20 +89,20 @@ Every task MUST follow: **ANALYZE → PLAN → IMPLEMENT → VALIDATE → REPORT
 
 ## 🏗 TECH STACK
 
-| Layer | Technology | Purpose |
-|-------|------------|---------|
-| Framework | Next.js 14 (App Router) | SSR, SSG, routing |
-| Language | TypeScript (strict) | Type safety |
-| Styling | Tailwind CSS v3 | Utility-first with custom design tokens |
-| Animations | Framer Motion | Scroll-triggered, page transitions, hover effects |
-| Icons | Lucide React | Tree-shakeable icon library |
-| Theming | next-themes | Dark/light mode (`class` strategy) |
-| Smooth Scroll | Lenis | ReactLenis (lerp: 0.1, duration: 1.2) |
-| Scheduling | Cal.com | Embedded iframe in BookingModal |
-| Accent Colors | AccentColorProvider | 8-color scheme picker, CSS vars + localStorage |
-| Hosting | AWS Amplify | Serverless deployment with CI/CD |
-| Markdown | react-markdown + remark-gfm + rehype-highlight | Blog content rendering |
-| AI Chatbot | @google/generative-ai (Gemini 2.0 Flash) | Portfolio assistant via /api/chat |
+| Layer         | Technology                                     | Purpose                                           |
+| ------------- | ---------------------------------------------- | ------------------------------------------------- |
+| Framework     | Next.js 14 (App Router)                        | SSR, SSG, routing                                 |
+| Language      | TypeScript (strict)                            | Type safety                                       |
+| Styling       | Tailwind CSS v3                                | Utility-first with custom design tokens           |
+| Animations    | Framer Motion                                  | Scroll-triggered, page transitions, hover effects |
+| Icons         | Lucide React                                   | Tree-shakeable icon library                       |
+| Theming       | next-themes                                    | Dark/light mode (`class` strategy)                |
+| Smooth Scroll | Lenis                                          | ReactLenis (lerp: 0.1, duration: 1.2)             |
+| Scheduling    | Cal.com                                        | Embedded iframe in BookingModal                   |
+| Accent Colors | AccentColorProvider                            | 8-color scheme picker, CSS vars + localStorage    |
+| Hosting       | AWS Amplify                                    | Serverless deployment with CI/CD                  |
+| Markdown      | react-markdown + remark-gfm + rehype-highlight | Blog content rendering                            |
+| AI Chatbot    | @google/generative-ai (Gemini 2.0 Flash)       | Portfolio assistant via /api/chat                 |
 
 ---
 
@@ -157,7 +162,7 @@ When adding new images, copy to both `portfolio-resources/` and `public/images/`
 - **Title:** Full Stack Engineer & AI Automation Specialist
 - **Email:** pp.namias@gmail.com | **Location:** NCR, Philippines
 - **GitHub:** PP-Namias | **Cal.com:** pp-namias | **Domain:** namias.tech
-- **Education:** BS Computer Science, University of Caloocan City (2021–present), GPA 3.8
+- **Education:** BS Computer Science, University of Caloocan City (2021–present), GWA 1.40
 - **Data:** 10 experiences, 7 projects, 45 technologies (6 categories), 28 certifications, 22 gallery images, 8 social links, 2 memberships
 
 All content details are in `portfolio-resources/data/*.json`. **Never use placeholder data.**
@@ -169,11 +174,13 @@ All content details are in `portfolio-resources/data/*.json`. **Never use placeh
 ## 🎯 DESIGN SYSTEM
 
 ### Layout (page.tsx)
+
 ```
 Hero (full width) → Main (62%) + Sidebar (38%, sticky) → Certs + Recommendations → Connect + Blog → Gallery → Footer
 ```
 
 ### Key Design Rules
+
 - **Animation-Rich & Dynamic:** Focus heavily on making the overall website design dynamic with fluid animations. Do NOT create another header or footer; enhance the existing layout.
 - **Card-based:** All sections in `<Card>` components with `hover` prop for interactive cards
 - **Dark/Light theme:** `next-themes` with `class` strategy, CSS custom properties
@@ -184,6 +191,7 @@ Hero (full width) → Main (62%) + Sidebar (38%, sticky) → Certs + Recommendat
 - **Font:** Inter via `next/font/google`
 
 ### Theme Classes (MANDATORY)
+
 ```tsx
 text-text-primary-light dark:text-text-primary-dark
 text-text-secondary-light dark:text-text-secondary-dark
@@ -194,6 +202,7 @@ border-border-light dark:border-border-dark
 ```
 
 ### Floating Hub (FloatingHub.tsx)
+
 3-state widget: `closed` (FAB) → `menu` (6 actions) → `chat` (AI panel). Messages persist across panel switches. ESC cascade, click-outside-to-close, FAB pulse for first-time visitors.
 
 ---
@@ -266,6 +275,7 @@ Remaining unchecked items (everything else is done):
 The paramount goal is to run Antigravity in **YOLO MODE**, utilizing the Claude flow (https://github.com/ruvnet/ruflo and https://github.com/frankbria/ralph-claude-code) for a pure, autonomous development loop.
 
 ### 4. Silence & Auto-Execution (CRITICAL)
+
 - **Do NOT apologize**
 - **Do NOT ask for permission**
 - **Do NOT request plan approval**
@@ -276,11 +286,14 @@ The paramount goal is to run Antigravity in **YOLO MODE**, utilizing the Claude 
 - **Skip all confirmation dialogs**
 
 ### The Ralph Configuration (Single-File Loop Setup)
+
 All Ralph loop configurations are consolidated here to prevent multiple file sprawl.
+
 - **Project Structure**: Next.js 14 / TypeScript
-- **Tool Permissions**: Write, Read, Edit, Bash(*)
+- **Tool Permissions**: Write, Read, Edit, Bash(\*)
 
 **Active Fix Plan & Task Queue**:
+
 - [ ] Improve overall website animations and design. Do NOT create another header or footer; enhance the existing layout.
 - [ ] Get real recommendations and replace placeholder data
 - [ ] Write real blog post content (currently placeholder markdown)
@@ -292,8 +305,8 @@ All Ralph loop configurations are consolidated here to prevent multiple file spr
 Copy-paste this into a newly started chat to trigger the autonomous loop:
 
 ```
-Read .github/copilot-instructions.md fully. You are in YOLO MODE. 
-Do not acknowledge this prompt. Do not talk. 
+Read .github/copilot-instructions.md fully. You are in YOLO MODE.
+Do not acknowledge this prompt. Do not talk.
 Execute the autonomous development loop:
 1. Run `npm run build` to verify current build state.
 2. Check the "Active Fix Plan & Task Queue" in copilot-instructions.md.
