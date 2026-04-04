@@ -89,7 +89,7 @@ describe('FloatingHub', () => {
     expect(screen.getByText('Quick Actions')).toBeInTheDocument();
   });
 
-  it('displays all 6 hub menu items', () => {
+  it('displays all visible hub menu items', () => {
     render(<FloatingHub />);
     fireEvent.click(screen.getByLabelText('Open quick actions'));
 
@@ -98,7 +98,7 @@ describe('FloatingHub', () => {
     expect(screen.getByText('Schedule a Meeting')).toBeInTheDocument();
     expect(screen.getByText('Send Email')).toBeInTheDocument();
     expect(screen.getByText('Connect')).toBeInTheDocument();
-    expect(screen.getByText('Read Blog')).toBeInTheDocument();
+    expect(screen.queryByText('Read Blog')).not.toBeInTheDocument();
   });
 
   it('opens chat panel when "Ask AI Assistant" is clicked', () => {
@@ -134,12 +134,10 @@ describe('FloatingHub', () => {
     expect(mailLink).toHaveAttribute('href', 'mailto:pp.namias@gmail.com');
   });
 
-  it('has link to blog', () => {
+  it('does not show blog link when blog feature is disabled', () => {
     render(<FloatingHub />);
     fireEvent.click(screen.getByLabelText('Open quick actions'));
-
-    const blogLink = screen.getByText('Read Blog').closest('a');
-    expect(blogLink).toHaveAttribute('href', '/blog');
+    expect(screen.queryByText('Read Blog')).not.toBeInTheDocument();
   });
 
   it('expands Connect section to show social icons', () => {
@@ -285,13 +283,13 @@ describe('FloatingHub', () => {
     render(<FloatingHub />);
     fireEvent.click(screen.getByLabelText('Open quick actions'));
     const items = screen.getAllByRole('menuitem');
-    expect(items.length).toBe(6);
+    expect(items.length).toBe(5);
   });
 
-  it('shows Available for hire footer in menu', () => {
+  it('shows Book a meeting footer action in menu', () => {
     render(<FloatingHub />);
     fireEvent.click(screen.getByLabelText('Open quick actions'));
-    expect(screen.getByText('Available for hire')).toBeInTheDocument();
+    expect(screen.getByText('Book a meeting')).toBeInTheDocument();
   });
 
   it('connect section collapses on second click', () => {
@@ -327,6 +325,75 @@ describe('FloatingHub', () => {
 
     fireEvent.keyDown(document, { key: 'a' });
     expect(screen.getByText('Quick Actions')).toBeInTheDocument();
+  });
+
+  it('closes when clicking outside on desktop', () => {
+    Object.defineProperty(window, 'innerWidth', {
+      configurable: true,
+      writable: true,
+      value: 1024,
+    });
+
+    render(<FloatingHub />);
+    fireEvent.click(screen.getByLabelText('Open quick actions'));
+    expect(screen.getByText('Quick Actions')).toBeInTheDocument();
+
+    fireEvent.mouseDown(document.body);
+    expect(screen.getByLabelText('Open quick actions')).toBeInTheDocument();
+  });
+
+  it('does not close on outside click on mobile widths', () => {
+    Object.defineProperty(window, 'innerWidth', {
+      configurable: true,
+      writable: true,
+      value: 500,
+    });
+
+    render(<FloatingHub />);
+    fireEvent.click(screen.getByLabelText('Open quick actions'));
+    expect(screen.getByText('Quick Actions')).toBeInTheDocument();
+
+    fireEvent.mouseDown(document.body);
+    expect(screen.getByText('Quick Actions')).toBeInTheDocument();
+  });
+
+  it('traps focus within the open panel on Tab and Shift+Tab', () => {
+    render(<FloatingHub />);
+    fireEvent.click(screen.getByLabelText('Open quick actions'));
+
+    const dialog = screen.getByRole('dialog');
+    const focusables = dialog.querySelectorAll<HTMLElement>(
+      'a[href], button:not([disabled]), input:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+    );
+
+    expect(focusables.length).toBeGreaterThan(1);
+
+    const first = focusables[0];
+    const last = focusables[focusables.length - 1];
+
+    last.focus();
+    fireEvent.keyDown(document, { key: 'Tab' });
+    expect(document.activeElement).toBe(first);
+
+    first.focus();
+    fireEvent.keyDown(document, { key: 'Tab', shiftKey: true });
+    expect(document.activeElement).toBe(last);
+  });
+
+  it('does nothing in focus trap when no focusable elements are found', () => {
+    render(<FloatingHub />);
+    fireEvent.click(screen.getByLabelText('Open quick actions'));
+
+    const dialog = screen.getByRole('dialog');
+    const emptyList = document.querySelectorAll<HTMLElement>('.__no-focusables__');
+    const spy = vi.spyOn(dialog, 'querySelectorAll').mockReturnValue(
+      emptyList as unknown as NodeListOf<HTMLElement>
+    );
+
+    fireEvent.keyDown(document, { key: 'Tab' });
+    expect(screen.getByText('Quick Actions')).toBeInTheDocument();
+
+    spy.mockRestore();
   });
 
   it('FAB has correct aria-label', () => {

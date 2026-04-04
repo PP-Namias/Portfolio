@@ -74,7 +74,7 @@ describe('HubMenu', () => {
     expect(screen.getByText('Schedule a Meeting')).toBeInTheDocument();
     expect(screen.getByText('Send Email')).toBeInTheDocument();
     expect(screen.getByText('Connect')).toBeInTheDocument();
-    expect(screen.getByText('Read Blog')).toBeInTheDocument();
+    expect(screen.queryByText('Read Blog')).not.toBeInTheDocument();
   });
 
   it('calls onOpenChat when Ask AI is clicked', () => {
@@ -103,10 +103,9 @@ describe('HubMenu', () => {
     expect(emailLink).toHaveAttribute('href', 'mailto:pp.namias@gmail.com');
   });
 
-  it('has blog internal link', () => {
+  it('hides blog menu item when blog feature is disabled', () => {
     render(<HubMenu onClose={mockOnClose} onOpenChat={mockOnOpenChat} />);
-    const blogLink = screen.getByText('Read Blog').closest('a');
-    expect(blogLink).toHaveAttribute('href', '/blog');
+    expect(screen.queryByText('Read Blog')).not.toBeInTheDocument();
   });
 
   it('expands connect section on click', () => {
@@ -140,7 +139,7 @@ describe('HubMenu', () => {
   it('renders all items with role="menuitem"', () => {
     render(<HubMenu onClose={mockOnClose} onOpenChat={mockOnOpenChat} />);
     const items = screen.getAllByRole('menuitem');
-    expect(items.length).toBe(6);
+    expect(items.length).toBe(5);
   });
 
   it('collapses connect section on second click', () => {
@@ -175,9 +174,17 @@ describe('HubMenu', () => {
     expect(instagram).toHaveAttribute('href', 'https://www.instagram.com/pp_namias/');
   });
 
-  it('shows "Available for hire" footer instead of Gemini branding', () => {
+  it('shows "Book a meeting" footer action', () => {
     render(<HubMenu onClose={mockOnClose} onOpenChat={mockOnOpenChat} />);
-    expect(screen.getByText('Available for hire')).toBeInTheDocument();
+    expect(screen.getByText('Book a meeting')).toBeInTheDocument();
+  });
+
+  it('opens booking modal from footer action and closes menu', () => {
+    render(<HubMenu onClose={mockOnClose} onOpenChat={mockOnOpenChat} />);
+    fireEvent.click(screen.getByText('Book a meeting'));
+
+    expect(mockOpenModal).toHaveBeenCalledWith('booking');
+    expect(mockOnClose).toHaveBeenCalledTimes(1);
   });
 
   it('shows correct subtitles for all items', () => {
@@ -187,7 +194,7 @@ describe('HubMenu', () => {
     expect(screen.getByText('Book on Cal.com')).toBeInTheDocument();
     expect(screen.getByText('pp.namias@gmail.com')).toBeInTheDocument();
     expect(screen.getByText('GitHub · LinkedIn · X')).toBeInTheDocument();
-    expect(screen.getByText('Latest articles & tutorials')).toBeInTheDocument();
+    expect(screen.queryByText('Latest articles & tutorials')).not.toBeInTheDocument();
   });
 
   it('navigates down with ArrowDown key', () => {
@@ -242,5 +249,45 @@ describe('HubMenu', () => {
     // ArrowUp wraps to last
     fireEvent.keyDown(menu, { key: 'ArrowUp' });
     expect(document.activeElement).toBe(items[items.length - 1]);
+  });
+
+  it('ignores non-arrow keys in menu keyboard navigation', () => {
+    render(<HubMenu onClose={mockOnClose} onOpenChat={mockOnOpenChat} />);
+    const menu = screen.getByRole('menu');
+    const items = screen.getAllByRole('menuitem');
+
+    items[0].focus();
+    fireEvent.keyDown(menu, { key: 'Enter' });
+
+    expect(document.activeElement).toBe(items[0]);
+  });
+
+  it('returns early when no menu items are found for arrow navigation', () => {
+    render(<HubMenu onClose={mockOnClose} onOpenChat={mockOnOpenChat} />);
+    const menu = screen.getByRole('menu');
+
+    const emptyList = document.querySelectorAll<HTMLElement>('.__no-menuitems__');
+    const spy = vi.spyOn(menu, 'querySelectorAll').mockReturnValue(
+      emptyList as unknown as NodeListOf<HTMLElement>
+    );
+
+    fireEvent.keyDown(menu, { key: 'ArrowDown' });
+    expect(screen.getByText('Quick Actions')).toBeInTheDocument();
+
+    spy.mockRestore();
+  });
+
+  it('auto-focuses the first menu item after mount', () => {
+    vi.useFakeTimers();
+
+    try {
+      render(<HubMenu onClose={mockOnClose} onOpenChat={mockOnOpenChat} />);
+      const items = screen.getAllByRole('menuitem');
+
+      vi.advanceTimersByTime(120);
+      expect(document.activeElement).toBe(items[0]);
+    } finally {
+      vi.useRealTimers();
+    }
   });
 });
