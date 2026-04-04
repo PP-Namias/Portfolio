@@ -19,8 +19,23 @@ vi.mock('framer-motion', () => ({
 
 // Mock ChatMessage component
 vi.mock('@/components/ui/ChatMessage', () => ({
-  ChatMessage: ({ message }: { message: { content: string; role: string } }) => (
-    <div data-testid={`message-${message.role}`}>{message.content}</div>
+  ChatMessage: ({
+    message,
+    onAction,
+  }: {
+    message: { content: string; role: string };
+    onAction?: (action: string) => void;
+  }) => (
+    <div data-testid={`message-${message.role}`}>
+      <span>{message.content}</span>
+      <button aria-label="action-booking" onClick={() => onAction?.('booking')}>booking</button>
+      <button aria-label="action-resume" onClick={() => onAction?.('resume')}>resume</button>
+      <button aria-label="action-email" onClick={() => onAction?.('email')}>email</button>
+      <button aria-label="action-linkedin" onClick={() => onAction?.('linkedin')}>linkedin</button>
+      <button aria-label="action-github" onClick={() => onAction?.('github')}>github</button>
+      <button aria-label="action-skills" onClick={() => onAction?.('skills')}>skills</button>
+      <button aria-label="action-unknown" onClick={() => onAction?.('unknown')}>unknown</button>
+    </div>
   ),
 }));
 
@@ -149,10 +164,36 @@ describe('ChatPanel', () => {
     });
   });
 
+  it('shows default API error message when response has no error field', async () => {
+    mockFetch.mockResolvedValueOnce({
+      ok: false,
+      json: () => Promise.resolve({}),
+    });
+
+    renderChatPanel();
+    const input = screen.getByPlaceholderText('Ask about skills, projects, experience...');
+    await userEvent.type(input, 'Hello');
+    fireEvent.click(screen.getByLabelText('Send message'));
+
+    await waitFor(() => {
+      expect(screen.getByText('Something went wrong.')).toBeInTheDocument();
+    });
+  });
+
   it('disables send button when input is empty', () => {
     renderChatPanel();
     const sendBtn = screen.getByLabelText('Send message');
     expect(sendBtn).toBeDisabled();
+  });
+
+  it('does not send when submitted with empty input', () => {
+    renderChatPanel();
+
+    const form = screen.getByPlaceholderText('Ask about skills, projects, experience...').closest('form');
+    expect(form).toBeTruthy();
+
+    fireEvent.submit(form as HTMLFormElement);
+    expect(mockFetch).not.toHaveBeenCalled();
   });
 
   it('shows clear chat button when messages exist', () => {
@@ -195,5 +236,144 @@ describe('ChatPanel', () => {
     ];
     renderChatPanel(messages);
     expect(screen.queryByText('What certifications do you have?')).not.toBeInTheDocument();
+  });
+
+  it('opens booking modal for booking action', () => {
+    const messages: ChatMessageType[] = [
+      { id: '1', role: 'assistant', content: 'Use quick actions', timestamp: new Date() },
+    ];
+    renderChatPanel(messages);
+
+    fireEvent.click(screen.getByLabelText('action-booking'));
+    expect(mockOpenModal).toHaveBeenCalledWith('booking');
+  });
+
+  it('opens resume modal for resume action', () => {
+    const messages: ChatMessageType[] = [
+      { id: '1', role: 'assistant', content: 'Use quick actions', timestamp: new Date() },
+    ];
+    renderChatPanel(messages);
+
+    fireEvent.click(screen.getByLabelText('action-resume'));
+    expect(mockOpenModal).toHaveBeenCalledWith('resume');
+  });
+
+  it('opens contact links for email/linkedin/github actions', () => {
+    const openSpy = vi.spyOn(window, 'open').mockImplementation(() => null);
+    const messages: ChatMessageType[] = [
+      { id: '1', role: 'assistant', content: 'Use quick actions', timestamp: new Date() },
+    ];
+    renderChatPanel(messages);
+
+    fireEvent.click(screen.getByLabelText('action-email'));
+    fireEvent.click(screen.getByLabelText('action-linkedin'));
+    fireEvent.click(screen.getByLabelText('action-github'));
+
+    expect(openSpy).toHaveBeenNthCalledWith(1, 'mailto:pp.namias@gmail.com', '_blank');
+    expect(openSpy).toHaveBeenNthCalledWith(2, 'https://www.linkedin.com/in/pp-namias/', '_blank');
+    expect(openSpy).toHaveBeenNthCalledWith(3, 'https://github.com/PP-Namias', '_blank');
+
+    openSpy.mockRestore();
+  });
+
+  it('sends mapped follow-up question from action map', async () => {
+    const messages: ChatMessageType[] = [
+      { id: '1', role: 'assistant', content: 'Use quick actions', timestamp: new Date() },
+    ];
+    renderChatPanel(messages);
+
+    fireEvent.click(screen.getByLabelText('action-skills'));
+
+    await waitFor(() => {
+      expect(mockFetch).toHaveBeenCalledWith('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: expect.stringContaining('"message":"What tech stack do you specialize in?"'),
+      });
+    });
+  });
+
+  it('ignores unknown action keys', () => {
+    const messages: ChatMessageType[] = [
+      { id: '1', role: 'assistant', content: 'Use quick actions', timestamp: new Date() },
+    ];
+    renderChatPanel(messages);
+
+    fireEvent.click(screen.getByLabelText('action-unknown'));
+    expect(mockOpenModal).not.toHaveBeenCalled();
+    expect(mockFetch).not.toHaveBeenCalled();
+  });
+
+  it('sends a follow-up when a suggestion chip is clicked', async () => {
+    const messages: ChatMessageType[] = [
+      { id: '1', role: 'user', content: 'Hello', timestamp: new Date() },
+      { id: '2', role: 'assistant', content: 'Hi there!', timestamp: new Date() },
+    ];
+    renderChatPanel(messages);
+
+    fireEvent.click(screen.getByText('Tell me about your education'));
+
+    await waitFor(() => {
+      expect(mockFetch).toHaveBeenCalledWith('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: expect.stringContaining('"message":"Tell me about your education"'),
+      });
+    });
+  });
+
+  it('retries the last user message from history when Retry is clicked', async () => {
+    mockFetch.mockRejectedValueOnce(new Error('Network error'));
+
+    const messages: ChatMessageType[] = [
+      { id: '1', role: 'user', content: 'Previous user message', timestamp: new Date() },
+      { id: '2', role: 'assistant', content: 'Previous assistant message', timestamp: new Date() },
+    ];
+
+    renderChatPanel(messages);
+
+    const input = screen.getByPlaceholderText('Ask about skills, projects, experience...');
+    await userEvent.type(input, 'New question');
+    fireEvent.click(screen.getByLabelText('Send message'));
+
+    await waitFor(() => {
+      expect(screen.getByText('Failed to connect. Please try again.')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByText('Retry'));
+
+    await waitFor(() => {
+      expect(mockFetch).toHaveBeenCalledTimes(2);
+    });
+
+    expect(mockFetch).toHaveBeenLastCalledWith('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: expect.stringContaining('"message":"Previous user message"'),
+    });
+  });
+
+  it('does not retry when no user message exists in history', async () => {
+    mockFetch.mockRejectedValueOnce(new Error('Network error'));
+
+    const messages: ChatMessageType[] = [
+      { id: '1', role: 'assistant', content: 'Assistant-only history', timestamp: new Date() },
+    ];
+
+    renderChatPanel(messages);
+
+    const input = screen.getByPlaceholderText('Ask about skills, projects, experience...');
+    await userEvent.type(input, 'New question');
+    fireEvent.click(screen.getByLabelText('Send message'));
+
+    await waitFor(() => {
+      expect(screen.getByText('Failed to connect. Please try again.')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByText('Retry'));
+
+    await waitFor(() => {
+      expect(mockFetch).toHaveBeenCalledTimes(1);
+    });
   });
 });

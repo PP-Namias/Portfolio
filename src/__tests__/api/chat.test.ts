@@ -163,6 +163,25 @@ describe('/api/chat route', () => {
     expect(callArgs.history.length).toBe(2);
   });
 
+  it('maps assistant history role to model and all other roles to user', async () => {
+    const req = createRequest({
+      message: 'Can you explain your decision-making process?',
+      history: [
+        { role: 'assistant', content: 'Prior answer' },
+        { role: 'user', content: 'Next question' },
+        { role: 'system', content: 'Ignored role should become user' },
+      ],
+    });
+
+    const res = await POST(req);
+    expect(res.status).toBe(200);
+
+    const callArgs = mockStartChat.mock.calls[0][0];
+    expect(callArgs.history[0].role).toBe('model');
+    expect(callArgs.history[1].role).toBe('user');
+    expect(callArgs.history[2].role).toBe('user');
+  });
+
   it('limits history to last 10 messages', async () => {
     const history = Array.from({ length: 15 }, (_, i) => ({
       role: i % 2 === 0 ? 'user' : 'assistant',
@@ -210,6 +229,20 @@ describe('/api/chat route', () => {
     expect(data.message).toContain('backup mode');
   });
 
+  it('returns fallback response when Gemini returns empty text', async () => {
+    mockSendMessage.mockResolvedValue({
+      response: { text: () => '   ' },
+    });
+
+    const req = createRequest({ message: 'Can you explain your decision-making process?' });
+    const res = await POST(req);
+
+    expect(res.status).toBe(200);
+    const data = await res.json();
+    expect(data.fallback).toBe(true);
+    expect(data.message).toContain('backup mode');
+  });
+
   it('returns preset response and skips Gemini for common intents', async () => {
     const req = createRequest({ message: 'Can I get your resume?' });
     const res = await POST(req);
@@ -220,6 +253,24 @@ describe('/api/chat route', () => {
     expect(data.message).toContain('[ACTION:resume]');
     expect(mockGetGenerativeModel).not.toHaveBeenCalled();
     expect(mockSendMessage).not.toHaveBeenCalled();
+  });
+
+  it('removes fallback notice via replacement path when startsWith check is false', async () => {
+    const req = createRequest({ message: 'Can I get your resume?' });
+    const startsWithSpy = vi.spyOn(String.prototype, 'startsWith').mockReturnValue(false);
+
+    try {
+      const res = await POST(req);
+      expect(res.status).toBe(200);
+      const data = await res.json();
+
+      expect(data.preset).toBe(true);
+      expect(data.message).toContain('[ACTION:resume]');
+      expect(data.message).not.toContain('backup mode is active');
+      expect(mockGetGenerativeModel).not.toHaveBeenCalled();
+    } finally {
+      startsWithSpy.mockRestore();
+    }
   });
 
   it('returns richer contact preset response with direct action tags', async () => {
@@ -236,6 +287,42 @@ describe('/api/chat route', () => {
     expect(mockGetGenerativeModel).not.toHaveBeenCalled();
   });
 
+  it('returns booking preset response and skips Gemini', async () => {
+    const req = createRequest({ message: 'Can we schedule a meeting?' });
+    const res = await POST(req);
+    expect(res.status).toBe(200);
+    const data = await res.json();
+
+    expect(data.preset).toBe(true);
+    expect(data.message).toContain('[ACTION:booking]');
+    expect(data.message).toContain('15-minute and 30-minute slots');
+    expect(mockGetGenerativeModel).not.toHaveBeenCalled();
+  });
+
+  it('returns skills preset response and skips Gemini', async () => {
+    const req = createRequest({ message: 'What tech stack do you specialize in?' });
+    const res = await POST(req);
+    expect(res.status).toBe(200);
+    const data = await res.json();
+
+    expect(data.preset).toBe(true);
+    expect(data.message).toContain('modern full-stack and AI automation stack');
+    expect(data.message).toContain('[ACTION:projects]');
+    expect(mockGetGenerativeModel).not.toHaveBeenCalled();
+  });
+
+  it('returns projects preset response and skips Gemini', async () => {
+    const req = createRequest({ message: 'What projects have you built?' });
+    const res = await POST(req);
+    expect(res.status).toBe(200);
+    const data = await res.json();
+
+    expect(data.preset).toBe(true);
+    expect(data.message).toContain('featured projects');
+    expect(data.message).toContain('[ACTION:experience]');
+    expect(mockGetGenerativeModel).not.toHaveBeenCalled();
+  });
+
   it('returns achievements preset response and skips Gemini', async () => {
     const req = createRequest({ message: 'What are your key achievements?' });
     const res = await POST(req);
@@ -245,6 +332,40 @@ describe('/api/chat route', () => {
     expect(data.preset).toBe(true);
     expect(data.message).toContain('key achievements');
     expect(data.message).toContain('9-engineer team');
+    expect(mockGetGenerativeModel).not.toHaveBeenCalled();
+  });
+
+  it('returns experience preset response and skips Gemini', async () => {
+    const req = createRequest({ message: 'Tell me about your work experience' });
+    const res = await POST(req);
+    expect(res.status).toBe(200);
+    const data = await res.json();
+
+    expect(data.preset).toBe(true);
+    expect(data.message).toContain("recent roles include");
+    expect(mockGetGenerativeModel).not.toHaveBeenCalled();
+  });
+
+  it('returns certifications preset response and skips Gemini', async () => {
+    const req = createRequest({ message: 'What certifications do you have?' });
+    const res = await POST(req);
+    expect(res.status).toBe(200);
+    const data = await res.json();
+
+    expect(data.preset).toBe(true);
+    expect(data.message).toContain('Most impactful highlights');
+    expect(mockGetGenerativeModel).not.toHaveBeenCalled();
+  });
+
+  it('returns profile intro preset response for "Who is Keneth" intent', async () => {
+    const req = createRequest({ message: 'Who is Keneth?' });
+    const res = await POST(req);
+    expect(res.status).toBe(200);
+    const data = await res.json();
+
+    expect(data.preset).toBe(true);
+    expect(data.message).toContain('based in');
+    expect(data.message).toContain('[ACTION:skills]');
     expect(mockGetGenerativeModel).not.toHaveBeenCalled();
   });
 
@@ -260,6 +381,26 @@ describe('/api/chat route', () => {
     expect(mockGetGenerativeModel).not.toHaveBeenCalled();
   });
 
+  it('returns location fallback when education data is unavailable', async () => {
+    const profileModule = await import('../../../portfolio-resources/data/profile.json');
+    const profile = profileModule.default as Record<string, unknown>;
+    const originalEducation = profile.education;
+    profile.education = undefined;
+
+    try {
+      const req = createRequest({ message: 'Tell me about your education' });
+      const res = await POST(req);
+      expect(res.status).toBe(200);
+      const data = await res.json();
+
+      expect(data.preset).toBe(true);
+      expect(data.message).toContain('currently based in');
+      expect(mockGetGenerativeModel).not.toHaveBeenCalled();
+    } finally {
+      profile.education = originalEducation;
+    }
+  });
+
   it('falls back to next model when first model quota is exhausted', async () => {
     mockSendMessage
       .mockRejectedValueOnce(new Error('429 quota exceeded'))
@@ -271,6 +412,39 @@ describe('/api/chat route', () => {
     expect(res.status).toBe(200);
     const data = await res.json();
     expect(data.message).toBe('Fallback model response');
+  });
+
+  it('returns fallback from outer catch when an unexpected error occurs after sanitization', async () => {
+    const req = createRequest({ message: 'Can I get your resume?' });
+    const startsWithSpy = vi.spyOn(String.prototype, 'startsWith').mockImplementation(() => {
+      throw new Error('Unexpected startsWith failure');
+    });
+
+    try {
+      const res = await POST(req);
+      expect(res.status).toBe(200);
+      const data = await res.json();
+      expect(data.fallback).toBe(true);
+      expect(data.message).toContain('backup mode');
+    } finally {
+      startsWithSpy.mockRestore();
+    }
+  });
+
+  it('returns 500 from outer catch when an unexpected error occurs before fallback message is set', async () => {
+    const req = createRequest({ message: 'Can you explain your decision-making process?' });
+    const replaceSpy = vi.spyOn(String.prototype, 'replace').mockImplementationOnce(() => {
+      throw new Error('Unexpected replace failure');
+    });
+
+    try {
+      const res = await POST(req);
+      expect(res.status).toBe(500);
+      const data = await res.json();
+      expect(data.error).toBe('Something went wrong. Please try again.');
+    } finally {
+      replaceSpy.mockRestore();
+    }
   });
 
   // --- Rate Limiting ---

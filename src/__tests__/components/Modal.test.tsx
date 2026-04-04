@@ -135,4 +135,83 @@ describe('Modal', () => {
     expect(dialog.className).toContain('max-w-2xl');
     expect(dialog.className).toContain('max-h-[85vh]');
   });
+
+  it('closes when clicking the backdrop', () => {
+    render(
+      <Modal open={true} onClose={mockOnClose}>
+        <p>Content</p>
+      </Modal>
+    );
+
+    const dialog = screen.getByRole('dialog');
+    const backdropLayer = dialog.parentElement;
+    expect(backdropLayer).toBeTruthy();
+
+    fireEvent.click(backdropLayer as HTMLElement);
+    expect(mockOnClose).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not close when clicking inside the modal panel', () => {
+    render(
+      <Modal open={true} onClose={mockOnClose}>
+        <p>Content</p>
+      </Modal>
+    );
+
+    fireEvent.click(screen.getByRole('dialog'));
+    expect(mockOnClose).not.toHaveBeenCalled();
+  });
+
+  it('wraps focus from last to first on Tab', () => {
+    render(
+      <Modal open={true} onClose={mockOnClose} title="Focus Test">
+        <button>First custom</button>
+        <button>Last custom</button>
+      </Modal>
+    );
+
+    const closeButton = screen.getByLabelText('Close modal');
+    const lastCustom = screen.getByText('Last custom');
+
+    lastCustom.focus();
+    fireEvent.keyDown(document, { key: 'Tab' });
+
+    expect(document.activeElement).toBe(closeButton);
+  });
+
+  it('wraps focus from first to last on Shift+Tab', () => {
+    render(
+      <Modal open={true} onClose={mockOnClose} title="Focus Test">
+        <button>First custom</button>
+        <button>Last custom</button>
+      </Modal>
+    );
+
+    const closeButton = screen.getByLabelText('Close modal');
+    const lastCustom = screen.getByText('Last custom');
+
+    closeButton.focus();
+    fireEvent.keyDown(document, { key: 'Tab', shiftKey: true });
+
+    expect(document.activeElement).toBe(lastCustom);
+  });
+
+  it('returns early from focus trap when no focusable elements are found', () => {
+    render(
+      <Modal open={true} onClose={mockOnClose}>
+        <p>Content</p>
+      </Modal>
+    );
+
+    const dialog = screen.getByRole('dialog');
+    const emptyList = document.querySelectorAll<HTMLElement>('.__no-focusables__');
+    const spy = vi.spyOn(dialog, 'querySelectorAll').mockReturnValue(
+      emptyList as unknown as NodeListOf<HTMLElement>
+    );
+
+    fireEvent.keyDown(document, { key: 'Tab' });
+    expect(screen.getByText('Content')).toBeInTheDocument();
+
+    spy.mockRestore();
+  });
 });
