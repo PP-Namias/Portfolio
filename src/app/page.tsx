@@ -20,33 +20,29 @@ export default function Home() {
       {/* Two-column layout: Main + Sidebar */}
       {/* Mobile: About → Experience + Connect → TechStack → Projects */}
       {/* Desktop: Left (About, TechStack, Projects) | Right sticky (Experience, Connect) */}
-      <div className="grid grid-cols-1 lg:grid-cols-[62%_1fr] gap-4 mt-0">
-        <div className="order-1 lg:order-none lg:col-start-1">
-          <Card>
-            <AboutSection />
-          </Card>
-        </div>
-
-        <div className="order-2 lg:order-none lg:col-start-2 lg:row-start-1 lg:row-span-3">
-          <aside className="lg:sticky lg:top-4 space-y-4">
+      <div className="grid grid-cols-1 lg:grid-cols-[62%_1fr] gap-4 mt-4">
+        <div className="order-1 lg:order-none lg:col-start-1 space-y-4">
+          <div className="lg:sticky lg:top-4">
             <Card>
-              <ExperienceTimeline />
+              <AboutSection />
             </Card>
-            <Card>
-              <ConnectSection />
-            </Card>
-          </aside>
-        </div>
+          </div>
 
-        <div className="order-3 lg:order-none lg:col-start-1">
           <Card>
             <TechStackSection />
           </Card>
-        </div>
 
-        <div className="order-4 lg:order-none lg:col-start-1">
           <Card>
             <ProjectsSection />
+          </Card>
+        </div>
+
+        <div className="order-2 lg:order-none lg:col-start-2 lg:row-start-1 lg:row-span-3 space-y-4">
+          <Card>
+            <ExperienceTimeline />
+          </Card>
+          <Card>
+            <ConnectSection />
           </Card>
         </div>
       </div>

@@ -20,7 +20,7 @@ export function TimelineItem({ item, index, isLast }: TimelineItemProps) {
 
   return (
     <motion.div
-      className="relative flex gap-3 pb-4"
+      className={`relative flex gap-4 ${isLast ? 'pb-0' : 'pb-5'}`}
       initial={{ opacity: 0, x: -10 }}
       whileInView={{ opacity: 1, x: 0 }}
       viewport={{ once: true }}
@@ -81,7 +81,7 @@ export function TimelineItem({ item, index, isLast }: TimelineItemProps) {
               transition={{ duration: 0.2 }}
               className="overflow-hidden"
             >
-              <div className="mt-2 space-y-2">
+              <div className="mt-2.5 space-y-2">
                 {item.summary && (
                   <p className="text-xs text-text-secondary-light dark:text-text-secondary-dark leading-relaxed">
                     {item.summary}
