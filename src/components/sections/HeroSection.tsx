@@ -232,15 +232,25 @@ export function HeroSection() {
             className="flex flex-wrap items-center justify-center sm:justify-start gap-2.5"
             variants={itemVariants}
           >
-            <Button variant="primary" size="lg" onClick={() => openModal('resume')} className="shadow-lg shadow-accent-pink/25 hover:shadow-xl hover:shadow-accent-pink/30 transition-shadow">
+            <Button
+              variant="primary"
+              size="md"
+              onClick={() => openModal('resume')}
+              className="h-11 px-6 shadow-lg shadow-accent-pink/25 hover:shadow-xl hover:shadow-accent-pink/30 transition-shadow"
+            >
               <Download className="h-4 w-4" />
               Resume
             </Button>
-            <Button variant="outline" size="md" onClick={() => openModal('booking')}>
+            <Button
+              variant="outline"
+              size="md"
+              onClick={() => openModal('booking')}
+              className="h-11"
+            >
               <Calendar className="h-4 w-4" />
               Book a Call
             </Button>
-            <Button variant="ghost" size="sm" href={`mailto:${profile.email}`}>
+            <Button variant="ghost" size="md" href={`mailto:${profile.email}`} className="h-11">
               <Mail className="h-3.5 w-3.5" />
               Email
             </Button>
