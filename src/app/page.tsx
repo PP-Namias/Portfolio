@@ -21,20 +21,20 @@ export default function Home() {
       {/* Mobile: About → Experience + Connect → TechStack → Projects */}
       {/* Desktop: Left (About, TechStack, Projects) | Right sticky (Experience, Connect) */}
       <div className="grid grid-cols-1 lg:grid-cols-[62%_1fr] gap-4 mt-4">
-        <div className="order-1 lg:order-none lg:col-start-1 space-y-4">
-          <div className="lg:sticky lg:top-4">
+        <div className="order-1 lg:order-none lg:col-start-1">
+          <div className="lg:sticky lg:top-4 space-y-4">
             <Card>
               <AboutSection />
             </Card>
+
+            <Card>
+              <TechStackSection />
+            </Card>
+
+            <Card>
+              <ProjectsSection />
+            </Card>
           </div>
-
-          <Card>
-            <TechStackSection />
-          </Card>
-
-          <Card>
-            <ProjectsSection />
-          </Card>
         </div>
 
         <div className="order-2 lg:order-none lg:col-start-2 lg:row-start-1 lg:row-span-3 space-y-4">
