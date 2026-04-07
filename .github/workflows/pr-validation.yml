@@ -22,82 +22,82 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event.pull_request.draft == false
     steps:
-        name: Quality Check
+      - name: Checkout PR
         uses: actions/checkout@v4
 
       - name: Setup Node.js
-          - name: Checkout PR
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          - name: Setup Node.js
+          cache: 'npm'
 
       - name: Install Dependencies
         run: npm ci
 
       - name: Lint Check
-          - name: Install Dependencies
+        run: npm run lint
 
       - name: Type Check
-          - name: Lint Check
+        run: npx tsc --noEmit
 
       - name: Build
-          - name: Type Check
+        run: npm run build
 
       - name: Run Tests
-          - name: Build
+        run: npm test
 
   security:
-          - name: Run Tests
+    name: Security Scan
     runs-on: ubuntu-latest
     if: github.event.pull_request.draft == false
     steps:
-        name: Security Scan
+      - name: Checkout PR
         uses: actions/checkout@v4
 
       - name: Setup Node.js
-          - name: Checkout PR
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          - name: Setup Node.js
+          cache: 'npm'
 
       - name: Install Dependencies
         run: npm ci
 
       - name: Security Audit
-          - name: Install Dependencies
+        run: npm audit --audit-level moderate || echo "Audit completed with warnings"
 
   comment:
-          - name: Security Audit
+    name: PR Status
     runs-on: ubuntu-latest
     needs: [quality-check, security]
     if: always() && github.event.pull_request.draft == false
-        name: PR Status
+    permissions:
       pull-requests: write
     steps:
       - name: Post PR Comment
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          - name: Post PR Comment
+          script: |
             const results = {
               qualityCheck: '${{ needs.quality-check.result }}',
               security: '${{ needs.security.result }}'
             };
 
-            const icon = (s) => s === 'success' ? 'Passed' : s === 'failure' ? 'Failed' : 'Skipped';
+            const label = (s) => s === 'success' ? 'Passed' : s === 'failure' ? 'Failed' : 'Skipped';
 
             const body = `## Pull Request Validation Results
 
-                const label = (s) => s === 'success' ? 'Passed' : s === 'failure' ? 'Failed' : 'Skipped';
+            | Check | Status |
             |-------|--------|
-                const body = `## Pull Request Validation Results
-            | Security Audit | ${icon(results.security)} (${results.security}) |
+            | Quality (Lint + Type + Build + Tests) | ${label(results.qualityCheck)} (${results.qualityCheck}) |
+            | Security Audit | ${label(results.security)} (${results.security}) |
 
             **Overall**: ${results.qualityCheck === 'success' ? 'Ready to merge' : 'Issues found'}
-                | Quality (Lint + Type + Build + Tests) | ${label(results.qualityCheck)} (${results.qualityCheck}) |
-                | Security Audit | ${label(results.security)} (${results.security}) |
+
+            ---
             *Automated PR validation • [View Details](${context.payload.repository.html_url}/actions/runs/${context.runId})*`;
-                **Overall**: ${results.qualityCheck === 'success' ? 'Ready to merge' : 'Issues found'}
+
             const comments = await github.rest.issues.listComments({
               owner: context.repo.owner,
               repo: context.repo.repo,

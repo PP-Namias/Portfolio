@@ -1,19 +1,13 @@
 # PP Namias Portfolio
 
-| vBanner | Profile Image |
+| Profile | Details |
 | --- | --- |
-| ![vBanner - PP Namias Portfolio](../public/images/projects/PP%20Namias%20Portfolio.png) | ![Jhon Keneth Ryan Namias profile image](../public/images/profile/PP%20Namias.png) |
-
-| Profile | Action |
-| --- | --- |
-| **Jhon Keneth Ryan Namias (PP Namias)** | [![Live Portfolio](https://img.shields.io/badge/Live%20Portfolio-namias.tech-db2777?style=for-the-badge&logo=vercel&logoColor=white)](https://namias.tech) |
-| Full Stack Engineer & AI Automation Specialist | [![Book a Call](https://img.shields.io/badge/Book%20a%20Call-Cal.com-111827?style=for-the-badge&logo=calendar&logoColor=white)](https://cal.com/pp-namias) |
-| Manila, Philippines · Available for collaboration | [![Email](https://img.shields.io/badge/Email-pp.namias%40gmail.com-2563eb?style=for-the-badge&logo=gmail&logoColor=white)](mailto:pp.namias@gmail.com) |
-
-[![GitHub](https://img.shields.io/badge/GitHub-PP--Namias-181717?style=flat-square&logo=github)](https://github.com/PP-Namias)
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-pp--namias-0A66C2?style=flat-square&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/pp-namias/)
-[![Status](https://img.shields.io/badge/Status-Production%20Ready-16a34a?style=flat-square)](https://namias.tech)
-![License](https://img.shields.io/badge/License-MIT-f59e0b?style=flat-square)
+| ![Jhon Keneth Ryan Namias profile image](../public/images/profile/PP%20Namias.png) | **Jhon Keneth Ryan Namias (PP Namias)** |
+|  | Project Manager @ MASH |
+|  | Full Stack Engineer & AI Automation Specialist |
+|  | Manila, Philippines · Available for collaboration |
+|  | [![Resume](https://img.shields.io/badge/Resume-View%20PDF-db2777?style=for-the-badge)](../public/resume.pdf) [![Book a Call](https://img.shields.io/badge/Book%20a%20Call-Cal.com-111827?style=for-the-badge&logo=calendar&logoColor=white)](https://cal.com/pp-namias) [![Email](https://img.shields.io/badge/Email-pp.namias%40gmail.com-2563eb?style=for-the-badge&logo=gmail&logoColor=white)](mailto:pp.namias@gmail.com) |
+|  | [![Live Portfolio](https://img.shields.io/badge/Live%20Portfolio-namias.tech-16a34a?style=flat-square&logo=vercel&logoColor=white)](https://namias.tech) [![GitHub](https://img.shields.io/badge/GitHub-PP--Namias-181717?style=flat-square&logo=github)](https://github.com/PP-Namias) [![LinkedIn](https://img.shields.io/badge/LinkedIn-pp--namias-0A66C2?style=flat-square&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/pp-namias/) ![License](https://img.shields.io/badge/License-MIT-f59e0b?style=flat-square) |
 
 ## About this repository
 
