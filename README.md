@@ -1,37 +1,53 @@
 # PP Namias Portfolio
 
-A modern, production-ready portfolio built with **Next.js 14**, **TypeScript**, and **Tailwind CSS**, deployed with AWS-oriented workflows and GitHub automation.
+![vBanner - PP Namias Portfolio](./public/images/projects/PP%20Namias%20Portfolio.png)
 
-- **Owner:** Jhon Keneth Ryan Namias (PP Namias)
-- **Live site:** [https://namias.tech](https://namias.tech)
-- **Repository:** [https://github.com/PP-Namias/Portfolio](https://github.com/PP-Namias/Portfolio)
+![Jhon Keneth Ryan Namias profile image](./public/images/profile/PP%20Namias.png)
 
-## What this project includes
+## Jhon Keneth Ryan Namias (PP Namias)
 
-- Modal-first portfolio experience (resume, experience details, booking)
-- Blog listing and blog post pages (`/blog`, `/blog/[slug]`)
-- AI chat API endpoint (`/api/chat`) using Gemini
-- Light/dark themes with accent color system
-- CI workflows for quality, security, and production health checks
+**Full Stack Engineer & AI Automation Specialist**  
+📍 Manila, Philippines • 🟢 Available for collaboration
 
-## Core stack
+[![Live Portfolio](https://img.shields.io/badge/Live%20Portfolio-namias.tech-db2777?style=for-the-badge&logo=vercel&logoColor=white)](https://namias.tech)
+[![Book a Call](https://img.shields.io/badge/Book%20a%20Call-Cal.com-111827?style=for-the-badge&logo=calendar&logoColor=white)](https://cal.com/pp-namias)
+[![Email](https://img.shields.io/badge/Email-pp.namias%40gmail.com-2563eb?style=for-the-badge&logo=gmail&logoColor=white)](mailto:pp.namias@gmail.com)
+
+[![GitHub](https://img.shields.io/badge/GitHub-PP--Namias-181717?style=flat-square&logo=github)](https://github.com/PP-Namias)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-pp--namias-0A66C2?style=flat-square&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/pp-namias/)
+[![Status](https://img.shields.io/badge/Status-Production%20Ready-16a34a?style=flat-square)](https://namias.tech)
+![License](https://img.shields.io/badge/License-MIT-f59e0b?style=flat-square)
+
+## 🚀 About this repository
+
+This repository powers my personal portfolio at [namias.tech](https://namias.tech), built as a **modal-first**, animation-rich Next.js experience with a production-ready CI workflow.
+
+### Highlights
+
+- Homepage-first architecture with rich modal flows (Resume, Full Experience, Booking)
+- SEO routes for blog content (`/blog`, `/blog/[slug]`)
+- AI chat endpoint at `/api/chat` using Gemini
+- Dark/light themes + accent color system
+- Testing, linting, and build validation pipelines
+
+## 🧱 Core stack
 
 - **Framework:** Next.js 14 (App Router)
-- **Language:** TypeScript
-- **UI:** Tailwind CSS + Framer Motion + Lucide React
+- **Language:** TypeScript (strict)
+- **Styling:** Tailwind CSS + Framer Motion + Lucide React
 - **Theme:** `next-themes`
-- **Content rendering:** `react-markdown`, `remark-gfm`, `rehype-highlight`
+- **Content:** `react-markdown`, `remark-gfm`, `rehype-highlight`
 - **Testing:** Vitest + Testing Library + jsdom
-- **Hosting:** AWS Amplify (`next.config.js` uses `output: 'standalone'`)
+- **Hosting target:** AWS Amplify (`output: 'standalone'`)
 
-## Quick start
+## 🛠️ Local development
 
 ### Prerequisites
 
 - Node.js 18+
 - npm
 
-### Local setup
+### Setup
 
 ```bash
 git clone https://github.com/PP-Namias/Portfolio.git
@@ -42,26 +58,26 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000).
 
-## Available scripts
+## 📦 Available scripts
 
 - `npm run dev` — start development server
 - `npm run build` — create production build
-- `npm run start` — run production server
-- `npm run lint` — run ESLint (Next.js config)
+- `npm run start` — run production build locally
+- `npm run lint` — run ESLint
 - `npm run test` — run Vitest once
 - `npm run test:watch` — run Vitest in watch mode
 
-## Environment variables
+## 🔐 Environment variables
 
-Create a `.env` file in project root using `.env.example`:
+Create a `.env` file in the project root based on `.env.example`:
 
 ```bash
 GOOGLE_GEMINI_API_KEY=your_key_here
 ```
 
-## Quality and validation
+## ✅ Quality checks
 
-Run these before opening a PR:
+Run before pushing or opening a PR:
 
 ```bash
 npm run lint
@@ -69,15 +85,9 @@ npm run build
 npm run test
 ```
 
-CI workflows in `.github/workflows/` enforce the same checks for pushes and pull requests.
+CI workflows in `.github/workflows/` enforce equivalent checks.
 
-## Deployment notes
-
-- AWS Amplify build config is defined in `amplify.yml`
-- Next.js standalone output is enabled in `next.config.js`
-- Production health checks are automated via GitHub Actions
-
-## Project structure (high level)
+## 🗂️ Project structure (high level)
 
 ```text
 Portfolio/
@@ -97,7 +107,7 @@ Portfolio/
 └── package.json
 ```
 
-## Documentation map
+## 📚 Documentation map
 
 - [Contributing Guide](CONTRIBUTING.md)
 - [Security Policy](SECURITY.md)
@@ -107,10 +117,10 @@ Portfolio/
 - [Public Repo Settings Checklist](docs/PUBLIC_REPO_SETTINGS_CHECKLIST.md)
 - [Reference Index](docs/REFERENCE_INDEX.md)
 
-## Design acknowledgment
+## 🙏 Design acknowledgment
 
 This project draws design inspiration from [bryllim.com](https://bryllim.com/). All implementation code in this repository is original.
 
-## License
+## 📄 License
 
 Licensed under the MIT License. See [LICENSE](LICENSE).
