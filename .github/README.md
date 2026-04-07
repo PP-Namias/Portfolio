@@ -1,80 +1,67 @@
-# GitHub Automation and Governance Guide
+# PP Namias Portfolio
 
-This document describes what the `.github/` directory controls in this repository.
+A modern, production-ready portfolio built with **Next.js 14**, **TypeScript**, and **Tailwind CSS**, deployed with AWS-oriented workflows and GitHub automation.
 
-## What is in this folder
+- **Owner:** Jhon Keneth Ryan Namias (PP Namias)
+- **Live site:** [https://namias.tech](https://namias.tech)
+- **Repository:** [https://github.com/PP-Namias/Portfolio](https://github.com/PP-Namias/Portfolio)
 
-- `workflows/` — CI, security, uptime, and scheduled health automations
-- `ISSUE_TEMPLATE/` — guided issue templates and contact links
-- `PULL_REQUEST_TEMPLATE.md` — pull request checklist and validation template
-- `CODEOWNERS` — review ownership rules
-- `dependabot.yml` — dependency update automation
-- `copilot-instructions.md` — project-specific Copilot agent instructions
+## What this project includes
 
-## Workflows overview
+- Modal-first portfolio experience (resume, experience details, booking)
+- Blog listing and blog post pages (`/blog`, `/blog/[slug]`)
+- AI chat API endpoint (`/api/chat`) using Gemini
+- Light/dark themes with accent color system
+- CI workflows for quality, security, and production health checks
 
-### `workflows/build.yml`
+## Core stack
 
-- Trigger: push and pull request to `main`
-- Jobs:
-  - `🔍 Lint & Type Check`
-  - `🏗️ Build Application`
-  - `🧪 Run Tests`
+- **Framework:** Next.js 14 (App Router)
+- **Language:** TypeScript
+- **UI:** Tailwind CSS + Framer Motion + Lucide React
+- **Theme:** `next-themes`
+- **Content rendering:** `react-markdown`, `remark-gfm`, `rehype-highlight`
+- **Testing:** Vitest + Testing Library + jsdom
+- **Hosting:** AWS Amplify (`next.config.js` uses `output: 'standalone'`)
 
-### `workflows/pr-validation.yml`
+## Quick start
 
-- Trigger: active pull request events targeting `main`
-- Jobs:
-  - `⚡ Quality Check`
-  - `🔒 Security Scan`
-  - `💬 PR Status` (posts/updates PR validation comment)
+### Prerequisites
 
-### `workflows/security-compliance.yml`
+- Node.js 18+
+- npm
 
-- Trigger: push, pull request, weekly schedule, manual dispatch
-- Jobs:
-  - `🔍 Dependency Audit`
-  - `🕵️ CodeQL Analysis`
-  - `📊 Security Summary`
+### Local setup
 
-### `workflows/daily-health-check.yml`
+```bash
+git clone https://github.com/PP-Namias/Portfolio.git
+cd Portfolio
+npm install
+npm run dev
+```
 
-- Trigger: daily schedule and manual dispatch
-- Performs lint, type check, audit, build, and tests
-- Creates an issue automatically if the health check fails
+Open [http://localhost:3000](http://localhost:3000).
 
-### `workflows/monitoring-health.yml`
+## Available scripts
 
-- Trigger: every 6 hours and manual dispatch
-- Checks production uptime for:
-  - `https://namias.tech`
-  - `https://namias.tech/blog`
-- Checks SSL certificate status and outputs a summary
+- `npm run dev` — start development server
+- `npm run build` — create production build
+- `npm run start` — run production server
+- `npm run lint` — run ESLint (Next.js config)
+- `npm run test` — run Vitest once
+- `npm run test:watch` — run Vitest in watch mode
 
-## Branch protection required checks
+## Environment variables
 
-For `main`, use these check names in branch protection/rulesets:
+Create a `.env` file in project root using `.env.example`:
 
-- `⚡ Quality Check`
-- `🔒 Security Scan`
-- `🔍 Lint & Type Check`
-- `🏗️ Build Application`
-- `🧪 Run Tests`
-- `🕵️ CodeQL Analysis`
+```bash
+GOOGLE_GEMINI_API_KEY=your_key_here
+```
 
-See `docs/BRANCH_PROTECTION_RULESET.md` for complete settings.
+## Quality and validation
 
-## Issue and pull request governance
-
-- `ISSUE_TEMPLATE/config.yml` disables blank issues and links to:
-  - `SECURITY.md`
-  - `SUPPORT.md`
-- `PULL_REQUEST_TEMPLATE.md` enforces validation checklist in every PR
-- `CODEOWNERS` ensures review routing for critical paths
-
-## Local pre-checks before opening a PR
-
-Run from repository root:
+Run these before opening a PR:
 
 ```bash
 npm run lint
@@ -82,11 +69,48 @@ npm run build
 npm run test
 ```
 
-## Related documentation
+CI workflows in `.github/workflows/` enforce the same checks for pushes and pull requests.
 
-- [`../README.md`](../README.md)
-- [`../CONTRIBUTING.md`](../CONTRIBUTING.md)
-- [`../SECURITY.md`](../SECURITY.md)
-- [`../SUPPORT.md`](../SUPPORT.md)
-- [`../docs/REPO_PUBLICATION_PLAN.md`](../docs/REPO_PUBLICATION_PLAN.md)
-- [`../docs/PUBLIC_REPO_SETTINGS_CHECKLIST.md`](../docs/PUBLIC_REPO_SETTINGS_CHECKLIST.md)
+## Deployment notes
+
+- AWS Amplify build config is defined in `amplify.yml`
+- Next.js standalone output is enabled in `next.config.js`
+- Production health checks are automated via GitHub Actions
+
+## Project structure (high level)
+
+```text
+Portfolio/
+├── .github/                     # workflows, templates, governance docs
+├── docs/                        # publication and repository governance docs
+├── portfolio-resources/         # source content and media resources
+├── public/                      # static files served by Next.js
+├── src/
+│   ├── app/                     # routes, layout, providers, API routes
+│   ├── components/              # layout, sections, and reusable UI
+│   ├── data/                    # typed data modules
+│   ├── hooks/                   # custom hooks
+│   ├── lib/                     # utilities and feature flags
+│   └── types/                   # shared TypeScript types
+├── amplify.yml
+├── next.config.js
+└── package.json
+```
+
+## Documentation map
+
+- [Contributing Guide](CONTRIBUTING.md)
+- [Security Policy](SECURITY.md)
+- [Support](SUPPORT.md)
+- [Publication Plan](docs/REPO_PUBLICATION_PLAN.md)
+- [Branch Protection Blueprint](docs/BRANCH_PROTECTION_RULESET.md)
+- [Public Repo Settings Checklist](docs/PUBLIC_REPO_SETTINGS_CHECKLIST.md)
+- [Reference Index](docs/REFERENCE_INDEX.md)
+
+## Design acknowledgment
+
+This project draws design inspiration from [bryllim.com](https://bryllim.com/). All implementation code in this repository is original.
+
+## License
+
+Licensed under the MIT License. See [LICENSE](LICENSE).
