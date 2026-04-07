@@ -98,4 +98,4 @@ This project draws design inspiration from [bryllim.com](https://bryllim.com/). 
 
 ## License
 
-Licensed under the MIT License. See [../LICENSE](../LICENSE).
+Licensed under the MIT License. See [../LICENSE](LICENSE).
