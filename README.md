@@ -1,147 +1,116 @@
-# Cloud-Native Portfolio
+# PP Namias Portfolio
 
-A modern, production-ready portfolio website built with cloud-native technologies and deployed on AWS. This project demonstrates end-to-end cloud development practices — from building in a cloud IDE to hosting static assets on S3 and deploying via AWS Amplify.
+A modern, production-ready portfolio built with **Next.js 14**, **TypeScript**, and **Tailwind CSS**, deployed with AWS-oriented workflows and GitHub automation.
 
-## Live Reference
+- **Owner:** Jhon Keneth Ryan Namias (PP Namias)
+- **Live site:** [https://namias.tech](https://namias.tech)
+- **Repository:** [https://github.com/PP-Namias/Portfolio](https://github.com/PP-Namias/Portfolio)
 
-This portfolio is inspired by [bryllim.com](https://bryllim.com/), a clean and professional developer portfolio by Bryl Lim. The design follows the same minimalist aesthetic, two-column layout, dark/light theme support, and content-first approach that makes the original so effective. All code is original; the design principles and information architecture serve as the creative reference.
+## What this project includes
 
-## Tech Stack
+- Modal-first portfolio experience (resume, experience details, booking)
+- Blog listing and blog post pages (`/blog`, `/blog/[slug]`)
+- AI chat API endpoint (`/api/chat`) using Gemini
+- Light/dark themes with accent color system
+- CI workflows for quality, security, and production health checks
 
-| Layer | Technology | Purpose |
-|-------|------------|---------|
-| Framework | [Next.js 14](https://nextjs.org/) (App Router) | Server-side rendering, static generation, routing |
-| Language | [TypeScript](https://www.typescriptlang.org/) | Type safety and developer experience |
-| Styling | [Tailwind CSS v3](https://tailwindcss.com/) | Utility-first styling with custom design tokens |
-| Animations | [Framer Motion](https://www.framer.com/motion/) | Smooth page transitions and scroll-based effects |
-| Icons | [Lucide React](https://lucide.dev/) | Consistent, tree-shakeable icon library |
-| Theming | [next-themes](https://github.com/pacocoursey/next-themes) | Dark/light mode with system preference detection |
-| Development | [GitHub Codespaces](https://github.com/features/codespaces) | Cloud-based development environment |
-| Static Assets | [AWS S3](https://aws.amazon.com/s3/) | Scalable object storage for images and documents |
-| Hosting | [AWS Amplify](https://aws.amazon.com/amplify/) | Serverless deployment with CI/CD pipeline |
-| Monitoring | [AWS CloudWatch](https://aws.amazon.com/cloudwatch/) | Logging, metrics, and operational visibility |
+## Core stack
 
-## AWS Services Used
+- **Framework:** Next.js 14 (App Router)
+- **Language:** TypeScript
+- **UI:** Tailwind CSS + Framer Motion + Lucide React
+- **Theme:** `next-themes`
+- **Content rendering:** `react-markdown`, `remark-gfm`, `rehype-highlight`
+- **Testing:** Vitest + Testing Library + jsdom
+- **Hosting:** AWS Amplify (`next.config.js` uses `output: 'standalone'`)
 
-### Amazon S3 (Simple Storage Service)
-Hosts all static assets including the profile photo, gallery images, and downloadable resume PDF. The bucket is configured with a public-read policy and CORS headers to allow cross-origin requests from the Amplify-hosted frontend.
-
-### AWS Amplify Hosting
-Provides fully managed hosting with automatic CI/CD. Every push to the `main` branch triggers a build and deployment pipeline. Amplify auto-detects the Next.js framework, handles server-side rendering, and serves the application through a global CDN with free SSL.
-
-### Amazon CloudWatch
-Integrated automatically with Amplify for build logs, access logs, and performance metrics. Provides operational visibility into the deployed application without additional configuration.
-
-## Project Structure
-
-```
-cloud-native-portfolio/
-├── .devcontainer/           # GitHub Codespaces configuration
-│   └── devcontainer.json
-├── src/
-│   ├── app/                 # Next.js App Router pages
-│   │   ├── blog/            # Blog listing and individual post pages
-│   │   ├── layout.tsx       # Root layout with theme provider
-│   │   ├── page.tsx         # Home page
-│   │   ├── providers.tsx    # Theme provider wrapper
-│   │   └── globals.css      # Global styles and CSS variables
-│   ├── components/
-│   │   ├── layout/          # Header, Footer layout components
-│   │   ├── sections/        # Page sections (Hero, About, Projects, etc.)
-│   │   └── ui/              # Reusable UI components (Button, Card, Badge)
-│   ├── data/                # Content data files (profile, experience, etc.)
-│   ├── hooks/               # Custom React hooks
-│   ├── lib/                 # Utility functions
-│   └── types/               # TypeScript type definitions
-├── public/                  # Static public files
-├── tailwind.config.ts       # Tailwind CSS configuration
-├── tsconfig.json            # TypeScript configuration
-└── package.json             # Dependencies and scripts
-```
-
-## Features
-
-- **Responsive Design** — Fully responsive across desktop, tablet, and mobile devices
-- **Dark / Light Mode** — Theme toggle with system preference detection, defaults to dark
-- **Card-Based Layout** — Clean sections wrapped in bordered cards for visual hierarchy
-- **Two-Column Layout** — Main content alongside a sticky sidebar on desktop
-- **Blog Section** — Dedicated blog with article pages, navigation, and tag system
-- **Gallery Slider** — Paginated image gallery with navigation arrows (5 images per slide)
-- **Experience Timeline** — Interactive timeline with hover-fill checkbox indicators
-- **Recommendations Carousel** — Auto-advancing testimonial slider with pagination dots
-- **Smooth Animations** — Scroll-triggered fade-ins and hover effects via Framer Motion
-
-## Getting Started
+## Quick start
 
 ### Prerequisites
 
-- Node.js 18+ (or use GitHub Codespaces — no local setup required)
-- npm or yarn
-- AWS account (free tier) for S3 and Amplify deployment
+- Node.js 18+
+- npm
 
-### Local Development
+### Local setup
 
 ```bash
-# Clone the repository
-git clone https://github.com/pabilandokarenpv/cloud-native-portfolio.git
-cd cloud-native-portfolio
-
-# Install dependencies
+git clone https://github.com/PP-Namias/Portfolio.git
+cd Portfolio
 npm install
-
-# Start the development server
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) to view the portfolio.
+Open [http://localhost:3000](http://localhost:3000).
 
-### Using GitHub Codespaces
+## Available scripts
 
-1. Click the green **Code** button on the repository page
-2. Select the **Codespaces** tab
-3. Click **Create codespace on main**
-4. The environment will be ready in under 2 minutes with all dependencies installed
+- `npm run dev` — start development server
+- `npm run build` — create production build
+- `npm run start` — run production server
+- `npm run lint` — run ESLint (Next.js config)
+- `npm run test` — run Vitest once
+- `npm run test:watch` — run Vitest in watch mode
 
-## Deployment
+## Environment variables
 
-### AWS Amplify
+Create a `.env` file in project root using `.env.example`:
 
-1. Push your code to GitHub
-2. Open the [AWS Amplify Console](https://console.aws.amazon.com/amplify/)
-3. Click **Host web app** → Select **GitHub** → Authorize and select this repository
-4. Amplify auto-detects Next.js and configures the build settings
-5. Click **Save and deploy**
+```bash
+GOOGLE_GEMINI_API_KEY=your_key_here
+```
 
-### Environment Variables
+## Quality and validation
 
-| Variable | Description |
-|----------|-------------|
-| `NEXT_PUBLIC_S3_BUCKET_URL` | Base URL of your S3 bucket for static assets |
+Run these before opening a PR:
 
-## Free Tier Coverage
+```bash
+npm run lint
+npm run build
+npm run test
+```
 
-This entire project runs within AWS Free Tier limits:
+CI workflows in `.github/workflows/` enforce the same checks for pushes and pull requests.
 
-| Service | Free Allowance | Our Usage |
-|---------|---------------|-----------|
-| GitHub Codespaces | 120 core-hours/month | ~30-40 hours |
-| AWS S3 | 5 GB storage, 20K GET/month | ~100 MB |
-| AWS Amplify | 1,000 build min, 15 GB served/month | ~15 builds |
-| AWS CloudWatch | 5 GB logs, 10 metrics | Basic logs |
+## Deployment notes
 
-## Design Reference
+- AWS Amplify build config is defined in `amplify.yml`
+- Next.js standalone output is enabled in `next.config.js`
+- Production health checks are automated via GitHub Actions
 
-This project draws design inspiration from [bryllim.com](https://bryllim.com/) by Bryl Lim — a software engineer and content creator from the Philippines. The original portfolio exemplifies modern developer portfolio design with its clean minimalist aesthetic, professional typography, smart two-column information architecture, and subtle animations. We follow the same design principles while keeping all implementation code original.
+## Project structure (high level)
 
-## Documentation Map
+```text
+Portfolio/
+├── .github/                     # workflows, templates, governance docs
+├── docs/                        # publication and repository governance docs
+├── portfolio-resources/         # source content and media resources
+├── public/                      # static files served by Next.js
+├── src/
+│   ├── app/                     # routes, layout, providers, API routes
+│   ├── components/              # layout, sections, and reusable UI
+│   ├── data/                    # typed data modules
+│   ├── hooks/                   # custom hooks
+│   ├── lib/                     # utilities and feature flags
+│   └── types/                   # shared TypeScript types
+├── amplify.yml
+├── next.config.js
+└── package.json
+```
+
+## Documentation map
 
 - [Contributing Guide](CONTRIBUTING.md)
 - [Security Policy](SECURITY.md)
 - [Support](SUPPORT.md)
 - [Publication Plan](docs/REPO_PUBLICATION_PLAN.md)
 - [Branch Protection Blueprint](docs/BRANCH_PROTECTION_RULESET.md)
+- [Public Repo Settings Checklist](docs/PUBLIC_REPO_SETTINGS_CHECKLIST.md)
 - [Reference Index](docs/REFERENCE_INDEX.md)
+
+## Design acknowledgment
+
+This project draws design inspiration from [bryllim.com](https://bryllim.com/). All implementation code in this repository is original.
 
 ## License
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+Licensed under the MIT License. See [LICENSE](LICENSE).

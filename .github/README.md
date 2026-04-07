@@ -1,41 +1,92 @@
-# GitHub Actions CI/CD Pipeline
+# GitHub Automation and Governance Guide
 
-Automated workflows for code quality, security, and monitoring.
+This document describes what the `.github/` directory controls in this repository.
 
-## Workflows
+## What is in this folder
 
-| Workflow | Trigger | Purpose |
-|----------|---------|---------|
-| [build.yml](workflows/build.yml) | Push to `main`, PRs | Lint, type check, build, tests |
-| [pr-validation.yml](workflows/pr-validation.yml) | PRs to `main` | Quality checks + security audit + PR comment |
-| [daily-health-check.yml](workflows/daily-health-check.yml) | Daily 6 AM UTC, manual | Full health check (lint, build, tests, audit) |
-| [monitoring-health.yml](workflows/monitoring-health.yml) | Every 6 hours, manual | Site uptime + SSL certificate monitoring |
-| [security-compliance.yml](workflows/security-compliance.yml) | Push, PRs, weekly, manual | Dependency audit + CodeQL analysis |
+- `workflows/` — CI, security, uptime, and scheduled health automations
+- `ISSUE_TEMPLATE/` — guided issue templates and contact links
+- `PULL_REQUEST_TEMPLATE.md` — pull request checklist and validation template
+- `CODEOWNERS` — review ownership rules
+- `dependabot.yml` — dependency update automation
+- `copilot-instructions.md` — project-specific Copilot agent instructions
 
-## Dependencies
+## Workflows overview
 
-- **Dependabot** ([dependabot.yml](dependabot.yml)): Daily patch/minor updates, ignores major versions
+### `workflows/build.yml`
 
-## Required Setup
+- Trigger: push and pull request to `main`
+- Jobs:
+  - `🔍 Lint & Type Check`
+  - `🏗️ Build Application`
+  - `🧪 Run Tests`
 
-No additional secrets are needed beyond the default `GITHUB_TOKEN`. Deployment is handled by **AWS Amplify** (configured in `amplify.yml`), not GitHub Actions.
+### `workflows/pr-validation.yml`
 
-## Local Commands
+- Trigger: active pull request events targeting `main`
+- Jobs:
+  - `⚡ Quality Check`
+  - `🔒 Security Scan`
+  - `💬 PR Status` (posts/updates PR validation comment)
+
+### `workflows/security-compliance.yml`
+
+- Trigger: push, pull request, weekly schedule, manual dispatch
+- Jobs:
+  - `🔍 Dependency Audit`
+  - `🕵️ CodeQL Analysis`
+  - `📊 Security Summary`
+
+### `workflows/daily-health-check.yml`
+
+- Trigger: daily schedule and manual dispatch
+- Performs lint, type check, audit, build, and tests
+- Creates an issue automatically if the health check fails
+
+### `workflows/monitoring-health.yml`
+
+- Trigger: every 6 hours and manual dispatch
+- Checks production uptime for:
+  - `https://namias.tech`
+  - `https://namias.tech/blog`
+- Checks SSL certificate status and outputs a summary
+
+## Branch protection required checks
+
+For `main`, use these check names in branch protection/rulesets:
+
+- `⚡ Quality Check`
+- `🔒 Security Scan`
+- `🔍 Lint & Type Check`
+- `🏗️ Build Application`
+- `🧪 Run Tests`
+- `🕵️ CodeQL Analysis`
+
+See `docs/BRANCH_PROTECTION_RULESET.md` for complete settings.
+
+## Issue and pull request governance
+
+- `ISSUE_TEMPLATE/config.yml` disables blank issues and links to:
+  - `SECURITY.md`
+  - `SUPPORT.md`
+- `PULL_REQUEST_TEMPLATE.md` enforces validation checklist in every PR
+- `CODEOWNERS` ensures review routing for critical paths
+
+## Local pre-checks before opening a PR
+
+Run from repository root:
 
 ```bash
-npm run dev      # Dev server
-npm run build    # Production build
-npm run lint     # ESLint
-npm test         # Vitest (129 tests)
-```
-
-## Troubleshooting
-
-```bash
-# Locally replicate what CI runs:
-npm ci
 npm run lint
-npx tsc --noEmit
 npm run build
-npm test
+npm run test
 ```
+
+## Related documentation
+
+- [`../README.md`](../README.md)
+- [`../CONTRIBUTING.md`](../CONTRIBUTING.md)
+- [`../SECURITY.md`](../SECURITY.md)
+- [`../SUPPORT.md`](../SUPPORT.md)
+- [`../docs/REPO_PUBLICATION_PLAN.md`](../docs/REPO_PUBLICATION_PLAN.md)
+- [`../docs/PUBLIC_REPO_SETTINGS_CHECKLIST.md`](../docs/PUBLIC_REPO_SETTINGS_CHECKLIST.md)
