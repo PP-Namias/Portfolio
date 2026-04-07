@@ -1,36 +1,33 @@
 # PP Namias Portfolio
 
-![vBanner - PP Namias Portfolio](../public/images/projects/PP%20Namias%20Portfolio.png)
+| vBanner | Profile Image |
+| --- | --- |
+| ![vBanner - PP Namias Portfolio](../public/images/projects/PP%20Namias%20Portfolio.png) | ![Jhon Keneth Ryan Namias profile image](../public/images/profile/PP%20Namias.png) |
 
-![Jhon Keneth Ryan Namias profile image](../public/images/profile/PP%20Namias.png)
-
-## Jhon Keneth Ryan Namias (PP Namias)
-
-**Full Stack Engineer & AI Automation Specialist**  
-📍 Manila, Philippines • 🟢 Available for collaboration
-
-[![Live Portfolio](https://img.shields.io/badge/Live%20Portfolio-namias.tech-db2777?style=for-the-badge&logo=vercel&logoColor=white)](https://namias.tech)
-[![Book a Call](https://img.shields.io/badge/Book%20a%20Call-Cal.com-111827?style=for-the-badge&logo=calendar&logoColor=white)](https://cal.com/pp-namias)
-[![Email](https://img.shields.io/badge/Email-pp.namias%40gmail.com-2563eb?style=for-the-badge&logo=gmail&logoColor=white)](mailto:pp.namias@gmail.com)
+| Profile | Action |
+| --- | --- |
+| **Jhon Keneth Ryan Namias (PP Namias)** | [![Live Portfolio](https://img.shields.io/badge/Live%20Portfolio-namias.tech-db2777?style=for-the-badge&logo=vercel&logoColor=white)](https://namias.tech) |
+| Full Stack Engineer & AI Automation Specialist | [![Book a Call](https://img.shields.io/badge/Book%20a%20Call-Cal.com-111827?style=for-the-badge&logo=calendar&logoColor=white)](https://cal.com/pp-namias) |
+| Manila, Philippines · Available for collaboration | [![Email](https://img.shields.io/badge/Email-pp.namias%40gmail.com-2563eb?style=for-the-badge&logo=gmail&logoColor=white)](mailto:pp.namias@gmail.com) |
 
 [![GitHub](https://img.shields.io/badge/GitHub-PP--Namias-181717?style=flat-square&logo=github)](https://github.com/PP-Namias)
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-pp--namias-0A66C2?style=flat-square&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/pp-namias/)
 [![Status](https://img.shields.io/badge/Status-Production%20Ready-16a34a?style=flat-square)](https://namias.tech)
 ![License](https://img.shields.io/badge/License-MIT-f59e0b?style=flat-square)
 
-## 🚀 About this repository
+## About this repository
 
-This repository powers my personal portfolio at [namias.tech](https://namias.tech), built as a **modal-first**, animation-rich Next.js experience with a production-ready CI workflow.
+This repository powers [namias.tech](https://namias.tech), a production portfolio built with a modal-first UX, modern animation system, and automated quality checks.
 
 ### Highlights
 
-- Homepage-first architecture with rich modal flows (Resume, Full Experience, Booking)
+- Homepage-first architecture with modal flows for Resume, Experience, and Booking
 - SEO routes for blog content (`/blog`, `/blog/[slug]`)
 - AI chat endpoint at `/api/chat` using Gemini
-- Dark/light themes + accent color system
-- Testing, linting, and build validation pipelines
+- Dark/light theme support with an accent color system
+- CI validation for lint, tests, and production build
 
-## 🧱 Core stack
+## Core stack
 
 - **Framework:** Next.js 14 (App Router)
 - **Language:** TypeScript (strict)
@@ -40,7 +37,7 @@ This repository powers my personal portfolio at [namias.tech](https://namias.tec
 - **Testing:** Vitest + Testing Library + jsdom
 - **Hosting target:** AWS Amplify (`output: 'standalone'`)
 
-## 🛠️ Local development
+## Local development
 
 ### Prerequisites
 
@@ -58,7 +55,7 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000).
 
-## 📦 Available scripts
+## Available scripts
 
 - `npm run dev` — start development server
 - `npm run build` — create production build
@@ -67,7 +64,7 @@ Open [http://localhost:3000](http://localhost:3000).
 - `npm run test` — run Vitest once
 - `npm run test:watch` — run Vitest in watch mode
 
-## 🔐 Environment variables
+## Environment variables
 
 Create a `.env` file in the project root based on `.env.example`:
 
@@ -75,7 +72,7 @@ Create a `.env` file in the project root based on `.env.example`:
 GOOGLE_GEMINI_API_KEY=your_key_here
 ```
 
-## ✅ Quality checks
+## Quality checks
 
 Run before pushing or opening a PR:
 
@@ -87,7 +84,7 @@ npm run test
 
 CI workflows in `.github/workflows/` enforce equivalent checks.
 
-## 🗂️ Project structure (high level)
+## Project structure (high level)
 
 ```text
 Portfolio/
@@ -107,7 +104,7 @@ Portfolio/
 └── package.json
 ```
 
-## 📚 Documentation map
+## Documentation map
 
 - [Contributing Guide](../CONTRIBUTING.md)
 - [Security Policy](../SECURITY.md)
@@ -117,10 +114,10 @@ Portfolio/
 - [Public Repo Settings Checklist](../docs/PUBLIC_REPO_SETTINGS_CHECKLIST.md)
 - [Reference Index](../docs/REFERENCE_INDEX.md)
 
-## 🙏 Design acknowledgment
+## Design acknowledgment
 
 This project draws design inspiration from [bryllim.com](https://bryllim.com/). All implementation code in this repository is original.
 
-## 📄 License
+## License
 
 Licensed under the MIT License. See [../LICENSE](../LICENSE).

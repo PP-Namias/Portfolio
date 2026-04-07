@@ -14,51 +14,51 @@ env:
 
 jobs:
   health-check:
-    name: 🏥 Daily Health Check
+    name: Daily Health Check
     runs-on: ubuntu-latest
     steps:
-      - name: 📥 Checkout Repository
+      - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: 📦 Setup Node.js
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
 
-      - name: 📦 Install Dependencies
+      - name: Install Dependencies
         run: npm ci
 
-      - name: 🔍 Run ESLint
+      - name: Run ESLint
         run: npm run lint
 
-      - name: 🔧 TypeScript Check
+      - name: TypeScript Check
         run: npx tsc --noEmit
 
-      - name: 🔒 Security Audit
+      - name: Security Audit
         run: npm audit --audit-level moderate || echo "Security audit completed with warnings"
 
-      - name: 🏗️ Build Test
+      - name: Build Test
         run: npm run build
 
-      - name: 🧪 Run Tests
+      - name: Run Tests
         run: npm test
 
-      - name: 📈 Generate Health Report
+      - name: Generate Health Report
         if: always()
         run: |
-          echo "## 🏥 Daily Health Check Report" >> $GITHUB_STEP_SUMMARY
+          echo "## Daily Health Check Report" >> $GITHUB_STEP_SUMMARY
           echo "- **Date**: $(date)" >> $GITHUB_STEP_SUMMARY
           echo "- **Node Version**: ${{ env.NODE_VERSION }}" >> $GITHUB_STEP_SUMMARY
           echo "- **Status**: Completed" >> $GITHUB_STEP_SUMMARY
 
-      - name: 🚨 Create Issue on Failure
+      - name: Create Issue on Failure
         if: failure()
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const title = `🚨 Daily Health Check Failed - ${new Date().toDateString()}`;
+            const title = `Daily Health Check Failed - ${new Date().toDateString()}`;
             const body = `## Daily Health Check Failure
 
             The automated daily health check has detected issues.

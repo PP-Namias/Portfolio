@@ -14,12 +14,12 @@ env:
 
 jobs:
   uptime-check:
-    name: 🌐 Uptime & Availability Check
+    name: Uptime and Availability Check
     runs-on: ubuntu-latest
     steps:
-      - name: 🌐 Check Website Availability
+      - name: Check Website Availability
         run: |
-          echo "## 🌐 Uptime Check Results" >> $GITHUB_STEP_SUMMARY
+          echo "## Uptime Check Results" >> $GITHUB_STEP_SUMMARY
           echo "**Date**: $(date)" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
 
@@ -27,17 +27,17 @@ jobs:
 
           # Check main site
           if curl -f -s --max-time 30 "${{ env.PRODUCTION_URL }}" > /dev/null; then
-            echo "✅ **Main Site**: Available" >> $GITHUB_STEP_SUMMARY
+            echo "**Main Site**: Available" >> $GITHUB_STEP_SUMMARY
           else
-            echo "❌ **Main Site**: Unavailable" >> $GITHUB_STEP_SUMMARY
+            echo "**Main Site**: Unavailable" >> $GITHUB_STEP_SUMMARY
             FAILED=1
           fi
 
           # Check blog page
           if curl -f -s --max-time 15 "${{ env.PRODUCTION_URL }}/blog" > /dev/null; then
-            echo "✅ **/blog**: Available" >> $GITHUB_STEP_SUMMARY
+            echo "**/blog**: Available" >> $GITHUB_STEP_SUMMARY
           else
-            echo "❌ **/blog**: Unavailable" >> $GITHUB_STEP_SUMMARY
+            echo "**/blog**: Unavailable" >> $GITHUB_STEP_SUMMARY
             FAILED=1
           fi
 
@@ -45,14 +45,14 @@ jobs:
             exit 1
           fi
 
-      - name: 🚨 Create Alert on Downtime
+      - name: Create Alert on Downtime
         if: failure()
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const title = `🚨 Website Downtime Alert - ${new Date().toDateString()}`;
-            const body = `## 🚨 Website Downtime Detected
+            const title = `Website Downtime Alert - ${new Date().toDateString()}`;
+            const body = `## Website Downtime Detected
 
             **Alert Time**: ${new Date().toISOString()}
             **URL**: ${{ env.PRODUCTION_URL }}
@@ -70,15 +70,15 @@ jobs:
             });
 
   ssl-certificate-check:
-    name: 🔒 SSL Certificate Check
+    name: SSL Certificate Check
     runs-on: ubuntu-latest
     continue-on-error: true
     steps:
-      - name: 🔒 Check SSL Certificate
+      - name: Check SSL Certificate
         run: |
           DOMAIN=$(echo "${{ env.PRODUCTION_URL }}" | sed 's|https\?://||' | cut -d'/' -f1)
 
-          echo "## 🔒 SSL Certificate Status" >> $GITHUB_STEP_SUMMARY
+          echo "## SSL Certificate Status" >> $GITHUB_STEP_SUMMARY
           echo "**Domain**: $DOMAIN" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
 
@@ -91,27 +91,27 @@ jobs:
               echo "**Expiry**: $EXPIRY" >> $GITHUB_STEP_SUMMARY
               echo "**Days Until Expiry**: $DAYS" >> $GITHUB_STEP_SUMMARY
               if [ "$DAYS" -lt 30 ]; then
-                echo "⚠️ **Certificate expiring soon!**" >> $GITHUB_STEP_SUMMARY
+                echo "**Certificate expiring soon**" >> $GITHUB_STEP_SUMMARY
               else
-                echo "✅ **Certificate valid**" >> $GITHUB_STEP_SUMMARY
+                echo "**Certificate valid**" >> $GITHUB_STEP_SUMMARY
               fi
             fi
           else
-            echo "⚠️ Could not retrieve certificate info" >> $GITHUB_STEP_SUMMARY
+            echo "Could not retrieve certificate info" >> $GITHUB_STEP_SUMMARY
           fi
 
   monitoring-summary:
-    name: 📊 Monitoring Summary
+    name: Monitoring Summary
     runs-on: ubuntu-latest
     needs: [uptime-check, ssl-certificate-check]
     if: always()
     steps:
-      - name: 📊 Generate Summary
+      - name: Generate Summary
         run: |
-          echo "## 📊 System Health Dashboard" >> $GITHUB_STEP_SUMMARY
+          echo "## System Health Dashboard" >> $GITHUB_STEP_SUMMARY
           echo "**Report**: $(date)" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "| Service | Status |" >> $GITHUB_STEP_SUMMARY
           echo "|---------|--------|" >> $GITHUB_STEP_SUMMARY
-          echo "| 🌐 Uptime | ${{ needs.uptime-check.result == 'success' && '✅ Online' || '❌ Issues' }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| 🔒 SSL | ${{ needs.ssl-certificate-check.result == 'success' && '✅ Valid' || '⚠️ Check' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Uptime | ${{ needs.uptime-check.result == 'success' && 'Online' || 'Issues' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| SSL | ${{ needs.ssl-certificate-check.result == 'success' && 'Valid' || 'Check' }} |" >> $GITHUB_STEP_SUMMARY
