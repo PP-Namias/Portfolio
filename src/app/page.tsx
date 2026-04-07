@@ -78,34 +78,8 @@ export default function Home() {
   const rightColumnClass = useMemo(
     () =>
       [
-        'order-2 lg:order-none lg:col-start-2 lg:row-start-1 lg:row-span-3 lg:self-start',
+        'order-2 lg:order-none lg:col-start-2 lg:self-start',
         stickySide === 'right' ? 'lg:sticky lg:top-4' : '',
-      ]
-        .filter(Boolean)
-        .join(' '),
-    [stickySide]
-  );
-
-  const leftContentClass = useMemo(
-    () =>
-      [
-        'space-y-4',
-        stickySide === 'left'
-          ? 'lg:max-h-[calc(100vh-1.5rem)] lg:overflow-y-auto lg:pr-1 chat-scrollbar'
-          : '',
-      ]
-        .filter(Boolean)
-        .join(' '),
-    [stickySide]
-  );
-
-  const rightContentClass = useMemo(
-    () =>
-      [
-        'space-y-4',
-        stickySide === 'right'
-          ? 'lg:max-h-[calc(100vh-1.5rem)] lg:overflow-y-auto lg:pr-1 chat-scrollbar'
-          : '',
       ]
         .filter(Boolean)
         .join(' '),
@@ -124,7 +98,7 @@ export default function Home() {
       {/* Desktop: whichever side is shorter becomes sticky for balanced scrolling */}
       <div className="grid grid-cols-1 lg:grid-cols-[62%_1fr] lg:items-start gap-4 mt-4">
         <div className={leftColumnClass}>
-          <div ref={leftColumnRef} className={leftContentClass}>
+          <div ref={leftColumnRef} className="space-y-4">
             <Card>
               <AboutSection />
             </Card>
@@ -140,7 +114,7 @@ export default function Home() {
         </div>
 
         <div className={rightColumnClass}>
-          <div ref={rightColumnRef} className={rightContentClass}>
+          <div ref={rightColumnRef} className="space-y-4">
             <Card>
               <ExperienceTimeline />
             </Card>
