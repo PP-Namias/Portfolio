@@ -11,7 +11,6 @@ This repository powers [namias.tech](https://namias.tech), a production portfoli
 ### Highlights
 
 - Homepage-first architecture with modal flows for Resume, Experience, and Booking
-- SEO routes for blog content (`/blog`, `/blog/[slug]`)
 - AI chat endpoint at `/api/chat` using Gemini
 - Dark/light theme support with an accent color system
 - CI validation for lint, tests, and production build
