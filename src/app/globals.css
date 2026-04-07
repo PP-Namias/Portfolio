@@ -3,13 +3,13 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --surface: #ffffff;
+  --background: #f4f6fb;
+  --surface: #f8fafc;
   --card-bg: #ffffff;
-  --card-border: #e5e7eb;
-  --text-primary: #111827;
-  --text-secondary: #4b5563;
-  --text-muted: #6b7280;
+  --card-border: #d8dee9;
+  --text-primary: #0f172a;
+  --text-secondary: #334155;
+  --text-muted: #64748b;
   --accent: 219 39 119;
   --accent-hover: 190 24 93;
   --accent-hover-dark: 244 114 182;
@@ -68,6 +68,13 @@ body {
   transition: background-color 0.3s ease, color 0.3s ease;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+html:not(.dark) body {
+  background-image:
+    radial-gradient(1200px 640px at 0% -20%, rgb(var(--accent) / 0.08), transparent 55%),
+    radial-gradient(900px 520px at 100% -10%, rgb(var(--accent) / 0.05), transparent 50%);
+  background-attachment: fixed;
 }
 
 /* Scrollbar hide utility */

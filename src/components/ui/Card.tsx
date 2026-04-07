@@ -14,8 +14,8 @@ export function Card({ children, className, hover = false }: CardProps) {
   return (
     <motion.div
       className={cn(
-        'rounded-xl border border-border-light dark:border-border-dark bg-white dark:bg-card-bg-dark p-5 transition-colors duration-200',
-        hover && 'hover:border-accent-pink/30 dark:hover:border-accent-pink/30 hover:shadow-sm',
+        'rounded-xl border border-border-light dark:border-border-dark bg-white dark:bg-card-bg-dark p-5 shadow-sm shadow-slate-900/[0.04] dark:shadow-none transition-[background-color,border-color,box-shadow] duration-200',
+        hover && 'hover:border-accent-pink/40 dark:hover:border-accent-pink/30 hover:shadow-md hover:shadow-slate-900/[0.08]',
         className
       )}
       whileHover={hover ? { y: -2 } : undefined}

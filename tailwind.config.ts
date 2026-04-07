@@ -10,11 +10,11 @@ const config: Config = {
     extend: {
       colors: {
         background: {
-          light: '#ffffff',
+          light: '#f4f6fb',
           dark: '#000000',
         },
         surface: {
-          light: '#ffffff',
+          light: '#f8fafc',
           dark: '#0a0a0a',
         },
         'card-bg': {
@@ -22,19 +22,19 @@ const config: Config = {
           dark: '#111111',
         },
         'text-primary': {
-          light: '#111827',
+          light: '#0f172a',
           dark: '#f5f5f5',
         },
         'text-secondary': {
-          light: '#4b5563',
+          light: '#334155',
           dark: '#d4d4d4',
         },
         'text-muted': {
-          light: '#6b7280',
+          light: '#64748b',
           dark: '#a3a3a3',
         },
         border: {
-          light: '#e5e7eb',
+          light: '#d8dee9',
           dark: '#1f1f1f',
         },
         accent: {
