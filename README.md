@@ -92,16 +92,6 @@ Portfolio/
 └── package.json
 ```
 
-## Documentation map
-
-- [Contributing Guide](CONTRIBUTING.md)
-- [Security Policy](SECURITY.md)
-- [Support](SUPPORT.md)
-- [Publication Plan](docs/REPO_PUBLICATION_PLAN.md)
-- [Branch Protection Blueprint](docs/BRANCH_PROTECTION_RULESET.md)
-- [Public Repo Settings Checklist](docs/PUBLIC_REPO_SETTINGS_CHECKLIST.md)
-- [Reference Index](docs/REFERENCE_INDEX.md)
-
 ## Design acknowledgment
 
 This project draws design inspiration from [bryllim.com](https://bryllim.com/). All implementation code in this repository is original.
