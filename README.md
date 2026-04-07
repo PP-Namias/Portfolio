@@ -133,6 +133,15 @@ This entire project runs within AWS Free Tier limits:
 
 This project draws design inspiration from [bryllim.com](https://bryllim.com/) by Bryl Lim — a software engineer and content creator from the Philippines. The original portfolio exemplifies modern developer portfolio design with its clean minimalist aesthetic, professional typography, smart two-column information architecture, and subtle animations. We follow the same design principles while keeping all implementation code original.
 
+## Documentation Map
+
+- [Contributing Guide](CONTRIBUTING.md)
+- [Security Policy](SECURITY.md)
+- [Support](SUPPORT.md)
+- [Publication Plan](docs/REPO_PUBLICATION_PLAN.md)
+- [Branch Protection Blueprint](docs/BRANCH_PROTECTION_RULESET.md)
+- [Reference Index](docs/REFERENCE_INDEX.md)
+
 ## License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
