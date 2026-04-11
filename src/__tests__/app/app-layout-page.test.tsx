@@ -49,6 +49,10 @@ vi.mock('@/components/ui/ScrollToTop', () => ({
   ScrollToTop: () => <div data-testid="scroll-to-top">ScrollToTop</div>,
 }));
 
+vi.mock('@/components/ui/Analytics', () => ({
+  Analytics: () => <script data-testid="analytics-script" />,
+}));
+
 vi.mock('@/components/sections/HeroSection', () => ({ HeroSection: () => <div>HeroSection</div> }));
 vi.mock('@/components/sections/AboutSection', () => ({ AboutSection: () => <div>AboutSection</div> }));
 vi.mock('@/components/sections/TechStackSection', () => ({ TechStackSection: () => <div>TechStackSection</div> }));
@@ -98,6 +102,7 @@ describe('app layout and page coverage', () => {
     expect(screen.getByText('AppChild')).toBeInTheDocument();
     expect(screen.getByTestId('floating-hub')).toBeInTheDocument();
     expect(screen.getByTestId('scroll-to-top')).toBeInTheDocument();
+    expect(screen.getByTestId('analytics-script')).toBeInTheDocument();
   });
 
   it('Home page renders all major section blocks', () => {
