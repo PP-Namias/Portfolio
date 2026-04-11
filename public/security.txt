@@ -1,0 +1,6 @@
+Contact: mailto:pp.namias@gmail.com
+Contact: https://namias.tech
+Expires: 2027-04-11T00:00:00.000Z
+Preferred-Languages: en
+Canonical: https://namias.tech/.well-known/security.txt
+Policy: https://github.com/PP-Namias/Portfolio/blob/main/SECURITY.md
