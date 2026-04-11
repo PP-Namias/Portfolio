@@ -111,6 +111,7 @@ describe('HubMenuItem', () => {
     const onClick = vi.fn();
     render(<HubMenuItem icon={Mail} label="Test" subtitle="Sub" index={0} href="/path" onClick={onClick} />);
     const link = screen.getByText('Test').closest('a')!;
+    link.addEventListener('click', (event) => event.preventDefault());
     fireEvent.click(link);
     expect(onClick).toHaveBeenCalledTimes(1);
   });
