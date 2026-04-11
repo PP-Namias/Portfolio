@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const isDev = process.env.NODE_ENV !== 'production';
 const defaultUmamiScriptUrl = 'https://cloud.umami.is/script.js';
-const hasUmamiAnalytics = Boolean(process.env.NEXT_PUBLIC_UMAMI_WEBSITE_ID);
+const defaultUmamiHostUrl = 'https://api-gateway.umami.dev';
 
 const getOrigin = (value) => {
   try {
@@ -11,9 +11,10 @@ const getOrigin = (value) => {
   }
 };
 
-const umamiScriptOrigin = hasUmamiAnalytics
-  ? getOrigin(process.env.NEXT_PUBLIC_UMAMI_SCRIPT_URL || defaultUmamiScriptUrl)
-  : '';
+const umamiScriptOrigin = getOrigin(process.env.NEXT_PUBLIC_UMAMI_SCRIPT_URL || defaultUmamiScriptUrl);
+const umamiHostOrigin = getOrigin(process.env.NEXT_PUBLIC_UMAMI_HOST_URL || defaultUmamiHostUrl);
+
+const connectSrc = ["'self'", umamiHostOrigin].filter(Boolean).join(' ');
 
 const contentSecurityPolicy = `
   default-src 'self';
@@ -21,7 +22,7 @@ const contentSecurityPolicy = `
   style-src 'self' 'unsafe-inline';
   img-src 'self' data: blob: https:;
   font-src 'self' data: https:;
-  connect-src 'self' https:;
+  connect-src ${connectSrc};
   frame-src 'self' https://cal.com https://*.cal.com;
   object-src 'none';
   base-uri 'self';

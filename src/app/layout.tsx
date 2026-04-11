@@ -77,9 +77,9 @@ const jsonLd = {
 
 export default function RootLayout({
   children,
-}: {
+}: Readonly<{
   children: React.ReactNode;
-}) {
+}>) {
   return (
     <html lang="en" suppressHydrationWarning className={inter.variable}>
       <head>
@@ -87,6 +87,7 @@ export default function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
+        <Analytics />
       </head>
       <body className="bg-background-light dark:bg-background-dark text-text-primary-light dark:text-text-primary-dark min-h-screen font-sans antialiased">
         <a
@@ -100,7 +101,6 @@ export default function RootLayout({
           <FloatingHub />
           <ScrollToTop />
         </Providers>
-        <Analytics />
       </body>
     </html>
   );

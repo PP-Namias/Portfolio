@@ -60,10 +60,11 @@ Create a `.env` file in the project root based on `.env.example`:
 GOOGLE_GEMINI_API_KEY=your_key_here
 NEXT_PUBLIC_UMAMI_WEBSITE_ID=your_umami_website_id
 NEXT_PUBLIC_UMAMI_SCRIPT_URL=https://cloud.umami.is/script.js
+NEXT_PUBLIC_UMAMI_HOST_URL=https://api-gateway.umami.dev
 NEXT_PUBLIC_UMAMI_DOMAINS=namias.tech
 ```
 
-`NEXT_PUBLIC_UMAMI_*` variables are optional. If `NEXT_PUBLIC_UMAMI_WEBSITE_ID` is not set, analytics remains disabled.
+Security note: keep `GOOGLE_GEMINI_API_KEY` only in `.env`/hosting secrets, never commit real keys. `NEXT_PUBLIC_UMAMI_*` values are public client config.
 
 ## Quality checks
 

@@ -50,7 +50,7 @@ vi.mock('@/components/ui/ScrollToTop', () => ({
 }));
 
 vi.mock('@/components/ui/Analytics', () => ({
-  Analytics: () => <div data-testid="analytics-script">Analytics</div>,
+  Analytics: () => <script data-testid="analytics-script" />,
 }));
 
 vi.mock('@/components/sections/HeroSection', () => ({ HeroSection: () => <div>HeroSection</div> }));
