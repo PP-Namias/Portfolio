@@ -1,8 +1,17 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 // Mock @google/generative-ai before importing route
+type ChatHistoryItem = {
+  role: 'user' | 'model';
+  parts: Array<{ text: string }>;
+};
+
+type StartChatArgs = {
+  history: ChatHistoryItem[];
+};
+
 const mockSendMessage = vi.fn();
-const mockStartChat = vi.fn(() => ({
+const mockStartChat = vi.fn((_args?: StartChatArgs) => ({
   sendMessage: mockSendMessage,
 }));
 const mockGetGenerativeModel = vi.fn(() => ({
@@ -158,7 +167,10 @@ describe('/api/chat route', () => {
     expect(res.status).toBe(200);
     // Verify startChat was called with history
     expect(mockStartChat).toHaveBeenCalled();
-    const callArgs = mockStartChat.mock.calls[0][0];
+    const callArgs = mockStartChat.mock.calls.at(0)?.[0];
+    if (!callArgs) {
+      throw new Error('Expected startChat to be called with history.');
+    }
     // Should have 2 history messages (no system prompt pair — uses systemInstruction now)
     expect(callArgs.history.length).toBe(2);
   });
@@ -176,7 +188,10 @@ describe('/api/chat route', () => {
     const res = await POST(req);
     expect(res.status).toBe(200);
 
-    const callArgs = mockStartChat.mock.calls[0][0];
+    const callArgs = mockStartChat.mock.calls.at(0)?.[0];
+    if (!callArgs) {
+      throw new Error('Expected startChat to be called with history roles.');
+    }
     expect(callArgs.history[0].role).toBe('model');
     expect(callArgs.history[1].role).toBe('user');
     expect(callArgs.history[2].role).toBe('user');
@@ -190,7 +205,10 @@ describe('/api/chat route', () => {
     const req = createRequest({ message: 'Latest question', history });
     const res = await POST(req);
     expect(res.status).toBe(200);
-    const callArgs = mockStartChat.mock.calls[0][0];
+    const callArgs = mockStartChat.mock.calls.at(0)?.[0];
+    if (!callArgs) {
+      throw new Error('Expected startChat to be called with capped history.');
+    }
     // 10 (capped history) — no system prompt pair anymore
     expect(callArgs.history.length).toBe(10);
   });

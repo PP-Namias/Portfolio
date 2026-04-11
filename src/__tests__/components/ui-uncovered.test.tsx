@@ -164,7 +164,7 @@ describe('uncovered UI components', () => {
     expect(screen.queryByLabelText('Scroll to top')).not.toBeInTheDocument();
 
     Object.defineProperty(globalThis, 'scrollY', { value: 500, configurable: true });
-    fireEvent.scroll(globalThis);
+    fireEvent.scroll(window);
 
     const button = screen.getByLabelText('Scroll to top');
     fireEvent.click(button);
