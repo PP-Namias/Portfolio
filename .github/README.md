@@ -85,6 +85,8 @@ To approve remediation reruns, comment this command on the PR:
 /approve-remediation
 ```
 
+The command must match exactly (extra text is ignored for safety).
+
 Only repository owners, members, or collaborators can approve remediation reruns.
 
 ## Project structure (high level)

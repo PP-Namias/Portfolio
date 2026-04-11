@@ -52,8 +52,9 @@ This PR hardens platform reliability, security posture, and maintainability on b
   - post failed-job analysis + suggested solutions to PR comments or repository issues
   - mark reports with an approval instruction
 - Added `.github/workflows/remediation-approval-gate.yml` so remediation reruns require explicit approval via:
-  - PR comment command: `/approve-remediation`
+  - PR comment command (exact): `/approve-remediation`
   - approver must be owner/member/collaborator
+  - command is ignored for bots and non-exact variants
   - reruns failed checks and posts result acknowledgment back to the PR
 
 ## Validation run

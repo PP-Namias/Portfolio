@@ -16,7 +16,6 @@ permissions:
   actions: read
   contents: read
   issues: write
-  pull-requests: write
 
 concurrency:
   group: problem-advisor-${{ github.event.workflow_run.id || github.run_id }}
@@ -31,6 +30,7 @@ jobs:
       github.event.workflow_run.conclusion != 'skipped' &&
       github.event.workflow_run.conclusion != 'neutral')
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - name: Publish report to PR or Issues
         uses: actions/github-script@v7
@@ -221,11 +221,20 @@ jobs:
                 body,
               });
             } else {
-              await github.rest.issues.create({
-                owner,
-                repo,
-                title: issueTitle,
-                body,
-                labels: ['automated', 'needs-approval', 'ci-cd'],
-              });
+              try {
+                await github.rest.issues.create({
+                  owner,
+                  repo,
+                  title: issueTitle,
+                  body,
+                  labels: ['automated', 'needs-approval', 'ci-cd'],
+                });
+              } catch (_error) {
+                await github.rest.issues.create({
+                  owner,
+                  repo,
+                  title: issueTitle,
+                  body,
+                });
+              }
             }
