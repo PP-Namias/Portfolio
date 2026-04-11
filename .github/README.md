@@ -72,6 +72,21 @@ npm run test
 
 CI workflows in `.github/workflows/` enforce equivalent checks.
 
+## Automated problem detection and approval flow
+
+When monitored workflows fail, automation now posts a problem report with suggested solutions directly on the related PR (or as a repository issue when no PR is linked).
+
+- Detection workflow: `problem-detection-advisor.yml`
+- Approval gate workflow: `remediation-approval-gate.yml`
+
+To approve remediation reruns, comment this command on the PR:
+
+```text
+/approve-remediation
+```
+
+Only repository owners, members, or collaborators can approve remediation reruns.
+
 ## Project structure (high level)
 
 ```text

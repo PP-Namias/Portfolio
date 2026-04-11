@@ -1,0 +1,114 @@
+name: Remediation Approval Gate
+
+on:
+  issue_comment:
+    types:
+      - created
+  workflow_dispatch:
+
+permissions:
+  actions: write
+  contents: read
+  issues: write
+  pull-requests: write
+
+jobs:
+  approve-and-rerun:
+    name: Approve and Rerun Failed Checks
+    if: >
+      github.event_name == 'issue_comment' &&
+      github.event.issue.pull_request &&
+      contains(github.event.comment.body, '/approve-remediation')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify approver and rerun failed checks
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const issueNumber = context.payload.issue.number;
+            const actor = context.payload.comment.user.login;
+            const association = context.payload.comment.author_association;
+            const allowed = ['OWNER', 'MEMBER', 'COLLABORATOR'].includes(association);
+
+            if (!allowed) {
+              await github.rest.issues.createComment({
+                owner,
+                repo,
+                issue_number: issueNumber,
+                body: `⚠️ @${actor}, you are not allowed to approve remediation reruns.\n\nOnly repository owners, members, or collaborators can run \`/approve-remediation\`.`
+              });
+              core.setFailed(`User @${actor} is not allowed to approve remediation reruns.`);
+              return;
+            }
+
+            await github.rest.issues
+              .addLabels({
+                owner,
+                repo,
+                issue_number: issueNumber,
+                labels: ['remediation-approved'],
+              })
+              .catch(() => null);
+
+            const monitoredWorkflows = new Set([
+              'Pull Request Validation',
+              'Build and Check',
+              'Security Scanning',
+              'Monitoring and Health Checks',
+              'Daily Health Check',
+            ]);
+
+            const runsResp = await github.rest.actions.listWorkflowRunsForRepo({
+              owner,
+              repo,
+              event: 'pull_request',
+              status: 'completed',
+              per_page: 100,
+            });
+
+            const candidates = runsResp.data.workflow_runs
+              .filter((run) =>
+                monitoredWorkflows.has(run.name) &&
+                (run.pull_requests || []).some((pr) => pr.number === issueNumber) &&
+                run.conclusion !== 'success'
+              )
+              .sort(
+                (a, b) =>
+                  new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+              );
+
+            if (candidates.length === 0) {
+              await github.rest.issues.createComment({
+                owner,
+                repo,
+                issue_number: issueNumber,
+                body: `✅ Remediation approval recorded from @${actor}, but no failed workflow runs were found for this PR.`
+              });
+              return;
+            }
+
+            const targetRun = candidates[0];
+
+            try {
+              await github.rest.actions.reRunWorkflowFailedJobs({
+                owner,
+                repo,
+                run_id: targetRun.id,
+              });
+            } catch (_error) {
+              await github.rest.actions.reRunWorkflow({
+                owner,
+                repo,
+                run_id: targetRun.id,
+              });
+            }
+
+            await github.rest.issues.createComment({
+              owner,
+              repo,
+              issue_number: issueNumber,
+              body: `✅ Remediation approved by @${actor}.\n\nI reran checks for **${targetRun.name}**.\n- Run URL: ${targetRun.html_url}\n- Approval role: ${association}\n\nIf it still fails, updated problem reports with solution suggestions will be posted automatically.`
+            });
