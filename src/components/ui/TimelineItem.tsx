@@ -11,12 +11,47 @@ interface TimelineItemProps {
   isLast: boolean;
 }
 
-export function TimelineItem({ item, index, isLast }: TimelineItemProps) {
+export function TimelineItem({ item, index, isLast }: Readonly<TimelineItemProps>) {
   const [expanded, setExpanded] = useState(false);
   const startYear = new Date(item.startedAt).getFullYear();
   const endLabel = item.endedAt ? new Date(item.endedAt).getFullYear().toString() : 'Present';
   const dateLabel = startYear === Number(endLabel) ? `${startYear}` : `${startYear} – ${endLabel}`;
   const hasDetails = item.summary || item.technologies.length > 0 || item.highlights.length > 0 || item.achievements.length > 0;
+  const detailsId = `timeline-details-${item.company.toLowerCase().replaceAll(/\s+/g, '-')}-${index}`;
+
+  const content = (
+    <>
+      <div className="flex items-start justify-between gap-1">
+        <p className="text-sm font-medium text-text-primary-light dark:text-text-primary-dark leading-snug">
+          {item.position}
+        </p>
+        {hasDetails && (
+          <ChevronDown className={`h-3.5 w-3.5 flex-shrink-0 mt-0.5 text-text-muted-light dark:text-text-muted-dark transition-transform duration-200 ${expanded ? 'rotate-180' : ''}`} />
+        )}
+      </div>
+      <p className="text-xs text-text-muted-light dark:text-text-muted-dark mt-0.5">
+        {item.company}
+      </p>
+      <div className="flex items-center gap-2 mt-1 flex-wrap">
+        <span className="text-xs text-text-muted-light dark:text-text-muted-dark">
+          {dateLabel}
+        </span>
+        <span className="text-xs px-1.5 py-0.5 rounded-full bg-accent-pink/10 text-accent-pink">
+          {item.type}
+        </span>
+        {item.modality && (
+          <span className="text-xs px-1.5 py-0.5 rounded-full border border-border-light dark:border-border-dark text-text-muted-light dark:text-text-muted-dark">
+            {item.modality}
+          </span>
+        )}
+        {item.country && (
+          <span className="text-xs text-text-muted-light dark:text-text-muted-dark">
+            {item.country}
+          </span>
+        )}
+      </div>
+    </>
+  );
 
   return (
     <motion.div
@@ -36,40 +71,19 @@ export function TimelineItem({ item, index, isLast }: TimelineItemProps) {
 
       {/* Content */}
       <div className="flex-1 min-w-0 pb-1">
-        <div
-          className={hasDetails ? 'cursor-pointer group' : ''}
-          onClick={() => hasDetails && setExpanded(!expanded)}
-        >
-          <div className="flex items-start justify-between gap-1">
-            <p className="text-sm font-medium text-text-primary-light dark:text-text-primary-dark leading-snug">
-              {item.position}
-            </p>
-            {hasDetails && (
-              <ChevronDown className={`h-3.5 w-3.5 flex-shrink-0 mt-0.5 text-text-muted-light dark:text-text-muted-dark transition-transform duration-200 ${expanded ? 'rotate-180' : ''}`} />
-            )}
-          </div>
-          <p className="text-xs text-text-muted-light dark:text-text-muted-dark mt-0.5">
-            {item.company}
-          </p>
-          <div className="flex items-center gap-2 mt-1 flex-wrap">
-            <span className="text-xs text-text-muted-light dark:text-text-muted-dark">
-              {dateLabel}
-            </span>
-            <span className="text-xs px-1.5 py-0.5 rounded-full bg-accent-pink/10 text-accent-pink">
-              {item.type}
-            </span>
-            {item.modality && (
-              <span className="text-xs px-1.5 py-0.5 rounded-full border border-border-light dark:border-border-dark text-text-muted-light dark:text-text-muted-dark">
-                {item.modality}
-              </span>
-            )}
-            {item.country && (
-              <span className="text-xs text-text-muted-light dark:text-text-muted-dark">
-                {item.country}
-              </span>
-            )}
-          </div>
-        </div>
+        {hasDetails ? (
+          <button
+            type="button"
+            className="w-full text-left cursor-pointer group rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-pink/50"
+            onClick={() => setExpanded((prev) => !prev)}
+            aria-expanded={expanded}
+            aria-controls={detailsId}
+          >
+            {content}
+          </button>
+        ) : (
+          <div>{content}</div>
+        )}
 
         {/* Expandable details */}
         <AnimatePresence>
@@ -80,6 +94,7 @@ export function TimelineItem({ item, index, isLast }: TimelineItemProps) {
               exit={{ height: 0, opacity: 0 }}
               transition={{ duration: 0.2 }}
               className="overflow-hidden"
+              id={detailsId}
             >
               <div className="mt-2.5 space-y-2">
                 {item.summary && (
@@ -102,7 +117,7 @@ export function TimelineItem({ item, index, isLast }: TimelineItemProps) {
                 {item.highlights.length > 0 && (
                   <ul className="space-y-0.5">
                     {item.highlights.map((highlight, i) => (
-                      <li key={i} className="text-xs text-text-muted-light dark:text-text-muted-dark flex gap-1.5">
+                      <li key={`${highlight}-${i}`} className="text-xs text-text-muted-light dark:text-text-muted-dark flex gap-1.5">
                         <span className="text-accent-pink mt-0.5">•</span>
                         <span>{highlight}</span>
                       </li>
@@ -114,7 +129,7 @@ export function TimelineItem({ item, index, isLast }: TimelineItemProps) {
                     <p className="text-xs font-medium text-text-secondary-light dark:text-text-secondary-dark uppercase tracking-wider mb-0.5">Achievements</p>
                     <ul className="space-y-0.5">
                       {item.achievements.map((achievement, i) => (
-                        <li key={i} className="text-xs text-text-muted-light dark:text-text-muted-dark flex gap-1.5">
+                        <li key={`${achievement}-${i}`} className="text-xs text-text-muted-light dark:text-text-muted-dark flex gap-1.5">
                           <span className="text-accent-pink mt-0.5">★</span>
                           <span>{achievement}</span>
                         </li>

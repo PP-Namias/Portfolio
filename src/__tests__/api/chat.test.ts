@@ -451,8 +451,8 @@ describe('/api/chat route', () => {
 
   it('returns 500 from outer catch when an unexpected error occurs before fallback message is set', async () => {
     const req = createRequest({ message: 'Can you explain your decision-making process?' });
-    const replaceSpy = vi.spyOn(String.prototype, 'replace').mockImplementationOnce(() => {
-      throw new Error('Unexpected replace failure');
+    const replaceAllSpy = vi.spyOn(String.prototype, 'replaceAll').mockImplementationOnce(() => {
+      throw new Error('Unexpected replaceAll failure');
     });
 
     try {
@@ -461,7 +461,7 @@ describe('/api/chat route', () => {
       const data = await res.json();
       expect(data.error).toBe('Something went wrong. Please try again.');
     } finally {
-      replaceSpy.mockRestore();
+      replaceAllSpy.mockRestore();
     }
   });
 

@@ -11,6 +11,7 @@ permissions:
 
 env:
   PRODUCTION_URL: 'https://namias.tech'
+  BLOG_MONITOR_ENABLED: 'false'
 
 jobs:
   uptime-check:
@@ -33,12 +34,16 @@ jobs:
             FAILED=1
           fi
 
-          # Check blog page
-          if curl -f -s --max-time 15 "${{ env.PRODUCTION_URL }}/blog" > /dev/null; then
-            echo "**/blog**: Available" >> $GITHUB_STEP_SUMMARY
+          # Check blog page only when blog route is publicly enabled
+          if [ "${{ env.BLOG_MONITOR_ENABLED }}" = "true" ]; then
+            if curl -f -s --max-time 15 "${{ env.PRODUCTION_URL }}/blog" > /dev/null; then
+              echo "**/blog**: Available" >> $GITHUB_STEP_SUMMARY
+            else
+              echo "**/blog**: Unavailable" >> $GITHUB_STEP_SUMMARY
+              FAILED=1
+            fi
           else
-            echo "**/blog**: Unavailable" >> $GITHUB_STEP_SUMMARY
-            FAILED=1
+            echo "**/blog**: Skipped (feature currently disabled)" >> $GITHUB_STEP_SUMMARY
           fi
 
           if [ "$FAILED" -eq 1 ]; then
@@ -56,6 +61,7 @@ jobs:
 
             **Alert Time**: ${new Date().toISOString()}
             **URL**: ${{ env.PRODUCTION_URL }}
+            **Blog Monitor Enabled**: ${{ env.BLOG_MONITOR_ENABLED }}
 
             Please check hosting provider status and server logs.
 

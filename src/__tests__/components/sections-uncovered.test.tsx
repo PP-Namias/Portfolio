@@ -12,7 +12,21 @@ vi.mock('framer-motion', () => {
     {
       get: (_, tag: string) =>
         R.forwardRef(function MotionTag(
-          { children, ...props }: Record<string, unknown>,
+          {
+            children,
+            whileHover: _whileHover,
+            whileTap: _whileTap,
+            whileInView: _whileInView,
+            initial: _initial,
+            animate: _animate,
+            exit: _exit,
+            transition: _transition,
+            variants: _variants,
+            custom: _custom,
+            layout: _layout,
+            viewport: _viewport,
+            ...props
+          }: Record<string, unknown>,
           ref: React.Ref<HTMLElement>
         ) {
           return R.createElement(tag, { ref, ...props }, children);
@@ -29,7 +43,13 @@ vi.mock('framer-motion', () => {
 });
 
 vi.mock('next/image', () => ({
-  default: ({ alt = '', src = '', ...props }: Record<string, unknown>) => (
+  default: ({
+    alt = '',
+    src = '',
+    fill: _fill,
+    priority: _priority,
+    ...props
+  }: Record<string, unknown>) => (
     // eslint-disable-next-line @next/next/no-img-element
     <img
       alt={typeof alt === 'string' ? alt : ''}

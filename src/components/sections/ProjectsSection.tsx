@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown, ChevronUp, ExternalLink, Github } from 'lucide-react';
+import { ChevronDown, ChevronUp, ExternalLink, Code2 } from 'lucide-react';
 import { projects } from '@/data/projects';
 
 export function ProjectsSection() {
@@ -19,14 +19,14 @@ export function ProjectsSection() {
       transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
     >
       <h2 className="text-lg font-semibold text-text-primary-light dark:text-text-primary-dark mb-4">
-        Projects
+        Projects{' '}
         <span className="text-xs font-medium px-1.5 py-0.5 rounded-md bg-accent-pink/10 text-accent-pink ml-2 align-middle">
           {projects.length}
         </span>
       </h2>
 
       {/* Featured project — large card */}
-      {featured && featured.image && featured.image !== 'placeholder.png' && (
+      {featured?.image && featured.image !== 'placeholder.png' && (
         <motion.div
           className="mb-4"
           initial={{ opacity: 0, y: 10 }}
@@ -82,7 +82,7 @@ export function ProjectsSection() {
                     aria-label="View repository"
                     className="inline-flex items-center gap-1 rounded-md border border-border-light dark:border-border-dark px-2.5 py-1 text-xs font-medium text-text-secondary-light dark:text-text-secondary-dark hover:text-accent-pink hover:border-accent-pink/40 transition-colors"
                   >
-                    <Github className="h-3.5 w-3.5" /> Code
+                    <Code2 className="h-3.5 w-3.5" /> Code
                   </a>
                 )}
                 {featured.liveURL && (
@@ -186,7 +186,7 @@ export function ProjectsSection() {
                             aria-label="View repository"
                             className="text-text-muted-light dark:text-text-muted-dark hover:text-accent-pink transition-colors"
                           >
-                            <Github className="h-3.5 w-3.5" />
+                            <Code2 className="h-3.5 w-3.5" />
                           </a>
                         )}
                         {project.liveURL && (
@@ -223,6 +223,7 @@ export function ProjectsSection() {
 
       {projects.length > 4 && (
         <button
+          type="button"
           onClick={() => setShowAll(!showAll)}
           className="flex items-center gap-1 mx-auto mt-4 text-xs font-medium text-text-muted-light dark:text-text-muted-dark hover:text-accent-pink dark:hover:text-accent-pink transition-colors"
         >
