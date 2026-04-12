@@ -12,7 +12,7 @@ import {
 } from './intentClassifier';
 
 const FALLBACK_NOTICE =
-  "Keneth's AI backup mode is active right now, but I can still answer from his verified portfolio data.";
+  "Here’s a direct answer based on Keneth’s verified portfolio data.";
 
 function findSocialLink(socials: SocialData[], name: string): string | null {
   const social = socials.find((item) => item.name?.toLowerCase() === name.toLowerCase());

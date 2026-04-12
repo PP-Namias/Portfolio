@@ -1,4 +1,3 @@
-import { GoogleGenerativeAI } from '@google/generative-ai';
 import { NextRequest, NextResponse } from 'next/server';
 
 import profileData from '../../../../portfolio-resources/data/profile.json';
@@ -10,6 +9,13 @@ import membershipsData from '../../../../portfolio-resources/data/memberships.js
 import socialsData from '../../../../portfolio-resources/data/socials.json';
 
 import { buildFallbackResponse, buildPresetResponse } from './lib/fallbackResponder';
+import {
+  classifyProviderError,
+  generateWithGemini,
+  generateWithOpenAI,
+  getProviderHealth,
+  isMultiProviderEnabled,
+} from './lib/providers';
 import { buildSystemPrompt } from './lib/promptBuilder';
 import { isRateLimited } from './lib/rateLimiter';
 import {
@@ -24,7 +30,6 @@ import {
   TechnologyData,
 } from './lib/types';
 
-const MODELS = ['gemini-2.0-flash', 'gemini-2.0-flash-lite', 'gemini-1.5-flash'];
 const MAX_MESSAGE_LENGTH = 500;
 
 const chatDataContext: ChatDataContext = {
@@ -113,85 +118,75 @@ function isValidationError(
   return 'status' in result;
 }
 
-function mapHistoryForModel(history: ConversationHistoryMessage[]) {
-  return history.slice(-10).map((item) => ({
-    role: item.role === 'assistant' ? ('model' as const) : ('user' as const),
-    parts: [{ text: item.content }],
-  }));
-}
+function createRequestId(request: NextRequest): string {
+  const existingId = request.headers.get('x-request-id')?.trim();
 
-async function tryModelResponse(
-  genAI: GoogleGenerativeAI,
-  modelName: string,
-  message: string,
-  history: ConversationHistoryMessage[]
-): Promise<string> {
-  const model = genAI.getGenerativeModel({
-    model: modelName,
-    systemInstruction: systemPrompt,
-    generationConfig: {
-      temperature: 0.6,
-      topP: 0.85,
-      maxOutputTokens: 1024,
-    },
-  });
-
-  const chat = model.startChat({
-    history: mapHistoryForModel(history),
-  });
-
-  const result = await chat.sendMessage(message);
-  const response = result.response.text().trim();
-
-  if (!response) {
-    throw new Error('Gemini returned an empty response.');
+  if (existingId) {
+    return existingId;
   }
 
+  try {
+    return crypto.randomUUID();
+  } catch {
+    return `chat-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+  }
+}
+
+function withRequestId(response: NextResponse, requestId: string): NextResponse {
+  response.headers.set('x-request-id', requestId);
   return response;
 }
 
-async function generateGeminiResponse(
-  genAI: GoogleGenerativeAI,
-  message: string,
-  history: ConversationHistoryMessage[]
-): Promise<string | null> {
-  let lastError: unknown = null;
+function logEvent(
+  level: 'info' | 'warn' | 'error',
+  event: string,
+  details: Record<string, unknown>
+): void {
+  const payload = JSON.stringify({
+    event,
+    timestamp: new Date().toISOString(),
+    ...details,
+  });
 
-  for (const modelName of MODELS) {
-    try {
-      return await tryModelResponse(genAI, modelName, message, history);
-    } catch (modelError) {
-      lastError = modelError;
-      const errorMessage = modelError instanceof Error ? modelError.message : String(modelError);
-      console.warn(`[Chat API] ${modelName} failed, trying next model...`, errorMessage);
-    }
+  if (level === 'error') {
+    console.error('[Chat API]', payload);
+    return;
   }
 
-  if (lastError) {
-    const finalError =
-      lastError instanceof Error
-        ? lastError.message
-        : (() => {
-            try {
-              return JSON.stringify(lastError);
-            } catch {
-              return 'Unknown non-serializable Gemini error';
-            }
-          })();
-    console.error('[Chat API Error]', finalError);
+  if (level === 'warn') {
+    console.warn('[Chat API]', payload);
+    return;
   }
 
-  return null;
+  console.info('[Chat API]', payload);
+}
+
+export async function GET() {
+  const health = getProviderHealth();
+  const statusCode = health.status === 'active' ? 200 : 503;
+
+  return NextResponse.json(health, { status: statusCode });
 }
 
 export async function POST(request: NextRequest) {
   let fallbackUserMessage = '';
+  const requestId = createRequestId(request);
+  const requestStartedAt = Date.now();
+  const clientIp = getClientIp(request);
 
   try {
-    if (await isRateLimited(getClientIp(request))) {
-      return NextResponse.json(
+    if (await isRateLimited(clientIp)) {
+      logEvent('warn', 'chat_rate_limited', {
+        requestId,
+        clientIp,
+      });
+
+      return withRequestId(
+        NextResponse.json(
         { error: 'Too many requests. Please wait a moment and try again.' },
         { status: 429 }
+        ),
+        requestId
       );
     }
 
@@ -199,7 +194,15 @@ export async function POST(request: NextRequest) {
     const parsedRequest = parseChatRequest(body);
 
     if (isValidationError(parsedRequest)) {
-      return NextResponse.json({ error: parsedRequest.error }, { status: parsedRequest.status });
+      logEvent('warn', 'chat_validation_error', {
+        requestId,
+        status: parsedRequest.status,
+      });
+
+      return withRequestId(
+        NextResponse.json({ error: parsedRequest.error }, { status: parsedRequest.status }),
+        requestId
+      );
     }
 
     const { message, history } = parsedRequest;
@@ -207,39 +210,119 @@ export async function POST(request: NextRequest) {
 
     const presetResponse = buildPresetResponse(message, chatDataContext);
     if (presetResponse) {
-      return NextResponse.json({ message: presetResponse, preset: true, fallback: false });
+      logEvent('info', 'chat_preset_response', {
+        requestId,
+        latencyMs: Date.now() - requestStartedAt,
+      });
+
+      return withRequestId(
+        NextResponse.json({ message: presetResponse, preset: true, fallback: false }),
+        requestId
+      );
     }
 
-    const apiKey = process.env.GOOGLE_GEMINI_API_KEY;
-    if (!apiKey) {
-      console.warn('[Chat API] GOOGLE_GEMINI_API_KEY is missing. Serving fallback response.');
-      return NextResponse.json({
-        message: buildFallbackResponse(message, chatDataContext),
-        fallback: true,
+    const providerAttempts: Array<Record<string, unknown>> = [];
+
+    try {
+      const geminiResult = await generateWithGemini(message, history, systemPrompt);
+
+      providerAttempts.push({
+        provider: geminiResult.provider,
+        model: geminiResult.model,
+        attempts: geminiResult.attempts,
+        latencyMs: geminiResult.latencyMs,
+        result: 'success',
+      });
+
+      logEvent('info', 'chat_provider_success', {
+        requestId,
+        provider: geminiResult.provider,
+        model: geminiResult.model,
+        totalLatencyMs: Date.now() - requestStartedAt,
+        failoverCount: 0,
+      });
+
+      return withRequestId(
+        NextResponse.json({ message: geminiResult.message, fallback: false }),
+        requestId
+      );
+    } catch (geminiError) {
+      providerAttempts.push({
+        provider: 'gemini',
+        result: 'error',
+        errorClass: classifyProviderError(geminiError),
       });
     }
 
-    const genAI = new GoogleGenerativeAI(apiKey);
-    const response = await generateGeminiResponse(genAI, message, history);
+    if (isMultiProviderEnabled()) {
+      try {
+        const openAiResult = await generateWithOpenAI(message, history, systemPrompt);
 
-    if (response) {
-      return NextResponse.json({ message: response, fallback: false });
+        providerAttempts.push({
+          provider: openAiResult.provider,
+          model: openAiResult.model,
+          attempts: openAiResult.attempts,
+          latencyMs: openAiResult.latencyMs,
+          result: 'success',
+        });
+
+        logEvent('info', 'chat_provider_success', {
+          requestId,
+          provider: openAiResult.provider,
+          model: openAiResult.model,
+          totalLatencyMs: Date.now() - requestStartedAt,
+          failoverCount: 1,
+        });
+
+        return withRequestId(
+          NextResponse.json({ message: openAiResult.message, fallback: false }),
+          requestId
+        );
+      } catch (openAiError) {
+        providerAttempts.push({
+          provider: 'openai',
+          result: 'error',
+          errorClass: classifyProviderError(openAiError),
+        });
+      }
     }
 
-    return NextResponse.json({
-      message: buildFallbackResponse(message, chatDataContext),
-      fallback: true,
+    const fallbackResponse = buildFallbackResponse(message, chatDataContext);
+
+    logEvent('warn', 'chat_fallback_response', {
+      requestId,
+      totalLatencyMs: Date.now() - requestStartedAt,
+      failoverCount: isMultiProviderEnabled() ? 2 : 1,
+      providerAttempts,
     });
+
+    return withRequestId(
+      NextResponse.json({
+        message: fallbackResponse,
+        fallback: true,
+      }),
+      requestId
+    );
   } catch (error) {
-    console.error('[Chat API Error]', error instanceof Error ? error.message : error);
+    logEvent('error', 'chat_unhandled_exception', {
+      requestId,
+      error: error instanceof Error ? error.message : String(error),
+      totalLatencyMs: Date.now() - requestStartedAt,
+    });
 
     if (fallbackUserMessage) {
-      return NextResponse.json({
-        message: buildFallbackResponse(fallbackUserMessage, chatDataContext),
-        fallback: true,
-      });
+      return withRequestId(
+        NextResponse.json({
+          message: buildFallbackResponse(fallbackUserMessage, chatDataContext),
+          fallback: true,
+        }),
+        requestId
+      );
     }
 
-    return NextResponse.json({ error: 'Something went wrong. Please try again.' }, { status: 500 });
+    return withRequestId(
+      NextResponse.json({ error: 'Something went wrong. Please try again.' }, { status: 500 }),
+      requestId
+    );
   }
 }

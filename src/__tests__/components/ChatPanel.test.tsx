@@ -47,7 +47,7 @@ vi.mock('@/hooks/useModal', () => ({
 
 // Mock fetch
 const mockFetch = vi.fn();
-global.fetch = mockFetch;
+globalThis.fetch = mockFetch;
 
 const mockOnBack = vi.fn();
 const mockOnClose = vi.fn();
@@ -84,6 +84,11 @@ describe('ChatPanel', () => {
   it('renders the chat panel with header', () => {
     renderChatPanel();
     expect(screen.getByText("Keneth's AI")).toBeInTheDocument();
+  });
+
+  it('shows active status indicator by default', () => {
+    renderChatPanel();
+    expect(screen.getByText('Online • Ask me anything')).toBeInTheDocument();
   });
 
   it('has a back button that calls onBack', () => {
@@ -152,6 +157,7 @@ describe('ChatPanel', () => {
     mockFetch.mockResolvedValueOnce({
       ok: false,
       json: () => Promise.resolve({ error: 'Rate limited' }),
+      status: 429,
     });
 
     renderChatPanel();
@@ -168,6 +174,7 @@ describe('ChatPanel', () => {
     mockFetch.mockResolvedValueOnce({
       ok: false,
       json: () => Promise.resolve({}),
+      status: 500,
     });
 
     renderChatPanel();
@@ -177,6 +184,23 @@ describe('ChatPanel', () => {
 
     await waitFor(() => {
       expect(screen.getByText('Something went wrong.')).toBeInTheDocument();
+    });
+  });
+
+  it('shows reconnecting status when server is unavailable', async () => {
+    mockFetch.mockResolvedValueOnce({
+      ok: false,
+      status: 503,
+      json: () => Promise.resolve({ error: 'Service unavailable' }),
+    });
+
+    renderChatPanel();
+    const input = screen.getByPlaceholderText('Ask about skills, projects, experience...');
+    await userEvent.type(input, 'Hello');
+    fireEvent.click(screen.getByLabelText('Send message'));
+
+    await waitFor(() => {
+      expect(screen.getByText('Temporarily reconnecting...')).toBeInTheDocument();
     });
   });
 
@@ -259,7 +283,7 @@ describe('ChatPanel', () => {
   });
 
   it('opens contact links for email/linkedin/github actions', () => {
-    const openSpy = vi.spyOn(window, 'open').mockImplementation(() => null);
+    const openSpy = vi.spyOn(globalThis, 'open').mockImplementation(() => null);
     const messages: ChatMessageType[] = [
       { id: '1', role: 'assistant', content: 'Use quick actions', timestamp: new Date() },
     ];

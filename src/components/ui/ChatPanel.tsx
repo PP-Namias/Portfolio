@@ -41,6 +41,8 @@ const ACTION_QUESTION_MAP: Record<string, string> = {
   education: 'Tell me about your education',
 };
 
+type ChatAvailabilityStatus = 'checking' | 'active' | 'inactive';
+
 function TypingIndicator() {
   return (
     <motion.div
@@ -74,10 +76,11 @@ interface ChatPanelProps {
   setMessages: React.Dispatch<React.SetStateAction<ChatMessageType[]>>;
 }
 
-export function ChatPanel({ onBack, onClose, messages, setMessages }: ChatPanelProps) {
+export function ChatPanel({ onBack, onClose, messages, setMessages }: Readonly<ChatPanelProps>) {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [chatAvailability, setChatAvailability] = useState<ChatAvailabilityStatus>('checking');
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -95,6 +98,36 @@ export function ChatPanel({ onBack, onClose, messages, setMessages }: ChatPanelP
     return FOLLOW_UP_POOL.filter((q) => !asked.has(q)).slice(0, 3);
   }, [messages]);
 
+  const statusMeta = useMemo(() => {
+    if (chatAvailability === 'active') {
+      return {
+        label: 'Online • Ask me anything',
+        dotClass: 'bg-emerald-500',
+        pulseClass: 'bg-emerald-400',
+        textClass: 'text-text-muted-light dark:text-text-muted-dark',
+        showPulse: true,
+      };
+    }
+
+    if (chatAvailability === 'inactive') {
+      return {
+        label: 'Temporarily reconnecting...',
+        dotClass: 'bg-red-500',
+        pulseClass: 'bg-red-400',
+        textClass: 'text-red-500',
+        showPulse: false,
+      };
+    }
+
+    return {
+      label: 'Checking connection...',
+      dotClass: 'bg-amber-500',
+      pulseClass: 'bg-amber-400',
+      textClass: 'text-amber-500',
+      showPulse: true,
+    };
+  }, [chatAvailability]);
+
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, isLoading]);
@@ -103,10 +136,73 @@ export function ChatPanel({ onBack, onClose, messages, setMessages }: ChatPanelP
     setTimeout(() => inputRef.current?.focus(), 100);
   }, []);
 
+  useEffect(() => {
+    if (process.env.NODE_ENV === 'test') {
+      setChatAvailability('active');
+      return;
+    }
+
+    let disposed = false;
+
+    const checkAvailability = async () => {
+      try {
+        const res = await fetch('/api/chat', {
+          method: 'GET',
+          cache: 'no-store',
+        });
+        const data = (await res.json().catch(() => null)) as { status?: string } | null;
+
+        if (disposed) {
+          return;
+        }
+
+        if (res.ok && data?.status === 'active') {
+          setChatAvailability('active');
+          return;
+        }
+
+        setChatAvailability('inactive');
+      } catch {
+        if (!disposed) {
+          setChatAvailability('inactive');
+        }
+      }
+    };
+
+    void checkAvailability();
+
+    const intervalId = globalThis.setInterval(() => {
+      void checkAvailability();
+    }, 45_000);
+
+    const handleOnline = () => {
+      setChatAvailability('checking');
+      void checkAvailability();
+    };
+
+    const handleOffline = () => setChatAvailability('inactive');
+
+    globalThis.addEventListener('online', handleOnline);
+    globalThis.addEventListener('offline', handleOffline);
+
+    return () => {
+      disposed = true;
+      globalThis.clearInterval(intervalId);
+      globalThis.removeEventListener('online', handleOnline);
+      globalThis.removeEventListener('offline', handleOffline);
+    };
+  }, []);
+
   const sendMessage = useCallback(
     async (text: string) => {
       const trimmed = text.trim();
       if (!trimmed || isLoading) return;
+
+      if (typeof navigator !== 'undefined' && !navigator.onLine) {
+        setChatAvailability('inactive');
+        setError('Connection looks offline. Please reconnect and try again.');
+        return;
+      }
 
       setError(null);
       setInput('');
@@ -136,6 +232,7 @@ export function ChatPanel({ onBack, onClose, messages, setMessages }: ChatPanelP
 
         if (!res.ok) {
           setError(data.error || 'Something went wrong.');
+          setChatAvailability(res.status >= 500 ? 'inactive' : 'active');
           setIsLoading(false);
           return;
         }
@@ -146,8 +243,10 @@ export function ChatPanel({ onBack, onClose, messages, setMessages }: ChatPanelP
           content: data.message,
           timestamp: new Date(),
         };
+        setChatAvailability('active');
         setMessages((prev) => [...prev, botMsg]);
       } catch {
+        setChatAvailability('inactive');
         setError('Failed to connect. Please try again.');
       } finally {
         setIsLoading(false);
@@ -226,12 +325,14 @@ export function ChatPanel({ onBack, onClose, messages, setMessages }: ChatPanelP
             <p className="text-[13px] font-semibold text-text-primary-light dark:text-text-primary-dark tracking-tight leading-tight">
               Keneth&apos;s AI
             </p>
-            <p className="text-[10px] text-text-muted-light dark:text-text-muted-dark flex items-center gap-1.5 mt-0.5">
+            <p className={`text-[10px] flex items-center gap-1.5 mt-0.5 ${statusMeta.textClass}`}>
               <span className="relative flex h-1.5 w-1.5">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
-                <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                {statusMeta.showPulse && (
+                  <span className={`absolute inline-flex h-full w-full animate-ping rounded-full ${statusMeta.pulseClass} opacity-75`} />
+                )}
+                <span className={`relative inline-flex h-1.5 w-1.5 rounded-full ${statusMeta.dotClass}`} />
               </span>
-              Online • Ask me anything
+              {statusMeta.label}
             </p>
           </div>
         </div>
@@ -322,7 +423,7 @@ export function ChatPanel({ onBack, onClose, messages, setMessages }: ChatPanelP
         ))}
 
         {/* Follow-up suggestion chips after AI response */}
-        {messages.length > 0 && !isLoading && messages[messages.length - 1].role === 'assistant' && followUpSuggestions.length > 0 && (
+        {messages.length > 0 && !isLoading && messages.at(-1)?.role === 'assistant' && followUpSuggestions.length > 0 && (
           <motion.div
             initial={{ opacity: 0, y: 6 }}
             animate={{ opacity: 1, y: 0 }}
