@@ -1,24 +1,49 @@
-[WARNING] 2026-04-16 Scope Pivot Initiated (PRD v2.0.0)
-- Direction changed to a no-filter, minimalist, hover-first Projects section.
-- Previous "Projects Section Experience Revamp" cycle is archived in git history.
-- Active PRD is now: "Portfolio - Projects Minimalist Hover Showcase Revamp".
+[WARNING] 2026-04-16 Scope Pivot Activated (PRD v2.1.0)
+- Projects section moved to no-filter, minimalist, hover-first interaction model.
+- Project details modal path removed from runtime and tests.
 
-[INFO] Legacy Cycle Archived
-- Completed story set in previous cycle: PROJECT-001 to PROJECT-008.
-- Previous commits remain valid historical references and are not deleted.
+[SUCCESS] PROJECT-MIN-001 Complete
+- Removed search/filter/sort/reset controls from `ProjectsSection`.
 
-[PENDING] Active Story Queue (v2.0.0)
-- PROJECT-MIN-001: Remove Filters and Discovery Controls
-- PROJECT-MIN-002: Project Click-Through Link Contract
-- PROJECT-MIN-003: Minimalist Projects Visual Redesign
-- PROJECT-MIN-004: Cyber-Futuristic Hover Reveal with Glitch Effects
-- PROJECT-MIN-005: Hover Media Preview (Image/Video) without Modal
-- PROJECT-MIN-006: Remove Project Detail Modal Flow
-- PROJECT-MIN-007: Accessibility and Keyboard-First Parity
-- PROJECT-MIN-008: Performance Hardening for Hover Effects and Media
-- PROJECT-MIN-009: Testing Expansion for No-Filter Hover-First UX
-- PROJECT-MIN-010: Documentation, Progress Log, and Release Alignment
+[SUCCESS] PROJECT-MIN-002 Complete
+- Simplified Projects UI into a minimalist card stack with focused hierarchy.
 
-[NEXT] First Execution Target
-- Start with PROJECT-MIN-001.
-- Validate with npm run lint and npm run build before committing.
+[SUCCESS] PROJECT-MIN-003 Complete
+- Added `detailURL` and `previewVideoURL` to Project type contract.
+- Added explicit `detailURL` mappings in `portfolio-resources/data/projects.json`.
+
+[SUCCESS] PROJECT-MIN-004 Complete
+- Implemented full-card click-through navigation using `detailURL > liveURL > repositoryURL`.
+
+[SUCCESS] PROJECT-MIN-005 Complete
+- Added cyber-futuristic hover/focus reveal treatment with controlled glitch layers.
+
+[SUCCESS] PROJECT-MIN-006 Complete
+- Implemented hover media preview support (video when present, image fallback).
+
+[SUCCESS] PROJECT-MIN-007 Complete
+- Removed project modal flow from `ModalProvider` and deleted project modal component.
+
+[SUCCESS] PROJECT-MIN-008 Complete
+- Keyboard focus now mirrors hover reveal behavior for accessibility parity.
+
+[SUCCESS] PROJECT-MIN-009 Complete
+- Reduced-motion and fallback interaction behavior preserved in Projects reveal UX.
+
+[SUCCESS] PROJECT-MIN-010 Complete
+- Maintained stable rendering and transition behavior for hover overlays and media.
+
+[SUCCESS] PROJECT-MIN-011 Complete
+- Updated tests for no-filter and click-through behavior.
+- Removed obsolete project modal tests and updated modal hook tests.
+
+[SUCCESS] PROJECT-MIN-012 Complete
+- Updated PRD and progress artifacts, and validated the full repo gates.
+
+[VALIDATION] 2026-04-16
+- npm run lint: PASS
+- npm run build: PASS
+- npm run test -- --run: PASS (21 files, 236 tests)
+
+[NEXT]
+- Start development server for interactive manual verification.

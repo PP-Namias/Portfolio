@@ -61,6 +61,8 @@ export interface Project {
   repositoryURL: string | null;
   liveURL: string | null;
   processURL: string | null;
+  detailURL?: string | null;
+  previewVideoURL?: string | null;
   tags: string[];
   year: number;
   category?: string;
@@ -136,4 +138,4 @@ export interface ChatMessage {
 
 export type HubState = 'closed' | 'menu' | 'chat';
 
-export type ModalName = 'resume' | 'experience' | 'booking' | 'project' | null;
+export type ModalName = 'resume' | 'experience' | 'booking' | null;
