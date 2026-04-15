@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent, act } from '@testing-library/react';
+import { render, screen, fireEvent, act, waitFor } from '@testing-library/react';
 import React from 'react';
 
 const openModalMock = vi.fn();
@@ -169,6 +169,13 @@ vi.mock('@/data/projects', () => ({
       processURL: 'https://docs.featured.app',
       tags: ['React', 'TypeScript', 'Node.js', 'AI', 'Cloud'],
       year: 2026,
+      category: 'AI Application',
+      role: 'Full Stack Developer',
+      featuredRank: 1,
+      status: 'completed',
+      impactMetrics: [
+        { label: 'Scale', value: '1000+ sessions' },
+      ],
     },
     {
       title: 'Proj 2',
@@ -179,6 +186,9 @@ vi.mock('@/data/projects', () => ({
       processURL: null,
       tags: ['React', 'Node.js', 'API'],
       year: 2025,
+      category: 'Desktop Application',
+      role: 'Software Engineer',
+      status: 'completed',
     },
     {
       title: 'Proj 3',
@@ -189,6 +199,9 @@ vi.mock('@/data/projects', () => ({
       processURL: null,
       tags: ['Next.js', 'TS', 'SSR'],
       year: 2025,
+      category: 'Web Platform',
+      role: 'Frontend Engineer',
+      status: 'completed',
     },
     {
       title: 'Proj 4',
@@ -199,6 +212,9 @@ vi.mock('@/data/projects', () => ({
       processURL: null,
       tags: ['Python', 'FastAPI', 'Docker'],
       year: 2024,
+      category: 'Backend Service',
+      role: 'Backend Engineer',
+      status: 'completed',
     },
     {
       title: 'Proj 5',
@@ -209,6 +225,9 @@ vi.mock('@/data/projects', () => ({
       processURL: null,
       tags: ['Go', 'Redis', 'Cloud'],
       year: 2024,
+      category: 'Backend Service',
+      role: 'Backend Engineer',
+      status: 'completed',
     },
   ],
 }));
@@ -364,6 +383,48 @@ describe('uncovered section components', () => {
 
     fireEvent.click(screen.getByText(/Show less/i));
     expect(screen.queryByText('Proj 5')).not.toBeInTheDocument();
+  });
+
+  it('ProjectsSection supports search, filter, sort, and reset controls', async () => {
+    render(<ProjectsSection />);
+
+    const search = screen.getByLabelText(/Search projects/i);
+    const sort = screen.getByLabelText(/Sort projects/i);
+    const tagFilter = screen.getByLabelText(/Filter by technology tag/i);
+
+    expect(search).toBeInTheDocument();
+    expect(sort).toBeInTheDocument();
+    expect(tagFilter).toBeInTheDocument();
+    expect(screen.getAllByText(/Showing 5 of 5 projects/i).length).toBeGreaterThan(0);
+
+    fireEvent.change(search, { target: { value: 'Fifth' } });
+    expect(screen.getAllByText(/Showing 1 of 5 projects/i).length).toBeGreaterThan(0);
+    expect(screen.getByText('Proj 5')).toBeInTheDocument();
+
+    fireEvent.change(sort, { target: { value: 'oldest' } });
+    expect((sort as HTMLSelectElement).value).toBe('oldest');
+
+    fireEvent.click(screen.getByRole('button', { name: 'Backend Service' }));
+    expect(screen.getByText(/Active:/i)).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: /Reset filters/i }));
+    await waitFor(() => {
+      expect(screen.getAllByText(/Showing 5 of 5 projects/i).length).toBeGreaterThan(0);
+      expect((screen.getByLabelText(/Search projects/i) as HTMLInputElement).value).toBe('');
+    });
+  });
+
+  it('ProjectsSection triggers project modal with selected project details', () => {
+    render(<ProjectsSection />);
+
+    fireEvent.click(screen.getByRole('button', { name: /View details for Featured App/i }));
+    expect(openModalMock).toHaveBeenCalledWith(
+      'project',
+      expect.objectContaining({
+        title: 'Featured App',
+        category: 'AI Application',
+      })
+    );
   });
 
   it('CertificationsSection filters, expands and opens/closes lightbox', () => {

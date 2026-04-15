@@ -236,8 +236,9 @@
       "title": "Test Coverage Expansion for Projects Epic",
       "priority": 1,
       "phase": "Phase 7: Quality",
-      "status": "Not Started",
-      "passes": false,
+      "status": "Complete",
+      "passes": true,
+      "completedAt": "2026-04-16T01:00:00Z",
       "acceptanceCriteria": [
         "Add tests for search, filters, sorting, and reset behavior",
         "Add tests for opening/closing ProjectDetailModal",
