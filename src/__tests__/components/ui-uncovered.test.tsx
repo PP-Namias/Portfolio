@@ -46,6 +46,7 @@ vi.mock('framer-motion', () => {
     AnimatePresence: ({ children }: { children: React.ReactNode }) => children,
     useScroll: () => ({ scrollYProgress: 0.5 }),
     useSpring: (value: unknown) => value,
+    useReducedMotion: () => false,
   };
 });
 
@@ -184,7 +185,7 @@ describe('uncovered UI components', () => {
     expect(screen.queryByLabelText('Scroll to top')).not.toBeInTheDocument();
 
     Object.defineProperty(globalThis, 'scrollY', { value: 500, configurable: true });
-    fireEvent.scroll(window);
+    fireEvent.scroll(globalThis as unknown as Window);
 
     const button = screen.getByLabelText('Scroll to top');
     fireEvent.click(button);

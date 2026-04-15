@@ -2,7 +2,7 @@
 
 import React, { useMemo, useState } from 'react';
 import Image from 'next/image';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { ChevronDown, ChevronUp, ExternalLink, Code2 } from 'lucide-react';
 import { projects } from '@/data/projects';
 import { useModal } from '@/hooks/useModal';
@@ -46,11 +46,20 @@ function sortProjects(sortBy: SortKey) {
 
 export function ProjectsSection() {
   const { openModal } = useModal();
+  const reduceMotion = useReducedMotion();
   const [showAll, setShowAll] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedTag, setSelectedTag] = useState('all');
   const [sortBy, setSortBy] = useState<SortKey>('featured');
+
+  const sectionTransition = reduceMotion
+    ? { duration: 0 }
+    : { duration: 0.45, ease: [0.25, 0.1, 0.25, 1] as [number, number, number, number] };
+
+  const cardTransition = reduceMotion
+    ? { duration: 0 }
+    : { duration: 0.25, ease: [0.25, 0.1, 0.25, 1] as [number, number, number, number] };
 
   const categoryOptions = useMemo(() => {
     const categories = Array.from(new Set(projects.map((project) => getProjectCategory(project.category))));
@@ -62,10 +71,12 @@ export function ProjectsSection() {
     return ['all', ...tags.sort((a, b) => a.localeCompare(b))];
   }, []);
 
+  const sortedProjects = useMemo(() => sortProjects(sortBy), [sortBy]);
+
   const filteredAndSortedProjects = useMemo(() => {
     const normalizedQuery = normalize(searchQuery);
 
-    const filtered = sortProjects(sortBy).filter((project) => {
+    const filtered = sortedProjects.filter((project) => {
       const projectCategory = getProjectCategory(project.category);
 
       const matchesSearch =
@@ -81,7 +92,7 @@ export function ProjectsSection() {
     });
 
     return filtered;
-  }, [searchQuery, selectedCategory, selectedTag, sortBy]);
+  }, [searchQuery, selectedCategory, selectedTag, sortedProjects]);
 
   const hasActiveFilters = searchQuery.trim().length > 0 || selectedCategory !== 'all' || selectedTag !== 'all';
 
@@ -90,6 +101,12 @@ export function ProjectsSection() {
     selectedCategory !== 'all' ? `Category: ${selectedCategory}` : null,
     selectedTag !== 'all' ? `Tag: ${selectedTag}` : null,
   ].filter(Boolean) as string[];
+
+  const sortLabel = SORT_OPTIONS.find((option) => option.value === sortBy)?.label ?? 'Featured';
+
+  const liveAnnouncement = `Showing ${filteredAndSortedProjects.length} of ${projects.length} projects. Sort ${sortLabel}. ${
+    activeFilterLabels.length > 0 ? `Active filters: ${activeFilterLabels.join(', ')}.` : 'No active filters.'
+  }`;
 
   const featured = filteredAndSortedProjects[0];
   const restSource = filteredAndSortedProjects.slice(1);
@@ -105,10 +122,10 @@ export function ProjectsSection() {
 
   return (
     <motion.section
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
+      initial={reduceMotion ? undefined : { opacity: 0, y: 20 }}
+      whileInView={reduceMotion ? undefined : { opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-50px' }}
-      transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
+      transition={sectionTransition}
     >
       <h2 className="text-lg font-semibold text-text-primary-light dark:text-text-primary-dark mb-4">
         Projects{' '}
@@ -118,6 +135,10 @@ export function ProjectsSection() {
       </h2>
 
       <div className="mb-4 rounded-xl border border-border-light dark:border-border-dark bg-white dark:bg-card-bg-dark p-3 space-y-3">
+        <p className="sr-only" aria-live="polite">
+          {liveAnnouncement}
+        </p>
+
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
           <label className="sm:col-span-2">
             <span className="sr-only">Search projects</span>
@@ -129,7 +150,7 @@ export function ProjectsSection() {
                 setShowAll(false);
               }}
               placeholder="Search by title, description, or tag"
-              className="w-full rounded-md border border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark px-3 py-2 text-xs text-text-primary-light dark:text-text-primary-dark placeholder:text-text-muted-light dark:placeholder:text-text-muted-dark focus:outline-none focus:ring-2 focus:ring-accent-pink/40"
+              className="w-full rounded-md border border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark px-3 py-2 text-xs text-text-primary-light dark:text-text-primary-dark placeholder:text-text-muted-light dark:placeholder:text-text-muted-dark focus:outline-none focus:ring-2 focus:ring-accent-pink/40 focus-visible:ring-2 focus-visible:ring-accent-pink/50"
               aria-label="Search projects"
             />
           </label>
@@ -142,7 +163,7 @@ export function ProjectsSection() {
                 setSortBy(event.target.value as SortKey);
                 setShowAll(false);
               }}
-              className="w-full rounded-md border border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark px-3 py-2 text-xs text-text-primary-light dark:text-text-primary-dark focus:outline-none focus:ring-2 focus:ring-accent-pink/40"
+              className="w-full rounded-md border border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark px-3 py-2 text-xs text-text-primary-light dark:text-text-primary-dark focus:outline-none focus:ring-2 focus:ring-accent-pink/40 focus-visible:ring-2 focus-visible:ring-accent-pink/50"
               aria-label="Sort projects"
             >
               {SORT_OPTIONS.map((option) => (
@@ -171,7 +192,7 @@ export function ProjectsSection() {
                   isActive
                     ? 'bg-accent-pink text-white border-accent-pink'
                     : 'bg-surface-light dark:bg-surface-dark text-text-secondary-light dark:text-text-secondary-dark border-border-light dark:border-border-dark hover:border-accent-pink/40 hover:text-accent-pink'
-                }`}
+                } focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-pink/50`}
                 aria-pressed={isActive}
               >
                 {label}
@@ -189,7 +210,7 @@ export function ProjectsSection() {
                 setSelectedTag(event.target.value);
                 setShowAll(false);
               }}
-              className="w-full rounded-md border border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark px-3 py-2 text-xs text-text-primary-light dark:text-text-primary-dark focus:outline-none focus:ring-2 focus:ring-accent-pink/40"
+              className="w-full rounded-md border border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark px-3 py-2 text-xs text-text-primary-light dark:text-text-primary-dark focus:outline-none focus:ring-2 focus:ring-accent-pink/40 focus-visible:ring-2 focus-visible:ring-accent-pink/50"
               aria-label="Filter by technology tag"
             >
               {tagOptions.map((tag) => (
@@ -213,7 +234,7 @@ export function ProjectsSection() {
             <button
               type="button"
               onClick={handleReset}
-              className="self-start sm:self-auto text-[11px] font-medium text-accent-pink hover:underline"
+              className="self-start sm:self-auto text-[11px] font-medium text-accent-pink hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-pink/50 rounded-sm"
             >
               Reset filters
             </button>
@@ -231,10 +252,11 @@ export function ProjectsSection() {
       {featured?.image && featured.image !== 'placeholder.png' && (
         <motion.div
           className="mb-4"
-          initial={{ opacity: 0, y: 10 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={reduceMotion ? undefined : { opacity: 0, y: 10 }}
+          whileInView={reduceMotion ? undefined : { opacity: 1, y: 0 }}
+          whileHover={reduceMotion ? undefined : { y: -2 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.4 }}
+          transition={cardTransition}
         >
           <div className="rounded-xl border border-border-light dark:border-border-dark bg-white dark:bg-card-bg-dark overflow-hidden group shadow-sm">
             <div className="relative h-48 sm:h-56">
@@ -243,8 +265,8 @@ export function ProjectsSection() {
                 alt={featured.title}
                 fill
                 sizes="(max-width: 768px) 100vw, 500px"
-                className="object-cover group-hover:scale-105 transition-transform duration-500"
-                priority
+                className="object-cover group-hover:scale-105 motion-reduce:transform-none transition-transform duration-300"
+                priority={!hasActiveFilters && !showAll}
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
               <div className="absolute top-3 left-3 text-[11px] font-semibold px-2 py-0.5 rounded-full bg-white/90 text-text-primary-light">
@@ -279,7 +301,8 @@ export function ProjectsSection() {
                 <button
                   type="button"
                   onClick={() => openModal('project', featured)}
-                  className="inline-flex items-center gap-1 rounded-md border border-border-light dark:border-border-dark px-2.5 py-1 text-xs font-medium text-text-secondary-light dark:text-text-secondary-dark hover:text-accent-pink hover:border-accent-pink/40 transition-colors"
+                  className="inline-flex items-center gap-1 rounded-md border border-border-light dark:border-border-dark px-2.5 py-1 text-xs font-medium text-text-secondary-light dark:text-text-secondary-dark hover:text-accent-pink hover:border-accent-pink/40 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-pink/50"
+                  aria-label={`View details for ${featured.title}`}
                 >
                   View details
                 </button>
@@ -288,8 +311,8 @@ export function ProjectsSection() {
                     href={featured.repositoryURL}
                     target="_blank"
                     rel="noopener noreferrer"
-                    aria-label="View repository"
-                    className="inline-flex items-center gap-1 rounded-md border border-border-light dark:border-border-dark px-2.5 py-1 text-xs font-medium text-text-secondary-light dark:text-text-secondary-dark hover:text-accent-pink hover:border-accent-pink/40 transition-colors"
+                    aria-label={`View repository for ${featured.title}`}
+                    className="inline-flex items-center gap-1 rounded-md border border-border-light dark:border-border-dark px-2.5 py-1 text-xs font-medium text-text-secondary-light dark:text-text-secondary-dark hover:text-accent-pink hover:border-accent-pink/40 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-pink/50"
                   >
                     <Code2 className="h-3.5 w-3.5" /> Code
                   </a>
@@ -299,8 +322,8 @@ export function ProjectsSection() {
                     href={featured.liveURL}
                     target="_blank"
                     rel="noopener noreferrer"
-                    aria-label="View live project"
-                    className="inline-flex items-center gap-1 rounded-md bg-accent-pink text-white px-2.5 py-1 text-xs font-medium hover:bg-accent-pink/90 transition-colors"
+                    aria-label={`View live project for ${featured.title}`}
+                    className="inline-flex items-center gap-1 rounded-md bg-accent-pink text-white px-2.5 py-1 text-xs font-medium hover:bg-accent-pink/90 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-pink/50"
                   >
                     <ExternalLink className="h-3.5 w-3.5" /> Live
                   </a>
@@ -310,8 +333,8 @@ export function ProjectsSection() {
                     href={featured.processURL}
                     target="_blank"
                     rel="noopener noreferrer"
-                    aria-label="View project process"
-                    className="inline-flex items-center gap-1 rounded-md border border-border-light dark:border-border-dark px-2.5 py-1 text-xs font-medium text-text-secondary-light dark:text-text-secondary-dark hover:text-accent-pink hover:border-accent-pink/40 transition-colors"
+                    aria-label={`View project process for ${featured.title}`}
+                    className="inline-flex items-center gap-1 rounded-md border border-border-light dark:border-border-dark px-2.5 py-1 text-xs font-medium text-text-secondary-light dark:text-text-secondary-dark hover:text-accent-pink hover:border-accent-pink/40 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-pink/50"
                   >
                     <ExternalLink className="h-3.5 w-3.5" /> Process
                   </a>
@@ -330,12 +353,20 @@ export function ProjectsSection() {
             return (
               <motion.div
                 key={project.title}
-                layout
-                className="group rounded-lg border border-border-light dark:border-border-dark bg-white dark:bg-card-bg-dark p-3 hover:border-accent-pink/40 hover:-translate-y-0.5 transition-all"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ delay: index * 0.05, duration: 0.3 }}
+                layout="position"
+                className="group rounded-lg border border-border-light dark:border-border-dark bg-white dark:bg-card-bg-dark p-3 hover:border-accent-pink/40 hover:-translate-y-0.5 transition-all duration-200"
+                initial={reduceMotion ? undefined : { opacity: 0, y: 6 }}
+                animate={reduceMotion ? undefined : { opacity: 1, y: 0 }}
+                exit={reduceMotion ? undefined : { opacity: 0, y: -6 }}
+                whileHover={reduceMotion ? undefined : { y: -2 }}
+                transition={
+                  reduceMotion
+                    ? { duration: 0 }
+                    : {
+                        ...cardTransition,
+                        delay: index * 0.04,
+                      }
+                }
               >
                 <div className="flex items-start gap-3">
                   {/* Project thumbnail */}
@@ -346,6 +377,8 @@ export function ProjectsSection() {
                         alt={project.title}
                         width={64}
                         height={48}
+                        sizes="64px"
+                        loading="lazy"
                         className="h-full w-full object-cover"
                       />
                     </div>
@@ -391,7 +424,7 @@ export function ProjectsSection() {
                           type="button"
                           onClick={() => openModal('project', project)}
                           aria-label={`View details for ${project.title}`}
-                          className="text-[11px] font-medium text-text-muted-light dark:text-text-muted-dark hover:text-accent-pink transition-colors"
+                          className="text-[11px] font-medium text-text-muted-light dark:text-text-muted-dark hover:text-accent-pink transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-pink/50 rounded-sm"
                         >
                           Details
                         </button>
@@ -400,8 +433,8 @@ export function ProjectsSection() {
                             href={project.repositoryURL}
                             target="_blank"
                             rel="noopener noreferrer"
-                            aria-label="View repository"
-                            className="text-text-muted-light dark:text-text-muted-dark hover:text-accent-pink transition-colors"
+                            aria-label={`View repository for ${project.title}`}
+                            className="text-text-muted-light dark:text-text-muted-dark hover:text-accent-pink transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-pink/50 rounded-sm"
                           >
                             <Code2 className="h-3.5 w-3.5" />
                           </a>
@@ -411,8 +444,8 @@ export function ProjectsSection() {
                             href={project.liveURL}
                             target="_blank"
                             rel="noopener noreferrer"
-                            aria-label="View live project"
-                            className="text-text-muted-light dark:text-text-muted-dark hover:text-accent-pink transition-colors"
+                            aria-label={`View live project for ${project.title}`}
+                            className="text-text-muted-light dark:text-text-muted-dark hover:text-accent-pink transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-pink/50 rounded-sm"
                           >
                             <ExternalLink className="h-3.5 w-3.5" />
                           </a>
@@ -422,8 +455,8 @@ export function ProjectsSection() {
                             href={project.processURL}
                             target="_blank"
                             rel="noopener noreferrer"
-                            aria-label="View project process"
-                            className="text-text-muted-light dark:text-text-muted-dark hover:text-accent-pink transition-colors"
+                            aria-label={`View project process for ${project.title}`}
+                            className="text-text-muted-light dark:text-text-muted-dark hover:text-accent-pink transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-pink/50 rounded-sm"
                           >
                             <ExternalLink className="h-3.5 w-3.5" />
                           </a>
@@ -442,7 +475,8 @@ export function ProjectsSection() {
         <button
           type="button"
           onClick={() => setShowAll(!showAll)}
-          className="flex items-center gap-1 mx-auto mt-4 text-xs font-medium text-text-muted-light dark:text-text-muted-dark hover:text-accent-pink dark:hover:text-accent-pink transition-colors"
+          className="flex items-center gap-1 mx-auto mt-4 text-xs font-medium text-text-muted-light dark:text-text-muted-dark hover:text-accent-pink dark:hover:text-accent-pink transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-pink/50 rounded-sm"
+          aria-expanded={showAll}
         >
           {showAll ? (
             <>Show less <ChevronUp className="h-3.5 w-3.5" /></>

@@ -129,7 +129,7 @@ describe('app layout and page coverage', () => {
 
     render(<Home />);
 
-    fireEvent(window, new Event('resize'));
+    fireEvent(globalThis as unknown as Window, new Event('resize'));
 
     await waitFor(() => {
       const stickyBlocks = document.querySelectorAll(String.raw`.lg\:sticky`);
