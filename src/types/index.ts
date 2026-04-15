@@ -42,6 +42,18 @@ export interface Experience {
   images: string[];
 }
 
+export interface ProjectImpactMetric {
+  label: string;
+  value: string;
+}
+
+export interface ProjectGalleryItem {
+  image: string;
+  caption: string;
+}
+
+export type ProjectStatus = 'completed' | 'in-progress' | 'prototype';
+
 export interface Project {
   title: string;
   image: string;
@@ -51,6 +63,12 @@ export interface Project {
   processURL: string | null;
   tags: string[];
   year: number;
+  category?: string;
+  role?: string;
+  impactMetrics?: ProjectImpactMetric[];
+  featuredRank?: number | null;
+  status?: ProjectStatus;
+  gallery?: ProjectGalleryItem[];
 }
 
 export interface Certification {

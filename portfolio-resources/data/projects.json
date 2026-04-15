@@ -27,7 +27,31 @@
       "Storytelling System",
       "Vercel Deployment"
     ],
-    "year": 2025
+    "year": 2025,
+    "category": "AI Application",
+    "role": "Full Stack Developer",
+    "impactMetrics": [
+      {
+        "label": "Narrative interactions",
+        "value": "1000+ user interactions processed"
+      },
+      {
+        "label": "Realtime visual generation",
+        "value": "Stable Diffusion API integrated"
+      },
+      {
+        "label": "Deployment",
+        "value": "Live production release on Vercel"
+      }
+    ],
+    "featuredRank": 1,
+    "status": "completed",
+    "gallery": [
+      {
+        "image": "PP Namias Portfolio.png",
+        "caption": "Gameplay interface with adaptive storytelling output"
+      }
+    ]
   },
   {
     "title": "Java Rice - Interactive Food Ordering System",
@@ -57,7 +81,31 @@
       "Admin Panel",
       "Tracking System"
     ],
-    "year": 2024
+    "year": 2024,
+    "category": "Desktop Application",
+    "role": "Software Engineer",
+    "impactMetrics": [
+      {
+        "label": "Ordering workflow",
+        "value": "QR-based ordering integrated with Java GUI"
+      },
+      {
+        "label": "Operations visibility",
+        "value": "Admin reports for menu, sales, and customer trends"
+      },
+      {
+        "label": "Commerce features",
+        "value": "Secure payments with discount and voucher support"
+      }
+    ],
+    "featuredRank": 2,
+    "status": "completed",
+    "gallery": [
+      {
+        "image": "Java Rice.jpg",
+        "caption": "Main Java desktop interface for restaurant operations"
+      }
+    ]
   },
   {
     "title": "Student Attendance Management System",
@@ -87,7 +135,31 @@
       "Comprehensive Reporting",
       "Authentication System"
     ],
-    "year": 2023
+    "year": 2023,
+    "category": "Desktop Application",
+    "role": "Full Stack Developer",
+    "impactMetrics": [
+      {
+        "label": "Attendance automation",
+        "value": "Barcode and QR-based attendance capture"
+      },
+      {
+        "label": "Reliability",
+        "value": "Offline sync support for desktop workflows"
+      },
+      {
+        "label": "Reporting",
+        "value": "Comprehensive attendance analytics and exports"
+      }
+    ],
+    "featuredRank": 3,
+    "status": "completed",
+    "gallery": [
+      {
+        "image": "Student Attendance Management System.png",
+        "caption": "Attendance dashboard and role-based admin panel"
+      }
+    ]
   },
   {
     "title": "Galaxy Animation - Interactive Solar System",
@@ -117,7 +189,31 @@
       "Educational Content",
       "Visual Experience"
     ],
-    "year": 2023
+    "year": 2023,
+    "category": "Interactive Web Experience",
+    "role": "Frontend Developer",
+    "impactMetrics": [
+      {
+        "label": "Animation scope",
+        "value": "Full solar system orbit visualization"
+      },
+      {
+        "label": "Tech stack",
+        "value": "Built with pure HTML, CSS, and JavaScript"
+      },
+      {
+        "label": "Educational value",
+        "value": "Astronomical data integrated into the experience"
+      }
+    ],
+    "featuredRank": null,
+    "status": "completed",
+    "gallery": [
+      {
+        "image": "Galaxy Animation.png",
+        "caption": "Animated orbit paths and interactive solar system view"
+      }
+    ]
   },
   {
     "title": "CSS3 Robot Animation - Web Art & Educational Platform",
@@ -147,7 +243,31 @@
       "Design Learning",
       "Art Appreciation"
     ],
-    "year": 2023
+    "year": 2023,
+    "category": "Interactive Web Experience",
+    "role": "Frontend Developer",
+    "impactMetrics": [
+      {
+        "label": "Design approach",
+        "value": "Pure CSS3 character animation without external libraries"
+      },
+      {
+        "label": "Learning support",
+        "value": "Step-by-step tutorial content included"
+      },
+      {
+        "label": "UX",
+        "value": "Minimal interface with smooth animation transitions"
+      }
+    ],
+    "featuredRank": null,
+    "status": "completed",
+    "gallery": [
+      {
+        "image": "CSS3 Robot Web Art.png",
+        "caption": "Robot character animation and learning-focused layout"
+      }
+    ]
   },
   {
     "title": "Car Dealership Management System",
@@ -177,7 +297,31 @@
       "Comprehensive Logging",
       "File System"
     ],
-    "year": 2022
+    "year": 2022,
+    "category": "Systems Application",
+    "role": "Software Developer",
+    "impactMetrics": [
+      {
+        "label": "Access control",
+        "value": "Admin, employee, and guest roles implemented"
+      },
+      {
+        "label": "Operations",
+        "value": "Inventory and order management workflows covered"
+      },
+      {
+        "label": "Auditability",
+        "value": "Comprehensive logging through file-based persistence"
+      }
+    ],
+    "featuredRank": null,
+    "status": "completed",
+    "gallery": [
+      {
+        "image": "Car Dealership Management Program.png",
+        "caption": "Console workflow for inventory, orders, and employee management"
+      }
+    ]
   },
   {
     "title": "Pre-enrollment Management System",
@@ -207,6 +351,30 @@
       "Verification System",
       "Enrollment Data"
     ],
-    "year": 2022
+    "year": 2022,
+    "category": "Desktop Application",
+    "role": "Software Developer",
+    "impactMetrics": [
+      {
+        "label": "Enrollment operations",
+        "value": "Student data processing and enrollment workflows automated"
+      },
+      {
+        "label": "Security model",
+        "value": "Super Admin, Admin, Teacher, and Guest access levels"
+      },
+      {
+        "label": "Attendance control",
+        "value": "Real-time logging with photo verification"
+      }
+    ],
+    "featuredRank": null,
+    "status": "completed",
+    "gallery": [
+      {
+        "image": "Pre-enrollment Management System.png",
+        "caption": "Enrollment dashboard with role-based controls and verification"
+      }
+    ]
   }
 ]

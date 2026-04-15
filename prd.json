@@ -61,8 +61,9 @@
       "title": "Data Model Upgrade for Project Metadata",
       "priority": 1,
       "phase": "Phase 1: Foundation",
-      "status": "Not Started",
-      "passes": false,
+      "status": "Complete",
+      "passes": true,
+      "completedAt": "2026-04-16T00:00:00Z",
       "acceptanceCriteria": [
         "Extend Project type in src/types/index.ts for richer metadata (category, role, impactMetrics, featuredRank, status, and optional gallery)",
         "Update portfolio-resources/data/projects.json with non-placeholder real metadata only",
@@ -76,7 +77,27 @@
           "portfolio-resources/data/projects.json",
           "src/data/projects.ts"
         ],
-        "risk": "Type drift between JSON data and TS interfaces"
+        "risk": "Type drift between JSON data and TS interfaces",
+        "dataContract": {
+          "requiredFields": [
+            "title",
+            "image",
+            "description",
+            "repositoryURL",
+            "liveURL",
+            "processURL",
+            "tags",
+            "year"
+          ],
+          "optionalFields": [
+            "category",
+            "role",
+            "impactMetrics",
+            "featuredRank",
+            "status",
+            "gallery"
+          ]
+        }
       },
       "dependencies": []
     },
