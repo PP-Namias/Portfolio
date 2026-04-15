@@ -19,13 +19,18 @@ function toStatusLabel(status?: Project['status']): string {
   return 'Completed';
 }
 
-export function ProjectDetailModal({ open, onClose, project }: ProjectDetailModalProps) {
+export function ProjectDetailModal({ open, onClose, project }: Readonly<ProjectDetailModalProps>) {
   if (!project) {
     return null;
   }
 
+  const descriptionId = `project-detail-description-${project.title
+    .toLowerCase()
+    .replaceAll(/[^a-z0-9]+/g, '-')
+    .replaceAll(/(^-|-$)/g, '')}`;
+
   return (
-    <Modal open={open} onClose={onClose} title={project.title} fullScreen>
+    <Modal open={open} onClose={onClose} title={project.title} fullScreen descriptionId={descriptionId}>
       <div className="p-5 sm:p-6 space-y-5">
         {project.image && project.image !== 'placeholder.png' && (
           <div className="relative h-56 sm:h-72 rounded-xl overflow-hidden border border-border-light dark:border-border-dark">
@@ -56,7 +61,7 @@ export function ProjectDetailModal({ open, onClose, project }: ProjectDetailModa
           </span>
         </div>
 
-        <p className="text-sm leading-relaxed text-text-secondary-light dark:text-text-secondary-dark">
+        <p id={descriptionId} className="text-sm leading-relaxed text-text-secondary-light dark:text-text-secondary-dark">
           {project.description}
         </p>
 
@@ -67,7 +72,7 @@ export function ProjectDetailModal({ open, onClose, project }: ProjectDetailModa
                 href={project.liveURL}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1 rounded-md bg-accent-pink text-white px-3 py-1.5 text-xs font-medium hover:bg-accent-pink/90 transition-colors"
+                className="inline-flex items-center gap-1 rounded-md bg-accent-pink text-white px-3 py-1.5 text-xs font-medium hover:bg-accent-pink/90 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-pink/50"
               >
                 <ExternalLink className="h-3.5 w-3.5" />
                 Live Demo
@@ -78,7 +83,7 @@ export function ProjectDetailModal({ open, onClose, project }: ProjectDetailModa
                 href={project.repositoryURL}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1 rounded-md border border-border-light dark:border-border-dark px-3 py-1.5 text-xs font-medium text-text-secondary-light dark:text-text-secondary-dark hover:text-accent-pink hover:border-accent-pink/40 transition-colors"
+                className="inline-flex items-center gap-1 rounded-md border border-border-light dark:border-border-dark px-3 py-1.5 text-xs font-medium text-text-secondary-light dark:text-text-secondary-dark hover:text-accent-pink hover:border-accent-pink/40 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-pink/50"
               >
                 <Code2 className="h-3.5 w-3.5" />
                 Source Code
@@ -89,7 +94,7 @@ export function ProjectDetailModal({ open, onClose, project }: ProjectDetailModa
                 href={project.processURL}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1 rounded-md border border-border-light dark:border-border-dark px-3 py-1.5 text-xs font-medium text-text-secondary-light dark:text-text-secondary-dark hover:text-accent-pink hover:border-accent-pink/40 transition-colors"
+                className="inline-flex items-center gap-1 rounded-md border border-border-light dark:border-border-dark px-3 py-1.5 text-xs font-medium text-text-secondary-light dark:text-text-secondary-dark hover:text-accent-pink hover:border-accent-pink/40 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-pink/50"
               >
                 <ExternalLink className="h-3.5 w-3.5" />
                 Process Notes
