@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useMemo, useState } from 'react';
+import React, { useCallback, useDeferredValue, useMemo, useState } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { ChevronDown, ChevronUp, ExternalLink, Code2 } from 'lucide-react';
@@ -49,6 +49,7 @@ export function ProjectsSection() {
   const reduceMotion = useReducedMotion();
   const [showAll, setShowAll] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const deferredSearchQuery = useDeferredValue(searchQuery);
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedTag, setSelectedTag] = useState('all');
   const [sortBy, setSortBy] = useState<SortKey>('featured');
@@ -74,7 +75,7 @@ export function ProjectsSection() {
   const sortedProjects = useMemo(() => sortProjects(sortBy), [sortBy]);
 
   const filteredAndSortedProjects = useMemo(() => {
-    const normalizedQuery = normalize(searchQuery);
+    const normalizedQuery = normalize(deferredSearchQuery);
 
     const filtered = sortedProjects.filter((project) => {
       const projectCategory = getProjectCategory(project.category);
@@ -92,7 +93,7 @@ export function ProjectsSection() {
     });
 
     return filtered;
-  }, [searchQuery, selectedCategory, selectedTag, sortedProjects]);
+  }, [deferredSearchQuery, selectedCategory, selectedTag, sortedProjects]);
 
   const hasActiveFilters = searchQuery.trim().length > 0 || selectedCategory !== 'all' || selectedTag !== 'all';
 
@@ -109,16 +110,22 @@ export function ProjectsSection() {
   }`;
 
   const featured = filteredAndSortedProjects[0];
-  const restSource = filteredAndSortedProjects.slice(1);
-  const rest = hasActiveFilters ? restSource : showAll ? restSource : restSource.slice(0, 3);
+  const rest = useMemo(() => {
+    const restSource = filteredAndSortedProjects.slice(1);
+    if (hasActiveFilters) {
+      return restSource;
+    }
 
-  const handleReset = () => {
+    return showAll ? restSource : restSource.slice(0, 3);
+  }, [filteredAndSortedProjects, hasActiveFilters, showAll]);
+
+  const handleReset = useCallback(() => {
     setSearchQuery('');
     setSelectedCategory('all');
     setSelectedTag('all');
     setSortBy('featured');
     setShowAll(false);
-  };
+  }, []);
 
   return (
     <motion.section

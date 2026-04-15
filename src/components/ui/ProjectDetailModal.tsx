@@ -39,8 +39,8 @@ export function ProjectDetailModal({ open, onClose, project }: Readonly<ProjectD
               alt={project.title}
               fill
               sizes="(max-width: 768px) 100vw, 900px"
+              loading="lazy"
               className="object-cover"
-              priority
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
           </div>
@@ -143,6 +143,7 @@ export function ProjectDetailModal({ open, onClose, project }: Readonly<ProjectD
                       alt={item.caption}
                       fill
                       sizes="(max-width: 768px) 100vw, 400px"
+                      loading="lazy"
                       className="object-cover"
                     />
                   </div>
