@@ -106,8 +106,9 @@
       "title": "ProjectsSection Discovery Layer (Search + Filters + Sort)",
       "priority": 1,
       "phase": "Phase 2: Discoverability",
-      "status": "Not Started",
-      "passes": false,
+      "status": "Complete",
+      "passes": true,
+      "completedAt": "2026-04-16T00:10:00Z",
       "acceptanceCriteria": [
         "Add client-side keyword search by title, description, and tags",
         "Add filter chips/selectors for category and tech tags",

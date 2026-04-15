@@ -1,15 +1,105 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, ChevronUp, ExternalLink, Code2 } from 'lucide-react';
 import { projects } from '@/data/projects';
 
+type SortKey = 'featured' | 'newest' | 'oldest' | 'az';
+
+const SORT_OPTIONS: Array<{ value: SortKey; label: string }> = [
+  { value: 'featured', label: 'Featured' },
+  { value: 'newest', label: 'Newest' },
+  { value: 'oldest', label: 'Oldest' },
+  { value: 'az', label: 'A-Z' },
+];
+
+function normalize(value: string): string {
+  return value.trim().toLowerCase();
+}
+
+function getProjectCategory(category?: string): string {
+  return category && category.trim().length > 0 ? category : 'Uncategorized';
+}
+
+function sortProjects(sortBy: SortKey) {
+  return [...projects].sort((a, b) => {
+    switch (sortBy) {
+      case 'newest':
+        return b.year - a.year;
+      case 'oldest':
+        return a.year - b.year;
+      case 'az':
+        return a.title.localeCompare(b.title);
+      case 'featured':
+      default: {
+        const aRank = a.featuredRank ?? Number.MAX_SAFE_INTEGER;
+        const bRank = b.featuredRank ?? Number.MAX_SAFE_INTEGER;
+        if (aRank !== bRank) return aRank - bRank;
+        return b.year - a.year;
+      }
+    }
+  });
+}
+
 export function ProjectsSection() {
   const [showAll, setShowAll] = useState(false);
-  const featured = projects[0];
-  const rest = showAll ? projects.slice(1) : projects.slice(1, 4);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('all');
+  const [selectedTag, setSelectedTag] = useState('all');
+  const [sortBy, setSortBy] = useState<SortKey>('featured');
+
+  const categoryOptions = useMemo(() => {
+    const categories = Array.from(new Set(projects.map((project) => getProjectCategory(project.category))));
+    return ['all', ...categories];
+  }, []);
+
+  const tagOptions = useMemo(() => {
+    const tags = Array.from(new Set(projects.flatMap((project) => project.tags || [])));
+    return ['all', ...tags.sort((a, b) => a.localeCompare(b))];
+  }, []);
+
+  const filteredAndSortedProjects = useMemo(() => {
+    const normalizedQuery = normalize(searchQuery);
+
+    const filtered = sortProjects(sortBy).filter((project) => {
+      const projectCategory = getProjectCategory(project.category);
+
+      const matchesSearch =
+        normalizedQuery.length === 0 ||
+        normalize(project.title).includes(normalizedQuery) ||
+        normalize(project.description).includes(normalizedQuery) ||
+        project.tags.some((tag) => normalize(tag).includes(normalizedQuery));
+
+      const matchesCategory = selectedCategory === 'all' || projectCategory === selectedCategory;
+      const matchesTag = selectedTag === 'all' || project.tags.includes(selectedTag);
+
+      return matchesSearch && matchesCategory && matchesTag;
+    });
+
+    return filtered;
+  }, [searchQuery, selectedCategory, selectedTag, sortBy]);
+
+  const hasActiveFilters = searchQuery.trim().length > 0 || selectedCategory !== 'all' || selectedTag !== 'all';
+
+  const activeFilterLabels = [
+    searchQuery.trim().length > 0 ? `Search: "${searchQuery.trim()}"` : null,
+    selectedCategory !== 'all' ? `Category: ${selectedCategory}` : null,
+    selectedTag !== 'all' ? `Tag: ${selectedTag}` : null,
+  ].filter(Boolean) as string[];
+
+  const featured = filteredAndSortedProjects[0];
+  const restSource = filteredAndSortedProjects.slice(1);
+  const rest = hasActiveFilters ? restSource : showAll ? restSource : restSource.slice(0, 3);
+
+  const handleReset = () => {
+    setSearchQuery('');
+    setSelectedCategory('all');
+    setSelectedTag('all');
+    setSortBy('featured');
+    setShowAll(false);
+  };
 
   return (
     <motion.section
@@ -24,6 +114,116 @@ export function ProjectsSection() {
           {projects.length}
         </span>
       </h2>
+
+      <div className="mb-4 rounded-xl border border-border-light dark:border-border-dark bg-white dark:bg-card-bg-dark p-3 space-y-3">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+          <label className="sm:col-span-2">
+            <span className="sr-only">Search projects</span>
+            <input
+              type="search"
+              value={searchQuery}
+              onChange={(event) => {
+                setSearchQuery(event.target.value);
+                setShowAll(false);
+              }}
+              placeholder="Search by title, description, or tag"
+              className="w-full rounded-md border border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark px-3 py-2 text-xs text-text-primary-light dark:text-text-primary-dark placeholder:text-text-muted-light dark:placeholder:text-text-muted-dark focus:outline-none focus:ring-2 focus:ring-accent-pink/40"
+              aria-label="Search projects"
+            />
+          </label>
+
+          <label className="sm:col-span-1">
+            <span className="sr-only">Sort projects</span>
+            <select
+              value={sortBy}
+              onChange={(event) => {
+                setSortBy(event.target.value as SortKey);
+                setShowAll(false);
+              }}
+              className="w-full rounded-md border border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark px-3 py-2 text-xs text-text-primary-light dark:text-text-primary-dark focus:outline-none focus:ring-2 focus:ring-accent-pink/40"
+              aria-label="Sort projects"
+            >
+              {SORT_OPTIONS.map((option) => (
+                <option key={option.value} value={option.value}>
+                  Sort: {option.label}
+                </option>
+              ))}
+            </select>
+          </label>
+        </div>
+
+        <div className="flex flex-wrap items-center gap-1.5">
+          {categoryOptions.map((category) => {
+            const isActive = selectedCategory === category;
+            const label = category === 'all' ? 'All categories' : category;
+
+            return (
+              <button
+                key={category}
+                type="button"
+                onClick={() => {
+                  setSelectedCategory(category);
+                  setShowAll(false);
+                }}
+                className={`text-[11px] font-medium px-2 py-1 rounded-full border transition-colors ${
+                  isActive
+                    ? 'bg-accent-pink text-white border-accent-pink'
+                    : 'bg-surface-light dark:bg-surface-dark text-text-secondary-light dark:text-text-secondary-dark border-border-light dark:border-border-dark hover:border-accent-pink/40 hover:text-accent-pink'
+                }`}
+                aria-pressed={isActive}
+              >
+                {label}
+              </button>
+            );
+          })}
+        </div>
+
+        <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:justify-between">
+          <label className="sm:w-56">
+            <span className="sr-only">Filter by technology tag</span>
+            <select
+              value={selectedTag}
+              onChange={(event) => {
+                setSelectedTag(event.target.value);
+                setShowAll(false);
+              }}
+              className="w-full rounded-md border border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark px-3 py-2 text-xs text-text-primary-light dark:text-text-primary-dark focus:outline-none focus:ring-2 focus:ring-accent-pink/40"
+              aria-label="Filter by technology tag"
+            >
+              {tagOptions.map((tag) => (
+                <option key={tag} value={tag}>
+                  {tag === 'all' ? 'All tags' : tag}
+                </option>
+              ))}
+            </select>
+          </label>
+
+          <div className="text-[11px] text-text-muted-light dark:text-text-muted-dark" aria-live="polite">
+            Showing {filteredAndSortedProjects.length} of {projects.length} projects
+          </div>
+        </div>
+
+        {(activeFilterLabels.length > 0 || sortBy !== 'featured') && (
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 border-t border-border-light dark:border-border-dark pt-2">
+            <p className="text-[11px] text-text-secondary-light dark:text-text-secondary-dark">
+              {activeFilterLabels.length > 0 ? `Active: ${activeFilterLabels.join(' • ')}` : 'Active: none'}
+            </p>
+            <button
+              type="button"
+              onClick={handleReset}
+              className="self-start sm:self-auto text-[11px] font-medium text-accent-pink hover:underline"
+            >
+              Reset filters
+            </button>
+          </div>
+        )}
+      </div>
+
+      {filteredAndSortedProjects.length === 0 && (
+        <div className="mb-4 rounded-xl border border-border-light dark:border-border-dark bg-white dark:bg-card-bg-dark p-4 text-xs text-text-secondary-light dark:text-text-secondary-dark">
+          No projects match your current filters. Try resetting filters or using a broader search.
+        </div>
+      )}
 
       {/* Featured project — large card */}
       {featured?.image && featured.image !== 'placeholder.png' && (
@@ -221,7 +421,7 @@ export function ProjectsSection() {
         </AnimatePresence>
       </div>
 
-      {projects.length > 4 && (
+      {!hasActiveFilters && filteredAndSortedProjects.length > 4 && (
         <button
           type="button"
           onClick={() => setShowAll(!showAll)}
