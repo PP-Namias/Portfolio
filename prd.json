@@ -130,8 +130,9 @@
       "title": "Project Detail Modal (Modal-First Expansion)",
       "priority": 1,
       "phase": "Phase 3: Deep Dive UX",
-      "status": "Not Started",
-      "passes": false,
+      "status": "Complete",
+      "passes": true,
+      "completedAt": "2026-04-16T00:20:00Z",
       "acceptanceCriteria": [
         "Create ProjectDetailModal in src/components/ui using existing Modal wrapper",
         "Open modal from featured and list cards using a clear CTA (e.g., View Details)",

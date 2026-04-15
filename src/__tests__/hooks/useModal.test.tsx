@@ -38,6 +38,12 @@ vi.mock('@/components/ui/BookingModal', () => ({
   ),
 }));
 
+vi.mock('@/components/ui/ProjectDetailModal', () => ({
+  ProjectDetailModal: ({ open, onClose }: { open: boolean; onClose: () => void }) => (
+    open ? <div data-testid="project-modal"><button onClick={onClose}>Close Project</button></div> : null
+  ),
+}));
+
 // Mock data modules used by modal components
 vi.mock('@/data/experience', () => ({
   experiences: [],
@@ -50,6 +56,22 @@ function TestConsumer() {
       <button onClick={() => openModal('resume')}>Open Resume</button>
       <button onClick={() => openModal('experience')}>Open Experience</button>
       <button onClick={() => openModal('booking')}>Open Booking</button>
+      <button
+        onClick={() =>
+          openModal('project', {
+            title: 'Sample Project',
+            image: 'sample.png',
+            description: 'Sample description',
+            repositoryURL: null,
+            liveURL: null,
+            processURL: null,
+            tags: ['React'],
+            year: 2026,
+          })
+        }
+      >
+        Open Project
+      </button>
       <button onClick={closeModal}>Close Modal</button>
     </div>
   );
@@ -69,6 +91,7 @@ describe('useModal / ModalProvider', () => {
     expect(screen.queryByTestId('resume-modal')).not.toBeInTheDocument();
     expect(screen.queryByTestId('experience-modal')).not.toBeInTheDocument();
     expect(screen.queryByTestId('booking-modal')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('project-modal')).not.toBeInTheDocument();
   });
 
   it('opens resume modal', () => {
@@ -90,6 +113,13 @@ describe('useModal / ModalProvider', () => {
     renderWithProvider();
     fireEvent.click(screen.getByText('Open Booking'));
     expect(screen.getByTestId('booking-modal')).toBeInTheDocument();
+    expect(screen.queryByTestId('resume-modal')).not.toBeInTheDocument();
+  });
+
+  it('opens project modal', () => {
+    renderWithProvider();
+    fireEvent.click(screen.getByText('Open Project'));
+    expect(screen.getByTestId('project-modal')).toBeInTheDocument();
     expect(screen.queryByTestId('resume-modal')).not.toBeInTheDocument();
   });
 

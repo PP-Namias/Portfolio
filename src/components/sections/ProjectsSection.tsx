@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, ChevronUp, ExternalLink, Code2 } from 'lucide-react';
 import { projects } from '@/data/projects';
+import { useModal } from '@/hooks/useModal';
 
 type SortKey = 'featured' | 'newest' | 'oldest' | 'az';
 
@@ -44,6 +45,7 @@ function sortProjects(sortBy: SortKey) {
 }
 
 export function ProjectsSection() {
+  const { openModal } = useModal();
   const [showAll, setShowAll] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
@@ -274,6 +276,13 @@ export function ProjectsSection() {
                 )}
               </div>
               <div className="flex flex-wrap items-center gap-2 mt-3">
+                <button
+                  type="button"
+                  onClick={() => openModal('project', featured)}
+                  className="inline-flex items-center gap-1 rounded-md border border-border-light dark:border-border-dark px-2.5 py-1 text-xs font-medium text-text-secondary-light dark:text-text-secondary-dark hover:text-accent-pink hover:border-accent-pink/40 transition-colors"
+                >
+                  View details
+                </button>
                 {featured.repositoryURL && (
                   <a
                     href={featured.repositoryURL}
@@ -378,6 +387,14 @@ export function ProjectsSection() {
                         )}
                       </div>
                       <div className="flex items-center gap-1.5 flex-shrink-0">
+                        <button
+                          type="button"
+                          onClick={() => openModal('project', project)}
+                          aria-label={`View details for ${project.title}`}
+                          className="text-[11px] font-medium text-text-muted-light dark:text-text-muted-dark hover:text-accent-pink transition-colors"
+                        >
+                          Details
+                        </button>
                         {project.repositoryURL && (
                           <a
                             href={project.repositoryURL}
