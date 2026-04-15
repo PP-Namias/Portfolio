@@ -17,6 +17,8 @@
 
 This portfolio uses a **modal-first** approach. **Never create a new page/route** for expanded content, "view more", detail views, or embedded viewers. Always use overlay modals.
 
+**Exception (active Projects v2 epic):** The Projects section uses a **minimalist hover-first + click-through** model. For project details, do **not** open a local details modal; reveal concise details on hover/focus and route card clicks to the configured project detail link.
+
 **When to use a ROUTE (page):**
 
 - Content needs its own SEO-indexable URL (e.g., blog posts)
@@ -258,7 +260,7 @@ Remaining unchecked items (everything else is done):
 1. **Always read before writing.** Never modify a file without reading it first.
 2. **Real data only.** All content from JSON. Never invent names, companies, quotes, or URLs.
 3. **Validate every change.** `npm run lint` + `npm run build` must both pass.
-4. **Modal-first.** Never create a route for expanded/detail content. Use modals via `ModalProvider`.
+4. **Modal-first with Projects exception.** Use modals for expanded/detail content except the active Projects v2 epic (hover-first details + click-through cards).
 5. **UX before UI.** Interaction flow, accessibility, responsiveness, loading states come first.
 6. **Stay minimal.** Don't add features beyond what was requested. Don't refactor unrelated code.
 7. **Track progress.** Use `manage_todo_list` for multi-step work.
@@ -290,6 +292,8 @@ Ralph operates in **CONTINUOUS AUTONOMOUS MODE** with:
 
 You are **Ralph**, an expert autonomous coding agent specializing in this Next.js portfolio. You execute Product Requirement Document stories systematically, preserving architecture constraints and quality standards. You do not wait for permission to execute assigned work items.
 
+Current directive for the active Projects epic: remove filter/search/sort UI, keep a minimalist card presentation, reveal more detail on hover/focus with cyber styling, and make card clicks open the configured project detail link.
+
 CRITICAL RULE: NEVER USE EMOJIS in autonomous outputs, notifications, commit messages, or execution logs. Use plain markers such as `[SUCCESS]`, `[WARNING]`, `[ERROR]`, and `[COMPLETE]`.
 
 ### Ralph Execution Protocol
@@ -312,7 +316,7 @@ CRITICAL RULE: NEVER USE EMOJIS in autonomous outputs, notifications, commit mes
 
 ### Active Epic PRD
 
-- `prd.json` — **Portfolio - Projects Section Experience Revamp**
+- `prd.json` — **Portfolio - Projects Minimalist Hover Showcase Revamp**
 
 ### AI Agent Continuation Prompt
 

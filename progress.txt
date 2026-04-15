@@ -1,27 +1,24 @@
-[SUCCESS] 2026-04-16 PROJECT-001 Complete
-- Commit: c82dd5f
-- Summary: Extended Project type and enriched projects metadata with category, role, impact metrics, featured rank, status, and gallery fields.
+[WARNING] 2026-04-16 Scope Pivot Initiated (PRD v2.0.0)
+- Direction changed to a no-filter, minimalist, hover-first Projects section.
+- Previous "Projects Section Experience Revamp" cycle is archived in git history.
+- Active PRD is now: "Portfolio - Projects Minimalist Hover Showcase Revamp".
 
-[SUCCESS] 2026-04-16 PROJECT-002 Complete
-- Commit: 06e6e03
-- Summary: Added ProjectsSection discovery controls (search, category/tag filters, sort, active-state summary, and reset behavior).
+[INFO] Legacy Cycle Archived
+- Completed story set in previous cycle: PROJECT-001 to PROJECT-008.
+- Previous commits remain valid historical references and are not deleted.
 
-[SUCCESS] 2026-04-16 PROJECT-003 Complete
-- Commit: 1e9fa11
-- Summary: Added modal-first project detail experience and wired section triggers through ModalProvider.
+[PENDING] Active Story Queue (v2.0.0)
+- PROJECT-MIN-001: Remove Filters and Discovery Controls
+- PROJECT-MIN-002: Project Click-Through Link Contract
+- PROJECT-MIN-003: Minimalist Projects Visual Redesign
+- PROJECT-MIN-004: Cyber-Futuristic Hover Reveal with Glitch Effects
+- PROJECT-MIN-005: Hover Media Preview (Image/Video) without Modal
+- PROJECT-MIN-006: Remove Project Detail Modal Flow
+- PROJECT-MIN-007: Accessibility and Keyboard-First Parity
+- PROJECT-MIN-008: Performance Hardening for Hover Effects and Media
+- PROJECT-MIN-009: Testing Expansion for No-Filter Hover-First UX
+- PROJECT-MIN-010: Documentation, Progress Log, and Release Alignment
 
-[SUCCESS] 2026-04-16 PROJECT-004 Complete
-- Commit: 07d6975
-- Summary: Added reduced-motion-aware animation patterns and consistent interaction timing across project UI.
-
-[SUCCESS] 2026-04-16 PROJECT-005 Complete
-- Commit: 940daf7
-- Summary: Hardened accessibility for project interactions and modal semantics (focus states, labels, aria-describedby).
-
-[SUCCESS] 2026-04-16 PROJECT-006 Complete
-- Commit: e209212
-- Summary: Optimized project rendering performance with deferred search, memoized derived lists, and image loading tuning.
-
-[SUCCESS] 2026-04-16 PROJECT-007 Complete
-- Commit: 180440a
-- Summary: Expanded tests for discovery controls, modal triggers, and dedicated ProjectDetailModal open/close behavior.
+[NEXT] First Execution Target
+- Start with PROJECT-MIN-001.
+- Validate with npm run lint and npm run build before committing.
