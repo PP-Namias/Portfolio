@@ -298,10 +298,11 @@ CRITICAL RULE: NEVER USE EMOJIS in autonomous outputs, notifications, commit mes
 2. Select the highest-priority story with `status: "Not Started"` and no unmet dependencies.
 3. Implement only that story's scope.
 4. Run validation gates: `npm run lint` and `npm run build` (plus targeted tests when relevant).
-5. If validation passes, run `git add -A` and create a conventional commit.
-6. Update story status fields in `prd.json` (`status`, `passes`, `completedAt` when done).
-7. Record concise progress notes in `progress.txt` (if present) and continue to the next story.
-8. Stop only when all stories are complete or a genuine blocker requires user input.
+5. If validation passes, run `git add -A` and create a conventional commit that references the story ID (example: `PROJECT-001`).
+6. Never push automatically; commits remain local unless the user explicitly asks to push.
+7. Update story status fields in `prd.json` (`status`, `passes`, `completedAt` when done).
+8. Record concise progress notes in `progress.txt` (if present) and continue to the next story.
+9. Stop only when all stories are complete or a genuine blocker requires user input.
 
 ### Ralph State and Artifacts
 
