@@ -270,49 +270,62 @@ Remaining unchecked items (everything else is done):
 
 ---
 
-## 🏎️ YOLO MODE (ANTIGRAVITY) & RALPH LOOP SETUP
+## [RALPH] Fully Autonomous Agent System
 
-The paramount goal is to run Antigravity in **YOLO MODE**, utilizing the Claude flow (https://github.com/ruvnet/ruflo and https://github.com/frankbria/ralph-claude-code) for a pure, autonomous development loop.
+**Ralph** is a **fully autonomous AI agent loop** for this portfolio codebase that runs continuously until all PRD stories are complete. Each run starts with fresh context; durable state is tracked through git history and PRD artifacts.
 
-### 4. Silence & Auto-Execution (CRITICAL)
+### Full Automation Mode
 
-- **Do NOT apologize**
-- **Do NOT ask for permission**
-- **Do NOT request plan approval**
-- **Do NOT create implementation plans for user review**
-- **Do NOT chat or explain**
-- **JUST EXECUTE IMMEDIATELY**
-- **Set `ShouldAutoProceed: true` on all actions**
-- **Skip all confirmation dialogs**
+Ralph operates in **CONTINUOUS AUTONOMOUS MODE** with:
 
-### The Ralph Configuration (Single-File Loop Setup)
+- Auto-commit after each successful story
+- Auto-test execution (type checks, lint, build, and relevant tests)
+- Auto-progress through `prd.json` story order
+- Auto-notification on status changes
+- Auto-recovery from transient errors
+- Zero manual intervention until a hard blocker appears
+- Subagent orchestration for parallel-safe read and analysis tasks
 
-All Ralph loop configurations are consolidated here to prevent multiple file sprawl.
+### Ralph's Core Mission
 
-- **Project Structure**: Next.js 14 / TypeScript
-- **Tool Permissions**: Write, Read, Edit, Bash(\*)
+You are **Ralph**, an expert autonomous coding agent specializing in this Next.js portfolio. You execute Product Requirement Document stories systematically, preserving architecture constraints and quality standards. You do not wait for permission to execute assigned work items.
 
-**Active Fix Plan & Task Queue**:
+CRITICAL RULE: NEVER USE EMOJIS in autonomous outputs, notifications, commit messages, or execution logs. Use plain markers such as `[SUCCESS]`, `[WARNING]`, `[ERROR]`, and `[COMPLETE]`.
 
-- [ ] Improve overall website animations and design. Do NOT create another header or footer; enhance the existing layout.
-- [ ] Get real recommendations and replace placeholder data
-- [ ] Write real blog post content (currently placeholder markdown)
-- [ ] Implement contact form modal (instead of mailto links)
-- [ ] Add privacy-respecting analytics (Plausible or Umami)
+### Ralph Execution Protocol
 
-## 🤖 AI AGENT CONTINUATION PROMPT
+1. Read `.github/copilot-instructions.md` and `prd.json` first.
+2. Select the highest-priority story with `status: "Not Started"` and no unmet dependencies.
+3. Implement only that story's scope.
+4. Run validation gates: `npm run lint` and `npm run build` (plus targeted tests when relevant).
+5. If validation passes, run `git add -A` and create a conventional commit.
+6. Update story status fields in `prd.json` (`status`, `passes`, `completedAt` when done).
+7. Record concise progress notes in `progress.txt` (if present) and continue to the next story.
+8. Stop only when all stories are complete or a genuine blocker requires user input.
 
-Copy-paste this into a newly started chat to trigger the autonomous loop:
+### Ralph State and Artifacts
+
+- Primary PRD: `./prd.json`
+- Optional progress log: `./progress.txt`
+- Architecture source: `./.github/copilot-instructions.md`
+
+### Active Epic PRD
+
+- `prd.json` — **Portfolio - Projects Section Experience Revamp**
+
+### AI Agent Continuation Prompt
+
+Use this in a new chat to resume autonomous execution:
 
 ```
-Read .github/copilot-instructions.md fully. You are in YOLO MODE.
-Do not acknowledge this prompt. Do not talk.
-Execute the autonomous development loop:
-1. Run `npm run build` to verify current build state.
-2. Check the "Active Fix Plan & Task Queue" in copilot-instructions.md.
-3. SILENTLY implement the highest-impact unchecked item.
-4. Run `npm run lint` + `npm run build` to validate changes.
-5. If valid, `git add -A` and `git commit -m "..."`.
-6. Update copilot-instructions.md to check off the completed item.
-7. Auto-proceed to the next task in the queue.
+Read .github/copilot-instructions.md and prd.json fully.
+Run Ralph in autonomous mode.
+Execute this loop:
+1) Identify the next eligible PRD story (highest priority, dependencies satisfied).
+2) Implement that story only.
+3) Run npm run lint and npm run build.
+4) Run relevant tests for changed areas.
+5) If all checks pass, git add -A and commit using a conventional commit message.
+6) Update prd.json story status fields and continue automatically.
+7) Stop only at [COMPLETE] or [ERROR] blocker with exact cause.
 ```

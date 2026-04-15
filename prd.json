@@ -1,0 +1,263 @@
+{
+  "projectName": "Portfolio - Projects Section Experience Revamp",
+  "version": "1.0.0",
+  "branchName": "feature/projects-section-experience-revamp",
+  "description": "Epic-level PRD to redesign and harden the Projects section into a high-converting, accessible, modal-first showcase with richer discovery, filtering, detail views, and measurable UX quality improvements.",
+  "owner": "AI Agent (Ralph)",
+  "startedDate": "2026-04-16",
+  "targetCompletion": "2026-04-26",
+  "scope": {
+    "inScope": [
+      "Projects section information architecture and interaction model",
+      "Client-side search/filter/sort for project discovery",
+      "Project detail modal (no new route) aligned with modal-first architecture",
+      "Data model improvements for projects metadata",
+      "Accessibility and keyboard support",
+      "Motion and micro-interactions with reduced-motion compliance",
+      "Performance hardening for images and rendering",
+      "Automated tests and documentation updates"
+    ],
+    "outOfScope": [
+      "Creating new SEO routes/pages for project details",
+      "Replacing existing portfolio owner profile content",
+      "Adding unrelated sections or redesigning header/footer",
+      "Changing blog architecture"
+    ]
+  },
+  "constraints": {
+    "architecture": [
+      "Modal-first pattern is mandatory for expanded project detail views",
+      "No additional routes for project details",
+      "Use existing Tailwind token classes for light/dark compatibility",
+      "Use data from portfolio-resources/data/projects.json as source of truth"
+    ],
+    "qualityGates": [
+      "npm run lint passes",
+      "npm run build passes",
+      "Relevant Vitest suites pass",
+      "No accessibility regressions for keyboard-only users"
+    ]
+  },
+  "existingFoundation": {
+    "projectSection": "src/components/sections/ProjectsSection.tsx - featured card + compact list + View all/Show less toggle",
+    "projectCard": "src/components/ui/ProjectCard.tsx - reusable card component variant",
+    "dataLayer": "src/data/projects.ts importing portfolio-resources/data/projects.json",
+    "types": "src/types/index.ts -> Project interface",
+    "tests": "src/__tests__/components/sections-uncovered.test.tsx includes baseline ProjectsSection behavior assertions",
+    "stylingAndMotion": "Tailwind + Framer Motion patterns already used across sections",
+    "modalInfrastructure": "src/hooks/useModal.tsx + src/components/ui/Modal.tsx available for expansion"
+  },
+  "successMetrics": {
+    "ux": "Users can discover a project within 2 interactions using search/filter/sort",
+    "a11y": "All project interactions keyboard accessible with clear focus states and semantic labels",
+    "performance": "No noticeable layout shifts in Projects section; image rendering optimized for mobile and desktop",
+    "quality": "Lint/build/test gates pass with zero failures",
+    "consistency": "Projects section follows portfolio design tokens and modal-first rules",
+    "maintainability": "PRD-driven implementation documented and linked in copilot instructions"
+  },
+  "stories": [
+    {
+      "id": "PROJECT-001",
+      "title": "Data Model Upgrade for Project Metadata",
+      "priority": 1,
+      "phase": "Phase 1: Foundation",
+      "status": "Not Started",
+      "passes": false,
+      "acceptanceCriteria": [
+        "Extend Project type in src/types/index.ts for richer metadata (category, role, impactMetrics, featuredRank, status, and optional gallery)",
+        "Update portfolio-resources/data/projects.json with non-placeholder real metadata only",
+        "Keep backward compatibility for existing fields: title, image, description, repositoryURL, liveURL, processURL, tags, year",
+        "Ensure src/data/projects.ts compiles without unsafe casts",
+        "Document optional vs required fields clearly in PRD/progress updates"
+      ],
+      "technicalNotes": {
+        "files": [
+          "src/types/index.ts",
+          "portfolio-resources/data/projects.json",
+          "src/data/projects.ts"
+        ],
+        "risk": "Type drift between JSON data and TS interfaces"
+      },
+      "dependencies": []
+    },
+    {
+      "id": "PROJECT-002",
+      "title": "ProjectsSection Discovery Layer (Search + Filters + Sort)",
+      "priority": 1,
+      "phase": "Phase 2: Discoverability",
+      "status": "Not Started",
+      "passes": false,
+      "acceptanceCriteria": [
+        "Add client-side keyword search by title, description, and tags",
+        "Add filter chips/selectors for category and tech tags",
+        "Add sort options (newest, oldest, featured, A-Z)",
+        "Display active filter state and total result count",
+        "Provide one-click reset for all filters",
+        "Preserve existing View all/Show less behavior when no filters are active"
+      ],
+      "technicalNotes": {
+        "file": "src/components/sections/ProjectsSection.tsx",
+        "state": "Prefer memoized derived state for filtered/sorted list"
+      },
+      "dependencies": [
+        "PROJECT-001"
+      ]
+    },
+    {
+      "id": "PROJECT-003",
+      "title": "Project Detail Modal (Modal-First Expansion)",
+      "priority": 1,
+      "phase": "Phase 3: Deep Dive UX",
+      "status": "Not Started",
+      "passes": false,
+      "acceptanceCriteria": [
+        "Create ProjectDetailModal in src/components/ui using existing Modal wrapper",
+        "Open modal from featured and list cards using a clear CTA (e.g., View Details)",
+        "Render extended details: summary, stack, role, impact metrics, and links",
+        "Modal supports ESC close, backdrop close, and explicit close button",
+        "No new page routes introduced"
+      ],
+      "technicalNotes": {
+        "files": [
+          "src/components/ui/ProjectDetailModal.tsx",
+          "src/components/sections/ProjectsSection.tsx",
+          "src/hooks/useModal.tsx",
+          "src/types/index.ts"
+        ],
+        "architecture": "Must follow existing modal registration pattern"
+      },
+      "dependencies": [
+        "PROJECT-001",
+        "PROJECT-002"
+      ]
+    },
+    {
+      "id": "PROJECT-004",
+      "title": "Visual Polish and Motion System for Projects",
+      "priority": 2,
+      "phase": "Phase 4: Interaction Quality",
+      "status": "Not Started",
+      "passes": false,
+      "acceptanceCriteria": [
+        "Enhance card hover/focus micro-interactions with consistent timings",
+        "Add staggered reveal for filtered results without layout jitter",
+        "Respect prefers-reduced-motion across section interactions",
+        "Maintain theme token compliance in light and dark modes"
+      ],
+      "technicalNotes": {
+        "files": [
+          "src/components/sections/ProjectsSection.tsx",
+          "src/components/ui/ProjectCard.tsx"
+        ],
+        "motion": "Use Framer Motion patterns already used in other sections"
+      },
+      "dependencies": [
+        "PROJECT-002"
+      ]
+    },
+    {
+      "id": "PROJECT-005",
+      "title": "Accessibility Hardening for Projects Interactions",
+      "priority": 1,
+      "phase": "Phase 5: Accessibility",
+      "status": "Not Started",
+      "passes": false,
+      "acceptanceCriteria": [
+        "Ensure all interactive controls are keyboard reachable and operable",
+        "Add/verify semantic labels for icon-only links and control buttons",
+        "Provide visible focus indicators on all project controls",
+        "Ensure modal content has logical heading order and screen-reader clarity",
+        "Validate that filter and sort controls announce state changes"
+      ],
+      "technicalNotes": {
+        "files": [
+          "src/components/sections/ProjectsSection.tsx",
+          "src/components/ui/ProjectDetailModal.tsx"
+        ],
+        "validation": "Manual keyboard walk-through + test assertions"
+      },
+      "dependencies": [
+        "PROJECT-003"
+      ]
+    },
+    {
+      "id": "PROJECT-006",
+      "title": "Performance Optimization for Project Media and Rendering",
+      "priority": 2,
+      "phase": "Phase 6: Performance",
+      "status": "Not Started",
+      "passes": false,
+      "acceptanceCriteria": [
+        "Audit Next/Image usage (sizes, priority, lazy loading) in project cards",
+        "Prevent layout shifts with explicit dimensions and stable containers",
+        "Avoid unnecessary re-renders for filtered/sorted lists",
+        "Keep interactions smooth on mobile under large tag sets"
+      ],
+      "technicalNotes": {
+        "files": [
+          "src/components/sections/ProjectsSection.tsx",
+          "src/components/ui/ProjectCard.tsx"
+        ],
+        "approach": "Memoization + conservative animation settings"
+      },
+      "dependencies": [
+        "PROJECT-002",
+        "PROJECT-004"
+      ]
+    },
+    {
+      "id": "PROJECT-007",
+      "title": "Test Coverage Expansion for Projects Epic",
+      "priority": 1,
+      "phase": "Phase 7: Quality",
+      "status": "Not Started",
+      "passes": false,
+      "acceptanceCriteria": [
+        "Add tests for search, filters, sorting, and reset behavior",
+        "Add tests for opening/closing ProjectDetailModal",
+        "Add keyboard accessibility tests for core interactions",
+        "Update existing ProjectsSection tests to cover new states",
+        "All project-related tests pass in CI"
+      ],
+      "technicalNotes": {
+        "files": [
+          "src/__tests__/components/sections-uncovered.test.tsx",
+          "src/__tests__/components/ui-uncovered.test.tsx",
+          "src/__tests__/components/ProjectDetailModal.test.tsx"
+        ],
+        "framework": "Vitest + Testing Library"
+      },
+      "dependencies": [
+        "PROJECT-003",
+        "PROJECT-005"
+      ]
+    },
+    {
+      "id": "PROJECT-008",
+      "title": "Documentation and Agent Loop Alignment",
+      "priority": 2,
+      "phase": "Phase 8: Delivery",
+      "status": "Not Started",
+      "passes": false,
+      "acceptanceCriteria": [
+        "Update .github/copilot-instructions.md Ralph section to reference PRD-first execution",
+        "Document project epic status markers in progress tracking file if used",
+        "Keep instructions consistent with no-push autocommit policy",
+        "Ensure implementation steps map to PRD story IDs"
+      ],
+      "technicalNotes": {
+        "files": [
+          ".github/copilot-instructions.md",
+          "prd.json"
+        ],
+        "note": "This story enables reliable autonomous execution and auditability"
+      },
+      "dependencies": [
+        "PROJECT-001",
+        "PROJECT-002",
+        "PROJECT-003",
+        "PROJECT-007"
+      ]
+    }
+  ]
+}
