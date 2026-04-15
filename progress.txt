@@ -47,3 +47,27 @@
 
 [NEXT]
 - Start development server for interactive manual verification.
+
+[WARNING] 2026-04-16 Scope Correction Applied (PRD v2.2.0)
+- User feedback required restoring project modal behavior in the Projects section.
+- No-filter, hover-first card presentation is preserved.
+
+[SUCCESS] PROJECT-MIN-013 Complete
+- Restored `project` modal support in `ModalName` and `ModalProvider` with active project payload state.
+- Reintroduced `ProjectDetailModal` with media preview, tech stack, impact highlights, and external action links.
+- Updated `ProjectsSection` to open project modal on full-card click instead of direct external navigation.
+- Updated targeted tests and planning artifacts for modal-first project detail flow.
+
+[VALIDATION] 2026-04-16 (PROJECT-MIN-013 targeted)
+- npm run test -- src/__tests__/hooks/useModal.test.tsx src/__tests__/components/sections-uncovered.test.tsx src/__tests__/components/ProjectDetailModal.test.tsx: PASS (3 files, 25 tests)
+
+[VALIDATION] 2026-04-16 (PROJECT-MIN-013 full gates)
+- npm run lint: PASS
+- npm run build: PASS
+- npm run test -- --run: PASS (22 files, 242 tests)
+
+[SUCCESS] 2026-04-16 Dev server ready
+- next dev started successfully on `http://localhost:3001` (3000 already in use).
+
+[NEXT]
+- Manual UX verification: open a project card, confirm modal content loads, and verify outbound links open correctly.

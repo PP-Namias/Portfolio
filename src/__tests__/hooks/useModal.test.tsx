@@ -38,6 +38,25 @@ vi.mock('@/components/ui/BookingModal', () => ({
   ),
 }));
 
+vi.mock('@/components/ui/ProjectDetailModal', () => ({
+  ProjectDetailModal: ({
+    open,
+    onClose,
+    project,
+  }: {
+    open: boolean;
+    onClose: () => void;
+    project: { title?: string } | null;
+  }) => (
+    open ? (
+      <div data-testid="project-modal">
+        <span>{project?.title}</span>
+        <button onClick={onClose}>Close Project</button>
+      </div>
+    ) : null
+  ),
+}));
+
 // Mock data modules used by modal components
 vi.mock('@/data/experience', () => ({
   experiences: [],
@@ -45,11 +64,25 @@ vi.mock('@/data/experience', () => ({
 
 function TestConsumer() {
   const { openModal, closeModal } = useModal();
+
+  const project = {
+    title: 'Modal Project',
+    image: 'modal-project.png',
+    description: 'Modal-enabled project',
+    repositoryURL: null,
+    liveURL: null,
+    processURL: null,
+    detailURL: 'https://example.com/modal-project',
+    tags: ['React', 'TypeScript'],
+    year: 2026,
+  };
+
   return (
     <div>
       <button onClick={() => openModal('resume')}>Open Resume</button>
       <button onClick={() => openModal('experience')}>Open Experience</button>
       <button onClick={() => openModal('booking')}>Open Booking</button>
+      <button onClick={() => openModal('project', project)}>Open Project</button>
       <button onClick={closeModal}>Close Modal</button>
     </div>
   );
@@ -69,6 +102,7 @@ describe('useModal / ModalProvider', () => {
     expect(screen.queryByTestId('resume-modal')).not.toBeInTheDocument();
     expect(screen.queryByTestId('experience-modal')).not.toBeInTheDocument();
     expect(screen.queryByTestId('booking-modal')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('project-modal')).not.toBeInTheDocument();
   });
 
   it('opens resume modal', () => {
@@ -90,6 +124,14 @@ describe('useModal / ModalProvider', () => {
     renderWithProvider();
     fireEvent.click(screen.getByText('Open Booking'));
     expect(screen.getByTestId('booking-modal')).toBeInTheDocument();
+    expect(screen.queryByTestId('resume-modal')).not.toBeInTheDocument();
+  });
+
+  it('opens project modal with active project payload', () => {
+    renderWithProvider();
+    fireEvent.click(screen.getByText('Open Project'));
+    expect(screen.getByTestId('project-modal')).toBeInTheDocument();
+    expect(screen.getByText('Modal Project')).toBeInTheDocument();
     expect(screen.queryByTestId('resume-modal')).not.toBeInTheDocument();
   });
 
@@ -119,5 +161,14 @@ describe('useModal / ModalProvider', () => {
 
     fireEvent.click(screen.getByText('Close Booking'));
     expect(screen.queryByTestId('booking-modal')).not.toBeInTheDocument();
+  });
+
+  it('project modal onClose callback works', () => {
+    renderWithProvider();
+    fireEvent.click(screen.getByText('Open Project'));
+    expect(screen.getByTestId('project-modal')).toBeInTheDocument();
+
+    fireEvent.click(screen.getByText('Close Project'));
+    expect(screen.queryByTestId('project-modal')).not.toBeInTheDocument();
   });
 });

@@ -17,7 +17,7 @@
 
 This portfolio uses a **modal-first** approach. **Never create a new page/route** for expanded content, "view more", detail views, or embedded viewers. Always use overlay modals.
 
-**Exception (active Projects v2 epic):** The Projects section uses a **minimalist hover-first + click-through** model. For project details, do **not** open a local details modal; reveal concise details on hover/focus and route card clicks to the configured project detail link.
+**Exception (active Projects v2.2 epic):** The Projects section uses a **minimalist hover-first + modal-first details** model. Reveal concise details on hover/focus, then open the local project details modal on card click. Keep external project links available from inside the modal.
 
 **When to use a ROUTE (page):**
 
@@ -47,6 +47,7 @@ This portfolio uses a **modal-first** approach. **Never create a new page/route*
 | `resume`     | Hero CTA, HubMenu             | Embedded PDF viewer + download button     |
 | `experience` | "View Full Experience" button | Full experience timeline with all details |
 | `booking`    | HubMenu, ConnectSection       | Cal.com scheduling iframe (15min/30min)   |
+| `project`    | Project card click            | Project details, metrics, and external links |
 
 **How to add a new modal:**
 
@@ -134,7 +135,7 @@ Every task MUST follow: **ANALYZE → PLAN → IMPLEMENT → VALIDATE → REPORT
 │   │   │       RecommendationsCarousel,Memberships,Speaking,Connect,Gallery}Section.tsx
 │   │   └── ui/                        # Reusable UI primitives
 │   │       ├── Modal.tsx              # Base modal (backdrop, ESC, focus trap, scroll lock, Framer Motion)
-│   │       ├── {Resume,Experience,Booking}Modal.tsx  # Content modals
+│   │       ├── {Resume,Experience,Booking,ProjectDetail}Modal.tsx  # Content modals
 │   │       ├── {FloatingHub,HubMenu,HubMenuItem,ChatPanel,ChatMessage}.tsx  # Hub widget
 │   │       ├── {Button,Card,ProjectCard,TimelineItem,VerifiedBadge}.tsx
 │   │       └── {ThemeToggle,ColorSchemePicker,ReadingProgress}.tsx
@@ -260,7 +261,7 @@ Remaining unchecked items (everything else is done):
 1. **Always read before writing.** Never modify a file without reading it first.
 2. **Real data only.** All content from JSON. Never invent names, companies, quotes, or URLs.
 3. **Validate every change.** `npm run lint` + `npm run build` must both pass.
-4. **Modal-first with Projects exception.** Use modals for expanded/detail content except the active Projects v2 epic (hover-first details + click-through cards).
+4. **Modal-first with Projects behavior.** Use modals for expanded/detail content; Projects uses hover-first preview with project-detail modal on click.
 5. **UX before UI.** Interaction flow, accessibility, responsiveness, loading states come first.
 6. **Stay minimal.** Don't add features beyond what was requested. Don't refactor unrelated code.
 7. **Track progress.** Use `manage_todo_list` for multi-step work.
@@ -292,7 +293,7 @@ Ralph operates in **CONTINUOUS AUTONOMOUS MODE** with:
 
 You are **Ralph**, an expert autonomous coding agent specializing in this Next.js portfolio. You execute Product Requirement Document stories systematically, preserving architecture constraints and quality standards. You do not wait for permission to execute assigned work items.
 
-Current directive for the active Projects epic: remove filter/search/sort UI, keep a minimalist card presentation, reveal more detail on hover/focus with cyber styling, and make card clicks open the configured project detail link.
+Current directive for the active Projects epic: remove filter/search/sort UI, keep a minimalist card presentation, reveal more detail on hover/focus with cyber styling, and make card clicks open the project detail modal with outbound links inside.
 
 CRITICAL RULE: NEVER USE EMOJIS in autonomous outputs, notifications, commit messages, or execution logs. Use plain markers such as `[SUCCESS]`, `[WARNING]`, `[ERROR]`, and `[COMPLETE]`.
 

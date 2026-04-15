@@ -1,8 +1,8 @@
 {
   "projectName": "Portfolio - Projects Minimalist Hover Showcase Revamp",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "branchName": "feature/projects-minimalist-hover-showcase",
-  "description": "Epic to fully transition the Projects section from filter-heavy interactions to a minimalist hover-first showcase with cyber-futuristic glitch detail reveals and full-card click-through navigation.",
+  "description": "Epic to fully transition the Projects section from filter-heavy interactions to a minimalist hover-first showcase with cyber-futuristic glitch detail reveals and full-card project-modal navigation.",
   "owner": "AI Agent (Ralph)",
   "startedDate": "2026-04-16",
   "targetCompletion": "2026-05-03",
@@ -17,14 +17,23 @@
       "Open detailed project view via card click to a configured destination link"
     ]
   },
+  "hotfixRequest": {
+    "requestedBy": "Portfolio owner",
+    "requestedAt": "2026-04-16",
+    "reason": [
+      "Restore and fix project detail modal behavior for the Projects section",
+      "Keep the no-filter, hover-first visual model while using modal-first details on click",
+      "Ensure project links remain available from within the modal"
+    ]
+  },
   "scope": {
     "inScope": [
       "Remove discovery controls (search/filter/sort/reset)",
       "Adopt minimalist card-first visual language",
       "Implement hover/focus cyber detail reveal with controlled glitch effects",
       "Support optional hover media preview (video when available, image fallback)",
-      "Make the project card itself the primary navigation target",
-      "Remove project modal flow from section/provider/types/tests",
+      "Make the project card itself the primary interaction target",
+      "Restore project modal flow in section/provider/types/tests",
       "Preserve accessibility, reduced-motion, and keyboard parity",
       "Preserve lint/build/test quality gates",
       "Update docs and progress tracking"
@@ -38,8 +47,8 @@
   },
   "constraints": {
     "architecture": [
-      "Projects section uses hover-first + click-through interactions",
-      "No local project detail modal in active Projects epic",
+      "Projects section uses hover-first + click-to-modal interactions",
+      "Project links open from within the project detail modal",
       "No additional page route for project details",
       "Use existing Tailwind light/dark token classes",
       "Use portfolio-resources/data/projects.json as source of truth",
@@ -53,22 +62,22 @@
     ]
   },
   "existingFoundation": {
-    "projectSection": "src/components/sections/ProjectsSection.tsx currently includes search/filter/sort and modal-detail triggers",
+    "projectSection": "src/components/sections/ProjectsSection.tsx currently uses no-filter minimalist cards with hover/focus reveal and full-card modal trigger",
     "projectCard": "src/components/ui/ProjectCard.tsx reusable project summary card",
-    "projectModal": "src/components/ui/ProjectDetailModal.tsx currently used by ModalProvider",
-    "modalProvider": "src/hooks/useModal.tsx currently registers project modal state",
+    "projectModal": "src/components/ui/ProjectDetailModal.tsx renders media, details, links, and metrics",
+    "modalProvider": "src/hooks/useModal.tsx registers project modal state with active project payload",
     "dataLayer": "src/data/projects.ts imports portfolio-resources/data/projects.json",
-    "types": "src/types/index.ts Project and ModalName include project-modal support",
+    "types": "src/types/index.ts Project and ModalName include project-modal support and detailURL fallback",
     "tests": "src/__tests__/components/sections-uncovered.test.tsx, src/__tests__/hooks/useModal.test.tsx, src/__tests__/components/ProjectDetailModal.test.tsx"
   },
   "successMetrics": {
     "ux": "Projects section contains zero filter/search/sort controls and looks intentionally minimalist",
     "interaction": "Hover/focus reveals cyber-styled details within 150ms without forcing click",
-    "navigation": "Clicking/focusing-and-activating a project card opens detailURL/liveURL/repositoryURL fallback",
+    "navigation": "Clicking/focusing-and-activating a project card opens the local project modal with detailURL/liveURL/repositoryURL actions",
     "a11y": "Keyboard users can access the same reveal information via focus states",
     "performance": "No noticeable layout shift during hover or media transitions",
     "quality": "Lint/build/tests all pass",
-    "maintainability": "PRD, progress, and instructions align with hover-first direction"
+    "maintainability": "PRD, progress, and instructions align with hover-first + modal-first project detail direction"
   },
   "stories": [
     {
@@ -224,6 +233,7 @@
       "priority": 1,
       "phase": "Phase 7: Modal Cleanup",
       "status": "Complete",
+      "supersededBy": "PROJECT-MIN-013",
       "passes": true,
       "completedAt": "2026-04-16T04:34:00Z",
       "acceptanceCriteria": [
@@ -375,6 +385,39 @@
       "dependencies": [
         "PROJECT-MIN-011",
         "PROJECT-MIN-010"
+      ]
+    },
+    {
+      "id": "PROJECT-MIN-013",
+      "title": "Restore Project Detail Modal Flow After User Feedback",
+      "priority": 1,
+      "phase": "Phase 13: Post-Release Hotfix",
+      "status": "Complete",
+      "passes": true,
+      "completedAt": "2026-04-16T05:10:00Z",
+      "acceptanceCriteria": [
+        "Reintroduce project modal in modal union/provider runtime",
+        "Wire project card click interaction to open project modal with payload",
+        "Provide external project actions from inside the modal",
+        "Update tests and planning docs to match restored modal flow"
+      ],
+      "technicalNotes": {
+        "files": [
+          "src/components/sections/ProjectsSection.tsx",
+          "src/components/ui/ProjectDetailModal.tsx",
+          "src/hooks/useModal.tsx",
+          "src/types/index.ts",
+          "src/__tests__/components/sections-uncovered.test.tsx",
+          "src/__tests__/hooks/useModal.test.tsx",
+          "src/__tests__/components/ProjectDetailModal.test.tsx",
+          "prd.json",
+          "progress.txt",
+          ".github/copilot-instructions.md"
+        ],
+        "note": "Keeps no-filter hover-first visual model while restoring modal-first project details"
+      },
+      "dependencies": [
+        "PROJECT-MIN-012"
       ]
     }
   ]
