@@ -26,25 +26,8 @@ function resolveProjectTarget(project: Project): string | null {
   return project.detailURL || project.liveURL || project.repositoryURL || null;
 }
 
-function renderProjectPreviewMedia(project: Project, isActive: boolean, isPriority: boolean) {
-  const shouldShowVideoPreview = Boolean(project.previewVideoURL && isActive);
+function renderProjectPreviewMedia(project: Project, isPriority: boolean) {
   const hasImagePreview = Boolean(project.image && project.image !== 'placeholder.png');
-
-  if (shouldShowVideoPreview) {
-    return (
-      <video
-        key={`${project.title}-preview-video`}
-        src={project.previewVideoURL ?? undefined}
-        className="h-full w-full object-cover"
-        muted
-        loop
-        autoPlay
-        playsInline
-        preload="none"
-        aria-label={`Preview video for ${project.title}`}
-      />
-    );
-  }
 
   if (hasImagePreview) {
     return (
@@ -54,7 +37,7 @@ function renderProjectPreviewMedia(project: Project, isActive: boolean, isPriori
         fill
         sizes="(max-width: 768px) 100vw, 700px"
         priority={isPriority}
-        className="object-cover transition-transform duration-500 group-hover:scale-105 group-focus-within:scale-105 motion-reduce:transform-none"
+        className="object-cover transition-transform duration-500 ease-out group-hover:scale-110 group-focus-within:scale-110 motion-reduce:transform-none"
       />
     );
   }
@@ -66,38 +49,12 @@ function renderProjectPreviewMedia(project: Project, isActive: boolean, isPriori
   );
 }
 
-function ProjectTitleGlitch({ title, isActive }: Readonly<{ title: string; isActive: boolean }>) {
-  return (
-    <>
-      <motion.span
-        aria-hidden
-        className="pointer-events-none absolute inset-0 text-sm font-semibold leading-snug text-cyan-300 mix-blend-screen"
-        animate={isActive ? { x: [0, -1, 1, 0], opacity: [0, 0.6, 0.2, 0.55] } : { x: 0, opacity: 0 }}
-        transition={{ duration: 0.28, repeat: isActive ? Infinity : 0, repeatDelay: 0.35 }}
-      >
-        {title}
-      </motion.span>
-
-      <motion.span
-        aria-hidden
-        className="pointer-events-none absolute inset-0 text-sm font-semibold leading-snug text-fuchsia-300 mix-blend-screen"
-        animate={isActive ? { x: [0, 1, -1, 0], opacity: [0, 0.55, 0.15, 0.45] } : { x: 0, opacity: 0 }}
-        transition={{ duration: 0.3, repeat: isActive ? Infinity : 0, repeatDelay: 0.4 }}
-      >
-        {title}
-      </motion.span>
-    </>
-  );
-}
-
 interface ProjectInteractionLayerProps {
   target: string | null;
   title: string;
-  onActivate: () => void;
-  onDeactivate: () => void;
 }
 
-function ProjectInteractionLayer({ target, title, onActivate, onDeactivate }: Readonly<ProjectInteractionLayerProps>) {
+function ProjectInteractionLayer({ target, title }: Readonly<ProjectInteractionLayerProps>) {
   if (!target) {
     return <div aria-hidden className="absolute inset-0 z-30 rounded-xl" />;
   }
@@ -109,52 +66,9 @@ function ProjectInteractionLayer({ target, title, onActivate, onDeactivate }: Re
       rel="noopener noreferrer"
       aria-label={`Open project link for ${title}`}
       className="absolute inset-0 z-30 rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-pink/60"
-      onFocus={onActivate}
-      onBlur={onDeactivate}
     >
       <span className="sr-only">Open project link for {title}</span>
     </a>
-  );
-}
-
-interface ProjectHoverPreviewProps {
-  project: Project;
-  target: string | null;
-  isActive: boolean;
-  reduceMotion: boolean;
-}
-
-function ProjectHoverPreview({ project, target, isActive, reduceMotion }: Readonly<ProjectHoverPreviewProps>) {
-  const hoverPreviewAnimation = reduceMotion || isActive ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 6, scale: 0.98 };
-
-  return (
-    <motion.div
-      initial={false}
-      animate={hoverPreviewAnimation}
-      transition={
-        reduceMotion
-          ? { duration: 0 }
-          : { duration: 0.2, ease: [0.25, 0.1, 0.25, 1] as [number, number, number, number] }
-      }
-      className="pointer-events-none absolute inset-3 z-20 flex items-end"
-      aria-hidden={!isActive && !reduceMotion}
-    >
-      <div className="w-full rounded-xl border border-accent-pink/40 bg-black/75 p-3 text-white shadow-2xl backdrop-blur-md">
-        <div className="flex items-center justify-between text-[11px]">
-          <span className="font-medium text-accent-pink">Modal-style hover preview</span>
-          <span className="text-white/70">{project.year}</span>
-        </div>
-        <p className="mt-1 line-clamp-3 text-[11px] leading-relaxed text-white/90">{project.description}</p>
-        {project.impactMetrics && project.impactMetrics.length > 0 && (
-          <p className="mt-1 text-[10px] text-cyan-200">
-            {project.impactMetrics[0].label}: {project.impactMetrics[0].value}
-          </p>
-        )}
-        <p className="mt-2 text-[10px] font-medium text-white/80">
-          {target ? 'Click card to open project link' : 'Preview only — no project link configured'}
-        </p>
-      </div>
-    </motion.div>
   );
 }
 
@@ -163,9 +77,6 @@ interface ProjectShowcaseCardProps {
   index: number;
   reduceMotion: boolean;
   showAll: boolean;
-  isActive: boolean;
-  onActivate: () => void;
-  onDeactivate: () => void;
 }
 
 function ProjectShowcaseCard({
@@ -173,13 +84,9 @@ function ProjectShowcaseCard({
   index,
   reduceMotion,
   showAll,
-  isActive,
-  onActivate,
-  onDeactivate,
 }: Readonly<ProjectShowcaseCardProps>) {
   const target = resolveProjectTarget(project);
-  const revealAnimation = reduceMotion || isActive ? { opacity: 1, y: 0 } : { opacity: 0.6, y: 2 };
-  const previewMedia = renderProjectPreviewMedia(project, isActive, index === 0 && !showAll);
+  const previewMedia = renderProjectPreviewMedia(project, index === 0 && !showAll);
 
   const cardTransition = reduceMotion
     ? { duration: 0 }
@@ -190,36 +97,18 @@ function ProjectShowcaseCard({
       key={project.title}
       initial={reduceMotion ? undefined : { opacity: 0, y: 10 }}
       whileInView={reduceMotion ? undefined : { opacity: 1, y: 0 }}
-      whileHover={reduceMotion ? undefined : { y: -2 }}
       viewport={{ once: true }}
       transition={cardTransition}
-      onMouseEnter={onActivate}
-      onMouseLeave={onDeactivate}
       className={`group relative overflow-hidden rounded-xl border border-border-light bg-white dark:border-border-dark dark:bg-card-bg-dark ${
         target ? 'cursor-pointer hover:border-accent-pink/50' : 'cursor-default'
       }`}
     >
-      <ProjectInteractionLayer target={target} title={project.title} onActivate={onActivate} onDeactivate={onDeactivate} />
-      <ProjectHoverPreview project={project} target={target} isActive={isActive} reduceMotion={reduceMotion} />
+      <ProjectInteractionLayer target={target} title={project.title} />
 
       <div className="relative h-44 overflow-hidden border-b border-border-light dark:border-border-dark sm:h-48">
         {previewMedia}
 
         <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/30 to-transparent" />
-
-        <motion.div
-          aria-hidden
-          className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100"
-          style={{
-            backgroundImage: 'repeating-linear-gradient(0deg, rgba(255,255,255,0.08) 0px, rgba(255,255,255,0.08) 1px, transparent 1px, transparent 6px)',
-          }}
-          animate={
-            isActive && !reduceMotion
-              ? { opacity: [0.35, 0.55, 0.4], backgroundPosition: ['0px 0px', '0px 14px', '0px 0px'] }
-              : { opacity: 0, backgroundPosition: '0px 0px' }
-          }
-          transition={{ duration: 0.5, repeat: isActive && !reduceMotion ? Infinity : 0, repeatDelay: 0.3 }}
-        />
 
         <div className="absolute left-3 top-3 rounded-full border border-white/30 bg-black/40 px-2 py-0.5 text-[11px] font-medium text-white/90 backdrop-blur-sm">
           {project.category || 'Project'}
@@ -231,12 +120,10 @@ function ProjectShowcaseCard({
       </div>
 
       <div className="relative p-4">
-        <div className="relative pr-8">
+        <div className="pr-8">
           <h3 className="text-sm font-semibold leading-snug text-text-primary-light dark:text-text-primary-dark">
             {project.title}
           </h3>
-
-          {!reduceMotion && <ProjectTitleGlitch title={project.title} isActive={isActive} />}
         </div>
 
         <div className="mt-1 flex flex-wrap items-center gap-1.5 text-[11px] text-text-muted-light dark:text-text-muted-dark">
@@ -266,19 +153,10 @@ function ProjectShowcaseCard({
           )}
         </div>
 
-        <motion.div
-          initial={false}
-          animate={revealAnimation}
-          transition={
-            reduceMotion
-              ? { duration: 0 }
-              : { duration: 0.2, ease: [0.25, 0.1, 0.25, 1] as [number, number, number, number] }
-          }
-          className="mt-3 rounded-lg border border-border-light/80 bg-surface-light/70 p-2.5 dark:border-border-dark/80 dark:bg-surface-dark/70"
-        >
+        <div className="mt-3 rounded-lg border border-border-light/80 bg-surface-light/70 p-2.5 dark:border-border-dark/80 dark:bg-surface-dark/70">
           <p className="text-[11px] text-text-secondary-light dark:text-text-secondary-dark">
             {target
-              ? 'Hover or focus reveals the modal-style preview. Click the card to open the project link directly.'
+              ? 'Hover or focus smoothly enlarges the project image. Click the card to open the project link.'
               : 'Hover or focus reveals project metadata. This card currently has no external project link.'}
           </p>
           {project.impactMetrics && project.impactMetrics.length > 0 && (
@@ -286,7 +164,7 @@ function ProjectShowcaseCard({
               {project.impactMetrics[0].label}: {project.impactMetrics[0].value}
             </p>
           )}
-        </motion.div>
+        </div>
       </div>
     </motion.article>
   );
@@ -295,7 +173,6 @@ function ProjectShowcaseCard({
 export function ProjectsSection() {
   const reduceMotion = useReducedMotion();
   const [showAll, setShowAll] = useState(false);
-  const [activeProjectTitle, setActiveProjectTitle] = useState<string | null>(null);
 
   const orderedProjects = useMemo(() => sortProjectsForShowcase(projects), []);
 
@@ -323,7 +200,7 @@ export function ProjectsSection() {
       </h2>
 
       <p className="mb-4 text-xs text-text-muted-light dark:text-text-muted-dark">
-        Minimalist showcase. Hover or focus a card to reveal a modal-style project preview, then click anywhere on the
+        Minimalist showcase. Hover or focus a card to smoothly enlarge the project image, then click anywhere on the
         card to open its project link.
       </p>
 
@@ -335,9 +212,6 @@ export function ProjectsSection() {
             index={index}
             reduceMotion={Boolean(reduceMotion)}
             showAll={showAll}
-            isActive={activeProjectTitle === project.title}
-            onActivate={() => setActiveProjectTitle(project.title)}
-            onDeactivate={() => setActiveProjectTitle((current) => (current === project.title ? null : current))}
           />
         ))}
       </div>

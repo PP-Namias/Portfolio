@@ -399,7 +399,7 @@ describe('uncovered section components', () => {
     expect(screen.queryByRole('button', { name: /Reset filters/i })).not.toBeInTheDocument();
   });
 
-  it('ProjectsSection keeps hover preview and routes card click to project link', () => {
+  it('ProjectsSection keeps image zoom hover behavior and routes card click to project link', () => {
     render(<ProjectsSection />);
 
     const projectLink = screen.getByRole('link', { name: /Open project link for Featured App/i });
@@ -408,8 +408,8 @@ describe('uncovered section components', () => {
     fireEvent.click(projectLink);
     expect(openModalMock).not.toHaveBeenCalled();
 
-    expect(screen.getAllByText(/Modal-style hover preview/i).length).toBeGreaterThan(0);
-    expect(screen.getAllByText(/Click the card to open the project link directly/i).length).toBeGreaterThan(0);
+    expect(screen.queryByText(/Modal-style hover preview/i)).not.toBeInTheDocument();
+    expect(screen.getAllByText(/Hover or focus smoothly enlarges the project image/i).length).toBeGreaterThan(0);
   });
 
   it('CertificationsSection filters, expands and opens/closes lightbox', () => {

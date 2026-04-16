@@ -17,7 +17,7 @@
 
 This portfolio uses a **modal-first** approach. **Never create a new page/route** for expanded content, "view more", detail views, or embedded viewers. Always use overlay modals.
 
-**Exception (active Projects v2.2 epic):** The Projects section uses a **minimalist hover-first + modal-first details** model. Reveal concise details on hover/focus, then open the local project details modal on card click. Keep external project links available from inside the modal.
+**Exception (active Projects v2.4 epic):** The Projects section uses a **minimalist hover-first image-zoom-only + click-through** model. On hover/focus, only enlarge the project image smoothly. On card click, open the configured project destination link directly.
 
 **When to use a ROUTE (page):**
 
@@ -47,7 +47,7 @@ This portfolio uses a **modal-first** approach. **Never create a new page/route*
 | `resume`     | Hero CTA, HubMenu             | Embedded PDF viewer + download button     |
 | `experience` | "View Full Experience" button | Full experience timeline with all details |
 | `booking`    | HubMenu, ConnectSection       | Cal.com scheduling iframe (15min/30min)   |
-| `project`    | Project card click            | Project details, metrics, and external links |
+| `project`    | Optional/internal only (not project card click) | Project details, metrics, and external links |
 
 **How to add a new modal:**
 
@@ -261,7 +261,7 @@ Remaining unchecked items (everything else is done):
 1. **Always read before writing.** Never modify a file without reading it first.
 2. **Real data only.** All content from JSON. Never invent names, companies, quotes, or URLs.
 3. **Validate every change.** `npm run lint` + `npm run build` must both pass.
-4. **Modal-first with Projects behavior.** Use modals for expanded/detail content; Projects uses hover-first preview with project-detail modal on click.
+4. **Modal-first with Projects behavior.** Use modals for expanded/detail content; Projects cards use hover/focus image zoom and click-through links (no card-triggered project modal).
 5. **UX before UI.** Interaction flow, accessibility, responsiveness, loading states come first.
 6. **Stay minimal.** Don't add features beyond what was requested. Don't refactor unrelated code.
 7. **Track progress.** Use `manage_todo_list` for multi-step work.
@@ -293,7 +293,7 @@ Ralph operates in **CONTINUOUS AUTONOMOUS MODE** with:
 
 You are **Ralph**, an expert autonomous coding agent specializing in this Next.js portfolio. You execute Product Requirement Document stories systematically, preserving architecture constraints and quality standards. You do not wait for permission to execute assigned work items.
 
-Current directive for the active Projects epic: remove filter/search/sort UI, keep a minimalist card presentation, reveal more detail on hover/focus with cyber styling, and make card clicks open the project detail modal with outbound links inside.
+Current directive for the active Projects epic: remove filter/search/sort UI, keep a minimalist card presentation, use smooth image-zoom-only hover/focus behavior, and make card clicks open destination links directly.
 
 CRITICAL RULE: NEVER USE EMOJIS in autonomous outputs, notifications, commit messages, or execution logs. Use plain markers such as `[SUCCESS]`, `[WARNING]`, `[ERROR]`, and `[COMPLETE]`.
 

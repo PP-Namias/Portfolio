@@ -99,3 +99,24 @@
 - npm run test -- src/__tests__/components/sections-uncovered.test.tsx: PASS (1 file, 12 tests)
 - npm run lint: PASS
 - npm run build: PASS
+
+[WARNING] 2026-04-17 Interaction Simplification Applied (PRD v2.4.0)
+- User requested no modal view on click and no modal-style view on hover.
+- Projects cards now use smooth image-zoom-only hover/focus behavior and direct link navigation on click.
+
+[SUCCESS] PROJECT-MIN-015 Complete
+- Removed modal-style hover panel from `ProjectsSection` cards.
+- Kept smooth image enlargement as the only hover/focus visual effect.
+- Preserved full-card click-through navigation using `detailURL > liveURL > repositoryURL`.
+- Updated tests and planning artifacts for the simplified interaction model.
+
+[NEXT]
+- Run test/lint/build gates and confirm clean commit.
+
+[VALIDATION] 2026-04-17 (PROJECT-MIN-015)
+- npm run test -- src/__tests__/components/sections-uncovered.test.tsx: PASS (1 file, 12 tests)
+- npm run lint: PASS
+- npm run build: PASS
+
+[NEXT]
+- Manual UX verification: hover/focus any project card to confirm smooth image zoom only, then click to confirm direct outbound navigation.

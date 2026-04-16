@@ -1,8 +1,8 @@
 {
   "projectName": "Portfolio - Projects Minimalist Hover Showcase Revamp",
-  "version": "2.3.0",
+  "version": "2.4.0",
   "branchName": "Projects-Hover-Showcase",
-  "description": "Epic to fully transition the Projects section from filter-heavy interactions to a minimalist hover-first showcase with cyber-futuristic glitch detail reveals, modal-style hover previews, and full-card click-through project navigation.",
+  "description": "Epic to fully transition the Projects section from filter-heavy interactions to a minimalist hover-first showcase with smooth image-zoom hover states and full-card click-through project navigation.",
   "owner": "AI Agent (Ralph)",
   "startedDate": "2026-04-16",
   "targetCompletion": "2026-05-03",
@@ -28,10 +28,11 @@
   },
   "latestFeedbackRequest": {
     "requestedBy": "Portfolio owner",
-    "requestedAt": "2026-04-16",
+    "requestedAt": "2026-04-17",
     "reason": [
       "Do not open project modal on click",
-      "Show modal-style project view on hover/focus",
+      "Do not show modal-style project view on hover/focus",
+      "Only enlarge the project image smoothly on hover/focus",
       "Open project destination link directly when card is clicked"
     ]
   },
@@ -42,7 +43,7 @@
       "Implement hover/focus cyber detail reveal with controlled glitch effects",
       "Support optional hover media preview (video when available, image fallback)",
       "Make the project card itself the primary interaction target",
-      "Show modal-style hover preview while keeping full-card external navigation",
+      "Use smooth image-zoom-only hover/focus effect while keeping full-card external navigation",
       "Preserve accessibility, reduced-motion, and keyboard parity",
       "Preserve lint/build/test quality gates",
       "Update docs and progress tracking"
@@ -56,7 +57,7 @@
   },
   "constraints": {
     "architecture": [
-      "Projects section uses hover-first modal-style preview + click-through navigation",
+      "Projects section uses hover-first smooth image zoom + click-through navigation",
       "Project links open directly from card activation using detailURL > liveURL > repositoryURL",
       "No additional page route for project details",
       "Use existing Tailwind light/dark token classes",
@@ -71,7 +72,7 @@
     ]
   },
   "existingFoundation": {
-    "projectSection": "src/components/sections/ProjectsSection.tsx currently uses no-filter minimalist cards with hover/focus reveal, modal-style hover preview, and full-card link trigger",
+    "projectSection": "src/components/sections/ProjectsSection.tsx currently uses no-filter minimalist cards with smooth image zoom on hover/focus and full-card link trigger",
     "projectCard": "src/components/ui/ProjectCard.tsx reusable project summary card",
     "projectModal": "src/components/ui/ProjectDetailModal.tsx retained for optional non-project-card modal flows",
     "modalProvider": "src/hooks/useModal.tsx keeps resume/experience/booking modal state and optional project support",
@@ -81,12 +82,12 @@
   },
   "successMetrics": {
     "ux": "Projects section contains zero filter/search/sort controls and looks intentionally minimalist",
-    "interaction": "Hover/focus reveals cyber-styled details within 150ms without forcing click",
+    "interaction": "Hover/focus smoothly enlarges the project image without showing any modal-style hover panel",
     "navigation": "Clicking/focusing-and-activating a project card opens the configured destination link using detailURL/liveURL/repositoryURL priority",
     "a11y": "Keyboard users can access the same reveal information via focus states",
     "performance": "No noticeable layout shift during hover or media transitions",
     "quality": "Lint/build/tests all pass",
-    "maintainability": "PRD and progress align with hover-first modal-style preview and click-through navigation direction"
+    "maintainability": "PRD and progress align with hover-first image-zoom-only and click-through navigation direction"
   },
   "stories": [
     {
@@ -436,6 +437,7 @@
       "priority": 1,
       "phase": "Phase 14: Interaction Realignment",
       "status": "Complete",
+      "supersededBy": "PROJECT-MIN-015",
       "passes": true,
       "completedAt": "2026-04-16T06:05:00Z",
       "acceptanceCriteria": [
@@ -455,6 +457,34 @@
       },
       "dependencies": [
         "PROJECT-MIN-013"
+      ]
+    },
+    {
+      "id": "PROJECT-MIN-015",
+      "title": "Remove Hover Modal Panel and Keep Image Zoom Only",
+      "priority": 1,
+      "phase": "Phase 15: Interaction Simplification",
+      "status": "Complete",
+      "passes": true,
+      "completedAt": "2026-04-17T02:20:00Z",
+      "acceptanceCriteria": [
+        "Project cards no longer show any modal-style hover panel",
+        "Hover/focus behavior only enlarges project image smoothly",
+        "Card click continues to open destination link via detailURL > liveURL > repositoryURL",
+        "Tests and tracking artifacts are updated for image-zoom-only interaction"
+      ],
+      "technicalNotes": {
+        "files": [
+          "src/components/sections/ProjectsSection.tsx",
+          "src/__tests__/components/sections-uncovered.test.tsx",
+          "prd.json",
+          "progress.txt",
+          ".github/copilot-instructions.md"
+        ],
+        "note": "Keeps minimalist flow and removes hover modal metaphors from Projects cards"
+      },
+      "dependencies": [
+        "PROJECT-MIN-014"
       ]
     }
   ]
