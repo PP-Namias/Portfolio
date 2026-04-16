@@ -399,19 +399,17 @@ describe('uncovered section components', () => {
     expect(screen.queryByRole('button', { name: /Reset filters/i })).not.toBeInTheDocument();
   });
 
-  it('ProjectsSection opens project modal from full-card click and keeps no-filter layout', () => {
+  it('ProjectsSection keeps hover preview and routes card click to project link', () => {
     render(<ProjectsSection />);
 
-    fireEvent.click(screen.getByRole('button', { name: /Open project modal for Featured App/i }));
-    expect(openModalMock).toHaveBeenCalledWith(
-      'project',
-      expect.objectContaining({
-        title: 'Featured App',
-        detailURL: 'https://featured.app/detail',
-      })
-    );
+    const projectLink = screen.getByRole('link', { name: /Open project link for Featured App/i });
+    expect(projectLink).toHaveAttribute('href', 'https://featured.app/detail');
 
-    expect(screen.getAllByText(/Click the card to open the project modal/i).length).toBeGreaterThan(0);
+    fireEvent.click(projectLink);
+    expect(openModalMock).not.toHaveBeenCalled();
+
+    expect(screen.getAllByText(/Modal-style hover preview/i).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/Click the card to open the project link directly/i).length).toBeGreaterThan(0);
   });
 
   it('CertificationsSection filters, expands and opens/closes lightbox', () => {
