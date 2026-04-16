@@ -60,13 +60,6 @@ Create a `.env` file in the project root based on `.env.example`:
 GOOGLE_GEMINI_API_KEY=your_key_here
 UPSTASH_REDIS_REST_URL=your_upstash_rest_url
 UPSTASH_REDIS_REST_TOKEN=your_upstash_rest_token
-NEXT_PUBLIC_UMAMI_WEBSITE_ID=your_umami_website_id
-NEXT_PUBLIC_UMAMI_SCRIPT_URL=https://cloud.umami.is/script.js
-NEXT_PUBLIC_UMAMI_HOST_URL=https://api-gateway.umami.dev
-NEXT_PUBLIC_UMAMI_DOMAINS=namias.tech
-```
-
-Security note: keep `GOOGLE_GEMINI_API_KEY` and `UPSTASH_REDIS_*` only in `.env`/hosting secrets, never commit real keys. `NEXT_PUBLIC_UMAMI_*` values are public client config.
 
 ## Quality checks
 
