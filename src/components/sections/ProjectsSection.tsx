@@ -37,7 +37,7 @@ function renderProjectPreviewMedia(project: Project, isPriority: boolean) {
         fill
         sizes="(max-width: 768px) 100vw, 700px"
         priority={isPriority}
-        className="object-cover transition-transform duration-500 ease-out group-hover:scale-110 group-focus-within:scale-110 motion-reduce:transform-none"
+        className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-108 group-focus-within:scale-108 motion-reduce:transform-none"
       />
     );
   }
@@ -97,10 +97,13 @@ function ProjectShowcaseCard({
       key={project.title}
       initial={reduceMotion ? undefined : { opacity: 0, y: 10 }}
       whileInView={reduceMotion ? undefined : { opacity: 1, y: 0 }}
+      whileHover={reduceMotion ? undefined : { y: -2 }}
       viewport={{ once: true }}
       transition={cardTransition}
       className={`group relative overflow-hidden rounded-xl border border-border-light bg-white dark:border-border-dark dark:bg-card-bg-dark ${
-        target ? 'cursor-pointer hover:border-accent-pink/50' : 'cursor-default'
+        target
+          ? 'cursor-pointer transition-[border-color,box-shadow,transform] duration-300 hover:border-accent-pink/50 hover:shadow-[0_12px_30px_-18px_rgba(236,72,153,0.55)]'
+          : 'cursor-default'
       }`}
     >
       <ProjectInteractionLayer target={target} title={project.title} />
@@ -153,18 +156,13 @@ function ProjectShowcaseCard({
           )}
         </div>
 
-        <div className="mt-3 rounded-lg border border-border-light/80 bg-surface-light/70 p-2.5 dark:border-border-dark/80 dark:bg-surface-dark/70">
-          <p className="text-[11px] text-text-secondary-light dark:text-text-secondary-dark">
-            {target
-              ? 'Hover or focus smoothly enlarges the project image. Click the card to open the project link.'
-              : 'Hover or focus reveals project metadata. This card currently has no external project link.'}
-          </p>
-          {project.impactMetrics && project.impactMetrics.length > 0 && (
-            <p className="mt-1 text-[11px] text-text-muted-light dark:text-text-muted-dark">
+        {project.impactMetrics && project.impactMetrics.length > 0 && (
+          <div className="mt-3 rounded-lg border border-border-light/80 bg-surface-light/70 p-2.5 dark:border-border-dark/80 dark:bg-surface-dark/70">
+            <p className="text-[11px] text-text-muted-light dark:text-text-muted-dark">
               {project.impactMetrics[0].label}: {project.impactMetrics[0].value}
             </p>
-          )}
-        </div>
+          </div>
+        )}
       </div>
     </motion.article>
   );
@@ -199,10 +197,7 @@ export function ProjectsSection() {
         </span>
       </h2>
 
-      <p className="mb-4 text-xs text-text-muted-light dark:text-text-muted-dark">
-        Minimalist showcase. Hover or focus a card to smoothly enlarge the project image, then click anywhere on the
-        card to open its project link.
-      </p>
+      <p className="mb-4 text-xs text-text-muted-light dark:text-text-muted-dark">Minimalist showcase of selected projects.</p>
 
       <div className="space-y-3">
         {visibleProjects.map((project, index) => (

@@ -120,3 +120,13 @@
 
 [NEXT]
 - Manual UX verification: hover/focus any project card to confirm smooth image zoom only, then click to confirm direct outbound navigation.
+
+[SUCCESS] 2026-04-17 Projects section copy cleanup and motion polish
+- Removed repeated instructional helper text from project cards.
+- Replaced long section helper paragraph with concise section copy.
+- Tuned hover/focus motion for smoother image zoom and cleaner card transitions.
+
+[VALIDATION] 2026-04-17 (Projects copy + smoothness)
+- npx vitest run src/__tests__/components/sections-uncovered.test.tsx --reporter=verbose: PASS (1 file, 12 tests)
+- npm run lint: PASS
+- npm run build: PASS

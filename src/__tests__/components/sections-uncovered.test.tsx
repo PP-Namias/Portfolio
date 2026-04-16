@@ -409,7 +409,8 @@ describe('uncovered section components', () => {
     expect(openModalMock).not.toHaveBeenCalled();
 
     expect(screen.queryByText(/Modal-style hover preview/i)).not.toBeInTheDocument();
-    expect(screen.getAllByText(/Hover or focus smoothly enlarges the project image/i).length).toBeGreaterThan(0);
+    expect(screen.queryByText(/Hover or focus smoothly enlarges the project image/i)).not.toBeInTheDocument();
+    expect(screen.getByText(/Minimalist showcase of selected projects/i)).toBeInTheDocument();
   });
 
   it('CertificationsSection filters, expands and opens/closes lightbox', () => {
