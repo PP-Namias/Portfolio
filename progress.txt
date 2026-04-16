@@ -88,3 +88,14 @@
 
 [NEXT]
 - Manual UX verification: hover a project card to confirm modal-style preview appearance, then click to confirm direct outbound navigation.
+
+[SUCCESS] 2026-04-17 PRD payload synchronized
+- Updated `prd.json` `branchName` to `feature/projects-minimalist-hover-showcase` to match the approved v2.3.0 update payload.
+
+[NEXT]
+- Re-run lint/build/tests to confirm workspace remains green after doc synchronization.
+
+[VALIDATION] 2026-04-17 (PRD sync)
+- npm run test -- src/__tests__/components/sections-uncovered.test.tsx: PASS (1 file, 12 tests)
+- npm run lint: PASS
+- npm run build: PASS
