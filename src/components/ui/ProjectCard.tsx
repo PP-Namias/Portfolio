@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Image from 'next/image';
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 import { ExternalLink, Github } from 'lucide-react';
 import { Project } from '@/types';
 import { Card } from './Card';
@@ -14,14 +14,20 @@ interface ProjectCardProps {
 
 export function ProjectCard({ project, index }: ProjectCardProps) {
   const projectUrl = project.liveURL || project.repositoryURL;
+  const reduceMotion = useReducedMotion();
 
   return (
     <motion.div
       className="h-full"
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
+      initial={reduceMotion ? undefined : { opacity: 0, y: 16 }}
+      whileInView={reduceMotion ? undefined : { opacity: 1, y: 0 }}
+      whileHover={reduceMotion ? undefined : { y: -2 }}
       viewport={{ once: true }}
-      transition={{ delay: index * 0.1, duration: 0.4 }}
+      transition={
+        reduceMotion
+          ? { duration: 0 }
+          : { delay: index * 0.08, duration: 0.3, ease: [0.25, 0.1, 0.25, 1] }
+      }
     >
       <Card hover className="h-full flex flex-col">
         {/* Project Screenshot */}
@@ -33,6 +39,7 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
               width={400}
               height={128}
               sizes="(max-width: 768px) 100vw, 400px"
+              loading="lazy"
               className="w-full h-32 object-cover"
             />
           </div>

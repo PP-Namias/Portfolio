@@ -19,7 +19,21 @@ vi.mock('framer-motion', () => {
     {
       get: (_, tag: string) =>
         R.forwardRef(function MotionTag(
-          { children, ...props }: Record<string, unknown>,
+          {
+            children,
+            whileHover: _whileHover,
+            whileTap: _whileTap,
+            whileInView: _whileInView,
+            initial: _initial,
+            animate: _animate,
+            exit: _exit,
+            transition: _transition,
+            variants: _variants,
+            custom: _custom,
+            layout: _layout,
+            viewport: _viewport,
+            ...props
+          }: Record<string, unknown>,
           ref: React.Ref<HTMLElement>
         ) {
           return R.createElement(tag, { ref, ...props }, children);
@@ -32,11 +46,18 @@ vi.mock('framer-motion', () => {
     AnimatePresence: ({ children }: { children: React.ReactNode }) => children,
     useScroll: () => ({ scrollYProgress: 0.5 }),
     useSpring: (value: unknown) => value,
+    useReducedMotion: () => false,
   };
 });
 
 vi.mock('next/image', () => ({
-  default: ({ alt = '', src = '', ...props }: Record<string, unknown>) => (
+  default: ({
+    alt = '',
+    src = '',
+    fill: _fill,
+    priority: _priority,
+    ...props
+  }: Record<string, unknown>) => (
     // eslint-disable-next-line @next/next/no-img-element
     <img
       alt={typeof alt === 'string' ? alt : ''}
@@ -164,11 +185,11 @@ describe('uncovered UI components', () => {
     expect(screen.queryByLabelText('Scroll to top')).not.toBeInTheDocument();
 
     Object.defineProperty(globalThis, 'scrollY', { value: 500, configurable: true });
-    fireEvent.scroll(globalThis);
+    fireEvent.scroll(globalThis as unknown as Window);
 
     const button = screen.getByLabelText('Scroll to top');
     fireEvent.click(button);
-    expect(window.scrollTo).toHaveBeenCalledWith({ top: 0, behavior: 'smooth' });
+    expect(globalThis.scrollTo).toHaveBeenCalledWith({ top: 0, behavior: 'smooth' });
   });
 
   it('ReadingProgress renders fixed top bar', () => {

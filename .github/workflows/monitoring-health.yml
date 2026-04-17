@@ -11,6 +11,7 @@ permissions:
 
 env:
   PRODUCTION_URL: 'https://namias.tech'
+  BLOG_MONITOR_ENABLED: 'false'
 
 jobs:
   uptime-check:
@@ -33,12 +34,41 @@ jobs:
             FAILED=1
           fi
 
-          # Check blog page
-          if curl -f -s --max-time 15 "${{ env.PRODUCTION_URL }}/blog" > /dev/null; then
-            echo "**/blog**: Available" >> $GITHUB_STEP_SUMMARY
+          # Check chat service health endpoint
+          CHAT_HEALTH_STATUS=$(curl -sS --max-time 20 -o /tmp/chat-health.json -w "%{http_code}" "${{ env.PRODUCTION_URL }}/api/chat")
+          if [ "$CHAT_HEALTH_STATUS" -eq 200 ] && grep -q '"status":"active"' /tmp/chat-health.json; then
+            echo "**Chat Health**: Active" >> $GITHUB_STEP_SUMMARY
           else
-            echo "**/blog**: Unavailable" >> $GITHUB_STEP_SUMMARY
+            echo "**Chat Health**: Inactive or unreachable" >> $GITHUB_STEP_SUMMARY
             FAILED=1
+          fi
+
+          # Synthetic chatbot probe (ensures non-empty message contract)
+          CHAT_PROBE_RESPONSE=$(curl -sS --max-time 30 -X POST "${{ env.PRODUCTION_URL }}/api/chat" \
+            -H "Content-Type: application/json" \
+            -d '{"message":"Hello Keneth AI"}' \
+            -w "HTTPSTATUS:%{http_code}")
+
+          CHAT_PROBE_BODY=$(echo "$CHAT_PROBE_RESPONSE" | sed -e 's/HTTPSTATUS:.*//g')
+          CHAT_PROBE_STATUS=$(echo "$CHAT_PROBE_RESPONSE" | tr -d '\n' | sed -e 's/.*HTTPSTATUS://')
+
+          if [ "$CHAT_PROBE_STATUS" -eq 200 ] && echo "$CHAT_PROBE_BODY" | grep -q '"message"'; then
+            echo "**Chat Probe**: Passed" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "**Chat Probe**: Failed" >> $GITHUB_STEP_SUMMARY
+            FAILED=1
+          fi
+
+          # Check blog page only when blog route is publicly enabled
+          if [ "${{ env.BLOG_MONITOR_ENABLED }}" = "true" ]; then
+            if curl -f -s --max-time 15 "${{ env.PRODUCTION_URL }}/blog" > /dev/null; then
+              echo "**/blog**: Available" >> $GITHUB_STEP_SUMMARY
+            else
+              echo "**/blog**: Unavailable" >> $GITHUB_STEP_SUMMARY
+              FAILED=1
+            fi
+          else
+            echo "**/blog**: Skipped (feature currently disabled)" >> $GITHUB_STEP_SUMMARY
           fi
 
           if [ "$FAILED" -eq 1 ]; then
@@ -56,6 +86,8 @@ jobs:
 
             **Alert Time**: ${new Date().toISOString()}
             **URL**: ${{ env.PRODUCTION_URL }}
+            **Blog Monitor Enabled**: ${{ env.BLOG_MONITOR_ENABLED }}
+            **Chat Endpoint**: ${{ env.PRODUCTION_URL }}/api/chat
 
             Please check hosting provider status and server logs.
 

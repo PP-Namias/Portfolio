@@ -1,0 +1,240 @@
+name: Problem Detection and Solution Advisor
+
+on:
+  workflow_run:
+    workflows:
+      - Pull Request Validation
+      - Build and Check
+      - Security Scanning
+      - Monitoring and Health Checks
+      - Daily Health Check
+    types:
+      - completed
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: read
+  issues: write
+
+concurrency:
+  group: problem-advisor-${{ github.event.workflow_run.id || github.run_id }}
+  cancel-in-progress: false
+
+jobs:
+  publish-report:
+    name: Post Problem Report
+    if: >
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.workflow_run.conclusion != 'success' &&
+      github.event.workflow_run.conclusion != 'skipped' &&
+      github.event.workflow_run.conclusion != 'neutral')
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Publish report to PR or Issues
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const marker = '<!-- automated-problem-report -->';
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+
+            const run = context.payload.workflow_run ?? {
+              id: context.runId,
+              name: 'Manual Detection Run',
+              html_url: `${context.serverUrl}/${owner}/${repo}/actions/runs/${context.runId}`,
+              conclusion: 'action_required',
+              head_branch: context.ref.replace('refs/heads/', ''),
+              pull_requests: [],
+            };
+
+            const jobsResp = run.id
+              ? await github.rest.actions
+                  .listJobsForWorkflowRun({
+                    owner,
+                    repo,
+                    run_id: run.id,
+                    per_page: 100,
+                  })
+                  .catch(() => ({ data: { jobs: [] } }))
+              : { data: { jobs: [] } };
+
+            const failedJobs = (jobsResp.data.jobs || []).filter((job) =>
+              ['failure', 'cancelled', 'timed_out', 'action_required'].includes(job.conclusion || '')
+            );
+
+            const addUnique = (arr, value) => {
+              if (!arr.includes(value)) arr.push(value);
+            };
+
+            const solutionsForJob = (jobName = '') => {
+              const lower = jobName.toLowerCase();
+              const tips = [];
+
+              if (lower.includes('lint')) {
+                addUnique(tips, 'Run `npm run lint` locally and fix ESLint violations before pushing.');
+              }
+
+              if (lower.includes('type')) {
+                addUnique(tips, 'Run `npx tsc --noEmit` and resolve strict TypeScript errors.');
+              }
+
+              if (lower.includes('build')) {
+                addUnique(tips, 'Run `npm run build` locally and fix compile/runtime import issues.');
+              }
+
+              if (lower.includes('test')) {
+                addUnique(tips, 'Run `npm run test` and fix failing assertions or flaky tests.');
+              }
+
+              if (lower.includes('security') || lower.includes('audit') || lower.includes('codeql')) {
+                addUnique(tips, 'Run `npm audit` and apply safe fixes (`npm audit fix`) for non-breaking updates.');
+                addUnique(tips, 'Review advisories and patch vulnerable dependencies while keeping framework compatibility.');
+              }
+
+              if (lower.includes('uptime') || lower.includes('monitor') || lower.includes('health')) {
+                addUnique(tips, 'Verify deployment status and endpoint health, then re-run checks.');
+                addUnique(tips, 'If a route is intentionally hidden (e.g. `/blog`), gate or disable its uptime check.');
+              }
+
+              if (lower.includes('ssl')) {
+                addUnique(tips, 'Check certificate expiration and DNS/edge configuration for TLS issues.');
+              }
+
+              if (tips.length === 0) {
+                tips.push('Review workflow logs and reproduce locally with `npm ci`, `npm run lint`, `npm run build`, and `npm run test`.');
+              }
+
+              return tips;
+            };
+
+            const lines = [];
+            lines.push(`${marker}`);
+            lines.push('## 🚨 Automated Problem Detection Report');
+            lines.push('');
+            lines.push(`- **Workflow**: ${run.name}`);
+            lines.push(`- **Conclusion**: ${run.conclusion || 'unknown'}`);
+            lines.push(`- **Branch**: ${run.head_branch || 'n/a'}`);
+            lines.push(`- **Run URL**: ${run.html_url}`);
+            lines.push('');
+
+            if (failedJobs.length === 0) {
+              lines.push('No individual failed jobs were returned by the API, but the workflow did not complete successfully.');
+              lines.push('');
+              lines.push('### Suggested Solutions');
+              lines.push('');
+              lines.push('- Re-run the workflow to confirm reproducibility.');
+              lines.push('- Review full run logs for the failing step and apply targeted fixes.');
+              lines.push('');
+            } else {
+              lines.push('### Failed Jobs');
+              lines.push('');
+              for (const job of failedJobs) {
+                lines.push(`- **${job.name}** (${job.conclusion})`);
+              }
+              lines.push('');
+              lines.push('### Suggested Solutions');
+              lines.push('');
+              for (const job of failedJobs) {
+                lines.push(`#### ${job.name}`);
+                for (const tip of solutionsForJob(job.name)) {
+                  lines.push(`- ${tip}`);
+                }
+                lines.push('');
+              }
+            }
+
+            lines.push('### Approval Gate');
+            lines.push('');
+            lines.push('To approve remediation reruns, comment this exact command:');
+            lines.push('');
+            lines.push('`/approve-remediation`');
+            lines.push('');
+            lines.push('Only repository owners, members, or collaborators can approve remediation reruns.');
+            lines.push('');
+            lines.push(`_Generated at ${new Date().toISOString()}_`);
+
+            const body = lines.join('\n');
+            const linkedPr = run.pull_requests && run.pull_requests.length > 0 ? run.pull_requests[0] : null;
+
+            if (linkedPr) {
+              const issueNumber = linkedPr.number;
+              const comments = await github.paginate(github.rest.issues.listComments, {
+                owner,
+                repo,
+                issue_number: issueNumber,
+                per_page: 100,
+              });
+
+              const existing = comments.find(
+                (comment) => comment.user?.type === 'Bot' && comment.body?.includes(marker)
+              );
+
+              if (existing) {
+                await github.rest.issues.updateComment({
+                  owner,
+                  repo,
+                  comment_id: existing.id,
+                  body,
+                });
+              } else {
+                await github.rest.issues.createComment({
+                  owner,
+                  repo,
+                  issue_number: issueNumber,
+                  body,
+                });
+              }
+
+              await github.rest.issues
+                .addLabels({
+                  owner,
+                  repo,
+                  issue_number: issueNumber,
+                  labels: ['needs-approval'],
+                })
+                .catch(() => null);
+
+              return;
+            }
+
+            const issueTitle = `Automated Problem Report: ${run.name}`;
+            const openIssues = await github.paginate(github.rest.issues.listForRepo, {
+              owner,
+              repo,
+              state: 'open',
+              per_page: 100,
+            });
+
+            const existingIssue = openIssues.find(
+              (issue) => !issue.pull_request && issue.title === issueTitle
+            );
+
+            if (existingIssue) {
+              await github.rest.issues.update({
+                owner,
+                repo,
+                issue_number: existingIssue.number,
+                title: issueTitle,
+                body,
+              });
+            } else {
+              try {
+                await github.rest.issues.create({
+                  owner,
+                  repo,
+                  title: issueTitle,
+                  body,
+                  labels: ['automated', 'needs-approval', 'ci-cd'],
+                });
+              } catch (_error) {
+                await github.rest.issues.create({
+                  owner,
+                  repo,
+                  title: issueTitle,
+                  body,
+                });
+              }
+            }

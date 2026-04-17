@@ -1,4 +1,5 @@
 import '@testing-library/jest-dom/vitest';
+import { vi } from 'vitest';
 
 // jsdom doesn't implement scrollIntoView
 Element.prototype.scrollIntoView = vi.fn();
@@ -19,10 +20,14 @@ Object.defineProperty(window, 'matchMedia', {
 });
 
 class ResizeObserverMock {
-	observe() {}
-	unobserve() {}
+	constructor(_callback: ResizeObserverCallback) {}
+	observe(_target: Element, _options?: ResizeObserverOptions) {}
+	unobserve(_target: Element) {}
 	disconnect() {}
 }
 
-// @ts-expect-error test polyfill
-global.ResizeObserver = ResizeObserverMock;
+Object.defineProperty(globalThis, 'ResizeObserver', {
+	writable: true,
+	configurable: true,
+	value: ResizeObserverMock,
+});

@@ -10,11 +10,11 @@ import {
   Mail,
   Share2,
   X,
-  Github,
-  Linkedin,
-  Twitter,
-  Instagram,
+  Code2,
+  BriefcaseBusiness,
+  Camera,
   ArrowUpRight,
+  LucideIcon,
 } from 'lucide-react';
 import { HubMenuItem } from './HubMenuItem';
 import { socialLinks } from '@/data/socials';
@@ -29,14 +29,13 @@ interface HubMenuProps {
 
 const CONNECT_SOCIALS = ['github', 'linkedin', 'x', 'instagram'] as const;
 
-const socialIconMap: Record<string, typeof Github> = {
-  github: Github,
-  linkedin: Linkedin,
-  x: Twitter,
-  instagram: Instagram,
+const socialIconMap: Record<string, LucideIcon> = {
+  github: Code2,
+  linkedin: BriefcaseBusiness,
+  instagram: Camera,
 };
 
-export function HubMenu({ onClose, onOpenChat }: HubMenuProps) {
+export function HubMenu({ onClose, onOpenChat }: Readonly<HubMenuProps>) {
   const [connectExpanded, setConnectExpanded] = useState(false);
   const { openModal } = useModal();
   const menuRef = useRef<HTMLDivElement>(null);
@@ -142,6 +141,7 @@ export function HubMenu({ onClose, onOpenChat }: HubMenuProps) {
         className="py-2 overflow-y-auto chat-scrollbar flex-1 touch-pan-y"
         role="menu"
         aria-label="Quick actions menu"
+        tabIndex={-1}
         onKeyDown={handleKeyDown}
         data-lenis-prevent
       >
@@ -273,6 +273,7 @@ export function HubMenu({ onClose, onOpenChat }: HubMenuProps) {
         >
           <span className="inline-flex items-center gap-1.5 font-medium">
             <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
+            {' '}
             Book a meeting
           </span>
           <ArrowUpRight className="h-3 w-3 opacity-0 -translate-y-0.5 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-200" />

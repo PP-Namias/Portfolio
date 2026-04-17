@@ -1,0 +1,491 @@
+{
+  "projectName": "Portfolio - Projects Minimalist Hover Showcase Revamp",
+  "version": "2.4.0",
+  "branchName": "Projects-Hover-Showcase",
+  "description": "Epic to fully transition the Projects section from filter-heavy interactions to a minimalist hover-first showcase with smooth image-zoom hover states and full-card click-through project navigation.",
+  "owner": "AI Agent (Ralph)",
+  "startedDate": "2026-04-16",
+  "targetCompletion": "2026-05-03",
+  "changeRequest": {
+    "requestedBy": "Portfolio owner",
+    "pivotDate": "2026-04-16",
+    "supersedesPRDVersion": "1.0.0",
+    "reason": [
+      "Remove all filter/search/sort controls from the Projects section",
+      "Shift visual direction toward cleaner minimalist presentation",
+      "Reveal richer details on hover/focus using cyber-futuristic glitch styling",
+      "Open detailed project view via card click to a configured destination link"
+    ]
+  },
+  "hotfixRequest": {
+    "requestedBy": "Portfolio owner",
+    "requestedAt": "2026-04-16",
+    "reason": [
+      "Restore and fix project detail modal behavior for the Projects section",
+      "Keep the no-filter, hover-first visual model while using modal-first details on click",
+      "Ensure project links remain available from within the modal"
+    ]
+  },
+  "latestFeedbackRequest": {
+    "requestedBy": "Portfolio owner",
+    "requestedAt": "2026-04-17",
+    "reason": [
+      "Do not open project modal on click",
+      "Do not show modal-style project view on hover/focus",
+      "Only enlarge the project image smoothly on hover/focus",
+      "Open project destination link directly when card is clicked"
+    ]
+  },
+  "scope": {
+    "inScope": [
+      "Remove discovery controls (search/filter/sort/reset)",
+      "Adopt minimalist card-first visual language",
+      "Implement hover/focus cyber detail reveal with controlled glitch effects",
+      "Support optional hover media preview (video when available, image fallback)",
+      "Make the project card itself the primary interaction target",
+      "Use smooth image-zoom-only hover/focus effect while keeping full-card external navigation",
+      "Preserve accessibility, reduced-motion, and keyboard parity",
+      "Preserve lint/build/test quality gates",
+      "Update docs and progress tracking"
+    ],
+    "outOfScope": [
+      "Creating new Next.js routes for project details",
+      "Reintroducing any search/filter/sort UI in Projects",
+      "Changing non-project sections outside required integration points",
+      "Changing blog architecture"
+    ]
+  },
+  "constraints": {
+    "architecture": [
+      "Projects section uses hover-first smooth image zoom + click-through navigation",
+      "Project links open directly from card activation using detailURL > liveURL > repositoryURL",
+      "No additional page route for project details",
+      "Use existing Tailwind light/dark token classes",
+      "Use portfolio-resources/data/projects.json as source of truth",
+      "Do not break resume/experience/booking modal behavior"
+    ],
+    "qualityGates": [
+      "npm run lint passes",
+      "npm run build passes",
+      "Relevant Vitest suites pass",
+      "No keyboard accessibility regressions"
+    ]
+  },
+  "existingFoundation": {
+    "projectSection": "src/components/sections/ProjectsSection.tsx currently uses no-filter minimalist cards with smooth image zoom on hover/focus and full-card link trigger",
+    "projectCard": "src/components/ui/ProjectCard.tsx reusable project summary card",
+    "projectModal": "src/components/ui/ProjectDetailModal.tsx retained for optional non-project-card modal flows",
+    "modalProvider": "src/hooks/useModal.tsx keeps resume/experience/booking modal state and optional project support",
+    "dataLayer": "src/data/projects.ts imports portfolio-resources/data/projects.json",
+    "types": "src/types/index.ts Project and ModalName include project-modal support and detailURL fallback",
+    "tests": "src/__tests__/components/sections-uncovered.test.tsx, src/__tests__/hooks/useModal.test.tsx, src/__tests__/components/ProjectDetailModal.test.tsx"
+  },
+  "successMetrics": {
+    "ux": "Projects section contains zero filter/search/sort controls and looks intentionally minimalist",
+    "interaction": "Hover/focus smoothly enlarges the project image without showing any modal-style hover panel",
+    "navigation": "Clicking/focusing-and-activating a project card opens the configured destination link using detailURL/liveURL/repositoryURL priority",
+    "a11y": "Keyboard users can access the same reveal information via focus states",
+    "performance": "No noticeable layout shift during hover or media transitions",
+    "quality": "Lint/build/tests all pass",
+    "maintainability": "PRD and progress align with hover-first image-zoom-only and click-through navigation direction"
+  },
+  "stories": [
+    {
+      "id": "PROJECT-MIN-001",
+      "title": "Remove Search/Filter/Sort Control Surface",
+      "priority": 1,
+      "phase": "Phase 1: De-scope Discovery UI",
+      "status": "Complete",
+      "passes": true,
+      "completedAt": "2026-04-16T04:21:00Z",
+      "acceptanceCriteria": [
+        "Remove search input from ProjectsSection",
+        "Remove category chips and tag dropdown",
+        "Remove sort selector and reset controls",
+        "Remove filter-result empty state tied to filter logic"
+      ],
+      "technicalNotes": {
+        "files": [
+          "src/components/sections/ProjectsSection.tsx"
+        ],
+        "risk": "Unused state/hooks left behind after control removal"
+      },
+      "dependencies": []
+    },
+    {
+      "id": "PROJECT-MIN-002",
+      "title": "Simplify Projects Layout to Minimalist Card Stack",
+      "priority": 1,
+      "phase": "Phase 2: Visual Foundation",
+      "status": "Complete",
+      "passes": true,
+      "completedAt": "2026-04-16T04:24:00Z",
+      "acceptanceCriteria": [
+        "Reduce visual clutter and card chrome",
+        "Improve hierarchy for title/year/summary",
+        "Keep compact tag signals with strict truncation",
+        "Retain optional View all/Show less only when needed"
+      ],
+      "technicalNotes": {
+        "files": [
+          "src/components/sections/ProjectsSection.tsx",
+          "src/components/ui/ProjectCard.tsx"
+        ],
+        "note": "No new layout containers outside existing section card system"
+      },
+      "dependencies": [
+        "PROJECT-MIN-001"
+      ]
+    },
+    {
+      "id": "PROJECT-MIN-003",
+      "title": "Define Click-Through Data Contract",
+      "priority": 1,
+      "phase": "Phase 3: Data Model",
+      "status": "Complete",
+      "passes": true,
+      "completedAt": "2026-04-16T04:26:00Z",
+      "acceptanceCriteria": [
+        "Add optional detailURL field to Project type",
+        "Optionally support previewVideoURL for hover media",
+        "Update projects source JSON with explicit detailURL mapping",
+        "Keep backward compatibility with liveURL/repositoryURL/processURL"
+      ],
+      "technicalNotes": {
+        "files": [
+          "src/types/index.ts",
+          "portfolio-resources/data/projects.json",
+          "src/data/projects.ts"
+        ],
+        "note": "Do not introduce placeholder fake external links"
+      },
+      "dependencies": []
+    },
+    {
+      "id": "PROJECT-MIN-004",
+      "title": "Implement Full-Card Click-Through Navigation",
+      "priority": 1,
+      "phase": "Phase 4: Primary Interaction",
+      "status": "Complete",
+      "passes": true,
+      "completedAt": "2026-04-16T04:28:00Z",
+      "acceptanceCriteria": [
+        "Entire card acts as a link target",
+        "Target resolution order is detailURL > liveURL > repositoryURL",
+        "Cards without target are visibly non-interactive",
+        "External navigation keeps noopener/noreferrer protection"
+      ],
+      "technicalNotes": {
+        "files": [
+          "src/components/sections/ProjectsSection.tsx"
+        ],
+        "risk": "Nested actionable elements causing invalid interaction model"
+      },
+      "dependencies": [
+        "PROJECT-MIN-003"
+      ]
+    },
+    {
+      "id": "PROJECT-MIN-005",
+      "title": "Add Cyber-Futuristic Hover/Focus Detail Reveal",
+      "priority": 1,
+      "phase": "Phase 5: Signature Visual Behavior",
+      "status": "Complete",
+      "passes": true,
+      "completedAt": "2026-04-16T04:31:00Z",
+      "acceptanceCriteria": [
+        "Hover/focus reveals additional detail panel without clicking",
+        "Glitch aesthetic uses controlled effects (scanline, chromatic split, jitter)",
+        "Readability remains high under both themes",
+        "Animation timing remains smooth and deterministic"
+      ],
+      "technicalNotes": {
+        "files": [
+          "src/components/sections/ProjectsSection.tsx"
+        ],
+        "motion": "Prefer Framer Motion and avoid global CSS side effects"
+      },
+      "dependencies": [
+        "PROJECT-MIN-002",
+        "PROJECT-MIN-004"
+      ]
+    },
+    {
+      "id": "PROJECT-MIN-006",
+      "title": "Support Hover Media Preview (Video/Image)",
+      "priority": 1,
+      "phase": "Phase 6: Rich Preview",
+      "status": "Complete",
+      "passes": true,
+      "completedAt": "2026-04-16T04:32:00Z",
+      "acceptanceCriteria": [
+        "If previewVideoURL exists, display muted looped preview on hover/focus",
+        "If previewVideoURL is absent, use optimized image fallback",
+        "No modal is required to inspect media",
+        "On touch/mobile, preview behavior degrades gracefully"
+      ],
+      "technicalNotes": {
+        "files": [
+          "portfolio-resources/data/projects.json",
+          "src/types/index.ts",
+          "src/components/sections/ProjectsSection.tsx"
+        ],
+        "note": "Preserve Next/Image optimization for image path"
+      },
+      "dependencies": [
+        "PROJECT-MIN-003",
+        "PROJECT-MIN-005"
+      ]
+    },
+    {
+      "id": "PROJECT-MIN-007",
+      "title": "Remove Project Modal from Runtime Flow",
+      "priority": 1,
+      "phase": "Phase 7: Modal Cleanup",
+      "status": "Complete",
+      "supersededBy": "PROJECT-MIN-013",
+      "passes": true,
+      "completedAt": "2026-04-16T04:34:00Z",
+      "acceptanceCriteria": [
+        "Remove openModal('project', ...) usage from ProjectsSection",
+        "Remove project modal state and registration from ModalProvider",
+        "Remove project modal name from shared modal union type",
+        "Delete obsolete ProjectDetailModal component and tests"
+      ],
+      "technicalNotes": {
+        "files": [
+          "src/components/sections/ProjectsSection.tsx",
+          "src/hooks/useModal.tsx",
+          "src/types/index.ts",
+          "src/components/ui/ProjectDetailModal.tsx",
+          "src/__tests__/components/ProjectDetailModal.test.tsx"
+        ],
+        "risk": "Breaking unrelated modal flows if shared types are edited incorrectly"
+      },
+      "dependencies": [
+        "PROJECT-MIN-004"
+      ]
+    },
+    {
+      "id": "PROJECT-MIN-008",
+      "title": "Accessibility and Keyboard Parity for Hover-First UX",
+      "priority": 1,
+      "phase": "Phase 8: Inclusive Interaction",
+      "status": "Complete",
+      "passes": true,
+      "completedAt": "2026-04-16T04:36:00Z",
+      "acceptanceCriteria": [
+        "Focus state mirrors hover reveal of details",
+        "Enter key opens the same click-through link",
+        "Reveal-only metadata is accessible for keyboard navigation",
+        "ARIA labels remain meaningful and concise"
+      ],
+      "technicalNotes": {
+        "files": [
+          "src/components/sections/ProjectsSection.tsx"
+        ],
+        "validation": "Manual keyboard walkthrough + automated assertions"
+      },
+      "dependencies": [
+        "PROJECT-MIN-005",
+        "PROJECT-MIN-006",
+        "PROJECT-MIN-007"
+      ]
+    },
+    {
+      "id": "PROJECT-MIN-009",
+      "title": "Reduced-Motion and Mobile Fallback Behavior",
+      "priority": 1,
+      "phase": "Phase 9: Compatibility",
+      "status": "Complete",
+      "passes": true,
+      "completedAt": "2026-04-16T04:38:00Z",
+      "acceptanceCriteria": [
+        "Reduce motion effects when prefers-reduced-motion is enabled",
+        "Ensure key details remain visible without hover availability",
+        "Keep touch interactions predictable with no hidden dead-ends",
+        "Avoid animated effects that obscure project content"
+      ],
+      "technicalNotes": {
+        "files": [
+          "src/components/sections/ProjectsSection.tsx"
+        ],
+        "note": "Functional parity > visual complexity"
+      },
+      "dependencies": [
+        "PROJECT-MIN-005",
+        "PROJECT-MIN-006"
+      ]
+    },
+    {
+      "id": "PROJECT-MIN-010",
+      "title": "Performance Hardening for Hover Overlay and Media",
+      "priority": 2,
+      "phase": "Phase 10: Performance",
+      "status": "Complete",
+      "passes": true,
+      "completedAt": "2026-04-16T04:40:00Z",
+      "acceptanceCriteria": [
+        "No noticeable layout shift while revealing details",
+        "Media preview does not trigger excessive eager loading",
+        "Render paths avoid unnecessary list-wide re-renders",
+        "Maintain smooth interactions on mid-range mobile devices"
+      ],
+      "technicalNotes": {
+        "files": [
+          "src/components/sections/ProjectsSection.tsx",
+          "src/components/ui/ProjectCard.tsx"
+        ],
+        "approach": "Progressive enhancement and conservative animation cost"
+      },
+      "dependencies": [
+        "PROJECT-MIN-006",
+        "PROJECT-MIN-009"
+      ]
+    },
+    {
+      "id": "PROJECT-MIN-011",
+      "title": "Update Test Suites for No-Filter Hover-First Behavior",
+      "priority": 1,
+      "phase": "Phase 11: Quality",
+      "status": "Complete",
+      "passes": true,
+      "completedAt": "2026-04-16T04:45:00Z",
+      "acceptanceCriteria": [
+        "Add tests asserting search/filter/sort controls are absent",
+        "Add tests for click-through target priority",
+        "Add tests for focus/hover reveal semantics",
+        "Remove or replace obsolete modal-detail tests"
+      ],
+      "technicalNotes": {
+        "files": [
+          "src/__tests__/components/sections-uncovered.test.tsx",
+          "src/__tests__/hooks/useModal.test.tsx",
+          "src/__tests__/components/ProjectDetailModal.test.tsx"
+        ],
+        "framework": "Vitest + Testing Library"
+      },
+      "dependencies": [
+        "PROJECT-MIN-007",
+        "PROJECT-MIN-008"
+      ]
+    },
+    {
+      "id": "PROJECT-MIN-012",
+      "title": "Finalize Docs, Progress Logs, Validation, and Dev Run",
+      "priority": 2,
+      "phase": "Phase 12: Delivery",
+      "status": "Complete",
+      "passes": true,
+      "completedAt": "2026-04-16T04:50:00Z",
+      "acceptanceCriteria": [
+        "Align copilot-instructions Ralph section with active hover-first epic",
+        "Record completion notes in progress.txt with story references",
+        "Run lint, build, and relevant tests successfully",
+        "Start dev server for manual verification"
+      ],
+      "technicalNotes": {
+        "files": [
+          ".github/copilot-instructions.md",
+          "progress.txt",
+          "prd.json"
+        ],
+        "note": "No automatic push"
+      },
+      "dependencies": [
+        "PROJECT-MIN-011",
+        "PROJECT-MIN-010"
+      ]
+    },
+    {
+      "id": "PROJECT-MIN-013",
+      "title": "Restore Project Detail Modal Flow After User Feedback",
+      "priority": 1,
+      "phase": "Phase 13: Post-Release Hotfix",
+      "status": "Complete",
+      "supersededBy": "PROJECT-MIN-014",
+      "passes": true,
+      "completedAt": "2026-04-16T05:10:00Z",
+      "acceptanceCriteria": [
+        "Reintroduce project modal in modal union/provider runtime",
+        "Wire project card click interaction to open project modal with payload",
+        "Provide external project actions from inside the modal",
+        "Update tests and planning docs to match restored modal flow"
+      ],
+      "technicalNotes": {
+        "files": [
+          "src/components/sections/ProjectsSection.tsx",
+          "src/components/ui/ProjectDetailModal.tsx",
+          "src/hooks/useModal.tsx",
+          "src/types/index.ts",
+          "src/__tests__/components/sections-uncovered.test.tsx",
+          "src/__tests__/hooks/useModal.test.tsx",
+          "src/__tests__/components/ProjectDetailModal.test.tsx",
+          "prd.json",
+          "progress.txt",
+          ".github/copilot-instructions.md"
+        ],
+        "note": "Keeps no-filter hover-first visual model while restoring modal-first project details"
+      },
+      "dependencies": [
+        "PROJECT-MIN-012"
+      ]
+    },
+    {
+      "id": "PROJECT-MIN-014",
+      "title": "Shift Project Interaction to Hover Preview + Click-Through Link",
+      "priority": 1,
+      "phase": "Phase 14: Interaction Realignment",
+      "status": "Complete",
+      "supersededBy": "PROJECT-MIN-015",
+      "passes": true,
+      "completedAt": "2026-04-16T06:05:00Z",
+      "acceptanceCriteria": [
+        "Project card click no longer opens a project modal",
+        "Hover/focus state reveals a modal-style project preview on-card",
+        "Card activation opens project destination via detailURL > liveURL > repositoryURL",
+        "Tests and planning artifacts reflect click-through behavior"
+      ],
+      "technicalNotes": {
+        "files": [
+          "src/components/sections/ProjectsSection.tsx",
+          "src/__tests__/components/sections-uncovered.test.tsx",
+          "prd.json",
+          "progress.txt"
+        ],
+        "note": "Preserves no-filter, hover-first aesthetic while removing click-to-modal behavior"
+      },
+      "dependencies": [
+        "PROJECT-MIN-013"
+      ]
+    },
+    {
+      "id": "PROJECT-MIN-015",
+      "title": "Remove Hover Modal Panel and Keep Image Zoom Only",
+      "priority": 1,
+      "phase": "Phase 15: Interaction Simplification",
+      "status": "Complete",
+      "passes": true,
+      "completedAt": "2026-04-17T02:20:00Z",
+      "acceptanceCriteria": [
+        "Project cards no longer show any modal-style hover panel",
+        "Hover/focus behavior only enlarges project image smoothly",
+        "Card click continues to open destination link via detailURL > liveURL > repositoryURL",
+        "Tests and tracking artifacts are updated for image-zoom-only interaction"
+      ],
+      "technicalNotes": {
+        "files": [
+          "src/components/sections/ProjectsSection.tsx",
+          "src/__tests__/components/sections-uncovered.test.tsx",
+          "prd.json",
+          "progress.txt",
+          ".github/copilot-instructions.md"
+        ],
+        "note": "Keeps minimalist flow and removes hover modal metaphors from Projects cards"
+      },
+      "dependencies": [
+        "PROJECT-MIN-014"
+      ]
+    }
+  ]
+}

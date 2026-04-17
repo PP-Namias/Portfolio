@@ -6,11 +6,10 @@ import { MessageSquare } from 'lucide-react';
 import { recommendations } from '@/data/recommendations';
 import { useCarousel } from '@/hooks/useCarousel';
 
-const PLACEHOLDER_NAMES = ['Sample Recommender', 'Another Recommender'];
+const PLACEHOLDER_NAMES = new Set(['Sample Recommender', 'Another Recommender']);
 
 function isPlaceholderData() {
-  return recommendations.length === 0 ||
-    recommendations.every((r) => PLACEHOLDER_NAMES.includes(r.name));
+  return recommendations.every((r) => PLACEHOLDER_NAMES.has(r.name));
 }
 
 export function RecommendationsCarousel() {
@@ -108,7 +107,8 @@ export function RecommendationsCarousel() {
         <div className="flex items-center gap-1.5 mt-4">
           {recommendations.map((_, index) => (
             <button
-              key={index}
+              key={`${recommendations[index]?.name || 'recommendation'}-${index}`}
+              type="button"
               onClick={() => handleDotClick(index)}
               className={`h-1.5 rounded-full transition-all duration-300 ${
                 index === currentIndex

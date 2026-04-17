@@ -8,18 +8,69 @@ vi.mock('framer-motion', () => {
   return {
     motion: {
       button: R.forwardRef(function MockButton(
-        { children, className, onClick, role, tabIndex, ...props }: Record<string, unknown>,
+        {
+          children,
+          className,
+          onClick,
+          role,
+          tabIndex,
+          whileHover: _whileHover,
+          whileTap: _whileTap,
+          initial: _initial,
+          animate: _animate,
+          exit: _exit,
+          transition: _transition,
+          variants: _variants,
+          custom: _custom,
+          layout: _layout,
+          ...props
+        }: Record<string, unknown>,
         ref: React.Ref<HTMLButtonElement>
       ) {
         return R.createElement('button', { ref, className, onClick, role, tabIndex, ...props }, children);
       }),
       div: R.forwardRef(function MockDiv(
-        { children, className, ...props }: Record<string, unknown>,
+        {
+          children,
+          className,
+          whileHover: _whileHover,
+          whileTap: _whileTap,
+          whileInView: _whileInView,
+          initial: _initial,
+          animate: _animate,
+          exit: _exit,
+          transition: _transition,
+          variants: _variants,
+          custom: _custom,
+          layout: _layout,
+          viewport: _viewport,
+          ...props
+        }: Record<string, unknown>,
         ref: React.Ref<HTMLDivElement>
       ) {
         return R.createElement('div', { ref, className, ...props }, children);
       }),
-      a: ({ children, className, onClick, href, download, target, rel, role, tabIndex, ...props }: Record<string, unknown>) =>
+      a: ({
+        children,
+        className,
+        onClick,
+        href,
+        download,
+        target,
+        rel,
+        role,
+        tabIndex,
+        whileHover: _whileHover,
+        whileTap: _whileTap,
+        initial: _initial,
+        animate: _animate,
+        exit: _exit,
+        transition: _transition,
+        variants: _variants,
+        custom: _custom,
+        layout: _layout,
+        ...props
+      }: Record<string, unknown>) =>
         R.createElement('a', { className, onClick, href, download, target, rel, role, tabIndex, ...props }, children),
     },
     AnimatePresence: ({ children }: { children: React.ReactNode }) => children,

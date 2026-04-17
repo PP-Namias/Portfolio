@@ -96,7 +96,9 @@ describe('app layout and page coverage', () => {
 
     expect((tree as React.ReactElement).type).toBe('html');
 
+    const domWarningSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
     render(tree as React.ReactElement);
+    domWarningSpy.mockRestore();
 
     expect(screen.getByText('Skip to main content')).toBeInTheDocument();
     expect(screen.getByText('AppChild')).toBeInTheDocument();
@@ -120,17 +122,17 @@ describe('app layout and page coverage', () => {
   });
 
   it('Home page clears sticky side under mobile width branch', async () => {
-    Object.defineProperty(window, 'innerWidth', {
+    Object.defineProperty(globalThis, 'innerWidth', {
       configurable: true,
       value: 768,
     });
 
     render(<Home />);
 
-    fireEvent(window, new Event('resize'));
+    fireEvent(globalThis as unknown as Window, new Event('resize'));
 
     await waitFor(() => {
-      const stickyBlocks = document.querySelectorAll('.lg\\:sticky');
+      const stickyBlocks = document.querySelectorAll(String.raw`.lg\:sticky`);
       expect(stickyBlocks.length).toBe(0);
     });
   });

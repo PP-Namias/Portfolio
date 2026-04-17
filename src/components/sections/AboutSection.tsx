@@ -31,7 +31,7 @@ export function AboutSection() {
         >
           {(showMore ? paragraphs : paragraphs.slice(0, 2)).map((paragraph, i) => (
             <p
-              key={i}
+              key={`${paragraph.slice(0, 16)}-${i}`}
               className="text-sm text-text-secondary-light dark:text-text-secondary-dark leading-[1.7]"
             >
               {paragraph}
@@ -41,6 +41,7 @@ export function AboutSection() {
 
         {paragraphs.length > 2 && (
           <button
+            type="button"
             onClick={() => setShowMore(!showMore)}
             className="flex items-center gap-1 text-xs font-medium text-text-muted-light dark:text-text-muted-dark hover:text-accent-pink dark:hover:text-accent-pink transition-colors"
           >
@@ -58,7 +59,7 @@ export function AboutSection() {
           const endLabel = edu.endedAt ? new Date(edu.endedAt).getFullYear() : 'Present';
           return (
             <motion.div
-              key={index}
+              key={`${edu.institution}-${edu.degree}-${edu.startedAt}-${index}`}
               className="mt-3"
               initial={{ opacity: 0, y: 10 }}
               whileInView={{ opacity: 1, y: 0 }}

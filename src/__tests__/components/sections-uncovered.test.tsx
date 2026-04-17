@@ -12,7 +12,21 @@ vi.mock('framer-motion', () => {
     {
       get: (_, tag: string) =>
         R.forwardRef(function MotionTag(
-          { children, ...props }: Record<string, unknown>,
+          {
+            children,
+            whileHover: _whileHover,
+            whileTap: _whileTap,
+            whileInView: _whileInView,
+            initial: _initial,
+            animate: _animate,
+            exit: _exit,
+            transition: _transition,
+            variants: _variants,
+            custom: _custom,
+            layout: _layout,
+            viewport: _viewport,
+            ...props
+          }: Record<string, unknown>,
           ref: React.Ref<HTMLElement>
         ) {
           return R.createElement(tag, { ref, ...props }, children);
@@ -25,11 +39,18 @@ vi.mock('framer-motion', () => {
     AnimatePresence: ({ children }: { children: React.ReactNode }) => children,
     useMotionValue: () => ({ set: vi.fn() }),
     useSpring: () => 0,
+    useReducedMotion: () => false,
   };
 });
 
 vi.mock('next/image', () => ({
-  default: ({ alt = '', src = '', ...props }: Record<string, unknown>) => (
+  default: ({
+    alt = '',
+    src = '',
+    fill: _fill,
+    priority: _priority,
+    ...props
+  }: Record<string, unknown>) => (
     // eslint-disable-next-line @next/next/no-img-element
     <img
       alt={typeof alt === 'string' ? alt : ''}
@@ -146,8 +167,16 @@ vi.mock('@/data/projects', () => ({
       repositoryURL: 'https://github.com/example/featured',
       liveURL: 'https://featured.app',
       processURL: 'https://docs.featured.app',
+      detailURL: 'https://featured.app/detail',
       tags: ['React', 'TypeScript', 'Node.js', 'AI', 'Cloud'],
       year: 2026,
+      category: 'AI Application',
+      role: 'Full Stack Developer',
+      featuredRank: 1,
+      status: 'completed',
+      impactMetrics: [
+        { label: 'Scale', value: '1000+ sessions' },
+      ],
     },
     {
       title: 'Proj 2',
@@ -156,8 +185,12 @@ vi.mock('@/data/projects', () => ({
       repositoryURL: 'https://github.com/example/p2',
       liveURL: null,
       processURL: null,
+      detailURL: 'https://github.com/example/p2',
       tags: ['React', 'Node.js', 'API'],
       year: 2025,
+      category: 'Desktop Application',
+      role: 'Software Engineer',
+      status: 'completed',
     },
     {
       title: 'Proj 3',
@@ -166,8 +199,12 @@ vi.mock('@/data/projects', () => ({
       repositoryURL: null,
       liveURL: 'https://p3.app',
       processURL: null,
+      detailURL: 'https://p3.app',
       tags: ['Next.js', 'TS', 'SSR'],
       year: 2025,
+      category: 'Web Platform',
+      role: 'Frontend Engineer',
+      status: 'completed',
     },
     {
       title: 'Proj 4',
@@ -176,8 +213,12 @@ vi.mock('@/data/projects', () => ({
       repositoryURL: null,
       liveURL: null,
       processURL: null,
+      detailURL: null,
       tags: ['Python', 'FastAPI', 'Docker'],
       year: 2024,
+      category: 'Backend Service',
+      role: 'Backend Engineer',
+      status: 'completed',
     },
     {
       title: 'Proj 5',
@@ -186,8 +227,12 @@ vi.mock('@/data/projects', () => ({
       repositoryURL: null,
       liveURL: null,
       processURL: null,
+      detailURL: null,
       tags: ['Go', 'Redis', 'Cloud'],
       year: 2024,
+      category: 'Backend Service',
+      role: 'Backend Engineer',
+      status: 'completed',
     },
   ],
 }));
@@ -336,13 +381,36 @@ describe('uncovered section components', () => {
   it('ProjectsSection renders featured project and toggles all projects', () => {
     render(<ProjectsSection />);
     expect(screen.getByText('Projects')).toBeInTheDocument();
-    expect(screen.getByText('Featured App')).toBeInTheDocument();
+    expect(screen.getAllByText('Featured App').length).toBeGreaterThan(0);
 
     fireEvent.click(screen.getByText(/View all/i));
-    expect(screen.getByText('Proj 5')).toBeInTheDocument();
+    expect(screen.getAllByText('Proj 5').length).toBeGreaterThan(0);
 
     fireEvent.click(screen.getByText(/Show less/i));
-    expect(screen.queryByText('Proj 5')).not.toBeInTheDocument();
+    expect(screen.queryAllByText('Proj 5').length).toBe(0);
+  });
+
+  it('ProjectsSection removes search, filter, and sort controls for minimalist layout', () => {
+    render(<ProjectsSection />);
+
+    expect(screen.queryByLabelText(/Search projects/i)).not.toBeInTheDocument();
+    expect(screen.queryByLabelText(/Sort projects/i)).not.toBeInTheDocument();
+    expect(screen.queryByLabelText(/Filter by technology tag/i)).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /Reset filters/i })).not.toBeInTheDocument();
+  });
+
+  it('ProjectsSection keeps image zoom hover behavior and routes card click to project link', () => {
+    render(<ProjectsSection />);
+
+    const projectLink = screen.getByRole('link', { name: /Open project link for Featured App/i });
+    expect(projectLink).toHaveAttribute('href', 'https://featured.app/detail');
+
+    fireEvent.click(projectLink);
+    expect(openModalMock).not.toHaveBeenCalled();
+
+    expect(screen.queryByText(/Modal-style hover preview/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/Hover or focus smoothly enlarges the project image/i)).not.toBeInTheDocument();
+    expect(screen.getByText(/Minimalist showcase of selected projects/i)).toBeInTheDocument();
   });
 
   it('CertificationsSection filters, expands and opens/closes lightbox', () => {

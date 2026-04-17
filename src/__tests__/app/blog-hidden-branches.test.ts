@@ -31,6 +31,10 @@ describe('blog hidden feature branches', () => {
       default: () => null,
     }));
 
+    vi.doMock('@/app/blog/[slug]/BlogPostContent', () => ({
+      default: () => null,
+    }));
+
     vi.doMock('framer-motion', () => ({
       motion: { div: ({ children }: { children: unknown }) => children },
       AnimatePresence: ({ children }: { children: unknown }) => children,

@@ -3,7 +3,16 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence, useMotionValue, useSpring } from 'framer-motion';
-import { MapPin, Mail, Download, Calendar, Github, Linkedin, Twitter, Instagram } from 'lucide-react';
+import {
+  MapPin,
+  Mail,
+  Download,
+  Calendar,
+  Code2,
+  BriefcaseBusiness,
+  Share2,
+  Camera,
+} from 'lucide-react';
 import { profile } from '@/data/profile';
 import { socialLinks } from '@/data/socials';
 import { Button } from '@/components/ui/Button';
@@ -20,10 +29,10 @@ const roles = [
 ];
 
 const socialIconMap: Record<string, React.ComponentType<{ className?: string }>> = {
-  github: Github,
-  linkedin: Linkedin,
-  x: Twitter,
-  instagram: Instagram,
+  github: Code2,
+  linkedin: BriefcaseBusiness,
+  x: Share2,
+  instagram: Camera,
 };
 
 /* Staggered entrance variants */
@@ -183,6 +192,7 @@ export function HeroSection() {
                   <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75" />
                   <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-green-500" />
                 </span>
+                {' '}
                 Available
               </span>
             </div>

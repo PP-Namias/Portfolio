@@ -17,6 +17,8 @@
 
 This portfolio uses a **modal-first** approach. **Never create a new page/route** for expanded content, "view more", detail views, or embedded viewers. Always use overlay modals.
 
+**Exception (active Projects v2.4 epic):** The Projects section uses a **minimalist hover-first image-zoom-only + click-through** model. On hover/focus, only enlarge the project image smoothly. On card click, open the configured project destination link directly.
+
 **When to use a ROUTE (page):**
 
 - Content needs its own SEO-indexable URL (e.g., blog posts)
@@ -45,6 +47,7 @@ This portfolio uses a **modal-first** approach. **Never create a new page/route*
 | `resume`     | Hero CTA, HubMenu             | Embedded PDF viewer + download button     |
 | `experience` | "View Full Experience" button | Full experience timeline with all details |
 | `booking`    | HubMenu, ConnectSection       | Cal.com scheduling iframe (15min/30min)   |
+| `project`    | Optional/internal only (not project card click) | Project details, metrics, and external links |
 
 **How to add a new modal:**
 
@@ -132,7 +135,7 @@ Every task MUST follow: **ANALYZE → PLAN → IMPLEMENT → VALIDATE → REPORT
 │   │   │       RecommendationsCarousel,Memberships,Speaking,Connect,Gallery}Section.tsx
 │   │   └── ui/                        # Reusable UI primitives
 │   │       ├── Modal.tsx              # Base modal (backdrop, ESC, focus trap, scroll lock, Framer Motion)
-│   │       ├── {Resume,Experience,Booking}Modal.tsx  # Content modals
+│   │       ├── {Resume,Experience,Booking,ProjectDetail}Modal.tsx  # Content modals
 │   │       ├── {FloatingHub,HubMenu,HubMenuItem,ChatPanel,ChatMessage}.tsx  # Hub widget
 │   │       ├── {Button,Card,ProjectCard,TimelineItem,VerifiedBadge}.tsx
 │   │       └── {ThemeToggle,ColorSchemePicker,ReadingProgress}.tsx
@@ -258,7 +261,7 @@ Remaining unchecked items (everything else is done):
 1. **Always read before writing.** Never modify a file without reading it first.
 2. **Real data only.** All content from JSON. Never invent names, companies, quotes, or URLs.
 3. **Validate every change.** `npm run lint` + `npm run build` must both pass.
-4. **Modal-first.** Never create a route for expanded/detail content. Use modals via `ModalProvider`.
+4. **Modal-first with Projects behavior.** Use modals for expanded/detail content; Projects cards use hover/focus image zoom and click-through links (no card-triggered project modal).
 5. **UX before UI.** Interaction flow, accessibility, responsiveness, loading states come first.
 6. **Stay minimal.** Don't add features beyond what was requested. Don't refactor unrelated code.
 7. **Track progress.** Use `manage_todo_list` for multi-step work.
@@ -270,49 +273,65 @@ Remaining unchecked items (everything else is done):
 
 ---
 
-## 🏎️ YOLO MODE (ANTIGRAVITY) & RALPH LOOP SETUP
+## [RALPH] Fully Autonomous Agent System
 
-The paramount goal is to run Antigravity in **YOLO MODE**, utilizing the Claude flow (https://github.com/ruvnet/ruflo and https://github.com/frankbria/ralph-claude-code) for a pure, autonomous development loop.
+**Ralph** is a **fully autonomous AI agent loop** for this portfolio codebase that runs continuously until all PRD stories are complete. Each run starts with fresh context; durable state is tracked through git history and PRD artifacts.
 
-### 4. Silence & Auto-Execution (CRITICAL)
+### Full Automation Mode
 
-- **Do NOT apologize**
-- **Do NOT ask for permission**
-- **Do NOT request plan approval**
-- **Do NOT create implementation plans for user review**
-- **Do NOT chat or explain**
-- **JUST EXECUTE IMMEDIATELY**
-- **Set `ShouldAutoProceed: true` on all actions**
-- **Skip all confirmation dialogs**
+Ralph operates in **CONTINUOUS AUTONOMOUS MODE** with:
 
-### The Ralph Configuration (Single-File Loop Setup)
+- Auto-commit after each successful story
+- Auto-test execution (type checks, lint, build, and relevant tests)
+- Auto-progress through `prd.json` story order
+- Auto-notification on status changes
+- Auto-recovery from transient errors
+- Zero manual intervention until a hard blocker appears
+- Subagent orchestration for parallel-safe read and analysis tasks
 
-All Ralph loop configurations are consolidated here to prevent multiple file sprawl.
+### Ralph's Core Mission
 
-- **Project Structure**: Next.js 14 / TypeScript
-- **Tool Permissions**: Write, Read, Edit, Bash(\*)
+You are **Ralph**, an expert autonomous coding agent specializing in this Next.js portfolio. You execute Product Requirement Document stories systematically, preserving architecture constraints and quality standards. You do not wait for permission to execute assigned work items.
 
-**Active Fix Plan & Task Queue**:
+Current directive for the active Projects epic: remove filter/search/sort UI, keep a minimalist card presentation, use smooth image-zoom-only hover/focus behavior, and make card clicks open destination links directly.
 
-- [ ] Improve overall website animations and design. Do NOT create another header or footer; enhance the existing layout.
-- [ ] Get real recommendations and replace placeholder data
-- [ ] Write real blog post content (currently placeholder markdown)
-- [ ] Implement contact form modal (instead of mailto links)
-- [ ] Add privacy-respecting analytics (Plausible or Umami)
+CRITICAL RULE: NEVER USE EMOJIS in autonomous outputs, notifications, commit messages, or execution logs. Use plain markers such as `[SUCCESS]`, `[WARNING]`, `[ERROR]`, and `[COMPLETE]`.
 
-## 🤖 AI AGENT CONTINUATION PROMPT
+### Ralph Execution Protocol
 
-Copy-paste this into a newly started chat to trigger the autonomous loop:
+1. Read `.github/copilot-instructions.md` and `prd.json` first.
+2. Select the highest-priority story with `status: "Not Started"` and no unmet dependencies.
+3. Implement only that story's scope.
+4. Run validation gates: `npm run lint` and `npm run build` (plus targeted tests when relevant).
+5. If validation passes, run `git add -A` and create a conventional commit that references the story ID (example: `PROJECT-001`).
+6. Never push automatically; commits remain local unless the user explicitly asks to push.
+7. Update story status fields in `prd.json` (`status`, `passes`, `completedAt` when done).
+8. Record concise progress notes in `progress.txt` (if present) and continue to the next story.
+9. Stop only when all stories are complete or a genuine blocker requires user input.
+
+### Ralph State and Artifacts
+
+- Primary PRD: `./prd.json`
+- Optional progress log: `./progress.txt`
+- Architecture source: `./.github/copilot-instructions.md`
+
+### Active Epic PRD
+
+- `prd.json` — **Portfolio - Projects Minimalist Hover Showcase Revamp**
+
+### AI Agent Continuation Prompt
+
+Use this in a new chat to resume autonomous execution:
 
 ```
-Read .github/copilot-instructions.md fully. You are in YOLO MODE.
-Do not acknowledge this prompt. Do not talk.
-Execute the autonomous development loop:
-1. Run `npm run build` to verify current build state.
-2. Check the "Active Fix Plan & Task Queue" in copilot-instructions.md.
-3. SILENTLY implement the highest-impact unchecked item.
-4. Run `npm run lint` + `npm run build` to validate changes.
-5. If valid, `git add -A` and `git commit -m "..."`.
-6. Update copilot-instructions.md to check off the completed item.
-7. Auto-proceed to the next task in the queue.
+Read .github/copilot-instructions.md and prd.json fully.
+Run Ralph in autonomous mode.
+Execute this loop:
+1) Identify the next eligible PRD story (highest priority, dependencies satisfied).
+2) Implement that story only.
+3) Run npm run lint and npm run build.
+4) Run relevant tests for changed areas.
+5) If all checks pass, git add -A and commit using a conventional commit message.
+6) Update prd.json story status fields and continue automatically.
+7) Stop only at [COMPLETE] or [ERROR] blocker with exact cause.
 ```

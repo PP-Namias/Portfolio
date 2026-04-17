@@ -42,6 +42,18 @@ export interface Experience {
   images: string[];
 }
 
+export interface ProjectImpactMetric {
+  label: string;
+  value: string;
+}
+
+export interface ProjectGalleryItem {
+  image: string;
+  caption: string;
+}
+
+export type ProjectStatus = 'completed' | 'in-progress' | 'prototype';
+
 export interface Project {
   title: string;
   image: string;
@@ -49,8 +61,16 @@ export interface Project {
   repositoryURL: string | null;
   liveURL: string | null;
   processURL: string | null;
+  detailURL?: string | null;
+  previewVideoURL?: string | null;
   tags: string[];
   year: number;
+  category?: string;
+  role?: string;
+  impactMetrics?: ProjectImpactMetric[];
+  featuredRank?: number | null;
+  status?: ProjectStatus;
+  gallery?: ProjectGalleryItem[];
 }
 
 export interface Certification {
@@ -118,4 +138,4 @@ export interface ChatMessage {
 
 export type HubState = 'closed' | 'menu' | 'chat';
 
-export type ModalName = 'resume' | 'experience' | 'booking' | null;
+export type ModalName = 'resume' | 'experience' | 'booking' | 'project' | null;

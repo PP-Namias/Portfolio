@@ -11,9 +11,11 @@ interface ModalProps {
   children: React.ReactNode;
   /** Full-screen modal (almost full viewport) vs default sized */
   fullScreen?: boolean;
+  /** Optional id that points to the dialog's primary descriptive text */
+  descriptionId?: string;
 }
 
-export function Modal({ open, onClose, title, children, fullScreen = false }: ModalProps) {
+export function Modal({ open, onClose, title, children, fullScreen = false, descriptionId }: ModalProps) {
   const panelRef = useRef<HTMLDivElement>(null);
 
   // Lock body scroll when open
@@ -93,6 +95,7 @@ export function Modal({ open, onClose, title, children, fullScreen = false }: Mo
             role="dialog"
             aria-modal="true"
             aria-label={title}
+            aria-describedby={descriptionId}
           >
             {/* Header */}
             {title && (

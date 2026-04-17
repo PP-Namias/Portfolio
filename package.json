@@ -1,8 +1,26 @@
 {
-  "name": "cloud-native-portfolio",
+  "name": "pp-namias-portfolio",
   "version": "1.0.0",
   "private": true,
-  "description": "A modern cloud-native portfolio website built with Next.js 14, Tailwind CSS, and deployed on AWS Amplify.",
+  "description": "Official personal portfolio of Jhon Keneth Ryan Namias (PP Namias), built with Next.js 14, TypeScript, Tailwind CSS, and AI-powered chat.",
+  "author": "Jhon Keneth Ryan Namias (PP Namias) <pp.namias@gmail.com>",
+  "license": "MIT",
+  "homepage": "https://namias.tech",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/PP-Namias/Portfolio.git"
+  },
+  "bugs": {
+    "url": "https://github.com/PP-Namias/Portfolio/issues"
+  },
+  "keywords": [
+    "pp-namias",
+    "portfolio",
+    "nextjs",
+    "typescript",
+    "tailwindcss",
+    "ai-chatbot"
+  ],
   "scripts": {
     "dev": "next dev",
     "build": "next build",
