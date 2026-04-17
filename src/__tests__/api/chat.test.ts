@@ -121,12 +121,12 @@ describe('/api/chat route', () => {
     expect(data.error).toBe('Message is too long. Maximum 500 characters.');
   });
 
-  it('strips HTML tags from message', async () => {
+  it('treats HTML-like input as plain text', async () => {
     const req = createRequest({ message: '<script>alert("xss")</script>Can you explain your decision-making process?' });
     const res = await POST(req);
-    // Should succeed after stripping and still call Gemini for non-preset intent
+    // Should succeed and pass plain text through to Gemini for non-preset intent
     expect(res.status).toBe(200);
-    expect(mockSendMessage).toHaveBeenCalledWith('alert("xss")Can you explain your decision-making process?');
+    expect(mockSendMessage).toHaveBeenCalledWith('<script>alert("xss")</script>Can you explain your decision-making process?');
   });
 
   it('returns 400 when body is invalid JSON', async () => {
@@ -464,9 +464,16 @@ describe('/api/chat route', () => {
   });
 
   it('returns 500 from outer catch when an unexpected error occurs before fallback message is set', async () => {
-    const req = createRequest({ message: 'Can you explain your decision-making process?' });
-    const replaceAllSpy = vi.spyOn(String.prototype, 'replaceAll').mockImplementationOnce(() => {
-      throw new Error('Unexpected replaceAll failure');
+    const req = new NextRequest('http://localhost:3000/api/chat', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-real-ip': 'trim-error-test-ip',
+      },
+      body: JSON.stringify({ message: 'Can you explain your decision-making process?' }),
+    });
+    const trimSpy = vi.spyOn(String.prototype, 'trim').mockImplementationOnce(() => {
+      throw new Error('Unexpected trim failure');
     });
 
     try {
@@ -475,7 +482,7 @@ describe('/api/chat route', () => {
       const data = await res.json();
       expect(data.error).toBe('Something went wrong. Please try again.');
     } finally {
-      replaceAllSpy.mockRestore();
+      trimSpy.mockRestore();
     }
   });
 

@@ -59,10 +59,6 @@ interface ValidationError {
   status: number;
 }
 
-function stripHtml(str: string): string {
-  return str.replaceAll(/<[^>]*>/g, '');
-}
-
 function getClientIp(request: NextRequest): string {
   return (
     request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
@@ -93,7 +89,7 @@ function parseChatRequest(body: RequestBody | null): ParsedChatRequest | Validat
     return { error: 'Message is required.', status: 400 };
   }
 
-  const message = stripHtml(body.message).trim();
+  const message = body.message.trim();
 
   if (message.length === 0) {
     return { error: 'Message cannot be empty.', status: 400 };
