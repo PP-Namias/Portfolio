@@ -38,12 +38,12 @@ export function ResumeModal({ open, onClose }: ResumeModalProps) {
 
       {/* PDF Viewer */}
       <div className="flex-1" style={{ height: 'calc(92vh - 60px)', minHeight: '500px' }}>
-        <object
-          data="/resume.pdf"
-          type="application/pdf"
-          className="w-full h-full"
+        <iframe
+          src="/resume.pdf#view=FitH"
+          className="w-full h-full border-0"
+          title="Resume PDF Viewer"
+          loading="lazy"
         >
-          {/* Fallback for browsers that don't support embedded PDFs */}
           <div className="flex flex-col items-center justify-center py-20 px-4 text-center h-full">
             <p className="text-text-secondary-light dark:text-text-secondary-dark mb-4">
               Your browser doesn&apos;t support embedded PDF viewing.
@@ -57,7 +57,7 @@ export function ResumeModal({ open, onClose }: ResumeModalProps) {
               Download Resume
             </a>
           </div>
-        </object>
+        </iframe>
       </div>
     </Modal>
   );
