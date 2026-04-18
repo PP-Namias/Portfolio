@@ -43,18 +43,18 @@ describe('ResumeModal', () => {
     expect(downloadLink).toHaveAttribute('download');
   });
 
-  it('embeds the resume PDF via object tag', () => {
+  it('embeds the resume PDF via iframe', () => {
     render(<ResumeModal open={true} onClose={mockOnClose} />);
-    const pdfObject = document.querySelector('object[data="/resume.pdf"]');
-    expect(pdfObject).toBeInTheDocument();
-    expect(pdfObject).toHaveAttribute('type', 'application/pdf');
+    const pdfIframe = screen.getByTitle('Resume PDF Viewer');
+    expect(pdfIframe).toBeInTheDocument();
+    expect(pdfIframe).toHaveAttribute('src', '/resume.pdf#view=FitH');
   });
 
   it('has a fallback download link for unsupported browsers', () => {
     render(<ResumeModal open={true} onClose={mockOnClose} />);
     const fallbackText = screen.getByText(/doesn't support embedded PDF/i);
     expect(fallbackText).toBeInTheDocument();
-    
+
     const fallbackLink = screen.getByText('Download Resume').closest('a');
     expect(fallbackLink).toHaveAttribute('href', '/resume.pdf');
     expect(fallbackLink).toHaveAttribute('download');
