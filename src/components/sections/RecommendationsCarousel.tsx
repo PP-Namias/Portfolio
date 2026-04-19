@@ -9,6 +9,10 @@ import { useCarousel } from '@/hooks/useCarousel';
 const PLACEHOLDER_NAMES = new Set(['Sample Recommender', 'Another Recommender']);
 
 function isPlaceholderData() {
+  if (recommendations.length === 0) {
+    return true;
+  }
+
   return recommendations.every((r) => PLACEHOLDER_NAMES.has(r.name));
 }
 

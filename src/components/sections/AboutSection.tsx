@@ -17,7 +17,7 @@ export function AboutSection() {
       viewport={{ once: true, margin: '-50px' }}
       transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
     >
-      <h2 className="text-lg font-semibold text-text-primary-light dark:text-text-primary-dark mb-4">
+      <h2 className="text-lg font-semibold text-text-primary-light dark:text-text-primary-dark mb-3.5">
         About
       </h2>
       <div className="space-y-4">
@@ -32,7 +32,7 @@ export function AboutSection() {
           {(showMore ? paragraphs : paragraphs.slice(0, 2)).map((paragraph, i) => (
             <p
               key={`${paragraph.slice(0, 16)}-${i}`}
-              className="text-sm text-text-secondary-light dark:text-text-secondary-dark leading-[1.7]"
+              className="text-[14px] sm:text-[15px] text-text-secondary-light dark:text-text-secondary-dark leading-[1.75]"
             >
               {paragraph}
             </p>
@@ -43,7 +43,7 @@ export function AboutSection() {
           <button
             type="button"
             onClick={() => setShowMore(!showMore)}
-            className="flex items-center gap-1 text-xs font-medium text-text-muted-light dark:text-text-muted-dark hover:text-accent-pink dark:hover:text-accent-pink transition-colors"
+            className="flex items-center gap-1 text-[13px] font-medium text-text-muted-light dark:text-text-muted-dark hover:text-accent-pink dark:hover:text-accent-pink transition-colors"
           >
             {showMore ? (
               <>Show less <ChevronUp className="h-3.5 w-3.5" /></>
@@ -69,13 +69,13 @@ export function AboutSection() {
               <div className="flex items-start gap-2">
                 <GraduationCap className="h-4 w-4 text-accent-pink mt-0.5 flex-shrink-0" />
                 <div>
-                  <p className="text-sm font-medium text-text-primary-light dark:text-text-primary-dark">
+                  <p className="text-[15px] font-medium text-text-primary-light dark:text-text-primary-dark leading-snug">
                     {edu.degree}
                   </p>
-                  <p className="text-xs text-text-muted-light dark:text-text-muted-dark">
+                  <p className="text-[12px] sm:text-xs text-text-muted-light dark:text-text-muted-dark">
                     {edu.institution} — {edu.location}
                   </p>
-                  <p className="text-xs text-text-muted-light dark:text-text-muted-dark mt-0.5">
+                  <p className="text-[12px] sm:text-xs text-text-muted-light dark:text-text-muted-dark mt-0.5">
                     {startYear} – {endLabel} · GWA: {edu.gpa}
                   </p>
                 </div>

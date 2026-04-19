@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Mail, Calendar, ExternalLink } from 'lucide-react';
+import { Mail, Calendar, ExternalLink, MessageSquareText } from 'lucide-react';
 import {
   FaDiscord,
   FaFacebookF,
@@ -31,6 +31,7 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
 
 export function ConnectSection() {
   const { openModal } = useModal();
+  const emailFallback = socialLinks.find((link) => link.name === 'email')?.link?.replace('mailto:', '') ?? 'pp.namias@gmail.com';
 
   return (
     <motion.div
@@ -42,15 +43,15 @@ export function ConnectSection() {
       <h2 className="text-lg font-semibold text-text-primary-light dark:text-text-primary-dark mb-2">
         Connect
       </h2>
-      <p className="text-sm text-text-secondary-light dark:text-text-secondary-dark mb-1.5 leading-relaxed">
+      <p className="text-[13px] sm:text-sm text-text-secondary-light dark:text-text-secondary-dark mb-2 leading-[1.7]">
         Open for collaborations, freelance work, and interesting conversations. Let&apos;s build something together.
       </p>
-      <p className="text-xs text-text-muted-light dark:text-text-muted-dark mb-3">
+      <p className="text-[12px] sm:text-xs text-text-muted-light dark:text-text-muted-dark mb-3.5">
         {experiences.length} companies &middot; {certifications.length} certifications &middot; {technologies.length} technologies
       </p>
 
       {/* Primary CTA — elevated above social links */}
-      <div className="flex flex-wrap items-center gap-2 mb-3">
+      <div className="flex flex-wrap items-center gap-2 mb-3.5">
         {socialLinks.filter(link => link.name === 'cal').map((link, index) => {
           const Icon = iconMap[link.icon] || ExternalLink;
           return (
@@ -68,16 +69,29 @@ export function ConnectSection() {
             </motion.button>
           );
         })}
-        <motion.a
-          href={`mailto:${socialLinks.find(s => s.name === 'email')?.link?.replace('mailto:', '') || 'pp.namias@gmail.com'}`}
+
+        <motion.button
+          onClick={() => openModal('contact')}
           initial={{ opacity: 0, y: 10 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ delay: 0.05, duration: 0.3 }}
-          className="flex items-center gap-1.5 px-4 py-2.5 text-sm font-medium rounded-lg transition-colors duration-200 group border-2 border-accent-pink/30 text-accent-pink hover:bg-accent-pink/10"
+          className="flex items-center gap-1.5 px-4 py-2.5 text-sm font-medium rounded-lg transition-colors duration-200 group border border-accent-pink/30 text-accent-pink hover:bg-accent-pink/10"
+        >
+          <MessageSquareText className="h-4 w-4" />
+          <span>Contact Form</span>
+        </motion.button>
+
+        <motion.a
+          href={`mailto:${emailFallback}`}
+          initial={{ opacity: 0, y: 10 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.08, duration: 0.3 }}
+          className="flex items-center gap-1.5 px-4 py-2.5 text-sm font-medium rounded-lg transition-colors duration-200 group border border-border-light dark:border-border-dark text-text-secondary-light dark:text-text-secondary-dark hover:text-accent-pink hover:border-accent-pink dark:hover:text-accent-pink dark:hover:border-accent-pink"
         >
           <Mail className="h-4 w-4" />
-          <span>Send Email</span>
+          <span>Email fallback</span>
         </motion.a>
       </div>
 

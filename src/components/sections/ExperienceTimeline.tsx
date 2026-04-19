@@ -23,9 +23,12 @@ export function ExperienceTimeline() {
       viewport={{ once: true, margin: '-50px' }}
       transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
     >
-      <h2 className="text-lg font-semibold text-text-primary-light dark:text-text-primary-dark mb-4">
+      <h2 className="text-lg font-semibold text-text-primary-light dark:text-text-primary-dark mb-2.5">
         Experience
       </h2>
+      <p className="text-[13px] sm:text-sm text-text-secondary-light dark:text-text-secondary-dark mb-3.5 leading-relaxed">
+        Recent roles across project leadership, technical execution, and delivery operations.
+      </p>
       <motion.div layout>
         {visibleExperiences.map((exp, index) => (
           <TimelineItem
@@ -41,7 +44,7 @@ export function ExperienceTimeline() {
             layout
             type="button"
             onClick={() => setIsExpanded((prev) => !prev)}
-            className="mt-3 inline-flex items-center gap-1.5 text-xs font-medium text-accent-pink hover:text-accent-pink-hover dark:hover:text-accent-pink-hover-dark transition-colors"
+            className="mt-3 inline-flex items-center gap-1.5 text-[13px] font-medium text-accent-pink hover:text-accent-pink-hover dark:hover:text-accent-pink-hover-dark transition-colors"
             aria-expanded={isExpanded}
           >
             {isExpanded ? 'Show Less' : 'View Full Experience'}

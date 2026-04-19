@@ -109,14 +109,14 @@ export function HeroSection() {
 
       {/* Controls — top-right corner */}
       <motion.div
-        className="mb-4 flex w-full items-center justify-end gap-2 md:absolute md:right-0 md:top-1 md:z-10 md:mb-0 md:w-auto"
+        className="mb-5 flex w-full items-center justify-end gap-2 md:absolute md:right-0 md:top-1 md:z-10 md:mb-0 md:w-auto"
         variants={itemVariants}
       >
         <ColorSchemePicker />
         <ThemeToggle />
       </motion.div>
 
-      <div className="flex flex-col items-center text-center sm:text-left sm:flex-row sm:items-center gap-7 md:pt-2 lg:pt-0">
+      <div className="flex flex-col items-center text-center sm:text-left sm:flex-row sm:items-center gap-6 sm:gap-7 lg:gap-8 md:pt-2 lg:pt-1">
         {/* Profile Photo — 160px with 3D tilt + gradient ring */}
         <motion.div className="flex-shrink-0" variants={photoVariants}>
           <div style={{ perspective: 600 }}>
@@ -145,22 +145,22 @@ export function HeroSection() {
         </motion.div>
 
         {/* Identity + Actions */}
-        <div className="flex-1 min-w-0 space-y-4">
+        <div className="flex-1 min-w-0 space-y-4 sm:space-y-5">
           {/* Name + Role block */}
           <div>
             <motion.h1
-              className="text-2xl sm:text-[1.8rem] font-bold text-text-primary-light dark:text-text-primary-dark inline-flex items-center flex-wrap justify-center sm:justify-start leading-tight tracking-tight"
+              className="text-[1.85rem] sm:text-[2.05rem] font-bold text-text-primary-light dark:text-text-primary-dark inline-flex items-center flex-wrap justify-center sm:justify-start leading-[1.18] tracking-tight"
               variants={itemVariants}
             >
               {profile.name}
               <VerifiedBadge />
             </motion.h1>
 
-            <motion.div className="h-7 mt-1 overflow-hidden" variants={itemVariants}>
+            <motion.div className="h-8 mt-1.5 overflow-hidden" variants={itemVariants}>
               <AnimatePresence mode="wait">
                 <motion.p
                   key={roleIndex}
-                  className="text-[15px] font-semibold text-accent-pink"
+                  className="text-[15px] sm:text-base font-semibold text-accent-pink"
                   initial={{ opacity: 0, y: 12, filter: 'blur(4px)' }}
                   animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
                   exit={{ opacity: 0, y: -12, filter: 'blur(4px)' }}
@@ -174,13 +174,13 @@ export function HeroSection() {
 
           {/* Location + Availability + Socials — one dense info row */}
           <motion.div
-            className="flex flex-col items-center sm:items-start gap-3"
+            className="flex flex-col items-center sm:items-start gap-3.5"
             variants={itemVariants}
           >
-            <div className="flex flex-wrap items-center justify-center sm:justify-start gap-3">
+            <div className="flex flex-wrap items-center justify-center sm:justify-start gap-3.5">
               <div className="flex items-center gap-1.5">
                 <MapPin className="h-3.5 w-3.5 text-text-muted-light dark:text-text-muted-dark" />
-                <span className="text-[13px] text-text-muted-light dark:text-text-muted-dark">
+                <span className="text-[13px] sm:text-sm text-text-muted-light dark:text-text-muted-dark">
                   {profile.location}
                 </span>
               </div>
@@ -195,7 +195,7 @@ export function HeroSection() {
             </div>
 
             {/* Social icons — compact row */}
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-1.5">
               {displayedSocials.map((link, i) => {
                 const Icon = socialIconMap[link.name];
                 if (!Icon) return null;
@@ -205,14 +205,14 @@ export function HeroSection() {
                     href={link.link}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="h-7 w-7 rounded-md flex items-center justify-center text-text-muted-light dark:text-text-muted-dark hover:text-accent-pink hover:bg-accent-pink/5 transition-colors"
+                    className="h-8 w-8 rounded-md flex items-center justify-center text-text-muted-light dark:text-text-muted-dark hover:text-accent-pink hover:bg-accent-pink/5 transition-colors"
                     aria-label={link.label}
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ delay: 0.5 + i * 0.04, type: 'spring', stiffness: 300, damping: 20 }}
                     whileHover={{ y: -1 }}
                   >
-                    <Icon className="h-[15px] w-[15px]" />
+                    <Icon className="h-[15.5px] w-[15.5px]" />
                   </motion.a>
                 );
               })}
@@ -236,14 +236,14 @@ export function HeroSection() {
 
           {/* CTAs — single row, clear hierarchy */}
           <motion.div
-            className="flex flex-wrap items-center justify-center sm:justify-start gap-2.5"
+            className="flex flex-wrap items-center justify-center sm:justify-start gap-2.5 sm:gap-3"
             variants={itemVariants}
           >
             <Button
               variant="primary"
               size="md"
               onClick={() => openModal('resume')}
-              className="h-11 px-6 shadow-lg shadow-accent-pink/25 hover:shadow-xl hover:shadow-accent-pink/30 transition-shadow"
+              className="h-10 sm:h-11 px-5 sm:px-6 shadow-lg shadow-accent-pink/25 hover:shadow-xl hover:shadow-accent-pink/30 transition-shadow"
             >
               <Download className="h-4 w-4" />
               Resume
@@ -252,14 +252,19 @@ export function HeroSection() {
               variant="outline"
               size="md"
               onClick={() => openModal('booking')}
-              className="h-11"
+              className="h-10 sm:h-11"
             >
               <Calendar className="h-4 w-4" />
               Book a Call
             </Button>
-            <Button variant="ghost" size="md" href={`mailto:${profile.email}`} className="h-11">
+            <Button
+              variant="ghost"
+              size="md"
+              onClick={() => openModal('contact')}
+              className="h-10 sm:h-11"
+            >
               <Mail className="h-3.5 w-3.5" />
-              Email
+              Contact
             </Button>
           </motion.div>
         </div>

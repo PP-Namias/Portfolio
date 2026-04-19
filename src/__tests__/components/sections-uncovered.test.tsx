@@ -438,7 +438,10 @@ describe('uncovered section components', () => {
     fireEvent.click(screen.getByText('Schedule a Meeting'));
     expect(openModalMock).toHaveBeenCalledWith('booking');
 
-    expect(screen.getByText('Send Email')).toBeInTheDocument();
+    fireEvent.click(screen.getByText('Contact Form'));
+    expect(openModalMock).toHaveBeenCalledWith('contact');
+
+    expect(screen.getByText('Email fallback')).toBeInTheDocument();
     expect(screen.getByText('GitHub')).toBeInTheDocument();
   });
 
@@ -479,6 +482,9 @@ describe('uncovered section components', () => {
 
     fireEvent.click(screen.getByText('Book a Call'));
     expect(openModalMock).toHaveBeenCalledWith('booking');
+
+    fireEvent.click(screen.getByText('Contact'));
+    expect(openModalMock).toHaveBeenCalledWith('contact');
 
     await act(async () => {
       await Promise.resolve();

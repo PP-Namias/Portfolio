@@ -5,6 +5,7 @@ import { ResumeModal } from '@/components/ui/ResumeModal';
 import { ExperienceModal } from '@/components/ui/ExperienceModal';
 import { BookingModal } from '@/components/ui/BookingModal';
 import { ProjectDetailModal } from '@/components/ui/ProjectDetailModal';
+import { ContactModal } from '@/components/ui/ContactModal';
 import { ModalName, Project } from '@/types';
 
 type OpenableModalName = Exclude<ModalName, null>;
@@ -54,6 +55,7 @@ export function ModalProvider({ children }: Readonly<{ children: React.ReactNode
       <ResumeModal open={activeModal === 'resume'} onClose={closeModal} />
       <ExperienceModal open={activeModal === 'experience'} onClose={closeModal} />
       <BookingModal open={activeModal === 'booking'} onClose={closeModal} />
+      <ContactModal open={activeModal === 'contact'} onClose={closeModal} />
       <ProjectDetailModal open={activeModal === 'project'} onClose={closeModal} project={activeProject} />
     </ModalContext.Provider>
   );
