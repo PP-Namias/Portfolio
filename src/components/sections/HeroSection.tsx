@@ -8,11 +8,8 @@ import {
   Mail,
   Download,
   Calendar,
-  Code2,
-  BriefcaseBusiness,
-  Share2,
-  Camera,
 } from 'lucide-react';
+import { FaGithub, FaInstagram, FaLinkedinIn, FaXTwitter } from 'react-icons/fa6';
 import { profile } from '@/data/profile';
 import { socialLinks } from '@/data/socials';
 import { Button } from '@/components/ui/Button';
@@ -29,10 +26,10 @@ const roles = [
 ];
 
 const socialIconMap: Record<string, React.ComponentType<{ className?: string }>> = {
-  github: Code2,
-  linkedin: BriefcaseBusiness,
-  x: Share2,
-  instagram: Camera,
+  github: FaGithub,
+  linkedin: FaLinkedinIn,
+  x: FaXTwitter,
+  instagram: FaInstagram,
 };
 
 /* Staggered entrance variants */

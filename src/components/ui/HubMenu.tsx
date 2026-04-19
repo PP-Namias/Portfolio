@@ -1,8 +1,9 @@
 'use client';
 
-import { useState, useRef, useCallback, useEffect } from 'react';
+import { useState, useRef, useCallback, useEffect, type ComponentType } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
+import { FaGithub, FaInstagram, FaLinkedinIn, FaXTwitter } from 'react-icons/fa6';
 import {
   Bot,
   FileDown,
@@ -10,11 +11,7 @@ import {
   Mail,
   Share2,
   X,
-  Code2,
-  BriefcaseBusiness,
-  Camera,
   ArrowUpRight,
-  LucideIcon,
 } from 'lucide-react';
 import { HubMenuItem } from './HubMenuItem';
 import { socialLinks } from '@/data/socials';
@@ -29,10 +26,11 @@ interface HubMenuProps {
 
 const CONNECT_SOCIALS = ['github', 'linkedin', 'x', 'instagram'] as const;
 
-const socialIconMap: Record<string, LucideIcon> = {
-  github: Code2,
-  linkedin: BriefcaseBusiness,
-  instagram: Camera,
+const socialIconMap: Record<string, ComponentType<{ className?: string }>> = {
+  github: FaGithub,
+  linkedin: FaLinkedinIn,
+  x: FaXTwitter,
+  instagram: FaInstagram,
 };
 
 export function HubMenu({ onClose, onOpenChat }: Readonly<HubMenuProps>) {

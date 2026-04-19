@@ -82,8 +82,15 @@ vi.mock('lucide-react', async () => {
   return {
     ...actual,
     Share2: (props: React.SVGProps<SVGSVGElement>) => <svg data-testid="icon-share2" {...props} />,
-    // Twitter is intentionally undefined so HubMenu falls back to Share2.
-    Twitter: undefined,
+  };
+});
+
+vi.mock('react-icons/fa6', async () => {
+  const actual = await vi.importActual<typeof import('react-icons/fa6')>('react-icons/fa6');
+  return {
+    ...actual,
+    // FaXTwitter is intentionally undefined so HubMenu falls back to Share2.
+    FaXTwitter: undefined,
   };
 });
 
