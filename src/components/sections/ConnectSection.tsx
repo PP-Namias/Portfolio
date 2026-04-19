@@ -2,10 +2,15 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
+import { Mail, Calendar, ExternalLink } from 'lucide-react';
 import {
-  Mail, Calendar, ExternalLink,
-  Github, Instagram, Linkedin, Facebook, Twitter, MessageSquare,
-} from 'lucide-react';
+  FaDiscord,
+  FaFacebookF,
+  FaGithub,
+  FaInstagram,
+  FaLinkedinIn,
+  FaXTwitter,
+} from 'react-icons/fa6';
 import { socialLinks } from '@/data/socials';
 import { experiences } from '@/data/experience';
 import { certifications } from '@/data/certifications';
@@ -14,13 +19,14 @@ import { useModal } from '@/hooks/useModal';
 
 const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   calendar: Calendar,
-  github: Github,
+  github: FaGithub,
   mail: Mail,
-  linkedin: Linkedin,
-  facebook: Facebook,
-  'message-square': MessageSquare,
-  twitter: Twitter,
-  instagram: Instagram,
+  linkedin: FaLinkedinIn,
+  facebook: FaFacebookF,
+  discord: FaDiscord,
+  twitter: FaXTwitter,
+  x: FaXTwitter,
+  instagram: FaInstagram,
 };
 
 export function ConnectSection() {
