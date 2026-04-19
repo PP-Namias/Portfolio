@@ -15,7 +15,7 @@ interface ModalProps {
   descriptionId?: string;
 }
 
-export function Modal({ open, onClose, title, children, fullScreen = false, descriptionId }: ModalProps) {
+export function Modal({ open, onClose, title, children, fullScreen = false, descriptionId }: Readonly<ModalProps>) {
   const panelRef = useRef<HTMLDivElement>(null);
 
   // Lock body scroll when open
@@ -49,10 +49,13 @@ export function Modal({ open, onClose, title, children, fullScreen = false, desc
       if (focusable.length === 0) return;
       const first = focusable[0];
       const last = focusable[focusable.length - 1];
-      if (e.shiftKey) {
-        if (document.activeElement === first) { e.preventDefault(); last.focus(); }
-      } else {
-        if (document.activeElement === last) { e.preventDefault(); first.focus(); }
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      }
+      if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
       }
     };
     document.addEventListener('keydown', handleKeyDown);
@@ -83,7 +86,7 @@ export function Modal({ open, onClose, title, children, fullScreen = false, desc
           {/* Panel */}
           <motion.div
             ref={panelRef}
-            className={`relative z-10 w-full bg-white dark:bg-card-bg-dark rounded-xl border border-border-light dark:border-border-dark shadow-2xl overflow-hidden flex flex-col ${
+            className={`relative z-10 w-full bg-white dark:bg-card-bg-dark rounded-xl border border-border-light dark:border-border-dark shadow-2xl overflow-hidden flex flex-col transition-colors duration-300 ${
               fullScreen
                 ? 'max-w-5xl max-h-[92vh]'
                 : 'max-w-2xl max-h-[85vh]'

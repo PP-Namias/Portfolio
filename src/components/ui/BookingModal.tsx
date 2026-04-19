@@ -1,7 +1,8 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { ExternalLink } from 'lucide-react';
+import { useTheme } from '@/hooks/useTheme';
 import { Modal } from './Modal';
 
 interface BookingModalProps {
@@ -17,14 +18,26 @@ const EVENT_TYPES = [
   { slug: '30min', label: '30 Minute Meeting', duration: '30 min' },
 ] as const;
 
-export function BookingModal({ open, onClose }: BookingModalProps) {
+export function BookingModal({ open, onClose }: Readonly<BookingModalProps>) {
+  const { resolvedTheme, mounted } = useTheme();
   const [selectedEvent, setSelectedEvent] = useState<string>(EVENT_TYPES[0].slug);
-  const embedUrl = `${CAL_BASE_URL}/${CAL_USERNAME}/${selectedEvent}?embed=true&theme=dark`;
+  const [isEmbedLoading, setIsEmbedLoading] = useState(true);
+
+  const calTheme = mounted && resolvedTheme === 'light' ? 'light' : 'dark';
+  const embedUrl = useMemo(
+    () => `${CAL_BASE_URL}/${CAL_USERNAME}/${selectedEvent}?embed=true&theme=${calTheme}`,
+    [selectedEvent, calTheme]
+  );
+
+  useEffect(() => {
+    if (!open) return;
+    setIsEmbedLoading(true);
+  }, [open, selectedEvent, calTheme]);
 
   return (
     <Modal open={open} onClose={onClose} fullScreen>
       {/* Toolbar */}
-      <div className="flex items-center justify-between px-5 py-3 border-b border-border-light dark:border-border-dark flex-shrink-0">
+      <div className="flex items-center justify-between px-5 py-3 border-b border-border-light dark:border-border-dark flex-shrink-0 transition-colors duration-300">
         <div className="flex items-center gap-4">
           <h2 className="text-sm font-semibold text-text-primary-light dark:text-text-primary-dark">
             Schedule a Meeting
@@ -67,14 +80,27 @@ export function BookingModal({ open, onClose }: BookingModalProps) {
       </div>
 
       {/* Cal.com Embed */}
-      <div className="flex-1" style={{ height: 'calc(92vh - 60px)', minHeight: '500px' }}>
+      <div
+        className="relative flex-1 bg-surface-light dark:bg-surface-dark transition-colors duration-300"
+        style={{ height: 'calc(92vh - 60px)', minHeight: '500px' }}
+      >
+        {isEmbedLoading && (
+          <div className="absolute inset-0 z-10 flex items-center justify-center bg-surface-light dark:bg-surface-dark transition-colors duration-300">
+            <div
+              className="h-8 w-8 animate-spin rounded-full border-2 border-accent-pink/30 border-t-accent-pink"
+              aria-hidden="true"
+            />
+            <span className="sr-only">Loading booking schedule</span>
+          </div>
+        )}
         <iframe
-          key={selectedEvent}
+          key={`${selectedEvent}-${calTheme}`}
           src={embedUrl}
-          className="w-full h-full border-0"
+          className={`w-full h-full border-0 transition-opacity duration-300 ${isEmbedLoading ? 'opacity-0' : 'opacity-100'}`}
           title={`Book a ${selectedEvent} meeting with PP Namias`}
           allow="payment"
           loading="lazy"
+          onLoad={() => setIsEmbedLoading(false)}
         />
       </div>
     </Modal>
