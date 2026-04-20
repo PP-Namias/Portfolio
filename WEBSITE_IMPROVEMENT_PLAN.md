@@ -1,6 +1,6 @@
 # Website Improvement Plan
 
-Last updated: 2026-04-19
+Last updated: 2026-04-20
 Project: PP Namias Portfolio (`namias.tech`)
 
 ## Objective
@@ -16,6 +16,7 @@ Create a practical, execution-ready plan to improve UX quality, credibility, con
 3. Content source of truth remains in `portfolio-resources/data/*.json`.
 4. Existing routes stay minimal:
    - `/`
+   - `/contact`
    - `/blog`
    - `/blog/[slug]`
    - `/api/chat`
@@ -36,7 +37,7 @@ Create a practical, execution-ready plan to improve UX quality, credibility, con
 ### Gaps to Improve
 
 1. Some portfolio content is still placeholder-level (recommendations, blog depth).
-2. Connect flow can be improved with a dedicated contact form modal.
+2. Connect flow can be improved further through a smoother dedicated `/contact` page flow.
 3. Analytics is not yet privacy-focused and structured for conversion tracking.
 4. Motion and spacing can be further tuned for readability on dense screens.
 5. Need consistent icon strategy across all social/action surfaces.
@@ -91,7 +92,7 @@ Create a practical, execution-ready plan to improve UX quality, credibility, con
 
 ### Phase 3 key tasks
 
-- Add `ContactModal` (modal-first, no extra route) with:
+- Enhance dedicated `/contact` page flow with:
   - name, email, message
   - optional service/topic selector
   - clear success/error states
@@ -100,7 +101,7 @@ Create a practical, execution-ready plan to improve UX quality, credibility, con
 
 ### Phase 3 acceptance criteria
 
-- Contact form is accessible (keyboard, labels, focus trap, ESC/backdrop close).
+- Contact page form is accessible (keyboard, labels, clear focus states).
 - Submission states are explicit (loading/success/error).
 - Contact/booking actions are reachable within 1-2 interactions from hero/connect.
 
@@ -149,12 +150,7 @@ Create a practical, execution-ready plan to improve UX quality, credibility, con
 ### Phase 6 key tasks
 
 - Integrate Plausible or Umami.
-- Track key events:
-  - `hero_book_call_click`
-  - `connect_schedule_click`
-  - `contact_modal_submit`
-  - `resume_view_click`
-  - `project_card_outbound_click`
+- Track key events: `hero_book_call_click`, `connect_schedule_click`, `contact_form_submit`, `resume_view_click`, `project_card_outbound_click`.
 - Add simple monthly dashboard review process.
 
 ### Phase 6 acceptance criteria
@@ -170,7 +166,7 @@ Create a practical, execution-ready plan to improve UX quality, credibility, con
 | IMP-002 | Cross-section icon consistency pass | P0 | S | `HeroSection`, `ConnectSection`, `HubMenu` |
 | IMP-003 | Replace recommendations placeholders | P0 | M | `portfolio-resources/data/recommendations.json` |
 | IMP-004 | Write 3 real blog posts | P0 | M/L | `portfolio-resources/data/blog.json` |
-| IMP-005 | Add contact form modal | P0 | M | `src/components/ui/ContactModal.tsx`, `src/hooks/useModal.tsx`, `src/types/index.ts` |
+| IMP-005 | Enhance dedicated contact page flow | P0 | M | `src/app/contact/page.tsx`, `src/components/sections/HeroSection.tsx`, `src/components/sections/ConnectSection.tsx` |
 | IMP-006 | Modal and section a11y audit | P1 | M | `src/components/ui/Modal.tsx`, section components |
 | IMP-007 | Motion/perf tuning pass | P1 | M | `src/components/sections/*`, `src/components/ui/*` |
 | IMP-008 | Add privacy analytics | P1 | S/M | `src/app/layout.tsx`, analytics config |
@@ -195,4 +191,4 @@ Create a practical, execution-ready plan to improve UX quality, credibility, con
 
 1. Start `IMP-001` (hero readability and spacing polish).
 2. Start `IMP-003` (real recommendations collection/import).
-3. Start `IMP-005` (contact form modal design + implementation).
+3. Start `IMP-005` (dedicated contact page flow design + implementation).
