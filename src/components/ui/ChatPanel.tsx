@@ -266,8 +266,8 @@ export function ChatPanel({ onBack, onClose, messages, setMessages }: Readonly<C
       return;
     }
 
-    if (action === 'email') {
-      window.open('mailto:pp.namias@gmail.com', '_blank');
+        if (action === 'email') {
+          globalThis.open('/contact', '_self');
       return;
     }
 

@@ -431,17 +431,17 @@ describe('uncovered section components', () => {
     expect(screen.queryByRole('dialog', { name: 'Cert 1' })).not.toBeInTheDocument();
   });
 
-  it('ConnectSection opens booking modal and renders social actions', () => {
+  it('ConnectSection opens booking modal and links email flow to contact page', () => {
     render(<ConnectSection />);
     expect(screen.getByText('Connect')).toBeInTheDocument();
 
     fireEvent.click(screen.getByText('Schedule a Meeting'));
     expect(openModalMock).toHaveBeenCalledWith('booking');
 
-    fireEvent.click(screen.getByText('Contact Form'));
-    expect(openModalMock).toHaveBeenCalledWith('contact');
+    const emailLink = screen.getByText('Send Email').closest('a');
+    expect(emailLink).toHaveAttribute('href', '/contact');
+    expect(openModalMock).not.toHaveBeenCalledWith('contact');
 
-    expect(screen.getByText('Email fallback')).toBeInTheDocument();
     expect(screen.getByText('GitHub')).toBeInTheDocument();
   });
 
@@ -473,7 +473,7 @@ describe('uncovered section components', () => {
     fireEvent.click(screen.getByLabelText('Close lightbox'));
   });
 
-  it('HeroSection renders CTAs and opens proper modals', async () => {
+  it('HeroSection renders CTAs and routes email action to /contact', async () => {
     render(<HeroSection />);
 
     expect(screen.getByText('Jhon Keneth Ryan Namias')).toBeInTheDocument();
@@ -483,8 +483,9 @@ describe('uncovered section components', () => {
     fireEvent.click(screen.getByText('Book a Call'));
     expect(openModalMock).toHaveBeenCalledWith('booking');
 
-    fireEvent.click(screen.getByText('Contact'));
-    expect(openModalMock).toHaveBeenCalledWith('contact');
+    const emailLink = screen.getByText('Email').closest('a');
+    expect(emailLink).toHaveAttribute('href', '/contact');
+    expect(openModalMock).not.toHaveBeenCalledWith('contact');
 
     await act(async () => {
       await Promise.resolve();
@@ -503,7 +504,7 @@ describe('uncovered section components', () => {
     expect(screen.getByText('Org Membership')).toBeInTheDocument();
 
     expect(screen.getByText('Speaking')).toBeInTheDocument();
-    expect(screen.getByText('Get in touch').closest('a')).toHaveAttribute('href', expect.stringContaining('mailto:'));
+    expect(screen.getByText('Get in touch').closest('a')).toHaveAttribute('href', expect.stringContaining('/contact'));
   });
 
   it('RecommendationsCarousel renders card and allows dot navigation', () => {

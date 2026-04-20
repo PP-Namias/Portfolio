@@ -1,15 +1,15 @@
 'use client';
 
 import React from 'react';
-import { Github, Linkedin, Twitter, Instagram } from 'lucide-react';
+import { FaGithub, FaInstagram, FaLinkedinIn, FaXTwitter } from 'react-icons/fa6';
 import { profile } from '@/data/profile';
 import { socialLinks } from '@/data/socials';
 
 const footerSocialIcons: Record<string, React.ComponentType<{ className?: string }>> = {
-  github: Github,
-  linkedin: Linkedin,
-  x: Twitter,
-  instagram: Instagram,
+  github: FaGithub,
+  linkedin: FaLinkedinIn,
+  x: FaXTwitter,
+  instagram: FaInstagram,
 };
 
 const footerSocials = socialLinks.filter((s) =>
@@ -24,12 +24,10 @@ export function Footer() {
         <p className="text-sm text-text-secondary-light dark:text-text-secondary-dark text-center">
           Interested in working together?{' '}
           <a
-            href="https://www.linkedin.com/in/pp-namias/"
-            target="_blank"
-            rel="noopener noreferrer"
+            href="/contact"
             className="text-accent-pink hover:text-accent-pink-hover dark:hover:text-accent-pink-hover-dark font-medium transition-colors"
           >
-            Let&apos;s connect
+            Send a message
           </a>
         </p>
         <div className="flex items-center gap-3">

@@ -260,11 +260,12 @@ export function HeroSection() {
             <Button
               variant="ghost"
               size="md"
-              onClick={() => openModal('contact')}
+              href="/contact"
+              internal
               className="h-10 sm:h-11"
             >
               <Mail className="h-3.5 w-3.5" />
-              Contact
+              Email
             </Button>
           </motion.div>
         </div>

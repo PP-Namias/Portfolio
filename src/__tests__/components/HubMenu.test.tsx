@@ -148,10 +148,10 @@ describe('HubMenu', () => {
     expect(mockOnClose).toHaveBeenCalledTimes(1);
   });
 
-  it('has email mailto link', () => {
+  it('routes Send Email to contact page', () => {
     render(<HubMenu onClose={mockOnClose} onOpenChat={mockOnOpenChat} />);
     const emailLink = screen.getByText('Send Email').closest('a');
-    expect(emailLink).toHaveAttribute('href', 'mailto:pp.namias@gmail.com');
+    expect(emailLink).toHaveAttribute('href', '/contact');
   });
 
   it('hides blog menu item when blog feature is disabled', () => {
@@ -282,7 +282,7 @@ describe('HubMenu', () => {
     const items = screen.getAllByRole('menuitem');
 
     // Focus last item
-    items[items.length - 1].focus();
+    items.at(-1)?.focus();
 
     // ArrowDown wraps to first
     fireEvent.keyDown(menu, { key: 'ArrowDown' });
@@ -299,7 +299,7 @@ describe('HubMenu', () => {
 
     // ArrowUp wraps to last
     fireEvent.keyDown(menu, { key: 'ArrowUp' });
-    expect(document.activeElement).toBe(items[items.length - 1]);
+    expect(document.activeElement).toBe(items.at(-1));
   });
 
   it('ignores non-arrow keys in menu keyboard navigation', () => {

@@ -37,7 +37,7 @@ export function SpeakingSection() {
         </div>
       )}
       <a
-        href={`mailto:${profile.email}?subject=Speaking%20Inquiry`}
+        href="/contact?subject=Speaking%20Inquiry"
         className="inline-flex items-center gap-1 text-sm text-accent-pink hover:text-accent-pink-hover dark:hover:text-accent-pink-hover-dark transition-colors duration-200 font-medium"
       >
         Get in touch

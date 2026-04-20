@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Mail, Calendar, ExternalLink, MessageSquareText } from 'lucide-react';
+import { Mail, Calendar, ExternalLink } from 'lucide-react';
 import {
   FaDiscord,
   FaFacebookF,
@@ -31,7 +31,6 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
 
 export function ConnectSection() {
   const { openModal } = useModal();
-  const emailFallback = socialLinks.find((link) => link.name === 'email')?.link?.replace('mailto:', '') ?? 'pp.namias@gmail.com';
 
   return (
     <motion.div
@@ -70,34 +69,22 @@ export function ConnectSection() {
           );
         })}
 
-        <motion.button
-          onClick={() => openModal('contact')}
+        <motion.a
+          href="/contact"
           initial={{ opacity: 0, y: 10 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ delay: 0.05, duration: 0.3 }}
           className="flex items-center gap-1.5 px-4 py-2.5 text-sm font-medium rounded-lg transition-colors duration-200 group border border-accent-pink/30 text-accent-pink hover:bg-accent-pink/10"
         >
-          <MessageSquareText className="h-4 w-4" />
-          <span>Contact Form</span>
-        </motion.button>
-
-        <motion.a
-          href={`mailto:${emailFallback}`}
-          initial={{ opacity: 0, y: 10 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.08, duration: 0.3 }}
-          className="flex items-center gap-1.5 px-4 py-2.5 text-sm font-medium rounded-lg transition-colors duration-200 group border border-border-light dark:border-border-dark text-text-secondary-light dark:text-text-secondary-dark hover:text-accent-pink hover:border-accent-pink dark:hover:text-accent-pink dark:hover:border-accent-pink"
-        >
           <Mail className="h-4 w-4" />
-          <span>Email fallback</span>
+          <span>Send Email</span>
         </motion.a>
       </div>
 
       {/* Secondary social links — lower visual weight */}
       <div className="flex flex-wrap items-center gap-2">
-        {socialLinks.filter(link => link.name !== 'cal').map((link, index) => {
+        {socialLinks.filter(link => !['cal', 'email'].includes(link.name)).map((link, index) => {
           const Icon = iconMap[link.icon] || ExternalLink;
           return (
             <motion.a

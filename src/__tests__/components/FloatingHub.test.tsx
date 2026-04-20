@@ -67,7 +67,7 @@ vi.mock('@/hooks/useModal', () => ({
 
 // Mock fetch
 const mockFetch = vi.fn();
-global.fetch = mockFetch;
+globalThis.fetch = mockFetch;
 
 describe('FloatingHub', () => {
   beforeEach(() => {
@@ -126,12 +126,12 @@ describe('FloatingHub', () => {
     expect(mockOpenModal).toHaveBeenCalledWith('booking');
   });
 
-  it('has mailto link for email', () => {
+  it('has contact page link for email', () => {
     render(<FloatingHub />);
     fireEvent.click(screen.getByLabelText('Open quick actions'));
 
     const mailLink = screen.getByText('Send Email').closest('a');
-    expect(mailLink).toHaveAttribute('href', 'mailto:pp.namias@gmail.com');
+    expect(mailLink).toHaveAttribute('href', '/contact');
   });
 
   it('does not show blog link when blog feature is disabled', () => {
@@ -328,7 +328,7 @@ describe('FloatingHub', () => {
   });
 
   it('closes when clicking outside on desktop', () => {
-    Object.defineProperty(window, 'innerWidth', {
+    Object.defineProperty(globalThis, 'innerWidth', {
       configurable: true,
       writable: true,
       value: 1024,
@@ -343,7 +343,7 @@ describe('FloatingHub', () => {
   });
 
   it('does not close on outside click on mobile widths', () => {
-    Object.defineProperty(window, 'innerWidth', {
+    Object.defineProperty(globalThis, 'innerWidth', {
       configurable: true,
       writable: true,
       value: 500,

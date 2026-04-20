@@ -38,12 +38,6 @@ vi.mock('@/components/ui/BookingModal', () => ({
   ),
 }));
 
-vi.mock('@/components/ui/ContactModal', () => ({
-  ContactModal: ({ open, onClose }: { open: boolean; onClose: () => void }) => (
-    open ? <div data-testid="contact-modal"><button onClick={onClose}>Close Contact</button></div> : null
-  ),
-}));
-
 vi.mock('@/components/ui/ProjectDetailModal', () => ({
   ProjectDetailModal: ({
     open,
@@ -88,7 +82,6 @@ function TestConsumer() {
       <button onClick={() => openModal('resume')}>Open Resume</button>
       <button onClick={() => openModal('experience')}>Open Experience</button>
       <button onClick={() => openModal('booking')}>Open Booking</button>
-      <button onClick={() => openModal('contact')}>Open Contact</button>
       <button onClick={() => openModal('project', project)}>Open Project</button>
       <button onClick={closeModal}>Close Modal</button>
     </div>
@@ -109,7 +102,6 @@ describe('useModal / ModalProvider', () => {
     expect(screen.queryByTestId('resume-modal')).not.toBeInTheDocument();
     expect(screen.queryByTestId('experience-modal')).not.toBeInTheDocument();
     expect(screen.queryByTestId('booking-modal')).not.toBeInTheDocument();
-    expect(screen.queryByTestId('contact-modal')).not.toBeInTheDocument();
     expect(screen.queryByTestId('project-modal')).not.toBeInTheDocument();
   });
 
@@ -133,13 +125,6 @@ describe('useModal / ModalProvider', () => {
     fireEvent.click(screen.getByText('Open Booking'));
     expect(screen.getByTestId('booking-modal')).toBeInTheDocument();
     expect(screen.queryByTestId('resume-modal')).not.toBeInTheDocument();
-  });
-
-  it('opens contact modal', () => {
-    renderWithProvider();
-    fireEvent.click(screen.getByText('Open Contact'));
-    expect(screen.getByTestId('contact-modal')).toBeInTheDocument();
-    expect(screen.queryByTestId('booking-modal')).not.toBeInTheDocument();
   });
 
   it('opens project modal with active project payload', () => {
@@ -176,15 +161,6 @@ describe('useModal / ModalProvider', () => {
 
     fireEvent.click(screen.getByText('Close Booking'));
     expect(screen.queryByTestId('booking-modal')).not.toBeInTheDocument();
-  });
-
-  it('contact modal onClose callback works', () => {
-    renderWithProvider();
-    fireEvent.click(screen.getByText('Open Contact'));
-    expect(screen.getByTestId('contact-modal')).toBeInTheDocument();
-
-    fireEvent.click(screen.getByText('Close Contact'));
-    expect(screen.queryByTestId('contact-modal')).not.toBeInTheDocument();
   });
 
   it('project modal onClose callback works', () => {
