@@ -12,15 +12,18 @@ interface BookingModalProps {
 
 const CAL_USERNAME = 'pp-namias';
 const CAL_BASE_URL = 'https://cal.com';
+const BOOKING_MODAL_EVENT_KEY = 'booking-modal-event';
 
 const EVENT_TYPES = [
   { slug: '15min', label: '15 Minute Meeting', duration: '15 min' },
   { slug: '30min', label: '30 Minute Meeting', duration: '30 min' },
 ] as const;
 
+type BookingEventSlug = (typeof EVENT_TYPES)[number]['slug'];
+
 export function BookingModal({ open, onClose }: Readonly<BookingModalProps>) {
   const { resolvedTheme, mounted } = useTheme();
-  const [selectedEvent, setSelectedEvent] = useState<string>(EVENT_TYPES[0].slug);
+  const [selectedEvent, setSelectedEvent] = useState<BookingEventSlug>(EVENT_TYPES[0].slug);
   const [isEmbedLoading, setIsEmbedLoading] = useState(true);
 
   const calTheme = mounted && resolvedTheme === 'light' ? 'light' : 'dark';
@@ -28,6 +31,23 @@ export function BookingModal({ open, onClose }: Readonly<BookingModalProps>) {
     () => `${CAL_BASE_URL}/${CAL_USERNAME}/${selectedEvent}?embed=true&theme=${calTheme}`,
     [selectedEvent, calTheme]
   );
+
+  useEffect(() => {
+    if (!open) return;
+
+    try {
+      const requestedEvent = globalThis.sessionStorage.getItem(BOOKING_MODAL_EVENT_KEY);
+      const isValidEvent = EVENT_TYPES.some((event) => event.slug === requestedEvent);
+
+      if (isValidEvent && requestedEvent) {
+        setSelectedEvent(requestedEvent as BookingEventSlug);
+      }
+
+      globalThis.sessionStorage.removeItem(BOOKING_MODAL_EVENT_KEY);
+    } catch {
+      // Ignore storage read errors and continue with current selection.
+    }
+  }, [open]);
 
   useEffect(() => {
     if (!open) return;

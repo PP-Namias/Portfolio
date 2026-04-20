@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Calendar, Clipboard, Mail, Send, Sparkles, Trash2 } from 'lucide-react';
 import { profile } from '@/data/profile';
 import { socialLinks } from '@/data/socials';
+import { useModal } from '@/hooks/useModal';
 import { Modal } from './Modal';
 
 interface ContactModalProps {
@@ -30,6 +31,7 @@ const INITIAL_FORM: ContactFormState = {
 };
 
 const DRAFT_STORAGE_KEY = 'contact-modal-draft-v1';
+const BOOKING_MODAL_EVENT_KEY = 'booking-modal-event';
 
 const TOPIC_PRESETS = [
   {
@@ -84,6 +86,7 @@ function buildEmailLinks(form: ContactFormState, recipient: string) {
 }
 
 export function ContactModal({ open, onClose }: Readonly<ContactModalProps>) {
+  const { openModal } = useModal();
   const [form, setForm] = useState<ContactFormState>(INITIAL_FORM);
   const [errors, setErrors] = useState<ContactFormErrors>({});
   const [status, setStatus] = useState<
@@ -192,7 +195,7 @@ export function ContactModal({ open, onClose }: Readonly<ContactModalProps>) {
       return (
         <span className="inline-flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400">
           <Mail className="h-3.5 w-3.5" />
-          Opening your email draft without leaving your portfolio.
+          Open Gmail or Open Outlook.
         </span>
       );
     }
@@ -219,13 +222,23 @@ export function ContactModal({ open, onClose }: Readonly<ContactModalProps>) {
 
     return (
       <span>
-        Need Gmail in a new page? Use the quick buttons below. You can also send directly to{' '}
+        Open Gmail or Open Outlook below. You can also send directly to{' '}
         <a href={`mailto:${profile.email}`} className="text-accent-pink hover:underline">
           {profile.email}
         </a>.
       </span>
     );
   }, [status]);
+
+  const handleBookCall = (eventSlug: '15min' | '30min') => {
+    try {
+      globalThis.sessionStorage.setItem(BOOKING_MODAL_EVENT_KEY, eventSlug);
+    } catch {
+      // Ignore session storage errors and still open booking modal.
+    }
+
+    openModal('booking');
+  };
 
   const handleChange = (field: keyof ContactFormState, value: string) => {
     setForm((prev) => ({ ...prev, [field]: value }));
@@ -344,27 +357,25 @@ export function ContactModal({ open, onClose }: Readonly<ContactModalProps>) {
               </p>
               <div className="flex flex-wrap gap-2">
                 {calendarShortcuts.fifteen ? (
-                  <a
-                    href={calendarShortcuts.fifteen}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                  <button
+                    type="button"
+                    onClick={() => handleBookCall('15min')}
                     className="inline-flex items-center gap-1.5 rounded-lg border border-border-light dark:border-border-dark px-3 py-2 text-xs sm:text-sm font-medium text-text-secondary-light dark:text-text-secondary-dark hover:text-accent-pink hover:border-accent-pink dark:hover:text-accent-pink dark:hover:border-accent-pink transition-colors"
                   >
                     <Calendar className="h-3.5 w-3.5" />
                     15 min meeting
-                  </a>
+                  </button>
                 ) : null}
 
                 {calendarShortcuts.thirty ? (
-                  <a
-                    href={calendarShortcuts.thirty}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                  <button
+                    type="button"
+                    onClick={() => handleBookCall('30min')}
                     className="inline-flex items-center gap-1.5 rounded-lg border border-border-light dark:border-border-dark px-3 py-2 text-xs sm:text-sm font-medium text-text-secondary-light dark:text-text-secondary-dark hover:text-accent-pink hover:border-accent-pink dark:hover:text-accent-pink dark:hover:border-accent-pink transition-colors"
                   >
                     <Calendar className="h-3.5 w-3.5" />
                     30 min meeting
-                  </a>
+                  </button>
                 ) : null}
               </div>
             </div>
@@ -541,7 +552,7 @@ export function ContactModal({ open, onClose }: Readonly<ContactModalProps>) {
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 rounded-lg border border-border-light dark:border-border-dark px-3 py-2 text-xs sm:text-sm font-medium text-text-secondary-light dark:text-text-secondary-dark hover:text-accent-pink hover:border-accent-pink dark:hover:text-accent-pink dark:hover:border-accent-pink transition-colors"
                 >
-                  Open Gmail in new page
+                  Open Gmail
                 </a>
 
                 <a
@@ -550,7 +561,7 @@ export function ContactModal({ open, onClose }: Readonly<ContactModalProps>) {
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 rounded-lg border border-border-light dark:border-border-dark px-3 py-2 text-xs sm:text-sm font-medium text-text-secondary-light dark:text-text-secondary-dark hover:text-accent-pink hover:border-accent-pink dark:hover:text-accent-pink dark:hover:border-accent-pink transition-colors"
                 >
-                  Open Outlook in new page
+                  Open Outlook
                 </a>
               </div>
 
