@@ -266,8 +266,8 @@ export function ChatPanel({ onBack, onClose, messages, setMessages }: Readonly<C
       return;
     }
 
-        if (action === 'email') {
-          globalThis.open('/contact', '_self');
+    if (action === 'email') {
+      globalThis.open('/contact', '_self');
       return;
     }
 
@@ -308,7 +308,7 @@ export function ChatPanel({ onBack, onClose, messages, setMessages }: Readonly<C
             {/* Custom Avatar container */}
             <div className="h-[38px] w-[38px] rounded-full overflow-hidden border border-border-light dark:border-border-dark bg-surface-light dark:bg-card-bg-dark shadow-sm">
               <Image
-                src="/images/profile/PP%20Namias.png"
+                src="/images/profile/Jhon%20Keneth%20Ryan%20Namias.jpg"
                 alt={profile.name}
                 width={38}
                 height={38}
@@ -376,7 +376,7 @@ export function ChatPanel({ onBack, onClose, messages, setMessages }: Readonly<C
               <div className="relative mb-3">
                 <div className="h-14 w-14 rounded-full overflow-hidden border border-border-light dark:border-border-dark bg-white dark:bg-card-bg-dark shadow-sm">
                   <Image
-                    src="/images/profile/PP%20Namias.png"
+                    src="/images/profile/Jhon%20Keneth%20Ryan%20Namias.jpg"
                     alt={profile.name}
                     width={56}
                     height={56}

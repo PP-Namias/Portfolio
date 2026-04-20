@@ -132,7 +132,7 @@ export function HeroSection() {
               <div className="absolute inset-0 rounded-2xl overflow-hidden">
                 {/* Photo */}
                 <Image
-                  src="/images/profile/PP%20Namias.png"
+                  src="/images/profile/Jhon%20Keneth%20Ryan%20Namias.jpg"
                   alt={profile.name}
                   fill
                   sizes="(max-width: 640px) 160px, 160px"

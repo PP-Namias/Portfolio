@@ -88,7 +88,7 @@ export function HubMenu({ onClose, onOpenChat }: Readonly<HubMenuProps>) {
             >
               <div className="h-11 w-11 rounded-lg border border-border-light dark:border-border-dark overflow-hidden bg-white dark:bg-card-bg-dark shadow-sm">
                 <Image
-                  src="/images/profile/PP%20Namias.png"
+                  src="/images/profile/Jhon%20Keneth%20Ryan%20Namias.jpg"
                   alt={profile.name}
                   fill
                   sizes="44px"
