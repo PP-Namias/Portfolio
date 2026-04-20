@@ -126,12 +126,12 @@ describe('FloatingHub', () => {
     expect(mockOpenModal).toHaveBeenCalledWith('booking');
   });
 
-  it('has contact page link for email', () => {
+  it('opens contact modal for email action', () => {
     render(<FloatingHub />);
     fireEvent.click(screen.getByLabelText('Open quick actions'));
 
-    const mailLink = screen.getByText('Send Email').closest('a');
-    expect(mailLink).toHaveAttribute('href', '/contact');
+    fireEvent.click(screen.getByText('Send Email'));
+    expect(mockOpenModal).toHaveBeenCalledWith('contact');
   });
 
   it('does not show blog link when blog feature is disabled', () => {

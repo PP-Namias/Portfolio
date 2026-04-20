@@ -282,7 +282,7 @@ describe('ChatPanel', () => {
     expect(mockOpenModal).toHaveBeenCalledWith('resume');
   });
 
-  it('opens contact page and social links for email/linkedin/github actions', () => {
+  it('opens contact modal and social links for email/linkedin/github actions', () => {
     const openSpy = vi.spyOn(globalThis, 'open').mockImplementation(() => null);
     const messages: ChatMessageType[] = [
       { id: '1', role: 'assistant', content: 'Use quick actions', timestamp: new Date() },
@@ -293,9 +293,9 @@ describe('ChatPanel', () => {
     fireEvent.click(screen.getByLabelText('action-linkedin'));
     fireEvent.click(screen.getByLabelText('action-github'));
 
-    expect(openSpy).toHaveBeenNthCalledWith(1, '/contact', '_self');
-    expect(openSpy).toHaveBeenNthCalledWith(2, 'https://www.linkedin.com/in/pp-namias/', '_blank');
-    expect(openSpy).toHaveBeenNthCalledWith(3, 'https://github.com/PP-Namias', '_blank');
+    expect(mockOpenModal).toHaveBeenCalledWith('contact');
+    expect(openSpy).toHaveBeenNthCalledWith(1, 'https://www.linkedin.com/in/pp-namias/', '_blank');
+    expect(openSpy).toHaveBeenNthCalledWith(2, 'https://github.com/PP-Namias', '_blank');
 
     openSpy.mockRestore();
   });

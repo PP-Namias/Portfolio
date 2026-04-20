@@ -55,9 +55,8 @@ describe('app metadata routes', () => {
     const mod = await import('@/app/sitemap');
     const result = mod.default();
 
-    expect(result).toHaveLength(2);
+    expect(result).toHaveLength(1);
     expect(result[0].url).toBe('https://namias.tech');
-    expect(result[1].url).toBe('https://namias.tech/contact');
   });
 
   it('sitemap includes blog and post entries when blog is visible', async () => {
@@ -72,8 +71,8 @@ describe('app metadata routes', () => {
     const mod = await import('@/app/sitemap');
     const result = mod.default();
 
-    expect(result.length).toBe(5);
-    expect(result.some((entry) => entry.url.endsWith('/contact'))).toBe(true);
+    expect(result.length).toBe(4);
+    expect(result.some((entry) => entry.url.endsWith('/contact'))).toBe(false);
     expect(result.some((entry) => entry.url.endsWith('/blog'))).toBe(true);
     expect(result.some((entry) => entry.url.endsWith('/blog/post-1'))).toBe(true);
     expect(result.some((entry) => entry.url.endsWith('/blog/post-2'))).toBe(true);

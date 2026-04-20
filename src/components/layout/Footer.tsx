@@ -4,6 +4,7 @@ import React from 'react';
 import { FaGithub, FaInstagram, FaLinkedinIn, FaXTwitter } from 'react-icons/fa6';
 import { profile } from '@/data/profile';
 import { socialLinks } from '@/data/socials';
+import { useModal } from '@/hooks/useModal';
 
 const footerSocialIcons: Record<string, React.ComponentType<{ className?: string }>> = {
   github: FaGithub,
@@ -17,18 +18,21 @@ const footerSocials = socialLinks.filter((s) =>
 );
 
 export function Footer() {
+  const { openModal } = useModal();
+
   return (
     <footer className="mt-8 pb-8 pt-6 border-t border-border-light dark:border-border-dark">
       <div className="flex flex-col items-center gap-4">
         {/* Final CTA */}
         <p className="text-sm text-text-secondary-light dark:text-text-secondary-dark text-center">
           Interested in working together?{' '}
-          <a
-            href="/contact"
+          <button
+            type="button"
+            onClick={() => openModal('contact')}
             className="text-accent-pink hover:text-accent-pink-hover dark:hover:text-accent-pink-hover-dark font-medium transition-colors"
           >
             Send a message
-          </a>
+          </button>
         </p>
         <div className="flex items-center gap-3">
           {footerSocials.map((link) => {

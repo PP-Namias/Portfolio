@@ -267,7 +267,7 @@ export function ChatPanel({ onBack, onClose, messages, setMessages }: Readonly<C
     }
 
     if (action === 'email') {
-      globalThis.open('/contact', '_self');
+      openModal('contact');
       return;
     }
 

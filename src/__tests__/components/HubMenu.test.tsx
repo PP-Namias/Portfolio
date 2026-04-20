@@ -148,10 +148,11 @@ describe('HubMenu', () => {
     expect(mockOnClose).toHaveBeenCalledTimes(1);
   });
 
-  it('routes Send Email to contact page', () => {
+  it('opens contact modal from Send Email', () => {
     render(<HubMenu onClose={mockOnClose} onOpenChat={mockOnOpenChat} />);
-    const emailLink = screen.getByText('Send Email').closest('a');
-    expect(emailLink).toHaveAttribute('href', '/contact');
+    fireEvent.click(screen.getByText('Send Email'));
+    expect(mockOpenModal).toHaveBeenCalledWith('contact');
+    expect(mockOnClose).toHaveBeenCalledTimes(1);
   });
 
   it('hides blog menu item when blog feature is disabled', () => {

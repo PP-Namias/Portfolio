@@ -69,8 +69,9 @@ export function ConnectSection() {
           );
         })}
 
-        <motion.a
-          href="/contact"
+        <motion.button
+          type="button"
+          onClick={() => openModal('contact')}
           initial={{ opacity: 0, y: 10 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -79,7 +80,7 @@ export function ConnectSection() {
         >
           <Mail className="h-4 w-4" />
           <span>Send Email</span>
-        </motion.a>
+        </motion.button>
       </div>
 
       {/* Secondary social links — lower visual weight */}

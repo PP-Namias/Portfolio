@@ -1,11 +1,15 @@
 'use client';
 
-import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
-import { motion } from 'framer-motion';
-import { ArrowLeft, Calendar, Clipboard, Mail, Send, Sparkles, Trash2 } from 'lucide-react';
+import { Calendar, Clipboard, Mail, Send, Sparkles, Trash2 } from 'lucide-react';
 import { profile } from '@/data/profile';
 import { socialLinks } from '@/data/socials';
+import { Modal } from './Modal';
+
+interface ContactModalProps {
+  open: boolean;
+  onClose: () => void;
+}
 
 type ContactFormState = {
   name: string;
@@ -25,7 +29,7 @@ const INITIAL_FORM: ContactFormState = {
   message: '',
 };
 
-const DRAFT_STORAGE_KEY = 'contact-page-draft-v2';
+const DRAFT_STORAGE_KEY = 'contact-modal-draft-v1';
 
 const TOPIC_PRESETS = [
   {
@@ -79,7 +83,7 @@ function buildEmailLinks(form: ContactFormState, recipient: string) {
   };
 }
 
-export default function ContactPage() {
+export function ContactModal({ open, onClose }: Readonly<ContactModalProps>) {
   const [form, setForm] = useState<ContactFormState>(INITIAL_FORM);
   const [errors, setErrors] = useState<ContactFormErrors>({});
   const [status, setStatus] = useState<
@@ -111,43 +115,37 @@ export default function ContactPage() {
   };
 
   useEffect(() => {
-    let restoredSubject = '';
+    if (!open) return;
 
     try {
       const rawDraft = globalThis.localStorage.getItem(DRAFT_STORAGE_KEY);
-      if (rawDraft) {
-        const parsed = JSON.parse(rawDraft) as Partial<ContactFormState>;
-        const nextDraft: ContactFormState = {
-          name: typeof parsed.name === 'string' ? parsed.name : '',
-          email: typeof parsed.email === 'string' ? parsed.email : '',
-          subject: typeof parsed.subject === 'string' ? parsed.subject : '',
-          message: typeof parsed.message === 'string' ? parsed.message : '',
-        };
+      if (!rawDraft) return;
 
-        if (
-          nextDraft.name ||
-          nextDraft.email ||
-          nextDraft.subject ||
-          nextDraft.message
-        ) {
-          restoredSubject = nextDraft.subject;
-          setForm(nextDraft);
-          setDraftRestored(true);
-        }
+      const parsed = JSON.parse(rawDraft) as Partial<ContactFormState>;
+      const nextDraft: ContactFormState = {
+        name: typeof parsed.name === 'string' ? parsed.name : '',
+        email: typeof parsed.email === 'string' ? parsed.email : '',
+        subject: typeof parsed.subject === 'string' ? parsed.subject : '',
+        message: typeof parsed.message === 'string' ? parsed.message : '',
+      };
+
+      if (
+        nextDraft.name ||
+        nextDraft.email ||
+        nextDraft.subject ||
+        nextDraft.message
+      ) {
+        setForm(nextDraft);
+        setDraftRestored(true);
       }
     } catch {
       // Ignore malformed local draft and continue with clean form.
     }
-
-    const subjectParam = new URLSearchParams(globalThis.location.search).get('subject')?.trim();
-    if (!subjectParam || restoredSubject.trim().length > 0) {
-      return;
-    }
-
-    setForm((prev) => ({ ...prev, subject: subjectParam }));
-  }, []);
+  }, [open]);
 
   useEffect(() => {
+    if (!open) return;
+
     const hasContent =
       form.name.trim().length > 0 ||
       form.email.trim().length > 0 ||
@@ -165,7 +163,7 @@ export default function ContactPage() {
     } catch {
       // Ignore storage write errors.
     }
-  }, [form]);
+  }, [form, open]);
 
   const bookingLink = useMemo(
     () => socialLinks.find((link) => link.name === 'cal')?.link ?? null,
@@ -194,17 +192,25 @@ export default function ContactPage() {
       return (
         <span className="inline-flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400">
           <Mail className="h-3.5 w-3.5" />
-          Opening your email app with pre-filled details.
+          Opening your email draft without leaving your portfolio.
         </span>
       );
     }
 
     if (status === 'copied') {
-      return <span className="text-emerald-600 dark:text-emerald-400">Draft copied to clipboard.</span>;
+      return (
+        <span className="text-emerald-600 dark:text-emerald-400">
+          Draft copied to clipboard.
+        </span>
+      );
     }
 
     if (status === 'copy-failed') {
-      return <span className="text-amber-600 dark:text-amber-400">Couldn&apos;t copy automatically. Use the email app buttons below.</span>;
+      return (
+        <span className="text-amber-600 dark:text-amber-400">
+          Couldn&apos;t copy automatically. Use the Gmail/Outlook buttons below.
+        </span>
+      );
     }
 
     if (status === 'invalid') {
@@ -213,7 +219,7 @@ export default function ContactPage() {
 
     return (
       <span>
-        Don&apos;t have a desktop email app configured? Use Gmail/Outlook options below or send directly to{' '}
+        Need Gmail in a new page? Use the quick buttons below. You can also send directly to{' '}
         <a href={`mailto:${profile.email}`} className="text-accent-pink hover:underline">
           {profile.email}
         </a>.
@@ -270,6 +276,7 @@ export default function ContactPage() {
     setStatus('idle');
     setDraftRestored(false);
     setLastSavedAt(null);
+
     try {
       globalThis.localStorage.removeItem(DRAFT_STORAGE_KEY);
     } catch {
@@ -289,39 +296,33 @@ export default function ContactPage() {
     }
 
     setStatus('opening');
-    globalThis.location.href = emailLinks.mailto;
+
+    const popup = globalThis.open(emailLinks.mailto, '_blank', 'noopener,noreferrer');
+    if (!popup) {
+      globalThis.location.href = emailLinks.mailto;
+    }
   };
 
   return (
-    <main id="main-content" className="min-h-screen px-4 py-8 sm:py-12">
-      <div className="max-w-5xl mx-auto space-y-6">
-        <motion.div
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.25 }}
-        >
-          <Link
-            href="/"
-            className="inline-flex items-center gap-2 text-sm text-text-secondary-light dark:text-text-secondary-dark hover:text-accent-pink dark:hover:text-accent-pink transition-colors"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            Back to portfolio
-          </Link>
-        </motion.div>
-
-        <div className="grid gap-4 lg:grid-cols-[1fr_1.4fr]">
-          <motion.section
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.03, duration: 0.3 }}
-            className="rounded-2xl border border-border-light dark:border-border-dark bg-white dark:bg-card-bg-dark p-5 sm:p-6 shadow-sm space-y-4"
-          >
+    <Modal
+      open={open}
+      onClose={onClose}
+      title="Send me a message"
+      fullScreen
+      descriptionId="contact-modal-description"
+    >
+      <div className="min-h-full bg-surface-light dark:bg-surface-dark px-4 py-5 sm:px-6 sm:py-6">
+        <div className="mx-auto max-w-5xl grid gap-4 lg:grid-cols-[1fr_1.4fr]">
+          <section className="rounded-2xl border border-border-light dark:border-border-dark bg-white dark:bg-card-bg-dark p-5 sm:p-6 shadow-sm space-y-4">
             <div className="space-y-2">
-              <h1 className="text-2xl sm:text-3xl font-semibold text-text-primary-light dark:text-text-primary-dark">
+              <h3 className="text-2xl sm:text-3xl font-semibold text-text-primary-light dark:text-text-primary-dark">
                 Let&apos;s connect
-              </h1>
-              <p className="text-sm sm:text-base text-text-secondary-light dark:text-text-secondary-dark">
-                This is your dedicated contact page: faster email drafting, smarter presets, and fewer clicks.
+              </h3>
+              <p
+                id="contact-modal-description"
+                className="text-sm sm:text-base text-text-secondary-light dark:text-text-secondary-dark"
+              >
+                Smoother contact flow in-modal: faster draft creation, topic presets, and Gmail in a new page.
               </p>
             </div>
 
@@ -333,12 +334,14 @@ export default function ContactPage() {
               <ol className="text-xs sm:text-sm text-text-secondary-light dark:text-text-secondary-dark space-y-1 list-decimal pl-4">
                 <li>Pick a topic preset (optional).</li>
                 <li>Complete your details and message.</li>
-                <li>Open draft in your email app (or Gmail/Outlook).</li>
+                <li>Open draft in mail app, Gmail, or Outlook.</li>
               </ol>
             </div>
 
             <div className="space-y-2">
-              <p className="text-sm font-medium text-text-primary-light dark:text-text-primary-dark">Need a call instead?</p>
+              <p className="text-sm font-medium text-text-primary-light dark:text-text-primary-dark">
+                Need a call instead?
+              </p>
               <div className="flex flex-wrap gap-2">
                 {calendarShortcuts.fifteen ? (
                   <a
@@ -370,24 +373,19 @@ export default function ContactPage() {
               {draftRestored ? (
                 <span>Draft restored from your previous session.</span>
               ) : (
-                <span>We save your draft locally while you type.</span>
+                <span>Draft is saved locally while you type.</span>
               )}
               {lastSavedAt ? <span className="ml-1">Last saved at {lastSavedAt}.</span> : null}
             </div>
-          </motion.section>
+          </section>
 
-          <motion.section
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.08, duration: 0.3 }}
-            className="rounded-2xl border border-border-light dark:border-border-dark bg-white dark:bg-card-bg-dark p-5 sm:p-7 shadow-sm"
-          >
+          <section className="rounded-2xl border border-border-light dark:border-border-dark bg-white dark:bg-card-bg-dark p-5 sm:p-7 shadow-sm">
             <div className="space-y-2">
-              <h2 className="text-xl sm:text-2xl font-semibold text-text-primary-light dark:text-text-primary-dark">
-                Send me a message
-              </h2>
+              <h3 className="text-xl sm:text-2xl font-semibold text-text-primary-light dark:text-text-primary-dark">
+                Compose your message
+              </h3>
               <p className="text-sm sm:text-base text-text-secondary-light dark:text-text-secondary-dark">
-                Fill this out and I&apos;ll generate a ready-to-send email draft. Quick, clean, and no copy-paste gymnastics.
+                We&apos;ll prepare a ready-to-send message with less friction.
               </p>
             </div>
 
@@ -413,23 +411,23 @@ export default function ContactPage() {
               <div className="grid gap-4 sm:grid-cols-2">
                 <div>
                   <label
-                    htmlFor="contact-name"
+                    htmlFor="contact-modal-name"
                     className="mb-1.5 block text-sm font-medium text-text-primary-light dark:text-text-primary-dark"
                   >
                     Name
                   </label>
                   <input
-                    id="contact-name"
+                    id="contact-modal-name"
                     name="name"
                     autoComplete="name"
                     value={form.name}
                     onChange={(event) => handleChange('name', event.target.value)}
                     className="w-full rounded-lg border border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark px-3 py-2 text-sm text-text-primary-light dark:text-text-primary-dark focus:outline-none focus:ring-2 focus:ring-accent-pink"
                     aria-invalid={Boolean(errors.name)}
-                    aria-describedby={errors.name ? 'contact-name-error' : undefined}
+                    aria-describedby={errors.name ? 'contact-modal-name-error' : undefined}
                   />
                   {errors.name ? (
-                    <p id="contact-name-error" className="mt-1 text-xs text-red-500">
+                    <p id="contact-modal-name-error" className="mt-1 text-xs text-red-500">
                       {errors.name}
                     </p>
                   ) : null}
@@ -437,13 +435,13 @@ export default function ContactPage() {
 
                 <div>
                   <label
-                    htmlFor="contact-email"
+                    htmlFor="contact-modal-email"
                     className="mb-1.5 block text-sm font-medium text-text-primary-light dark:text-text-primary-dark"
                   >
                     Your email
                   </label>
                   <input
-                    id="contact-email"
+                    id="contact-modal-email"
                     name="email"
                     type="email"
                     autoComplete="email"
@@ -451,10 +449,10 @@ export default function ContactPage() {
                     onChange={(event) => handleChange('email', event.target.value)}
                     className="w-full rounded-lg border border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark px-3 py-2 text-sm text-text-primary-light dark:text-text-primary-dark focus:outline-none focus:ring-2 focus:ring-accent-pink"
                     aria-invalid={Boolean(errors.email)}
-                    aria-describedby={errors.email ? 'contact-email-error' : undefined}
+                    aria-describedby={errors.email ? 'contact-modal-email-error' : undefined}
                   />
                   {errors.email ? (
-                    <p id="contact-email-error" className="mt-1 text-xs text-red-500">
+                    <p id="contact-modal-email-error" className="mt-1 text-xs text-red-500">
                       {errors.email}
                     </p>
                   ) : null}
@@ -463,22 +461,22 @@ export default function ContactPage() {
 
               <div>
                 <label
-                  htmlFor="contact-subject"
+                  htmlFor="contact-modal-subject"
                   className="mb-1.5 block text-sm font-medium text-text-primary-light dark:text-text-primary-dark"
                 >
                   Subject
                 </label>
                 <input
-                  id="contact-subject"
+                  id="contact-modal-subject"
                   name="subject"
                   value={form.subject}
                   onChange={(event) => handleChange('subject', event.target.value)}
                   className="w-full rounded-lg border border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark px-3 py-2 text-sm text-text-primary-light dark:text-text-primary-dark focus:outline-none focus:ring-2 focus:ring-accent-pink"
                   aria-invalid={Boolean(errors.subject)}
-                  aria-describedby={errors.subject ? 'contact-subject-error' : undefined}
+                  aria-describedby={errors.subject ? 'contact-modal-subject-error' : undefined}
                 />
                 {errors.subject ? (
-                  <p id="contact-subject-error" className="mt-1 text-xs text-red-500">
+                  <p id="contact-modal-subject-error" className="mt-1 text-xs text-red-500">
                     {errors.subject}
                   </p>
                 ) : null}
@@ -486,23 +484,23 @@ export default function ContactPage() {
 
               <div>
                 <label
-                  htmlFor="contact-message"
+                  htmlFor="contact-modal-message"
                   className="mb-1.5 block text-sm font-medium text-text-primary-light dark:text-text-primary-dark"
                 >
                   Message
                 </label>
                 <textarea
-                  id="contact-message"
+                  id="contact-modal-message"
                   name="message"
                   rows={7}
                   value={form.message}
                   onChange={(event) => handleChange('message', event.target.value)}
                   className="w-full rounded-lg border border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark px-3 py-2 text-sm text-text-primary-light dark:text-text-primary-dark focus:outline-none focus:ring-2 focus:ring-accent-pink"
                   aria-invalid={Boolean(errors.message)}
-                  aria-describedby={errors.message ? 'contact-message-error' : undefined}
+                  aria-describedby={errors.message ? 'contact-modal-message-error' : undefined}
                 />
                 {errors.message ? (
-                  <p id="contact-message-error" className="mt-1 text-xs text-red-500">
+                  <p id="contact-modal-message-error" className="mt-1 text-xs text-red-500">
                     {errors.message}
                   </p>
                 ) : null}
@@ -534,18 +532,6 @@ export default function ContactPage() {
                   <Trash2 className="h-4 w-4" />
                   Clear
                 </button>
-
-                {bookingLink ? (
-                  <a
-                    href={bookingLink}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 rounded-lg border border-border-light dark:border-border-dark px-4 py-2.5 text-sm font-medium text-text-secondary-light dark:text-text-secondary-dark hover:text-accent-pink hover:border-accent-pink dark:hover:text-accent-pink dark:hover:border-accent-pink transition-colors"
-                  >
-                    <Calendar className="h-4 w-4" />
-                    Prefer to talk live?
-                  </a>
-                ) : null}
               </div>
 
               <div className="flex flex-wrap gap-2">
@@ -555,7 +541,7 @@ export default function ContactPage() {
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 rounded-lg border border-border-light dark:border-border-dark px-3 py-2 text-xs sm:text-sm font-medium text-text-secondary-light dark:text-text-secondary-dark hover:text-accent-pink hover:border-accent-pink dark:hover:text-accent-pink dark:hover:border-accent-pink transition-colors"
                 >
-                  Open in Gmail
+                  Open Gmail in new page
                 </a>
 
                 <a
@@ -564,7 +550,7 @@ export default function ContactPage() {
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 rounded-lg border border-border-light dark:border-border-dark px-3 py-2 text-xs sm:text-sm font-medium text-text-secondary-light dark:text-text-secondary-dark hover:text-accent-pink hover:border-accent-pink dark:hover:text-accent-pink dark:hover:border-accent-pink transition-colors"
                 >
-                  Open in Outlook
+                  Open Outlook in new page
                 </a>
               </div>
 
@@ -575,9 +561,9 @@ export default function ContactPage() {
                 {statusMessage}
               </div>
             </form>
-          </motion.section>
+          </section>
         </div>
       </div>
-    </main>
+    </Modal>
   );
 }

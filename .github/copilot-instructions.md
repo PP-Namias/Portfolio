@@ -19,8 +19,6 @@ This portfolio uses a **modal-first** approach. **Never create a new page/route*
 
 **Exception (active Projects v2.4 epic):** The Projects section uses a **minimalist hover-first image-zoom-only + click-through** model. On hover/focus, only enlarge the project image smoothly. On card click, open the configured project destination link directly.
 
-**Exception (active Contact flow):** A dedicated `/contact` page is allowed for smoother email intake and prefilled message drafting.
-
 **When to use a ROUTE (page):**
 
 - Content needs its own SEO-indexable URL (e.g., blog posts)
@@ -38,7 +36,6 @@ This portfolio uses a **modal-first** approach. **Never create a new page/route*
 | Route          | Type | Purpose                                       |
 | -------------- | ---- | --------------------------------------------- |
 | `/`            | Page | Main portfolio (single page, all sections)    |
-| `/contact`     | Page | Dedicated contact/email flow                  |
 | `/blog`        | Page | Blog listing (SEO-critical, server component) |
 | `/blog/[slug]` | Page | Individual blog posts (SEO-critical, SSG)     |
 | `/api/chat`    | API  | Gemini AI chatbot endpoint                    |
@@ -50,6 +47,7 @@ This portfolio uses a **modal-first** approach. **Never create a new page/route*
 | `resume`     | Hero CTA, HubMenu             | Embedded PDF viewer + download button     |
 | `experience` | "View Full Experience" button | Full experience timeline with all details |
 | `booking`    | HubMenu, ConnectSection       | Cal.com scheduling iframe (15min/30min)   |
+| `contact`    | Hero, Connect, Hub, Chat, Footer, Speaking | In-modal smoother email form + Gmail/Outlook compose helpers |
 | `project`    | Optional/internal only (not project card click) | Project details, metrics, and external links |
 
 **How to add a new modal:**
@@ -127,7 +125,6 @@ Every task MUST follow: **ANALYZE → PLAN → IMPLEMENT → VALIDATE → REPORT
 │   ├── app/
 │   │   ├── layout.tsx                 # Root layout + metadata + Inter font + JSON-LD
 │   │   ├── page.tsx                   # Home (all sections, server component)
-│   │   ├── contact/page.tsx           # Dedicated contact/email page
 │   │   ├── providers.tsx              # ThemeProvider > AccentColorProvider > ModalProvider > ReactLenis
 │   │   ├── globals.css, sitemap.ts, not-found.tsx, error.tsx
 │   │   ├── api/chat/route.ts          # Gemini AI chatbot endpoint
@@ -139,7 +136,7 @@ Every task MUST follow: **ANALYZE → PLAN → IMPLEMENT → VALIDATE → REPORT
 │   │   │       RecommendationsCarousel,Memberships,Speaking,Connect,Gallery}Section.tsx
 │   │   └── ui/                        # Reusable UI primitives
 │   │       ├── Modal.tsx              # Base modal (backdrop, ESC, focus trap, scroll lock, Framer Motion)
-│   │       ├── {Resume,Experience,Booking,ProjectDetail}Modal.tsx  # Content modals
+│   │       ├── {Resume,Experience,Booking,Contact,ProjectDetail}Modal.tsx  # Content modals
 │   │       ├── {FloatingHub,HubMenu,HubMenuItem,ChatPanel,ChatMessage}.tsx  # Hub widget
 │   │       ├── {Button,Card,ProjectCard,TimelineItem,VerifiedBadge}.tsx
 │   │       └── {ThemeToggle,ColorSchemePicker,ReadingProgress}.tsx
@@ -240,7 +237,7 @@ Remaining unchecked items (everything else is done):
 - [ ] Improve overall website animations and design. Do NOT create another header or footer; enhance the existing layout.
 - [ ] Get real recommendations and replace placeholder data
 - [ ] Write real blog post content (currently placeholder markdown)
-- [x] Dedicated contact page flow (instead of just mailto links)
+- [x] Smoother modal contact email flow (no extra route)
 - [ ] Privacy-respecting analytics (Plausible or Umami)
 
 ---

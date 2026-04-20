@@ -4,6 +4,7 @@ import React, { createContext, useContext, useState, useCallback, useMemo } from
 import { ResumeModal } from '@/components/ui/ResumeModal';
 import { ExperienceModal } from '@/components/ui/ExperienceModal';
 import { BookingModal } from '@/components/ui/BookingModal';
+import { ContactModal } from '@/components/ui/ContactModal';
 import { ProjectDetailModal } from '@/components/ui/ProjectDetailModal';
 import { ModalName, Project } from '@/types';
 
@@ -54,6 +55,7 @@ export function ModalProvider({ children }: Readonly<{ children: React.ReactNode
       <ResumeModal open={activeModal === 'resume'} onClose={closeModal} />
       <ExperienceModal open={activeModal === 'experience'} onClose={closeModal} />
       <BookingModal open={activeModal === 'booking'} onClose={closeModal} />
+      <ContactModal open={activeModal === 'contact'} onClose={closeModal} />
       <ProjectDetailModal open={activeModal === 'project'} onClose={closeModal} project={activeProject} />
     </ModalContext.Provider>
   );

@@ -4,9 +4,11 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { ChevronRight } from 'lucide-react';
 import { profile } from '@/data/profile';
+import { useModal } from '@/hooks/useModal';
 
 export function SpeakingSection() {
   const topics = profile.highlights.primaryTechnologies;
+  const { openModal } = useModal();
 
   return (
     <motion.section
@@ -36,13 +38,14 @@ export function SpeakingSection() {
           ))}
         </div>
       )}
-      <a
-        href="/contact?subject=Speaking%20Inquiry"
+      <button
+        type="button"
+        onClick={() => openModal('contact')}
         className="inline-flex items-center gap-1 text-sm text-accent-pink hover:text-accent-pink-hover dark:hover:text-accent-pink-hover-dark transition-colors duration-200 font-medium"
       >
         Get in touch
         <ChevronRight className="h-4 w-4" />
-      </a>
+      </button>
     </motion.section>
   );
 }
