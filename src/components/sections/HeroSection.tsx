@@ -78,7 +78,6 @@ export function HeroSection() {
   const [activeProfileImage, setActiveProfileImage] = useState(mainProfileImage);
   const { openModal } = useModal();
   const photoRef = useRef<HTMLDivElement>(null);
-  const hoverCycleRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   /* 3D tilt motion values */
   const rotateX = useMotionValue(0);
@@ -110,39 +109,15 @@ export function HeroSection() {
     [rotateX, rotateY]
   );
 
-  const stopProfileImageCycle = useCallback(() => {
-    if (hoverCycleRef.current) {
-      clearInterval(hoverCycleRef.current);
-      hoverCycleRef.current = null;
-    }
-    setActiveProfileImage(mainProfileImage);
-  }, []);
-
-  const startProfileImageCycle = useCallback(() => {
+  const handlePhotoMouseEnter = useCallback(() => {
     setActiveProfileImage((currentImage) => pickRandomHoverImage(currentImage));
-
-    if (hoverCycleRef.current) {
-      clearInterval(hoverCycleRef.current);
-    }
-
-    hoverCycleRef.current = setInterval(() => {
-      setActiveProfileImage((currentImage) => pickRandomHoverImage(currentImage));
-    }, 900);
   }, []);
 
   const handlePhotoMouseLeave = useCallback(() => {
     rotateX.set(0);
     rotateY.set(0);
-    stopProfileImageCycle();
-  }, [rotateX, rotateY, stopProfileImageCycle]);
-
-  useEffect(() => {
-    return () => {
-      if (hoverCycleRef.current) {
-        clearInterval(hoverCycleRef.current);
-      }
-    };
-  }, []);
+    setActiveProfileImage(mainProfileImage);
+  }, [rotateX, rotateY]);
 
   return (
     <motion.section
@@ -162,16 +137,16 @@ export function HeroSection() {
       </motion.div>
 
       <div className="flex flex-col items-center text-center sm:text-left sm:flex-row sm:items-center gap-6 sm:gap-7 lg:gap-8 md:pt-2 lg:pt-1">
-        {/* Profile Photo — 160px with 3D tilt + gradient ring */}
+        {/* Profile Photo — taller 3D tilt card */}
         <motion.div className="flex-shrink-0" variants={photoVariants}>
           <div style={{ perspective: 600 }}>
             <motion.div
               ref={photoRef}
-              className="group relative h-[160px] w-[160px] cursor-pointer shadow-lg border border-border-light dark:border-border-dark rounded-2xl"
+              className="group relative h-[188px] w-[160px] cursor-pointer shadow-lg border border-border-light dark:border-border-dark rounded-2xl"
               style={{ rotateX: smoothRotateX, rotateY: smoothRotateY }}
               whileHover={{ scale: 1.12, y: -2 }}
               transition={{ type: 'spring', stiffness: 260, damping: 20 }}
-              onMouseEnter={startProfileImageCycle}
+              onMouseEnter={handlePhotoMouseEnter}
               onMouseMove={handlePhotoMouseMove}
               onMouseLeave={handlePhotoMouseLeave}
             >
