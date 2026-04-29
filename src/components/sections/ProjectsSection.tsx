@@ -4,8 +4,9 @@ import React, { useMemo, useState } from 'react';
 import Image from 'next/image';
 import { motion, useReducedMotion } from 'framer-motion';
 import { ChevronDown, ChevronUp } from 'lucide-react';
-import { projects } from '@/data/projects';
+import { projects as defaultProjects } from '@/data/projects';
 import { Project } from '@/types';
+import { useSanityData } from '@/hooks/useSanityData';
 
 const INITIAL_VISIBLE_PROJECTS = 4;
 
@@ -169,10 +170,11 @@ function ProjectShowcaseCard({
 }
 
 export function ProjectsSection() {
+  const projects = useSanityData<Project[]>('*[_type == "project"]', defaultProjects);
   const reduceMotion = useReducedMotion();
   const [showAll, setShowAll] = useState(false);
 
-  const orderedProjects = useMemo(() => sortProjectsForShowcase(projects), []);
+  const orderedProjects = useMemo(() => sortProjectsForShowcase(projects), [projects]);
 
   const visibleProjects = useMemo(
     () => (showAll ? orderedProjects : orderedProjects.slice(0, INITIAL_VISIBLE_PROJECTS)),
