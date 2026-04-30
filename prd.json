@@ -848,8 +848,9 @@
       "title": "Add Playwright E2E and UX Smoke Coverage",
       "priority": 2,
       "phase": "Sanity Production Launch Hardening",
-      "status": "Not Started",
-      "passes": false,
+      "status": "Complete",
+      "passes": true,
+      "completedAt": "2026-05-01T08:15:00Z",
       "acceptanceCriteria": [
         "Add Playwright configuration and smoke tests",
         "Document how to run E2E and attach screenshots",

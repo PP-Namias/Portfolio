@@ -14,8 +14,9 @@ export function generateStaticParams() {
   }));
 }
 
-export function generateMetadata({ params }: { params: { slug: string } }): Metadata {
-  const post = blogPosts.find((p) => p.slug === params.slug);
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params;
+  const post = blogPosts.find((p) => p.slug === slug);
   if (!post) {
     return { title: 'Post Not Found | Jhon Keneth Ryan Namias' };
   }
@@ -32,12 +33,13 @@ export function generateMetadata({ params }: { params: { slug: string } }): Meta
   };
 }
 
-export default function BlogPostPage({ params }: { params: { slug: string } }) {
+export default async function BlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
   if (!IS_BLOG_VISIBLE) {
     notFound();
   }
 
-  const post = blogPosts.find((p) => p.slug === params.slug);
+  const { slug } = await params;
+  const post = blogPosts.find((p) => p.slug === slug);
 
   const jsonLd = post
     ? {
@@ -63,7 +65,7 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       )}
-      <BlogPostContent slug={params.slug} />
+      <BlogPostContent slug={slug} />
     </>
   );
 }

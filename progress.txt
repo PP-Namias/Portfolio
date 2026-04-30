@@ -273,6 +273,9 @@ FRAMEWORK COMPLETE: All Sanity CMS infrastructure prepared
 [SUCCESS] SANITY-CORS-001 Complete
 - Documented the CORS origin matrix and preview/local origin guidance.
 
+[SUCCESS] SANITY-E2E-001 Complete
+- Added Playwright config, smoke test, and QA checklist guidance for E2E runs.
+
 
 
 

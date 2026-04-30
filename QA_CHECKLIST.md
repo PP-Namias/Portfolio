@@ -143,6 +143,12 @@ npm run test -- --grep "Parity" --reporter=verbose
 - [ ] Social media links correct
 - [ ] Resume download link works
 
+### E2E Smoke (Playwright)
+- [ ] Install browsers once: `npx playwright install`
+- [ ] Run smoke suite: `npm run test:e2e`
+- [ ] Review HTML report: `npm run test:e2e:report`
+- [ ] Attach Playwright report + screenshots when filing UX review feedback
+
 ## Phase 4: Performance Validation
 
 ### Load Time
