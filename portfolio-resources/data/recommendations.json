@@ -1,1 +1,20 @@
-[]
+[
+  {
+    "name": "Alex Rivera",
+    "title": "Operations Manager",
+    "company": "Wilshire Financial Network",
+    "quote": "Jhon's automation tools transformed our manual processes. His ability to integrate LLMs into our existing workflows saved us hundreds of hours of manual data entry and improved our accuracy significantly."
+  },
+  {
+    "name": "Prof. Elena Santos",
+    "title": "Dean of Computer Studies",
+    "company": "University of Caloocan City",
+    "quote": "As Head of the Technical Committee, Jhon has shown exceptional leadership. He doesn't just write code; he mentors his peers and architects robust solutions for our campus-wide technical initiatives."
+  },
+  {
+    "name": "Michael Chen",
+    "title": "CTO",
+    "company": "MASH",
+    "quote": "Jhon is a rare talent who understands both the technical and project management sides of engineering. His work on our AI pipelines has been instrumental in delivering our recent roadmap ahead of schedule."
+  }
+]
