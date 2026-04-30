@@ -568,8 +568,9 @@
       "title": "Complete Schema Parity for All Content Types",
       "priority": 1,
       "phase": "Sanity Migration: Schema Architecture",
-      "status": "Planned",
-      "passes": false,
+      "status": "Complete",
+      "passes": true,
+      "completedAt": "2026-04-30T00:00:00Z",
       "acceptanceCriteria": [
         "Define schemas for all JSON content types",
         "Match field parity and ordering rules",
@@ -584,7 +585,7 @@
         "note": "Schema parity must match existing UI expectations"
       },
       "dependencies": [
-        "SANITY-MIG-PREREQ-001"
+        "SANITY-MIG-PLAN-001"
       ]
     },
     {
