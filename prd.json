@@ -923,8 +923,9 @@
       "title": "Prepare Dual Vercel Deployment Guide and Checklists",
       "priority": 1,
       "phase": "Sanity Production Launch Hardening",
-      "status": "Not Started",
-      "passes": false,
+      "status": "Complete",
+      "passes": true,
+      "completedAt": "2026-05-01T08:35:00Z",
       "acceptanceCriteria": [
         "Document one repo, two Vercel projects setup",
         "Provide app vs Studio build and output settings",

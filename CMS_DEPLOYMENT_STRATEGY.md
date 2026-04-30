@@ -1,4 +1,4 @@
-﻿# CMS Deployment Architecture: Separate Domains vs Integrated
+# CMS Deployment Architecture: Separate Domains vs Integrated
 
 ## Recommendation
 
@@ -84,42 +84,54 @@ Deploy Sanity Studio to a dedicated subdomain (cms.namias.tech) and keep the mai
 
 For Vercel, set Production + Preview values in each project (portfolio app vs studio). Store migration-only secrets locally in `.env.local` or a CI job, not in the app runtime.
 
-### Build and Deployment
+### Build and Deployment (Dual Vercel Setup)
 
-#### Option 1: AWS Amplify (Recommended for consistency)
+We use a **Single Repository, Two Vercel Projects** pattern.
 
-1. **Primary Portfolio App** (namias.tech)
-   - Repository: PP-Namias/Portfolio
-   - Root directory: `/`
-   - Build command: `npm ci && npm run build`
-   - Output directory: `.next`
-   - Environment variables: `NEXT_PUBLIC_SANITY_PROJECT_ID`, `NEXT_PUBLIC_SANITY_DATASET`
+#### 1. Primary Portfolio App (namias.tech)
+Create a Vercel project connected to the root of the repository.
+- **Framework Preset**: Next.js
+- **Root Directory**: `./`
+- **Build Command**: `npm run build`
+- **Output Directory**: `.next` (default)
+- **Environment Variables**:
+  - `NEXT_PUBLIC_SANITY_PROJECT_ID=nl0qw78w`
+  - `NEXT_PUBLIC_SANITY_DATASET=production`
+  - `SANITY_CUTOVER_ENABLED=false` (toggle to `true` when ready)
+  - `SANITY_REVALIDATE_SECRET=<random-secret>`
+- **Domains**: Assign `namias.tech` and `www.namias.tech`
 
-2. **Sanity Studio** (cms.namias.tech)
-   - Same repository
-   - Base directory: `studio/`
-   - Build command: `npm ci && npm run build --prefix studio/`
-   - Output directory: `studio/dist`
-   - Environment variables: `NEXT_PUBLIC_SANITY_PROJECT_ID`, `NEXT_PUBLIC_SANITY_DATASET`
-   - Subdomain: `cms` on `namias.tech` domain
+#### 2. Sanity Studio (cms.namias.tech)
+Create a *second* Vercel project connected to the exact same repository.
+- **Framework Preset**: Vite (or Other, since it's a SPA)
+- **Root Directory**: `studio`
+- **Build Command**: `npm install && npm run build` (Note: Ensure dependencies are installed in the root if not handled automatically, or just `npm run build` if the lockfile works)
+- **Output Directory**: `dist`
+- **Environment Variables**:
+  - `NEXT_PUBLIC_SANITY_PROJECT_ID=nl0qw78w`
+  - `NEXT_PUBLIC_SANITY_DATASET=production`
+- **Domains**: Assign `cms.namias.tech`
 
-#### Option 2: Vercel (Alternative)
+*(Note: Vercel might warn about multiple projects on the same repo; this is intentional and safe for our architecture.)*
 
-- **Portfolio**: Deploy root directory to production
-- **Studio**: Deploy `studio/` directory to subdomain via Vercel project settings
+#### Pre-Deployment Checklist
+- [ ] Ensure Vercel environment variables are securely set.
+- [ ] Sanity CORS origins updated (`https://namias.tech`, `https://cms.namias.tech`).
+- [ ] API tokens created and securely stored.
+- [ ] No tokens committed to Git.
 
-#### Option 3: Self-Hosted / Docker
+#### Post-Deployment Verification Checklist
 
-```dockerfile
-# Dockerfile for studio/
-FROM node:20-alpine
-WORKDIR /app
-COPY studio/ ./
-RUN npm ci
-RUN npm run build
-EXPOSE 3333
-CMD ["npm", "run", "start"]
-```
+**Main App (namias.tech)**
+- [ ] Loads without errors.
+- [ ] JSON fallback or Sanity data correctly fetched.
+- [ ] Playwright E2E smoke tests pass against production URL.
+
+**Sanity Studio (cms.namias.tech)**
+- [ ] Loads Studio login page.
+- [ ] Login successful for authorized accounts.
+- [ ] Can view and edit documents.
+- [ ] Publishing triggers webhooks (if configured).
 
 ### Access Control & Security
 

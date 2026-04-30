@@ -7,50 +7,17 @@
 
 export const studioDeploymentConfig = {
   /**
-   * Amplify Deployment Settings for studio/ folder
+   * Vercel Deployment Settings for studio/ folder
    */
-  amplify: {
-    appName: 'portfolio-studio',
-    repository: 'github.com/PP-Namias/Portfolio',
-    branch: 'main',
-    buildSettings: {
-      frontend: {
-        phases: {
-          preBuild: {
-            commands: [
-              'npm ci',
-              'echo "Studio build starting..."',
-            ],
-          },
-          build: {
-            commands: [
-              'cd studio && npm ci',
-              'npm run build --prefix studio/',
-            ],
-          },
-          postBuild: {
-            commands: [
-              'echo "Studio deployment ready"',
-            ],
-          },
-        },
-        artifacts: {
-          baseDirectory: 'studio/dist',
-          files: '**/*',
-        },
-        cache: {
-          paths: [
-            'node_modules/**/*',
-            'studio/node_modules/**/*',
-          ],
-        },
-      },
-    },
-    environment: {
-      variables: {
-        NEXT_PUBLIC_SANITY_PROJECT_ID: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID,
-        NEXT_PUBLIC_SANITY_DATASET: process.env.NEXT_PUBLIC_SANITY_DATASET,
-      },
+  vercel: {
+    projectName: 'portfolio-studio',
+    frameworkPreset: 'vite',
+    rootDirectory: 'studio',
+    buildCommand: 'npm run build',
+    outputDirectory: 'dist',
+    environmentVariables: {
+      NEXT_PUBLIC_SANITY_PROJECT_ID: 'nl0qw78w',
+      NEXT_PUBLIC_SANITY_DATASET: 'production',
     },
     domain: {
       domainName: 'namias.tech',
@@ -93,8 +60,8 @@ export const studioDeploymentConfig = {
     '✓ API tokens generated (read-only for portfolio, admin for studio)',
     '✓ CORS origins added to Sanity dashboard',
     '✓ studio/ folder build tested locally: npm run build --prefix studio/',
-    '✓ Environment variables set in Amplify console',
-    '✓ DNS records configured (cms.namias.tech CNAME)',
+    '✓ Environment variables set in Vercel console',
+    '✓ DNS records configured (cms.namias.tech assigned to Vercel)',
     '✓ Studio authentication enabled',
     '✓ Data migration completed: npm run migrate:sanity',
   ],
