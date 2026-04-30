@@ -74,6 +74,7 @@ In `.env.production` (or Amplify env vars):
 ```
 NEXT_PUBLIC_SANITY_PROJECT_ID=your-actual-project-id
 NEXT_PUBLIC_SANITY_DATASET=production
+SANITY_REVALIDATE_SECRET=your_revalidate_secret
 SANITY_CUTOVER_ENABLED=true
 ```
 

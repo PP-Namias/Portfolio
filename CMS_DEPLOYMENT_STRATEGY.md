@@ -65,10 +65,24 @@ Deploy Sanity Studio to a dedicated subdomain (cms.namias.tech) and keep the mai
    ```
    NEXT_PUBLIC_SANITY_PROJECT_ID=nl0qw78w
    NEXT_PUBLIC_SANITY_DATASET=production
+   SANITY_CUTOVER_ENABLED=false
    SANITY_API_WRITE_TOKEN=<write-token>  # Keep secret, never commit
    SANITY_STUDIO_DEPLOY_TOKEN=<deploy-token>  # Keep secret, never commit
    SANITY_REVALIDATE_SECRET=<random-secret>
    ```
+
+### Environment Variables by Deployment Target
+
+| Variable | Portfolio App | Studio | Notes |
+| --- | --- | --- | --- |
+| NEXT_PUBLIC_SANITY_PROJECT_ID | Required | Required | Public identifier (safe to expose). |
+| NEXT_PUBLIC_SANITY_DATASET | Required | Required | Usually `production`. |
+| SANITY_CUTOVER_ENABLED | Required | Not used | Feature flag for primary Sanity reads. |
+| SANITY_REVALIDATE_SECRET | Required | Not used | Protects revalidation endpoint. |
+| SANITY_API_WRITE_TOKEN | Local only | Not used | Migration script only; do not set in app runtime. |
+| SANITY_STUDIO_DEPLOY_TOKEN | Not used | CI only | Used to deploy Studio builds. |
+
+For Vercel, set Production + Preview values in each project (portfolio app vs studio). Store migration-only secrets locally in `.env.local` or a CI job, not in the app runtime.
 
 ### Build and Deployment
 

@@ -799,8 +799,9 @@
       "title": "Wire Required Sanity Env Keys in Example and Docs",
       "priority": 1,
       "phase": "Sanity Production Launch Hardening",
-      "status": "Not Started",
-      "passes": false,
+      "status": "Complete",
+      "passes": true,
+      "completedAt": "2026-05-01T07:10:00Z",
       "acceptanceCriteria": [
         "Ensure .env.example lists all required Sanity keys",
         "Document app vs Studio environment variables",

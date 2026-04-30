@@ -267,6 +267,9 @@ FRAMEWORK COMPLETE: All Sanity CMS infrastructure prepared
 [SUCCESS] SANITY-SEC-001 Complete
 - Documented token rotation response and secret handling in SECURITY.md and CMS_DEPLOYMENT_STRATEGY.md.
 
+[SUCCESS] SANITY-ENV-001 Complete
+- Added SANITY_CUTOVER_ENABLED to .env.example and clarified deployment env requirements.
+
 
 
 
