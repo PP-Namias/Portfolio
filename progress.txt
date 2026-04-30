@@ -301,3 +301,11 @@ FRAMEWORK COMPLETE: All Sanity CMS infrastructure prepared
 - Executed parity and fallback test suites (`src/__tests__/lib/sanity.test.ts`).
 - Executed Playwright E2E smoke tests.
 - Updated `QA_CHECKLIST.md` to mark automated QA phases as complete.
+
+[SUCCESS] UI-ANIM-001 Complete
+- Implemented global `MotionConfig` to respect `prefers-reduced-motion` across all components.
+- Enhanced `Card` and `ProjectCard` with premium spring-based micro-interactions and refined hover states.
+- Implemented staggered entry animations for `TechStack` pills and categories.
+- Refined global accent color palette for a more vibrant and premium feel.
+- Updated entire test suite (23 files) to fix `framer-motion` mock regressions and handle Next.js 15 async page/metadata changes.
+- Verified completion via full production build and 256 tests (Vitest + Playwright).
