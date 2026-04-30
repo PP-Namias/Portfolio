@@ -824,8 +824,9 @@
       "title": "Finalize CORS Origin Matrix",
       "priority": 1,
       "phase": "Sanity Production Launch Hardening",
-      "status": "Not Started",
-      "passes": false,
+      "status": "Complete",
+      "passes": true,
+      "completedAt": "2026-05-01T07:45:00Z",
       "acceptanceCriteria": [
         "List production, preview, and local origins",
         "Clarify credentials settings for Studio and app",

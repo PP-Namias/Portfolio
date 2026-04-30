@@ -270,6 +270,9 @@ FRAMEWORK COMPLETE: All Sanity CMS infrastructure prepared
 [SUCCESS] SANITY-ENV-001 Complete
 - Added SANITY_CUTOVER_ENABLED to .env.example and clarified deployment env requirements.
 
+[SUCCESS] SANITY-CORS-001 Complete
+- Documented the CORS origin matrix and preview/local origin guidance.
+
 
 
 

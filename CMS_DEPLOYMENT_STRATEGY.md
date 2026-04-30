@@ -136,6 +136,18 @@ CMD ["npm", "run", "start"]
       - `http://localhost:3333` (local Studio dev)
       - `https://www.namias.tech` (optional canonical host support)
 
+   **CORS Origin Matrix**
+
+   | Environment | Origin | Credentials | Notes |
+   | --- | --- | --- | --- |
+   | Production App | https://namias.tech | Disabled | Public read-only access. |
+   | Production Studio | https://cms.namias.tech | Enabled | Requires authenticated Studio access. |
+   | Preview (Vercel) | https://<preview>.vercel.app | Disabled | Add exact preview domains as needed. |
+   | Local App | http://localhost:3000 | Disabled | Local development for the portfolio. |
+   | Local Studio | http://localhost:3333 | Enabled | Local Studio authentication. |
+
+   Sanity does not support wildcard origins. Add exact preview domains and remove old ones when no longer needed.
+
 3. **API Token Security**
    - Create separate read-only token for portfolio app
    - Create admin token for migration script (migrate-to-sanity.ts)

@@ -72,6 +72,7 @@
 - Use environment-specific datasets (production, staging) where needed.
 - Lock down Studio access with Sanity project auth and CORS rules.
 - Document deployment inputs and rollout steps.
+- Maintain a CORS origin matrix for production, preview, and local environments (no wildcards).
 
 ### Phase 7: Performance & Edge Caching
 
