@@ -1,5 +1,16 @@
 [
   {
+    "id": "post-7",
+    "slug": "migrating-to-sanity-cms-production-case-study",
+    "title": "Migrating to Sanity CMS: A Production Case Study",
+    "excerpt": "A deep dive into the technical challenges and solutions during our recent migration from static JSON to a fully integrated Sanity CMS setup.",
+    "content": "Transitioning from a static data structure to a headless CMS is a milestone for any scaling application. In our latest update to namias.tech, we successfully migrated our entire portfolio and blog data to Sanity CMS. Here's how we did it.\n\n## The Challenge\n\nMaintaining a portfolio through JSON files is sustainable for a while, but eventually, the friction of manual edits and deployment cycles slows down content velocity. We needed a solution that offered:\n\n1. **Real-time Editing**: A GUI for content managers (me) to update projects and posts without touching code.\n2. **Type-Safe Data Fetching**: Ensuring our Next.js frontend remains robust even as data structures evolve.\n3. **Scalable Assets**: Moving from local `/public` images to a global CDN (Sanity Asset Pipeline).\n\n## The Solution: Sanity.io\n\nWe chose Sanity for its incredible flexibility and the powerful GROQ query language. The migration involved three key phases:\n\n### 1. Schema Definition\n\nWe defined custom schemas for `profile`, `project`, `experience`, and `blogPost`. By using Sanity's Studio, we created a tailored editing environment that matches our specific data needs.\n\n### 2. Automated Data Migration\n\nInstead of manual entry, we wrote an automated migration script that parsed our legacy JSON files and used the Sanity CLI to import them directly into the production dataset. This ensured 100% data parity and zero loss of information.\n\n### 3. Next.js 15 Integration\n\nIntegrating with the latest Next.js 15 features (like async `params` and `generateMetadata`) required careful handling of Sanity's fetching logic. We implemented a `safeFetchSanity` wrapper that provides seamless fallbacks to our local JSON if the CMS is ever unreachable.\n\n## Key Learnings\n\n- **Asset Management**: Sanity's image pipeline automatically handles resizing and WebP conversion, significantly improving our Core Web Vitals.\n- **Preview Mode**: Setting up Next.js Draft Mode allows us to see content changes instantly before they go live.\n\n## Conclusion\n\nThis migration wasn't just about moving data; it was about building a foundation for future growth. With Sanity, the portfolio is now truly dynamic, secure, and ready for whatever comes next.",
+    "date": "2026-05-01",
+    "readTime": "12 min read",
+    "tags": ["Sanity CMS", "Next.js 15", "Migration", "Web Development"],
+    "coverImage": "/images/blog/sanity-migration.svg"
+  },
+  {
     "id": "post-1",
     "slug": "building-ai-powered-applications-with-langchain",
     "title": "Building AI-Powered Applications with LangChain and OpenAI",
