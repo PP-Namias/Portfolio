@@ -261,6 +261,12 @@ FRAMEWORK COMPLETE: All Sanity CMS infrastructure prepared
 - [SECURITY] Raw token values are intentionally not written to tracked files.
 - [SUCCESS] Removed stale `HeroSectionServer.tsx` placeholder to restore clean type-check/build path.
 
+[2026-05-01] Sanity Production Launch Hardening wave initialized (PRD v2.5.0)
+- Added backlog stories for token rotation, env wiring, CORS matrix, Playwright E2E, dual Vercel deployment, migration run, and QA automation.
+
+[SUCCESS] SANITY-SEC-001 Complete
+- Documented token rotation response and secret handling in SECURITY.md and CMS_DEPLOYMENT_STRATEGY.md.
+
 
 
 

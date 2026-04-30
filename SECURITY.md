@@ -41,4 +41,10 @@ Out of scope:
 
 Please allow time for investigation and remediation before public disclosure.
 
+## Secrets Handling
+
+- Treat any token shown in chats, logs, screenshots, or PRs as compromised and rotate immediately.
+- Store secrets only in local `.env` files (gitignored) or deployment secret managers.
+- Use least-privilege tokens for runtime, migration, and Studio deployment access.
+
 Thank you for helping keep this project secure.

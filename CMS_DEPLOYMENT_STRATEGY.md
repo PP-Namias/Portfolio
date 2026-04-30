@@ -51,6 +51,7 @@ Deploy Sanity Studio to a dedicated subdomain (cms.namias.tech) and keep the mai
 - Studio deployment pipeline: use dedicated deploy token (`SANITY_STUDIO_DEPLOY_TOKEN`) in CI only.
 - Revalidation API route: protect with `SANITY_REVALIDATE_SECRET`.
 - Do not commit any raw token values in repository files or docs.
+- If any token appears in chat, logs, or screenshots, revoke it in Sanity immediately and replace it in your secret manager.
 
 ### Prerequisites
 

@@ -1,11 +1,11 @@
 {
   "projectName": "Portfolio - Projects Minimalist Hover Showcase Revamp",
-  "version": "2.4.0",
+  "version": "2.5.0",
   "branchName": "Projects-Hover-Showcase",
-  "description": "Epic to fully transition the Projects section from filter-heavy interactions to a minimalist hover-first showcase with smooth image-zoom hover states and full-card click-through project navigation.",
+  "description": "Epic to fully transition the Projects section from filter-heavy interactions to a minimalist hover-first showcase with smooth image-zoom hover states and full-card click-through project navigation. Includes Sanity Production Launch Hardening for security, deployment, and QA readiness.",
   "owner": "AI Agent (Ralph)",
   "startedDate": "2026-04-16",
-  "targetCompletion": "2026-05-03",
+  "targetCompletion": "2026-05-15",
   "changeRequest": {
     "requestedBy": "Portfolio owner",
     "pivotDate": "2026-04-16",
@@ -35,6 +35,13 @@
       "Only enlarge the project image smoothly on hover/focus",
       "Open project destination link directly when card is clicked"
     ]
+  },
+  "hardeningWave": {
+    "name": "Sanity Production Launch Hardening",
+    "branchName": "feature/sanity-production-hardening",
+    "startedDate": "2026-05-01",
+    "targetCompletion": "2026-05-15",
+    "goal": "Finalize security, deployment, and QA automation for dual-deploy Sanity Studio + portfolio in a single repo."
   },
   "scope": {
     "inScope": [
@@ -763,6 +770,173 @@
       },
       "dependencies": [
         "SANITY-MIG-QA-001"
+      ]
+    },
+    {
+      "id": "SANITY-SEC-001",
+      "title": "Rotate Leaked Tokens and Lock Down Secrets",
+      "priority": 1,
+      "phase": "Sanity Production Launch Hardening",
+      "status": "Complete",
+      "passes": true,
+      "completedAt": "2026-05-01T06:30:00Z",
+      "acceptanceCriteria": [
+        "Document token rotation and incident response steps",
+        "Reaffirm that secrets never appear in tracked files",
+        "Provide least-privilege token guidance for app, migration, and Studio"
+      ],
+      "technicalNotes": {
+        "files": [
+          "CMS_DEPLOYMENT_STRATEGY.md",
+          "SECURITY.md"
+        ],
+        "note": "Treat any token exposure in chats or logs as compromised and rotate immediately."
+      },
+      "dependencies": []
+    },
+    {
+      "id": "SANITY-ENV-001",
+      "title": "Wire Required Sanity Env Keys in Example and Docs",
+      "priority": 1,
+      "phase": "Sanity Production Launch Hardening",
+      "status": "Not Started",
+      "passes": false,
+      "acceptanceCriteria": [
+        "Ensure .env.example lists all required Sanity keys",
+        "Document app vs Studio environment variables",
+        "Add cutover flag and secret placeholders for production"
+      ],
+      "technicalNotes": {
+        "files": [
+          ".env.example",
+          "CMS_DEPLOYMENT_STRATEGY.md",
+          "SANITY_CUTOVER_GUIDE.md"
+        ],
+        "note": "No raw secrets committed; use Vercel project env settings."
+      },
+      "dependencies": [
+        "SANITY-SEC-001"
+      ]
+    },
+    {
+      "id": "SANITY-CORS-001",
+      "title": "Finalize CORS Origin Matrix",
+      "priority": 1,
+      "phase": "Sanity Production Launch Hardening",
+      "status": "Not Started",
+      "passes": false,
+      "acceptanceCriteria": [
+        "List production, preview, and local origins",
+        "Clarify credentials settings for Studio and app",
+        "Document update steps in Sanity dashboard"
+      ],
+      "technicalNotes": {
+        "files": [
+          "CMS_DEPLOYMENT_STRATEGY.md",
+          "SANITY_MIGRATION_PLAN.md"
+        ],
+        "note": "Avoid wildcard origins in production."
+      },
+      "dependencies": [
+        "SANITY-ENV-001"
+      ]
+    },
+    {
+      "id": "SANITY-E2E-001",
+      "title": "Add Playwright E2E and UX Smoke Coverage",
+      "priority": 2,
+      "phase": "Sanity Production Launch Hardening",
+      "status": "Not Started",
+      "passes": false,
+      "acceptanceCriteria": [
+        "Add Playwright configuration and smoke tests",
+        "Document how to run E2E and attach screenshots",
+        "Include Playwright step in QA checklist"
+      ],
+      "technicalNotes": {
+        "files": [
+          "playwright.config.ts",
+          "tests/e2e/*.spec.ts",
+          "package.json",
+          "QA_CHECKLIST.md"
+        ],
+        "note": "Use reusable baseURL and keep tests minimal and stable."
+      },
+      "dependencies": [
+        "SANITY-ENV-001"
+      ]
+    },
+    {
+      "id": "SANITY-MIG-RUN-001",
+      "title": "Execute Migration Dry-Run and Write Run",
+      "priority": 2,
+      "phase": "Sanity Production Launch Hardening",
+      "status": "Not Started",
+      "passes": false,
+      "acceptanceCriteria": [
+        "Run migration in dry-run mode and capture summary output",
+        "Execute full write run after dry-run success",
+        "Record counts and anomalies in progress log"
+      ],
+      "technicalNotes": {
+        "files": [
+          "scripts/migrate-to-sanity.ts",
+          "progress.txt"
+        ],
+        "note": "Requires SANITY_API_WRITE_TOKEN set in environment."
+      },
+      "dependencies": [
+        "SANITY-ENV-001",
+        "SANITY-CORS-001"
+      ]
+    },
+    {
+      "id": "SANITY-QA-RUN-001",
+      "title": "Run QA Checklist Automation and Parity Tests",
+      "priority": 2,
+      "phase": "Sanity Production Launch Hardening",
+      "status": "Not Started",
+      "passes": false,
+      "acceptanceCriteria": [
+        "Execute parity and fallback test suites",
+        "Run Playwright E2E smoke checks",
+        "Update QA checklist log entries"
+      ],
+      "technicalNotes": {
+        "files": [
+          "QA_CHECKLIST.md",
+          "src/__tests__/lib/sanity.test.ts",
+          "tests/e2e/*.spec.ts"
+        ],
+        "note": "Run after migration write completes."
+      },
+      "dependencies": [
+        "SANITY-MIG-RUN-001",
+        "SANITY-E2E-001"
+      ]
+    },
+    {
+      "id": "SANITY-DEPLOY-001",
+      "title": "Prepare Dual Vercel Deployment Guide and Checklists",
+      "priority": 1,
+      "phase": "Sanity Production Launch Hardening",
+      "status": "Not Started",
+      "passes": false,
+      "acceptanceCriteria": [
+        "Document one repo, two Vercel projects setup",
+        "Provide app vs Studio build and output settings",
+        "Add verification checklist for both deployments"
+      ],
+      "technicalNotes": {
+        "files": [
+          "CMS_DEPLOYMENT_STRATEGY.md",
+          "SANITY_MIGRATION_PLAN.md"
+        ],
+        "note": "Preserve separate deployment model and modal-first constraints."
+      },
+      "dependencies": [
+        "SANITY-ENV-001",
+        "SANITY-CORS-001"
       ]
     }
   ]
