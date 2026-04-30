@@ -145,7 +145,7 @@ describe('uncovered hooks', () => {
 
     expect(screen.getByTestId('scheme')).toHaveTextContent('blue');
     expect(localStorage.getItem('accent-color')).toBe('blue');
-    expect(document.documentElement.style.getPropertyValue('--accent')).toContain('37 99 235');
+    expect(document.documentElement.style.getPropertyValue('--accent')).toContain('59 130 246');
   });
 
   it('useAccentColor initializes from localStorage when available', async () => {
@@ -162,6 +162,6 @@ describe('uncovered hooks', () => {
     });
 
     expect(screen.getByTestId('scheme')).toHaveTextContent('green');
-    expect(document.documentElement.style.getPropertyValue('--accent')).toContain('5 150 105');
+    expect(document.documentElement.style.getPropertyValue('--accent')).toContain('16 185 129');
   });
 });

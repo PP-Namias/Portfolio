@@ -98,9 +98,10 @@ function ProjectShowcaseCard({
       key={project.title}
       initial={reduceMotion ? undefined : { opacity: 0, y: 10 }}
       whileInView={reduceMotion ? undefined : { opacity: 1, y: 0 }}
-      whileHover={reduceMotion ? undefined : { y: -2 }}
+      whileHover={reduceMotion ? undefined : { y: -4, scale: 1.01 }}
+      whileTap={reduceMotion ? undefined : { scale: 0.98 }}
       viewport={{ once: true }}
-      transition={cardTransition}
+      transition={{ type: 'spring', stiffness: 400, damping: 25, ...cardTransition }}
       className={`group relative overflow-hidden rounded-xl border border-border-light bg-white dark:border-border-dark dark:bg-card-bg-dark ${
         target
           ? 'cursor-pointer transition-[border-color,box-shadow,transform] duration-300 hover:border-accent-pink/50 hover:shadow-[0_12px_30px_-18px_rgba(236,72,153,0.55)]'

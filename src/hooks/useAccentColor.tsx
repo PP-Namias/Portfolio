@@ -12,13 +12,13 @@ export interface AccentScheme {
 }
 
 export const ACCENT_SCHEMES: AccentScheme[] = [
-  { name: 'pink',   label: 'Pink',   accent: '219 39 119',  hover: '190 24 93',   hoverDark: '244 114 182', preview: '#db2777' },
-  { name: 'blue',   label: 'Blue',   accent: '37 99 235',   hover: '29 78 216',   hoverDark: '96 165 250',  preview: '#2563eb' },
-  { name: 'purple', label: 'Purple', accent: '124 58 237',  hover: '109 40 217',  hoverDark: '167 139 250', preview: '#7c3aed' },
-  { name: 'green',  label: 'Green',  accent: '5 150 105',   hover: '4 120 87',    hoverDark: '52 211 153',  preview: '#059669' },
-  { name: 'orange', label: 'Orange', accent: '234 88 12',   hover: '194 65 12',   hoverDark: '251 146 60',  preview: '#ea580c' },
-  { name: 'red',    label: 'Red',    accent: '220 38 38',   hover: '185 28 28',   hoverDark: '248 113 113', preview: '#dc2626' },
-  { name: 'teal',   label: 'Teal',   accent: '13 148 136',  hover: '15 118 110',  hoverDark: '94 234 212',  preview: '#0d9488' },
+  { name: 'pink',   label: 'Pink',   accent: '236 72 153',  hover: '219 39 119',  hoverDark: '244 114 182', preview: '#ec4899' },
+  { name: 'blue',   label: 'Blue',   accent: '59 130 246',  hover: '37 99 235',   hoverDark: '96 165 250',  preview: '#3b82f6' },
+  { name: 'purple', label: 'Purple', accent: '139 92 246',  hover: '124 58 237',  hoverDark: '167 139 250', preview: '#8b5cf6' },
+  { name: 'green',  label: 'Green',  accent: '16 185 129',  hover: '5 150 105',   hoverDark: '52 211 153',  preview: '#10b981' },
+  { name: 'orange', label: 'Orange', accent: '249 115 22',  hover: '234 88 12',   hoverDark: '251 146 60',  preview: '#f97316' },
+  { name: 'red',    label: 'Red',    accent: '239 68 68',   hover: '220 38 38',   hoverDark: '248 113 113', preview: '#ef4444' },
+  { name: 'teal',   label: 'Teal',   accent: '20 184 166',  hover: '13 148 136',  hoverDark: '94 234 212',  preview: '#14b8a6' },
   { name: 'cyan',   label: 'Cyan',   accent: '6 182 212',   hover: '8 145 178',   hoverDark: '103 232 249', preview: '#06b6d4' },
 ];
 

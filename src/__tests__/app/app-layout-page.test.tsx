@@ -20,6 +20,7 @@ vi.mock('framer-motion', () => {
   return {
     motion,
     AnimatePresence: ({ children }: { children: React.ReactNode }) => children,
+    MotionConfig: ({ children }: { children: React.ReactNode }) => children,
   };
 });
 
@@ -108,7 +109,8 @@ describe('app layout and page coverage', () => {
   });
 
   it('Home page renders all major section blocks', async () => {
-    render(await Home() as React.ReactElement);
+    const page = await Home();
+    render(page as React.ReactElement);
 
     expect(screen.getByText('HeroSection')).toBeInTheDocument();
     expect(screen.getByText('AboutSection')).toBeInTheDocument();
@@ -127,7 +129,8 @@ describe('app layout and page coverage', () => {
       value: 768,
     });
 
-    render(await Home() as React.ReactElement);
+    const page = await Home();
+    render(page as React.ReactElement);
 
     fireEvent(globalThis as unknown as Window, new Event('resize'));
 

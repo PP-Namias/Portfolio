@@ -2,6 +2,7 @@
 
 import { ThemeProvider } from 'next-themes';
 import { ReactLenis } from 'lenis/react';
+import { MotionConfig } from 'framer-motion';
 import { AccentColorProvider } from '@/hooks/useAccentColor';
 import { ModalProvider } from '@/hooks/useModal';
 import React from 'react';
@@ -15,18 +16,20 @@ export function Providers({ children }: ProvidersProps) {
     <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
       <AccentColorProvider>
         <ModalProvider>
-          <ReactLenis
-            root
-            options={{
-              lerp: 0.12,
-              duration: 1.2,
-              smoothWheel: true,
-              touchMultiplier: 1.5,
-              wheelMultiplier: 1,
-            }}
-          >
-            {children}
-          </ReactLenis>
+          <MotionConfig reducedMotion="user">
+            <ReactLenis
+              root
+              options={{
+                lerp: 0.12,
+                duration: 1.2,
+                smoothWheel: true,
+                touchMultiplier: 1.5,
+                wheelMultiplier: 1,
+              }}
+            >
+              {children}
+            </ReactLenis>
+          </MotionConfig>
         </ModalProvider>
       </AccentColorProvider>
     </ThemeProvider>

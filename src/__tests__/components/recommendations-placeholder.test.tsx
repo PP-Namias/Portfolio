@@ -5,7 +5,9 @@ import React from 'react';
 vi.mock('framer-motion', () => ({
   motion: {
     section: ({ children }: { children: React.ReactNode }) => <section>{children}</section>,
+    AnimatePresence: ({ children }: { children: React.ReactNode }) => children,
   },
+  MotionConfig: ({ children }: { children: React.ReactNode }) => children,
 }));
 
 vi.mock('@/hooks/useCarousel', () => ({

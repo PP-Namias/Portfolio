@@ -14,7 +14,8 @@ vi.mock('framer-motion', () => ({
       <div className={className} {...props}>{children}</div>
     ),
   },
-  AnimatePresence: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+  AnimatePresence: ({ children }: { children: React.ReactNode }) => children,
+  MotionConfig: ({ children }: { children: React.ReactNode }) => children,
 }));
 
 // Mock ChatMessage component

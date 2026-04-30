@@ -74,6 +74,7 @@ vi.mock('framer-motion', () => {
         R.createElement('a', { className, onClick, href, download, target, rel, role, tabIndex, ...props }, children),
     },
     AnimatePresence: ({ children }: { children: React.ReactNode }) => children,
+    MotionConfig: ({ children }: { children: React.ReactNode }) => children,
   };
 });
 

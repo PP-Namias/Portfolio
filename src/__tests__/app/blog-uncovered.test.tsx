@@ -35,6 +35,7 @@ vi.mock('framer-motion', () => {
   return {
     motion,
     AnimatePresence: ({ children }: { children: React.ReactNode }) => children,
+    MotionConfig: ({ children }: { children: React.ReactNode }) => children,
   };
 });
 
@@ -191,19 +192,20 @@ describe('blog route and content coverage', () => {
     expect(mockedNotFound).not.toHaveBeenCalled();
   });
 
-  it('generateStaticParams and generateMetadata work for existing and missing slugs', () => {
-    const params = generateStaticParams();
-    expect(params).toEqual([{ slug: 'hello-world' }, { slug: 'deep-dive' }]);
+  it('generateStaticParams and generateMetadata work for existing and missing slugs', async () => {
+    const paramsList = generateStaticParams();
+    expect(paramsList).toEqual([{ slug: 'hello-world' }, { slug: 'deep-dive' }]);
 
-    const existing = generateMetadata({ params: { slug: 'hello-world' } });
+    const existing = await generateMetadata({ params: Promise.resolve({ slug: 'hello-world' }) });
     expect(existing.title).toContain('Hello World');
 
-    const missing = generateMetadata({ params: { slug: 'missing' } });
+    const missing = await generateMetadata({ params: Promise.resolve({ slug: 'missing' }) });
     expect(missing.title).toContain('Post Not Found');
   });
 
-  it('BlogPostPage renders JSON-LD script and post content', () => {
-    const { container } = render(<BlogPostPage params={{ slug: 'hello-world' }} />);
+  it('BlogPostPage renders JSON-LD script and post content', async () => {
+    const page = await BlogPostPage({ params: Promise.resolve({ slug: 'hello-world' }) });
+    const { container } = render(page);
 
     expect(screen.getByText('Hello World')).toBeInTheDocument();
     const jsonLdScript = container.querySelector('script[type="application/ld+json"]');

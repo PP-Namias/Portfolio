@@ -34,7 +34,7 @@ export function TechStackSection() {
               key={category}
               layout
               initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
+              animate={{ opacity: 1, y: 0, transition: { staggerChildren: 0.03, delayChildren: catIndex * 0.05 + 0.1 } }}
               exit={{ opacity: 0, y: -10 }}
               transition={{ delay: catIndex * 0.05, duration: 0.3 }}
             >
@@ -43,12 +43,16 @@ export function TechStackSection() {
               </h3>
               <div className="flex flex-wrap gap-1.5">
                 {techs.map((tech) => (
-                  <span
+                  <motion.span
                     key={tech.name}
-                    className="text-xs font-medium px-2.5 py-1 rounded-lg bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark text-text-secondary-light dark:text-text-secondary-dark hover:border-accent-pink/40 hover:text-accent-pink transition-colors cursor-default"
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    whileHover={{ scale: 1.05, y: -1 }}
+                    transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+                    className="text-xs font-medium px-2.5 py-1 rounded-lg bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark text-text-secondary-light dark:text-text-secondary-dark hover:border-accent-pink/40 hover:text-accent-pink hover:shadow-sm transition-[border-color,color,box-shadow] cursor-default"
                   >
                     {tech.name}
-                  </span>
+                  </motion.span>
                 ))}
               </div>
             </motion.div>
