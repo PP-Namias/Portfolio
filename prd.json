@@ -545,8 +545,9 @@
       "title": "Confirm Sanity Project Credentials",
       "priority": 1,
       "phase": "Sanity Migration: Prerequisites",
-      "status": "Blocked",
-      "passes": false,
+      "status": "Complete",
+      "passes": true,
+      "completedAt": "2026-05-01T03:10:00Z",
       "acceptanceCriteria": [
         "Provide Sanity project ID and dataset for production",
         "Confirm API token strategy for migration and read access",
@@ -559,7 +560,7 @@
           "studio/sanity.config.ts",
           "studio/sanity.cli.ts"
         ],
-        "note": "Blocked on user-provided Sanity project details"
+        "note": "Credentials provided; token handling strategy documented without committing secrets"
       },
       "dependencies": []
     },

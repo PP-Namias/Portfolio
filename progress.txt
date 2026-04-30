@@ -253,7 +253,13 @@ NEXT STEPS FOR LAUNCH:
 
 DEPLOYMENT READY: Studio folder and app are production-ready
 FRAMEWORK COMPLETE: All Sanity CMS infrastructure prepared
-BLOCKER: Awaiting Sanity project credentials from owner
+[2026-05-01] SANITY-MIG-PREREQ-001 Complete
+- [SUCCESS] Received Sanity production project context (projectId `nl0qw78w`, dataset `production`).
+- [SUCCESS] Updated `.env.example` with required Sanity environment variable keys.
+- [SUCCESS] Documented least-privilege token strategy for runtime, migration, deploy, and revalidation flows.
+- [SUCCESS] Updated CORS and deployment strategy docs for production domains.
+- [SECURITY] Raw token values are intentionally not written to tracked files.
+- [SUCCESS] Removed stale `HeroSectionServer.tsx` placeholder to restore clean type-check/build path.
 
 
 

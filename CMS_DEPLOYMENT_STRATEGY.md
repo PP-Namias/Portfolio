@@ -37,6 +37,21 @@ Deploy Sanity Studio to a dedicated subdomain (cms.namias.tech) and keep the mai
 
 ## Studio Deployment Pipeline (NEW)
 
+### Confirmed Sanity Project Context
+
+- Organization ID: `oBQP4vpxm`
+- Project ID: `nl0qw78w`
+- Dataset: `production`
+- Studio local origin already configured: `http://localhost:3333`
+
+### Token Strategy (Least Privilege)
+
+- Portfolio runtime reads: no write token in browser; keep public dataset reads to `NEXT_PUBLIC_SANITY_PROJECT_ID` and `NEXT_PUBLIC_SANITY_DATASET`.
+- Migration script (`scripts/migrate-to-sanity.ts`): use `SANITY_API_WRITE_TOKEN` with write-capable scope (Contributor/Editor).
+- Studio deployment pipeline: use dedicated deploy token (`SANITY_STUDIO_DEPLOY_TOKEN`) in CI only.
+- Revalidation API route: protect with `SANITY_REVALIDATE_SECRET`.
+- Do not commit any raw token values in repository files or docs.
+
 ### Prerequisites
 
 1. **Sanity Project Setup** (owner/admin task)
@@ -47,9 +62,11 @@ Deploy Sanity Studio to a dedicated subdomain (cms.namias.tech) and keep the mai
 
 2. **Environment Variables**
    ```
-   NEXT_PUBLIC_SANITY_PROJECT_ID=<your-project-id>
+   NEXT_PUBLIC_SANITY_PROJECT_ID=nl0qw78w
    NEXT_PUBLIC_SANITY_DATASET=production
-   SANITY_API_TOKEN=<your-api-token>  # Keep secret, never commit
+   SANITY_API_WRITE_TOKEN=<write-token>  # Keep secret, never commit
+   SANITY_STUDIO_DEPLOY_TOKEN=<deploy-token>  # Keep secret, never commit
+   SANITY_REVALIDATE_SECRET=<random-secret>
    ```
 
 ### Build and Deployment
@@ -98,10 +115,11 @@ CMD ["npm", "run", "start"]
 
 2. **CORS Configuration** (in Sanity dashboard)
    - Allowed origins:
-     - `https://namias.tech` (main portfolio, read-only)
-     - `https://cms.namias.tech` (Studio, admin)
-     - `http://localhost:3000` (development)
-     - `http://localhost:3333` (local Studio dev)
+      - `https://namias.tech` (main portfolio, read-only)
+      - `https://cms.namias.tech` (Studio, admin)
+      - `http://localhost:3000` (development)
+      - `http://localhost:3333` (local Studio dev)
+      - `https://www.namias.tech` (optional canonical host support)
 
 3. **API Token Security**
    - Create separate read-only token for portfolio app
@@ -179,4 +197,3 @@ CNAME record:   cms.namias.tech -> cms-deploy-host.namias.tech
    - Revert Sanity documents to backup
    - Re-run dry-run migration to validate: `npm run migrate:sanity -- --dry-run`
    - Run full migration once validated
-

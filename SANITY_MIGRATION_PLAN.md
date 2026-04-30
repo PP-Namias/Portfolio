@@ -22,6 +22,7 @@
 - Add standalone `studio/` folder for separate CMS deployment.
 - Validate base schema wiring from `sanity/schema.ts`.
 - Define environment variables shared between app + Studio.
+- Confirm production project context (`projectId: nl0qw78w`, `dataset: production`) and credential handling strategy.
 
 ### Phase 2: Schema Architecture
 
