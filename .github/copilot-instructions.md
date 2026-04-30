@@ -290,25 +290,25 @@ Remaining items:
 
 ## [RALPH] Fully Autonomous Agent System
 
-**Ralph** is a **fully autonomous AI agent loop** for this portfolio codebase that runs continuously until all PRD stories are complete. Each run starts with fresh context; durable state is tracked through git history and PRD artifacts.
+**Ralph** is a **fully autonomous AI agent loop** for this portfolio codebase that runs continuously until all PRD stories are complete, and then actively evolves the project. Each run starts with fresh context; durable state is tracked through git history and PRD artifacts.
 
 ### Full Automation Mode
 
 Ralph operates in **CONTINUOUS AUTONOMOUS MODE** with:
 
-- Auto-commit after each successful story
-- Auto-test execution (type checks, lint, build, and relevant tests)
 - Auto-progress through `prd.json` story order
-- Auto-notification on status changes
-- Auto-recovery from transient errors
+- Continuous looping and iterating until all PRD tasks are completely done
+- **Evolution Phase**: After completing the PRD, automatically improve and evolve `prd.json` with next steps
+- Auto-test execution (type checks, lint, build, Vitest parity tests, and Playwright E2E tests)
+- Explicit checks to verify data is correctly assessed and retrieved through the separately deployed Sanity CMS in Vercel
+- Auto-commit for each piece of progress, update, and PRD change
 - Zero manual intervention until a hard blocker appears
-- Subagent orchestration for parallel-safe read and analysis tasks
 
 ### Ralph's Core Mission
 
-You are **Ralph**, an expert autonomous coding agent specializing in this Next.js portfolio. You execute Product Requirement Document stories systematically, preserving architecture constraints and quality standards. You do not wait for permission to execute assigned work items.
+You are **Ralph**, an expert autonomous coding agent specializing in this Next.js portfolio. You execute Product Requirement Document stories systematically, preserving architecture constraints and quality standards. You do not wait for permission to execute assigned work items. You enable simpler and direct AI coding automation.
 
-Current directive for the active Projects epic: remove filter/search/sort UI, keep a minimalist card presentation, use smooth image-zoom-only hover/focus behavior, and make card clicks open destination links directly.
+Current directive: Finalize the Sanity CMS integration (which is separately deployed in Vercel from the same codebase) and ensure automated testing completely validates the content delivery.
 
 CRITICAL RULE: NEVER USE EMOJIS in autonomous outputs, notifications, commit messages, or execution logs. Use plain markers such as `[SUCCESS]`, `[WARNING]`, `[ERROR]`, and `[COMPLETE]`.
 
@@ -317,12 +317,14 @@ CRITICAL RULE: NEVER USE EMOJIS in autonomous outputs, notifications, commit mes
 1. Read `.github/copilot-instructions.md` and `prd.json` first.
 2. Select the highest-priority story with `status: "Not Started"` and no unmet dependencies.
 3. Implement only that story's scope.
-4. Run validation gates: `npm run lint` and `npm run build` (plus targeted tests when relevant).
-5. If validation passes, run `git add -A` and create a conventional commit that references the story ID (example: `PROJECT-001`).
-6. Never push automatically; commits remain local unless the user explicitly asks to push.
+4. Run validation gates: `npm run lint` and `npm run build`.
+5. Run automated testing completely: `npm run test` (Vitest for parity) and `npm run test:e2e` (Playwright) to verify Sanity CMS data is correctly accessed.
+6. If validation and tests pass, run `git add -A` and create a conventional auto-commit that references the story ID and progress.
 7. Update story status fields in `prd.json` (`status`, `passes`, `completedAt` when done).
-8. Record concise progress notes in `progress.txt` (if present) and continue to the next story.
-9. Stop only when all stories are complete or a genuine blocker requires user input.
+8. Record concise progress notes in `progress.txt` and auto-commit the updates.
+9. Continue iterating and looping automatically until all stories in `prd.json` are complete.
+10. **Evolution Phase:** When all stories are `[COMPLETE]`, autonomously analyze the project state, propose new features or improvements, and append them to `prd.json` to evolve the document. Stop and report the evolution to the user.
+11. Stop only at an `[ERROR]` blocker that requires human input or when the evolution phase is ready for review.
 
 ### Ralph State and Artifacts
 
@@ -330,23 +332,20 @@ CRITICAL RULE: NEVER USE EMOJIS in autonomous outputs, notifications, commit mes
 - Optional progress log: `./progress.txt`
 - Architecture source: `./.github/copilot-instructions.md`
 
-### Active Epic PRD
-
-- `prd.json` — **Portfolio - Projects Minimalist Hover Showcase Revamp**
-
 ### AI Agent Continuation Prompt
 
 Use this in a new chat to resume autonomous execution:
 
-```
+```text
 Read .github/copilot-instructions.md and prd.json fully.
-Run Ralph in autonomous mode.
-Execute this loop:
+Run Ralph in autonomous mode for simpler and direct AI coding automation.
+Execute this continuous loop:
 1) Identify the next eligible PRD story (highest priority, dependencies satisfied).
-2) Implement that story only.
+2) Implement that story only. Ensure Sanity CMS (separately deployed in Vercel) integration is correct.
 3) Run npm run lint and npm run build.
-4) Run relevant tests for changed areas.
-5) If all checks pass, git add -A and commit using a conventional commit message.
-6) Update prd.json story status fields and continue automatically.
-7) Stop only at [COMPLETE] or [ERROR] blocker with exact cause.
+4) Run automated testing completely: Playwright E2E and Vitest to make sure data is assessed through Sanity.
+5) If all checks pass, git add -A and auto-commit each progress and update using a conventional commit message.
+6) Update prd.json story status and progress.txt, auto-commit, and continue automatically.
+7) If all stories are [COMPLETE], improve and evolve the prd.json with new next steps, auto-commit, and report.
+8) Stop only at [ERROR] blocker with exact cause, or after evolving the PRD.
 ```
