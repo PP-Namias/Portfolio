@@ -161,3 +161,7 @@
 - [SUCCESS] Expanded sanity/schema.ts to cover all JSON-backed content types.
 - [SUCCESS] Added object schemas for nested fields (education, impact metrics, gallery items).
 - [SUCCESS] Aligned schema fields with existing portfolio JSON data structure.
+
+[2026-04-30] SANITY-MIG-ASSETS-001 Complete
+- [SUCCESS] Added asset normalization helpers and reuse logic in migrate-to-sanity.ts.
+- [SUCCESS] Documented asset folder alignment and URL decoding rules.

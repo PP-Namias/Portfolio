@@ -593,8 +593,9 @@
       "title": "Define Asset Normalization and Upload Rules",
       "priority": 2,
       "phase": "Sanity Migration: Schema Architecture",
-      "status": "Planned",
-      "passes": false,
+      "status": "Complete",
+      "passes": true,
+      "completedAt": "2026-04-30T00:00:00Z",
       "acceptanceCriteria": [
         "Normalize image file names and source mapping",
         "Ensure asset reuse across repeated migration runs",

@@ -46,6 +46,13 @@
 - Provide a dry-run mode for validation before writing.
 - Add verification output showing changed/created/unchanged counts.
 
+#### Asset normalization rules
+
+- Source assets live in `portfolio-resources/assets/images` and are mirrored in `public/images`.
+- Use folder mapping aligned with the JSON data: `projects`, `certifications`, `gallery`, `experience`, `blog`, `profile`.
+- Decode URL-encoded filenames (for example `%20`) before resolving files on disk.
+- Store assets with a folder-prefixed key to avoid duplicate uploads across runs.
+
 ### Phase 4: Advanced Fetching & Failover Architecture
 
 - Use `safeFetchSanity` for resilient data reads with timeouts and fallback to JSON.
