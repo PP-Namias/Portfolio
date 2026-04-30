@@ -250,7 +250,7 @@ Remaining items:
 - [ ] Write real blog post content (currently placeholder markdown)
 - [ ] Privacy-respecting analytics (Plausible or Umami)
 - [x] Execute Sanity project setup (credentials confirmed)
-- [ ] Run full migration to Sanity
+- [x] Run full migration to Sanity
 - [ ] Launch Sanity Studio to production
 - [ ] Monitor and optimize post-cutover
 

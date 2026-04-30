@@ -944,6 +944,113 @@
         "SANITY-ENV-001",
         "SANITY-CORS-001"
       ]
+    },
+    {
+      "id": "UI-ANIM-001",
+      "title": "Enhance Overall Website Animations and Design",
+      "priority": 1,
+      "phase": "Design Revamp & Final Production Cutover",
+      "status": "Not Started",
+      "passes": false,
+      "acceptanceCriteria": [
+        "Improve global fluid animations and micro-interactions without changing layout structure",
+        "Implement smooth scroll-driven reveals or stagger effects on cards",
+        "Refine accent color implementations to feel more premium",
+        "Ensure no new header or footer components are created",
+        "Verify all animations are accessible (respect prefers-reduced-motion)"
+      ],
+      "technicalNotes": {
+        "files": [
+          "src/app/globals.css",
+          "tailwind.config.ts",
+          "src/components/sections/*.tsx"
+        ],
+        "note": "Focus on Framer Motion enhancements and utility class polishes."
+      },
+      "dependencies": []
+    },
+    {
+      "id": "CONTENT-REC-001",
+      "title": "Replace Placeholder Recommendations",
+      "priority": 2,
+      "phase": "Design Revamp & Final Production Cutover",
+      "status": "Not Started",
+      "passes": false,
+      "acceptanceCriteria": [
+        "Identify and document missing real recommendations",
+        "Prompt the user to provide real testimonial data",
+        "Update the Sanity CMS schema or fallback JSON with the new data",
+        "Verify recommendations carousel renders the new data correctly"
+      ],
+      "technicalNotes": {
+        "files": [
+          "portfolio-resources/data/recommendations.json"
+        ]
+      },
+      "dependencies": []
+    },
+    {
+      "id": "CONTENT-BLOG-001",
+      "title": "Write Real Blog Post Content",
+      "priority": 2,
+      "phase": "Design Revamp & Final Production Cutover",
+      "status": "Not Started",
+      "passes": false,
+      "acceptanceCriteria": [
+        "Replace placeholder markdown files with actual blog content",
+        "Verify the markdown parser handles the new content formatting correctly",
+        "Upload any necessary images to the local repo or Sanity Studio"
+      ],
+      "technicalNotes": {
+        "files": [
+          "portfolio-resources/data/blog.json"
+        ]
+      },
+      "dependencies": []
+    },
+    {
+      "id": "ANALYTICS-001",
+      "title": "Integrate Privacy-Respecting Analytics",
+      "priority": 3,
+      "phase": "Design Revamp & Final Production Cutover",
+      "status": "Not Started",
+      "passes": false,
+      "acceptanceCriteria": [
+        "Install and configure a privacy-first analytics provider (e.g., Plausible or Umami)",
+        "Add tracking script securely to the root layout",
+        "Verify that tracking script does not impact Core Web Vitals"
+      ],
+      "technicalNotes": {
+        "files": [
+          "src/app/layout.tsx"
+        ]
+      },
+      "dependencies": []
+    },
+    {
+      "id": "SANITY-CUTOVER-001",
+      "title": "Launch Sanity Studio & Final Production Cutover",
+      "priority": 4,
+      "phase": "Design Revamp & Final Production Cutover",
+      "status": "Not Started",
+      "passes": false,
+      "acceptanceCriteria": [
+        "Deploy Sanity Studio to cms.namias.tech",
+        "Set SANITY_CUTOVER_ENABLED to true in Vercel production environment",
+        "Verify the live namias.tech site successfully pulls data from Sanity CMS",
+        "Monitor the first hour of traffic for fallback invocations"
+      ],
+      "technicalNotes": {
+        "files": [
+          ".env.local"
+        ],
+        "note": "Requires manual user action in Vercel."
+      },
+      "dependencies": [
+        "UI-ANIM-001",
+        "CONTENT-REC-001",
+        "CONTENT-BLOG-001"
+      ]
     }
   ]
 }
