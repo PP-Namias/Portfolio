@@ -1,4 +1,4 @@
-﻿import { createClient } from '@sanity/client';
+import { createClient } from '@sanity/client';
 
 export const client = createClient({
   projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || 'dummy-project-id',
@@ -32,7 +32,7 @@ export async function safeFetchSanity<T>(
     }
     return fallbackData;
   } catch (error) {
-    console.warn('[Sanity CMS] Fetch failed or timed out. Instantly failing over to local JSON fallback.');
+    console.warn('[Sanity CMS] Fetch failed or timed out. Instantly failing over to local JSON fallback.', error);
     return fallbackData;
   }
 }

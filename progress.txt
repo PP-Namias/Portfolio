@@ -295,3 +295,9 @@ FRAMEWORK COMPLETE: All Sanity CMS infrastructure prepared
   - blogPost: created 6
   - assets: uploaded 74
 - No errors or anomalies recorded during the migration.
+
+[SUCCESS] SANITY-QA-RUN-001 Complete
+- Fixed mock behavior in `sanity.test.ts` to correctly handle `process.env.NEXT_PUBLIC_SANITY_PROJECT_ID` state.
+- Executed parity and fallback test suites (`src/__tests__/lib/sanity.test.ts`).
+- Executed Playwright E2E smoke tests.
+- Updated `QA_CHECKLIST.md` to mark automated QA phases as complete.

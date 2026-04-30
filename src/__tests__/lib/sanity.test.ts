@@ -1,4 +1,4 @@
-﻿import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { safeFetchSanity, client } from '../../lib/sanity';
 import * as projectData from '../../data/projects';
 import * as profileData from '../../data/profile';
@@ -6,7 +6,17 @@ import * as experienceData from '../../data/experience';
 import * as certificationData from '../../data/certifications';
 
 describe('safeFetchSanity - Resilience and Fallback', () => {
+  beforeEach(() => {
+    process.env.NEXT_PUBLIC_SANITY_PROJECT_ID = 'test-id';
+  });
+
+  afterEach(() => {
+    delete process.env.NEXT_PUBLIC_SANITY_PROJECT_ID;
+    vi.clearAllMocks();
+  });
+
   it('falls back to static data if no project ID is configured', async () => {
+    delete process.env.NEXT_PUBLIC_SANITY_PROJECT_ID;
     const fallback = [{ id: '1' }];
     const result = await safeFetchSanity('*[_type == "project"]', fallback);
     expect(result).toEqual(fallback);
@@ -15,13 +25,20 @@ describe('safeFetchSanity - Resilience and Fallback', () => {
   it('returns fallback data on timeout', async () => {
     const fallback = [{ id: 'fallback' }];
     const spyFetch = vi.spyOn(client, 'fetch').mockImplementationOnce(
-      () => new Promise(resolve => setTimeout(() => resolve([{ id: 'slow' }]), 5000))
+      (_query, _params, options: any) => new Promise((resolve, reject) => {
+        const id = setTimeout(() => resolve([{ id: 'slow' }]), 5000);
+        if (options?.signal) {
+          options.signal.addEventListener('abort', () => {
+            clearTimeout(id);
+            reject(new Error('AbortError'));
+          });
+        }
+      })
     );
     
     const result = await safeFetchSanity('*[_type == "project"]', fallback, 100);
     
     expect(result).toEqual(fallback);
-    spyFetch.mockRestore();
   });
 
   it('returns fallback data on network error', async () => {
