@@ -975,8 +975,9 @@
       "title": "Replace Placeholder Recommendations",
       "priority": 2,
       "phase": "Design Revamp & Final Production Cutover",
-      "status": "Not Started",
-      "passes": false,
+      "status": "Complete",
+      "passes": true,
+      "completedAt": "2026-05-01T13:40:00Z",
       "acceptanceCriteria": [
         "Identify and document missing real recommendations",
         "Prompt the user to provide real testimonial data",
