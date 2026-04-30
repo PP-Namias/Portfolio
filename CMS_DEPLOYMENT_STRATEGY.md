@@ -6,10 +6,10 @@ Deploy Sanity Studio to a dedicated subdomain (cms.namias.tech) and keep the mai
 
 ## Why Separate Deployments
 
-- Security isolation: Studio requires authenticated access and should not ship with the public app.
-- Independent release cadence: content operations can update without redeploying the portfolio.
-- Smaller public bundle: removes Studio dependencies from the main site runtime.
-- Cleaner operational surface: distinct logs, access policies, and uptime profiles.
+- **Security isolation**: Studio requires authenticated access and should not ship with the public app.
+- **Independent release cadence**: content operations can update without redeploying the portfolio.
+- **Smaller public bundle**: removes Studio dependencies from the main site runtime.
+- **Cleaner operational surface**: distinct logs, access policies, and uptime profiles.
 
 ## Deployment Outline
 
@@ -32,3 +32,151 @@ Deploy Sanity Studio to a dedicated subdomain (cms.namias.tech) and keep the mai
 
 - If CMS issues occur, keep JSON fallback active in the main app.
 - Maintain a documented switch to temporarily disable Sanity reads.
+
+---
+
+## Studio Deployment Pipeline (NEW)
+
+### Prerequisites
+
+1. **Sanity Project Setup** (owner/admin task)
+   - Create Sanity project at sanity.io
+   - Note project ID and dataset name
+   - Create API token for programmatic access
+   - Configure CORS origins: https://namias.tech, https://cms.namias.tech, http://localhost:3000, http://localhost:3333
+
+2. **Environment Variables**
+   ```
+   NEXT_PUBLIC_SANITY_PROJECT_ID=<your-project-id>
+   NEXT_PUBLIC_SANITY_DATASET=production
+   SANITY_API_TOKEN=<your-api-token>  # Keep secret, never commit
+   ```
+
+### Build and Deployment
+
+#### Option 1: AWS Amplify (Recommended for consistency)
+
+1. **Primary Portfolio App** (namias.tech)
+   - Repository: PP-Namias/Portfolio
+   - Root directory: `/`
+   - Build command: `npm ci && npm run build`
+   - Output directory: `.next`
+   - Environment variables: `NEXT_PUBLIC_SANITY_PROJECT_ID`, `NEXT_PUBLIC_SANITY_DATASET`
+
+2. **Sanity Studio** (cms.namias.tech)
+   - Same repository
+   - Base directory: `studio/`
+   - Build command: `npm ci && npm run build --prefix studio/`
+   - Output directory: `studio/dist`
+   - Environment variables: `NEXT_PUBLIC_SANITY_PROJECT_ID`, `NEXT_PUBLIC_SANITY_DATASET`
+   - Subdomain: `cms` on `namias.tech` domain
+
+#### Option 2: Vercel (Alternative)
+
+- **Portfolio**: Deploy root directory to production
+- **Studio**: Deploy `studio/` directory to subdomain via Vercel project settings
+
+#### Option 3: Self-Hosted / Docker
+
+```dockerfile
+# Dockerfile for studio/
+FROM node:20-alpine
+WORKDIR /app
+COPY studio/ ./
+RUN npm ci
+RUN npm run build
+EXPOSE 3333
+CMD ["npm", "run", "start"]
+```
+
+### Access Control & Security
+
+1. **Studio Authentication**
+   - Enable Sanity OAuth or JWT authentication
+   - Restrict to owner and trusted editors
+   - Use Sanity's built-in role-based access control (RBAC)
+
+2. **CORS Configuration** (in Sanity dashboard)
+   - Allowed origins:
+     - `https://namias.tech` (main portfolio, read-only)
+     - `https://cms.namias.tech` (Studio, admin)
+     - `http://localhost:3000` (development)
+     - `http://localhost:3333` (local Studio dev)
+
+3. **API Token Security**
+   - Create separate read-only token for portfolio app
+   - Create admin token for migration script (migrate-to-sanity.ts)
+   - Store in environment secrets, never in code
+   - Rotate tokens periodically
+
+### DNS Configuration
+
+Add DNS records to `namias.tech`:
+```
+A record:       ns-123.awsamp.com (or your Amplify domain)
+CNAME record:   cms.namias.tech -> cms-deploy-host.namias.tech
+```
+
+### Post-Deployment Verification
+
+1. **Health Checks**
+   ```bash
+   curl https://namias.tech/api/health  # Main app
+   curl https://cms.namias.tech/health  # Studio (if endpoint exists)
+   ```
+
+2. **Sanity Connectivity Test**
+   - Check for fallback logs in CloudWatch/Amplify logs
+   - Verify Sanity fetch success in portfolio logs
+   - Monitor for any timeout/CORS errors
+
+3. **Studio Accessibility**
+   - Login to https://cms.namias.tech
+   - Verify document editing works
+   - Test publish/unpublish workflow
+
+### Continuous Deployment
+
+1. **Main Portfolio** (on push to main branch)
+   - Amplify auto-builds and deploys to namias.tech
+   - Triggers ISR revalidation via revalidateTag hooks
+
+2. **Studio** (separate workflow)
+   - On changes to `studio/` folder, rebuild studio deployment
+   - Update cms.namias.tech subdomain
+
+3. **Separate Deployments** (recommended)
+   - Portfolio: auto-deploy on every main push
+   - Studio: manual trigger or separate branch for safety
+
+### Monitoring & Logging
+
+- **CloudWatch Logs** (Amplify): Monitor Sanity fetch failures and JSON fallback usage
+- **Sanity Analytics**: Track API usage, document updates
+- **Error Tracking**: Sentry or similar for production issues
+
+### Troubleshooting
+
+| Issue | Solution |
+|-------|----------|
+| Studio returns 404 | Verify subdomain DNS and Amplify routing |
+| CORS errors | Check CORS origins in Sanity dashboard |
+| Slow Sanity fetches | Increase timeout in safeFetchSanity (src/lib/sanity.ts) |
+| Data not syncing | Re-run migration script: `npm run migrate:sanity` |
+| Authentication fails | Verify API token has read/write permissions |
+
+### Rollback Plan
+
+1. **If Sanity becomes unavailable**
+   - JSON fallback automatically engages (safeFetchSanity handles timeouts)
+   - No manual intervention needed; portfolio continues serving JSON data
+
+2. **If Studio deployment fails**
+   - Main portfolio remains unaffected (separate deployments)
+   - Rollback studio to previous version via Amplify console
+
+3. **If data sync is corrupted**
+   - Revert Sanity documents to backup
+   - Re-run dry-run migration to validate: `npm run migrate:sanity -- --dry-run`
+   - Run full migration once validated
+

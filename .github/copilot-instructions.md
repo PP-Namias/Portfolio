@@ -235,13 +235,24 @@ npm run test         # Vitest (94 tests across 10 files)
 
 ## 🗺 IMPROVEMENT ROADMAP
 
-Remaining unchecked items (everything else is done):
+Completed initiatives:
+- [x] Projects minimalist hover showcase revamp (v2.4.0)
+- [x] Sanity CMS infrastructure and schema setup
+- [x] Async data fetcher layer with JSON fallback
+- [x] Server component conversion framework
+- [x] Studio deployment pipeline documentation
+- [x] QA validation framework and checklists
+- [x] Sanity cutover procedure and rollback plan
 
+Remaining items:
 - [ ] Improve overall website animations and design. Do NOT create another header or footer; enhance the existing layout.
 - [ ] Get real recommendations and replace placeholder data
 - [ ] Write real blog post content (currently placeholder markdown)
-- [x] Smoother modal contact email flow (no extra route)
 - [ ] Privacy-respecting analytics (Plausible or Umami)
+- [ ] Execute Sanity project setup (once owner provides credentials)
+- [ ] Run full migration to Sanity
+- [ ] Launch Sanity Studio to production
+- [ ] Monitor and optimize post-cutover
 
 ---
 
