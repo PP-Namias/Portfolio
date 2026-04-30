@@ -486,6 +486,33 @@
       "dependencies": [
         "PROJECT-MIN-014"
       ]
+    },
+    {
+      "id": "SANITY-STUDIO-001",
+      "title": "Prepare Standalone Studio Folder",
+      "priority": 1,
+      "phase": "Sanity Migration: Deployment Readiness",
+      "status": "Complete",
+      "passes": true,
+      "completedAt": "2026-04-30T00:00:00Z",
+      "acceptanceCriteria": [
+        "Create a standalone studio folder for separate Sanity CMS deployment",
+        "Provide studio-specific Sanity config and CLI entrypoint",
+        "Keep schema source of truth in sanity/schema.ts",
+        "Document the studio deployment preparation in migration docs"
+      ],
+      "technicalNotes": {
+        "files": [
+          "studio/sanity.config.ts",
+          "studio/sanity.cli.ts",
+          ".env",
+          "SANITY_MIGRATION_PLAN.md",
+          "progress.txt",
+          ".github/copilot-instructions.md"
+        ],
+        "note": "Standalone Studio config uses shared schema and existing Sanity env vars"
+      },
+      "dependencies": []
     }
   ]
 }

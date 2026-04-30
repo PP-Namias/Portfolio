@@ -121,6 +121,9 @@ Every task MUST follow: **ANALYZE → PLAN → IMPLEMENT → VALIDATE → REPORT
 ├── public/                            # Static files served by Next.js
 │   ├── images/{blog,certifications,experience,gallery,profile,projects}/
 │   ├── resume.pdf, favicon.svg, og-image.svg, robots.txt, site.webmanifest
+├── studio/                          # Standalone Sanity Studio (separate deploy)
+│   ├── sanity.cli.ts
+│   └── sanity.config.ts
 ├── src/
 │   ├── app/
 │   │   ├── layout.tsx                 # Root layout + metadata + Inter font + JSON-LD

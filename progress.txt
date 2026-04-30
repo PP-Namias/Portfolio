@@ -146,3 +146,8 @@
 - [SUCCESS] Validated fallback layer with tests
 
 [2026-04-29] Autonomous execution hit logical synchronization point. Components using sync data modules (e.g. projects.ts) must be converted to Async Server Components to consume safeFetchSanity next.
+
+[2026-04-30] Sanity Studio standalone deployment prep
+- [SUCCESS] Added `studio/` with dedicated Sanity config and CLI entries.
+- [SUCCESS] Added Sanity environment placeholders for shared app + Studio config.
+- [SUCCESS] Documented the standalone studio preparation in the migration plan and copilot instructions.
