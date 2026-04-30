@@ -34,7 +34,7 @@ vi.mock('next/font/google', () => ({
 }));
 
 vi.mock('next-themes', () => ({
-  ThemeProvider: ({ children }: { children: React.ReactNode }) => <div data-testid="theme-provider">{children}</div>,
+  ThemeProvider: ({ children }: { children: React.ReactNode }) => <div data-testid="theme-provider">{children}</div>, useTheme: () => ({ theme: 'dark', setTheme: vi.fn(), resolvedTheme: 'dark' }),
 }));
 
 vi.mock('lenis/react', () => ({
@@ -50,7 +50,7 @@ vi.mock('@/components/ui/ScrollToTop', () => ({
 }));
 
 vi.mock('@/components/ui/Analytics', () => ({
-  Analytics: () => <script data-testid="analytics-script" />,
+  Analytics: () => <div data-testid="analytics-script">Analytics</div>,
 }));
 
 vi.mock('@/components/sections/HeroSection', () => ({ HeroSection: () => <div>HeroSection</div> }));
@@ -104,11 +104,11 @@ describe('app layout and page coverage', () => {
     expect(screen.getByText('AppChild')).toBeInTheDocument();
     expect(screen.getByTestId('floating-hub')).toBeInTheDocument();
     expect(screen.getByTestId('scroll-to-top')).toBeInTheDocument();
-    expect(screen.getByTestId('analytics-script')).toBeInTheDocument();
+    expect((document.querySelector('[data-testid="analytics-script"]') || screen.getByTestId('analytics-script'))).toBeInTheDocument();
   });
 
-  it('Home page renders all major section blocks', () => {
-    render(<Home />);
+  it('Home page renders all major section blocks', async () => {
+    render(await Home() as React.ReactElement);
 
     expect(screen.getByText('HeroSection')).toBeInTheDocument();
     expect(screen.getByText('AboutSection')).toBeInTheDocument();
@@ -127,7 +127,7 @@ describe('app layout and page coverage', () => {
       value: 768,
     });
 
-    render(<Home />);
+    render(await Home() as React.ReactElement);
 
     fireEvent(globalThis as unknown as Window, new Event('resize'));
 

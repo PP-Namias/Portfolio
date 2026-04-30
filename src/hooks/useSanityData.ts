@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { safeFetchSanity } from '@/lib/sanity/client';
+﻿import { useEffect, useState } from 'react';
+import { safeFetchSanity } from '@/lib/sanity';
 
 export function useSanityData<T>(query: string, fallbackData: T): T {
   const [data, setData] = useState<T>(fallbackData);

@@ -1,11 +1,17 @@
-import { Project, ProjectStatus } from '@/types';
+﻿import { Project, ProjectStatus } from '@/types';
 import projectData from '../../portfolio-resources/data/projects.json';
+import { safeFetchSanity } from '@/lib/sanity';
 
 const isProjectStatus = (value: unknown): value is ProjectStatus => {
-	return value === 'completed' || value === 'in-progress' || value === 'prototype';
+  return value === 'completed' || value === 'in-progress' || value === 'prototype';
 };
 
-export const projects: Project[] = projectData.map((project) => ({
-	...project,
-	status: isProjectStatus(project.status) ? project.status : undefined,
+const defaultProjects: Project[] = projectData.map((project) => ({
+  ...project,
+  status: isProjectStatus(project.status) ? project.status : undefined,
 }));
+
+export const getProjects = async (): Promise<Project[]> => {
+  const query = '*[_type == "project"] | order(year desc)';
+  return safeFetchSanity<Project[]>(query, defaultProjects);
+};

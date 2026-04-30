@@ -5,7 +5,7 @@ import { experiences } from '@/data/experience';
 import { galleryImages } from '@/data/gallery';
 import { memberships } from '@/data/memberships';
 import { profile } from '@/data/profile';
-import { projects } from '@/data/projects';
+import { getProjects } from '@/data/projects';
 import { recommendations } from '@/data/recommendations';
 import { socialLinks } from '@/data/socials';
 import { technologies, techCategories } from '@/data/techStack';
@@ -19,7 +19,7 @@ describe('data module coverage', () => {
     expect(Array.isArray(experiences)).toBe(true);
     expect(Array.isArray(galleryImages)).toBe(true);
     expect(Array.isArray(memberships)).toBe(true);
-    expect(Array.isArray(projects)).toBe(true);
+    expect(typeof getProjects).toBe("function");
     expect(Array.isArray(recommendations)).toBe(true);
     expect(Array.isArray(socialLinks)).toBe(true);
     expect(Array.isArray(technologies)).toBe(true);

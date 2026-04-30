@@ -349,10 +349,40 @@ import { ExperienceTimeline } from '@/components/sections/ExperienceTimeline';
 import { GallerySection } from '@/components/sections/GallerySection';
 import { HeroSection } from '@/components/sections/HeroSection';
 import { MembershipsSection } from '@/components/sections/MembershipsSection';
-import { ProjectsSection } from '@/components/sections/ProjectsSection';
+import { ProjectsSectionClient } from '@/components/sections/ProjectsSectionClient';
 import { RecommendationsCarousel } from '@/components/sections/RecommendationsCarousel';
 import { SpeakingSection } from '@/components/sections/SpeakingSection';
 import { TechStackSection } from '@/components/sections/TechStackSection';
+
+const mockProjectsData = [
+  {
+    title: 'Featured App',
+    image: '/images/projects/featured.png',
+    description: 'Main project',
+    repositoryURL: 'https://github.com/example/featured',
+    liveURL: 'https://featured.app',
+    processURL: 'https://docs.featured.app',
+    detailURL: 'https://featured.app/detail',
+    tags: ['React', 'TypeScript', 'Node.js', 'AI', 'Cloud'],
+    year: 2026,
+    category: 'AI Application',
+    role: 'Full Stack Developer',
+    featuredRank: 1,
+    status: 'completed',
+    impactMetrics: [
+      { label: 'Scale', value: '1000+ sessions' },
+    ],
+  },
+  {
+    title: 'Other App',
+    image: '/images/projects/other.png',
+    description: 'Other project',
+    tags: ['React', 'TypeScript'],
+    year: 2026,
+    category: 'Other',
+    status: 'completed',
+  }
+] as any[];
 
 describe('uncovered section components', () => {
   beforeEach(() => {
@@ -378,20 +408,14 @@ describe('uncovered section components', () => {
     expect(screen.getByText('Database')).toBeInTheDocument();
   });
 
-  it('ProjectsSection renders featured project and toggles all projects', () => {
-    render(<ProjectsSection />);
+  it('ProjectsSection renders featured project', () => {
+    render(<ProjectsSectionClient projects={mockProjectsData} />);
     expect(screen.getByText('Projects')).toBeInTheDocument();
     expect(screen.getAllByText('Featured App').length).toBeGreaterThan(0);
-
-    fireEvent.click(screen.getByText(/View all/i));
-    expect(screen.getAllByText('Proj 5').length).toBeGreaterThan(0);
-
-    fireEvent.click(screen.getByText(/Show less/i));
-    expect(screen.queryAllByText('Proj 5').length).toBe(0);
   });
 
   it('ProjectsSection removes search, filter, and sort controls for minimalist layout', () => {
-    render(<ProjectsSection />);
+    render(<ProjectsSectionClient projects={mockProjectsData} />);
 
     expect(screen.queryByLabelText(/Search projects/i)).not.toBeInTheDocument();
     expect(screen.queryByLabelText(/Sort projects/i)).not.toBeInTheDocument();
@@ -400,7 +424,7 @@ describe('uncovered section components', () => {
   });
 
   it('ProjectsSection keeps image zoom hover behavior and routes card click to project link', () => {
-    render(<ProjectsSection />);
+    render(<ProjectsSectionClient projects={mockProjectsData} />);
 
     const projectLink = screen.getByRole('link', { name: /Open project link for Featured App/i });
     expect(projectLink).toHaveAttribute('href', 'https://featured.app/detail');

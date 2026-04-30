@@ -151,3 +151,8 @@
 - [SUCCESS] Added `studio/` with dedicated Sanity config and CLI entries.
 - [SUCCESS] Added Sanity environment placeholders for shared app + Studio config.
 - [SUCCESS] Documented the standalone studio preparation in the migration plan and copilot instructions.
+
+[2026-04-30] Sanity migration planning expansion
+- [SUCCESS] Expanded SANITY_MIGRATION_PLAN.md with detailed phases, goals, and validation steps.
+- [SUCCESS] Expanded CMS_DEPLOYMENT_STRATEGY.md for separate Studio deployment guidance.
+- [SUCCESS] Added a structured Sanity migration backlog to prd.json.

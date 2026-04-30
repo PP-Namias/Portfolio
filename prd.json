@@ -513,6 +513,244 @@
         "note": "Standalone Studio config uses shared schema and existing Sanity env vars"
       },
       "dependencies": []
+    },
+    {
+      "id": "SANITY-MIG-PLAN-001",
+      "title": "Expand Sanity Migration Plan and PRD",
+      "priority": 1,
+      "phase": "Sanity Migration: Planning",
+      "status": "Complete",
+      "passes": true,
+      "completedAt": "2026-04-30T00:00:00Z",
+      "acceptanceCriteria": [
+        "Expand SANITY_MIGRATION_PLAN.md with detailed phases and goals",
+        "Expand CMS_DEPLOYMENT_STRATEGY.md with separate deployment guidance",
+        "Add Sanity migration stories to prd.json with dependencies"
+      ],
+      "technicalNotes": {
+        "files": [
+          "SANITY_MIGRATION_PLAN.md",
+          "CMS_DEPLOYMENT_STRATEGY.md",
+          "prd.json",
+          "progress.txt"
+        ],
+        "note": "Planning expansion documents the end-to-end CMS path before implementation"
+      },
+      "dependencies": [
+        "SANITY-STUDIO-001"
+      ]
+    },
+    {
+      "id": "SANITY-MIG-PREREQ-001",
+      "title": "Confirm Sanity Project Credentials",
+      "priority": 1,
+      "phase": "Sanity Migration: Prerequisites",
+      "status": "Blocked",
+      "passes": false,
+      "acceptanceCriteria": [
+        "Provide Sanity project ID and dataset for production",
+        "Confirm API token strategy for migration and read access",
+        "Confirm CORS origins for namias.tech and cms.namias.tech"
+      ],
+      "technicalNotes": {
+        "files": [
+          ".env",
+          "sanity.config.ts",
+          "studio/sanity.config.ts",
+          "studio/sanity.cli.ts"
+        ],
+        "note": "Blocked on user-provided Sanity project details"
+      },
+      "dependencies": []
+    },
+    {
+      "id": "SANITY-MIG-SCHEMA-001",
+      "title": "Complete Schema Parity for All Content Types",
+      "priority": 1,
+      "phase": "Sanity Migration: Schema Architecture",
+      "status": "Planned",
+      "passes": false,
+      "acceptanceCriteria": [
+        "Define schemas for all JSON content types",
+        "Match field parity and ordering rules",
+        "Include image fields, slugs, and reference links"
+      ],
+      "technicalNotes": {
+        "files": [
+          "sanity/schema.ts",
+          "portfolio-resources/data/*.json",
+          "src/types/index.ts"
+        ],
+        "note": "Schema parity must match existing UI expectations"
+      },
+      "dependencies": [
+        "SANITY-MIG-PREREQ-001"
+      ]
+    },
+    {
+      "id": "SANITY-MIG-ASSETS-001",
+      "title": "Define Asset Normalization and Upload Rules",
+      "priority": 2,
+      "phase": "Sanity Migration: Schema Architecture",
+      "status": "Planned",
+      "passes": false,
+      "acceptanceCriteria": [
+        "Normalize image file names and source mapping",
+        "Ensure asset reuse across repeated migration runs",
+        "Document asset folder alignment with public/images"
+      ],
+      "technicalNotes": {
+        "files": [
+          "portfolio-resources/assets/images",
+          "public/images",
+          "scripts/migrate-to-sanity.ts"
+        ],
+        "note": "Asset normalization prevents duplicate uploads"
+      },
+      "dependencies": [
+        "SANITY-MIG-SCHEMA-001"
+      ]
+    },
+    {
+      "id": "SANITY-MIG-MIGRATION-001",
+      "title": "Implement Idempotent Migration Script",
+      "priority": 1,
+      "phase": "Sanity Migration: Automated Sync",
+      "status": "Planned",
+      "passes": false,
+      "acceptanceCriteria": [
+        "Upsert documents by stable IDs",
+        "Support dry-run and verification output",
+        "Handle asset uploads and reference linking"
+      ],
+      "technicalNotes": {
+        "files": [
+          "scripts/migrate-to-sanity.ts",
+          "portfolio-resources/data/*.json"
+        ],
+        "note": "Script must be safe to re-run without duplication"
+      },
+      "dependencies": [
+        "SANITY-MIG-SCHEMA-001",
+        "SANITY-MIG-ASSETS-001"
+      ]
+    },
+    {
+      "id": "SANITY-MIG-FETCH-001",
+      "title": "Wire safeFetchSanity into Data Modules",
+      "priority": 1,
+      "phase": "Sanity Migration: Data Integration",
+      "status": "Planned",
+      "passes": false,
+      "acceptanceCriteria": [
+        "Replace static JSON reads with safe Sanity fetches",
+        "Preserve JSON fallback for all content slices",
+        "Add cache tagging and revalidation where needed"
+      ],
+      "technicalNotes": {
+        "files": [
+          "src/lib/sanity.ts",
+          "src/hooks/useSanityData.ts",
+          "src/data/*.ts"
+        ],
+        "note": "safeFetchSanity is available; integration remains"
+      },
+      "dependencies": [
+        "SANITY-MIG-MIGRATION-001"
+      ]
+    },
+    {
+      "id": "SANITY-MIG-REFAC-001",
+      "title": "Convert Sections to Async Server Components",
+      "priority": 2,
+      "phase": "Sanity Migration: Component Refactor",
+      "status": "Planned",
+      "passes": false,
+      "acceptanceCriteria": [
+        "Convert server components to async data fetching",
+        "Keep client components data-agnostic",
+        "Preserve existing layout and metadata"
+      ],
+      "technicalNotes": {
+        "files": [
+          "src/app/page.tsx",
+          "src/components/sections/*.tsx"
+        ],
+        "note": "Refactor should avoid new routes or UI regressions"
+      },
+      "dependencies": [
+        "SANITY-MIG-FETCH-001"
+      ]
+    },
+    {
+      "id": "SANITY-MIG-STUDIO-OPS-001",
+      "title": "Prepare Studio Deployment Pipeline",
+      "priority": 2,
+      "phase": "Sanity Migration: Deployment",
+      "status": "Planned",
+      "passes": false,
+      "acceptanceCriteria": [
+        "Document studio build and deploy pipeline",
+        "Verify cms.namias.tech DNS routing",
+        "Lock down Studio access and CORS rules"
+      ],
+      "technicalNotes": {
+        "files": [
+          "CMS_DEPLOYMENT_STRATEGY.md",
+          "studio/sanity.config.ts"
+        ],
+        "note": "Studio deployment must remain separate from the main app"
+      },
+      "dependencies": [
+        "SANITY-MIG-PREREQ-001"
+      ]
+    },
+    {
+      "id": "SANITY-MIG-QA-001",
+      "title": "Parity and Fallback Validation",
+      "priority": 2,
+      "phase": "Sanity Migration: QA",
+      "status": "Planned",
+      "passes": false,
+      "acceptanceCriteria": [
+        "Snapshot parity checks for JSON vs Sanity",
+        "Fallback tests for outage scenarios",
+        "Performance and accessibility verification"
+      ],
+      "technicalNotes": {
+        "files": [
+          "src/__tests__/lib/sanity.test.ts",
+          "src/__tests__/core/data-and-utils.test.ts"
+        ],
+        "note": "QA must confirm no regressions before cutover"
+      },
+      "dependencies": [
+        "SANITY-MIG-REFAC-001",
+        "SANITY-MIG-STUDIO-OPS-001"
+      ]
+    },
+    {
+      "id": "SANITY-MIG-LAUNCH-001",
+      "title": "Cut Over to Sanity as Primary Source",
+      "priority": 2,
+      "phase": "Sanity Migration: Launch",
+      "status": "Planned",
+      "passes": false,
+      "acceptanceCriteria": [
+        "Enable Sanity primary reads in production",
+        "Keep JSON fallback available for emergency rollback",
+        "Monitor logs and content freshness after cutover"
+      ],
+      "technicalNotes": {
+        "files": [
+          "src/lib/sanity.ts",
+          "src/hooks/useSanityData.ts"
+        ],
+        "note": "Cutover only after QA confirms parity"
+      },
+      "dependencies": [
+        "SANITY-MIG-QA-001"
+      ]
     }
   ]
 }
