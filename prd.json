@@ -1016,8 +1016,9 @@
       "title": "Integrate Privacy-Respecting Analytics",
       "priority": 3,
       "phase": "Design Revamp & Final Production Cutover",
-      "status": "Not Started",
-      "passes": false,
+      "status": "Complete",
+      "passes": true,
+      "completedAt": "2026-05-01T13:50:00Z",
       "acceptanceCriteria": [
         "Install and configure a privacy-first analytics provider (e.g., Plausible or Umami)",
         "Add tracking script securely to the root layout",
