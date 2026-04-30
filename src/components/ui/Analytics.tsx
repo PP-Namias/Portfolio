@@ -12,7 +12,7 @@ const isSecureUrl = (value: string) => {
 export function Analytics() {
   const websiteId = process.env.NEXT_PUBLIC_UMAMI_WEBSITE_ID;
 
-  if (!websiteId) {
+  if (process.env.NODE_ENV !== 'production' || !websiteId) {
     return null;
   }
 

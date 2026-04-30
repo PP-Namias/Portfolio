@@ -123,6 +123,7 @@ import { ColorSchemePicker } from '@/components/ui/ColorSchemePicker';
 import { ProjectCard } from '@/components/ui/ProjectCard';
 import { TimelineItem } from '@/components/ui/TimelineItem';
 import { ExperienceModal } from '@/components/ui/ExperienceModal';
+import { Analytics } from '@/components/ui/Analytics';
 
 describe('uncovered UI components', () => {
   beforeEach(() => {
@@ -293,5 +294,27 @@ describe('uncovered UI components', () => {
     expect(screen.getByText('Built systems')).toBeInTheDocument();
     expect(screen.getByText('Award')).toBeInTheDocument();
     expect(screen.getByText('TypeScript')).toBeInTheDocument();
+  });
+
+  it('Analytics renders script only in production with websiteId', () => {
+    // Test Dev mode
+    vi.stubEnv('NODE_ENV', 'development');
+    process.env.NEXT_PUBLIC_UMAMI_WEBSITE_ID = 'test-id';
+    const { rerender } = render(<Analytics />);
+    expect(document.querySelector('script[data-website-id="test-id"]')).not.toBeInTheDocument();
+
+    // Test Production mode without ID
+    vi.stubEnv('NODE_ENV', 'production');
+    process.env.NEXT_PUBLIC_UMAMI_WEBSITE_ID = '';
+    rerender(<Analytics />);
+    expect(document.querySelector('script[data-website-id="test-id"]')).not.toBeInTheDocument();
+
+    // Test Production mode with ID
+    process.env.NEXT_PUBLIC_UMAMI_WEBSITE_ID = 'prod-id';
+    rerender(<Analytics />);
+    expect(document.querySelector('script[data-website-id="prod-id"]')).toBeInTheDocument();
+
+    // Restore
+    vi.unstubAllEnvs();
   });
 });
