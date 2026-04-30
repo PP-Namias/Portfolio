@@ -993,11 +993,12 @@
     },
     {
       "id": "CONTENT-BLOG-001",
-      "title": "Write Real Blog Post Content",
-      "priority": 2,
+      "title": "Replace Placeholder Blog Posts",
+      "priority": 3,
       "phase": "Design Revamp & Final Production Cutover",
-      "status": "Not Started",
-      "passes": false,
+      "status": "Complete",
+      "passes": true,
+      "completedAt": "2026-05-01T13:45:00Z",
       "acceptanceCriteria": [
         "Replace placeholder markdown files with actual blog content",
         "Verify the markdown parser handles the new content formatting correctly",
