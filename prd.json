@@ -1055,6 +1055,65 @@
         "CONTENT-REC-001",
         "CONTENT-BLOG-001"
       ]
+    },
+    {
+      "id": "PHASE-5-EVOLUTION",
+      "title": "Phase 5: Post-Launch Growth & Advanced Features",
+      "priority": 1,
+      "status": "In Progress",
+      "stories": [
+        {
+          "id": "EVOLVE-SEO-001",
+          "title": "Dynamic SEO & Sanity-Driven Sitemap",
+          "priority": 1,
+          "phase": "Post-Launch Growth",
+          "status": "Not Started",
+          "passes": false,
+          "acceptanceCriteria": [
+            "Generate sitemap.xml dynamically including all blog posts from Sanity",
+            "Implement OpenGraph image generation using @vercel/og for every blog post",
+            "Ensure all metadata is pulled from Sanity 'profile' and 'blogPost' schemas"
+          ],
+          "technicalNotes": {
+            "files": ["src/app/sitemap.ts", "src/app/blog/[slug]/opengraph-image.tsx"]
+          },
+          "dependencies": ["SANITY-CUTOVER-001"]
+        },
+        {
+          "id": "EVOLVE-CHAT-001",
+          "title": "AI Chatbot Knowledge Base (RAG)",
+          "priority": 2,
+          "phase": "Post-Launch Growth",
+          "status": "Not Started",
+          "passes": false,
+          "acceptanceCriteria": [
+            "Integrate Sanity data into the AI Chatbot's system prompt",
+            "Allow the chatbot to answer specific questions about projects, experience, and blog content",
+            "Implement a 'Cite Source' feature in chat responses linking to relevant portfolio sections"
+          ],
+          "technicalNotes": {
+            "files": ["src/app/api/chat/route.ts", "src/lib/sanity.ts"]
+          },
+          "dependencies": ["SANITY-CUTOVER-001"]
+        },
+        {
+          "id": "EVOLVE-PWA-001",
+          "title": "Full PWA & Offline Support",
+          "priority": 3,
+          "phase": "Post-Launch Growth",
+          "status": "Not Started",
+          "passes": false,
+          "acceptanceCriteria": [
+            "Implement manifest.json and service worker using next-pwa",
+            "Ensure core portfolio pages are available offline",
+            "Add 'Add to Home Screen' prompt for mobile users"
+          ],
+          "technicalNotes": {
+            "files": ["public/manifest.json", "next.config.ts"]
+          },
+          "dependencies": []
+        }
+      ]
     }
   ]
 }
