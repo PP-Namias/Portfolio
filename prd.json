@@ -1120,8 +1120,9 @@
           "title": "On-Demand ISR via Sanity Webhooks",
           "priority": 2,
           "phase": "Post-Launch Growth",
-          "status": "Not Started",
-          "passes": false,
+          "status": "Complete",
+          "passes": true,
+          "completedAt": "2026-05-02T04:06:00Z",
           "acceptanceCriteria": [
             "Implement /api/revalidate API route for Sanity webhook payloads",
             "Secure endpoint with SANITY_REVALIDATE_SECRET verification",
