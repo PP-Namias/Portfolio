@@ -1068,8 +1068,9 @@
           "title": "Dynamic SEO & Sanity-Driven Sitemap",
           "priority": 1,
           "phase": "Post-Launch Growth",
-          "status": "Not Started",
-          "passes": false,
+          "status": "Complete",
+          "passes": true,
+          "completedAt": "2026-05-02T03:45:00Z",
           "acceptanceCriteria": [
             "Generate sitemap.xml dynamically including all blog posts from Sanity",
             "Implement OpenGraph image generation using @vercel/og for every blog post",

@@ -341,4 +341,9 @@ FRAMEWORK COMPLETE: All Sanity CMS infrastructure prepared
  -   C o m p l e t e d   V i t e s t   a n d   P l a y w r i g h t   t e s t   s u i t e s   t o   v a l i d a t e   S a n i t y   i n t e g r a t i o n .  
  -   F i x e d   G R O Q   q u e r i e s   t o   d y n a m i c a l l y   r e s o l v e   i m a g e   U R L s   u s i n g   a s s e t - > u r l .  
   
+ [ S U C C E S S ]   E V O L V E - S E O - 0 0 1   C o m p l e t e  
+ -   I m p l e m e n t e d   d y n a m i c   s i t e m a p . x m l   f e t c h i n g   f r o m   S a n i t y .  
+ -   A d d e d   d y n a m i c   @ v e r c e l / o g   O p e n G r a p h   i m a g e s   f o r   b l o g   p o s t s .  
+ -   R e f a c t o r e d   R o o t L a y o u t   t o   u s e   d y n a m i c   S E O   m e t a d a t a .  
+  
  

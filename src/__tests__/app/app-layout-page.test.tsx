@@ -92,8 +92,8 @@ describe('app layout and page coverage', () => {
     expect(screen.getByText('Children')).toBeInTheDocument();
   });
 
-  it('RootLayout returns html tree and includes skip link + shared widgets', () => {
-    const tree = RootLayout({ children: <div>AppChild</div> });
+  it('RootLayout returns html tree and includes skip link + shared widgets', async () => {
+    const tree = await RootLayout({ children: <div>AppChild</div> });
 
     expect((tree as React.ReactElement).type).toBe('html');
 

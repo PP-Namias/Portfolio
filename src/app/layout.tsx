@@ -4,6 +4,7 @@ import { Providers } from './providers';
 import { FloatingHub } from '@/components/ui/FloatingHub';
 import { ScrollToTop } from '@/components/ui/ScrollToTop';
 import { Analytics } from '@/components/ui/Analytics';
+import { getProfile } from '@/data/profile';
 import './globals.css';
 
 const inter = Inter({
@@ -12,74 +13,79 @@ const inter = Inter({
   variable: '--font-inter',
 });
 
-export const metadata: Metadata = {
-  title: 'Jhon Keneth Namias | Portfolio king of stuff',
-  description: 'Personal portfolio of Jhon Keneth Namias.',
-  metadataBase: new URL('https://namias.tech'),
-  openGraph: {
-    title: 'Jhon Keneth Namias | Portfolio king of stuff',
-    description: 'Personal portfolio of Jhon Keneth Namias.',
-    siteName: 'Jhon Keneth Namias Portfolio',
-    type: 'website',
-    locale: 'en_US',
-    images: [
-      {
-        url: '/opengraph-image',
-        width: 1200,
-        height: 630,
-        alt: 'Jhon Keneth Namias portfolio preview',
-      },
-    ],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Jhon Keneth Namias | Portfolio king of stuff',
-    description: 'Personal portfolio of Jhon Keneth Namias.',
-    images: ['/twitter-image'],
-  },
-  icons: {
-    icon: '/favicon.svg',
-    apple: '/apple-touch-icon.svg',
-  },
-};
-
-const jsonLd = {
-  '@context': 'https://schema.org',
-  '@graph': [
-    {
-      '@type': 'WebSite',
-      '@id': 'https://namias.tech/#website',
-      url: 'https://namias.tech',
-      name: 'Jhon Keneth Ryan Namias — Portfolio',
-      description:
-        'Portfolio of Jhon Keneth Ryan Namias — Full Stack Engineer & AI Automation Specialist based in the Philippines.',
-    },
-    {
-      '@type': 'Person',
-      '@id': 'https://namias.tech/#person',
-      name: 'Jhon Keneth Ryan Namias',
-      jobTitle: 'Full Stack Engineer & AI Automation Specialist',
-      url: 'https://namias.tech',
-      email: 'pp.namias@gmail.com',
-      address: {
-        '@type': 'PostalAddress',
-        addressLocality: 'Caloocan City',
-        addressCountry: 'PH',
-      },
-      sameAs: [
-        'https://github.com/PP-Namias',
-        'https://www.linkedin.com/in/pp-namias/',
+export async function generateMetadata(): Promise<Metadata> {
+  const profile = await getProfile();
+  
+  return {
+    title: `${profile.name} | ${profile.title}`,
+    description: profile.summary.substring(0, 160) + '...',
+    metadataBase: new URL('https://namias.tech'),
+    openGraph: {
+      title: `${profile.name} | ${profile.title}`,
+      description: profile.summary.substring(0, 160) + '...',
+      siteName: `${profile.name} Portfolio`,
+      type: 'website',
+      locale: 'en_US',
+      images: [
+        {
+          url: '/opengraph-image',
+          width: 1200,
+          height: 630,
+          alt: `${profile.name} portfolio preview`,
+        },
       ],
-      knowsAbout: ['React', 'TypeScript', 'Node.js', 'Next.js', 'Python', 'AI Automation', 'Prompt Engineering'],
     },
-  ],
-};
+    twitter: {
+      card: 'summary_large_image',
+      title: `${profile.name} | ${profile.title}`,
+      description: profile.summary.substring(0, 160) + '...',
+      images: ['/twitter-image'],
+    },
+    icons: {
+      icon: '/favicon.svg',
+      apple: '/apple-touch-icon.svg',
+    },
+  };
+}
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const profile = await getProfile();
+
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'WebSite',
+        '@id': 'https://namias.tech/#website',
+        url: 'https://namias.tech',
+        name: `${profile.name} — Portfolio`,
+        description: profile.summary,
+      },
+      {
+        '@type': 'Person',
+        '@id': 'https://namias.tech/#person',
+        name: profile.name,
+        jobTitle: profile.title,
+        url: 'https://namias.tech',
+        email: profile.email,
+        address: {
+          '@type': 'PostalAddress',
+          addressLocality: profile.location.split(',')[0].trim(),
+          addressCountry: profile.location.split(',')[1]?.trim() || '',
+        },
+        sameAs: [
+          profile.github,
+          profile.linkedin,
+        ].filter(Boolean),
+        knowsAbout: profile.highlights.primaryTechnologies,
+      },
+    ],
+  };
+
   return (
     <html lang="en" suppressHydrationWarning className={inter.variable}>
       <head>

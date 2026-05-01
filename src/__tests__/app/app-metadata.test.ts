@@ -50,10 +50,10 @@ describe('app metadata routes', () => {
 
   it('sitemap returns only homepage when blog is hidden', async () => {
     vi.doMock('@/lib/features', () => ({ IS_BLOG_VISIBLE: false }));
-    vi.doMock('@/data/blogPosts', () => ({ blogPosts: [] }));
+    vi.doMock('@/data/blogPosts', () => ({ getBlogPosts: vi.fn().mockResolvedValue([]) }));
 
     const mod = await import('@/app/sitemap');
-    const result = mod.default();
+    const result = await mod.default();
 
     expect(result).toHaveLength(1);
     expect(result[0].url).toBe('https://namias.tech');
@@ -62,14 +62,14 @@ describe('app metadata routes', () => {
   it('sitemap includes blog and post entries when blog is visible', async () => {
     vi.doMock('@/lib/features', () => ({ IS_BLOG_VISIBLE: true }));
     vi.doMock('@/data/blogPosts', () => ({
-      blogPosts: [
+      getBlogPosts: vi.fn().mockResolvedValue([
         { slug: 'post-1', date: '2026-01-01' },
         { slug: 'post-2', date: '2026-02-01' },
-      ],
+      ]),
     }));
 
     const mod = await import('@/app/sitemap');
-    const result = mod.default();
+    const result = await mod.default();
 
     expect(result.length).toBe(4);
     expect(result.some((entry) => entry.url.endsWith('/contact'))).toBe(false);
