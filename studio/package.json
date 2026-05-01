@@ -1,0 +1,21 @@
+{
+  "name": "portfolio-studio",
+  "version": "1.0.0",
+  "description": "Standalone Sanity Studio for Portfolio",
+  "private": true,
+  "scripts": {
+    "dev": "sanity dev",
+    "start": "sanity start",
+    "build": "sanity build"
+  },
+  "dependencies": {
+    "sanity": "^3.99.0",
+    "styled-components": "^6.4.1",
+    "react": "^19.2.5",
+    "react-dom": "^19.2.5"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.3",
+    "@types/react": "^18.3.18"
+  }
+}

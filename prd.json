@@ -1114,6 +1114,39 @@
             "files": ["public/manifest.json", "next.config.ts"]
           },
           "dependencies": []
+        },
+        {
+          "id": "SANITY-WEBHOOKS-001",
+          "title": "On-Demand ISR via Sanity Webhooks",
+          "priority": 2,
+          "phase": "Post-Launch Growth",
+          "status": "Not Started",
+          "passes": false,
+          "acceptanceCriteria": [
+            "Implement /api/revalidate API route for Sanity webhook payloads",
+            "Secure endpoint with SANITY_REVALIDATE_SECRET verification",
+            "Targeted cache tagging (e.g. 'blog', 'projects') for precise ISR"
+          ],
+          "technicalNotes": {
+            "files": ["src/app/api/revalidate/route.ts", "src/lib/sanity.ts"]
+          },
+          "dependencies": ["SANITY-CUTOVER-001"]
+        },
+        {
+          "id": "SANITY-STUDIO-CUSTOM-001",
+          "title": "Studio Branding & Custom Actions",
+          "priority": 3,
+          "phase": "Post-Launch Growth",
+          "status": "Not Started",
+          "passes": false,
+          "acceptanceCriteria": [
+            "Add custom logo and theme colors to Sanity Studio matching portfolio brand",
+            "Implement custom document actions (e.g., specific publish workflow)"
+          ],
+          "technicalNotes": {
+            "files": ["studio/sanity.config.ts", "studio/theme.ts"]
+          },
+          "dependencies": ["SANITY-CUTOVER-001"]
         }
       ]
     }
