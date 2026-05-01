@@ -17,13 +17,13 @@ This repository powers [namias.tech](https://namias.tech), a production portfoli
 
 ## Core stack
 
-- **Framework:** Next.js 14 (App Router)
+- **Framework:** Next.js 15 (App Router, pinned <16 for Sanity)
 - **Language:** TypeScript (strict)
 - **Styling:** Tailwind CSS + Framer Motion + Lucide React
 - **Theme:** `next-themes`
 - **Content:** `react-markdown`, `remark-gfm`, `rehype-highlight`
-- **Testing:** Vitest + Testing Library + jsdom
-- **Hosting target:** AWS Amplify (`output: 'standalone'`)
+- **Testing:** Vitest + Testing Library + Playwright + jsdom
+- **Hosting target:** Vercel (dual project) + AWS Amplify (`output: 'standalone'`)
 
 ## Local development
 
@@ -51,6 +51,8 @@ Open [http://localhost:3000](http://localhost:3000).
 - `npm run lint` — run ESLint
 - `npm run test` — run Vitest once
 - `npm run test:watch` — run Vitest in watch mode
+- `npm run test:e2e` — run Playwright smoke tests
+- `npm run test:e2e:report` — open Playwright HTML report
 
 ## Environment variables
 
@@ -60,6 +62,21 @@ Create a `.env` file in the project root based on `.env.example`:
 GOOGLE_GEMINI_API_KEY=your_key_here
 UPSTASH_REDIS_REST_URL=your_upstash_rest_url
 UPSTASH_REDIS_REST_TOKEN=your_upstash_rest_token
+```
+
+## Deployment (Vercel dual project)
+
+This repository deploys as two Vercel projects: the portfolio app (root) and the Sanity Studio (`studio/`).
+See `CMS_DEPLOYMENT_STRATEGY.md` for step-by-step setup, environment variables, and verification checklists.
+
+## UI/UX regression testing (Playwright)
+
+Run Playwright smoke tests and review the report to spot UI/UX regressions early:
+
+```bash
+npm run test:e2e
+npm run test:e2e:report
+```
 
 ## Quality checks
 

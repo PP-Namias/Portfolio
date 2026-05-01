@@ -1,4 +1,4 @@
-# Copilot Instructions — Portfolio (Next.js 14)
+# Copilot Instructions — Portfolio (Next.js 15, pinned <16)
 
 ## AI Agent: Claude Opus 4.6 via VS Code Copilot
 
@@ -95,7 +95,7 @@ Every task MUST follow: **ANALYZE → PLAN → IMPLEMENT → VALIDATE → REPORT
 
 | Layer         | Technology                                     | Purpose                                           |
 | ------------- | ---------------------------------------------- | ------------------------------------------------- |
-| Framework     | Next.js 14 (App Router)                        | SSR, SSG, routing                                 |
+| Framework     | Next.js 15 (App Router, pinned <16)            | SSR, SSG, routing                                 |
 | Language      | TypeScript (strict)                            | Type safety                                       |
 | Styling       | Tailwind CSS v3                                | Utility-first with custom design tokens           |
 | Animations    | Framer Motion                                  | Scroll-triggered, page transitions, hover effects |

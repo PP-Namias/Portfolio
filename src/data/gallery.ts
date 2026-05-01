@@ -5,6 +5,6 @@ import { safeFetchSanity } from '@/lib/sanity';
 export const galleryImages: GalleryItem[] = galleryData;
 
 export async function getGalleryImages(): Promise<GalleryItem[]> {
-  const query = '*[_type == "gallery"] | order(order asc)';
+  const query = '*[_type == "galleryItem"] | order(order asc) {..., "media": media.asset->url}';
   return safeFetchSanity<GalleryItem[]>(query, galleryData);
 }

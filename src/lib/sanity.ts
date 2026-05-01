@@ -10,7 +10,8 @@ export const client = createClient({
 export async function safeFetchSanity<T>(
   query: string,
   fallbackData: T,
-  timeoutMs = 2000
+  timeoutMs = 2000,
+  params: Record<string, unknown> = {}
 ): Promise<T> {
   if (!process.env.NEXT_PUBLIC_SANITY_PROJECT_ID) {
     return fallbackData;
@@ -20,7 +21,7 @@ export async function safeFetchSanity<T>(
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
 
-    const sanityData = await client.fetch<T>(query, {}, {
+    const sanityData = await client.fetch<T>(query, params, {
       signal: controller.signal,
       next: { revalidate: 3600, tags: ['sanity'] }
     });

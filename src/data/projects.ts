@@ -1,4 +1,4 @@
-﻿import { Project, ProjectStatus } from '@/types';
+import { Project, ProjectStatus } from '@/types';
 import projectData from '../../portfolio-resources/data/projects.json';
 import { safeFetchSanity } from '@/lib/sanity';
 
@@ -12,6 +12,6 @@ const defaultProjects: Project[] = projectData.map((project) => ({
 }));
 
 export const getProjects = async (): Promise<Project[]> => {
-  const query = '*[_type == "project"] | order(year desc)';
+  const query = '*[_type == "project"] | order(year desc) {..., "image": image.asset->url, "gallery": gallery[]{..., "image": image.asset->url}}';
   return safeFetchSanity<Project[]>(query, defaultProjects);
 };

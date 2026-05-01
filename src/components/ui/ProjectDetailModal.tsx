@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { Calendar, Code2, ExternalLink, Layers, BriefcaseBusiness } from 'lucide-react';
 import { Modal } from './Modal';
 import { Project } from '@/types';
+import { resolveImage } from '@/lib/utils';
 
 interface ProjectDetailModalProps {
   open: boolean;
@@ -53,7 +54,7 @@ export function ProjectDetailModal({ open, onClose, project }: Readonly<ProjectD
               />
             ) : (
               <Image
-                src={`/images/projects/${project.image}`}
+                src={resolveImage(project.image, 'projects')}
                 alt={project.title}
                 fill
                 sizes="(max-width: 768px) 100vw, 900px"
@@ -172,7 +173,7 @@ export function ProjectDetailModal({ open, onClose, project }: Readonly<ProjectD
                 >
                   <div className="relative h-40">
                     <Image
-                      src={`/images/projects/${item.image}`}
+                      src={resolveImage(item.image, 'projects')}
                       alt={item.caption}
                       fill
                       sizes="(max-width: 768px) 100vw, 400px"

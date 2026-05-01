@@ -4,8 +4,8 @@ import React, { useMemo, useState } from 'react';
 import Image from 'next/image';
 import { motion, useReducedMotion } from 'framer-motion';
 import { ChevronDown, ChevronUp } from 'lucide-react';
-
 import { Project } from '@/types';
+import { resolveImage } from '@/lib/utils';
 
 
 const INITIAL_VISIBLE_PROJECTS = 4;
@@ -33,7 +33,7 @@ function renderProjectPreviewMedia(project: Project, isPriority: boolean) {
   if (hasImagePreview) {
     return (
       <Image
-        src={`/images/projects/${project.image}`}
+        src={resolveImage(project.image, 'projects')}
         alt={project.title}
         fill
         sizes="(max-width: 768px) 100vw, 700px"

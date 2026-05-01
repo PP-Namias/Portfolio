@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ChevronDown, ChevronUp } from 'lucide-react';
 import { certifications } from '@/data/certifications';
+import { resolveImage } from '@/lib/utils';
 
 const ISSUERS = ['All', ...Array.from(new Set(certifications.map((c) => c.issuer)))];
 const INITIAL_COUNT = 6;
@@ -78,7 +79,7 @@ export function CertificationsSection() {
           >
             <div className="aspect-[4/3] relative">
               <Image
-                src={`/images/certifications/${cert.image}`}
+                src={resolveImage(cert.image, 'certifications')}
                 alt={cert.title}
                 fill
                 sizes="(max-width: 640px) 45vw, 200px"
@@ -140,7 +141,7 @@ export function CertificationsSection() {
                 <X className="h-5 w-5" />
               </button>
               <Image
-                src={`/images/certifications/${selectedCert.image}`}
+                src={resolveImage(selectedCert.image, 'certifications')}
                 alt={selectedCert.title}
                 width={800}
                 height={600}

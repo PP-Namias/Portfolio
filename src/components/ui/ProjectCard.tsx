@@ -6,6 +6,7 @@ import { motion, useReducedMotion } from 'framer-motion';
 import { ExternalLink, Github } from 'lucide-react';
 import { Project } from '@/types';
 import { Card } from './Card';
+import { resolveImage } from '@/lib/utils';
 
 interface ProjectCardProps {
   project: Project;
@@ -34,7 +35,7 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
         {project.image && project.image !== 'placeholder.png' && (
           <div className="relative -mx-5 -mt-5 mb-3 rounded-t-xl overflow-hidden">
             <Image
-              src={`/images/projects/${project.image}`}
+              src={resolveImage(project.image, 'projects')}
               alt={project.title}
               width={400}
               height={128}

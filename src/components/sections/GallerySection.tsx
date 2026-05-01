@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight, X, ChevronDown, ChevronUp } from 'lucide-react';
 import { galleryImages } from '@/data/gallery';
+import { resolveImage } from '@/lib/utils';
 
 const INITIAL_COUNT = 9;
 const FILTER_TAGS = ['All', ...Array.from(new Set(galleryImages.flatMap((img) => img.tags.filter((t) => !/^\d{4}$/.test(t))).sort()))];
@@ -120,7 +121,7 @@ export function GallerySection() {
                 className={`relative rounded-xl overflow-hidden group cursor-pointer focus:outline-none focus:ring-2 focus:ring-accent-pink focus:ring-offset-2 dark:focus:ring-offset-background-dark ${spanClass}`}
               >
                 <Image
-                  src={`/images/gallery/${image.media}`}
+                  src={resolveImage(image.media, 'gallery')}
                   alt={image.title}
                   fill
                   sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, 25vw"
@@ -221,7 +222,7 @@ export function GallerySection() {
               onClick={(e) => e.stopPropagation()}
             >
               <Image
-                src={`/images/gallery/${selectedImage.media}`}
+                src={resolveImage(selectedImage.media, 'gallery')}
                 alt={selectedImage.title}
                 width={1200}
                 height={800}

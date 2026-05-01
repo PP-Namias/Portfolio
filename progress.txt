@@ -258,6 +258,12 @@ FRAMEWORK COMPLETE: All Sanity CMS infrastructure prepared
 - [SUCCESS] Updated `.env.example` with required Sanity environment variable keys.
 - [SUCCESS] Documented least-privilege token strategy for runtime, migration, deploy, and revalidation flows.
 - [SUCCESS] Updated CORS and deployment strategy docs for production domains.
+
+[WARNING] 2026-05-01 SANITY-CUTOVER-001 In Progress
+- Added Sanity cutover placeholders to `.env` without committing secrets.
+- Pinned Next.js to <16 and aligned `eslint-config-next` for Sanity compatibility.
+- Expanded deployment and Playwright UX guidance for dual Vercel projects.
+- Pending manual steps: deploy Studio to cms.namias.tech and set SANITY_CUTOVER_ENABLED in Vercel.
 - [SECURITY] Raw token values are intentionally not written to tracked files.
 - [SUCCESS] Removed stale `HeroSectionServer.tsx` placeholder to restore clean type-check/build path.
 
@@ -330,3 +336,9 @@ FRAMEWORK COMPLETE: All Sanity CMS infrastructure prepared
 - Analyzed project state and appended "Phase 5: Post-Launch Growth & Advanced Features" to `prd.json`.
 - Generated 3 new high-impact stories: `EVOLVE-SEO-001` (Dynamic SEO), `EVOLVE-CHAT-001` (RAG Chatbot), and `EVOLVE-PWA-001` (Offline PWA).
 - Ready to proceed with autonomous execution of Phase 5.
+[ S U C C E S S ]   S A N I T Y - C U T O V E R - 0 0 1   C o m p l e t e  
+ -   V e r i f i e d   S a n i t y   C M S   i m a g e   a n d   m e d i a   U R L   m a p p i n g   l o g i c   a c r o s s   U I   c o m p o n e n t s .  
+ -   C o m p l e t e d   V i t e s t   a n d   P l a y w r i g h t   t e s t   s u i t e s   t o   v a l i d a t e   S a n i t y   i n t e g r a t i o n .  
+ -   F i x e d   G R O Q   q u e r i e s   t o   d y n a m i c a l l y   r e s o l v e   i m a g e   U R L s   u s i n g   a s s e t - > u r l .  
+  
+ 

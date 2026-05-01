@@ -84,6 +84,11 @@ Deploy Sanity Studio to a dedicated subdomain (cms.namias.tech) and keep the mai
 
 For Vercel, set Production + Preview values in each project (portfolio app vs studio). Store migration-only secrets locally in `.env.local` or a CI job, not in the app runtime.
 
+### Version Compatibility (Sanity + Next.js)
+
+- Keep Next.js pinned to the 15.x line and explicitly below 16 for Sanity compatibility.
+- The repo enforces this with the `next` range `>=15 <16` in package.json.
+
 ### Build and Deployment (Dual Vercel Setup)
 
 We use a **Single Repository, Two Vercel Projects** pattern.
@@ -126,6 +131,15 @@ Create a *second* Vercel project connected to the exact same repository.
 - [ ] Loads without errors.
 - [ ] JSON fallback or Sanity data correctly fetched.
 - [ ] Playwright E2E smoke tests pass against production URL.
+
+### Automated UI/UX Regression (Playwright)
+
+Run Playwright smoke tests and review the HTML report during staging and after production deploys:
+
+```bash
+npm run test:e2e
+npm run test:e2e:report
+```
 
 **Sanity Studio (cms.namias.tech)**
 - [ ] Loads Studio login page.

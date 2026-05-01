@@ -8,7 +8,7 @@ This PR hardens platform reliability, security posture, and maintainability on b
 
 ### 1) Dependency and supply-chain hardening
 
-- Upgraded `next` and `eslint-config-next` to `14.2.35`.
+- Upgraded `next` and `eslint-config-next` to the 15.x line (pinned <16).
 - Refreshed `package-lock.json` via `npm install`.
 - Applied safe transitive updates via `npm audit fix`.
 
@@ -67,7 +67,7 @@ This PR hardens platform reliability, security posture, and maintainability on b
 
 `npm audit` still reports vulnerabilities that require **breaking upgrades** (`next@16.x` / `eslint-config-next@16.x`) to fully clear.
 
-This PR intentionally avoids forced major upgrades to keep compatibility with the current Next.js 14 architecture.
+This PR intentionally avoids forced major upgrades to keep compatibility with the current Next.js 15 (<16) architecture.
 
 ## Reviewer checklist
 
