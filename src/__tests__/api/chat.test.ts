@@ -24,27 +24,35 @@ vi.mock('@google/generative-ai', () => ({
   }),
 }));
 
-// Mock portfolio JSON data
-vi.mock('../../../../portfolio-resources/data/profile.json', () => ({
-  default: { name: 'Jhon Keneth Ryan Namias', title: 'Full Stack Engineer & AI Automation Specialist' },
+// Mock dynamic data fetchers
+vi.mock('@/data/profile', () => ({
+  getProfile: vi.fn().mockResolvedValue({ 
+    name: 'Jhon Keneth Ryan Namias', 
+    title: 'Full Stack Engineer & AI Automation Specialist', 
+    highlights: { yearsExperience: 4, projectsCompleted: 7 },
+    education: [{ degree: 'BSCS', institution: 'UCC', startedAt: '2022', gpa: '1.40' }]
+  }),
 }));
-vi.mock('../../../../portfolio-resources/data/experiences.json', () => ({
-  default: [{ company: 'Test Co', position: 'Dev' }],
+vi.mock('@/data/experience', () => ({
+  getExperiences: vi.fn().mockResolvedValue([{ company: 'Test Co', position: 'Dev' }]),
 }));
-vi.mock('../../../../portfolio-resources/data/projects.json', () => ({
-  default: [{ title: 'Test Project' }],
+vi.mock('@/data/projects', () => ({
+  getProjects: vi.fn().mockResolvedValue([{ title: 'Test Project' }]),
 }));
-vi.mock('../../../../portfolio-resources/data/technologies.json', () => ({
-  default: [{ name: 'TypeScript', category: 'Languages' }],
+vi.mock('@/data/techStack', () => ({
+  getTechnologies: vi.fn().mockResolvedValue([{ name: 'TypeScript', category: 'Languages' }]),
 }));
-vi.mock('../../../../portfolio-resources/data/certifications.json', () => ({
-  default: [{ title: 'Test Cert', issuer: 'Test Org', issuedAt: '2025' }],
+vi.mock('@/data/certifications', () => ({
+  getCertifications: vi.fn().mockResolvedValue([{ title: 'Test Cert', issuer: 'Test Org', issuedAt: '2025' }]),
 }));
-vi.mock('../../../../portfolio-resources/data/memberships.json', () => ({
-  default: [{ name: 'PSIA' }],
+vi.mock('@/data/memberships', () => ({
+  getMemberships: vi.fn().mockResolvedValue([{ name: 'PSIA' }]),
 }));
-vi.mock('../../../../portfolio-resources/data/socials.json', () => ({
-  default: [{ name: 'GitHub', link: 'https://github.com/PP-Namias' }],
+vi.mock('@/data/socials', () => ({
+  getSocialLinks: vi.fn().mockResolvedValue([{ name: 'GitHub', link: 'https://github.com/PP-Namias' }]),
+}));
+vi.mock('@/data/blogPosts', () => ({
+  getBlogPosts: vi.fn().mockResolvedValue([{ title: 'Test Post', slug: { current: 'test-post' }, publishedAt: '2026-01-01', readTime: '5 min read' }]),
 }));
 
 import { GET, POST } from '@/app/api/chat/route';
@@ -413,23 +421,22 @@ describe('/api/chat route', () => {
   });
 
   it('returns location fallback when education data is unavailable', async () => {
-    const profileModule = await import('../../../portfolio-resources/data/profile.json');
-    const profile = profileModule.default as Record<string, unknown>;
-    const originalEducation = profile.education;
-    profile.education = undefined;
+    // Mock getProfile directly to omit education
+    const { getProfile } = await import('@/data/profile');
+    vi.mocked(getProfile).mockResolvedValueOnce({
+      name: 'Jhon Keneth Ryan Namias',
+      title: 'Full Stack Engineer & AI Automation Specialist',
+      education: undefined,
+    });
 
-    try {
-      const req = createRequest({ message: 'Tell me about your education' });
-      const res = await POST(req);
-      expect(res.status).toBe(200);
-      const data = await res.json();
+    const req = createRequest({ message: 'Tell me about your education' });
+    const res = await POST(req);
+    expect(res.status).toBe(200);
+    const data = await res.json();
 
-      expect(data.preset).toBe(true);
-      expect(data.message).toContain('currently based in');
-      expect(mockGetGenerativeModel).not.toHaveBeenCalled();
-    } finally {
-      profile.education = originalEducation;
-    }
+    expect(data.preset).toBe(true);
+    expect(data.message).toContain('currently based in');
+    expect(mockGetGenerativeModel).not.toHaveBeenCalled();
   });
 
   it('falls back to next model when first model quota is exhausted', async () => {

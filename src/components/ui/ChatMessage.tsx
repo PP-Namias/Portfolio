@@ -57,6 +57,30 @@ interface ChatMessageProps {
   onAction?: (action: string) => void;
 }
 
+// Helper to render text with clickable links
+function renderTextWithLinks(text: string) {
+  // Regex to match URLs
+  const urlRegex = /(https?:\/\/[^\s]+)/g;
+  const parts = text.split(urlRegex);
+
+  return parts.map((part, i) => {
+    if (part.match(urlRegex)) {
+      return (
+        <a
+          key={i}
+          href={part}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-accent-pink hover:underline"
+        >
+          {part}
+        </a>
+      );
+    }
+    return part;
+  });
+}
+
 export function ChatMessage({ message, onAction }: ChatMessageProps) {
   const isUser = message.role === 'user';
   const { cleanContent, actions } = isUser
@@ -78,7 +102,7 @@ export function ChatMessage({ message, onAction }: ChatMessageProps) {
         }`}
       >
         <div className="px-3.5 py-2.5 text-sm leading-relaxed whitespace-pre-wrap">
-          {cleanContent}
+          {renderTextWithLinks(cleanContent)}
         </div>
         {actions.length > 0 && (
           <div className="flex flex-wrap gap-2 px-3.5 pb-2.5">

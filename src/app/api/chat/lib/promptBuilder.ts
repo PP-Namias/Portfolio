@@ -1,4 +1,4 @@
-import { ChatDataContext, ExperienceData, ProjectData, TechnologyData } from './types';
+import { BlogPostData, ChatDataContext, ExperienceData, ProjectData, TechnologyData } from './types';
 
 function formatExperiences(experiences: ExperienceData[]): string {
   return experiences
@@ -70,8 +70,17 @@ function formatSocials(socials: Array<{ name?: string; link?: string }>): string
     .join('\n');
 }
 
+function formatBlogPosts(posts: BlogPostData[]): string {
+  return posts
+    .map((post) => `• ${post.title || 'Untitled Post'} (${post.date || 'N/A'}, ${post.readTime || 'N/A'})
+  Tags: ${Array.isArray(post.tags) ? post.tags.join(', ') : 'N/A'}
+  Excerpt: ${post.excerpt || 'No excerpt available.'}
+  URL: https://namias.tech/blog/${post.slug || '#'}`)
+    .join('\n\n');
+}
+
 function buildSystemPrompt(data: ChatDataContext): string {
-  const { profile, highlights = {}, education, experiences, projects, technologies, certifications, memberships, socials } = {
+  const { profile, highlights = {}, education, experiences, projects, technologies, certifications, memberships, socials, blogPosts } = {
     profile: data.profile,
     highlights: data.profile.highlights,
     education: Array.isArray(data.profile.education) ? data.profile.education[0] : undefined,
@@ -81,6 +90,7 @@ function buildSystemPrompt(data: ChatDataContext): string {
     certifications: data.certifications,
     memberships: data.memberships,
     socials: data.socials,
+    blogPosts: data.blogPosts || [],
   };
 
   const membershipLines = memberships
@@ -140,6 +150,7 @@ RESPONSE FORMAT:
 - Include specific numbers and facts (years, percentages, counts)
 - Include relevant URLs when mentioning projects, GitHub, LinkedIn, etc.
 - End responses with a brief follow-up suggestion when natural (e.g., "Want to hear about his projects?" or "I can also tell you about his certifications!")
+- Use the Cite Source feature: when discussing a project, experience, or blog post, always include the relevant URL so the user can click it.
 
 ACTION TAGS & SPECIAL HANDLING (CRITICAL):
 The UI will automatically render interactive buttons when you include these tags. NEVER say you cannot do these things or don't have the files — the UI handles it for you!
@@ -199,6 +210,10 @@ ${formatTechnologies(technologies)}
 === CERTIFICATIONS (${certifications.length} verified) ===
 
 ${formatCertifications(certifications)}
+
+=== BLOG POSTS (${blogPosts.length} published) ===
+
+${formatBlogPosts(blogPosts)}
 
 === MEMBERSHIPS ===
 

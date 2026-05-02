@@ -1148,6 +1148,23 @@
             "files": ["studio/sanity.config.ts", "studio/theme.ts"]
           },
           "dependencies": ["SANITY-CUTOVER-001"]
+        },
+        {
+          "id": "E2E-SCREENSHOTS-001",
+          "title": "Automated Playwright Screenshots for Studio & Portfolio",
+          "priority": 1,
+          "phase": "Post-Launch Growth",
+          "status": "Not Started",
+          "passes": false,
+          "acceptanceCriteria": [
+            "Configure Playwright to take full page screenshots of the portfolio website",
+            "Configure Playwright to take screenshots of the Sanity Studio interface",
+            "Ensure full iteration testing executes and saves screenshots to a dedicated directory"
+          ],
+          "technicalNotes": {
+            "files": ["playwright.config.ts", "tests/e2e/screenshots.spec.ts"]
+          },
+          "dependencies": []
         }
       ]
     }

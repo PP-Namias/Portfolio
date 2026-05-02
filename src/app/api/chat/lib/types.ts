@@ -70,6 +70,15 @@ export interface MembershipData {
   joinedAt?: string;
 }
 
+export interface BlogPostData {
+  title?: string;
+  slug?: string;
+  date?: string;
+  readTime?: string;
+  excerpt?: string;
+  tags?: string[];
+}
+
 export interface ChatDataContext {
   profile: ProfileData;
   experiences: ExperienceData[];
@@ -78,6 +87,7 @@ export interface ChatDataContext {
   certifications: CertificationData[];
   memberships: MembershipData[];
   socials: SocialData[];
+  blogPosts: BlogPostData[];
 }
 
 export interface ConversationHistoryMessage {

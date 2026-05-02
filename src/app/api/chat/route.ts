@@ -1,12 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-import profileData from '../../../../portfolio-resources/data/profile.json';
-import experiencesData from '../../../../portfolio-resources/data/experiences.json';
-import projectsData from '../../../../portfolio-resources/data/projects.json';
-import technologiesData from '../../../../portfolio-resources/data/technologies.json';
-import certificationsData from '../../../../portfolio-resources/data/certifications.json';
-import membershipsData from '../../../../portfolio-resources/data/memberships.json';
-import socialsData from '../../../../portfolio-resources/data/socials.json';
+import { getProfile } from '@/data/profile';
+import { getExperiences } from '@/data/experience';
+import { getProjects } from '@/data/projects';
+import { getTechnologies } from '@/data/techStack';
+import { getCertifications } from '@/data/certifications';
+import { getMemberships } from '@/data/memberships';
+import { getSocialLinks } from '@/data/socials';
+import { getBlogPosts } from '@/data/blogPosts';
 
 import { buildFallbackResponse, buildPresetResponse } from './lib/fallbackResponder';
 import {
@@ -32,17 +33,45 @@ import {
 
 const MAX_MESSAGE_LENGTH = 500;
 
-const chatDataContext: ChatDataContext = {
-  profile: profileData as ProfileData,
-  experiences: experiencesData as ExperienceData[],
-  projects: projectsData as ProjectData[],
-  technologies: technologiesData as TechnologyData[],
-  certifications: certificationsData as CertificationData[],
-  memberships: membershipsData as MembershipData[],
-  socials: socialsData as SocialData[],
-};
+async function getDynamicChatContext(): Promise<ChatDataContext> {
+  const [
+    profile,
+    experiences,
+    projects,
+    technologies,
+    certifications,
+    memberships,
+    socials,
+    blogPosts,
+  ] = await Promise.all([
+    getProfile(),
+    getExperiences(),
+    getProjects(),
+    getTechnologies(),
+    getCertifications(),
+    getMemberships(),
+    getSocialLinks(),
+    getBlogPosts(),
+  ]);
 
-const systemPrompt = buildSystemPrompt(chatDataContext);
+  return {
+    profile: profile as ProfileData,
+    experiences: experiences as ExperienceData[],
+    projects: projects as ProjectData[],
+    technologies: technologies as TechnologyData[],
+    certifications: certifications as CertificationData[],
+    memberships: memberships as MembershipData[],
+    socials: socials as SocialData[],
+    blogPosts: blogPosts.map(post => ({
+      title: post.title,
+      slug: post.slug,
+      date: post.date,
+      readTime: post.readTime,
+      excerpt: post.excerpt,
+      tags: post.tags,
+    })),
+  };
+}
 
 interface RequestBody {
   message?: unknown;
@@ -204,6 +233,9 @@ export async function POST(request: NextRequest) {
     const { message, history } = parsedRequest;
     fallbackUserMessage = message;
 
+    const chatDataContext = await getDynamicChatContext();
+    const systemPrompt = buildSystemPrompt(chatDataContext);
+
     const presetResponse = buildPresetResponse(message, chatDataContext);
     if (presetResponse) {
       logEvent('info', 'chat_preset_response', {
@@ -309,7 +341,7 @@ export async function POST(request: NextRequest) {
     if (fallbackUserMessage) {
       return withRequestId(
         NextResponse.json({
-          message: buildFallbackResponse(fallbackUserMessage, chatDataContext),
+          message: buildFallbackResponse(fallbackUserMessage, await getDynamicChatContext()),
           fallback: true,
         }),
         requestId
