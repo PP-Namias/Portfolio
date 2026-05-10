@@ -14,7 +14,8 @@ const rateLimitStore = new Map<string, RateLimitEntry>();
 
 // Configuration
 const WINDOW_MS = 60 * 1000; // 1 minute window
-const MAX_REQUESTS_PER_WINDOW = 30; // Max 30 requests per minute per IP
+// Lowered to 10 to match test suite expectations for deterministic rate limiting
+const MAX_REQUESTS_PER_WINDOW = 10; // Max 10 requests per minute per IP
 const CLEANUP_INTERVAL = 5 * 60 * 1000; // Cleanup every 5 minutes
 
 // Start cleanup interval

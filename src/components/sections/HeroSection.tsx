@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import Image from 'next/image';
-import { motion, AnimatePresence, useMotionValue, useSpring } from 'framer-motion';
+import { motion, useMotionValue, useSpring } from 'framer-motion';
 import {
   MapPin,
   Mail,
@@ -32,19 +32,7 @@ const socialIconMap: Record<string, React.ComponentType<{ className?: string }>>
   instagram: FaInstagram,
 };
 
-const mainProfileImage = '/images/profile/Jhon%20Keneth%20Ryan%20Namias.jpg';
-
-const hoverProfileImages = [
-  '/images/profile/Jhon%20Keneth%20Ryan%20Namias%202.JPG',
-  '/images/profile/Jhon%20Keneth%20Ryan%20Namias%203.JPG',
-  mainProfileImage,
-];
-
-const pickRandomHoverImage = (currentImage: string) => {
-  const pool = hoverProfileImages.filter((image) => image !== currentImage);
-  const candidates = pool.length > 0 ? pool : hoverProfileImages;
-  return candidates[Math.floor(Math.random() * candidates.length)] ?? mainProfileImage;
-};
+const mainProfileImage = '/images/profile/PP%20Namias.png';
 
 /* Staggered entrance variants */
 const containerVariants = {
@@ -75,7 +63,6 @@ const photoVariants = {
 
 export function HeroSection() {
   const [roleIndex, setRoleIndex] = useState(0);
-  const [activeProfileImage, setActiveProfileImage] = useState(mainProfileImage);
   const { openModal } = useModal();
   const photoRef = useRef<HTMLDivElement>(null);
 
@@ -109,14 +96,9 @@ export function HeroSection() {
     [rotateX, rotateY]
   );
 
-  const handlePhotoMouseEnter = useCallback(() => {
-    setActiveProfileImage((currentImage) => pickRandomHoverImage(currentImage));
-  }, []);
-
   const handlePhotoMouseLeave = useCallback(() => {
     rotateX.set(0);
     rotateY.set(0);
-    setActiveProfileImage(mainProfileImage);
   }, [rotateX, rotateY]);
 
   return (
@@ -146,31 +128,18 @@ export function HeroSection() {
               style={{ rotateX: smoothRotateX, rotateY: smoothRotateY }}
               whileHover={{ scale: 1.12, y: -2 }}
               transition={{ type: 'spring', stiffness: 260, damping: 20 }}
-              onMouseEnter={handlePhotoMouseEnter}
               onMouseMove={handlePhotoMouseMove}
               onMouseLeave={handlePhotoMouseLeave}
             >
               <div className="absolute inset-0 rounded-2xl overflow-hidden">
-                <AnimatePresence mode="wait" initial={false}>
-                  <motion.div
-                    key={activeProfileImage}
-                    className="absolute inset-0"
-                    initial={{ opacity: 0, scale: 1.06, filter: 'blur(2px)' }}
-                    animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
-                    exit={{ opacity: 0, scale: 0.96, filter: 'blur(3px)' }}
-                    transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-                  >
-                    {/* Photo */}
-                    <Image
-                      src={activeProfileImage}
-                      alt={profile.name}
-                      fill
-                      sizes="(max-width: 640px) 160px, 160px"
-                      className="object-cover brightness-100 group-hover:brightness-110 transition-[filter] duration-300"
-                      priority
-                    />
-                  </motion.div>
-                </AnimatePresence>
+                <Image
+                  src={mainProfileImage}
+                  alt={profile.name}
+                  fill
+                  sizes="(max-width: 640px) 160px, 160px"
+                  className="object-cover brightness-100 group-hover:brightness-110 transition-[filter] duration-300"
+                  priority
+                />
 
                 <div className="pointer-events-none absolute inset-0 bg-gradient-to-tr from-transparent via-transparent to-accent-pink/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               </div>

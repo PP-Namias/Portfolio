@@ -148,6 +148,8 @@ describe('/api/chat route', () => {
     const data = await res.json();
     expect(data.message).toBe('Hello! I can help you learn about Keneth.');
     expect(data.fallback).toBe(false);
+    expect(data.mode).toBe('ai');
+    expect(data.backupActive).toBe(false);
   });
 
   it('passes generationConfig to Gemini model', async () => {
@@ -231,6 +233,9 @@ describe('/api/chat route', () => {
     expect(res.status).toBe(200);
     const data = await res.json();
     expect(data.fallback).toBe(true);
+    expect(data.mode).toBe('backup');
+    expect(data.backupActive).toBe(true);
+    expect(data.providerStatus).toBe('degraded');
     expect(data.message).toContain('verified portfolio data');
     expect(data.message.toLowerCase()).not.toMatch(/backup mode|fallback mode|degraded/);
   });
@@ -244,6 +249,8 @@ describe('/api/chat route', () => {
     expect(res.status).toBe(200);
     const data = await res.json();
     expect(data.fallback).toBe(true);
+    expect(data.mode).toBe('backup');
+    expect(data.backupActive).toBe(true);
     expect(data.message).toContain('verified portfolio data');
     expect(data.message.toLowerCase()).not.toMatch(/backup mode|fallback mode|degraded/);
   });

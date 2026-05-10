@@ -41,7 +41,16 @@ const ACTION_QUESTION_MAP: Record<string, string> = {
   education: 'Tell me about your education',
 };
 
-type ChatAvailabilityStatus = 'checking' | 'active' | 'inactive';
+type ChatAvailabilityStatus = 'checking' | 'active' | 'inactive' | 'backup';
+
+interface ChatApiResponse {
+  message?: string;
+  error?: string;
+  fallback?: boolean;
+  mode?: 'ai' | 'backup';
+  backupActive?: boolean;
+  backupReason?: string | null;
+}
 
 function TypingIndicator() {
   return (
@@ -81,6 +90,7 @@ export function ChatPanel({ onBack, onClose, messages, setMessages }: Readonly<C
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [chatAvailability, setChatAvailability] = useState<ChatAvailabilityStatus>('checking');
+  const [backupReason, setBackupReason] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -116,6 +126,16 @@ export function ChatPanel({ onBack, onClose, messages, setMessages }: Readonly<C
         pulseClass: 'bg-red-400',
         textClass: 'text-red-500',
         showPulse: false,
+      };
+    }
+
+    if (chatAvailability === 'backup') {
+      return {
+        label: 'AI offline temporarily • Backup mode active',
+        dotClass: 'bg-amber-500',
+        pulseClass: 'bg-amber-400',
+        textClass: 'text-amber-500',
+        showPulse: true,
       };
     }
 
@@ -158,6 +178,7 @@ export function ChatPanel({ onBack, onClose, messages, setMessages }: Readonly<C
 
         if (res.ok && data?.status === 'active') {
           setChatAvailability('active');
+          setBackupReason(null);
           return;
         }
 
@@ -228,11 +249,12 @@ export function ChatPanel({ onBack, onClose, messages, setMessages }: Readonly<C
           body: JSON.stringify({ message: trimmed, history }),
         });
 
-        const data = await res.json();
+        const data = (await res.json()) as ChatApiResponse;
 
         if (!res.ok) {
           setError(data.error || 'Something went wrong.');
           setChatAvailability(res.status >= 500 ? 'inactive' : 'active');
+          setBackupReason(null);
           setIsLoading(false);
           return;
         }
@@ -240,13 +262,23 @@ export function ChatPanel({ onBack, onClose, messages, setMessages }: Readonly<C
         const botMsg: ChatMessageType = {
           id: (Date.now() + 1).toString(),
           role: 'assistant',
-          content: data.message,
+          content: data.message || 'I encountered an empty response. Please try again.',
           timestamp: new Date(),
         };
-        setChatAvailability('active');
+        const isBackupMode = data.fallback === true || data.mode === 'backup' || data.backupActive === true;
+
+        if (isBackupMode) {
+          setChatAvailability('backup');
+          setBackupReason(data.backupReason || 'AI provider is temporarily unavailable. I am responding using verified portfolio data.');
+        } else {
+          setChatAvailability('active');
+          setBackupReason(null);
+        }
+
         setMessages((prev) => [...prev, botMsg]);
       } catch {
         setChatAvailability('inactive');
+        setBackupReason(null);
         setError('Failed to connect. Please try again.');
       } finally {
         setIsLoading(false);
@@ -308,7 +340,7 @@ export function ChatPanel({ onBack, onClose, messages, setMessages }: Readonly<C
             {/* Custom Avatar container */}
             <div className="h-[38px] w-[38px] rounded-full overflow-hidden border border-border-light dark:border-border-dark bg-surface-light dark:bg-card-bg-dark shadow-sm">
               <Image
-                src="/images/profile/Jhon%20Keneth%20Ryan%20Namias.jpg"
+                src="/images/profile/PP%20Namias.png"
                 alt={profile.name}
                 width={38}
                 height={38}
@@ -376,7 +408,7 @@ export function ChatPanel({ onBack, onClose, messages, setMessages }: Readonly<C
               <div className="relative mb-3">
                 <div className="h-14 w-14 rounded-full overflow-hidden border border-border-light dark:border-border-dark bg-white dark:bg-card-bg-dark shadow-sm">
                   <Image
-                    src="/images/profile/Jhon%20Keneth%20Ryan%20Namias.jpg"
+                    src="/images/profile/PP%20Namias.png"
                     alt={profile.name}
                     width={56}
                     height={56}
@@ -467,6 +499,18 @@ export function ChatPanel({ onBack, onClose, messages, setMessages }: Readonly<C
                 <RotateCcw className="h-3 w-3" />
                 Retry
               </button>
+            </div>
+          </motion.div>
+        )}
+
+        {chatAvailability === 'backup' && !error && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="flex justify-center mb-3"
+          >
+            <div className="text-xs text-amber-700 dark:text-amber-300 bg-amber-500/10 border border-amber-500/20 rounded-lg px-3 py-2 max-w-[92%] text-center">
+              {backupReason || 'AI is temporarily offline. Backup mode is active using verified portfolio data.'}
             </div>
           </motion.div>
         )}

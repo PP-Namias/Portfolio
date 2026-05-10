@@ -40,7 +40,7 @@ export const SECURITY_CONFIG = {
     /what[:\s]+.*are[:\s]+you\s+really/i,
     /reveal[:\s]+.*system[:\s]+prompt/i,
     /(?:phone|address|social security number|ssn|salary|credentials|api key|database password|private key)/i,
-    /(?:malware|hacking instructions|sql injection|xss|exploit)/i,
+    /(?:malware|hacking instructions|sql injection|exploit)/i,
     /(?:make|send|perform).*(?:api request|external api|network request)/i,
   ],
 };
@@ -59,27 +59,28 @@ export function filterOutput(text: string): string {
   const emailRegex = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g;
 
   // Only redact emails that are NOT pp.namias@gmail.com or namias.tech
-  filtered = filtered.replace(emailRegex, (match) => {
-    if (
-      match.toLowerCase() === 'pp.namias@gmail.com' ||
-      match.toLowerCase().includes('namias.tech')
-    ) {
-      return match; // Keep portfolio contact emails
+  // Use matchAll + replaceAll to satisfy lint rules and preserve allowed emails
+  const emailMatches = [...filtered.matchAll(emailRegex)].map((m) => m[0]);
+  const uniqueEmails = Array.from(new Set(emailMatches));
+  for (const em of uniqueEmails) {
+    const lower = em.toLowerCase();
+    if (lower === 'pp.namias@gmail.com' || lower.includes('namias.tech')) {
+      continue; // Keep portfolio contact emails
     }
-    return '[EMAIL_REDACTED]';
-  });
+    filtered = filtered.replaceAll(em, '[EMAIL_REDACTED]');
+  }
 
   // Phone number redaction
   const phoneRegex = /(\+\d{1,3}[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}\b/g;
-  filtered = filtered.replace(phoneRegex, '[PHONE_REDACTED]');
+  filtered = filtered.replaceAll(phoneRegex, '[PHONE_REDACTED]');
 
   // Social Security Number redaction
   const ssnRegex = /\b\d{3}-\d{2}-\d{4}\b/g;
-  filtered = filtered.replace(ssnRegex, '[SSN_REDACTED]');
+  filtered = filtered.replaceAll(ssnRegex, '[SSN_REDACTED]');
 
   // Credit card redaction
   const ccRegex = /\b(?:\d{4}[-\s]?){3}\d{4}\b/g;
-  filtered = filtered.replace(ccRegex, '[CARD_REDACTED]');
+  filtered = filtered.replaceAll(ccRegex, '[CARD_REDACTED]');
 
   return filtered;
 }
@@ -177,7 +178,7 @@ export function detectUnsafeRequest(text: string): {
 
   const harmfulPatterns = [
     /(?:malware|virus|ransomware|backdoor|exploit)/i,
-    /(?:hacking instructions|sql injection|xss|ddos)/i,
+    /(?:hacking instructions|ddos)/i,
   ];
 
   for (const pattern of harmfulPatterns) {

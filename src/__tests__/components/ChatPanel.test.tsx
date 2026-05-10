@@ -204,6 +204,28 @@ describe('ChatPanel', () => {
     });
   });
 
+  it('shows backup mode indicator when API returns fallback mode', async () => {
+    mockFetch.mockResolvedValueOnce({
+      ok: true,
+      json: () => Promise.resolve({
+        message: 'Here is a curated fallback response.',
+        fallback: true,
+        mode: 'backup',
+        backupReason: 'AI provider is temporarily rate-limited.',
+      }),
+    });
+
+    renderChatPanel();
+    const input = screen.getByPlaceholderText('Ask about skills, projects, experience...');
+    await userEvent.type(input, 'Hello');
+    fireEvent.click(screen.getByLabelText('Send message'));
+
+    await waitFor(() => {
+      expect(screen.getByText('AI offline temporarily • Backup mode active')).toBeInTheDocument();
+      expect(screen.getByText('AI provider is temporarily rate-limited.')).toBeInTheDocument();
+    });
+  });
+
   it('disables send button when input is empty', () => {
     renderChatPanel();
     const sendBtn = screen.getByLabelText('Send message');

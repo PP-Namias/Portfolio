@@ -67,6 +67,197 @@ interface ValidationError {
   status: number;
 }
 
+type ChatMode = 'ai' | 'backup';
+
+interface RequestBlockResult {
+  blocked: boolean;
+  response?: NextResponse;
+}
+
+interface ProviderResolution {
+  message: string;
+  fallback: boolean;
+  backupReason?: string;
+  providerAttempts: Array<Record<string, unknown>>;
+}
+
+function deriveBackupReason(providerAttempts: Array<Record<string, unknown>>): string {
+  const reasonText = providerAttempts
+    .map((attempt) => {
+      const candidate = attempt['errorClass'];
+      return typeof candidate === 'string' ? candidate.toLowerCase() : '';
+    })
+    .join(' ')
+    .trim();
+
+  if (reasonText.includes('rate') || reasonText.includes('429') || reasonText.includes('quota')) {
+    return 'AI provider is temporarily rate-limited.';
+  }
+
+  if (reasonText.includes('timeout')) {
+    return 'AI provider timed out and is temporarily unavailable.';
+  }
+
+  if (reasonText.includes('circuit_open')) {
+    return 'AI provider protection circuit is temporarily open.';
+  }
+
+  if (reasonText.includes('missing_config')) {
+    return 'AI provider is not configured.';
+  }
+
+  return 'AI provider is temporarily unavailable.';
+}
+
+function buildModeMetadata(mode: ChatMode, backupReason?: string) {
+  if (mode === 'backup') {
+    return {
+      mode,
+      backupActive: true,
+      providerStatus: 'degraded' as const,
+      backupReason: backupReason || 'AI provider is temporarily unavailable.',
+    };
+  }
+
+  return {
+    mode,
+    backupActive: false,
+    providerStatus: 'healthy' as const,
+    backupReason: null,
+  };
+}
+
+function blockUnsafeMessage(message: string, clientIp: string): RequestBlockResult {
+  const messageValidation = validateMessageContent(message);
+  if (!messageValidation.valid) {
+    logSecurityEvent('warn', 'invalid_message_content', {
+      error: messageValidation.error,
+      length: message.length,
+    });
+
+    return {
+      blocked: true,
+      response: NextResponse.json({ error: 'Invalid message content.' }, { status: 400 }),
+    };
+  }
+
+  const injectionCheck = detectInjectionAttempt(message);
+  const unsafeRequest = detectUnsafeRequest(message);
+  if (injectionCheck.detected || unsafeRequest.detected) {
+    const violation = injectionCheck.detected
+      ? { event: 'injection_attempt_detected', ...injectionCheck }
+      : { event: 'unsafe_request_detected', ...unsafeRequest };
+
+    logSecurityEvent('warn', violation.event, {
+      type: violation.type,
+      reason: violation.reason,
+      clientIp,
+    });
+
+    return {
+      blocked: true,
+      response: NextResponse.json(
+        { error: 'Your request could not be processed safely.' },
+        { status: 400 }
+      ),
+    };
+  }
+
+  return { blocked: false };
+}
+
+async function resolveProviderMessage(
+  message: string,
+  history: ConversationHistoryMessage[],
+  secureSystemPrompt: string,
+  requestId: string,
+  requestStartedAt: number
+): Promise<ProviderResolution> {
+  const providerAttempts: Array<Record<string, unknown>> = [];
+
+  try {
+    const geminiResult = await generateWithGemini(message, history, secureSystemPrompt);
+
+    providerAttempts.push({
+      provider: geminiResult.provider,
+      model: geminiResult.model,
+      attempts: geminiResult.attempts,
+      latencyMs: geminiResult.latencyMs,
+      result: 'success',
+    });
+
+    logEvent('info', 'chat_provider_success', {
+      requestId,
+      provider: geminiResult.provider,
+      model: geminiResult.model,
+      totalLatencyMs: Date.now() - requestStartedAt,
+      failoverCount: 0,
+    });
+
+    return {
+      message: geminiResult.message,
+      fallback: false,
+      providerAttempts,
+    };
+  } catch (geminiError) {
+    providerAttempts.push({
+      provider: 'gemini',
+      result: 'error',
+      errorClass: classifyProviderError(geminiError),
+    });
+  }
+
+  if (isMultiProviderEnabled()) {
+    try {
+      const openAiResult = await generateWithOpenAI(message, history, secureSystemPrompt);
+
+      providerAttempts.push({
+        provider: openAiResult.provider,
+        model: openAiResult.model,
+        attempts: openAiResult.attempts,
+        latencyMs: openAiResult.latencyMs,
+        result: 'success',
+      });
+
+      logEvent('info', 'chat_provider_success', {
+        requestId,
+        provider: openAiResult.provider,
+        model: openAiResult.model,
+        totalLatencyMs: Date.now() - requestStartedAt,
+        failoverCount: 1,
+      });
+
+      return {
+        message: openAiResult.message,
+        fallback: false,
+        providerAttempts,
+      };
+    } catch (openAiError) {
+      providerAttempts.push({
+        provider: 'openai',
+        result: 'error',
+        errorClass: classifyProviderError(openAiError),
+      });
+    }
+  }
+
+  const fallbackResponse = buildFallbackResponse(message, chatDataContext);
+
+  logEvent('warn', 'chat_fallback_response', {
+    requestId,
+    totalLatencyMs: Date.now() - requestStartedAt,
+    failoverCount: isMultiProviderEnabled() ? 2 : 1,
+    providerAttempts,
+  });
+
+  return {
+    message: fallbackResponse,
+    fallback: true,
+    backupReason: deriveBackupReason(providerAttempts),
+    providerAttempts,
+  };
+}
+
 function getClientIp(request: NextRequest): string {
   return (
     request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
@@ -214,53 +405,9 @@ export async function POST(request: NextRequest) {
     const { message, history } = parsedRequest;
     fallbackUserMessage = message;
 
-    // Security Guard: Validate message content
-    const messageValidation = validateMessageContent(message);
-    if (!messageValidation.valid) {
-      logSecurityEvent('warn', 'invalid_message_content', {
-        error: messageValidation.error,
-        length: message.length,
-      });
-
-      return withRequestId(
-        NextResponse.json({ error: 'Invalid message content.' }, { status: 400 }),
-        requestId
-      );
-    }
-
-    // Security Guard: Detect injection attempts
-    const injectionCheck = detectInjectionAttempt(message);
-    if (injectionCheck.detected) {
-      logSecurityEvent('warn', 'injection_attempt_detected', {
-        type: injectionCheck.type,
-        reason: injectionCheck.reason,
-        clientIp,
-      });
-
-      return withRequestId(
-        NextResponse.json(
-          { error: 'Your message could not be processed. Please try a different question.' },
-          { status: 400 }
-        ),
-        requestId
-      );
-    }
-
-    const unsafeRequest = detectUnsafeRequest(message);
-    if (unsafeRequest.detected) {
-      logSecurityEvent('warn', 'unsafe_request_detected', {
-        type: unsafeRequest.type,
-        reason: unsafeRequest.reason,
-        clientIp,
-      });
-
-      return withRequestId(
-        NextResponse.json(
-          { error: 'Your request could not be processed safely.' },
-          { status: 400 }
-        ),
-        requestId
-      );
+    const blockedMessage = blockUnsafeMessage(message, clientIp);
+    if (blockedMessage.blocked && blockedMessage.response) {
+      return withRequestId(blockedMessage.response, requestId);
     }
 
     const presetResponse = buildPresetResponse(message, chatDataContext);
@@ -274,103 +421,43 @@ export async function POST(request: NextRequest) {
       const filteredPreset = filterOutput(presetResponse);
 
       return withRequestId(
-        NextResponse.json({ message: filteredPreset, preset: true, fallback: false }),
+        NextResponse.json({
+          message: filteredPreset,
+          preset: true,
+          fallback: false,
+          ...buildModeMetadata('ai'),
+        }),
         requestId
       );
     }
 
     // Use secure system prompt for all AI provider calls
-    const secureSystemPrompt = generateSecureSystemPrompt();
+    const secureSystemPrompt = `${generateSecureSystemPrompt()}\n\n${systemPrompt}`;
 
-    const providerAttempts: Array<Record<string, unknown>> = [];
-
-    try {
-      const geminiResult = await generateWithGemini(message, history, secureSystemPrompt);
-
-      providerAttempts.push({
-        provider: geminiResult.provider,
-        model: geminiResult.model,
-        attempts: geminiResult.attempts,
-        latencyMs: geminiResult.latencyMs,
-        result: 'success',
-      });
-
-      logEvent('info', 'chat_provider_success', {
-        requestId,
-        provider: geminiResult.provider,
-        model: geminiResult.model,
-        totalLatencyMs: Date.now() - requestStartedAt,
-        failoverCount: 0,
-      });
-
-      // Security Guard: Filter PII from output
-      const filteredMessage = filterOutput(geminiResult.message);
-
-      return withRequestId(
-        NextResponse.json({ message: filteredMessage, fallback: false }),
-        requestId
-      );
-    } catch (geminiError) {
-      providerAttempts.push({
-        provider: 'gemini',
-        result: 'error',
-        errorClass: classifyProviderError(geminiError),
-      });
-    }
-
-    if (isMultiProviderEnabled()) {
-      try {
-        const openAiResult = await generateWithOpenAI(message, history, secureSystemPrompt);
-
-        providerAttempts.push({
-          provider: openAiResult.provider,
-          model: openAiResult.model,
-          attempts: openAiResult.attempts,
-          latencyMs: openAiResult.latencyMs,
-          result: 'success',
-        });
-
-        logEvent('info', 'chat_provider_success', {
-          requestId,
-          provider: openAiResult.provider,
-          model: openAiResult.model,
-          totalLatencyMs: Date.now() - requestStartedAt,
-          failoverCount: 1,
-        });
-
-        // Security Guard: Filter PII from output
-        const filteredMessage = filterOutput(openAiResult.message);
-
-        return withRequestId(
-          NextResponse.json({ message: filteredMessage, fallback: false }),
-          requestId
-        );
-      } catch (openAiError) {
-        providerAttempts.push({
-          provider: 'openai',
-          result: 'error',
-          errorClass: classifyProviderError(openAiError),
-        });
-      }
-    }
-
-    const fallbackResponse = buildFallbackResponse(message, chatDataContext);
-
-    // Security Guard: Filter PII from fallback response
-    const filteredFallback = filterOutput(fallbackResponse);
-
-    logEvent('warn', 'chat_fallback_response', {
+    const providerResolution = await resolveProviderMessage(
+      message,
+      history,
+      secureSystemPrompt,
       requestId,
-      totalLatencyMs: Date.now() - requestStartedAt,
-      failoverCount: isMultiProviderEnabled() ? 2 : 1,
-      providerAttempts,
-    });
+      requestStartedAt
+    );
+
+    const filteredMessage = filterOutput(providerResolution.message);
 
     return withRequestId(
-      NextResponse.json({
-        message: filteredFallback,
-        fallback: true,
-      }),
+      NextResponse.json(
+        providerResolution.fallback
+          ? {
+              message: filteredMessage,
+              fallback: true,
+              ...buildModeMetadata('backup', providerResolution.backupReason),
+            }
+          : {
+              message: filteredMessage,
+              fallback: false,
+              ...buildModeMetadata('ai'),
+            }
+      ),
       requestId
     );
   } catch (error) {
@@ -388,6 +475,7 @@ export async function POST(request: NextRequest) {
         NextResponse.json({
           message: filteredFallbackMsg,
           fallback: true,
+          ...buildModeMetadata('backup', 'AI provider is temporarily unavailable.'),
         }),
         requestId
       );
