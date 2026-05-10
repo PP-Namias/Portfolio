@@ -17,7 +17,15 @@ import {
   isMultiProviderEnabled,
 } from './lib/providers';
 import { buildSystemPrompt } from './lib/promptBuilder';
-import { isRateLimited } from './lib/rateLimiter';
+import {
+  detectInjectionAttempt,
+  detectUnsafeRequest,
+  filterOutput,
+  generateSecureSystemPrompt,
+  logSecurityEvent,
+  validateMessageContent,
+} from './lib/securityGuards';
+import { checkRateLimit } from './lib/chatRateLimit';
 import {
   CertificationData,
   ChatDataContext,
@@ -171,16 +179,18 @@ export async function POST(request: NextRequest) {
   const clientIp = getClientIp(request);
 
   try {
-    if (await isRateLimited(clientIp)) {
-      logEvent('warn', 'chat_rate_limited', {
-        requestId,
+    // Enhanced rate limiting check (new security system)
+    const rateLimitCheck = checkRateLimit(clientIp);
+    if (!rateLimitCheck.success) {
+      logSecurityEvent('warn', 'rate_limit_exceeded', {
         clientIp,
+        remaining: rateLimitCheck.remaining,
       });
 
       return withRequestId(
         NextResponse.json(
-        { error: 'Too many requests. Please wait a moment and try again.' },
-        { status: 429 }
+          { error: 'Too many requests. Please wait a moment and try again.' },
+          { status: 429 }
         ),
         requestId
       );
@@ -204,6 +214,55 @@ export async function POST(request: NextRequest) {
     const { message, history } = parsedRequest;
     fallbackUserMessage = message;
 
+    // Security Guard: Validate message content
+    const messageValidation = validateMessageContent(message);
+    if (!messageValidation.valid) {
+      logSecurityEvent('warn', 'invalid_message_content', {
+        error: messageValidation.error,
+        length: message.length,
+      });
+
+      return withRequestId(
+        NextResponse.json({ error: 'Invalid message content.' }, { status: 400 }),
+        requestId
+      );
+    }
+
+    // Security Guard: Detect injection attempts
+    const injectionCheck = detectInjectionAttempt(message);
+    if (injectionCheck.detected) {
+      logSecurityEvent('warn', 'injection_attempt_detected', {
+        type: injectionCheck.type,
+        reason: injectionCheck.reason,
+        clientIp,
+      });
+
+      return withRequestId(
+        NextResponse.json(
+          { error: 'Your message could not be processed. Please try a different question.' },
+          { status: 400 }
+        ),
+        requestId
+      );
+    }
+
+    const unsafeRequest = detectUnsafeRequest(message);
+    if (unsafeRequest.detected) {
+      logSecurityEvent('warn', 'unsafe_request_detected', {
+        type: unsafeRequest.type,
+        reason: unsafeRequest.reason,
+        clientIp,
+      });
+
+      return withRequestId(
+        NextResponse.json(
+          { error: 'Your request could not be processed safely.' },
+          { status: 400 }
+        ),
+        requestId
+      );
+    }
+
     const presetResponse = buildPresetResponse(message, chatDataContext);
     if (presetResponse) {
       logEvent('info', 'chat_preset_response', {
@@ -211,16 +270,22 @@ export async function POST(request: NextRequest) {
         latencyMs: Date.now() - requestStartedAt,
       });
 
+      // Security Guard: Filter PII from output
+      const filteredPreset = filterOutput(presetResponse);
+
       return withRequestId(
-        NextResponse.json({ message: presetResponse, preset: true, fallback: false }),
+        NextResponse.json({ message: filteredPreset, preset: true, fallback: false }),
         requestId
       );
     }
 
+    // Use secure system prompt for all AI provider calls
+    const secureSystemPrompt = generateSecureSystemPrompt();
+
     const providerAttempts: Array<Record<string, unknown>> = [];
 
     try {
-      const geminiResult = await generateWithGemini(message, history, systemPrompt);
+      const geminiResult = await generateWithGemini(message, history, secureSystemPrompt);
 
       providerAttempts.push({
         provider: geminiResult.provider,
@@ -238,8 +303,11 @@ export async function POST(request: NextRequest) {
         failoverCount: 0,
       });
 
+      // Security Guard: Filter PII from output
+      const filteredMessage = filterOutput(geminiResult.message);
+
       return withRequestId(
-        NextResponse.json({ message: geminiResult.message, fallback: false }),
+        NextResponse.json({ message: filteredMessage, fallback: false }),
         requestId
       );
     } catch (geminiError) {
@@ -252,7 +320,7 @@ export async function POST(request: NextRequest) {
 
     if (isMultiProviderEnabled()) {
       try {
-        const openAiResult = await generateWithOpenAI(message, history, systemPrompt);
+        const openAiResult = await generateWithOpenAI(message, history, secureSystemPrompt);
 
         providerAttempts.push({
           provider: openAiResult.provider,
@@ -270,8 +338,11 @@ export async function POST(request: NextRequest) {
           failoverCount: 1,
         });
 
+        // Security Guard: Filter PII from output
+        const filteredMessage = filterOutput(openAiResult.message);
+
         return withRequestId(
-          NextResponse.json({ message: openAiResult.message, fallback: false }),
+          NextResponse.json({ message: filteredMessage, fallback: false }),
           requestId
         );
       } catch (openAiError) {
@@ -285,6 +356,9 @@ export async function POST(request: NextRequest) {
 
     const fallbackResponse = buildFallbackResponse(message, chatDataContext);
 
+    // Security Guard: Filter PII from fallback response
+    const filteredFallback = filterOutput(fallbackResponse);
+
     logEvent('warn', 'chat_fallback_response', {
       requestId,
       totalLatencyMs: Date.now() - requestStartedAt,
@@ -294,7 +368,7 @@ export async function POST(request: NextRequest) {
 
     return withRequestId(
       NextResponse.json({
-        message: fallbackResponse,
+        message: filteredFallback,
         fallback: true,
       }),
       requestId
@@ -307,9 +381,12 @@ export async function POST(request: NextRequest) {
     });
 
     if (fallbackUserMessage) {
+      const fallbackMsg = buildFallbackResponse(fallbackUserMessage, chatDataContext);
+      const filteredFallbackMsg = filterOutput(fallbackMsg);
+
       return withRequestId(
         NextResponse.json({
-          message: buildFallbackResponse(fallbackUserMessage, chatDataContext),
+          message: filteredFallbackMsg,
           fallback: true,
         }),
         requestId

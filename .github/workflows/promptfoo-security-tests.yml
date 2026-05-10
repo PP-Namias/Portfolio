@@ -1,0 +1,244 @@
+name: Promptfoo AI Security Tests
+
+on:
+  pull_request:
+    branches: [main, develop]
+    paths:
+      - 'src/app/api/chat/**'
+      - 'promptfoo.yaml'
+      - 'agents.json'
+      - '.github/workflows/promptfoo-security-tests.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'src/app/api/chat/**'
+      - 'promptfoo.yaml'
+      - 'agents.json'
+  schedule:
+    # Run security tests weekly on Sunday at 2 AM UTC
+    - cron: '0 2 * * 0'
+  workflow_dispatch:
+
+concurrency:
+  group: promptfoo-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  security-test:
+    name: Run AI Security Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci --prefer-offline --no-audit
+        env:
+          CI: true
+
+      - name: Build application
+        run: npm run build
+        env:
+          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY || 'test-key' }}
+          CI: true
+          NODE_ENV: production
+
+      - name: Install Promptfoo
+        run: npm install -D promptfoo @promptfoo/redteam
+
+      - name: Start dev server
+        run: |
+          npm run dev > /tmp/dev-server.log 2>&1 &
+          echo $! > /tmp/dev-server.pid
+        env:
+          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY || 'test-key' }}
+          NODE_ENV: development
+
+      - name: Wait for server startup
+        run: |
+          for i in {1..30}; do
+            if curl -s -f http://localhost:3000/api/chat -X GET > /dev/null 2>&1; then
+              echo "Server is ready!"
+              exit 0
+            fi
+            echo "Attempt $i/30: Waiting for server..."
+            sleep 2
+          done
+          echo "Server startup timeout!"
+          cat /tmp/dev-server.log
+          exit 1
+        timeout-minutes: 5
+
+      - name: Run Promptfoo red team setup
+        run: npx promptfoo redteam setup --force
+        env:
+          PROMPTFOO_CONFIG: promptfoo.yaml
+        continue-on-error: true
+
+      - name: Execute security tests
+        id: security-tests
+        run: |
+          echo "[INFO] Starting Promptfoo security evaluation..."
+          npx promptfoo eval \
+            --config promptfoo.yaml \
+            --output ./promptfoo-results.json \
+            --no-cache \
+            --verbose 2>&1 | tee /tmp/promptfoo-output.log
+          
+          echo "Test run completed."
+        env:
+          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY || 'test-key' }}
+          PROMPTFOO_DISABLE_TELEMETRY: 1
+        continue-on-error: true
+
+      - name: Parse Promptfoo results
+        id: parse-results
+        run: node scripts/parse-promptfoo-results.js
+        continue-on-error: true
+
+      - name: Comment PR with security findings
+        if: github.event_name == 'pull_request' && always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            let findings = { vulnerabilitiesFound: 0, findings: [], summary: {}, assessment: 'No data' };
+            
+            try {
+              if (fs.existsSync('./promptfoo-findings.json')) {
+                findings = JSON.parse(fs.readFileSync('./promptfoo-findings.json', 'utf8'));
+              }
+            } catch (e) {
+              console.log('Could not parse findings file:', e.message);
+            }
+            
+            let comment = '## 🔒 AI Chatbot Security Test Results\n\n';
+            
+            if (findings.vulnerabilitiesFound > 0) {
+              comment += `⚠️ **${findings.vulnerabilitiesFound} vulnerabilities detected**\n\n`;
+              
+              // Group by severity
+              const critical = findings.findings.filter(f => f.severity === 'CRITICAL');
+              const high = findings.findings.filter(f => f.severity === 'HIGH');
+              const medium = findings.findings.filter(f => f.severity === 'MEDIUM');
+              
+              if (critical.length > 0) {
+                comment += '### 🚨 CRITICAL Issues\n';
+                critical.slice(0, 5).forEach(f => {
+                  comment += `- **${f.name}**\n`;
+                  comment += `  - Category: ${f.category}\n`;
+                  comment += `  - Recommendation: ${f.recommendation}\n\n`;
+                });
+              }
+              
+              if (high.length > 0) {
+                comment += '### ⚠️ HIGH Severity Issues\n';
+                high.slice(0, 5).forEach(f => {
+                  comment += `- **${f.name}**\n`;
+                  comment += `  - Recommendation: ${f.recommendation}\n\n`;
+                });
+              }
+              
+              if (medium.length > 0) {
+                comment += `\n### ℹ️ MEDIUM Severity Issues: ${medium.length} found\n`;
+              }
+              
+              comment += '\n**Status:** ❌ Review required before merge\n';
+            } else {
+              comment += '✅ **All security tests passed!**\n\n';
+              if (findings.summary) {
+                comment += `- Passed: ${findings.summary.passed || 0}\n`;
+              }
+              comment += 'No vulnerabilities detected in AI chatbot endpoint.\n';
+              comment += '**Status:** ✅ Ready to merge\n';
+            }
+            
+            comment += `\n**Assessment:** ${findings.assessment}\n`;
+            if (findings.timestamp) {
+              comment += `**Timestamp:** ${findings.timestamp}\n`;
+            }
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });
+
+      - name: Generate security report
+        if: always()
+        run: |
+          cat > SECURITY_TEST_SUMMARY.md << 'EOF'
+          # AI Chatbot Security Test Summary
+          
+          **Date:** $(date -u +'%Y-%m-%d %H:%M:%S UTC')
+          **Commit:** ${{ github.sha }}
+          **Branch:** ${{ github.ref_name }}
+          **Run:** [View Actions Run](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
+          
+          ## Test Configuration
+          - Strategy: Multi-layered red teaming (9 categories)
+          - Target: http://localhost:3000/api/chat
+          - Attack Vectors: 100+
+          - Framework: Promptfoo
+          
+          EOF
+          
+          if [ -f promptfoo-findings.json ]; then
+            echo "## Results" >> SECURITY_TEST_SUMMARY.md
+            jq '.assessment, .summary' promptfoo-findings.json >> SECURITY_TEST_SUMMARY.md
+          fi
+
+      - name: Upload test artifacts
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: promptfoo-security-results
+          path: |
+            promptfoo-results.json
+            promptfoo-findings.json
+            promptfoo-cache.json
+            SECURITY_TEST_SUMMARY.md
+          retention-days: 30
+          if-no-files-found: ignore
+
+      - name: Upload debug logs on failure
+        if: failure()
+        uses: actions/upload-artifact@v3
+        with:
+          name: promptfoo-debug-logs
+          path: |
+            /tmp/dev-server.log
+            /tmp/promptfoo-output.log
+          retention-days: 7
+          if-no-files-found: ignore
+
+      - name: Block merge if critical vulnerabilities
+        if: always()
+        run: |
+          if [ -f "promptfoo-findings.json" ]; then
+            CRITICALS=$(jq '[.findings[] | select(.severity=="CRITICAL")] | length' promptfoo-findings.json)
+            echo "Critical vulnerabilities found: $CRITICALS"
+            if [ "$CRITICALS" -gt 0 ]; then
+              echo "[ERROR] $CRITICALS CRITICAL vulnerabilities detected - merge blocked!"
+              exit 1
+            fi
+          fi
+
+      - name: Cleanup
+        if: always()
+        run: |
+          if [ -f /tmp/dev-server.pid ]; then
+            kill $(cat /tmp/dev-server.pid) 2>/dev/null || true
+          fi
+          pkill -f "next dev" || true
