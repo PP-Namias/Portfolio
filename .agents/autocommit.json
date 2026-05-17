@@ -1,0 +1,20 @@
+{
+  "enabled": true,
+  "allow_agents": true,
+  "commit_message_template": "chore(agents): align portfolio agent docs + cleanup stale workflow references",
+  "files": [
+    ".agents/README.md",
+    ".agents/rules/architecture.md",
+    ".agents/rules/development-standards.md",
+    ".agents/rules/git-policy.md",
+    ".agents/rules/project-context.md",
+    ".agents/rules/ui-system.md",
+    ".agents/scripts/auto_commit.ps1",
+    ".agents/workflows/autocommit.md",
+    ".agents/workflows/commit-convention.md",
+    ".agents/workflows/done-criteria.md",
+    ".agents/workflows/format-and-lint-workflow.md",
+    ".agents/workflows/pr-workflow.md",
+    ".agents/autocommit.json"
+  ]
+}
