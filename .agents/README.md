@@ -11,11 +11,14 @@ This folder is the control center for the portfolio repo's AI-agent workflow.
 
 ## Folder map
 
-- `rules/` - always-on repository policy and standards.
+- `README.md` - entrypoint for the agent workflow notes.
 - `skills/` - reusable agent behaviors for specialized tasks.
-- `workflows/` - repeatable process docs for validation, PRs, and commits.
-- `scripts/` - helper automation for safe local operations.
-- `autocommit.json` - opt-in commit configuration for generated docs and cleanup slices.
+
+## Related repo guidance
+
+- `.github/copilot-instructions.md` - repository-wide architecture and workflow rules.
+- `.agents/skills/design/SKILL.md` - baseline UI implementation guidance.
+- `.agents/skills/ui-ux-pro-max/SKILL.md` - extended UI/UX design-system workflow guidance.
 
 ## Core operating rules
 
@@ -27,16 +30,12 @@ This folder is the control center for the portfolio repo's AI-agent workflow.
 
 ## Recommended reading order
 
-- `rules/architecture.md`
-- `rules/development-standards.md`
-- `rules/git-policy.md`
-- `rules/project-context.md`
-- `rules/ui-system.md`
-- `workflows/done-criteria.md`
-- `workflows/format-and-lint-workflow.md`
-- `workflows/commit-convention.md`
-- `workflows/pr-workflow.md`
-- `skills/impeccable/SKILL.md`
+- `.github/copilot-instructions.md`
+- `.agents/skills/design/SKILL.md`
+- `.agents/skills/ui-ux-pro-max/SKILL.md`
+- `.agents/skills/git/SKILL.md`
+- `.agents/skills/tests/SKILL.md`
+- `.agents/skills/impeccable/SKILL.md`
 
 ## Agent routing
 

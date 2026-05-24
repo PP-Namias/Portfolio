@@ -7,7 +7,7 @@ description: Provides advanced UI/UX design intelligence for portfolio and app w
 
 Use this skill for UI/UX tasks that need stronger design reasoning, clearer system selection, or more deliberate interaction guidance.
 
-This skill mirrors the upstream repo's design-system workflow in a repo-safe way: identify the target, generate a system, persist reusable rules when needed, then implement against the existing portfolio tokens and constraints.
+This skill mirrors the repo's design-system workflow in a repo-safe way: identify the target, generate a system, persist reusable rules when needed, then implement against the existing portfolio tokens and constraints.
 
 ## When to use this skill
 
@@ -43,15 +43,15 @@ Keep the output concise enough to act on immediately. If the task is broad, pref
 
 If a feature or page needs repeatable guidance across sessions, write the result as layered rules:
 
-- `design-system/MASTER.md` for global visual decisions.
-- `design-system/pages/<page>.md` for page-specific overrides.
+- a shared master note for global visual decisions.
+- a page-specific override note when a section or page needs deviations.
 
-Use the page file only for deviations from the master system. If no page file exists, rely on the master rules alone.
+Use the override note only for deviations from the shared master. If no override exists, rely on the shared rules alone.
 
 Recommended retrieval order:
 
 1. Read the page-specific rules first if they exist.
-2. Fall back to `design-system/MASTER.md`.
+2. Fall back to the shared master note.
 3. Apply the repo's existing modal-first and token-based conventions.
 
 ## Output structure
