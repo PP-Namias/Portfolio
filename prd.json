@@ -1,490 +1,640 @@
 {
-  "projectName": "Portfolio - Projects Minimalist Hover Showcase Revamp",
-  "version": "2.4.0",
-  "branchName": "Projects-Hover-Showcase",
-  "description": "Epic to fully transition the Projects section from filter-heavy interactions to a minimalist hover-first showcase with smooth image-zoom hover states and full-card click-through project navigation.",
+  "projectName": "Portfolio - Sanity CMS Foundation & Content Migration",
+  "version": "1.1.0",
+  "branchName": "feature/sanity-cms-migration",
+  "description": "Plan-first epic to make Sanity the working CMS for the portfolio: align connections, complete schema coverage, create deterministic migration scripts, and switch the Next.js app to Sanity-backed reads with a safe fallback path.",
   "owner": "AI Agent (Ralph)",
-  "startedDate": "2026-04-16",
-  "targetCompletion": "2026-05-03",
+  "startedDate": "2026-05-25",
+  "targetCompletion": "2026-06-15",
+  "planSummary": {
+    "goal": "Make the Sanity studio and the Next.js app work together as one content system without manual content entry.",
+    "approach": [
+      "Normalize the Sanity project and dataset connections across app, studio, and environment files.",
+      "Map every existing JSON dataset to a Sanity model or a deliberate normalized equivalent.",
+      "Create missing schemas for content groups that are present in the repo data but not yet modeled.",
+      "Write idempotent migration scripts that seed, refresh, and report on content import progress.",
+      "Switch the app to Sanity-first reads only after parity is proven and fallback behavior is verified.",
+      "Keep JSON files in place during migration so the app can still run while the CMS is being populated."
+    ],
+    "nonGoals": [
+      "Redesigning the public UI beyond what is required to consume CMS data.",
+      "Replacing the existing portfolio architecture with a different framework.",
+      "Manually entering content as the primary migration method.",
+      "Deleting the JSON source of truth before parity and cutover are complete."
+    ]
+  },
   "changeRequest": {
     "requestedBy": "Portfolio owner",
-    "pivotDate": "2026-04-16",
-    "supersedesPRDVersion": "1.0.0",
+    "pivotDate": "2026-05-25",
+    "supersedesPRDVersion": "2.4.0",
     "reason": [
-      "Remove all filter/search/sort controls from the Projects section",
-      "Shift visual direction toward cleaner minimalist presentation",
-      "Reveal richer details on hover/focus using cyber-futuristic glitch styling",
-      "Open detailed project view via card click to a configured destination link"
+      "Make Sanity the working CMS for the portfolio content in portfolio-resources/data",
+      "Establish reliable studio, preview, slug, and reference wiring before migrating content",
+      "Automate content population with repeatable scripts instead of manual entry",
+      "Keep the existing Next.js app stable while the data source is switched over",
+      "Preserve branch history while restarting development from the latest main tip"
     ]
   },
-  "hotfixRequest": {
-    "requestedBy": "Portfolio owner",
-    "requestedAt": "2026-04-16",
-    "reason": [
-      "Restore and fix project detail modal behavior for the Projects section",
-      "Keep the no-filter, hover-first visual model while using modal-first details on click",
-      "Ensure project links remain available from within the modal"
+  "contentInventory": [
+    {
+      "source": "portfolio-resources/data/profile.json",
+      "currentType": "Global profile content",
+      "targetModel": "New singleton profile document",
+      "keyFields": ["name", "title", "email", "phone", "location", "github", "linkedin", "summary", "highlights", "education"],
+      "notes": "Currently has no matching Sanity schema; must be modeled explicitly or folded into a singleton profile document."
+    },
+    {
+      "source": "portfolio-resources/data/experiences.json",
+      "currentType": "Experience collection",
+      "targetModel": "experience documents",
+      "keyFields": ["company", "position", "summary", "country", "modality", "type", "startedAt", "endedAt", "technologies", "highlights", "achievements", "relatedProjects", "images"],
+      "notes": "Already represented by studio/schemaTypes/experience.ts, but field normalization is needed because the schema uses role/company and the JSON uses position/company."
+    },
+    {
+      "source": "portfolio-resources/data/projects.json",
+      "currentType": "Project collection",
+      "targetModel": "project documents",
+      "keyFields": ["title", "image", "description", "repositoryURL", "liveURL", "processURL", "detailURL", "tags", "year", "category", "role", "impactMetrics", "featuredRank", "status", "gallery"],
+      "notes": "Already represented by studio/schemaTypes/project.ts, but slug, ordering, and link precedence must be preserved during migration."
+    },
+    {
+      "source": "portfolio-resources/data/certifications.json",
+      "currentType": "Certification collection",
+      "targetModel": "certification documents plus issuer/category references",
+      "keyFields": ["title", "image", "issuer", "issuedAt", "tags"],
+      "notes": "Current schema covers certification, certificationCategory, and certificationIssuer, but the JSON has a flatter shape that must be normalized into references."
+    },
+    {
+      "source": "portfolio-resources/data/gallery.json",
+      "currentType": "Gallery collection",
+      "targetModel": "galleryImage documents plus galleryCategory references",
+      "keyFields": ["title", "mediaType", "media", "tags", "createdAt"],
+      "notes": "Current schema covers galleryImage and galleryCategory, but the import must preserve file names with spaces and encode media paths safely."
+    },
+    {
+      "source": "portfolio-resources/data/technologies.json",
+      "currentType": "Technology list",
+      "targetModel": "techStack singleton document",
+      "keyFields": ["name", "logo", "category", "proficiency"],
+      "notes": "Current techStack schema groups technologies by category; the migration must transform the flat JSON into category buckets."
+    },
+    {
+      "source": "portfolio-resources/data/blog.json",
+      "currentType": "Blog post collection",
+      "targetModel": "post documents plus author/category references",
+      "keyFields": ["id", "slug", "title", "excerpt", "content", "date", "readTime", "tags", "coverImage"],
+      "notes": "Current post, author, and category schemas exist; slug uniqueness and publication flags must be normalized for editorial use."
+    },
+    {
+      "source": "portfolio-resources/data/socials.json",
+      "currentType": "Social link collection",
+      "targetModel": "New social links singleton or heroSection nested array",
+      "keyFields": ["name", "icon", "label", "link", "featured"],
+      "notes": "No standalone schema exists yet; decide whether to keep social links embedded in heroSection or create a dedicated singleton."
+    },
+    {
+      "source": "portfolio-resources/data/memberships.json",
+      "currentType": "Membership collection",
+      "targetModel": "New membership documents or singleton array",
+      "keyFields": ["name", "url", "joinedAt"],
+      "notes": "No matching Sanity schema exists yet; this should be added if membership content is part of the CMS cutover."
+    },
+    {
+      "source": "portfolio-resources/data/recommendations.json",
+      "currentType": "Recommendation collection",
+      "targetModel": "New recommendation documents or singleton array",
+      "keyFields": ["quote", "name", "title", "company"],
+      "notes": "Currently empty in the repo; plan should support parity import first and editorial cleanup later."
+    },
+    {
+      "source": "portfolio-resources/data/hero and site copy",
+      "currentType": "Homepage singleton content",
+      "targetModel": "heroSection, aboutSection, siteSettings, resume",
+      "keyFields": ["fullName", "title", "heroRoles", "location", "contactEmail", "socialLinks", "aboutContent", "education", "section headings", "action labels"],
+      "notes": "These singleton models already exist but must be aligned with app data types and preview behavior."
+    }
+  ],
+  "connectionMatrix": {
+    "appEnvironment": {
+      "rootEnv": ".env and .env.local currently expose NEXT_PUBLIC_SANITY_PROJECT_ID, NEXT_PUBLIC_SANITY_DATASET, SANITY_API_READ_TOKEN, SANITY_API_WRITE_TOKEN, SANITY_REVALIDATE_SECRET, and SANITY_CUTOVER_ENABLED",
+      "currentRisk": "The root environment points to a different project ID than the studio config, so the plan must normalize the canonical Sanity project before migration starts."
+    },
+    "studioEnvironment": {
+      "configFiles": ["studio/sanity.config.ts", "studio/sanity.cli.ts"],
+      "currentRisk": "studio/sanity.config.ts and studio/sanity.cli.ts must be reconciled with the app env values and the selected canonical project ID/dataset."
+    },
+    "requiredDecisions": [
+      "Choose the canonical Sanity project ID and dataset for both app and studio.",
+      "Confirm the preview origin for local and production draft preview flows.",
+      "Decide whether the app should use a single dataset for both draft and published reads or separate read/write token policies.",
+      "Determine whether social links and memberships should be singleton fields or standalone collections."
     ]
   },
-  "latestFeedbackRequest": {
-    "requestedBy": "Portfolio owner",
-    "requestedAt": "2026-04-17",
-    "reason": [
-      "Do not open project modal on click",
-      "Do not show modal-style project view on hover/focus",
-      "Only enlarge the project image smoothly on hover/focus",
-      "Open project destination link directly when card is clicked"
-    ]
-  },
-  "scope": {
-    "inScope": [
-      "Remove discovery controls (search/filter/sort/reset)",
-      "Adopt minimalist card-first visual language",
-      "Implement hover/focus cyber detail reveal with controlled glitch effects",
-      "Support optional hover media preview (video when available, image fallback)",
-      "Make the project card itself the primary interaction target",
-      "Use smooth image-zoom-only hover/focus effect while keeping full-card external navigation",
-      "Preserve accessibility, reduced-motion, and keyboard parity",
-      "Preserve lint/build/test quality gates",
-      "Update docs and progress tracking"
-    ],
-    "outOfScope": [
-      "Creating new Next.js routes for project details",
-      "Reintroducing any search/filter/sort UI in Projects",
-      "Changing non-project sections outside required integration points",
-      "Changing blog architecture"
-    ]
-  },
+  "executionPlan": [
+    {
+      "phase": "Phase 1: Connection and Inventory Audit",
+      "objective": "Prove which CMS connection values are authoritative and map every data source to a target schema before any migration begins.",
+      "deliverables": [
+        "Canonical Sanity project ID and dataset decision",
+        "Complete source-to-schema mapping for every JSON file in portfolio-resources/data",
+        "List of schema gaps and field mismatches",
+        "Slug and reference rules for each content type"
+      ],
+      "exitCriteria": [
+        "No ambiguity remains about which project/dataset the studio and app should use.",
+        "Every source JSON file is mapped to a Sanity document type, singleton, or explicit normalized structure."
+      ]
+    },
+    {
+      "phase": "Phase 2: Studio Stabilization",
+      "objective": "Make the Sanity studio build and preview correctly with the chosen project connection and editorial preview flow.",
+      "deliverables": [
+        "Updated studio config and CLI config for the canonical project/dataset",
+        "Preview mode and presentation wiring for homepage and blog content",
+        "Studio build validation",
+        "Documented local setup steps for the studio"
+      ],
+      "exitCriteria": [
+        "The studio opens locally with the correct project connection.",
+        "Draft preview points to the intended Next.js preview target."
+      ]
+    },
+    {
+      "phase": "Phase 3: Schema Completion and Normalization",
+      "objective": "Fill missing schema gaps and normalize the content model so it matches the portfolio data cleanly.",
+      "deliverables": [
+        "New or normalized schemas for profile, social links, memberships, and recommendations if retained in CMS",
+        "Field alignment between JSON keys and Sanity document fields",
+        "Slug rules for posts, authors, categories, issuers, and any other URL-backed collections",
+        "Ordered singleton strategy for homepage sections"
+      ],
+      "exitCriteria": [
+        "Every content type either has a matching schema or an explicitly documented normalization rule.",
+        "All slug and ordering rules are written down before migration code is added."
+      ]
+    },
+    {
+      "phase": "Phase 4: Migration Script System",
+      "objective": "Automate population of Sanity from the JSON source of truth with deterministic, repeatable scripts.",
+      "deliverables": [
+        "Migration entry point for seed/import operations",
+        "Dry-run mode with verbose report output",
+        "Idempotent upsert logic for documents and singleton records",
+        "Asset handling for images with spaces in file names",
+        "Reference resolution for authors, categories, issuers, and gallery categories"
+      ],
+      "exitCriteria": [
+        "Scripts can be run repeatedly without duplicating content.",
+        "The migration output reports created, updated, skipped, and failed items clearly."
+      ]
+    },
+    {
+      "phase": "Phase 5: App Data Layer Cutover",
+      "objective": "Switch the Next.js app to Sanity-backed reads while preserving a safe fallback to the JSON files until cutover is complete.",
+      "deliverables": [
+        "Sanity-first data fetching for migrated collections",
+        "Fallback behavior for any content not yet migrated",
+        "Type-safe data access layer updates",
+        "Slug lookup and page rendering parity for blog and homepage sections"
+      ],
+      "exitCriteria": [
+        "The app renders correctly from Sanity data.",
+        "Fallback JSON reads remain available until the final cutover checklist is complete."
+      ]
+    },
+    {
+      "phase": "Phase 6: Preview, Revalidation, and Editorial Workflow",
+      "objective": "Make draft preview and content publication usable for ongoing editorial work.",
+      "deliverables": [
+        "Preview/revalidation flow documented and working",
+        "Draft mode workflow for local and deployed environments",
+        "Studio guidance for editors to update content safely",
+        "Revalidation hooks or equivalent content refresh strategy"
+      ],
+      "exitCriteria": [
+        "A content change in Sanity can be previewed before publish.",
+        "Content publish flows update the app predictably."
+      ]
+    },
+    {
+      "phase": "Phase 7: Parity Verification and Handoff",
+      "objective": "Prove the CMS is complete enough to own the content lifecycle and publish a runbook for future changes.",
+      "deliverables": [
+        "Parity report comparing JSON source data to Sanity documents",
+        "Root and studio validation results",
+        "Migration runbook",
+        "Rollback and retry notes for future maintenance"
+      ],
+      "exitCriteria": [
+        "Content parity is confirmed collection by collection.",
+        "The repo includes instructions for future CMS updates and re-runs."
+      ]
+    }
+  ],
+  "migrationOrder": [
+    "1. Canonical project/dataset alignment and preview wiring",
+    "2. Singleton homepage content: heroSection, aboutSection, siteSettings, resume, techStack",
+    "3. Taxonomy/reference sets: category, certificationCategory, certificationIssuer, galleryCategory, author",
+    "4. Core collections: experience, project, certification, galleryImage, post",
+    "5. Missing collections: profile, social links, memberships, recommendations if retained in CMS",
+    "6. Sanity-first app read layer and fallback removal after parity",
+    "7. Draft preview, revalidation, and editorial handoff"
+  ],
+  "phase1ImplementationChecklist": [
+    "Confirm the canonical Sanity project ID and dataset used by both the root app and the studio.",
+    "Record the authoritative environment variables for read, write, preview, and revalidation access.",
+    "Compare every JSON file in portfolio-resources/data against the current Sanity schemas.",
+    "Mark each collection as one of: existing schema, existing schema with field normalization, new schema required, or singleton normalization required.",
+    "Define the slug rules for posts, authors, category references, issuer references, and any future URL-backed entities.",
+    "Define the reference rules for certification issuers, certification categories, gallery categories, blog authors, and blog categories.",
+    "Define ordering rules for experiences, projects, certifications, gallery items, and homepage singleton sections.",
+    "Decide where social links, memberships, recommendations, and profile data will live in Sanity.",
+    "Write the migration contract for every file: source file, target model, required transforms, and validation checks.",
+    "Identify any media asset filename normalization needed before import.",
+    "Freeze the Phase 1 mapping before any migration or app cutover code is written."
+  ],
+  "phase1ModelMap": [
+    {
+      "sourceFile": "portfolio-resources/data/profile.json",
+      "sanityModel": "New singleton profile document",
+      "action": "Create a dedicated profile schema or fold the content into an explicit singleton document.",
+      "transformNotes": [
+        "Map contact and identity fields directly.",
+        "Convert education to structured nested fields.",
+        "Keep highlights as an ordered array."
+      ]
+    },
+    {
+      "sourceFile": "portfolio-resources/data/experiences.json",
+      "sanityModel": "experience documents",
+      "action": "Use the existing experience schema and normalize field names where JSON and schema differ.",
+      "transformNotes": [
+        "Map position to role or normalize the schema to position.",
+        "Preserve images, highlights, achievements, and related project references.",
+        "Use a stable sort key for ordering."
+      ]
+    },
+    {
+      "sourceFile": "portfolio-resources/data/projects.json",
+      "sanityModel": "project documents",
+      "action": "Use the existing project schema and preserve the current link priority order.",
+      "transformNotes": [
+        "Preserve detailURL, liveURL, repositoryURL, and processURL precedence.",
+        "Keep slug generation stable from the project title.",
+        "Preserve gallery arrays and impact metrics."
+      ]
+    },
+    {
+      "sourceFile": "portfolio-resources/data/certifications.json",
+      "sanityModel": "certification documents plus certificationIssuer and certificationCategory references",
+      "action": "Normalize the flat JSON into referenced documents.",
+      "transformNotes": [
+        "Create issuer and category references before importing certifications.",
+        "Keep image and issuedAt values intact.",
+        "Treat tags as metadata for later filtering or editorial use."
+      ]
+    },
+    {
+      "sourceFile": "portfolio-resources/data/gallery.json",
+      "sanityModel": "galleryImage documents plus galleryCategory references",
+      "action": "Import each gallery item as a document and resolve the category reference.",
+      "transformNotes": [
+        "Preserve mediaType and createdAt.",
+        "URL-encode media filenames with spaces.",
+        "Keep alt text available if present in the source or derive it from title when necessary."
+      ]
+    },
+    {
+      "sourceFile": "portfolio-resources/data/technologies.json",
+      "sanityModel": "techStack singleton document",
+      "action": "Bucket the flat technology list into category groups inside the singleton structure.",
+      "transformNotes": [
+        "Preserve proficiency values.",
+        "Group entries by category.",
+        "Keep logos stable for later rendering."
+      ]
+    },
+    {
+      "sourceFile": "portfolio-resources/data/blog.json",
+      "sanityModel": "post documents plus author and category references",
+      "action": "Import as blog posts and normalize publication state and references.",
+      "transformNotes": [
+        "Ensure slug uniqueness.",
+        "Map author and categories to reference documents.",
+        "Preserve body markdown as portable rich text or structured blocks."
+      ]
+    },
+    {
+      "sourceFile": "portfolio-resources/data/socials.json",
+      "sanityModel": "heroSection nested array",
+      "action": "Keep social links nested under heroSection for Phase 1 so the homepage can remain the single source of truth for hero contact actions.",
+      "transformNotes": [
+        "Preserve featured ordering.",
+        "Keep icon and link semantics stable.",
+        "Avoid duplicating the same source in multiple documents.",
+        "Revisit a standalone social links document only if later app requirements need it."
+      ]
+    },
+    {
+      "sourceFile": "portfolio-resources/data/memberships.json",
+      "sanityModel": "New membership documents or singleton array",
+      "action": "Add a membership schema if the content should be editable in Sanity.",
+      "transformNotes": [
+        "Preserve joinedAt for chronological display.",
+        "Keep URLs exact.",
+        "Decide whether memberships are a separate section or a nested content block."
+      ]
+    },
+    {
+      "sourceFile": "portfolio-resources/data/recommendations.json",
+      "sanityModel": "New recommendation documents or singleton array",
+      "action": "Support the empty placeholder dataset now and replace it later with real testimonials.",
+      "transformNotes": [
+        "Keep the schema ready even if the source is empty.",
+        "Do not invent testimonial content during migration.",
+        "Allow later editorial replacement without changing the schema contract."
+      ]
+    },
+    {
+      "sourceFile": "portfolio-resources/data/hero and site copy",
+      "sanityModel": "heroSection, aboutSection, siteSettings, and resume singleton documents",
+      "action": "Keep homepage copy in singleton documents and align it with the app's content model.",
+      "transformNotes": [
+        "Preserve the current hero actions, section headings, and footer copy.",
+        "Keep about content and education structured for editor-friendly updates.",
+        "Use siteSettings for labels and section copy that the app renders globally."
+      ]
+    }
+  ],
+  "phase1ExitChecklist": [
+    "Each content source has one assigned Sanity target model.",
+    "Every schema gap is documented with an owner decision.",
+    "Slug and reference rules are frozen.",
+    "The canonical project/dataset values are fixed.",
+    "The Phase 1 mapping is ready to drive schema and migration work."
+  ],
+  "agentContinuationPrompt": [
+    "Read prd.json, the current branch state, and the latest Phase 1 checklist before making changes.",
+    "Work in small slices and commit after each completed slice with a conventional commit message.",
+    "After each slice, validate the touched area and update prd.json and progress.txt if the plan changes.",
+    "Start with Phase 1 only: connection audit, source inventory, schema gap mapping, and slug/reference rules.",
+    "Do not start migration or app cutover work until Phase 1 is complete and recorded.",
+    "Keep the JSON source files intact until parity is proven and the cutover plan explicitly says to switch.",
+    "Preserve the previous git history while continuing development from the refreshed main base."
+  ],
   "constraints": {
     "architecture": [
-      "Projects section uses hover-first smooth image zoom + click-through navigation",
-      "Project links open directly from card activation using detailURL > liveURL > repositoryURL",
-      "No additional page route for project details",
-      "Use existing Tailwind light/dark token classes",
-      "Use portfolio-resources/data/projects.json as source of truth",
-      "Do not break resume/experience/booking modal behavior"
+      "Use Sanity as the source of truth only after migration parity is proven",
+      "Keep the current public URLs and slug semantics stable where possible",
+      "Support idempotent migration scripts so reruns do not duplicate content",
+      "Preserve the existing Next.js app while the CMS wiring is introduced",
+      "Keep local JSON files available as a fallback until cutover is complete",
+      "Do not break the existing modal, blog, or project interaction rules while data sources change"
     ],
     "qualityGates": [
-      "npm run lint passes",
-      "npm run build passes",
-      "Relevant Vitest suites pass",
-      "No keyboard accessibility regressions"
+      "Root npm run lint passes",
+      "Root npm run build passes",
+      "Studio npm run build passes",
+      "Migration scripts support dry-run and repeatable execution",
+      "Parity reports cover each migrated content collection",
+      "No broken images, missing references, or slug regressions after cutover"
     ]
   },
   "existingFoundation": {
-    "projectSection": "src/components/sections/ProjectsSection.tsx currently uses no-filter minimalist cards with smooth image zoom on hover/focus and full-card link trigger",
-    "projectCard": "src/components/ui/ProjectCard.tsx reusable project summary card",
-    "projectModal": "src/components/ui/ProjectDetailModal.tsx retained for optional non-project-card modal flows",
-    "modalProvider": "src/hooks/useModal.tsx keeps resume/experience/booking modal state and optional project support",
-    "dataLayer": "src/data/projects.ts imports portfolio-resources/data/projects.json",
-    "types": "src/types/index.ts Project and ModalName include project-modal support and detailURL fallback",
-    "tests": "src/__tests__/components/sections-uncovered.test.tsx, src/__tests__/hooks/useModal.test.tsx, src/__tests__/components/ProjectDetailModal.test.tsx"
+    "studio": "studio/ already contains Sanity 4 config, schemaTypes, and a standalone package",
+    "schemaCoverage": [
+      "heroSection",
+      "aboutSection",
+      "experience",
+      "project",
+      "certification",
+      "galleryImage",
+      "resume",
+      "siteSettings",
+      "techStack",
+      "post",
+      "author",
+      "category",
+      "certificationCategory",
+      "certificationIssuer",
+      "galleryCategory",
+      "blockContent"
+    ],
+    "currentContentSource": "portfolio-resources/data/*.json",
+    "appDataLayer": "src/data/*.ts imports file-based JSON directly today",
+    "missingAutomation": "No migration or seed scripts currently exist in the repo",
+    "missingIntegration": "The root app still reads from static JSON rather than Sanity",
+    "schemaGaps": [
+      "No dedicated schema yet for profile content",
+      "No dedicated schema yet for social links",
+      "No dedicated schema yet for memberships",
+      "Potential field normalization needed between existing schema names and file-based JSON keys"
+    ],
+    "contentNotes": [
+      "recommendations.json is placeholder content and should be migrated as-is only if the CMS needs parity before editorial cleanup",
+      "blog.json is placeholder content and should be migrated with clear ownership for later replacement",
+      "media file names include spaces and will need URL-safe handling during asset migration"
+    ]
   },
   "successMetrics": {
-    "ux": "Projects section contains zero filter/search/sort controls and looks intentionally minimalist",
-    "interaction": "Hover/focus smoothly enlarges the project image without showing any modal-style hover panel",
-    "navigation": "Clicking/focusing-and-activating a project card opens the configured destination link using detailURL/liveURL/repositoryURL priority",
-    "a11y": "Keyboard users can access the same reveal information via focus states",
-    "performance": "No noticeable layout shift during hover or media transitions",
-    "quality": "Lint/build/tests all pass",
-    "maintainability": "PRD and progress align with hover-first image-zoom-only and click-through navigation direction"
+    "studio": "The Sanity studio opens locally, builds successfully, and exposes the portfolio content types clearly",
+    "schema": "Every content collection in portfolio-resources/data has a matching or deliberately normalized Sanity model",
+    "migration": "All collections can be seeded or refreshed through repeatable scripts without duplicate documents",
+    "dataFlow": "The app reads from Sanity first and can fall back to JSON during migration without breaking the UI",
+    "preview": "Draft and preview behavior works for the homepage, blog posts, and content-managed sections",
+    "quality": "Lint, build, and migration verification pass before cutover",
+    "maintainability": "The repo has a documented process for future CMS edits, schema changes, and content refreshes"
   },
   "stories": [
     {
-      "id": "PROJECT-MIN-001",
-      "title": "Remove Search/Filter/Sort Control Surface",
+      "id": "SANITY-CMS-001",
+      "title": "Audit Content Inventory and Model Coverage",
       "priority": 1,
-      "phase": "Phase 1: De-scope Discovery UI",
-      "status": "Complete",
-      "passes": true,
-      "completedAt": "2026-04-16T04:21:00Z",
+      "phase": "Phase 1: Connection and Inventory Audit",
+      "status": "Not Started",
       "acceptanceCriteria": [
-        "Remove search input from ProjectsSection",
-        "Remove category chips and tag dropdown",
-        "Remove sort selector and reset controls",
-        "Remove filter-result empty state tied to filter logic"
+        "Map every JSON dataset in portfolio-resources/data to the correct Sanity document or singleton type",
+        "Identify which schema files already cover the source data and which ones need to be added or normalized",
+        "Define slug, reference, ordering, and preview rules for each collection",
+        "Document field-level mismatches between JSON keys and schema field names",
+        "Confirm which content groups are singleton-managed and which are collection-managed"
       ],
       "technicalNotes": {
         "files": [
-          "src/components/sections/ProjectsSection.tsx"
+          "portfolio-resources/data/*.json",
+          "studio/schemaTypes/*.ts",
+          "src/types/index.ts",
+          "studio/sanity.config.ts",
+          "studio/sanity.cli.ts"
         ],
-        "risk": "Unused state/hooks left behind after control removal"
+        "risk": "Content shape drift between the JSON source and the studio schemas can break migration mapping"
       },
       "dependencies": []
     },
     {
-      "id": "PROJECT-MIN-002",
-      "title": "Simplify Projects Layout to Minimalist Card Stack",
+      "id": "SANITY-CMS-002",
+      "title": "Stabilize Studio Connectivity and Preview Configuration",
       "priority": 1,
-      "phase": "Phase 2: Visual Foundation",
-      "status": "Complete",
-      "passes": true,
-      "completedAt": "2026-04-16T04:24:00Z",
+      "phase": "Phase 2: Studio Stabilization",
+      "status": "Not Started",
       "acceptanceCriteria": [
-        "Reduce visual clutter and card chrome",
-        "Improve hierarchy for title/year/summary",
-        "Keep compact tag signals with strict truncation",
-        "Retain optional View all/Show less only when needed"
+        "Sanity projectId and dataset are confirmed and documented for the repo",
+        "The studio config exposes the portfolio content types in a clear structure",
+        "Preview and presentation settings point to the correct local and production preview targets",
+        "Draft mode or equivalent preview wiring is available for the Next.js app",
+        "The studio can be built locally without breaking existing config",
+        "The root app and studio read the same canonical project connection values"
       ],
       "technicalNotes": {
         "files": [
-          "src/components/sections/ProjectsSection.tsx",
-          "src/components/ui/ProjectCard.tsx"
+          "studio/sanity.config.ts",
+          "studio/sanity.cli.ts",
+          "studio/package.json",
+          ".env",
+          ".env.local",
+          ".env.example"
         ],
-        "note": "No new layout containers outside existing section card system"
+        "risk": "Preview URLs or project identifiers can become stale if they are not centralized early"
       },
       "dependencies": [
-        "PROJECT-MIN-001"
+        "SANITY-CMS-001"
       ]
     },
     {
-      "id": "PROJECT-MIN-003",
-      "title": "Define Click-Through Data Contract",
+      "id": "SANITY-CMS-003",
+      "title": "Complete Schema Coverage and Normalize Slugs",
       "priority": 1,
-      "phase": "Phase 3: Data Model",
-      "status": "Complete",
-      "passes": true,
-      "completedAt": "2026-04-16T04:26:00Z",
+      "phase": "Phase 3: Schema Completion",
+      "status": "Not Started",
       "acceptanceCriteria": [
-        "Add optional detailURL field to Project type",
-        "Optionally support previewVideoURL for hover media",
-        "Update projects source JSON with explicit detailURL mapping",
-        "Keep backward compatibility with liveURL/repositoryURL/processURL"
+        "Add or normalize schemas for any content collections not yet represented in studio/schemaTypes",
+        "Ensure hero, about, experience, project, certification, gallery, blog, resume, tech stack, and site settings have a consistent mapping",
+        "Add missing profile, social link, and membership schemas if those collections are migrated into Sanity",
+        "Define slug generation rules for blog posts and any content that needs stable human-readable URLs",
+        "Keep preview definitions useful for editorial navigation in the studio",
+        "Normalize field names where the JSON source and the schema currently differ"
       ],
       "technicalNotes": {
         "files": [
+          "studio/schemaTypes/*.ts",
+          "studio/schemaTypes/index.ts",
+          "src/types/index.ts"
+        ],
+        "risk": "Schema names and frontend types may diverge unless the model map is written down before migration"
+      },
+      "dependencies": [
+        "SANITY-CMS-001"
+      ]
+    },
+    {
+      "id": "SANITY-CMS-004",
+      "title": "Build Idempotent Migration and Seed Scripts",
+      "priority": 1,
+      "phase": "Phase 4: Migration Automation",
+      "status": "Not Started",
+      "acceptanceCriteria": [
+        "Create repeatable scripts that can seed or refresh Sanity from the JSON source of truth",
+        "Support dry-run mode so the import can be verified before writing data",
+        "Upload or map media assets and preserve image references correctly",
+        "Resolve document references, singleton updates, and slug fields without duplicate writes",
+        "Generate a migration report showing created, updated, skipped, and failed records",
+        "Allow reruns after a partial import without creating duplicate documents"
+      ],
+      "technicalNotes": {
+        "files": [
+          "scripts/**/*.ts",
+          "scripts/**/*.js",
+          "portfolio-resources/data/*.json",
+          "studio/static/",
+          "sanity.config.ts"
+        ],
+        "risk": "Asset paths with spaces and legacy placeholder content can break import logic if not normalized"
+      },
+      "dependencies": [
+        "SANITY-CMS-001",
+        "SANITY-CMS-002",
+        "SANITY-CMS-003"
+      ]
+    },
+    {
+      "id": "SANITY-CMS-005",
+      "title": "Switch the App Data Layer to Sanity-First Reads",
+      "priority": 1,
+      "phase": "Phase 5: App Cutover",
+      "status": "Not Started",
+      "acceptanceCriteria": [
+        "The Next.js app reads Sanity content first for all migrated content groups",
+        "The existing JSON data layer remains as a controlled fallback until cutover is complete",
+        "Blog slugs and content lookups resolve correctly from CMS data",
+        "Project, hero, about, experience, certification, gallery, tech stack, and settings views resolve from Sanity-backed data",
+        "Type safety remains intact across the migration boundary",
+        "Content queries fail gracefully when a record has not yet been migrated"
+      ],
+      "technicalNotes": {
+        "files": [
+          "src/data/*.ts",
           "src/types/index.ts",
-          "portfolio-resources/data/projects.json",
-          "src/data/projects.ts"
+          "src/app/**",
+          "src/components/**"
         ],
-        "note": "Do not introduce placeholder fake external links"
+        "risk": "A partial data switch can produce inconsistent rendering if one section is migrated before its dependencies"
       },
-      "dependencies": []
+      "dependencies": [
+        "SANITY-CMS-004"
+      ]
     },
     {
-      "id": "PROJECT-MIN-004",
-      "title": "Implement Full-Card Click-Through Navigation",
+      "id": "SANITY-CMS-006",
+      "title": "Implement Draft Preview and Editorial Workflow",
       "priority": 1,
-      "phase": "Phase 4: Primary Interaction",
-      "status": "Complete",
-      "passes": true,
-      "completedAt": "2026-04-16T04:28:00Z",
+      "phase": "Phase 6: Preview and Editorial Workflow",
+      "status": "Not Started",
       "acceptanceCriteria": [
-        "Entire card acts as a link target",
-        "Target resolution order is detailURL > liveURL > repositoryURL",
-        "Cards without target are visibly non-interactive",
-        "External navigation keeps noopener/noreferrer protection"
+        "Editors can preview changed homepage and blog content from the studio",
+        "Draft-mode access is documented and tested end to end",
+        "Presentation or preview tooling reflects the current public route structure",
+        "The editorial flow is clear for future content updates and validation",
+        "Revalidation or refresh behavior is documented for published content"
       ],
       "technicalNotes": {
         "files": [
-          "src/components/sections/ProjectsSection.tsx"
+          "studio/sanity.config.ts",
+          "src/app/**",
+          "src/data/**"
         ],
-        "risk": "Nested actionable elements causing invalid interaction model"
+        "risk": "Preview mismatch between studio and app can hide broken content until late in the process"
       },
       "dependencies": [
-        "PROJECT-MIN-003"
+        "SANITY-CMS-002",
+        "SANITY-CMS-005"
       ]
     },
     {
-      "id": "PROJECT-MIN-005",
-      "title": "Add Cyber-Futuristic Hover/Focus Detail Reveal",
+      "id": "SANITY-CMS-007",
+      "title": "Run Cutover Validation and Publish the CMS Runbook",
       "priority": 1,
-      "phase": "Phase 5: Signature Visual Behavior",
-      "status": "Complete",
-      "passes": true,
-      "completedAt": "2026-04-16T04:31:00Z",
+      "phase": "Phase 7: Parity and Handoff",
+      "status": "Not Started",
       "acceptanceCriteria": [
-        "Hover/focus reveals additional detail panel without clicking",
-        "Glitch aesthetic uses controlled effects (scanline, chromatic split, jitter)",
-        "Readability remains high under both themes",
-        "Animation timing remains smooth and deterministic"
+        "Content parity checks confirm the Sanity documents match the source JSON collections",
+        "Root lint/build and studio build pass after the final data switch",
+        "Migration can be rerun or rolled forward without manual recovery steps",
+        "The repo includes a short runbook for editing, seeding, previewing, and validating content in the future",
+        "The final plan documents how to recover if migration must be rerun"
       ],
       "technicalNotes": {
         "files": [
-          "src/components/sections/ProjectsSection.tsx"
-        ],
-        "motion": "Prefer Framer Motion and avoid global CSS side effects"
-      },
-      "dependencies": [
-        "PROJECT-MIN-002",
-        "PROJECT-MIN-004"
-      ]
-    },
-    {
-      "id": "PROJECT-MIN-006",
-      "title": "Support Hover Media Preview (Video/Image)",
-      "priority": 1,
-      "phase": "Phase 6: Rich Preview",
-      "status": "Complete",
-      "passes": true,
-      "completedAt": "2026-04-16T04:32:00Z",
-      "acceptanceCriteria": [
-        "If previewVideoURL exists, display muted looped preview on hover/focus",
-        "If previewVideoURL is absent, use optimized image fallback",
-        "No modal is required to inspect media",
-        "On touch/mobile, preview behavior degrades gracefully"
-      ],
-      "technicalNotes": {
-        "files": [
-          "portfolio-resources/data/projects.json",
-          "src/types/index.ts",
-          "src/components/sections/ProjectsSection.tsx"
-        ],
-        "note": "Preserve Next/Image optimization for image path"
-      },
-      "dependencies": [
-        "PROJECT-MIN-003",
-        "PROJECT-MIN-005"
-      ]
-    },
-    {
-      "id": "PROJECT-MIN-007",
-      "title": "Remove Project Modal from Runtime Flow",
-      "priority": 1,
-      "phase": "Phase 7: Modal Cleanup",
-      "status": "Complete",
-      "supersededBy": "PROJECT-MIN-013",
-      "passes": true,
-      "completedAt": "2026-04-16T04:34:00Z",
-      "acceptanceCriteria": [
-        "Remove openModal('project', ...) usage from ProjectsSection",
-        "Remove project modal state and registration from ModalProvider",
-        "Remove project modal name from shared modal union type",
-        "Delete obsolete ProjectDetailModal component and tests"
-      ],
-      "technicalNotes": {
-        "files": [
-          "src/components/sections/ProjectsSection.tsx",
-          "src/hooks/useModal.tsx",
-          "src/types/index.ts",
-          "src/components/ui/ProjectDetailModal.tsx",
-          "src/__tests__/components/ProjectDetailModal.test.tsx"
-        ],
-        "risk": "Breaking unrelated modal flows if shared types are edited incorrectly"
-      },
-      "dependencies": [
-        "PROJECT-MIN-004"
-      ]
-    },
-    {
-      "id": "PROJECT-MIN-008",
-      "title": "Accessibility and Keyboard Parity for Hover-First UX",
-      "priority": 1,
-      "phase": "Phase 8: Inclusive Interaction",
-      "status": "Complete",
-      "passes": true,
-      "completedAt": "2026-04-16T04:36:00Z",
-      "acceptanceCriteria": [
-        "Focus state mirrors hover reveal of details",
-        "Enter key opens the same click-through link",
-        "Reveal-only metadata is accessible for keyboard navigation",
-        "ARIA labels remain meaningful and concise"
-      ],
-      "technicalNotes": {
-        "files": [
-          "src/components/sections/ProjectsSection.tsx"
-        ],
-        "validation": "Manual keyboard walkthrough + automated assertions"
-      },
-      "dependencies": [
-        "PROJECT-MIN-005",
-        "PROJECT-MIN-006",
-        "PROJECT-MIN-007"
-      ]
-    },
-    {
-      "id": "PROJECT-MIN-009",
-      "title": "Reduced-Motion and Mobile Fallback Behavior",
-      "priority": 1,
-      "phase": "Phase 9: Compatibility",
-      "status": "Complete",
-      "passes": true,
-      "completedAt": "2026-04-16T04:38:00Z",
-      "acceptanceCriteria": [
-        "Reduce motion effects when prefers-reduced-motion is enabled",
-        "Ensure key details remain visible without hover availability",
-        "Keep touch interactions predictable with no hidden dead-ends",
-        "Avoid animated effects that obscure project content"
-      ],
-      "technicalNotes": {
-        "files": [
-          "src/components/sections/ProjectsSection.tsx"
-        ],
-        "note": "Functional parity > visual complexity"
-      },
-      "dependencies": [
-        "PROJECT-MIN-005",
-        "PROJECT-MIN-006"
-      ]
-    },
-    {
-      "id": "PROJECT-MIN-010",
-      "title": "Performance Hardening for Hover Overlay and Media",
-      "priority": 2,
-      "phase": "Phase 10: Performance",
-      "status": "Complete",
-      "passes": true,
-      "completedAt": "2026-04-16T04:40:00Z",
-      "acceptanceCriteria": [
-        "No noticeable layout shift while revealing details",
-        "Media preview does not trigger excessive eager loading",
-        "Render paths avoid unnecessary list-wide re-renders",
-        "Maintain smooth interactions on mid-range mobile devices"
-      ],
-      "technicalNotes": {
-        "files": [
-          "src/components/sections/ProjectsSection.tsx",
-          "src/components/ui/ProjectCard.tsx"
-        ],
-        "approach": "Progressive enhancement and conservative animation cost"
-      },
-      "dependencies": [
-        "PROJECT-MIN-006",
-        "PROJECT-MIN-009"
-      ]
-    },
-    {
-      "id": "PROJECT-MIN-011",
-      "title": "Update Test Suites for No-Filter Hover-First Behavior",
-      "priority": 1,
-      "phase": "Phase 11: Quality",
-      "status": "Complete",
-      "passes": true,
-      "completedAt": "2026-04-16T04:45:00Z",
-      "acceptanceCriteria": [
-        "Add tests asserting search/filter/sort controls are absent",
-        "Add tests for click-through target priority",
-        "Add tests for focus/hover reveal semantics",
-        "Remove or replace obsolete modal-detail tests"
-      ],
-      "technicalNotes": {
-        "files": [
-          "src/__tests__/components/sections-uncovered.test.tsx",
-          "src/__tests__/hooks/useModal.test.tsx",
-          "src/__tests__/components/ProjectDetailModal.test.tsx"
-        ],
-        "framework": "Vitest + Testing Library"
-      },
-      "dependencies": [
-        "PROJECT-MIN-007",
-        "PROJECT-MIN-008"
-      ]
-    },
-    {
-      "id": "PROJECT-MIN-012",
-      "title": "Finalize Docs, Progress Logs, Validation, and Dev Run",
-      "priority": 2,
-      "phase": "Phase 12: Delivery",
-      "status": "Complete",
-      "passes": true,
-      "completedAt": "2026-04-16T04:50:00Z",
-      "acceptanceCriteria": [
-        "Align copilot-instructions Ralph section with active hover-first epic",
-        "Record completion notes in progress.txt with story references",
-        "Run lint, build, and relevant tests successfully",
-        "Start dev server for manual verification"
-      ],
-      "technicalNotes": {
-        "files": [
-          ".github/copilot-instructions.md",
-          "progress.txt",
+          "README.md",
+          "studio/README.md",
+          "scripts/**/*.ts",
           "prd.json"
         ],
-        "note": "No automatic push"
+        "risk": "Cutover without a written runbook makes future content updates harder to recover or reproduce"
       },
       "dependencies": [
-        "PROJECT-MIN-011",
-        "PROJECT-MIN-010"
-      ]
-    },
-    {
-      "id": "PROJECT-MIN-013",
-      "title": "Restore Project Detail Modal Flow After User Feedback",
-      "priority": 1,
-      "phase": "Phase 13: Post-Release Hotfix",
-      "status": "Complete",
-      "supersededBy": "PROJECT-MIN-014",
-      "passes": true,
-      "completedAt": "2026-04-16T05:10:00Z",
-      "acceptanceCriteria": [
-        "Reintroduce project modal in modal union/provider runtime",
-        "Wire project card click interaction to open project modal with payload",
-        "Provide external project actions from inside the modal",
-        "Update tests and planning docs to match restored modal flow"
-      ],
-      "technicalNotes": {
-        "files": [
-          "src/components/sections/ProjectsSection.tsx",
-          "src/components/ui/ProjectDetailModal.tsx",
-          "src/hooks/useModal.tsx",
-          "src/types/index.ts",
-          "src/__tests__/components/sections-uncovered.test.tsx",
-          "src/__tests__/hooks/useModal.test.tsx",
-          "src/__tests__/components/ProjectDetailModal.test.tsx",
-          "prd.json",
-          "progress.txt",
-          ".github/copilot-instructions.md"
-        ],
-        "note": "Keeps no-filter hover-first visual model while restoring modal-first project details"
-      },
-      "dependencies": [
-        "PROJECT-MIN-012"
-      ]
-    },
-    {
-      "id": "PROJECT-MIN-014",
-      "title": "Shift Project Interaction to Hover Preview + Click-Through Link",
-      "priority": 1,
-      "phase": "Phase 14: Interaction Realignment",
-      "status": "Complete",
-      "supersededBy": "PROJECT-MIN-015",
-      "passes": true,
-      "completedAt": "2026-04-16T06:05:00Z",
-      "acceptanceCriteria": [
-        "Project card click no longer opens a project modal",
-        "Hover/focus state reveals a modal-style project preview on-card",
-        "Card activation opens project destination via detailURL > liveURL > repositoryURL",
-        "Tests and planning artifacts reflect click-through behavior"
-      ],
-      "technicalNotes": {
-        "files": [
-          "src/components/sections/ProjectsSection.tsx",
-          "src/__tests__/components/sections-uncovered.test.tsx",
-          "prd.json",
-          "progress.txt"
-        ],
-        "note": "Preserves no-filter, hover-first aesthetic while removing click-to-modal behavior"
-      },
-      "dependencies": [
-        "PROJECT-MIN-013"
-      ]
-    },
-    {
-      "id": "PROJECT-MIN-015",
-      "title": "Remove Hover Modal Panel and Keep Image Zoom Only",
-      "priority": 1,
-      "phase": "Phase 15: Interaction Simplification",
-      "status": "Complete",
-      "passes": true,
-      "completedAt": "2026-04-17T02:20:00Z",
-      "acceptanceCriteria": [
-        "Project cards no longer show any modal-style hover panel",
-        "Hover/focus behavior only enlarges project image smoothly",
-        "Card click continues to open destination link via detailURL > liveURL > repositoryURL",
-        "Tests and tracking artifacts are updated for image-zoom-only interaction"
-      ],
-      "technicalNotes": {
-        "files": [
-          "src/components/sections/ProjectsSection.tsx",
-          "src/__tests__/components/sections-uncovered.test.tsx",
-          "prd.json",
-          "progress.txt",
-          ".github/copilot-instructions.md"
-        ],
-        "note": "Keeps minimalist flow and removes hover modal metaphors from Projects cards"
-      },
-      "dependencies": [
-        "PROJECT-MIN-014"
+        "SANITY-CMS-004",
+        "SANITY-CMS-005",
+        "SANITY-CMS-006"
       ]
     }
   ]

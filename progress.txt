@@ -1,3 +1,9 @@
+[SUCCESS] SANITY-CMS-001 Slice 1 Complete
+- Added initial CMS schemas for profile, membership, and recommendation content.
+- Wired the studio navigation and preview locations to include the new models.
+- Created migration manifest, dry-run, and seed scaffolding under `scripts/sanity/`.
+- Recorded the Phase 1 mapping and agent continuation prompt in `prd.json`.
+
 [WARNING] 2026-04-16 Scope Pivot Activated (PRD v2.1.0)
 - Projects section moved to no-filter, minimalist, hover-first interaction model.
 - Project details modal path removed from runtime and tests.
