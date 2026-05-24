@@ -1,12 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-import profileData from '../../../../portfolio-resources/data/profile.json';
-import experiencesData from '../../../../portfolio-resources/data/experiences.json';
-import projectsData from '../../../../portfolio-resources/data/projects.json';
-import technologiesData from '../../../../portfolio-resources/data/technologies.json';
-import certificationsData from '../../../../portfolio-resources/data/certifications.json';
-import membershipsData from '../../../../portfolio-resources/data/memberships.json';
-import socialsData from '../../../../portfolio-resources/data/socials.json';
+import {
+  certifications,
+  experiences,
+  memberships,
+  profile,
+  projects,
+  socialLinks,
+  technologies,
+} from '@/lib/cms-data';
 
 import { buildFallbackResponse, buildPresetResponse } from './lib/fallbackResponder';
 import {
@@ -33,13 +35,13 @@ import {
 const MAX_MESSAGE_LENGTH = 500;
 
 const chatDataContext: ChatDataContext = {
-  profile: profileData as ProfileData,
-  experiences: experiencesData as ExperienceData[],
-  projects: projectsData as ProjectData[],
-  technologies: technologiesData as TechnologyData[],
-  certifications: certificationsData as CertificationData[],
-  memberships: membershipsData as MembershipData[],
-  socials: socialsData as SocialData[],
+  profile: profile as ProfileData,
+  experiences: experiences as ExperienceData[],
+  projects: projects as ProjectData[],
+  technologies: technologies as TechnologyData[],
+  certifications: certifications as CertificationData[],
+  memberships: memberships as MembershipData[],
+  socials: socialLinks as SocialData[],
 };
 
 const systemPrompt = buildSystemPrompt(chatDataContext);

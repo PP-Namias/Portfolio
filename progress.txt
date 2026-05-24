@@ -136,3 +136,8 @@
 - npx vitest run src/__tests__/components/sections-uncovered.test.tsx --reporter=verbose: PASS (1 file, 12 tests)
 - npm run lint: PASS
 - npm run build: PASS
+
+[NEXT] 2026-05-25
+- Next slice: build the actual Sanity import runner and the root app data-layer bridge.
+- Commit after every completed slice, including docs-only or prompt-only updates, so the history stays granular.
+- Keep the JSON source files intact until migration parity is proven and the cutover plan explicitly says to switch.

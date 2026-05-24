@@ -52,7 +52,7 @@ describe('blog hidden feature branches', () => {
     const mod = await import('@/app/blog/[slug]/page');
 
     expect(mod.generateStaticParams()).toEqual([]);
-    mod.default({ params: { slug: 'x' } });
+    await mod.default({ params: Promise.resolve({ slug: 'x' }) });
 
     expect(notFoundMock).toHaveBeenCalled();
   });

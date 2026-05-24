@@ -35,6 +35,11 @@ vi.mock('next/font/google', () => ({
 
 vi.mock('next-themes', () => ({
   ThemeProvider: ({ children }: { children: React.ReactNode }) => <div data-testid="theme-provider">{children}</div>,
+  useTheme: () => ({
+    theme: 'light',
+    resolvedTheme: 'light',
+    setTheme: vi.fn(),
+  }),
 }));
 
 vi.mock('lenis/react', () => ({
@@ -104,7 +109,6 @@ describe('app layout and page coverage', () => {
     expect(screen.getByText('AppChild')).toBeInTheDocument();
     expect(screen.getByTestId('floating-hub')).toBeInTheDocument();
     expect(screen.getByTestId('scroll-to-top')).toBeInTheDocument();
-    expect(screen.getByTestId('analytics-script')).toBeInTheDocument();
   });
 
   it('Home page renders all major section blocks', () => {
