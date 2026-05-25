@@ -54,12 +54,24 @@ Open [http://localhost:3000](http://localhost:3000).
 
 ## Environment variables
 
-Create a `.env` file in the project root based on `.env.example`:
+Create a `.env.local` file in the project root for real secrets and keep `.env` aligned for local tooling. Use `.env.example` as the template:
 
 ```bash
 GOOGLE_GEMINI_API_KEY=your_key_here
 UPSTASH_REDIS_REST_URL=your_upstash_rest_url
 UPSTASH_REDIS_REST_TOKEN=your_upstash_rest_token
+NEXT_PUBLIC_SANITY_PROJECT_ID=nl0qw78w
+NEXT_PUBLIC_SANITY_DATASET=production
+SANITY_STUDIO_PROJECT_ID=nl0qw78w
+SANITY_STUDIO_DATASET=production
+SANITY_API_READ_TOKEN=your_sanity_read_token
+SANITY_API_WRITE_TOKEN=your_sanity_write_token
+SANITY_STUDIO_DEPLOY_TOKEN=your_studio_deploy_token
+SANITY_REVALIDATE_SECRET=your_revalidate_secret
+SANITY_CUTOVER_ENABLED=true
+```
+
+`.env.local` overrides `.env` for private values, and the Sanity migration runner loads both files automatically.
 
 ## Quality checks
 

@@ -172,3 +172,5 @@
 
 [SUCCESS] 2026-05-25 Sanity gallery and blog imports now preserve source metadata
 - Added gallery `mediaType`, `tags`, and media path fields plus blog `sourceId`, `readTime`, `tags`, and cover image path fields so both collections stay lossless.
+[SUCCESS] 2026-05-25 Root env files now share the same Sanity connection keys
+- Aligned `.env`, `.env.example`, and `.env.local` with the shared Sanity project, dataset, and token fields so the migration runner and studio resolve the same configuration shape.
