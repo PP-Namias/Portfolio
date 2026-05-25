@@ -682,6 +682,13 @@ function printPlan(plan) {
   console.log('');
   console.log(`Documents queued: ${plan.documents.length}`);
   console.log(`Assets queued: ${plan.assets.length}`);
+  if (plan.warnings.length > 0) {
+    console.log('');
+    console.log('Source warnings:');
+    for (const warning of plan.warnings) {
+      console.log(`- ${warning}`);
+    }
+  }
   console.log('');
   for (const [type, count] of Object.entries(plan.countsByType)) {
     console.log(`- ${type}: ${count}`);
@@ -731,6 +738,11 @@ async function main() {
   const membershipDocs = buildMembershipDocuments(memberships);
   const recommendationDocs = buildRecommendationDocuments(recommendations);
   const profileDoc = buildProfileDocument(profile);
+  const warnings = [];
+
+  if (recommendations.length === 0) {
+    warnings.push('portfolio-resources/data/recommendations.json is empty; skipping recommendation document writes.');
+  }
 
   const issuerMap = new Map(
     certificationIssuerDocs.map((doc) => [doc.title, doc._id])
@@ -807,6 +819,7 @@ async function main() {
     documents,
     countsByType,
     assets: documents.filter((doc) => doc.image?.asset?._ref || doc.mainImage?.asset?._ref),
+    warnings,
   };
 
   printPlan(plan);

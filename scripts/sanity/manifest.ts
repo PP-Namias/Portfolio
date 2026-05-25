@@ -81,7 +81,10 @@ export const phaseOneSanityManifest: SanitySourceMapping[] = [
     sourceFile: 'portfolio-resources/data/recommendations.json',
     targetModel: 'recommendation documents',
     kind: 'collection',
-    notes: ['Allow placeholder import first, editorial replacement later.'],
+    notes: [
+      'Source is currently empty, so the runner should report a deliberate no-op.',
+      'Keep the collection path ready for future real testimonials without changing the contract.',
+    ],
   },
 ]
 

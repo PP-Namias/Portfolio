@@ -157,3 +157,6 @@
 
 [SUCCESS] 2026-05-25 Sanity tech stack import now preserves raw technology fields
 - Updated the techStack schema and import payload so `name`, `logo`, `category`, and `proficiency` are retained for each technology entry.
+
+[SUCCESS] 2026-05-25 Sanity recommendations import now reports an explicit empty-source warning
+- Added a no-op safety path for `recommendations.json` so the dry-run clearly states the collection is empty instead of silently skipping it.
