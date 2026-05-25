@@ -169,3 +169,6 @@
 
 [SUCCESS] 2026-05-25 Sanity certification import now preserves source tags
 - Added `tags` to the certification schema and import payload so `certifications.json` keeps the full tag list alongside issuer/category references.
+
+[SUCCESS] 2026-05-25 Sanity gallery and blog imports now preserve source metadata
+- Added gallery `mediaType`, `tags`, and media path fields plus blog `sourceId`, `readTime`, `tags`, and cover image path fields so both collections stay lossless.

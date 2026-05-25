@@ -29,6 +29,16 @@ export default defineType({
       description: 'A brief summary of the blog post',
     }),
     defineField({
+      name: 'sourceId',
+      title: 'Source ID',
+      type: 'string',
+    }),
+    defineField({
+      name: 'readTime',
+      title: 'Read time',
+      type: 'string',
+    }),
+    defineField({
       name: 'mainImage',
       title: 'Main image',
       type: 'image',
@@ -42,6 +52,11 @@ export default defineType({
           title: 'Alternative Text',
         }
       ]
+    }),
+    defineField({
+      name: 'coverImagePath',
+      title: 'Cover image path',
+      type: 'string',
     }),
     defineField({
       name: 'body',
@@ -59,6 +74,12 @@ export default defineType({
       title: 'Categories',
       type: 'array',
       of: [{type: 'reference', to: {type: 'category'}}],
+    }),
+    defineField({
+      name: 'tags',
+      title: 'Tags',
+      type: 'array',
+      of: [{type: 'string'}],
     }),
     defineField({
       name: 'publishedAt',

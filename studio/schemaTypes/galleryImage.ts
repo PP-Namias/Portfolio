@@ -17,6 +17,11 @@ export default defineType({
       validation: (Rule) => Rule.required(),
     }),
     defineField({
+      name: 'mediaType',
+      title: 'Media type',
+      type: 'string',
+    }),
+    defineField({
       name: 'category',
       title: 'Category',
       type: 'reference',
@@ -33,6 +38,17 @@ export default defineType({
     defineField({
       name: 'alt',
       title: 'Alt text',
+      type: 'string',
+    }),
+    defineField({
+      name: 'tags',
+      title: 'Tags',
+      type: 'array',
+      of: [{type: 'string'}],
+    }),
+    defineField({
+      name: 'mediaPath',
+      title: 'Media path',
       type: 'string',
     }),
     defineField({

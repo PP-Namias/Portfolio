@@ -54,6 +54,7 @@ export const phaseOneSanityManifest: SanitySourceMapping[] = [
     notes: [
       'URL-encode media filenames with spaces.',
       'Preserve createdAt and alt text where available.',
+      'Preserve mediaType, tags, and source media path for each gallery item.',
     ],
   },
   {
@@ -66,7 +67,10 @@ export const phaseOneSanityManifest: SanitySourceMapping[] = [
     sourceFile: 'portfolio-resources/data/blog.json',
     targetModel: 'post documents with author/category references',
     kind: 'taxonomy',
-    notes: ['Enforce slug uniqueness and publication status normalization.'],
+    notes: [
+      'Enforce slug uniqueness and publication status normalization.',
+      'Preserve source id, readTime, tags, and the cover image path alongside the generated asset.',
+    ],
   },
   {
     sourceFile: 'portfolio-resources/data/socials.json',
