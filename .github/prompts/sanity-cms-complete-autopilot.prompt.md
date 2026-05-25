@@ -132,3 +132,16 @@ If blocked, report:
 - the exact blocker,
 - the exact file or command affected,
 - the minimal next user action needed.
+
+## Next Step Copy-Paste
+
+Use this in a new chat to continue from the current state:
+
+```prompt
+Read .github/copilot-instructions.md, SANITY_CMS_IMPROVEMENT_PLAN.md, progress.txt, and the current Sanity QA agent prompt first.
+Continue the Sanity CMS completion work slice by slice.
+The resume publish flow and webhook refresh are already working, so pick the next unresolved slice from the prompt order and implement only that slice.
+Keep the worktree clean by validating each slice, updating progress.txt, and creating exactly one conventional commit per slice.
+After every successful slice, immediately continue to the next eligible slice without waiting for user confirmation.
+If you hit a blocker, report the exact file, command, and minimal next user action needed.
+```
