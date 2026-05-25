@@ -512,6 +512,7 @@ function buildExperienceDocuments(experiences) {
     highlights: experience.highlights,
     tags: experience.technologies,
     achievements: experience.achievements,
+    images: experience.images,
   }));
 }
 

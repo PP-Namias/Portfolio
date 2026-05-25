@@ -160,3 +160,6 @@
 
 [SUCCESS] 2026-05-25 Sanity recommendations import now reports an explicit empty-source warning
 - Added a no-op safety path for `recommendations.json` so the dry-run clearly states the collection is empty instead of silently skipping it.
+
+[SUCCESS] 2026-05-25 Sanity experience import now preserves source images
+- Added `images` to the experience schema and import payload so the collection keeps its linked media references from `experiences.json`.

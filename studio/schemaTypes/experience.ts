@@ -89,6 +89,12 @@ export default defineType({
       type: 'array',
       of: [{type: 'string'}],
     }),
+    defineField({
+      name: 'images',
+      title: 'Images',
+      type: 'array',
+      of: [{type: 'string'}],
+    }),
   ],
   preview: {
     select: {

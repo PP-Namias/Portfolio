@@ -24,6 +24,7 @@ export const phaseOneSanityManifest: SanitySourceMapping[] = [
     notes: [
       'Normalize position/role naming during import.',
       'Keep ordering stable for the timeline.',
+      'Preserve the experience images array for gallery-linked references.',
     ],
   },
   {
