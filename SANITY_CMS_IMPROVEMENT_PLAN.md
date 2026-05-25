@@ -53,16 +53,9 @@ Why this matters:
 ### 3. Improve editorial UX inside Studio
 
 Make the content editing experience simpler for future updates.
-
-Recommended improvements:
-
-- Add better document previews for homepage singletons.
 - Group documents in the Studio structure by content lifecycle: singleton, taxonomy, collection.
 - Add description copy in schema fields so editors know which data is authoritative.
 - Surface references like issuers, categories, and authors more clearly in the Studio UI.
-
-Why this matters:
-
 - Editors can find the right document faster.
 - The Studio becomes easier to use without reading the import scripts.
 
@@ -70,14 +63,8 @@ Why this matters:
 
 Make the Studio reflect how the localhosted portfolio is actually presented so editors can reason about what changes appear where.
 
-Recommended improvements:
-
-- Mirror the homepage composition in the Studio structure: hero, main sections, sidebar sections, modals, and footer-related content.
-- Group reusable singletons and section-level documents in the same order the website renders them.
 - Add clear labels for content that feeds the localhost site directly versus content that only supports editorial workflows.
 - Keep the resume, site settings, hero section, and navigation-linked documents easy to reach from the Studio sidebar.
-
-Why this matters:
 
 - The Studio should feel like the control panel for the site, not a separate content bucket.
 - Editors can understand the impact of each document faster.
@@ -86,14 +73,8 @@ Why this matters:
 
 Make sure Studio preview behavior matches what the local website shows as closely as possible.
 
-Recommended improvements:
-
-- Verify that presentation links from Studio open the localhost site in the correct preview mode.
-- Make document preview labels match the site section names and modal names.
 - Validate that homepage singletons, blog posts, and resume content all preview correctly against localhost.
 - Keep the preview origin and draft mode flow documented and easy to update.
-
-Why this matters:
 
 - Editors can trust that what they see in Studio is what the local site will render.
 - Preview mismatches are easier to catch before publishing.
@@ -102,14 +83,8 @@ Why this matters:
 
 Use the Sanity Vision tool and query patterns to inspect and verify content relationships during planning and maintenance.
 
-Recommended improvements:
-
-- Add a Vision-backed verification step for singleton documents and referenced collections.
-- Use Vision queries to confirm document counts, references, and active resume selection.
 - Document a standard set of queries for troubleshooting structure, presentation, and content parity.
 - Keep sample queries for hero, resume, blog, and project content.
-
-Why this matters:
 
 - Vision gives a direct way to inspect the CMS data model without guessing.
 - It helps confirm that the Studio structure matches what the website expects.
@@ -118,14 +93,8 @@ Why this matters:
 
 Make the resume easy to upload and switch from inside Studio instead of relying on a hardcoded file path.
 
-Recommended improvements:
-
-- Upgrade the `resume` document so editors can upload a PDF file directly in Sanity Studio.
-- Keep a single active resume document rule so the website always knows which resume to use.
 - Preserve the existing `/resume.pdf` fallback path for backward compatibility until the upload flow is fully stable.
 - Expose the active resume URL in the site settings or resume modal wiring so the website reads it dynamically.
-
-Why this matters:
 
 - It lets the resume be updated from the CMS without editing the codebase.
 - It reduces manual file replacement in the public folder.
@@ -140,7 +109,8 @@ Recommended improvements:
 - Add a post-import summary that lists counts by document type.
 - Add a parity checklist for each collection.
 - Compare imported document counts against the dry-run plan.
-- Flag any source file that is empty, partially imported, or missing references.
+11. Future implementation slice map
+12. AI-agent slice prompt planning
 
 Why this matters:
 
@@ -160,6 +130,11 @@ Recommended improvements:
 
 Why this matters:
 
+| CMS-015 | Add a studio control map | Make the content hierarchy reflect the rendered homepage |
+| CMS-016 | Add local preview route notes | Ensure Studio preview targets match the app routes |
+| CMS-017 | Add a Vision query pack | Standardize inspection queries for debugging and parity |
+| CMS-018 | Add a resume fallback rule note | Keep the transition from URL-based to file-based resume management safe |
+| CMS-019 | Add a slice map for implementation | Break the roadmap into commit-sized work items |
 - It lowers the support burden for future CMS changes.
 - It keeps the migration path reproducible.
 
@@ -179,13 +154,6 @@ Why this matters:
 - Smaller slices are easier to debug and revert.
 - The repo history stays clear enough to audit later.
 
-### 11. Prepare the future AI-agent slice prompt
-
-Plan for a dedicated agent prompt that can execute this roadmap slice by slice and commit every completed update.
-
-Recommended improvements:
-
-- Define the exact slice order for the next planning-to-implementation phase.
 - Add rules for when the agent should stop, validate, commit, and continue.
 - Keep the prompt focused on one slice at a time so every update stays reviewable.
 - Require the agent to update the plan and progress log after each completed slice.

@@ -189,3 +189,5 @@
 - Added section-specific presentation targets for homepage content and blog posts so Studio preview matches the localhost site more closely.
 [SUCCESS] 2026-05-25 Resume upload workflow slice implemented
 - Added a Sanity file field for the active resume, preserved the legacy URL fallback, and seeded the imported resume PDF as a Sanity file asset.
+[SUCCESS] 2026-05-25 Sanity CMS plan expanded with deeper roadmap and agent prompt
+- Added a Studio control map, localhost preview parity checks, Vision query pack tasks, a safer resume fallback plan, and a copy-paste agent prompt for slice-by-slice execution.
