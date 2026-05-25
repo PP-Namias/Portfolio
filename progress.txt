@@ -196,6 +196,11 @@
 [SUCCESS] 2026-05-25 Studio structure parity slice completed
 - Reorganized the Studio sidebar to mirror the homepage composition with homepage shell, main column, sidebar column, support data, blog, and reference data groups.
 - Validated with `npm --prefix studio run lint`, `npm --prefix studio run build`, `npm run lint`, and `cmd /c npm run build`.
+[SUCCESS] 2026-05-25 Preview parity and Windows build fallback slice completed
+- Updated Studio presentation labels so homepage and blog content explicitly point at the localhost routes.
+- Swapped the Open Graph and Twitter metadata images to the static public SVG preview asset.
+- Made `next.config.js` use standalone output on non-Windows platforms so the local Windows build can complete without the standalone packaging race.
+- Validated with `npm run lint` and `npm run build` after clearing stale build workers.
 [SUCCESS] 2026-05-25 Vision query pack slice completed
 - Added `studio/VISION_QUERIES.md` with repeatable Vision queries for homepage shell, resume selection, blog parity, projects, and reference/support data.
 - Linked the Vision query pack from `studio/README.md` so the inspection workflow is easy to find from the Studio docs.

@@ -15,6 +15,7 @@ const umamiScriptOrigin = getOrigin(process.env.NEXT_PUBLIC_UMAMI_SCRIPT_URL || 
 const umamiHostOrigin = getOrigin(process.env.NEXT_PUBLIC_UMAMI_HOST_URL || defaultUmamiHostUrl);
 
 const connectSrc = ["'self'", umamiHostOrigin].filter(Boolean).join(' ');
+const isWindows = process.platform === 'win32';
 
 const contentSecurityPolicy = `
   default-src 'self';
@@ -77,7 +78,7 @@ const securityHeaders = [
 ];
 
 const nextConfig = {
-  output: 'standalone',
+  output: isWindows ? undefined : 'standalone',
   poweredByHeader: false,
   async headers() {
     return [

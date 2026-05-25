@@ -13,7 +13,7 @@ const projectId = requireStudioEnv('SANITY_STUDIO_PROJECT_ID', 'NEXT_PUBLIC_SANI
 const dataset = requireStudioEnv('SANITY_STUDIO_DATASET', 'NEXT_PUBLIC_SANITY_DATASET')
 
 const homePageLocation = (title: string) => ({
-  message: 'This document is used on',
+  message: 'This document previews on the localhost homepage (`/`).',
   tone: 'positive' as const,
   locations: [
     {
@@ -24,7 +24,7 @@ const homePageLocation = (title: string) => ({
 })
 
 const blogPostLocation = {
-  message: 'This document is used in',
+  message: 'This document previews in the localhost blog route (`/blog`).',
   tone: 'positive' as const,
   locations: [
     {
