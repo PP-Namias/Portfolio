@@ -66,7 +66,55 @@ Why this matters:
 - Editors can find the right document faster.
 - The Studio becomes easier to use without reading the import scripts.
 
-### 4. Make resume management Sanity-driven
+### 4. Align Studio structure with the website presentation model
+
+Make the Studio reflect how the localhosted portfolio is actually presented so editors can reason about what changes appear where.
+
+Recommended improvements:
+
+- Mirror the homepage composition in the Studio structure: hero, main sections, sidebar sections, modals, and footer-related content.
+- Group reusable singletons and section-level documents in the same order the website renders them.
+- Add clear labels for content that feeds the localhost site directly versus content that only supports editorial workflows.
+- Keep the resume, site settings, hero section, and navigation-linked documents easy to reach from the Studio sidebar.
+
+Why this matters:
+
+- The Studio should feel like the control panel for the site, not a separate content bucket.
+- Editors can understand the impact of each document faster.
+
+### 5. Add presentation and preview parity for localhost
+
+Make sure Studio preview behavior matches what the local website shows as closely as possible.
+
+Recommended improvements:
+
+- Verify that presentation links from Studio open the localhost site in the correct preview mode.
+- Make document preview labels match the site section names and modal names.
+- Validate that homepage singletons, blog posts, and resume content all preview correctly against localhost.
+- Keep the preview origin and draft mode flow documented and easy to update.
+
+Why this matters:
+
+- Editors can trust that what they see in Studio is what the local site will render.
+- Preview mismatches are easier to catch before publishing.
+
+### 6. Add a content-vision workflow
+
+Use the Sanity Vision tool and query patterns to inspect and verify content relationships during planning and maintenance.
+
+Recommended improvements:
+
+- Add a Vision-backed verification step for singleton documents and referenced collections.
+- Use Vision queries to confirm document counts, references, and active resume selection.
+- Document a standard set of queries for troubleshooting structure, presentation, and content parity.
+- Keep sample queries for hero, resume, blog, and project content.
+
+Why this matters:
+
+- Vision gives a direct way to inspect the CMS data model without guessing.
+- It helps confirm that the Studio structure matches what the website expects.
+
+### 7. Make resume management Sanity-driven
 
 Make the resume easy to upload and switch from inside Studio instead of relying on a hardcoded file path.
 
@@ -83,7 +131,7 @@ Why this matters:
 - It reduces manual file replacement in the public folder.
 - It makes the resume flow match the rest of the CMS-managed content.
 
-### 5. Add import verification and parity checks
+### 8. Add import verification and parity checks
 
 Create a repeatable way to confirm Sanity matches the JSON source.
 
@@ -99,7 +147,7 @@ Why this matters:
 - It turns migration work into a measurable process.
 - It makes future re-imports safer.
 
-### 6. Improve operational documentation
+### 9. Improve operational documentation
 
 Write the minimum docs needed so the CMS can be run again without re-analysis.
 
@@ -115,7 +163,23 @@ Why this matters:
 - It lowers the support burden for future CMS changes.
 - It keeps the migration path reproducible.
 
-### 7. Add safer maintenance workflows
+### 10. Add safer maintenance workflows
+
+### 11. Prepare the future AI-agent slice prompt
+
+Plan for a dedicated agent prompt that can execute this roadmap slice by slice and commit every completed update.
+
+Recommended improvements:
+
+- Define the exact slice order for the next planning-to-implementation phase.
+- Add rules for when the agent should stop, validate, commit, and continue.
+- Keep the prompt focused on one slice at a time so every update stays reviewable.
+- Require the agent to update the plan and progress log after each completed slice.
+
+Why this matters:
+
+- The future agent can continue without re-analysis.
+- Every change stays traceable in the git history.
 
 Use a slice-by-slice approach for future CMS improvements.
 
@@ -136,10 +200,14 @@ Why this matters:
 1. Import resilience and diagnostics
 2. Schema parity and lossless data mapping
 3. Studio editorial UX improvements
-4. Sanity-managed resume upload flow
-5. Parity checks and verification summaries
-6. Operational documentation
-7. Maintenance workflow cleanup
+4. Studio structure aligned with website presentation
+5. Localhost preview and presentation parity
+6. Content-vision query workflow
+7. Sanity-managed resume upload flow
+8. Parity checks and verification summaries
+9. Operational documentation
+10. Maintenance workflow cleanup
+11. AI-agent slice prompt planning
 
 ## Suggested Near-Term Backlog
 
@@ -151,16 +219,23 @@ Why this matters:
 | CMS-004 | Add a CMS runbook section to repo docs | Simpler handoff for future maintenance |
 | CMS-005 | Expand transient retry coverage | Better resilience for Sanity asset uploads |
 | CMS-006 | Add a Studio-uploaded resume document | Update the resume from Sanity instead of hardcoding the file path |
+| CMS-007 | Align Studio navigation with website sections | Faster understanding of what each document controls |
+| CMS-008 | Add localhost preview parity checks | Reduce confusion between Studio preview and site rendering |
+| CMS-009 | Create a Vision query cheat sheet | Easier debugging of content relationships |
+| CMS-010 | Draft the slice-by-slice AI agent prompt | Make future work repeatable and commit-safe |
 
 ## Definition Of Done
 
 - The CMS import runner can be re-run safely.
 - Dry-run and live import outputs are easy to compare.
 - The Studio schema stays aligned with the JSON source.
+- The Studio structure matches how the website is presented locally.
+- Studio preview mode and localhost rendering stay in sync.
+- Vision queries can be used to inspect the CMS model during planning and debugging.
 - The resume can be updated from Sanity Studio without editing application code.
 - Editors can update content without needing to inspect the migration code first.
 - The repo includes enough documentation to continue the CMS work without re-analysis.
 
 ## Immediate Next Step
 
-Start with import resilience and reporting, then add a Sanity-managed resume upload flow before continuing collection-by-collection parity checks.
+Start with import resilience and reporting, then align Studio structure and localhost presentation before adding the Sanity-managed resume upload flow and finally the future AI-agent slice prompt.
