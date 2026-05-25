@@ -74,9 +74,9 @@ After every completed task that passes validation:
 1. Run `npm run lint` — fix ALL lint errors
 2. Run `npm run build` — fix ALL TypeScript/compilation errors
 3. Stage all changes: `git add -A`
-4. Commit with conventional format: `feat:` / `fix:` / `refactor:` / `chore:` / `style:` / `docs:`
+4. Commit immediately with a conventional format: `feat:` / `fix:` / `refactor:` / `chore:` / `style:` / `docs:`
 5. **Never push automatically** — only commit locally
-6. One commit per logical change — don't bundle unrelated changes
+6. One commit per logical change or slice — don't bundle unrelated changes
 7. Never commit code that fails lint or build
 
 ### 4. Agent Workflow
@@ -325,14 +325,15 @@ CRITICAL RULE: NEVER USE EMOJIS in autonomous outputs, notifications, commit mes
 Use this in a new chat to resume autonomous execution:
 
 ```
-Read .github/copilot-instructions.md and prd.json fully.
+Read .github/copilot-instructions.md, prd.json, and progress.txt fully.
 Run Ralph in autonomous mode.
-Execute this loop:
-1) Identify the next eligible PRD story (highest priority, dependencies satisfied).
-2) Implement that story only.
-3) Run npm run lint and npm run build.
-4) Run relevant tests for changed areas.
-5) If all checks pass, git add -A and commit using a conventional commit message.
-6) Update prd.json story status fields and continue automatically.
-7) Stop only at [COMPLETE] or [ERROR] blocker with exact cause.
+Work in very small slices and treat each slice as a self-contained deliverable.
+After every completed slice, docs refinement, or prompt update:
+1) Validate the slice with the relevant checks, including `npm run lint` and `npm run build` when the repo is touched.
+2) Stage all changes with `git add -A`.
+3) Create exactly one conventional local commit for that slice before starting the next one.
+4) Update `prd.json` and `progress.txt` so the history stays granular and traceable.
+5) Immediately continue to the next eligible slice without waiting for user confirmation.
+6) Never batch unrelated changes together.
+7) Stop only when a genuine blocker is reached or the full plan is complete.
 ```
