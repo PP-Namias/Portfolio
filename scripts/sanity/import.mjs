@@ -569,6 +569,7 @@ async function buildCertificationDocuments(certifications, assetContext, issuerM
       issuer: issuerRef ? {_type: 'reference', _ref: issuerRef} : undefined,
       issuedAt: certification.issuedAt,
       category: categoryRef ? {_type: 'reference', _ref: categoryRef} : undefined,
+      tags: certification.tags,
       image: buildImageValue(imageId, certification.title),
     });
   }

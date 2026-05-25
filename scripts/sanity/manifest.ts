@@ -44,6 +44,7 @@ export const phaseOneSanityManifest: SanitySourceMapping[] = [
     notes: [
       'Seed issuer and category reference documents before certification import.',
       'Normalize flat certification rows into referenced docs.',
+      'Preserve the original tag list alongside the first tag used for category lookup.',
     ],
   },
   {
