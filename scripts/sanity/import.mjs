@@ -7,6 +7,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const repoRoot = path.resolve(__dirname, '..', '..');
 const apiVersion = '2021-06-07';
+const networkTimeoutMs = 30000;
 
 const sourceFiles = {
   profile: 'portfolio-resources/data/profile.json',
@@ -210,6 +211,53 @@ function buildImageValue(assetId, alt) {
   };
 }
 
+function logImportStep(message) {
+  console.log(`[sanity-import] ${message}`);
+}
+
+async function fetchWithTimeout(input, init, label) {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(new Error(`Timed out after ${networkTimeoutMs}ms`)), networkTimeoutMs);
+
+  try {
+    return await fetch(input, {...init, signal: controller.signal});
+  } catch (error) {
+    if (error instanceof Error && error.name === 'AbortError') {
+      throw new Error(`${label} timed out after ${networkTimeoutMs}ms`);
+    }
+
+    throw error;
+  } finally {
+    clearTimeout(timeoutId);
+  }
+}
+
+async function fetchWithRetry(input, init, label, attempts = 3) {
+  let lastError;
+
+  for (let attempt = 1; attempt <= attempts; attempt += 1) {
+    try {
+      const response = await fetchWithTimeout(input, init, label);
+
+      if (response.ok || ![502, 503, 504].includes(response.status)) {
+        return response;
+      }
+
+      lastError = new Error(`${label} failed with ${response.status}`);
+    } catch (error) {
+      lastError = error instanceof Error ? error : new Error(String(error));
+    }
+
+    if (attempt < attempts) {
+      const delayMs = 1000 * attempt;
+      logImportStep(`${label} retrying after ${delayMs}ms (${attempt}/${attempts})`);
+      await new Promise((resolve) => setTimeout(resolve, delayMs));
+    }
+  }
+
+  throw lastError ?? new Error(`${label} failed after ${attempts} attempts`);
+}
+
 async function uploadImageAsset({projectId, dataset, token, folder, fileName}) {
   const assetPath = await findAssetPath(folder, fileName);
 
@@ -223,14 +271,16 @@ async function uploadImageAsset({projectId, dataset, token, folder, fileName}) {
   );
   uploadUrl.searchParams.set('filename', fileName);
 
-  const response = await fetch(uploadUrl, {
+  logImportStep(`uploading ${folder}/${fileName}`);
+
+  const response = await fetchWithRetry(uploadUrl, {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${token}`,
       'Content-Type': getContentType(fileName),
     },
     body: buffer,
-  });
+  }, `asset upload for ${folder}/${fileName}`);
 
   if (!response.ok) {
     const body = await response.text();
@@ -246,6 +296,22 @@ async function uploadImageAsset({projectId, dataset, token, folder, fileName}) {
   }
 
   return assetId;
+}
+
+function createAssetCache() {
+  const cache = new Map();
+
+  return {
+    async get(key, loader) {
+      if (cache.has(key)) {
+        return cache.get(key);
+      }
+
+      const assetId = await loader();
+      cache.set(key, assetId);
+      return assetId;
+    },
+  };
 }
 
 function markdownToBlocks(markdown) {
@@ -664,8 +730,10 @@ function chunk(values, size) {
 }
 
 async function mutateDocuments({projectId, dataset, token, docs}) {
-  for (const group of chunk(docs, 25)) {
-    const response = await fetch(
+  for (const [batchIndex, group] of chunk(docs, 25).entries()) {
+    logImportStep(`writing batch ${batchIndex + 1}/${Math.ceil(docs.length / 25)} (${group.length} documents)`);
+
+    const response = await fetchWithRetry(
       `https://${projectId}.api.sanity.io/v${apiVersion}/data/mutate/${dataset}`,
       {
         method: 'POST',
@@ -676,7 +744,8 @@ async function mutateDocuments({projectId, dataset, token, docs}) {
         body: JSON.stringify({
           mutations: group.map((doc) => ({createOrReplace: doc})),
         }),
-      }
+      },
+      `mutation batch ${batchIndex + 1}`
     );
 
     if (!response.ok) {
@@ -729,6 +798,8 @@ async function main() {
     throw new Error('Missing NEXT_PUBLIC_SANITY_PROJECT_ID or SANITY_PROJECT_ID.');
   }
 
+  logImportStep(`using project ${projectId} and dataset ${dataset}`);
+
   const profile = await readJson(sourceFiles.profile);
   const experiences = await readJson(sourceFiles.experiences);
   const projects = await readJson(sourceFiles.projects);
@@ -768,30 +839,39 @@ async function main() {
   );
   const blogCategoryMap = new Map(blogCategoryDocs.map((doc) => [doc.title, doc._id]));
 
+  const assetCache = createAssetCache();
   const assetContext = {
     projectImage: async (fileName) => {
       if (dryRun) {
         return `dry-run:projects/${fileName}`;
       }
-      return uploadImageAsset({projectId, dataset, token, folder: 'projects', fileName});
+      return assetCache.get(`projects/${fileName}`, () =>
+        uploadImageAsset({projectId, dataset, token, folder: 'projects', fileName})
+      );
     },
     certificationImage: async (fileName) => {
       if (dryRun) {
         return `dry-run:certifications/${fileName}`;
       }
-      return uploadImageAsset({projectId, dataset, token, folder: 'certifications', fileName});
+      return assetCache.get(`certifications/${fileName}`, () =>
+        uploadImageAsset({projectId, dataset, token, folder: 'certifications', fileName})
+      );
     },
     galleryImage: async (fileName) => {
       if (dryRun) {
         return `dry-run:gallery/${fileName}`;
       }
-      return uploadImageAsset({projectId, dataset, token, folder: 'gallery', fileName});
+      return assetCache.get(`gallery/${fileName}`, () =>
+        uploadImageAsset({projectId, dataset, token, folder: 'gallery', fileName})
+      );
     },
     blogImage: async (fileName) => {
       if (dryRun) {
         return `dry-run:blog/${fileName}`;
       }
-      return uploadImageAsset({projectId, dataset, token, folder: 'blog', fileName});
+      return assetCache.get(`blog/${fileName}`, () =>
+        uploadImageAsset({projectId, dataset, token, folder: 'blog', fileName})
+      );
     },
   };
 
@@ -847,6 +927,7 @@ async function main() {
     throw new Error('Missing SANITY_API_WRITE_TOKEN or SANITY_API_READ_TOKEN.');
   }
 
+  logImportStep(`writing ${documents.length} documents`);
   await mutateDocuments({projectId, dataset, token, docs: documents});
 
   console.log('');

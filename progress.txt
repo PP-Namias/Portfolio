@@ -174,3 +174,5 @@
 - Added gallery `mediaType`, `tags`, and media path fields plus blog `sourceId`, `readTime`, `tags`, and cover image path fields so both collections stay lossless.
 [SUCCESS] 2026-05-25 Root env files now share the same Sanity connection keys
 - Aligned `.env`, `.env.example`, and `.env.local` with the shared Sanity project, dataset, and token fields so the migration runner and studio resolve the same configuration shape.
+[SUCCESS] 2026-05-25 Live Sanity import completed with diagnostics and retries
+- Added import-phase logging, request timeouts, asset caching, and transient 502 retries so the live import could complete and write 131 documents into the connected Sanity dataset.
