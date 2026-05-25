@@ -151,3 +151,6 @@
 
 [SUCCESS] 2026-05-25 Sanity import runner now writes the profile singleton
 - Added the missing profile document to the import payload so dry-run/import counts match the manifest and `portfolio-resources/data/profile.json`.
+
+[SUCCESS] 2026-05-25 Sanity migration prompt now includes a human next-step guide
+- Tightened the prompt with slice handoff guidance, env checks, and a clearer recommendation to continue one content type at a time.
