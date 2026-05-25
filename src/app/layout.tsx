@@ -4,6 +4,7 @@ import { Providers } from './providers';
 import { FloatingHub } from '@/components/ui/FloatingHub';
 import { ScrollToTop } from '@/components/ui/ScrollToTop';
 import { Analytics } from '@/components/ui/Analytics';
+import { getCmsContent } from '@/lib/cms-content.server';
 import './globals.css';
 
 const inter = Inter({
@@ -75,11 +76,13 @@ const jsonLd = {
   ],
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const cmsContent = await getCmsContent();
+
   return (
     <html lang="en" suppressHydrationWarning className={inter.variable}>
       <head>
@@ -96,7 +99,7 @@ export default function RootLayout({
         >
           Skip to main content
         </a>
-        <Providers>
+        <Providers cmsContent={cmsContent}>
           {children}
           <FloatingHub />
           <ScrollToTop />
