@@ -4,6 +4,7 @@
 2026-05-25: Renamed the visible Sanity Studio branding to Namias CMS Studio and verified the studio still builds and starts cleanly.
 2026-05-25: Fixed missing SANITY_STUDIO env handling by mapping NEXT_PUBLIC_* values, updating env helpers, and restarting the studio cleanly.
 2026-05-25: Added safe default fallbacks for Studio project/dataset values to prevent missing env errors in the client bundle.
+2026-05-25: Added a workspace prompt for automated JSON → Sanity migration scripts under .github/prompts/.
 [SUCCESS] SANITY-CMS-001 Slice 1 Complete
 - Added initial CMS schemas for profile, membership, and recommendation content.
 - Wired the studio navigation and preview locations to include the new models.
@@ -147,3 +148,6 @@
 - Next slice: build the actual Sanity import runner and the root app data-layer bridge.
 - Commit after every completed slice, including docs-only or prompt-only updates, so the history stays granular.
 - Keep the JSON source files intact until migration parity is proven and the cutover plan explicitly says to switch.
+
+[SUCCESS] 2026-05-25 Sanity import runner now writes the profile singleton
+- Added the missing profile document to the import payload so dry-run/import counts match the manifest and `portfolio-resources/data/profile.json`.

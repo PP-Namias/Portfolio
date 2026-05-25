@@ -27,7 +27,9 @@
     "start": "next start",
     "lint": "next lint",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "sanity:dry-run": "node ./scripts/sanity/import.mjs --dry-run",
+    "sanity:import": "node ./scripts/sanity/import.mjs"
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",

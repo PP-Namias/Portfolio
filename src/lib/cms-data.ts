@@ -17,6 +17,29 @@ const isProjectStatus = (value: unknown): value is ProjectStatus => {
 
 export const isSanityCutoverEnabled = process.env.NEXT_PUBLIC_SANITY_CUTOVER_ENABLED === 'true';
 
+export type ContentSourceMode = 'json-fallback' | 'sanity-ready';
+
+export const contentSourceMode: ContentSourceMode = isSanityCutoverEnabled
+  ? 'sanity-ready'
+  : 'json-fallback';
+
+export const contentSourceCatalog = [
+  { sourceFile: 'portfolio-resources/data/profile.json', targetModel: 'profile singleton document' },
+  { sourceFile: 'portfolio-resources/data/experiences.json', targetModel: 'experience documents' },
+  { sourceFile: 'portfolio-resources/data/projects.json', targetModel: 'project documents' },
+  { sourceFile: 'portfolio-resources/data/certifications.json', targetModel: 'certification documents' },
+  { sourceFile: 'portfolio-resources/data/gallery.json', targetModel: 'galleryImage documents' },
+  { sourceFile: 'portfolio-resources/data/technologies.json', targetModel: 'techStack singleton document' },
+  { sourceFile: 'portfolio-resources/data/blog.json', targetModel: 'post documents' },
+  { sourceFile: 'portfolio-resources/data/socials.json', targetModel: 'heroSection.socialLinks nested array' },
+  { sourceFile: 'portfolio-resources/data/memberships.json', targetModel: 'membership documents' },
+  { sourceFile: 'portfolio-resources/data/recommendations.json', targetModel: 'recommendation documents' },
+] as const;
+
+export const contentSourceSummary = contentSourceCatalog
+  .map((entry) => `${entry.sourceFile} -> ${entry.targetModel}`)
+  .join('\n');
+
 export const profile: Profile = profileData;
 
 export const experiences: Experience[] = experienceData.map((experience) => ({
