@@ -165,6 +165,20 @@ Why this matters:
 
 ### 10. Add safer maintenance workflows
 
+Use a slice-by-slice approach for future CMS improvements.
+
+Recommended improvements:
+
+- Keep one content type or one small schema improvement per commit.
+- Validate every slice with dry-run before any live write.
+- Keep `progress.txt` updated after each successful step.
+- Avoid mixing docs, schema refactors, and app data-layer changes in the same slice unless necessary.
+
+Why this matters:
+
+- Smaller slices are easier to debug and revert.
+- The repo history stays clear enough to audit later.
+
 ### 11. Prepare the future AI-agent slice prompt
 
 Plan for a dedicated agent prompt that can execute this roadmap slice by slice and commit every completed update.
@@ -180,20 +194,6 @@ Why this matters:
 
 - The future agent can continue without re-analysis.
 - Every change stays traceable in the git history.
-
-Use a slice-by-slice approach for future CMS improvements.
-
-Recommended improvements:
-
-- Keep one content type or one small schema improvement per commit.
-- Validate every slice with dry-run before any live write.
-- Keep `progress.txt` updated after each successful step.
-- Avoid mixing docs, schema refactors, and app data-layer changes in the same slice unless necessary.
-
-Why this matters:
-
-- Smaller slices are easier to debug and revert.
-- The repo history stays clear enough to audit later.
 
 ## Priority Order
 
@@ -223,6 +223,10 @@ Why this matters:
 | CMS-008 | Add localhost preview parity checks | Reduce confusion between Studio preview and site rendering |
 | CMS-009 | Create a Vision query cheat sheet | Easier debugging of content relationships |
 | CMS-010 | Draft the slice-by-slice AI agent prompt | Make future work repeatable and commit-safe |
+| CMS-011 | Add a homepage section map to the Studio | Clear control panel view for what powers each site area |
+| CMS-012 | Add a resume activation workflow | Make it obvious which uploaded resume is currently live |
+| CMS-013 | Add a document preview parity checklist | Keep Studio previews aligned with localhost rendering |
+| CMS-014 | Add a Vision inspection pack | Quick queries for structure, preview, and reference debugging |
 
 ## Definition Of Done
 

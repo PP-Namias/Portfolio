@@ -182,3 +182,5 @@
 - Expanded `SANITY_CMS_IMPROVEMENT_PLAN.md` to prioritize a Studio-managed resume upload flow so the resume can be updated from Sanity instead of a hardcoded file path.
 [SUCCESS] 2026-05-25 Sanity CMS plan expanded for Studio structure and preview parity
 - Expanded `SANITY_CMS_IMPROVEMENT_PLAN.md` to include Studio navigation, localhost preview parity, Vision query workflow, and a future slice-by-slice AI-agent prompt plan.
+[SUCCESS] 2026-05-25 Sanity CMS plan expanded with backlog tasks for structure and resume workflow
+- Added backlog items for Studio section mapping, resume activation, preview parity checks, and a Vision inspection pack so the planning phase covers the full CMS surface.
