@@ -225,3 +225,10 @@
 - Expanded `scripts/sanity/README.md` with required env vars, an operational command sequence, transient upload recovery steps, and next-type cleanup priorities.
 - Updated root `README.md` to include Sanity migration/parity scripts in the standard script catalog.
 - Validated with `npm run lint` and `npm run build`.
+[SUCCESS] 2026-05-26 Resume data refresh and migration-plan update slice completed
+- Updated `portfolio-resources/data/profile.json` with the latest resume summary, education completion status, and updated highlights.
+- Replaced `portfolio-resources/data/experiences.json` with the current four-role timeline (Aeternitas, Wilshire, Jimirene, J5).
+- Replaced `portfolio-resources/data/projects.json` with current flagship projects (`Klaro`, `MASH`, `Ucc-Ingo`).
+- Aligned `portfolio-resources/data/certifications.json` to the latest set (TESDA NC III + HackerRank-focused list).
+- Updated `SANITY_CMS_IMPROVEMENT_PLAN.md` with a dedicated resume baseline refresh track and migration checklist.
+- Validated with `npm run sanity:dry-run`, `npm run lint`, and `npm run build`.

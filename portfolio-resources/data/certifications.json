@@ -1,10 +1,10 @@
 [
   {
-    "title": "Software Engineer Intern",
-    "image": "hackerrank-software-engineer-intern.png",
-    "issuer": "HackerRank",
+    "title": "TESDA NC III — Java Programming",
+    "image": "CS COUNCIL NAMIAS.png",
+    "issuer": "TESDA",
     "issuedAt": "2025-12-20",
-    "tags": ["Software Engineering", "Intern", "Problem Solving", "Data Structures"]
+    "tags": ["Java", "Programming", "TESDA", "NC III"]
   },
 
   {
@@ -20,23 +20,7 @@
     "image": "hackerrank-frontend-developer-react.png",
     "issuer": "HackerRank",
     "issuedAt": "2025-12-20",
-    "tags": ["Frontend Development", "React", "JavaScript", "CSS"]
-  },
-
-  {
-    "title": "Angular (Intermediate)",
-    "image": "hackerrank-angular-intermediate.png",
-    "issuer": "HackerRank",
-    "issuedAt": "2025-12-20",
-    "tags": ["Angular", "TypeScript", "Frontend", "Web Development"]
-  },
-
-  {
-    "title": "Angular (Basic)",
-    "image": "hackerrank-angular-basic.png",
-    "issuer": "HackerRank",
-    "issuedAt": "2025-12-20",
-    "tags": ["Angular", "TypeScript", "Frontend", "Components"]
+    "tags": ["Frontend Development", "React", "JavaScript", "Software Engineering"]
   },
 
   {
@@ -48,6 +32,22 @@
   },
 
   {
+    "title": "Node.js (Intermediate)",
+    "image": "hackerrank-nodejs-intermediate.png",
+    "issuer": "HackerRank",
+    "issuedAt": "2025-12-20",
+    "tags": ["Node.js", "JavaScript", "Backend", "API"]
+  },
+
+  {
+    "title": "JavaScript (Intermediate)",
+    "image": "hackerrank-javascript-intermediate.png",
+    "issuer": "HackerRank",
+    "issuedAt": "2025-12-20",
+    "tags": ["JavaScript", "ES6", "Programming"]
+  },
+
+  {
     "title": "SQL (Advanced)",
     "image": "hackerrank-sql-advanced.png",
     "issuer": "HackerRank",
@@ -56,27 +56,19 @@
   },
 
   {
-    "title": "SQL (Intermediate)",
-    "image": "hackerrank-sql-intermediate.png",
+    "title": "Python (Basic)",
+    "image": "hackerrank-python-basic.png",
     "issuer": "HackerRank",
     "issuedAt": "2025-12-20",
-    "tags": ["SQL", "Database", "Joins", "Subqueries"]
+    "tags": ["Python", "Programming", "Basic Syntax"]
   },
 
   {
-    "title": "SQL (Basic)",
-    "image": "hackerrank-sql-basic.png",
+    "title": "Java (Basic)",
+    "image": "hackerrank-java-basic.png",
     "issuer": "HackerRank",
     "issuedAt": "2025-12-20",
-    "tags": ["SQL", "Database", "Basic Queries"]
-  },
-
-  {
-    "title": "React (Basic)",
-    "image": "hackerrank-react-basic.png",
-    "issuer": "HackerRank",
-    "issuedAt": "2025-12-20",
-    "tags": ["React", "JavaScript", "Frontend", "Components"]
+    "tags": ["Java", "OOP", "Programming"]
   },
 
   {
@@ -85,14 +77,6 @@
     "issuer": "HackerRank",
     "issuedAt": "2025-12-20",
     "tags": ["R", "Data Science", "Statistics", "Programming"]
-  },
-
-  {
-    "title": "Python (Basic)",
-    "image": "hackerrank-python-basic.png",
-    "issuer": "HackerRank",
-    "issuedAt": "2025-12-20",
-    "tags": ["Python", "Programming", "Basic Syntax"]
   },
 
   {
@@ -109,117 +93,5 @@
     "issuer": "HackerRank",
     "issuedAt": "2025-12-20",
     "tags": ["Problem Solving", "Algorithms", "Logic"]
-  },
-
-  {
-    "title": "Node.js (Intermediate)",
-    "image": "hackerrank-nodejs-intermediate.png",
-    "issuer": "HackerRank",
-    "issuedAt": "2025-12-20",
-    "tags": ["Node.js", "JavaScript", "Backend", "API"]
-  },
-
-  {
-    "title": "Node.js (Basic)",
-    "image": "hackerrank-nodejs-basic.png",
-    "issuer": "HackerRank",
-    "issuedAt": "2025-12-20",
-    "tags": ["Node.js", "JavaScript", "Backend"]
-  },
-
-  {
-    "title": "JavaScript (Intermediate)",
-    "image": "hackerrank-javascript-intermediate.png",
-    "issuer": "HackerRank",
-    "issuedAt": "2025-12-20",
-    "tags": ["JavaScript", "ES6", "Programming"]
-  },
-
-  {
-    "title": "JavaScript (Basic)",
-    "image": "hackerrank-javascript-basic.png",
-    "issuer": "HackerRank",
-    "issuedAt": "2025-12-20",
-    "tags": ["JavaScript", "Programming", "Basic Syntax"]
-  },
-
-  {
-    "title": "Java (Basic)",
-    "image": "hackerrank-java-basic.png",
-    "issuer": "HackerRank",
-    "issuedAt": "2025-12-20",
-    "tags": ["Java", "OOP", "Programming"]
-  },
-
-  {
-    "title": "CSS (Basic)",
-    "image": "hackerrank-css-basic.png",
-    "issuer": "HackerRank",
-    "issuedAt": "2025-12-20",
-    "tags": ["CSS", "Styling", "Frontend", "Web Design"]
-  },
-
-  {
-    "title": "C# (Basic)",
-    "image": "hackerrank-csharp-basic.png",
-    "issuer": "HackerRank",
-    "issuedAt": "2025-12-20",
-    "tags": ["C#", ".NET", "OOP", "Programming"]
-  },
-
-  {
-    "title": "2nd Place Programming Competition",
-    "image": "2nd Place Programming Compitition Certificate.jpg",
-    "issuer": "University of Caloocan City",
-    "issuedAt": "2025-12-01",
-    "tags": ["Programming", "Competition", "Award", "Achievement"]
-  },
-
-  {
-    "title": "CS Council Member",
-    "image": "CS COUNCIL NAMIAS.png",
-    "issuer": "University of Caloocan City",
-    "issuedAt": "2025-06-01",
-    "tags": ["Leadership", "Student Council", "Computer Science"]
-  },
-
-  {
-    "title": "Cybersecurity Fundamentals",
-    "image": "Cybersecurity Fundamentals.png",
-    "issuer": "IBM",
-    "issuedAt": "2025-01-15",
-    "tags": ["Cybersecurity", "Security", "IBM", "Information Security"]
-  },
-
-  {
-    "title": "Deployment Static Website using Firebase",
-    "image": "Deployment Static basic Website using Firebase.png",
-    "issuer": "Google Developer Student Clubs",
-    "issuedAt": "2024-11-15",
-    "tags": ["Firebase", "Deployment", "Web Development", "Google Cloud"]
-  },
-
-  {
-    "title": "Google Maps APIs and Camera Integration using React Native",
-    "image": "Google maps APIs and Camera Integration using React Native.png",
-    "issuer": "Google Developer Student Clubs",
-    "issuedAt": "2024-10-20",
-    "tags": ["React Native", "Google Maps API", "Mobile Development", "Camera Integration"]
-  },
-
-  {
-    "title": "Google User Authentication",
-    "image": "Google User AUthentication.jpg",
-    "issuer": "Google Developer Student Clubs",
-    "issuedAt": "2024-09-15",
-    "tags": ["Authentication", "OAuth", "Google", "Security"]
-  },
-
-  {
-    "title": "How to Navigate the Database Universe",
-    "image": "How to Navigate the Database Universe.png",
-    "issuer": "AWS",
-    "issuedAt": "2024-08-10",
-    "tags": ["Database", "AWS", "Cloud", "Data Management"]
   }
 ]

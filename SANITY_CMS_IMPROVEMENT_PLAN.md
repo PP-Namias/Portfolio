@@ -1,6 +1,6 @@
 # Sanity CMS Improvement Plan
 
-Last updated: 2026-05-25  
+Last updated: 2026-05-26  
 Project: PP Namias Portfolio (`namias.tech`)
 
 ## Goal
@@ -196,6 +196,34 @@ Why this matters:
 - The future agent can continue without re-analysis.
 - Every change stays traceable in the git history.
 
+### 12. Refresh baseline profile data from the latest resume
+
+Align source content in `portfolio-resources/data/*.json` with the latest resume before the next live import.
+
+Recommended improvements:
+
+- Update `profile.json` with current summary, graduation status, and current headline metrics.
+- Replace `experiences.json` with the current 4-role timeline (Aeternitas, Wilshire, Jimirene, J5).
+- Replace `projects.json` with the current featured technical projects (`Klaro`, `MASH`, `Ucc-Ingo`).
+- Align `certifications.json` to the current resume set (TESDA NC III + HackerRank list).
+- Keep existing media filenames valid during refresh; use known image assets first, then swap in newer assets in a dedicated media pass.
+
+Why this matters:
+
+- It prevents stale portfolio data from being re-imported into Sanity.
+- It makes parity checks meaningful against the owner's latest CV.
+- It reduces editorial cleanup work after import.
+
+### Resume refresh migration checklist (2026-05)
+
+1. Update source JSON files (`profile`, `experiences`, `projects`, `certifications`) from the latest resume.
+2. Run `npm run sanity:dry-run` and confirm expected type counts.
+3. Run `npm run sanity:import` to upsert refreshed documents.
+4. Run `npm run sanity:parity` and capture mismatches.
+5. Fix mismatches (especially singleton drift and duplicate collections), then run `npm run sanity:parity:strict`.
+6. Spot-check Studio documents: `profile`, `resume`, `experience`, `project`, `certification`.
+7. Record the import run + parity results in `progress.txt`.
+
 ## Priority Order
 
 1. Import resilience and diagnostics
@@ -210,6 +238,7 @@ Why this matters:
 10. Maintenance workflow cleanup
 11. Future implementation slice map
 12. AI-agent slice prompt planning
+13. Resume baseline data refresh and re-import parity
 
 ## Suggested Near-Term Backlog
 
@@ -234,6 +263,7 @@ Why this matters:
 | CMS-017 | Add a Vision query pack | Standardize inspection queries for debugging and parity |
 | CMS-018 | Add a resume fallback rule note | Keep the transition from URL-based to file-based resume management safe |
 | CMS-019 | Add a slice map for implementation | Break the roadmap into commit-sized work items |
+| CMS-020 | Resume baseline data refresh | Keep profile, experience, projects, and certifications aligned with the latest CV before each import |
 
 ## Copy/Paste Agent Prompt
 
@@ -286,4 +316,4 @@ Stop only when the current slice is complete or a genuine blocker requires user 
 
 ## Immediate Next Step
 
-Start with import resilience and reporting, then align Studio structure and localhost presentation before adding the Sanity-managed resume upload flow and finally the future AI-agent slice prompt.
+Refresh source data from the latest resume, run dry-run/import/parity, then continue with incremental cleanup of parity mismatches.
