@@ -80,3 +80,15 @@ export function getDraftModeEnablePath(): string {
 
   return `/api/draft-mode/enable?secret=${encodeURIComponent(secret)}`
 }
+
+export function getWebhookTriggerUrl(): string {
+  const origin = getStudioPreviewOrigin()
+  const secret = getEnvValue('SANITY_REVALIDATE_SECRET')
+  const url = new URL('/api/sanity/webhook', origin)
+
+  if (secret) {
+    url.searchParams.set('secret', secret)
+  }
+
+  return url.toString()
+}

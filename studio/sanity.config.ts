@@ -3,6 +3,7 @@ import {defineLocations, presentationTool} from 'sanity/presentation'
 import {structureTool} from 'sanity/structure'
 import {visionTool} from '@sanity/vision'
 import {schemaTypes} from './schemaTypes'
+import {createPublishAndRefreshAction} from './actions/publishAndRefreshAction'
 import {getDraftModeEnablePath, getStudioPreviewOrigin, loadStudioEnvironment, requireStudioEnv} from './env'
 
 loadStudioEnvironment()
@@ -157,6 +158,15 @@ export default defineConfig({
     }),
     visionTool(),
   ],
+
+  document: {
+    actions: (prev) =>
+      prev.map((originalAction) =>
+        originalAction.action === 'publish'
+          ? createPublishAndRefreshAction(originalAction)
+          : originalAction,
+      ),
+  },
 
   schema: {
     types: schemaTypes,
