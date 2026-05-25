@@ -176,3 +176,5 @@
 - Aligned `.env`, `.env.example`, and `.env.local` with the shared Sanity project, dataset, and token fields so the migration runner and studio resolve the same configuration shape.
 [SUCCESS] 2026-05-25 Live Sanity import completed with diagnostics and retries
 - Added import-phase logging, request timeouts, asset caching, and transient 502 retries so the live import could complete and write 131 documents into the connected Sanity dataset.
+[SUCCESS] 2026-05-25 Sanity CMS improvement plan document added
+- Added `SANITY_CMS_IMPROVEMENT_PLAN.md` with practical next steps for import resilience, schema parity, Studio UX, parity checks, and operational documentation.
