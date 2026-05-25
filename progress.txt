@@ -196,3 +196,8 @@
 [SUCCESS] 2026-05-25 Studio structure parity slice completed
 - Reorganized the Studio sidebar to mirror the homepage composition with homepage shell, main column, sidebar column, support data, blog, and reference data groups.
 - Validated with `npm --prefix studio run lint`, `npm --prefix studio run build`, `npm run lint`, and `cmd /c npm run build`.
+[SUCCESS] 2026-05-25 Vision query pack slice completed
+- Added `studio/VISION_QUERIES.md` with repeatable Vision queries for homepage shell, resume selection, blog parity, projects, and reference/support data.
+- Linked the Vision query pack from `studio/README.md` so the inspection workflow is easy to find from the Studio docs.
+- Restored the missing `src/app/opengraph-image.tsx` and `src/app/twitter-image.tsx` metadata routes after the build surfaced the missing-file failure.
+- Verified the restored route files and metadata test file have no syntax or type issues with the available error checks.
