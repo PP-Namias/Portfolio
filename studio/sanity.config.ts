@@ -51,25 +51,47 @@ export default defineConfig({
               S.list()
                 .title('Homepage')
                 .items([
-                  S.listItem()
-                    .title('Hero Section')
-                    .child(S.document().schemaType('heroSection').documentId('heroSection')),
-                  S.listItem()
-                    .title('About Section')
-                    .child(S.document().schemaType('aboutSection').documentId('aboutSection')),
-                  S.listItem().title('Tech Stack').child(S.document().schemaType('techStack').documentId('techStack')),
-                  S.listItem()
-                    .title('Experience')
-                    .child(S.documentTypeList('experience').title('Experience')),
-                  S.listItem().title('Projects').child(S.documentTypeList('project').title('Projects')),
-                  S.listItem()
-                    .title('Certifications')
-                    .child(S.documentTypeList('certification').title('Certifications')),
-                  S.listItem().title('Gallery').child(S.documentTypeList('galleryImage').title('Gallery')),
-                  S.listItem().title('Resume').child(S.documentTypeList('resume').title('Resume')),
-                  S.listItem()
-                    .title('Site Settings')
-                    .child(S.document().schemaType('siteSettings').documentId('siteSettings')),
+                  S.listItem().title('Hero & shell').child(
+                    S.list()
+                      .title('Hero & shell')
+                      .items([
+                        S.listItem()
+                          .title('Hero Section')
+                          .child(S.document().schemaType('heroSection').documentId('heroSection')),
+                        S.listItem()
+                          .title('Resume')
+                          .child(S.documentTypeList('resume').title('Resume')),
+                        S.listItem()
+                          .title('Site Settings')
+                          .child(S.document().schemaType('siteSettings').documentId('siteSettings')),
+                      ])
+                  ),
+                  S.listItem().title('Main column').child(
+                    S.list()
+                      .title('Main column')
+                      .items([
+                        S.listItem()
+                          .title('About Section')
+                          .child(S.document().schemaType('aboutSection').documentId('aboutSection')),
+                        S.listItem()
+                          .title('Tech Stack')
+                          .child(S.document().schemaType('techStack').documentId('techStack')),
+                        S.listItem().title('Projects').child(S.documentTypeList('project').title('Projects')),
+                      ])
+                  ),
+                  S.listItem().title('Sidebar column').child(
+                    S.list()
+                      .title('Sidebar column')
+                      .items([
+                        S.listItem()
+                          .title('Experience')
+                          .child(S.documentTypeList('experience').title('Experience')),
+                        S.listItem()
+                          .title('Certifications')
+                          .child(S.documentTypeList('certification').title('Certifications')),
+                        S.listItem().title('Gallery').child(S.documentTypeList('galleryImage').title('Gallery')),
+                      ])
+                  ),
                 ])
             ),
             S.listItem().title('Support Data').child(

@@ -193,3 +193,6 @@
 - Added a Studio control map, localhost preview parity checks, Vision query pack tasks, a safer resume fallback plan, and a copy-paste agent prompt for slice-by-slice execution.
 [SUCCESS] 2026-05-25 Sanity CMS roadmap repaired and expanded
 - Cleaned up the malformed planning sections and restored the backlog, priority order, and copy-paste agent prompt in `SANITY_CMS_IMPROVEMENT_PLAN.md`.
+[SUCCESS] 2026-05-25 Studio structure parity slice completed
+- Reorganized the Studio sidebar to mirror the homepage composition with homepage shell, main column, sidebar column, support data, blog, and reference data groups.
+- Validated with `npm --prefix studio run lint`, `npm --prefix studio run build`, `npm run lint`, and `cmd /c npm run build`.
