@@ -38,7 +38,7 @@ Use this sequence for every migration or maintenance cycle:
 
 ## Transient upload failure recovery
 
-The importer already retries transient `502/503/504` upload and mutation failures.
+The importer already retries transient `502/503/504` upload and mutation failures, and it now retires stale managed documents after a successful live write so legacy duplicates do not linger in parity checks.
 If a live run still fails:
 
 1. Re-run `npm run sanity:import` (the importer uses deterministic IDs and `createOrReplace`).

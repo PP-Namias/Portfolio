@@ -22,6 +22,25 @@ const sourceFiles = {
   recommendations: 'portfolio-resources/data/recommendations.json',
 };
 
+const managedDocumentTypes = [
+  'profile',
+  'author',
+  'heroSection',
+  'techStack',
+  'resume',
+  'experience',
+  'project',
+  'certificationIssuer',
+  'certificationCategory',
+  'galleryCategory',
+  'category',
+  'post',
+  'galleryImage',
+  'certification',
+  'membership',
+  'recommendation',
+];
+
 const phaseOneManifest = [
   {
     sourceFile: sourceFiles.profile,
@@ -395,7 +414,7 @@ function createAssetCache() {
 function markdownToBlocks(markdown) {
   const blocks = [];
   const lines = String(markdown)
-    .replace(/\r\n/g, '\n')
+    .replaceAll('\r\n', '\n')
     .split('\n');
 
   let paragraphLines = [];
@@ -833,6 +852,102 @@ async function mutateDocuments({projectId, dataset, token, docs}) {
   }
 }
 
+async function fetchExistingManagedDocuments({projectId, dataset, token, types}) {
+  const query = encodeURIComponent('*[_type in $types]{_id, _type}');
+  const url = `https://${projectId}.api.sanity.io/v${apiVersion}/data/query/${dataset}?query=${query}`;
+
+  const response = await fetchWithRetry(
+    url,
+    {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({params: {types}}),
+    },
+    'fetching managed documents'
+  );
+
+  if (!response.ok) {
+    const body = await response.text();
+    throw new Error(`Failed to load existing managed documents: ${response.status} ${body}`);
+  }
+
+  const payload = await response.json();
+  return Array.isArray(payload.result) ? payload.result : [];
+}
+
+async function deleteDocuments({projectId, dataset, token, ids}) {
+  for (const [batchIndex, group] of chunk(ids, 25).entries()) {
+    logImportStep(`deleting stale batch ${batchIndex + 1}/${Math.ceil(ids.length / 25)} (${group.length} documents)`);
+
+    const response = await fetchWithRetry(
+      `https://${projectId}.api.sanity.io/v${apiVersion}/data/mutate/${dataset}`,
+      {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          mutations: group.map((id) => ({delete: {id}})),
+        }),
+      },
+      `delete batch ${batchIndex + 1}`
+    );
+
+    if (!response.ok) {
+      const body = await response.text();
+      throw new Error(`Sanity delete failed: ${response.status} ${body}`);
+    }
+  }
+}
+
+function buildManagedCleanupPlan(documents) {
+  const desiredIdsByType = new Map(managedDocumentTypes.map((type) => [type, new Set()]));
+
+  for (const doc of documents) {
+    const ids = desiredIdsByType.get(doc._type);
+    if (ids) {
+      ids.add(doc._id);
+    }
+  }
+
+  return desiredIdsByType;
+}
+
+async function cleanupManagedDocuments({projectId, dataset, token, documents}) {
+  const desiredIdsByType = buildManagedCleanupPlan(documents);
+  const existingDocuments = await fetchExistingManagedDocuments({projectId, dataset, token, types: managedDocumentTypes});
+
+  const staleIds = [];
+  const staleCounts = new Map();
+
+  for (const doc of existingDocuments) {
+    const desiredIds = desiredIdsByType.get(doc._type) ?? new Set();
+
+    if (!desiredIds.has(doc._id)) {
+      staleIds.push(doc._id);
+      staleCounts.set(doc._type, (staleCounts.get(doc._type) || 0) + 1);
+    }
+  }
+
+  if (staleIds.length === 0) {
+    logImportStep('no stale managed documents to delete');
+    return;
+  }
+
+  console.log('');
+  console.log('Stale document cleanup:');
+  for (const [type, count] of staleCounts.entries()) {
+    console.log(`- ${type}: ${count}`);
+  }
+
+  await deleteDocuments({projectId, dataset, token, ids: staleIds});
+  logImportStep(`removed ${staleIds.length} stale managed documents`);
+}
+
 function printPlan(plan) {
   console.log('Phase 1 Sanity migration import runner');
   console.log('-------------------------------------');
@@ -1019,12 +1134,15 @@ async function main() {
 
   logImportStep(`writing ${documents.length} documents`);
   await mutateDocuments({projectId, dataset, token, docs: documents});
+  await cleanupManagedDocuments({projectId, dataset, token, documents});
 
   console.log('');
   console.log(`Imported ${documents.length} documents into ${dataset} on ${projectId}.`);
 }
 
-main().catch((error) => {
+try {
+  await main();
+} catch (error) {
   console.error('[sanity-import]', error instanceof Error ? error.message : error);
   process.exitCode = 1;
-});
+}

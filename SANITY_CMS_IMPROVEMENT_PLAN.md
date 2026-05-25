@@ -328,4 +328,4 @@ Stop only when the current slice is complete or a genuine blocker requires user 
 
 ## Immediate Next Step
 
-Refresh source data from the latest resume, run dry-run/import/parity, then continue with incremental cleanup of parity mismatches.
+Parity is currently clean for the managed CMS document types. Use the existing dry-run/import/parity runbook for future content refreshes, and only reopen this plan when new source changes or schema updates introduce drift.
