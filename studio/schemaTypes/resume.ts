@@ -6,11 +6,17 @@ export default defineType({
   type: 'document',
   fields: [
     defineField({
-      name: 'resumeUrl',
-      title: 'Resume URL',
-      type: 'url',
-      description: 'Enter the URL for the live resume file or document. This will be used for the resume button on the site.',
+      name: 'resumeFile',
+      title: 'Resume file',
+      type: 'file',
+      description: 'Upload the active resume PDF here. The website can keep using the fallback URL until it reads this field directly.',
       validation: (Rule: any) => Rule.required()
+    }),
+    defineField({
+      name: 'resumeUrl',
+      title: 'Legacy resume URL',
+      type: 'url',
+      description: 'Optional fallback path for the active resume while the uploaded file workflow is being adopted.'
     }),
     defineField({
       name: 'isActive',
@@ -23,12 +29,13 @@ export default defineType({
   preview: {
     select: {
       isActive: 'isActive',
+      resumeFileName: 'resumeFile.asset.originalFilename',
       resumeUrl: 'resumeUrl'
     },
     prepare(selection: any) {
-      const {isActive, resumeUrl} = selection
+      const {isActive, resumeFileName, resumeUrl} = selection
       return {
-        title: resumeUrl || 'Resume',
+        title: resumeFileName || resumeUrl || 'Resume',
         subtitle: isActive ? 'Active Resume' : 'Inactive'
       }
     }

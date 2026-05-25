@@ -175,6 +175,8 @@ function getContentType(fileName) {
       return 'image/svg+xml';
     case '.bmp':
       return 'image/bmp';
+    case '.pdf':
+      return 'application/pdf';
     default:
       return 'application/octet-stream';
   }
@@ -186,6 +188,26 @@ async function findAssetPath(folder, fileName) {
     path.join(repoRoot, 'portfolio-resources', 'assets', 'images', folder, fileName),
     path.join(repoRoot, 'public', 'images', folder, decodeURIComponent(fileName)),
     path.join(repoRoot, 'portfolio-resources', 'assets', 'images', folder, decodeURIComponent(fileName)),
+  ];
+
+  for (const candidate of candidates) {
+    try {
+      await fs.access(candidate);
+      return candidate;
+    } catch {
+      // Keep looking.
+    }
+  }
+
+  return null;
+}
+
+async function findDocumentAssetPath(fileName) {
+  const candidates = [
+    path.join(repoRoot, 'portfolio-resources', 'assets', 'documents', fileName),
+    path.join(repoRoot, 'public', fileName),
+    path.join(repoRoot, 'portfolio-resources', 'assets', 'documents', decodeURIComponent(fileName)),
+    path.join(repoRoot, 'public', decodeURIComponent(fileName)),
   ];
 
   for (const candidate of candidates) {
@@ -296,6 +318,62 @@ async function uploadImageAsset({projectId, dataset, token, folder, fileName}) {
   }
 
   return assetId;
+}
+
+async function uploadFileAsset({projectId, dataset, token, fileName}) {
+  const assetPath = await findDocumentAssetPath(fileName);
+
+  if (!assetPath) {
+    throw new Error(`Missing document asset for ${fileName}`);
+  }
+
+  const buffer = await fs.readFile(assetPath);
+  const uploadUrl = new URL(
+    `https://${projectId}.api.sanity.io/v${apiVersion}/assets/files/${dataset}`
+  );
+  uploadUrl.searchParams.set('filename', fileName);
+
+  logImportStep(`uploading document ${fileName}`);
+
+  const response = await fetchWithRetry(uploadUrl, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': getContentType(fileName),
+    },
+    body: buffer,
+  }, `file upload for ${fileName}`);
+
+  if (!response.ok) {
+    const body = await response.text();
+    throw new Error(`File upload failed for ${fileName}: ${response.status} ${body}`);
+  }
+
+  const payload = await response.json();
+  const asset = payload.document ?? payload.asset ?? payload;
+  const assetId = asset?._id ?? asset?.id;
+
+  if (!assetId) {
+    throw new Error(`Unable to read file asset id from upload response for ${fileName}`);
+  }
+
+  return assetId;
+}
+
+function buildResumeDocument(resumeAssetId) {
+  return {
+    _id: 'resume',
+    _type: 'resume',
+    resumeFile: {
+      _type: 'file',
+      asset: {
+        _type: 'reference',
+        _ref: resumeAssetId,
+      },
+    },
+    resumeUrl: '/resume.pdf',
+    isActive: true,
+  };
 }
 
 function createAssetCache() {
@@ -873,6 +951,14 @@ async function main() {
         uploadImageAsset({projectId, dataset, token, folder: 'blog', fileName})
       );
     },
+    resumeFile: async (fileName) => {
+      if (dryRun) {
+        return `dry-run:documents/${fileName}`;
+      }
+      return assetCache.get(`documents/${fileName}`, () =>
+        uploadFileAsset({projectId, dataset, token, fileName})
+      );
+    },
   };
 
   const projectDocs = await buildProjectDocuments(projects, assetContext);
@@ -884,6 +970,7 @@ async function main() {
   );
   const galleryDocs = await buildGalleryDocuments(gallery, assetContext, galleryCategoryMap);
   const blogDocs = await buildBlogDocuments(blogPosts, assetContext, authorDoc._id, blogCategoryMap);
+  const resumeDoc = buildResumeDocument(await assetContext.resumeFile('resume.pdf'));
 
   const documents = [
     ...certificationIssuerDocs,
@@ -894,6 +981,7 @@ async function main() {
     authorDoc,
     heroSectionDoc,
     techStackDoc,
+    resumeDoc,
     ...experienceDocs,
     ...projectDocs,
     ...certificationDocs,
@@ -911,7 +999,9 @@ async function main() {
   const plan = {
     documents,
     countsByType,
-    assets: documents.filter((doc) => doc.image?.asset?._ref || doc.mainImage?.asset?._ref),
+    assets: documents.filter(
+      (doc) => doc.image?.asset?._ref || doc.mainImage?.asset?._ref || doc.resumeFile?.asset?._ref
+    ),
     warnings,
   };
 

@@ -187,3 +187,5 @@
 [SUCCESS] 2026-05-25 Studio structure and presentation parity slice implemented
 - Grouped the Sanity sidebar into Homepage, Support Data, Blog, and Reference Data sections.
 - Added section-specific presentation targets for homepage content and blog posts so Studio preview matches the localhost site more closely.
+[SUCCESS] 2026-05-25 Resume upload workflow slice implemented
+- Added a Sanity file field for the active resume, preserved the legacy URL fallback, and seeded the imported resume PDF as a Sanity file asset.
