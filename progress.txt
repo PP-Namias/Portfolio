@@ -221,3 +221,7 @@
 - Documented parity verification usage in `scripts/sanity/README.md`.
 - Validated with `npm run sanity:parity`, `npm run lint`, and `npm run build`.
 - Latest parity report surfaced mismatches in `profile`, `resume`, `experience`, `project`, `certification`, and `membership` for follow-up cleanup.
+[SUCCESS] 2026-05-26 Operational docs and maintenance workflow cleanup slice completed
+- Expanded `scripts/sanity/README.md` with required env vars, an operational command sequence, transient upload recovery steps, and next-type cleanup priorities.
+- Updated root `README.md` to include Sanity migration/parity scripts in the standard script catalog.
+- Validated with `npm run lint` and `npm run build`.

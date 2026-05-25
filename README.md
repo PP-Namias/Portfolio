@@ -51,6 +51,10 @@ Open [http://localhost:3000](http://localhost:3000).
 - `npm run lint` — run ESLint
 - `npm run test` — run Vitest once
 - `npm run test:watch` — run Vitest in watch mode
+- `npm run sanity:dry-run` — preview Sanity import plan without writing
+- `npm run sanity:import` — run Sanity import with idempotent upserts
+- `npm run sanity:parity` — compare expected source counts vs dataset counts
+- `npm run sanity:parity:strict` — same parity report, returns non-zero on mismatch
 
 ## Environment variables
 
