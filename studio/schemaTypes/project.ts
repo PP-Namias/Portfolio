@@ -37,6 +37,16 @@ export default defineType({
       type: 'number',
     }),
     defineField({
+      name: 'category',
+      title: 'Category',
+      type: 'string',
+    }),
+    defineField({
+      name: 'role',
+      title: 'Role',
+      type: 'string',
+    }),
+    defineField({
       name: 'technologies',
       title: 'Technologies',
       type: 'array',
@@ -70,6 +80,23 @@ export default defineType({
       name: 'repositoryUrl',
       title: 'Repository URL',
       type: 'url',
+    }),
+    defineField({
+      name: 'featuredRank',
+      title: 'Featured rank',
+      type: 'number',
+    }),
+    defineField({
+      name: 'status',
+      title: 'Status',
+      type: 'string',
+      options: {
+        list: [
+          {title: 'Completed', value: 'completed'},
+          {title: 'In progress', value: 'in-progress'},
+          {title: 'Prototype', value: 'prototype'},
+        ],
+      },
     }),
   ],
   preview: {

@@ -163,3 +163,6 @@
 
 [SUCCESS] 2026-05-25 Sanity experience import now preserves source images
 - Added `images` to the experience schema and import payload so the collection keeps its linked media references from `experiences.json`.
+
+[SUCCESS] 2026-05-25 Sanity project import now preserves source metadata
+- Added project `category`, `role`, `featuredRank`, and `status` fields to the schema and import payload so `projects.json` stays lossless.

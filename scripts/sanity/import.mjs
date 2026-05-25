@@ -536,12 +536,16 @@ async function buildProjectDocuments(projects, assetContext) {
       slug: {current: slugify(project.title)},
       summary: project.description,
       year: project.year,
+      category: project.category,
+      role: project.role,
       technologies: project.tags,
       achievements: (project.impactMetrics ?? []).map((metric) => `${metric.label}: ${metric.value}`),
       image: buildImageValue(imageId, project.title),
       gallery: galleryImages,
       liveUrl: project.detailURL || project.liveURL || undefined,
       repositoryUrl: project.repositoryURL || undefined,
+      featuredRank: project.featuredRank ?? undefined,
+      status: project.status ?? undefined,
     });
   }
 

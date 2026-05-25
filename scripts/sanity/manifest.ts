@@ -34,6 +34,7 @@ export const phaseOneSanityManifest: SanitySourceMapping[] = [
     notes: [
       'Preserve detailURL > liveURL > repositoryURL link precedence.',
       'Keep gallery and impact metrics intact.',
+      'Preserve category, role, featured rank, and status fields from the source data.',
     ],
   },
   {
