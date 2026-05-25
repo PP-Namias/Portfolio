@@ -13,13 +13,25 @@ export default defineType({
       validation: (Rule: any) => Rule.required(),
     }),
     defineField({
-      name: 'categories',
-      title: 'Categories',
+      name: 'technologies',
+      title: 'Technologies',
       type: 'array',
       of: [
         {
           type: 'object',
           fields: [
+            defineField({
+              name: 'name',
+              title: 'Name',
+              type: 'string',
+              validation: (Rule: any) => Rule.required(),
+            }),
+            defineField({
+              name: 'logo',
+              title: 'Logo',
+              type: 'string',
+              validation: (Rule: any) => Rule.required(),
+            }),
             defineField({
               name: 'category',
               title: 'Category',
@@ -27,10 +39,9 @@ export default defineType({
               validation: (Rule: any) => Rule.required(),
             }),
             defineField({
-              name: 'tags',
-              title: 'Tags',
-              type: 'array',
-              of: [{type: 'string'}],
+              name: 'proficiency',
+              title: 'Proficiency',
+              type: 'number',
               validation: (Rule: any) => Rule.required(),
             }),
           ],

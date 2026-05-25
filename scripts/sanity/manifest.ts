@@ -57,7 +57,7 @@ export const phaseOneSanityManifest: SanitySourceMapping[] = [
     sourceFile: 'portfolio-resources/data/technologies.json',
     targetModel: 'techStack singleton document',
     kind: 'singleton',
-    notes: ['Bucket technologies by category before import.'],
+    notes: ['Preserve the full technologies array with logo and proficiency fields.'],
   },
   {
     sourceFile: 'portfolio-resources/data/blog.json',

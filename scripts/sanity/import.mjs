@@ -482,23 +482,16 @@ function buildHeroSectionDocument(profile, socials) {
 }
 
 function buildTechStackDocument(technologies) {
-  const grouped = technologies.reduce((acc, item) => {
-    if (!acc[item.category]) {
-      acc[item.category] = [];
-    }
-
-    acc[item.category].push(item.name);
-    return acc;
-  }, {});
-
   return {
     _id: 'techStack',
     _type: 'techStack',
     title: 'Tech Stack',
-    categories: Object.entries(grouped).map(([category, tags]) => ({
-      _key: slugify(category),
-      category,
-      tags,
+    technologies: technologies.map((technology) => ({
+      _key: slugify(`${technology.category}-${technology.name}`),
+      name: technology.name,
+      logo: technology.logo,
+      category: technology.category,
+      proficiency: technology.proficiency,
     })),
   };
 }
