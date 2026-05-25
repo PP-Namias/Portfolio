@@ -3,8 +3,14 @@ import {defineLocations, presentationTool} from 'sanity/presentation'
 import {structureTool} from 'sanity/structure'
 import {visionTool} from '@sanity/vision'
 import {schemaTypes} from './schemaTypes'
+import {getDraftModeEnablePath, getStudioPreviewOrigin, loadStudioEnvironment, requireStudioEnv} from './env'
 
-const presentationPreviewUrl = 'https://ervhyne.vercel.app'
+loadStudioEnvironment()
+
+const presentationPreviewUrl = getStudioPreviewOrigin()
+const presentationEnablePath = getDraftModeEnablePath()
+const projectId = requireStudioEnv('NEXT_PUBLIC_SANITY_PROJECT_ID')
+const dataset = requireStudioEnv('NEXT_PUBLIC_SANITY_DATASET')
 
 const homePageLocation = {
   message: 'This document is used on',
@@ -19,10 +25,10 @@ const homePageLocation = {
 
 export default defineConfig({
   name: 'default',
-  title: 'Ervhyne Portfolio CMS',
+  title: 'Namias CMS Studio',
 
-  projectId: '3auhr54u',
-  dataset: 'production',
+  projectId,
+  dataset,
 
   plugins: [
     structureTool({
@@ -73,7 +79,7 @@ export default defineConfig({
       previewUrl: {
         origin: presentationPreviewUrl,
         previewMode: {
-          enable: '/api/draft-mode/enable',
+          enable: presentationEnablePath,
         },
       },
       resolve: {
@@ -93,7 +99,7 @@ export default defineConfig({
         },
       },
     }),
-    visionTool()
+    visionTool(),
   ],
 
   schema: {
