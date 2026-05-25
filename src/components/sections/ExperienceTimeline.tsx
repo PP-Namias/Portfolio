@@ -3,15 +3,16 @@
 import React, { useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import { ChevronDown, ChevronUp } from 'lucide-react';
-import { experiences } from '@/data/experience';
 import { TimelineItem } from '@/components/ui/TimelineItem';
+import { useCmsContent } from '@/hooks/useCmsContent';
 
 export function ExperienceTimeline() {
+  const { experiences } = useCmsContent();
   const [isExpanded, setIsExpanded] = useState(false);
 
   const visibleExperiences = useMemo(
     () => (isExpanded ? experiences : experiences.slice(0, 3)),
-    [isExpanded]
+    [isExpanded, experiences]
   );
 
   const isExpandable = experiences.length > 3;

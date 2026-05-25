@@ -11,11 +11,8 @@ import {
   FaLinkedinIn,
   FaXTwitter,
 } from 'react-icons/fa6';
-import { socialLinks } from '@/data/socials';
-import { experiences } from '@/data/experience';
-import { certifications } from '@/data/certifications';
-import { technologies } from '@/data/techStack';
 import { useModal } from '@/hooks/useModal';
+import { useCmsContent } from '@/hooks/useCmsContent';
 
 const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   calendar: Calendar,
@@ -30,6 +27,7 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
 };
 
 export function ConnectSection() {
+  const { socialLinks, experiences, certifications, technologies } = useCmsContent();
   const { openModal } = useModal();
 
   return (

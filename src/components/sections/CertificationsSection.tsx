@@ -4,19 +4,21 @@ import React, { useState, useEffect, useMemo } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ChevronDown, ChevronUp } from 'lucide-react';
-import { certifications } from '@/data/certifications';
+import { useCmsContent } from '@/hooks/useCmsContent';
 
-const ISSUERS = ['All', ...Array.from(new Set(certifications.map((c) => c.issuer)))];
 const INITIAL_COUNT = 6;
 
 export function CertificationsSection() {
+  const { certifications } = useCmsContent();
   const [selectedCert, setSelectedCert] = useState<{ image: string; title: string } | null>(null);
   const [activeIssuer, setActiveIssuer] = useState('All');
   const [expanded, setExpanded] = useState(false);
 
+  const issuers = ['All', ...Array.from(new Set(certifications.map((c) => c.issuer)))];
+
   const filtered = useMemo(
     () => activeIssuer === 'All' ? certifications : certifications.filter((c) => c.issuer === activeIssuer),
-    [activeIssuer]
+    [activeIssuer, certifications]
   );
 
   const visibleCerts = expanded ? filtered : filtered.slice(0, INITIAL_COUNT);
@@ -42,7 +44,7 @@ export function CertificationsSection() {
       transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
     >
       <h2 className="text-lg font-semibold text-text-primary-light dark:text-text-primary-dark mb-4">
-        Certifications
+        Certifications{' '}
         <span className="text-xs font-medium px-1.5 py-0.5 rounded-md bg-accent-pink/10 text-accent-pink ml-2 align-middle">
           {certifications.length}
         </span>
@@ -50,7 +52,7 @@ export function CertificationsSection() {
 
       {/* Issuer filter tabs */}
       <div className="flex flex-wrap gap-1.5 mb-4">
-        {ISSUERS.map((issuer) => (
+        {issuers.map((issuer) => (
           <button
             key={issuer}
             onClick={() => setActiveIssuer(issuer)}

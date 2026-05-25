@@ -3,10 +3,11 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { ChevronRight } from 'lucide-react';
-import { profile } from '@/data/profile';
 import { useModal } from '@/hooks/useModal';
+import { useCmsContent } from '@/hooks/useCmsContent';
 
 export function SpeakingSection() {
+  const { profile } = useCmsContent();
   const topics = profile.highlights.primaryTechnologies;
   const { openModal } = useModal();
 

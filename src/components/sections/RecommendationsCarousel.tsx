@@ -3,26 +3,20 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MessageSquare } from 'lucide-react';
-import { recommendations } from '@/data/recommendations';
 import { useCarousel } from '@/hooks/useCarousel';
+import { useCmsContent } from '@/hooks/useCmsContent';
 
 const PLACEHOLDER_NAMES = new Set(['Sample Recommender', 'Another Recommender']);
 
-function isPlaceholderData() {
-  if (recommendations.length === 0) {
-    return true;
-  }
-
-  return recommendations.every((r) => PLACEHOLDER_NAMES.has(r.name));
-}
-
 export function RecommendationsCarousel() {
+  const { recommendations } = useCmsContent();
   const { currentIndex, goTo, setIsHovered } = useCarousel({
     totalItems: recommendations.length,
     autoAdvanceInterval: 6000,
   });
   const [direction, setDirection] = useState(1);
   const prevIndex = useRef(0);
+  const isPlaceholderData = recommendations.every((recommendation) => PLACEHOLDER_NAMES.has(recommendation.name));
 
   useEffect(() => {
     setDirection(currentIndex > prevIndex.current ? 1 : -1);
@@ -35,7 +29,7 @@ export function RecommendationsCarousel() {
     goTo(index);
   };
 
-  if (isPlaceholderData()) {
+  if (isPlaceholderData) {
     return (
       <motion.section
         initial={{ opacity: 0, y: 20 }}

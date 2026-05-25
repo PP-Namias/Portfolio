@@ -3,9 +3,10 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { GraduationCap, ChevronDown, ChevronUp } from 'lucide-react';
-import { profile } from '@/data/profile';
+import { useCmsContent } from '@/hooks/useCmsContent';
 
 export function AboutSection() {
+  const { profile } = useCmsContent();
   const [showMore, setShowMore] = useState(false);
   const paragraphs = profile.summary.split('\n\n');
 

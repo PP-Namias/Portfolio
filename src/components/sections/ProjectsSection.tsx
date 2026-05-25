@@ -4,7 +4,7 @@ import React, { useMemo, useState } from 'react';
 import Image from 'next/image';
 import { motion, useReducedMotion } from 'framer-motion';
 import { ChevronDown, ChevronUp } from 'lucide-react';
-import { projects } from '@/data/projects';
+import { useCmsContent } from '@/hooks/useCmsContent';
 import { Project } from '@/types';
 
 const INITIAL_VISIBLE_PROJECTS = 4;
@@ -169,10 +169,11 @@ function ProjectShowcaseCard({
 }
 
 export function ProjectsSection() {
+  const { projects } = useCmsContent();
   const reduceMotion = useReducedMotion();
   const [showAll, setShowAll] = useState(false);
 
-  const orderedProjects = useMemo(() => sortProjectsForShowcase(projects), []);
+  const orderedProjects = useMemo(() => sortProjectsForShowcase(projects), [projects]);
 
   const visibleProjects = useMemo(
     () => (showAll ? orderedProjects : orderedProjects.slice(0, INITIAL_VISIBLE_PROJECTS)),
@@ -216,7 +217,6 @@ export function ProjectsSection() {
           type="button"
           onClick={() => setShowAll((current) => !current)}
           className="mx-auto mt-4 flex items-center gap-1 rounded-sm text-xs font-medium text-text-muted-light transition-colors hover:text-accent-pink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-pink/50 dark:text-text-muted-dark"
-          aria-expanded={showAll}
         >
           {showAll ? (
             <>

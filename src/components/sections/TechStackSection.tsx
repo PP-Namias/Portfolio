@@ -3,14 +3,15 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, ChevronUp } from 'lucide-react';
-import { techCategories } from '@/data/techStack';
-import { technologies } from '@/data/techStack';
+import { useCmsContent } from '@/hooks/useCmsContent';
+import type { Technology } from '@/types';
 
 const INITIAL_CATEGORIES = 3;
-const categories = Object.entries(techCategories);
 
 export function TechStackSection() {
+  const { techCategories, technologies } = useCmsContent();
   const [expanded, setExpanded] = useState(false);
+  const categories = Object.entries(techCategories) as Array<[string, Technology[]]>;
   const visible = expanded ? categories : categories.slice(0, INITIAL_CATEGORIES);
 
   return (
@@ -21,7 +22,7 @@ export function TechStackSection() {
       transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
     >
       <h2 className="text-lg font-semibold text-text-primary-light dark:text-text-primary-dark mb-4">
-        Tech Stack
+        Tech Stack{' '}
         <span className="text-xs font-medium px-1.5 py-0.5 rounded-md bg-accent-pink/10 text-accent-pink ml-2 align-middle">
           {technologies.length}
         </span>

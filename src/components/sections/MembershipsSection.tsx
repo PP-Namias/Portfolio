@@ -3,9 +3,10 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { ExternalLink } from 'lucide-react';
-import { memberships } from '@/data/memberships';
+import { useCmsContent } from '@/hooks/useCmsContent';
 
 export function MembershipsSection() {
+  const { memberships } = useCmsContent();
   return (
     <motion.section
       className=""

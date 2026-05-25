@@ -11,12 +11,12 @@ import {
 } from 'lucide-react';
 import { FaGithub, FaInstagram, FaLinkedinIn, FaXTwitter } from 'react-icons/fa6';
 import { profile } from '@/data/profile';
-import { socialLinks } from '@/data/socials';
 import { Button } from '@/components/ui/Button';
 import { VerifiedBadge } from '@/components/ui/VerifiedBadge';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import { ColorSchemePicker } from '@/components/ui/ColorSchemePicker';
 import { useModal } from '@/hooks/useModal';
+import { useCmsContent } from '@/hooks/useCmsContent';
 import { IS_BLOG_VISIBLE } from '@/lib/features';
 
 const roles = [
@@ -74,6 +74,7 @@ const photoVariants = {
 };
 
 export function HeroSection() {
+  const { profile, socialLinks } = useCmsContent();
   const [roleIndex, setRoleIndex] = useState(0);
   const [activeProfileImage, setActiveProfileImage] = useState(mainProfileImage);
   const { openModal } = useModal();
@@ -139,7 +140,7 @@ export function HeroSection() {
       <div className="flex flex-col items-center text-center sm:text-left sm:flex-row sm:items-center gap-6 sm:gap-7 lg:gap-8 md:pt-2 lg:pt-1">
         {/* Profile Photo — taller 3D tilt card */}
         <motion.div className="flex-shrink-0" variants={photoVariants}>
-          <div style={{ perspective: 600 }}>
+          <div className="[perspective:600px]">
             <motion.div
               ref={photoRef}
               className="group relative h-[188px] w-[160px] cursor-pointer shadow-lg border border-border-light dark:border-border-dark rounded-2xl"

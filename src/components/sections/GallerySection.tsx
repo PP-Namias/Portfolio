@@ -4,10 +4,9 @@ import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight, X, ChevronDown, ChevronUp } from 'lucide-react';
-import { galleryImages } from '@/data/gallery';
+import { useCmsContent } from '@/hooks/useCmsContent';
 
 const INITIAL_COUNT = 9;
-const FILTER_TAGS = ['All', ...Array.from(new Set(galleryImages.flatMap((img) => img.tags.filter((t) => !/^\d{4}$/.test(t))).sort()))];
 
 // Assigns span classes for visual variety — only the first image gets 2x2, rest are 1x1
 // This avoids gaps in the dense grid while still giving a hero treatment
@@ -17,14 +16,34 @@ function getSpanClass(index: number): string {
 }
 
 export function GallerySection() {
+  const { galleryImages } = useCmsContent();
   const [activeTag, setActiveTag] = useState('All');
   const [expanded, setExpanded] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
 
-  const filtered = useMemo(
-    () => activeTag === 'All' ? galleryImages : galleryImages.filter((img) => img.tags.includes(activeTag)),
-    [activeTag]
-  );
+  const filterTags = useMemo(() => {
+    const tagSet = new Set<string>();
+
+    for (const image of galleryImages) {
+      for (const tag of image.tags) {
+        if (/^\d{4}$/.test(tag)) {
+          continue;
+        }
+
+        tagSet.add(tag);
+      }
+    }
+
+    return ['All', ...Array.from(tagSet).sort((a, b) => a.localeCompare(b))];
+  }, [galleryImages]);
+
+  const filtered = useMemo(() => {
+    if (activeTag === 'All') {
+      return galleryImages;
+    }
+
+    return galleryImages.filter((image) => image.tags.includes(activeTag));
+  }, [activeTag, galleryImages]);
 
   const visibleImages = expanded ? filtered : filtered.slice(0, INITIAL_COUNT);
   const hasMore = filtered.length > INITIAL_COUNT;
@@ -36,13 +55,31 @@ export function GallerySection() {
 
   // Lightbox navigation
   const goToNext = useCallback(() => {
-    if (selectedIndex === null) return;
-    setSelectedIndex((prev) => (prev !== null && prev < filtered.length - 1) ? prev + 1 : 0);
+    if (selectedIndex === null) {
+      return;
+    }
+
+    setSelectedIndex((prev) => {
+      if (prev === null) {
+        return 0;
+      }
+
+      return prev < filtered.length - 1 ? prev + 1 : 0;
+    });
   }, [selectedIndex, filtered.length]);
 
   const goToPrev = useCallback(() => {
-    if (selectedIndex === null) return;
-    setSelectedIndex((prev) => (prev !== null && prev > 0) ? prev - 1 : filtered.length - 1);
+    if (selectedIndex === null) {
+      return;
+    }
+
+    setSelectedIndex((prev) => {
+      if (prev === null) {
+        return filtered.length - 1;
+      }
+
+      return prev > 0 ? prev - 1 : filtered.length - 1;
+    });
   }, [selectedIndex, filtered.length]);
 
   // Keyboard navigation for lightbox
@@ -59,15 +96,15 @@ export function GallerySection() {
 
   // Lock body scroll when lightbox is open
   useEffect(() => {
-    if (selectedIndex !== null) {
-      document.body.style.overflow = 'hidden';
-    } else {
+    if (selectedIndex === null) {
       document.body.style.overflow = '';
+    } else {
+      document.body.style.overflow = 'hidden';
     }
     return () => { document.body.style.overflow = ''; };
   }, [selectedIndex]);
 
-  const selectedImage = selectedIndex !== null ? filtered[selectedIndex] : null;
+  const selectedImage = selectedIndex === null ? null : filtered[selectedIndex];
 
   return (
     <motion.section
@@ -78,7 +115,7 @@ export function GallerySection() {
     >
       {/* Header */}
       <h2 className="text-lg font-semibold text-text-primary-light dark:text-text-primary-dark mb-4">
-        Gallery
+        Gallery{' '}
         <span className="text-xs font-medium px-1.5 py-0.5 rounded-md bg-accent-pink/10 text-accent-pink ml-2 align-middle">
           {filtered.length}
         </span>
@@ -86,7 +123,7 @@ export function GallerySection() {
 
       {/* Tag filter */}
       <div className="flex flex-wrap gap-1.5 mb-4">
-        {FILTER_TAGS.map((tag) => (
+        {filterTags.map((tag) => (
           <button
             key={tag}
             onClick={() => setActiveTag(tag)}
@@ -102,7 +139,7 @@ export function GallerySection() {
       </div>
 
       {/* Masonry-style grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 auto-rows-[150px] sm:auto-rows-[170px]" style={{ gridAutoFlow: 'dense' }}>
+      <div className="grid grid-cols-2 gap-2 auto-rows-[150px] sm:grid-cols-3 sm:auto-rows-[170px] md:grid-cols-4 [grid-auto-flow:dense]">
         <AnimatePresence mode="popLayout">
           {visibleImages.map((image, index) => {
             const globalIndex = filtered.indexOf(image);
