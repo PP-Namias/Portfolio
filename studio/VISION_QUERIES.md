@@ -2,6 +2,13 @@
 
 Use these queries in Sanity Vision when checking homepage structure, preview parity, and content relationships.
 
+## Recommended inspection order
+
+1. Run the homepage shell queries first to confirm the structure and preview labels.
+2. Check the resume selection queries next to confirm the active file and fallback URL.
+3. Use the blog and collection queries to verify counts and ordering before and after imports.
+4. Finish with the reference and support data query to confirm the homepage inputs stay aligned.
+
 ## Homepage shell
 
 ```groq

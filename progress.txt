@@ -202,6 +202,10 @@
 - Made `next.config.js` use standalone output on non-Windows platforms so the local Windows build can complete without the standalone packaging race.
 - Validated with `npm run lint` and `npm run build` after clearing stale build workers.
 [SUCCESS] 2026-05-25 Vision query pack slice completed
+- Added a recommended inspection order to `studio/VISION_QUERIES.md` so homepage, resume, blog, and collection checks happen in a repeatable sequence.
+- Linked the Sanity improvement plan directly to the living query pack for easier maintenance.
+- Validated with `npm run lint` and `npm run build`.
+[SUCCESS] 2026-05-25 Vision query pack slice completed
 - Added `studio/VISION_QUERIES.md` with repeatable Vision queries for homepage shell, resume selection, blog parity, projects, and reference/support data.
 - Linked the Vision query pack from `studio/README.md` so the inspection workflow is easy to find from the Studio docs.
 - Restored the missing `src/app/opengraph-image.tsx` and `src/app/twitter-image.tsx` metadata routes after the build surfaced the missing-file failure.

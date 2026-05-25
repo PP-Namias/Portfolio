@@ -102,6 +102,8 @@ Why this matters:
 
 Use the Sanity Vision tool and query patterns to inspect and verify content relationships during planning and maintenance.
 
+The living query pack lives in `studio/VISION_QUERIES.md` and covers homepage shell checks, resume selection, blog parity, collection ordering, and support/reference counts.
+
 Recommended improvements:
 
 - Document a standard set of queries for troubleshooting structure, presentation, and content parity.
