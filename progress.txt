@@ -215,3 +215,9 @@
 - Updated `src/components/ui/ResumeModal.tsx` to fetch `/api/resume` on open and use the resolved URL for download + embedded viewer while preserving fallback behavior.
 - Expanded `src/__tests__/components/ResumeModal.test.tsx` to validate runtime URL hydration and fallback expectations.
 - Validated with `npm run test -- src/__tests__/components/ResumeModal.test.tsx`, `npm run lint`, and `npm run build`.
+[SUCCESS] 2026-05-26 Import verification and parity reporting slice completed
+- Added `scripts/sanity/parity-report.mjs` to compare source-derived expected counts against live Sanity dataset counts by document type.
+- Added `npm run sanity:parity` and `npm run sanity:parity:strict` commands in `package.json`.
+- Documented parity verification usage in `scripts/sanity/README.md`.
+- Validated with `npm run sanity:parity`, `npm run lint`, and `npm run build`.
+- Latest parity report surfaced mismatches in `profile`, `resume`, `experience`, `project`, `certification`, and `membership` for follow-up cleanup.
