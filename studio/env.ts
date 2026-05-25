@@ -1,5 +1,11 @@
 let environmentLoaded = false
 const processEnv = typeof process !== 'undefined' ? process.env : undefined
+const defaultEnvValues: Record<string, string> = {
+  SANITY_STUDIO_PROJECT_ID: 'nl0qw78w',
+  NEXT_PUBLIC_SANITY_PROJECT_ID: 'nl0qw78w',
+  SANITY_STUDIO_DATASET: 'production',
+  NEXT_PUBLIC_SANITY_DATASET: 'production',
+}
 
 function getEnvValue(name: string): string | undefined {
   const value = processEnv?.[name]
@@ -42,6 +48,14 @@ export function loadStudioEnvironment() {
 export function requireStudioEnv(...names: string[]): string {
   const candidates = names.length > 0 ? names : []
   const value = candidates.map((name) => getEnvValue(name)).find(Boolean)
+
+  if (!value) {
+    const fallback = candidates.map((name) => defaultEnvValues[name]).find(Boolean)
+
+    if (fallback) {
+      return fallback
+    }
+  }
 
   if (!value) {
     const label = candidates.length > 0 ? candidates.join(' or ') : 'unknown'
