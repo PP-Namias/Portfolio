@@ -22,9 +22,20 @@ vi.mock('framer-motion', () => {
 describe('ResumeModal', () => {
   const mockOnClose = vi.fn();
 
+  const fetchMock = vi.fn();
+
   beforeEach(() => {
     vi.clearAllMocks();
+    fetchMock.mockReset();
+    globalThis.fetch = fetchMock as typeof fetch;
   });
+
+  const mockResumeResponse = (resumeUrl = '/sanity-resume.pdf') => {
+    fetchMock.mockResolvedValue({
+      ok: true,
+      json: async () => ({ resumeUrl, isActive: true }),
+    });
+  };
 
   it('renders nothing when closed', () => {
     render(<ResumeModal open={false} onClose={mockOnClose} />);
@@ -37,20 +48,26 @@ describe('ResumeModal', () => {
   });
 
   it('renders download PDF button', () => {
+    mockResumeResponse('/resume.pdf');
     render(<ResumeModal open={true} onClose={mockOnClose} />);
     const downloadLink = screen.getByText('Download PDF').closest('a');
     expect(downloadLink).toHaveAttribute('href', '/resume.pdf');
     expect(downloadLink).toHaveAttribute('download');
   });
 
-  it('embeds the resume PDF via iframe', () => {
+  it('hydrates the resume URL from the runtime endpoint', async () => {
+    mockResumeResponse('/sanity-resume.pdf');
     render(<ResumeModal open={true} onClose={mockOnClose} />);
     const pdfIframe = screen.getByTitle('Resume PDF Viewer');
     expect(pdfIframe).toBeInTheDocument();
-    expect(pdfIframe).toHaveAttribute('src', '/resume.pdf#view=FitH');
+
+    expect(await screen.findByText('Download PDF')).toBeInTheDocument();
+    expect(fetchMock).toHaveBeenCalledWith('/api/resume', expect.any(Object));
+    expect(pdfIframe).toHaveAttribute('src', '/sanity-resume.pdf#view=FitH');
   });
 
   it('has a fallback download link for unsupported browsers', () => {
+    mockResumeResponse('/resume.pdf');
     render(<ResumeModal open={true} onClose={mockOnClose} />);
     const fallbackText = screen.getByText(/doesn't support embedded PDF/i);
     expect(fallbackText).toBeInTheDocument();
@@ -61,6 +78,7 @@ describe('ResumeModal', () => {
   });
 
   it('has a close button that calls onClose', () => {
+    mockResumeResponse('/resume.pdf');
     render(<ResumeModal open={true} onClose={mockOnClose} />);
     // The ResumeModal toolbar has its own close button
     const closeButtons = screen.getAllByLabelText('Close');

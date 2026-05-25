@@ -210,3 +210,8 @@
 - Linked the Vision query pack from `studio/README.md` so the inspection workflow is easy to find from the Studio docs.
 - Restored the missing `src/app/opengraph-image.tsx` and `src/app/twitter-image.tsx` metadata routes after the build surfaced the missing-file failure.
 - Verified the restored route files and metadata test file have no syntax or type issues with the available error checks.
+[SUCCESS] 2026-05-26 Resume runtime wiring slice completed
+- Added `src/app/api/resume/route.ts` to resolve the active Sanity resume URL with `/resume.pdf` fallback when CMS data is unavailable.
+- Updated `src/components/ui/ResumeModal.tsx` to fetch `/api/resume` on open and use the resolved URL for download + embedded viewer while preserving fallback behavior.
+- Expanded `src/__tests__/components/ResumeModal.test.tsx` to validate runtime URL hydration and fallback expectations.
+- Validated with `npm run test -- src/__tests__/components/ResumeModal.test.tsx`, `npm run lint`, and `npm run build`.
