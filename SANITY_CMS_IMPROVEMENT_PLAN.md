@@ -66,7 +66,24 @@ Why this matters:
 - Editors can find the right document faster.
 - The Studio becomes easier to use without reading the import scripts.
 
-### 4. Add import verification and parity checks
+### 4. Make resume management Sanity-driven
+
+Make the resume easy to upload and switch from inside Studio instead of relying on a hardcoded file path.
+
+Recommended improvements:
+
+- Upgrade the `resume` document so editors can upload a PDF file directly in Sanity Studio.
+- Keep a single active resume document rule so the website always knows which resume to use.
+- Preserve the existing `/resume.pdf` fallback path for backward compatibility until the upload flow is fully stable.
+- Expose the active resume URL in the site settings or resume modal wiring so the website reads it dynamically.
+
+Why this matters:
+
+- It lets the resume be updated from the CMS without editing the codebase.
+- It reduces manual file replacement in the public folder.
+- It makes the resume flow match the rest of the CMS-managed content.
+
+### 5. Add import verification and parity checks
 
 Create a repeatable way to confirm Sanity matches the JSON source.
 
@@ -82,7 +99,7 @@ Why this matters:
 - It turns migration work into a measurable process.
 - It makes future re-imports safer.
 
-### 5. Improve operational documentation
+### 6. Improve operational documentation
 
 Write the minimum docs needed so the CMS can be run again without re-analysis.
 
@@ -98,7 +115,7 @@ Why this matters:
 - It lowers the support burden for future CMS changes.
 - It keeps the migration path reproducible.
 
-### 6. Add safer maintenance workflows
+### 7. Add safer maintenance workflows
 
 Use a slice-by-slice approach for future CMS improvements.
 
@@ -119,9 +136,10 @@ Why this matters:
 1. Import resilience and diagnostics
 2. Schema parity and lossless data mapping
 3. Studio editorial UX improvements
-4. Parity checks and verification summaries
-5. Operational documentation
-6. Maintenance workflow cleanup
+4. Sanity-managed resume upload flow
+5. Parity checks and verification summaries
+6. Operational documentation
+7. Maintenance workflow cleanup
 
 ## Suggested Near-Term Backlog
 
@@ -132,15 +150,17 @@ Why this matters:
 | CMS-003 | Improve Studio document descriptions | Faster editing and fewer mistakes |
 | CMS-004 | Add a CMS runbook section to repo docs | Simpler handoff for future maintenance |
 | CMS-005 | Expand transient retry coverage | Better resilience for Sanity asset uploads |
+| CMS-006 | Add a Studio-uploaded resume document | Update the resume from Sanity instead of hardcoding the file path |
 
 ## Definition Of Done
 
 - The CMS import runner can be re-run safely.
 - Dry-run and live import outputs are easy to compare.
 - The Studio schema stays aligned with the JSON source.
+- The resume can be updated from Sanity Studio without editing application code.
 - Editors can update content without needing to inspect the migration code first.
 - The repo includes enough documentation to continue the CMS work without re-analysis.
 
 ## Immediate Next Step
 
-Start with import resilience and reporting, then continue collection-by-collection parity checks until every source file has a stable Sanity target.
+Start with import resilience and reporting, then add a Sanity-managed resume upload flow before continuing collection-by-collection parity checks.

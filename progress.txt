@@ -178,3 +178,5 @@
 - Added import-phase logging, request timeouts, asset caching, and transient 502 retries so the live import could complete and write 131 documents into the connected Sanity dataset.
 [SUCCESS] 2026-05-25 Sanity CMS improvement plan document added
 - Added `SANITY_CMS_IMPROVEMENT_PLAN.md` with practical next steps for import resilience, schema parity, Studio UX, parity checks, and operational documentation.
+[SUCCESS] 2026-05-25 Sanity CMS plan now includes resume upload workflow
+- Expanded `SANITY_CMS_IMPROVEMENT_PLAN.md` to prioritize a Studio-managed resume upload flow so the resume can be updated from Sanity instead of a hardcoded file path.
