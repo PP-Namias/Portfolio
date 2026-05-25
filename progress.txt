@@ -1,5 +1,6 @@
 2026-05-25: Tightened the autonomous continuation prompt so every slice, docs refinement, and prompt update is validated, committed, and immediately followed by the next slice.
 2026-05-25: Fixed the Sanity Studio browser crash by removing node:fs from the shared env module and adding a Node-only launcher that loads root env files before running Studio commands.
+2026-05-25: Cleaned up the Sanity CLI config shape by moving auto-updates under deployment in studio/sanity.cli.ts.
 [SUCCESS] SANITY-CMS-001 Slice 1 Complete
 - Added initial CMS schemas for profile, membership, and recommendation content.
 - Wired the studio navigation and preview locations to include the new models.
