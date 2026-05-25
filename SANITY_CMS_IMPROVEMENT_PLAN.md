@@ -53,9 +53,16 @@ Why this matters:
 ### 3. Improve editorial UX inside Studio
 
 Make the content editing experience simpler for future updates.
+
+Recommended improvements:
+
 - Group documents in the Studio structure by content lifecycle: singleton, taxonomy, collection.
 - Add description copy in schema fields so editors know which data is authoritative.
 - Surface references like issuers, categories, and authors more clearly in the Studio UI.
+- Add better previews for homepage singletons and content collections.
+
+Why this matters:
+
 - Editors can find the right document faster.
 - The Studio becomes easier to use without reading the import scripts.
 
@@ -63,8 +70,14 @@ Make the content editing experience simpler for future updates.
 
 Make the Studio reflect how the localhosted portfolio is actually presented so editors can reason about what changes appear where.
 
+Recommended improvements:
+
+- Mirror the homepage composition in the Studio structure: hero, main sections, sidebar sections, modals, and footer-related content.
 - Add clear labels for content that feeds the localhost site directly versus content that only supports editorial workflows.
 - Keep the resume, site settings, hero section, and navigation-linked documents easy to reach from the Studio sidebar.
+- Separate support/reference documents from page-facing content so the hierarchy reads like the website.
+
+Why this matters:
 
 - The Studio should feel like the control panel for the site, not a separate content bucket.
 - Editors can understand the impact of each document faster.
@@ -73,8 +86,14 @@ Make the Studio reflect how the localhosted portfolio is actually presented so e
 
 Make sure Studio preview behavior matches what the local website shows as closely as possible.
 
+Recommended improvements:
+
+- Verify that Presentation links open the correct localhost preview origin.
+- Keep document preview labels aligned with the section or route the content actually powers.
 - Validate that homepage singletons, blog posts, and resume content all preview correctly against localhost.
 - Keep the preview origin and draft mode flow documented and easy to update.
+
+Why this matters:
 
 - Editors can trust that what they see in Studio is what the local site will render.
 - Preview mismatches are easier to catch before publishing.
@@ -83,8 +102,13 @@ Make sure Studio preview behavior matches what the local website shows as closel
 
 Use the Sanity Vision tool and query patterns to inspect and verify content relationships during planning and maintenance.
 
+Recommended improvements:
+
 - Document a standard set of queries for troubleshooting structure, presentation, and content parity.
 - Keep sample queries for hero, resume, blog, and project content.
+- Add a query pack that can confirm document counts, references, and the active resume selection.
+
+Why this matters:
 
 - Vision gives a direct way to inspect the CMS data model without guessing.
 - It helps confirm that the Studio structure matches what the website expects.
@@ -93,8 +117,14 @@ Use the Sanity Vision tool and query patterns to inspect and verify content rela
 
 Make the resume easy to upload and switch from inside Studio instead of relying on a hardcoded file path.
 
-- Preserve the existing `/resume.pdf` fallback path for backward compatibility until the upload flow is fully stable.
+Recommended improvements:
+
+- Store the active resume as a file asset on the `resume` document.
+- Preserve the existing `/resume.pdf` fallback path for backward compatibility until the runtime reads the CMS value directly.
 - Expose the active resume URL in the site settings or resume modal wiring so the website reads it dynamically.
+- Keep a clear active/inactive indicator in Studio preview and document summaries.
+
+Why this matters:
 
 - It lets the resume be updated from the CMS without editing the codebase.
 - It reduces manual file replacement in the public folder.
@@ -109,8 +139,7 @@ Recommended improvements:
 - Add a post-import summary that lists counts by document type.
 - Add a parity checklist for each collection.
 - Compare imported document counts against the dry-run plan.
-11. Future implementation slice map
-12. AI-agent slice prompt planning
+- Flag any source file that is empty, partially imported, or intentionally skipped.
 
 Why this matters:
 
@@ -130,11 +159,6 @@ Recommended improvements:
 
 Why this matters:
 
-| CMS-015 | Add a studio control map | Make the content hierarchy reflect the rendered homepage |
-| CMS-016 | Add local preview route notes | Ensure Studio preview targets match the app routes |
-| CMS-017 | Add a Vision query pack | Standardize inspection queries for debugging and parity |
-| CMS-018 | Add a resume fallback rule note | Keep the transition from URL-based to file-based resume management safe |
-| CMS-019 | Add a slice map for implementation | Break the roadmap into commit-sized work items |
 - It lowers the support burden for future CMS changes.
 - It keeps the migration path reproducible.
 
@@ -154,6 +178,13 @@ Why this matters:
 - Smaller slices are easier to debug and revert.
 - The repo history stays clear enough to audit later.
 
+### 11. Prepare the future AI-agent slice prompt
+
+Plan for a dedicated agent prompt that can execute this roadmap slice by slice and commit every completed update.
+
+Recommended improvements:
+
+- Define the exact slice order for the next planning-to-implementation phase.
 - Add rules for when the agent should stop, validate, commit, and continue.
 - Keep the prompt focused on one slice at a time so every update stays reviewable.
 - Require the agent to update the plan and progress log after each completed slice.
@@ -175,7 +206,8 @@ Why this matters:
 8. Parity checks and verification summaries
 9. Operational documentation
 10. Maintenance workflow cleanup
-11. AI-agent slice prompt planning
+11. Future implementation slice map
+12. AI-agent slice prompt planning
 
 ## Suggested Near-Term Backlog
 
@@ -195,6 +227,48 @@ Why this matters:
 | CMS-012 | Add a resume activation workflow | Make it obvious which uploaded resume is currently live |
 | CMS-013 | Add a document preview parity checklist | Keep Studio previews aligned with localhost rendering |
 | CMS-014 | Add a Vision inspection pack | Quick queries for structure, preview, and reference debugging |
+| CMS-015 | Add a studio control map | Make the content hierarchy reflect the rendered homepage |
+| CMS-016 | Add local preview route notes | Ensure Studio preview targets match the app routes |
+| CMS-017 | Add a Vision query pack | Standardize inspection queries for debugging and parity |
+| CMS-018 | Add a resume fallback rule note | Keep the transition from URL-based to file-based resume management safe |
+| CMS-019 | Add a slice map for implementation | Break the roadmap into commit-sized work items |
+
+## Copy/Paste Agent Prompt
+
+Use this prompt when you want the next phase to execute slice by slice and commit every completed update.
+
+```text
+Read SANITY_CMS_IMPROVEMENT_PLAN.md and progress.txt first.
+
+Work in small slices only. Do not start implementation until the current slice is fully understood.
+
+For each slice:
+1. Read the current files that control the slice.
+2. Make the smallest focused change that satisfies the slice.
+3. Run the narrowest relevant validation first, then run npm run lint and npm run build if the repository was touched.
+4. Update progress.txt with the completed slice.
+5. Commit the slice with one conventional commit message.
+6. Move immediately to the next slice only after the current slice is validated and committed.
+
+Rules:
+- Keep Studio structure aligned with the localhost website layout.
+- Keep Presentation and preview parity aligned with local routes.
+- Use Vision for inspection and verification tasks before changing code when possible.
+- Keep the resume flow Sanity-driven, but preserve /resume.pdf as a fallback until the runtime fully reads the CMS value.
+- Do not bundle unrelated tasks into the same slice.
+- Do not skip validation or commit steps.
+- Update the plan if a slice changes the roadmap.
+
+Slice order:
+1. Studio structure and navigation parity.
+2. Preview and Presentation parity.
+3. Vision query pack and inspection docs.
+4. Resume upload and runtime wiring.
+5. Import verification and parity reporting.
+6. Operational docs and maintenance workflow cleanup.
+
+Stop only when the current slice is complete or a genuine blocker requires user input.
+```
 
 ## Definition Of Done
 
