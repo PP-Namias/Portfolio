@@ -7,6 +7,7 @@ Congratulations, you have now installed the Sanity Content Studio, an open-sourc
 - The studio reads the same Sanity env values as the root app from `.env` / `.env.local` in the repository root.
 - Preview mode points to `http://localhost:3000` by default, or to `NEXT_PUBLIC_SITE_URL` when that variable is set.
 - The presentation tool uses `/api/draft-mode/enable` to turn on draft mode before opening the preview.
+- The publish action also pings `/api/sanity/webhook` after a successful publish so the website can refresh and revalidate immediately.
 - Homepage content previews against `/`, and blog posts preview against `/blog` so the Studio routes stay aligned with the localhost app.
 - Use [VISION_QUERIES.md](VISION_QUERIES.md) for repeatable Vision checks across homepage, resume, blog, and collection parity.
 

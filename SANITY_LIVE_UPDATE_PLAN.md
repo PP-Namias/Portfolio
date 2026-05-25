@@ -173,7 +173,7 @@ Current role:
 
 Planned change:
 
-- Document or configure the webhook target used by Sanity after publish.
+- Wire the publish document action so successful publishes ping `src/app/api/sanity/webhook`.
 - Keep the existing preview flow separate from the live-update flow.
 
 Why this file matters:
@@ -223,6 +223,7 @@ If any of these later cache CMS data in local component state, they will need a 
 5. Wire Sanity Studio to the webhook target in `studio/sanity.config.ts`.
 6. Add tests for the webhook and refresh flow.
 7. Verify blog and sitemap freshness behavior.
+8. Run the final end-to-end publish test from Sanity Studio and confirm the open site updates without a manual refresh.
 
 ## Environment Variables
 
