@@ -241,3 +241,6 @@
 - Added `.github/prompts/sanity-cms-complete-autopilot.prompt.md` for end-to-end Sanity CMS completion across structure, preview, Vision, resume, parity, docs, and maintenance cleanup.
 - Updated `SANITY_CMS_IMPROVEMENT_PLAN.md` to point at the broader completion prompt.
 - Validated the prompt/plan handoff by checking the updated files and preparing the next autonomous slice path.
+[SUCCESS] 2026-05-26 Sanity CMS completion prompt text aligned to user-provided spec
+- Replaced the prompt body in `.github/prompts/sanity-cms-complete-autopilot.prompt.md` with the user-provided completion workflow, slice order, and stop conditions.
+- Kept the plan linkage intact so future agents can launch the full CMS completion workflow from one prompt.
