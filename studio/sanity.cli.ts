@@ -3,13 +3,13 @@ import {loadStudioEnvironment, requireStudioEnv} from './env'
 
 loadStudioEnvironment()
 
-const projectId = requireStudioEnv('NEXT_PUBLIC_SANITY_PROJECT_ID')
-const dataset = requireStudioEnv('NEXT_PUBLIC_SANITY_DATASET')
+const studioProjectId = requireStudioEnv('SANITY_STUDIO_PROJECT_ID', 'NEXT_PUBLIC_SANITY_PROJECT_ID')
+const studioDataset = requireStudioEnv('SANITY_STUDIO_DATASET', 'NEXT_PUBLIC_SANITY_DATASET')
 
 export default defineCliConfig({
   api: {
-    projectId,
-    dataset,
+    projectId: studioProjectId,
+    dataset: studioDataset,
   },
   deployment: {
     autoUpdates: true,

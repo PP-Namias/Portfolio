@@ -2,6 +2,7 @@
 2026-05-25: Fixed the Sanity Studio browser crash by removing node:fs from the shared env module and adding a Node-only launcher that loads root env files before running Studio commands.
 2026-05-25: Cleaned up the Sanity CLI config shape by moving auto-updates under deployment in studio/sanity.cli.ts.
 2026-05-25: Renamed the visible Sanity Studio branding to Namias CMS Studio and verified the studio still builds and starts cleanly.
+2026-05-25: Fixed missing SANITY_STUDIO env handling by mapping NEXT_PUBLIC_* values, updating env helpers, and restarting the studio cleanly.
 [SUCCESS] SANITY-CMS-001 Slice 1 Complete
 - Added initial CMS schemas for profile, membership, and recommendation content.
 - Wired the studio navigation and preview locations to include the new models.

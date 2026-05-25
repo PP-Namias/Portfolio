@@ -65,6 +65,14 @@ for (const filePath of envFiles) {
   }
 }
 
+if (!env.SANITY_STUDIO_PROJECT_ID && env.NEXT_PUBLIC_SANITY_PROJECT_ID) {
+  env.SANITY_STUDIO_PROJECT_ID = env.NEXT_PUBLIC_SANITY_PROJECT_ID
+}
+
+if (!env.SANITY_STUDIO_DATASET && env.NEXT_PUBLIC_SANITY_DATASET) {
+  env.SANITY_STUDIO_DATASET = env.NEXT_PUBLIC_SANITY_DATASET
+}
+
 const [command, ...commandArgs] = process.argv.slice(2)
 
 if (!command) {

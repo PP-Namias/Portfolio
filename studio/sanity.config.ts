@@ -9,8 +9,8 @@ loadStudioEnvironment()
 
 const presentationPreviewUrl = getStudioPreviewOrigin()
 const presentationEnablePath = getDraftModeEnablePath()
-const projectId = requireStudioEnv('NEXT_PUBLIC_SANITY_PROJECT_ID')
-const dataset = requireStudioEnv('NEXT_PUBLIC_SANITY_DATASET')
+const projectId = requireStudioEnv('SANITY_STUDIO_PROJECT_ID', 'NEXT_PUBLIC_SANITY_PROJECT_ID')
+const dataset = requireStudioEnv('SANITY_STUDIO_DATASET', 'NEXT_PUBLIC_SANITY_DATASET')
 
 const homePageLocation = {
   message: 'This document is used on',

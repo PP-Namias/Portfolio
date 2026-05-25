@@ -1,19 +1,52 @@
 let environmentLoaded = false
+const processEnv = typeof process !== 'undefined' ? process.env : undefined
+
+function getEnvValue(name: string): string | undefined {
+  const value = processEnv?.[name]
+
+  if (typeof value !== 'string') {
+    return undefined
+  }
+
+  const trimmed = value.trim()
+  return trimmed.length > 0 ? trimmed : undefined
+}
+
+function setProcessEnvValue(name: string, value?: string) {
+  if (!processEnv || !value) {
+    return
+  }
+
+  if (!processEnv[name] || processEnv[name]?.trim() === '') {
+    processEnv[name] = value
+  }
+}
 
 export function loadStudioEnvironment() {
   if (environmentLoaded) {
     return
   }
 
+  setProcessEnvValue(
+    'SANITY_STUDIO_PROJECT_ID',
+    getEnvValue('SANITY_STUDIO_PROJECT_ID') ?? getEnvValue('NEXT_PUBLIC_SANITY_PROJECT_ID'),
+  )
+  setProcessEnvValue(
+    'SANITY_STUDIO_DATASET',
+    getEnvValue('SANITY_STUDIO_DATASET') ?? getEnvValue('NEXT_PUBLIC_SANITY_DATASET'),
+  )
+
   environmentLoaded = true
 }
 
-export function requireStudioEnv(name: string): string {
-  const value = process.env[name]?.trim()
+export function requireStudioEnv(...names: string[]): string {
+  const candidates = names.length > 0 ? names : []
+  const value = candidates.map((name) => getEnvValue(name)).find(Boolean)
 
   if (!value) {
+    const label = candidates.length > 0 ? candidates.join(' or ') : 'unknown'
     throw new Error(
-      `Missing required Sanity Studio env var: ${name}. Load the root .env/.env.local files or set it in the shell.`,
+      `Missing required Sanity Studio env var: ${label}. Load the root .env/.env.local files or set it in the shell.`,
     )
   }
 
@@ -21,11 +54,11 @@ export function requireStudioEnv(name: string): string {
 }
 
 export function getStudioPreviewOrigin(): string {
-  return process.env.NEXT_PUBLIC_SITE_URL?.trim() || 'http://localhost:3000'
+  return getEnvValue('NEXT_PUBLIC_SITE_URL') || 'http://localhost:3000'
 }
 
 export function getDraftModeEnablePath(): string {
-  const secret = process.env.SANITY_REVALIDATE_SECRET?.trim()
+  const secret = getEnvValue('SANITY_REVALIDATE_SECRET')
 
   if (!secret) {
     return '/api/draft-mode/enable'
