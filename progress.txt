@@ -237,3 +237,7 @@
 - Added `.github/prompts/sanity-resume-refresh-autopilot.prompt.md` for autonomous end-to-end resume refresh + Sanity migration completion.
 - Linked the new autonomous prompt from `SANITY_CMS_IMPROVEMENT_PLAN.md` under the AI agent prompt section.
 - Validated with `npm run sanity:dry-run`, `npm run lint`, and `npm run build`.
+[SUCCESS] 2026-05-26 Full Sanity CMS completion prompt created
+- Added `.github/prompts/sanity-cms-complete-autopilot.prompt.md` for end-to-end Sanity CMS completion across structure, preview, Vision, resume, parity, docs, and maintenance cleanup.
+- Updated `SANITY_CMS_IMPROVEMENT_PLAN.md` to point at the broader completion prompt.
+- Validated the prompt/plan handoff by checking the updated files and preparing the next autonomous slice path.

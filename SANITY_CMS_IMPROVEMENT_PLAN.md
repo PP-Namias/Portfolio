@@ -226,7 +226,7 @@ Why this matters:
 
 ### AI agent prompt for full completion
 
-Use `.github/prompts/sanity-resume-refresh-autopilot.prompt.md` to run the remaining migration work autonomously.
+Use `.github/prompts/sanity-cms-complete-autopilot.prompt.md` to run the remaining migration work autonomously.
 
 This prompt is designed to:
 
