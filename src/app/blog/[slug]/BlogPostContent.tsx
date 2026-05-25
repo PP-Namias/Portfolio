@@ -5,21 +5,82 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
+import type { Components } from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeHighlight from 'rehype-highlight';
 import { ArrowLeft, Clock, Calendar, ChevronLeft, ChevronRight } from 'lucide-react';
-import { blogPosts } from '@/data/blogPosts';
 import { Card } from '@/components/ui/Card';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import { ReadingProgress } from '@/components/ui/ReadingProgress';
+import type { BlogPost } from '@/types';
+
+const markdownComponents: Components = {
+  h2: ({ children }) => (
+    <h2 className="text-lg font-semibold text-text-primary-light dark:text-text-primary-dark mt-8 mb-3">
+      {children}
+    </h2>
+  ),
+  h3: ({ children }) => (
+    <h3 className="text-base font-semibold text-text-primary-light dark:text-text-primary-dark mt-6 mb-2">
+      {children}
+    </h3>
+  ),
+  p: ({ children }) => (
+    <p className="text-sm text-text-secondary-light dark:text-text-secondary-dark leading-relaxed my-3">
+      {children}
+    </p>
+  ),
+  ul: ({ children }) => (
+    <ul className="my-3 space-y-1.5 pl-5 list-disc">
+      {children}
+    </ul>
+  ),
+  ol: ({ children }) => (
+    <ol className="my-3 space-y-1.5 pl-5 list-decimal">
+      {children}
+    </ol>
+  ),
+  strong: ({ children }) => (
+    <strong className="font-semibold text-text-primary-light dark:text-text-primary-dark">
+      {children}
+    </strong>
+  ),
+  a: ({ href, children }) => (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="text-accent-pink hover:underline"
+    >
+      {children}
+    </a>
+  ),
+  code: ({ className, children }) => {
+    const isBlock = className?.includes('language-');
+    if (isBlock) {
+      return <code className="text-xs text-text-secondary-light dark:text-text-secondary-dark">{children}</code>;
+    }
+    return <code className="text-accent-pink bg-surface-light dark:bg-surface-dark px-1.5 py-0.5 rounded text-xs">{children}</code>;
+  },
+  pre: ({ children }) => (
+    <pre className="bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark rounded-lg p-4 my-4 overflow-x-auto">
+      {children}
+    </pre>
+  ),
+  blockquote: ({ children }) => (
+    <blockquote className="border-l-2 border-accent-pink pl-4 my-4 italic text-text-muted-light dark:text-text-muted-dark">
+      {children}
+    </blockquote>
+  ),
+};
 
 interface BlogPostContentProps {
-  slug: string;
+  post: BlogPost | null;
+  allPosts: BlogPost[];
 }
 
-export default function BlogPostContent({ slug }: BlogPostContentProps) {
-  const postIndex = blogPosts.findIndex((p) => p.slug === slug);
-  const post = blogPosts[postIndex];
+export default function BlogPostContent({ post, allPosts }: Readonly<BlogPostContentProps>) {
+  const postIndex = post ? allPosts.findIndex((p) => p.slug === post.slug) : -1;
 
   if (!post) {
     return (
@@ -46,8 +107,8 @@ export default function BlogPostContent({ slug }: BlogPostContentProps) {
     );
   }
 
-  const prevPost = postIndex > 0 ? blogPosts[postIndex - 1] : null;
-  const nextPost = postIndex < blogPosts.length - 1 ? blogPosts[postIndex + 1] : null;
+  const prevPost = postIndex > 0 ? allPosts[postIndex - 1] : null;
+  const nextPost = postIndex < allPosts.length - 1 ? allPosts[postIndex + 1] : null;
 
   return (
     <main className="mx-auto max-w-container px-4 sm:px-6 pt-8 lg:pt-12 pb-16">
@@ -122,78 +183,7 @@ export default function BlogPostContent({ slug }: BlogPostContentProps) {
             <ReactMarkdown
               remarkPlugins={[remarkGfm]}
               rehypePlugins={[rehypeHighlight]}
-              components={{
-                h2: ({ children }) => (
-                  <h2 className="text-lg font-semibold text-text-primary-light dark:text-text-primary-dark mt-8 mb-3">
-                    {children}
-                  </h2>
-                ),
-                h3: ({ children }) => (
-                  <h3 className="text-base font-semibold text-text-primary-light dark:text-text-primary-dark mt-6 mb-2">
-                    {children}
-                  </h3>
-                ),
-                p: ({ children }) => (
-                  <p className="text-sm text-text-secondary-light dark:text-text-secondary-dark leading-relaxed my-3">
-                    {children}
-                  </p>
-                ),
-                ul: ({ children }) => (
-                  <ul className="my-3 space-y-1.5 pl-5 list-disc">
-                    {children}
-                  </ul>
-                ),
-                ol: ({ children }) => (
-                  <ol className="my-3 space-y-1.5 pl-5 list-decimal">
-                    {children}
-                  </ol>
-                ),
-                li: ({ children }) => (
-                  <li className="text-sm text-text-secondary-light dark:text-text-secondary-dark leading-relaxed">
-                    {children}
-                  </li>
-                ),
-                strong: ({ children }) => (
-                  <strong className="font-semibold text-text-primary-light dark:text-text-primary-dark">
-                    {children}
-                  </strong>
-                ),
-                a: ({ href, children }) => (
-                  <a
-                    href={href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-accent-pink hover:underline"
-                  >
-                    {children}
-                  </a>
-                ),
-                code: ({ className, children }) => {
-                  const isBlock = className?.includes('language-');
-                  if (isBlock) {
-                    return (
-                      <code className="text-xs text-text-secondary-light dark:text-text-secondary-dark">
-                        {children}
-                      </code>
-                    );
-                  }
-                  return (
-                    <code className="text-accent-pink bg-surface-light dark:bg-surface-dark px-1.5 py-0.5 rounded text-xs">
-                      {children}
-                    </code>
-                  );
-                },
-                pre: ({ children }) => (
-                  <pre className="bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark rounded-lg p-4 my-4 overflow-x-auto">
-                    {children}
-                  </pre>
-                ),
-                blockquote: ({ children }) => (
-                  <blockquote className="border-l-2 border-accent-pink pl-4 my-4 italic text-text-muted-light dark:text-text-muted-dark">
-                    {children}
-                  </blockquote>
-                ),
-              }}
+              components={markdownComponents}
             >
               {post.content}
             </ReactMarkdown>

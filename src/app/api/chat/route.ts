@@ -1,14 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-import {
-  certifications,
-  experiences,
-  memberships,
-  profile,
-  projects,
-  socialLinks,
-  technologies,
-} from '@/lib/cms-data';
+import { getCmsContent } from '@/lib/cms-content.server';
 
 import { buildFallbackResponse, buildPresetResponse } from './lib/fallbackResponder';
 import {
@@ -33,18 +25,6 @@ import {
 } from './lib/types';
 
 const MAX_MESSAGE_LENGTH = 500;
-
-const chatDataContext: ChatDataContext = {
-  profile: profile as ProfileData,
-  experiences: experiences as ExperienceData[],
-  projects: projects as ProjectData[],
-  technologies: technologies as TechnologyData[],
-  certifications: certifications as CertificationData[],
-  memberships: memberships as MembershipData[],
-  socials: socialLinks as SocialData[],
-};
-
-const systemPrompt = buildSystemPrompt(chatDataContext);
 
 interface RequestBody {
   message?: unknown;
@@ -171,8 +151,21 @@ export async function POST(request: NextRequest) {
   const requestId = createRequestId(request);
   const requestStartedAt = Date.now();
   const clientIp = getClientIp(request);
+  let chatDataContext!: ChatDataContext;
 
   try {
+    const cmsContent = await getCmsContent();
+    chatDataContext = {
+      profile: cmsContent.profile as ProfileData,
+      experiences: cmsContent.experiences as ExperienceData[],
+      projects: cmsContent.projects as ProjectData[],
+      technologies: cmsContent.technologies as TechnologyData[],
+      certifications: cmsContent.certifications as CertificationData[],
+      memberships: cmsContent.memberships as MembershipData[],
+      socials: cmsContent.socialLinks as SocialData[],
+    };
+    const systemPrompt = buildSystemPrompt(chatDataContext);
+
     if (await isRateLimited(clientIp)) {
       logEvent('warn', 'chat_rate_limited', {
         requestId,

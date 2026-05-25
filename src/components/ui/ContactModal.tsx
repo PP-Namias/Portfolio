@@ -2,9 +2,8 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { Calendar, Clipboard, Mail, Send, Sparkles, Trash2 } from 'lucide-react';
-import { profile } from '@/data/profile';
-import { socialLinks } from '@/data/socials';
 import { useModal } from '@/hooks/useModal';
+import { useCmsContent } from '@/hooks/useCmsContent';
 import { Modal } from './Modal';
 
 interface ContactModalProps {
@@ -60,10 +59,10 @@ const TOPIC_PRESETS = [
   },
 ] as const;
 
-function buildEmailLinks(form: ContactFormState, recipient: string) {
+function buildEmailLinks(form: ContactFormState, recipient: string, recipientName: string) {
   const subject = form.subject.trim() || `Inquiry from ${form.name.trim()}`;
   const message = [
-    `Hi ${profile.name},`,
+    `Hi ${recipientName},`,
     '',
     form.message.trim(),
     '',
@@ -87,6 +86,7 @@ function buildEmailLinks(form: ContactFormState, recipient: string) {
 
 export function ContactModal({ open, onClose }: Readonly<ContactModalProps>) {
   const { openModal } = useModal();
+  const { profile, socialLinks } = useCmsContent();
   const [form, setForm] = useState<ContactFormState>(INITIAL_FORM);
   const [errors, setErrors] = useState<ContactFormErrors>({});
   const [status, setStatus] = useState<
@@ -170,7 +170,7 @@ export function ContactModal({ open, onClose }: Readonly<ContactModalProps>) {
 
   const bookingLink = useMemo(
     () => socialLinks.find((link) => link.name === 'cal')?.link ?? null,
-    []
+    [socialLinks]
   );
 
   const calendarShortcuts = useMemo(() => {
@@ -188,7 +188,10 @@ export function ContactModal({ open, onClose }: Readonly<ContactModalProps>) {
     };
   }, [bookingLink]);
 
-  const emailLinks = useMemo(() => buildEmailLinks(form, profile.email), [form]);
+  const emailLinks = useMemo(
+    () => buildEmailLinks(form, profile.email, profile.name),
+    [form, profile.email, profile.name]
+  );
 
   const statusMessage = useMemo(() => {
     if (status === 'opening') {
@@ -228,7 +231,7 @@ export function ContactModal({ open, onClose }: Readonly<ContactModalProps>) {
         </a>.
       </span>
     );
-  }, [status]);
+  }, [status, profile.email]);
 
   const handleBookCall = (eventSlug: '15min' | '30min') => {
     try {
@@ -434,7 +437,7 @@ export function ContactModal({ open, onClose }: Readonly<ContactModalProps>) {
                     value={form.name}
                     onChange={(event) => handleChange('name', event.target.value)}
                     className="w-full rounded-lg border border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark px-3 py-2 text-sm text-text-primary-light dark:text-text-primary-dark focus:outline-none focus:ring-2 focus:ring-accent-pink"
-                    aria-invalid={Boolean(errors.name)}
+                    aria-invalid={errors.name ? 'true' : 'false'}
                     aria-describedby={errors.name ? 'contact-modal-name-error' : undefined}
                   />
                   {errors.name ? (
@@ -459,7 +462,7 @@ export function ContactModal({ open, onClose }: Readonly<ContactModalProps>) {
                     value={form.email}
                     onChange={(event) => handleChange('email', event.target.value)}
                     className="w-full rounded-lg border border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark px-3 py-2 text-sm text-text-primary-light dark:text-text-primary-dark focus:outline-none focus:ring-2 focus:ring-accent-pink"
-                    aria-invalid={Boolean(errors.email)}
+                    aria-invalid={errors.email ? 'true' : 'false'}
                     aria-describedby={errors.email ? 'contact-modal-email-error' : undefined}
                   />
                   {errors.email ? (
@@ -483,7 +486,7 @@ export function ContactModal({ open, onClose }: Readonly<ContactModalProps>) {
                   value={form.subject}
                   onChange={(event) => handleChange('subject', event.target.value)}
                   className="w-full rounded-lg border border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark px-3 py-2 text-sm text-text-primary-light dark:text-text-primary-dark focus:outline-none focus:ring-2 focus:ring-accent-pink"
-                  aria-invalid={Boolean(errors.subject)}
+                  aria-invalid={errors.subject ? 'true' : 'false'}
                   aria-describedby={errors.subject ? 'contact-modal-subject-error' : undefined}
                 />
                 {errors.subject ? (
@@ -507,7 +510,7 @@ export function ContactModal({ open, onClose }: Readonly<ContactModalProps>) {
                   value={form.message}
                   onChange={(event) => handleChange('message', event.target.value)}
                   className="w-full rounded-lg border border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark px-3 py-2 text-sm text-text-primary-light dark:text-text-primary-dark focus:outline-none focus:ring-2 focus:ring-accent-pink"
-                  aria-invalid={Boolean(errors.message)}
+                  aria-invalid={errors.message ? 'true' : 'false'}
                   aria-describedby={errors.message ? 'contact-modal-message-error' : undefined}
                 />
                 {errors.message ? (
