@@ -232,3 +232,8 @@
 - Aligned `portfolio-resources/data/certifications.json` to the latest set (TESDA NC III + HackerRank-focused list).
 - Updated `SANITY_CMS_IMPROVEMENT_PLAN.md` with a dedicated resume baseline refresh track and migration checklist.
 - Validated with `npm run sanity:dry-run`, `npm run lint`, and `npm run build`.
+[SUCCESS] 2026-05-26 Resume skills alignment and autonomous prompt slice completed
+- Updated `portfolio-resources/data/technologies.json` to match the latest resume skill taxonomy across languages, frameworks, backend, DevOps, AI/ML, IoT, CMS/search, and testing/tooling.
+- Added `.github/prompts/sanity-resume-refresh-autopilot.prompt.md` for autonomous end-to-end resume refresh + Sanity migration completion.
+- Linked the new autonomous prompt from `SANITY_CMS_IMPROVEMENT_PLAN.md` under the AI agent prompt section.
+- Validated with `npm run sanity:dry-run`, `npm run lint`, and `npm run build`.

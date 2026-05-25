@@ -224,6 +224,18 @@ Why this matters:
 6. Spot-check Studio documents: `profile`, `resume`, `experience`, `project`, `certification`.
 7. Record the import run + parity results in `progress.txt`.
 
+### AI agent prompt for full completion
+
+Use `.github/prompts/sanity-resume-refresh-autopilot.prompt.md` to run the remaining migration work autonomously.
+
+This prompt is designed to:
+
+- refresh resume-driven JSON source files,
+- execute dry-run/import/parity validation loops,
+- resolve mismatches incrementally,
+- update `progress.txt`, and
+- commit every slice with one conventional commit.
+
 ## Priority Order
 
 1. Import resilience and diagnostics

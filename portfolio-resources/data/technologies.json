@@ -1,277 +1,82 @@
 [
-  {
-    "name": "TypeScript",
-    "logo": "typescript",
-    "category": "Languages",
-    "proficiency": 90
-  },
-  {
-    "name": "JavaScript",
-    "logo": "javascript",
-    "category": "Languages",
-    "proficiency": 92
-  },
-  {
-    "name": "Python",
-    "logo": "python",
-    "category": "Languages",
-    "proficiency": 80
-  },
-  {
-    "name": "Java",
-    "logo": "openjdk",
-    "category": "Languages",
-    "proficiency": 75
-  },
-  {
-    "name": "C#",
-    "logo": "sharp",
-    "category": "Languages",
-    "proficiency": 70
-  },
-  {
-    "name": "PHP",
-    "logo": "php",
-    "category": "Languages",
-    "proficiency": 72
-  },
-  {
-    "name": "HTML5",
-    "logo": "html5",
-    "category": "Languages",
-    "proficiency": 95
-  },
-  {
-    "name": "CSS3",
-    "logo": "css",
-    "category": "Languages",
-    "proficiency": 90
-  },
-  {
-    "name": "Bash",
-    "logo": "gnubash",
-    "category": "Languages",
-    "proficiency": 68
-  },
-  {
-    "name": "R",
-    "logo": "r",
-    "category": "Languages",
-    "proficiency": 60
-  },
+  { "name": "JavaScript", "logo": "javascript", "category": "Languages", "proficiency": 93 },
+  { "name": "TypeScript", "logo": "typescript", "category": "Languages", "proficiency": 92 },
+  { "name": "Python", "logo": "python", "category": "Languages", "proficiency": 88 },
+  { "name": "Java", "logo": "openjdk", "category": "Languages", "proficiency": 82 },
+  { "name": "SQL", "logo": "postgresql", "category": "Languages", "proficiency": 88 },
+  { "name": "Dart", "logo": "dart", "category": "Languages", "proficiency": 72 },
+  { "name": "R", "logo": "r", "category": "Languages", "proficiency": 70 },
+  { "name": "C", "logo": "c", "category": "Languages", "proficiency": 66 },
+  { "name": "C++", "logo": "cplusplus", "category": "Languages", "proficiency": 68 },
+  { "name": "HTML", "logo": "html5", "category": "Languages", "proficiency": 95 },
+  { "name": "CSS", "logo": "css", "category": "Languages", "proficiency": 93 },
+  { "name": "Bash", "logo": "gnubash", "category": "Languages", "proficiency": 74 },
+  { "name": "YAML", "logo": "yaml", "category": "Languages", "proficiency": 78 },
+  { "name": "Markdown", "logo": "markdown", "category": "Languages", "proficiency": 92 },
 
-  {
-    "name": "React",
-    "logo": "react",
-    "category": "Frontend",
-    "proficiency": 92
-  },
-  {
-    "name": "Next.js",
-    "logo": "nextjs",
-    "category": "Frontend",
-    "proficiency": 88
-  },
-  {
-    "name": "TailwindCSS",
-    "logo": "tailwindcss",
-    "category": "Frontend",
-    "proficiency": 95
-  },
-  {
-    "name": "HeroUI",
-    "logo": "heroui",
-    "category": "Frontend",
-    "proficiency": 85
-  },
-  {
-    "name": "ShadcnUI",
-    "logo": "shadcnui",
-    "category": "Frontend",
-    "proficiency": 80
-  },
-  {
-    "name": "Bootstrap",
-    "logo": "bootstrap",
-    "category": "Frontend",
-    "proficiency": 85
-  },
-  {
-    "name": "Flutter",
-    "logo": "flutter",
-    "category": "Frontend",
-    "proficiency": 70
-  },
-  {
-    "name": "JavaFX",
-    "logo": "javafx",
-    "category": "Frontend",
-    "proficiency": 65
-  },
+  { "name": "React", "logo": "react", "category": "Frameworks & Runtimes", "proficiency": 93 },
+  { "name": "Next.js", "logo": "nextjs", "category": "Frameworks & Runtimes", "proficiency": 91 },
+  { "name": "NestJS", "logo": "nestjs", "category": "Frameworks & Runtimes", "proficiency": 86 },
+  { "name": "Spring Boot", "logo": "springboot", "category": "Frameworks & Runtimes", "proficiency": 85 },
+  { "name": "Express.js", "logo": "express", "category": "Frameworks & Runtimes", "proficiency": 90 },
+  { "name": "Flutter", "logo": "flutter", "category": "Frameworks & Runtimes", "proficiency": 78 },
+  { "name": "Electron", "logo": "electron", "category": "Frameworks & Runtimes", "proficiency": 84 },
+  { "name": "Vite", "logo": "vite", "category": "Frameworks & Runtimes", "proficiency": 84 },
+  { "name": "Node.js", "logo": "nodedotjs", "category": "Frameworks & Runtimes", "proficiency": 92 },
+  { "name": "Tailwind CSS", "logo": "tailwindcss", "category": "Frameworks & Runtimes", "proficiency": 95 },
 
-  {
-    "name": "Node.js",
-    "logo": "nodedotjs",
-    "category": "Backend",
-    "proficiency": 85
-  },
-  {
-    "name": "FastAPI",
-    "logo": "fastapi",
-    "category": "Backend",
-    "proficiency": 82
-  },
-  {
-    "name": "Flask",
-    "logo": "flask",
-    "category": "Backend",
-    "proficiency": 80
-  },
-  {
-    "name": "Laravel",
-    "logo": "laravel",
-    "category": "Backend",
-    "proficiency": 72
-  },
-  {
-    "name": "CodeIgniter",
-    "logo": "codeigniter",
-    "category": "Backend",
-    "proficiency": 70
-  },
-  {
-    "name": "Swagger",
-    "logo": "swagger",
-    "category": "Backend",
-    "proficiency": 78
-  },
+  { "name": "PostgreSQL", "logo": "postgresql", "category": "Databases & Backend", "proficiency": 91 },
+  { "name": "SQLite", "logo": "sqlite", "category": "Databases & Backend", "proficiency": 80 },
+  { "name": "Firebase", "logo": "firebase", "category": "Databases & Backend", "proficiency": 83 },
+  { "name": "Supabase", "logo": "supabase", "category": "Databases & Backend", "proficiency": 82 },
+  { "name": "REST APIs", "logo": "swagger", "category": "Databases & Backend", "proficiency": 92 },
+  { "name": "GraphQL", "logo": "graphql", "category": "Databases & Backend", "proficiency": 77 },
+  { "name": "GROQ", "logo": "sanity", "category": "Databases & Backend", "proficiency": 84 },
+  { "name": "OAuth 2.0", "logo": "auth0", "category": "Databases & Backend", "proficiency": 83 },
+  { "name": "RBAC", "logo": "shield", "category": "Databases & Backend", "proficiency": 88 },
+  { "name": "ISR/SSR", "logo": "nextdotjs", "category": "Databases & Backend", "proficiency": 86 },
 
-  {
-    "name": "PostgreSQL",
-    "logo": "postgresql",
-    "category": "Databases",
-    "proficiency": 82
-  },
-  {
-    "name": "MySQL",
-    "logo": "mysql",
-    "category": "Databases",
-    "proficiency": 85
-  },
-  {
-    "name": "Supabase",
-    "logo": "supabase",
-    "category": "Databases",
-    "proficiency": 80
-  },
-  {
-    "name": "PocketBase",
-    "logo": "pocketbase",
-    "category": "Databases",
-    "proficiency": 75
-  },
-  {
-    "name": "InfluxDB",
-    "logo": "influxdb",
-    "category": "Databases",
-    "proficiency": 65
-  },
+  { "name": "Docker", "logo": "docker", "category": "DevOps & Cloud", "proficiency": 88 },
+  { "name": "GitHub Actions", "logo": "githubactions", "category": "DevOps & Cloud", "proficiency": 90 },
+  { "name": "CI/CD Pipelines", "logo": "githubactions", "category": "DevOps & Cloud", "proficiency": 90 },
+  { "name": "Google Cloud", "logo": "googlecloud", "category": "DevOps & Cloud", "proficiency": 76 },
+  { "name": "Azure", "logo": "microsoftazure", "category": "DevOps & Cloud", "proficiency": 74 },
+  { "name": "Vercel", "logo": "vercel", "category": "DevOps & Cloud", "proficiency": 90 },
+  { "name": "Railway", "logo": "railway", "category": "DevOps & Cloud", "proficiency": 84 },
+  { "name": "Linux Administration", "logo": "linux", "category": "DevOps & Cloud", "proficiency": 78 },
+  { "name": "Bare Metal Deployment", "logo": "server", "category": "DevOps & Cloud", "proficiency": 70 },
 
-  {
-    "name": "Docker",
-    "logo": "docker",
-    "category": "Tools",
-    "proficiency": 78
-  },
-  {
-    "name": "Git",
-    "logo": "git",
-    "category": "Tools",
-    "proficiency": 90
-  },
-  {
-    "name": "GitHub",
-    "logo": "github",
-    "category": "Tools",
-    "proficiency": 92
-  },
-  {
-    "name": "VS Code",
-    "logo": "vscodium",
-    "category": "Tools",
-    "proficiency": 95
-  },
-  {
-    "name": "Neovim",
-    "logo": "neovim",
-    "category": "Tools",
-    "proficiency": 70
-  },
-  {
-    "name": "Jenkins",
-    "logo": "jenkins",
-    "category": "Tools",
-    "proficiency": 65
-  },
-  {
-    "name": "Grafana",
-    "logo": "grafana",
-    "category": "Tools",
-    "proficiency": 68
-  },
-  {
-    "name": "n8n",
-    "logo": "n8n",
-    "category": "Tools",
-    "proficiency": 75
-  },
-  {
-    "name": "Jupyter",
-    "logo": "jupyter",
-    "category": "Tools",
-    "proficiency": 80
-  },
-  {
-    "name": "Photoshop",
-    "logo": "photoshop",
-    "category": "Tools",
-    "proficiency": 70
-  },
+  { "name": "TensorFlow", "logo": "tensorflow", "category": "ML & AI", "proficiency": 72 },
+  { "name": "PyTorch", "logo": "pytorch", "category": "ML & AI", "proficiency": 70 },
+  { "name": "Scikit-learn", "logo": "scikitlearn", "category": "ML & AI", "proficiency": 78 },
+  { "name": "Pandas", "logo": "pandas", "category": "ML & AI", "proficiency": 82 },
+  { "name": "NumPy", "logo": "numpy", "category": "ML & AI", "proficiency": 82 },
+  { "name": "MLOps", "logo": "mlflow", "category": "ML & AI", "proficiency": 74 },
+  { "name": "ETL Pipelines", "logo": "apacheairflow", "category": "ML & AI", "proficiency": 78 },
+  { "name": "n8n", "logo": "n8n", "category": "ML & AI", "proficiency": 90 },
+  { "name": "OpenAI API", "logo": "openai", "category": "ML & AI", "proficiency": 92 },
+  { "name": "Gemini API", "logo": "googlegemini", "category": "ML & AI", "proficiency": 84 },
+  { "name": "ElevenLabs", "logo": "waveform", "category": "ML & AI", "proficiency": 82 },
 
-  {
-    "name": "NumPy",
-    "logo": "numpy",
-    "category": "Data Science",
-    "proficiency": 75
-  },
-  {
-    "name": "Pandas",
-    "logo": "pandas",
-    "category": "Data Science",
-    "proficiency": 78
-  },
-  {
-    "name": "Scikit-learn",
-    "logo": "sklearn",
-    "category": "Data Science",
-    "proficiency": 70
-  },
-  {
-    "name": "Plotly",
-    "logo": "plotly",
-    "category": "Data Science",
-    "proficiency": 72
-  },
-  {
-    "name": "Seaborn",
-    "logo": "seaborn",
-    "category": "Data Science",
-    "proficiency": 68
-  },
-  {
-    "name": "Streamlit",
-    "logo": "streamlit",
-    "category": "Data Science",
-    "proficiency": 75
-  }
+  { "name": "MQTT", "logo": "mqtt", "category": "IoT & Embedded", "proficiency": 76 },
+  { "name": "Arduino", "logo": "arduino", "category": "IoT & Embedded", "proficiency": 79 },
+  { "name": "Raspberry Pi", "logo": "raspberrypi", "category": "IoT & Embedded", "proficiency": 78 },
+  { "name": "ESP32", "logo": "espressif", "category": "IoT & Embedded", "proficiency": 76 },
+  { "name": "I2C/SPI/UART", "logo": "cpu", "category": "IoT & Embedded", "proficiency": 72 },
+  { "name": "GPIO", "logo": "cpu", "category": "IoT & Embedded", "proficiency": 74 },
+  { "name": "MicroPython", "logo": "micropython", "category": "IoT & Embedded", "proficiency": 70 },
+  { "name": "Node-RED", "logo": "nodered", "category": "IoT & Embedded", "proficiency": 76 },
+
+  { "name": "Sanity CMS", "logo": "sanity", "category": "CMS & Search", "proficiency": 90 },
+  { "name": "Algolia", "logo": "algolia", "category": "CMS & Search", "proficiency": 82 },
+
+  { "name": "Jest", "logo": "jest", "category": "Testing & Tools", "proficiency": 84 },
+  { "name": "Vitest", "logo": "vitest", "category": "Testing & Tools", "proficiency": 87 },
+  { "name": "Puppeteer", "logo": "puppeteer", "category": "Testing & Tools", "proficiency": 86 },
+  { "name": "Playwright", "logo": "playwright", "category": "Testing & Tools", "proficiency": 84 },
+  { "name": "Sentry", "logo": "sentry", "category": "Testing & Tools", "proficiency": 79 },
+  { "name": "Lighthouse", "logo": "lighthouse", "category": "Testing & Tools", "proficiency": 82 },
+  { "name": "Git", "logo": "git", "category": "Testing & Tools", "proficiency": 95 },
+  { "name": "Postman", "logo": "postman", "category": "Testing & Tools", "proficiency": 88 },
+  { "name": "Swagger/OpenAPI", "logo": "swagger", "category": "Testing & Tools", "proficiency": 86 }
 ]
