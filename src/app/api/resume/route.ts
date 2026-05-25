@@ -3,6 +3,13 @@ import { NextResponse } from 'next/server';
 const fallbackResumeUrl = '/resume.pdf';
 const sanityApiVersion = '2021-06-07';
 
+type ResumeQueryResult = {
+  resumeUrl?: string;
+  isActive?: boolean;
+  fileName?: string;
+  _id?: string;
+};
+
 function getSanityAuthHeaders() {
   const token = process.env.SANITY_API_READ_TOKEN?.trim();
 
@@ -18,7 +25,7 @@ function buildResumeQueryUrl() {
   }
 
   const query = encodeURIComponent(
-    '*[_type == "resume" && isActive == true][0]{"resumeUrl": coalesce(resumeFile.asset->url, resumeUrl, "/resume.pdf"), "isActive": isActive, "fileName": resumeFile.asset->originalFilename}'
+    '*[_type == "resume" && isActive == true] | order(_updatedAt desc){"resumeUrl": coalesce(resumeFile.asset->url, resumeUrl, "/resume.pdf"), "isActive": isActive, "fileName": resumeFile.asset->originalFilename, "_id": _id}'
   );
 
   return `https://${projectId}.api.sanity.io/v${sanityApiVersion}/data/query/${dataset}?query=${query}`;
@@ -38,19 +45,27 @@ export async function GET() {
     });
 
     if (!response.ok) {
-      return NextResponse.json({ resumeUrl: fallbackResumeUrl, isActive: false });
+      return NextResponse.json({ resumeUrl: fallbackResumeUrl, isActive: false, activeResumeCount: 0, hasMultipleActiveResumes: false });
     }
 
     const payload = (await response.json()) as {
-      result?: { resumeUrl?: string; isActive?: boolean };
+      result?: ResumeQueryResult | ResumeQueryResult[];
     };
-    const resumeUrl = payload.result?.resumeUrl?.trim() || fallbackResumeUrl;
+    const activeResumes = Array.isArray(payload.result)
+      ? payload.result
+      : payload.result
+        ? [payload.result]
+        : [];
+    const selectedResume = activeResumes.find((resume) => typeof resume.resumeUrl === 'string' && resume.resumeUrl.trim().length > 0) ?? activeResumes[0];
+    const resumeUrl = selectedResume?.resumeUrl?.trim() || fallbackResumeUrl;
 
     return NextResponse.json({
       resumeUrl,
-      isActive: Boolean(payload.result?.isActive),
+      isActive: activeResumes.length > 0,
+      activeResumeCount: activeResumes.length,
+      hasMultipleActiveResumes: activeResumes.length > 1,
     });
   } catch {
-    return NextResponse.json({ resumeUrl: fallbackResumeUrl, isActive: false });
+    return NextResponse.json({ resumeUrl: fallbackResumeUrl, isActive: false, activeResumeCount: 0, hasMultipleActiveResumes: false });
   }
 }

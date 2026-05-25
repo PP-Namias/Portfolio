@@ -41,6 +41,12 @@ export function loadStudioEnvironment() {
     'SANITY_STUDIO_DATASET',
     getEnvValue('SANITY_STUDIO_DATASET') ?? getEnvValue('NEXT_PUBLIC_SANITY_DATASET'),
   )
+  setProcessEnvValue(
+    'SANITY_STUDIO_REVALIDATE_SECRET',
+    getEnvValue('SANITY_STUDIO_REVALIDATE_SECRET') ??
+      getEnvValue('SANITY_REVALIDATE_SECRET') ??
+      getEnvValue('NEXT_PUBLIC_SANITY_REVALIDATE_SECRET'),
+  )
 
   environmentLoaded = true
 }
@@ -72,7 +78,7 @@ export function getStudioPreviewOrigin(): string {
 }
 
 export function getDraftModeEnablePath(): string {
-  const secret = getEnvValue('SANITY_REVALIDATE_SECRET')
+  const secret = getEnvValue('SANITY_STUDIO_REVALIDATE_SECRET') ?? getEnvValue('SANITY_REVALIDATE_SECRET')
 
   if (!secret) {
     return '/api/draft-mode/enable'
@@ -83,7 +89,7 @@ export function getDraftModeEnablePath(): string {
 
 export function getWebhookTriggerUrl(): string {
   const origin = getStudioPreviewOrigin()
-  const secret = getEnvValue('SANITY_REVALIDATE_SECRET')
+  const secret = getEnvValue('SANITY_STUDIO_REVALIDATE_SECRET') ?? getEnvValue('SANITY_REVALIDATE_SECRET')
   const url = new URL('/api/sanity/webhook', origin)
 
   if (secret) {

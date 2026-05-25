@@ -78,7 +78,7 @@ export default defineType({
     defineField({
       name: 'resumeUrl',
       title: 'Legacy resume URL',
-      type: 'url',
+      type: 'string',
       description: 'Optional fallback. The active resume document is preferred.',
     }),
     defineField({

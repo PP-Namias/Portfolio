@@ -1,3 +1,5 @@
+2026-05-26: Added a Sanity QA agent for automated regression coverage and hardened the resume endpoint to handle duplicate active docs deterministically with focused tests.
+2026-05-26: Added a Sanity QA agent for automated regression coverage, hardened the resume endpoint for duplicate active docs, fixed Studio resume fallback validation, and verified the webhook route returns 200 with the revalidation secret.
 2026-05-26: Completed the import-verification parity cleanup slice by adding stale-document cleanup to the Sanity importer, rerunning dry-run/import/parity, and confirming all managed document counts are now in sync.
 2026-05-25: Tightened the autonomous continuation prompt so every slice, docs refinement, and prompt update is validated, committed, and immediately followed by the next slice.
 2026-05-25: Fixed the Sanity Studio browser crash by removing node:fs from the shared env module and adding a Node-only launcher that loads root env files before running Studio commands.

@@ -15,7 +15,7 @@ export default defineType({
     defineField({
       name: 'resumeUrl',
       title: 'Legacy resume URL',
-      type: 'url',
+      type: 'string',
       description: 'Optional fallback path for the active resume while the uploaded file workflow is being adopted.'
     }),
     defineField({
