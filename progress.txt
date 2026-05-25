@@ -184,3 +184,6 @@
 - Expanded `SANITY_CMS_IMPROVEMENT_PLAN.md` to include Studio navigation, localhost preview parity, Vision query workflow, and a future slice-by-slice AI-agent prompt plan.
 [SUCCESS] 2026-05-25 Sanity CMS plan expanded with backlog tasks for structure and resume workflow
 - Added backlog items for Studio section mapping, resume activation, preview parity checks, and a Vision inspection pack so the planning phase covers the full CMS surface.
+[SUCCESS] 2026-05-25 Studio structure and presentation parity slice implemented
+- Grouped the Sanity sidebar into Homepage, Support Data, Blog, and Reference Data sections.
+- Added section-specific presentation targets for homepage content and blog posts so Studio preview matches the localhost site more closely.

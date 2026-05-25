@@ -12,13 +12,24 @@ const presentationEnablePath = getDraftModeEnablePath()
 const projectId = requireStudioEnv('SANITY_STUDIO_PROJECT_ID', 'NEXT_PUBLIC_SANITY_PROJECT_ID')
 const dataset = requireStudioEnv('SANITY_STUDIO_DATASET', 'NEXT_PUBLIC_SANITY_DATASET')
 
-const homePageLocation = {
+const homePageLocation = (title: string) => ({
   message: 'This document is used on',
   tone: 'positive' as const,
   locations: [
     {
-      title: 'Homepage',
+      title,
       href: '/',
+    },
+  ],
+})
+
+const blogPostLocation = {
+  message: 'This document is used in',
+  tone: 'positive' as const,
+  locations: [
+    {
+      title: 'Blog',
+      href: '/blog',
     },
   ],
 }
@@ -36,42 +47,64 @@ export default defineConfig({
         S.list()
           .title('Content')
           .items([
-            S.listItem()
-              .title('Hero Section')
-              .child(S.document().schemaType('heroSection').documentId('heroSection')),
-            S.listItem()
-              .title('About Section')
-              .child(S.document().schemaType('aboutSection').documentId('aboutSection')),
-            S.listItem()
-              .title('Profile')
-              .child(S.document().schemaType('profile').documentId('profile')),
-            S.listItem()
-              .title('Experience')
-              .child(S.documentTypeList('experience').title('Experience')),
-            S.listItem()
-              .title('Projects')
-              .child(S.documentTypeList('project').title('Projects')),
-            S.listItem()
-              .title('Certifications')
-              .child(S.documentTypeList('certification').title('Certifications')),
-            S.listItem()
-              .title('Gallery')
-              .child(S.documentTypeList('galleryImage').title('Gallery')),
-            S.listItem()
-              .title('Memberships')
-              .child(S.documentTypeList('membership').title('Memberships')),
-            S.listItem()
-              .title('Recommendations')
-              .child(S.documentTypeList('recommendation').title('Recommendations')),
-            S.listItem()
-              .title('Tech Stack')
-              .child(S.document().schemaType('techStack').documentId('techStack')),
-            S.listItem()
-              .title('Resume')
-              .child(S.documentTypeList('resume').title('Resume')),
-            S.listItem()
-              .title('Site Settings')
-              .child(S.document().schemaType('siteSettings').documentId('siteSettings')),
+            S.listItem().title('Homepage').child(
+              S.list()
+                .title('Homepage')
+                .items([
+                  S.listItem()
+                    .title('Hero Section')
+                    .child(S.document().schemaType('heroSection').documentId('heroSection')),
+                  S.listItem()
+                    .title('About Section')
+                    .child(S.document().schemaType('aboutSection').documentId('aboutSection')),
+                  S.listItem().title('Tech Stack').child(S.document().schemaType('techStack').documentId('techStack')),
+                  S.listItem()
+                    .title('Experience')
+                    .child(S.documentTypeList('experience').title('Experience')),
+                  S.listItem().title('Projects').child(S.documentTypeList('project').title('Projects')),
+                  S.listItem()
+                    .title('Certifications')
+                    .child(S.documentTypeList('certification').title('Certifications')),
+                  S.listItem().title('Gallery').child(S.documentTypeList('galleryImage').title('Gallery')),
+                  S.listItem().title('Resume').child(S.documentTypeList('resume').title('Resume')),
+                  S.listItem()
+                    .title('Site Settings')
+                    .child(S.document().schemaType('siteSettings').documentId('siteSettings')),
+                ])
+            ),
+            S.listItem().title('Support Data').child(
+              S.list()
+                .title('Support Data')
+                .items([
+                  S.listItem().title('Profile').child(S.document().schemaType('profile').documentId('profile')),
+                  S.listItem().title('Memberships').child(S.documentTypeList('membership').title('Memberships')),
+                  S.listItem().title('Recommendations').child(S.documentTypeList('recommendation').title('Recommendations')),
+                ])
+            ),
+            S.listItem().title('Blog').child(
+              S.list()
+                .title('Blog')
+                .items([
+                  S.listItem().title('Posts').child(S.documentTypeList('post').title('Posts')),
+                  S.listItem().title('Authors').child(S.documentTypeList('author').title('Authors')),
+                  S.listItem().title('Categories').child(S.documentTypeList('category').title('Categories')),
+                ])
+            ),
+            S.listItem().title('Reference Data').child(
+              S.list()
+                .title('Reference Data')
+                .items([
+                  S.listItem()
+                    .title('Certification Categories')
+                    .child(S.documentTypeList('certificationCategory').title('Certification Categories')),
+                  S.listItem()
+                    .title('Certification Issuers')
+                    .child(S.documentTypeList('certificationIssuer').title('Certification Issuers')),
+                  S.listItem()
+                    .title('Gallery Categories')
+                    .child(S.documentTypeList('galleryCategory').title('Gallery Categories')),
+                ])
+            ),
           ])
     }),
     presentationTool({
@@ -84,18 +117,19 @@ export default defineConfig({
       },
       resolve: {
         locations: {
-          heroSection: defineLocations(homePageLocation),
-          aboutSection: defineLocations(homePageLocation),
-          profile: defineLocations(homePageLocation),
-          siteSettings: defineLocations(homePageLocation),
-          experience: defineLocations(homePageLocation),
-          project: defineLocations(homePageLocation),
-          certification: defineLocations(homePageLocation),
-          galleryImage: defineLocations(homePageLocation),
-          membership: defineLocations(homePageLocation),
-          recommendation: defineLocations(homePageLocation),
-          techStack: defineLocations(homePageLocation),
-          resume: defineLocations(homePageLocation),
+          heroSection: defineLocations(homePageLocation('Hero Section')),
+          aboutSection: defineLocations(homePageLocation('About Section')),
+          profile: defineLocations(homePageLocation('About Section')),
+          techStack: defineLocations(homePageLocation('Tech Stack')),
+          experience: defineLocations(homePageLocation('Experience')),
+          project: defineLocations(homePageLocation('Projects')),
+          certification: defineLocations(homePageLocation('Certifications')),
+          galleryImage: defineLocations(homePageLocation('Gallery')),
+          membership: defineLocations(homePageLocation('Memberships')),
+          recommendation: defineLocations(homePageLocation('Recommendations')),
+          resume: defineLocations(homePageLocation('Resume')),
+          siteSettings: defineLocations(homePageLocation('Site Settings')),
+          post: defineLocations(blogPostLocation),
         },
       },
     }),
