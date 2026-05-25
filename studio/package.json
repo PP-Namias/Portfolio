@@ -5,11 +5,12 @@
   "main": "package.json",
   "license": "UNLICENSED",
   "scripts": {
-    "dev": "sanity dev",
-    "start": "sanity start",
-    "build": "sanity build",
-    "deploy": "sanity deploy",
-    "deploy-graphql": "sanity graphql deploy"
+    "dev": "node ./scripts/run-with-root-env.mjs sanity dev",
+    "start": "node ./scripts/run-with-root-env.mjs sanity start",
+    "lint": "eslint .",
+    "build": "node ./scripts/run-with-root-env.mjs sanity build",
+    "deploy": "node ./scripts/run-with-root-env.mjs sanity deploy",
+    "deploy-graphql": "node ./scripts/run-with-root-env.mjs sanity graphql deploy"
   },
   "keywords": [
     "sanity"
