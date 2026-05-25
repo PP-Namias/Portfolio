@@ -2,9 +2,8 @@
 
 import React from 'react';
 import { FaGithub, FaInstagram, FaLinkedinIn, FaXTwitter } from 'react-icons/fa6';
-import { profile } from '@/data/profile';
-import { socialLinks } from '@/data/socials';
 import { useModal } from '@/hooks/useModal';
+import { useCmsContent } from '@/hooks/useCmsContent';
 
 const footerSocialIcons: Record<string, React.ComponentType<{ className?: string }>> = {
   github: FaGithub,
@@ -13,12 +12,12 @@ const footerSocialIcons: Record<string, React.ComponentType<{ className?: string
   instagram: FaInstagram,
 };
 
-const footerSocials = socialLinks.filter((s) =>
-  ['github', 'linkedin', 'x', 'instagram'].includes(s.name)
-);
-
 export function Footer() {
+  const { profile, socialLinks } = useCmsContent();
   const { openModal } = useModal();
+  const footerSocials = socialLinks.filter((link) =>
+    ['github', 'linkedin', 'x', 'instagram'].includes(link.name)
+  );
 
   return (
     <footer className="mt-8 pb-8 pt-6 border-t border-border-light dark:border-border-dark">

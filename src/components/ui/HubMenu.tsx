@@ -14,9 +14,8 @@ import {
   ArrowUpRight,
 } from 'lucide-react';
 import { HubMenuItem } from './HubMenuItem';
-import { socialLinks } from '@/data/socials';
-import { profile } from '@/data/profile';
 import { useModal } from '@/hooks/useModal';
+import { useCmsContent } from '@/hooks/useCmsContent';
 import { IS_BLOG_VISIBLE } from '@/lib/features';
 
 interface HubMenuProps {
@@ -36,6 +35,7 @@ const socialIconMap: Record<string, ComponentType<{ className?: string }>> = {
 export function HubMenu({ onClose, onOpenChat }: Readonly<HubMenuProps>) {
   const [connectExpanded, setConnectExpanded] = useState(false);
   const { openModal } = useModal();
+  const { profile, socialLinks } = useCmsContent();
   const menuRef = useRef<HTMLDivElement>(null);
 
   const calLink = socialLinks.find((s) => s.name === 'cal');
@@ -137,7 +137,6 @@ export function HubMenu({ onClose, onOpenChat }: Readonly<HubMenuProps>) {
       <div
         ref={menuRef}
         className="py-2 overflow-y-auto chat-scrollbar flex-1 touch-pan-y"
-        role="menu"
         aria-label="Quick actions menu"
         tabIndex={-1}
         onKeyDown={handleKeyDown}

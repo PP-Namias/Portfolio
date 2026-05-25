@@ -12,7 +12,7 @@ import {
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Modal } from './Modal';
-import { experiences } from '@/data/experience';
+import { useCmsContent } from '@/hooks/useCmsContent';
 
 interface ExperienceModalProps {
   open: boolean;
@@ -22,7 +22,9 @@ interface ExperienceModalProps {
 const imageShadow =
   'shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]';
 
-export function ExperienceModal({ open, onClose }: ExperienceModalProps) {
+export function ExperienceModal({ open, onClose }: Readonly<ExperienceModalProps>) {
+  const { experiences } = useCmsContent();
+
   return (
     <Modal open={open} onClose={onClose} title="Work Experience" fullScreen>
       <div className="px-5 py-4 space-y-6">
@@ -98,7 +100,7 @@ export function ExperienceModal({ open, onClose }: ExperienceModalProps) {
                   <ul className="space-y-1">
                     {exp.highlights.map((h, i) => (
                       <li
-                        key={i}
+                        key={`${exp.company}-${exp.position}-${h}`}
                         className="text-[11px] text-text-secondary-light dark:text-text-secondary-dark flex gap-1.5"
                       >
                         <span className="text-accent-pink mt-0.5 flex-shrink-0">•</span>
@@ -119,7 +121,7 @@ export function ExperienceModal({ open, onClose }: ExperienceModalProps) {
                   <div className="flex flex-wrap gap-1.5">
                     {exp.achievements.map((a, i) => (
                       <span
-                        key={i}
+                        key={`${exp.company}-${exp.position}-${a}`}
                         className="text-[10px] px-2.5 py-1 rounded-full bg-accent-pink/10 text-accent-pink font-medium border border-accent-pink/20"
                       >
                         {a}
@@ -138,7 +140,7 @@ export function ExperienceModal({ open, onClose }: ExperienceModalProps) {
                   <div className="flex flex-wrap gap-1">
                     {exp.technologies.map((tech) => (
                       <span
-                        key={tech}
+                        key={`${exp.company}-${exp.position}-${tech}`}
                         className="text-[10px] px-2 py-0.5 rounded-full border border-border-light dark:border-border-dark text-text-muted-light dark:text-text-muted-dark"
                       >
                         {tech}

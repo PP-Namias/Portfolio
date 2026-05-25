@@ -5,9 +5,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, Send, RotateCcw, ArrowLeft, Trash2, Sparkles, UserCircle, Terminal, Briefcase, Layers, CalendarCheck, Medal } from 'lucide-react';
 import { ChatMessage } from './ChatMessage';
 import { useModal } from '@/hooks/useModal';
+import { useCmsContent } from '@/hooks/useCmsContent';
 import type { ChatMessage as ChatMessageType } from '@/types';
 import Image from 'next/image';
-import { profile } from '@/data/profile';
 
 const ACTION_CARDS = [
   { icon: UserCircle, label: 'About Keneth', question: 'Who is Keneth? Tell me about him.', color: 'text-blue-500', bg: 'bg-blue-500/10' },
@@ -85,6 +85,7 @@ export function ChatPanel({ onBack, onClose, messages, setMessages }: Readonly<C
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const { openModal } = useModal();
+  const { profile } = useCmsContent();
 
   const handleClearChat = useCallback(() => {
     setMessages([]);
@@ -272,12 +273,12 @@ export function ChatPanel({ onBack, onClose, messages, setMessages }: Readonly<C
     }
 
     if (action === 'linkedin') {
-      window.open('https://www.linkedin.com/in/pp-namias/', '_blank');
+      window.open('https://www.linkedin.com/in/pp-namias/', '_blank', 'noopener,noreferrer');
       return;
     }
 
     if (action === 'github') {
-      window.open('https://github.com/PP-Namias', '_blank');
+      window.open('https://github.com/PP-Namias', '_blank', 'noopener,noreferrer');
       return;
     }
 
