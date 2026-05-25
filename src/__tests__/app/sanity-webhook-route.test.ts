@@ -9,12 +9,23 @@ vi.mock('next/cache', () => ({
   revalidatePath: revalidatePathMock,
 }));
 
-import { POST } from '@/app/api/sanity/webhook/route';
+import { OPTIONS, POST } from '@/app/api/sanity/webhook/route';
 
 describe('/api/sanity/webhook route', () => {
   beforeEach(() => {
     revalidatePathMock.mockClear();
     process.env.SANITY_REVALIDATE_SECRET = 'unit-test-secret';
+  });
+
+  it('allows preflight requests for the studio action', async () => {
+    const request = new NextRequest('http://localhost:3000/api/sanity/webhook', {
+      method: 'OPTIONS',
+    });
+
+    const response = await OPTIONS(request);
+
+    expect(response.status).toBe(204);
+    expect(response.headers.get('access-control-allow-origin')).toBe('*');
   });
 
   it('rejects requests with an invalid secret', async () => {

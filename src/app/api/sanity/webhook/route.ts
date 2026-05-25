@@ -3,6 +3,13 @@ import { NextRequest, NextResponse } from 'next/server';
 
 const REVALIDATE_PATHS = ['/', '/blog', '/blog/[slug]', '/sitemap.xml'] as const;
 
+function withCorsHeaders(response: NextResponse): NextResponse {
+  response.headers.set('Access-Control-Allow-Origin', '*');
+  response.headers.set('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  response.headers.set('Access-Control-Allow-Headers', 'content-type, x-sanity-webhook-secret, x-sanity-revalidate-secret');
+  return response;
+}
+
 function getExpectedSecret(): string | null {
   return process.env.SANITY_REVALIDATE_SECRET?.trim() || null;
 }
@@ -35,17 +42,21 @@ function revalidateCmsPaths(): void {
 
 export async function POST(request: NextRequest) {
   if (!isAuthorizedWebhookRequest(request)) {
-    return NextResponse.json({ error: 'Invalid webhook secret.' }, { status: 401 });
+    return withCorsHeaders(NextResponse.json({ error: 'Invalid webhook secret.' }, { status: 401 }));
   }
 
   revalidateCmsPaths();
 
-  return NextResponse.json({
+  return withCorsHeaders(NextResponse.json({
     revalidated: true,
     paths: REVALIDATE_PATHS,
-  });
+  }));
 }
 
 export async function GET() {
-  return NextResponse.json({ error: 'Method not allowed.' }, { status: 405 });
+  return withCorsHeaders(NextResponse.json({ error: 'Method not allowed.' }, { status: 405 }));
+}
+
+export async function OPTIONS() {
+  return withCorsHeaders(new NextResponse(null, { status: 204 }));
 }
