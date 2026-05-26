@@ -15,10 +15,6 @@ describe('blog hidden feature branches', () => {
       IS_BLOG_VISIBLE: false,
     }));
 
-    vi.doMock('@/data/blogPosts', () => ({
-      blogPosts: [],
-    }));
-
     vi.doMock('next/link', () => ({
       default: () => null,
     }));
@@ -43,7 +39,7 @@ describe('blog hidden feature branches', () => {
 
   it('app/blog/page invokes notFound when blog feature is hidden', async () => {
     const mod = await import('@/app/blog/page');
-    mod.default();
+    await mod.default();
 
     expect(notFoundMock).toHaveBeenCalledTimes(1);
   });
@@ -51,7 +47,7 @@ describe('blog hidden feature branches', () => {
   it('app/blog/[slug]/page invokes notFound and yields empty static params when hidden', async () => {
     const mod = await import('@/app/blog/[slug]/page');
 
-    expect(mod.generateStaticParams()).toEqual([]);
+    await expect(mod.generateStaticParams()).resolves.toEqual([]);
     await mod.default({ params: Promise.resolve({ slug: 'x' }) });
 
     expect(notFoundMock).toHaveBeenCalled();

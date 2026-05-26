@@ -13,9 +13,6 @@ import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import { ReadingProgress } from '@/components/ui/ReadingProgress';
 import type { BlogPost } from '@/types';
 
-// Tests mock '@/data/blogPosts' so import it to support slug-only test usage.
-import { blogPosts as _testBlogPosts } from '@/data/blogPosts';
-
 const markdownComponents: any = {
   h2: ({ children }: { children: React.ReactNode }) => (
     <h2 className="text-lg font-semibold text-text-primary-light dark:text-text-primary-dark mt-8 mb-3">
@@ -83,15 +80,11 @@ interface BlogPostContentProps {
 }
 
 export default function BlogPostContent({ post, allPosts, slug }: Readonly<BlogPostContentProps>) {
-  // Support a test-friendly usage where tests render <BlogPostContent slug="..." />
-  // and rely on a mocked '@/data/blogPosts' module. In normal usage, the
-  // parent passes `post` and `allPosts` props.
   let resolvedAll = allPosts;
   let resolvedPost = post ?? null;
 
-  if (!resolvedAll && typeof slug === 'string') {
-    resolvedAll = _testBlogPosts;
-    resolvedPost = _testBlogPosts.find((p) => p.slug === slug) ?? null;
+  if (!resolvedPost && typeof slug === 'string' && resolvedAll) {
+    resolvedPost = resolvedAll.find((p) => p.slug === slug) ?? null;
   }
 
   const postIndex = resolvedPost ? (resolvedAll ?? []).findIndex((p) => p.slug === resolvedPost.slug) : -1;

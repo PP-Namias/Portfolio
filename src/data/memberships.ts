@@ -1,1 +1,3 @@
-export { memberships } from '@/lib/cms-data';
+import { fallbackCmsContent } from '@/lib/cms-content.shared';
+export const memberships = fallbackCmsContent.memberships;
+

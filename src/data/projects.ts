@@ -1,1 +1,3 @@
-export { projects } from '@/lib/cms-data';
+import { fallbackCmsContent } from '@/lib/cms-content.shared';
+export const projects = fallbackCmsContent.projects;
+

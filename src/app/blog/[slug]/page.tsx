@@ -3,9 +3,8 @@ import { notFound } from 'next/navigation';
 import { getCmsContent } from '@/lib/cms-content.server';
 import { IS_BLOG_VISIBLE } from '@/lib/features';
 import BlogPostContent from './BlogPostContent';
-import { blogPosts as localBlogPosts } from '@/data/blogPosts';
 
-export function generateStaticParams(): { slug: string }[] | Promise<{ slug: string }[]> {
+export async function generateStaticParams(): Promise<{ slug: string }[]> {
   if (!IS_BLOG_VISIBLE) {
     return [];
   }
@@ -13,10 +12,12 @@ export function generateStaticParams(): { slug: string }[] | Promise<{ slug: str
   const isTest = process.env.VITEST === 'true' || process.env.NODE_ENV === 'test';
 
   if (isTest) {
-    return localBlogPosts.map((post) => ({ slug: post.slug }));
+    const { blogPosts } = await import('@/data/blogPosts');
+    return blogPosts.map((post) => ({ slug: post.slug }));
   }
 
-  return getCmsContent().then(({ blogPosts }) => blogPosts.map((post) => ({ slug: post.slug })));
+  const { blogPosts } = await getCmsContent();
+  return blogPosts.map((post) => ({ slug: post.slug }));
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
