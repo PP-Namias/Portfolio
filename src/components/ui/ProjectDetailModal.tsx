@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { Calendar, Code2, ExternalLink, Layers, BriefcaseBusiness } from 'lucide-react';
 import { Modal } from './Modal';
 import { Project } from '@/types';
+import { resolveContentImageSrc } from '@/lib/media';
 
 interface ProjectDetailModalProps {
   open: boolean;
@@ -34,11 +35,12 @@ export function ProjectDetailModal({ open, onClose, project }: Readonly<ProjectD
     .replaceAll(/(^-|-$)/g, '')}`;
 
   const target = resolveProjectTarget(project);
+  const heroImageSrc = resolveContentImageSrc(project.image, { folder: 'projects' });
 
   return (
     <Modal open={open} onClose={onClose} title={project.title} fullScreen descriptionId={descriptionId}>
       <div className="space-y-5 p-5 sm:p-6">
-        {(project.previewVideoURL || (project.image && project.image !== 'placeholder.png')) && (
+        {(project.previewVideoURL || heroImageSrc) && (
           <div className="relative h-56 overflow-hidden rounded-xl border border-border-light dark:border-border-dark sm:h-72">
             {project.previewVideoURL ? (
               <video
@@ -53,7 +55,7 @@ export function ProjectDetailModal({ open, onClose, project }: Readonly<ProjectD
               />
             ) : (
               <Image
-                src={`/images/projects/${project.image}`}
+                src={heroImageSrc}
                 alt={project.title}
                 fill
                 sizes="(max-width: 768px) 100vw, 900px"
@@ -172,7 +174,7 @@ export function ProjectDetailModal({ open, onClose, project }: Readonly<ProjectD
                 >
                   <div className="relative h-40">
                     <Image
-                      src={`/images/projects/${item.image}`}
+                      src={resolveContentImageSrc(item.image, { folder: 'projects' })}
                       alt={item.caption}
                       fill
                       sizes="(max-width: 768px) 100vw, 400px"

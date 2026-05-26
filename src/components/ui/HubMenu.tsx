@@ -17,6 +17,7 @@ import { HubMenuItem } from './HubMenuItem';
 import { useModal } from '@/hooks/useModal';
 import { useCmsContent } from '@/hooks/useCmsContent';
 import { IS_BLOG_VISIBLE } from '@/lib/features';
+import { resolveContentImageSrc } from '@/lib/media';
 
 interface HubMenuProps {
   onClose: () => void;
@@ -35,8 +36,12 @@ const socialIconMap: Record<string, ComponentType<{ className?: string }>> = {
 export function HubMenu({ onClose, onOpenChat }: Readonly<HubMenuProps>) {
   const [connectExpanded, setConnectExpanded] = useState(false);
   const { openModal } = useModal();
-  const { profile, socialLinks } = useCmsContent();
+  const { profile, socialLinks, hero } = useCmsContent();
   const menuRef = useRef<HTMLDivElement>(null);
+  const profileImageSrc = resolveContentImageSrc(hero.profileImageUrl, {
+    folder: 'profile',
+    fallback: '/images/profile/me.jpg',
+  });
 
   const calLink = socialLinks.find((s) => s.name === 'cal');
   const connectLinks = socialLinks.filter((s) =>
@@ -88,7 +93,7 @@ export function HubMenu({ onClose, onOpenChat }: Readonly<HubMenuProps>) {
             >
               <div className="h-11 w-11 rounded-lg border border-border-light dark:border-border-dark overflow-hidden bg-white dark:bg-card-bg-dark shadow-sm">
                 <Image
-                  src="/images/profile/Jhon%20Keneth%20Ryan%20Namias.jpg"
+                  src={profileImageSrc}
                   alt={profile.name}
                   fill
                   sizes="44px"
@@ -134,9 +139,11 @@ export function HubMenu({ onClose, onOpenChat }: Readonly<HubMenuProps>) {
       <div className="h-px bg-gradient-to-r from-transparent via-accent-pink/20 to-transparent" />
 
       {/* Menu Items */}
+      {/* eslint-disable-next-line jsx-a11y/role-has-required-aria-props */}
       <div
         ref={menuRef}
         className="py-2 overflow-y-auto chat-scrollbar flex-1 touch-pan-y"
+        role="menu"
         aria-label="Quick actions menu"
         tabIndex={-1}
         onKeyDown={handleKeyDown}

@@ -5,19 +5,15 @@ import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ChevronDown, ChevronUp } from 'lucide-react';
 import { useCmsContent } from '@/hooks/useCmsContent';
+import { resolveContentImageSrc } from '@/lib/media';
 
 const INITIAL_COUNT = 6;
 
 function getCertificationImageSrc(cert: { image: string; imageUrl?: string }): string {
-  if (cert.imageUrl?.trim()) {
-    return cert.imageUrl.trim();
-  }
-
-  if (cert.image.trim()) {
-    return encodeURI(`/images/certifications/${cert.image.trim()}`);
-  }
-
-  return '/images/certifications/CS COUNCIL NAMIAS.png';
+  return resolveContentImageSrc(cert.imageUrl || cert.image, {
+    folder: 'certifications',
+    fallback: '/images/certifications/CS COUNCIL NAMIAS.png',
+  });
 }
 
 export function CertificationsSection() {

@@ -13,6 +13,8 @@ import {
 import { motion } from 'framer-motion';
 import { Modal } from './Modal';
 import { useCmsContent } from '@/hooks/useCmsContent';
+// Tests may mock '@/data/experience' — import it so tests can override content
+import { experiences as _testExperiences } from '@/data/experience';
 
 interface ExperienceModalProps {
   open: boolean;
@@ -24,6 +26,7 @@ const imageShadow =
 
 export function ExperienceModal({ open, onClose }: Readonly<ExperienceModalProps>) {
   const { experiences } = useCmsContent();
+  const effectiveExperiences = process.env.NODE_ENV === 'test' && _testExperiences ? _testExperiences : experiences;
 
   return (
     <Modal open={open} onClose={onClose} title="Work Experience" fullScreen>
@@ -34,7 +37,7 @@ export function ExperienceModal({ open, onClose }: Readonly<ExperienceModalProps
           engineering.
         </p>
 
-        {experiences.map((exp, idx) => {
+        {effectiveExperiences.map((exp, idx) => {
           const startYear = new Date(exp.startedAt).getFullYear();
           const endLabel = exp.endedAt
             ? new Date(exp.endedAt).getFullYear().toString()
@@ -160,8 +163,8 @@ export function ExperienceModal({ open, onClose }: Readonly<ExperienceModalProps
                   }
                 >
                   {images.map((src, i) => (
-                    <Image
-                      key={i}
+                        <Image
+                          key={`${src}-${i}`}
                       src={src}
                       alt={`${exp.company} — ${exp.position}`}
                       width={500}

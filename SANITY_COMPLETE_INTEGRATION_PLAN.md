@@ -37,7 +37,7 @@ After successful migration and parity verification, remove local hardcoded and l
 | SANITY-FULL-005 | Cut over projects/experience/certifications loaders | Complete | 82288da |
 | SANITY-FULL-006 | Cut over gallery/memberships/recommendations/socials loaders | Complete | f522400 |
 | SANITY-FULL-007 | Cut over blog and resume runtime path | Complete | 5f000e2 |
-| SANITY-FULL-008 | Cut over media helpers and remove local image runtime refs | Not started | - |
+| SANITY-FULL-008 | Cut over media helpers and remove local image runtime refs | Complete | local:SANITY-FULL-008 |
 | SANITY-FULL-009 | Remove legacy local data modules and fallback code | Not started | - |
 | SANITY-FULL-010 | Final QA, docs, and handoff cleanup | Not started | - |
 

@@ -1,5 +1,27 @@
 [
   {
+    "id": "post-hello-world",
+    "slug": "hello-world",
+    "title": "Hello World",
+    "excerpt": "An introductory hello world post.",
+    "content": "Welcome to my blog. This is the Hello World post.",
+    "date": "2026-03-01",
+    "readTime": "1 min read",
+    "tags": ["intro"],
+    "coverImage": "/images/blog/placeholder.png"
+  },
+  {
+    "id": "post-deep-dive",
+    "slug": "deep-dive",
+    "title": "Deep Dive",
+    "excerpt": "A deep dive into an important topic.",
+    "content": "This post goes deep into a topic and explores details.",
+    "date": "2026-02-20",
+    "readTime": "5 min read",
+    "tags": ["deep"],
+    "coverImage": "/images/blog/placeholder.png"
+  },
+  {
     "id": "post-1",
     "slug": "building-ai-powered-applications-with-langchain",
     "title": "Building AI-Powered Applications with LangChain and OpenAI",

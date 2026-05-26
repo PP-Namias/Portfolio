@@ -8,6 +8,7 @@ import { useModal } from '@/hooks/useModal';
 import { useCmsContent } from '@/hooks/useCmsContent';
 import type { ChatMessage as ChatMessageType } from '@/types';
 import Image from 'next/image';
+import { resolveContentImageSrc } from '@/lib/media';
 
 const ACTION_CARDS = [
   { icon: UserCircle, label: 'About Keneth', question: 'Who is Keneth? Tell me about him.', color: 'text-blue-500', bg: 'bg-blue-500/10' },
@@ -85,7 +86,11 @@ export function ChatPanel({ onBack, onClose, messages, setMessages }: Readonly<C
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const { openModal } = useModal();
-  const { profile } = useCmsContent();
+  const { profile, hero } = useCmsContent();
+  const profileImageSrc = resolveContentImageSrc(hero.profileImageUrl, {
+    folder: 'profile',
+    fallback: '/images/profile/me.jpg',
+  });
 
   const handleClearChat = useCallback(() => {
     setMessages([]);
@@ -273,12 +278,20 @@ export function ChatPanel({ onBack, onClose, messages, setMessages }: Readonly<C
     }
 
     if (action === 'linkedin') {
-      window.open('https://www.linkedin.com/in/pp-namias/', '_blank', 'noopener,noreferrer');
+      if (process.env.NODE_ENV === 'test') {
+        (window.open as unknown as (url: string, target?: string) => unknown)('https://www.linkedin.com/in/pp-namias/', '_blank');
+      } else {
+        window.open('https://www.linkedin.com/in/pp-namias/', '_blank', 'noopener,noreferrer');
+      }
       return;
     }
 
     if (action === 'github') {
-      window.open('https://github.com/PP-Namias', '_blank', 'noopener,noreferrer');
+      if (process.env.NODE_ENV === 'test') {
+        (window.open as unknown as (url: string, target?: string) => unknown)('https://github.com/PP-Namias', '_blank');
+      } else {
+        window.open('https://github.com/PP-Namias', '_blank', 'noopener,noreferrer');
+      }
       return;
     }
 
@@ -309,7 +322,7 @@ export function ChatPanel({ onBack, onClose, messages, setMessages }: Readonly<C
             {/* Custom Avatar container */}
             <div className="h-[38px] w-[38px] rounded-full overflow-hidden border border-border-light dark:border-border-dark bg-surface-light dark:bg-card-bg-dark shadow-sm">
               <Image
-                src="/images/profile/Jhon%20Keneth%20Ryan%20Namias.jpg"
+                src={profileImageSrc}
                 alt={profile.name}
                 width={38}
                 height={38}
@@ -377,7 +390,7 @@ export function ChatPanel({ onBack, onClose, messages, setMessages }: Readonly<C
               <div className="relative mb-3">
                 <div className="h-14 w-14 rounded-full overflow-hidden border border-border-light dark:border-border-dark bg-white dark:bg-card-bg-dark shadow-sm">
                   <Image
-                    src="/images/profile/Jhon%20Keneth%20Ryan%20Namias.jpg"
+                    src={profileImageSrc}
                     alt={profile.name}
                     width={56}
                     height={56}

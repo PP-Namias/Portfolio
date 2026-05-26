@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight, X, ChevronDown, ChevronUp } from 'lucide-react';
 import { useCmsContent } from '@/hooks/useCmsContent';
+import { resolveContentImageSrc } from '@/lib/media';
 
 const INITIAL_COUNT = 9;
 
@@ -157,7 +158,7 @@ export function GallerySection() {
                 className={`relative rounded-xl overflow-hidden group cursor-pointer focus:outline-none focus:ring-2 focus:ring-accent-pink focus:ring-offset-2 dark:focus:ring-offset-background-dark ${spanClass}`}
               >
                 <Image
-                  src={`/images/gallery/${image.media}`}
+                  src={resolveContentImageSrc(image.media, { folder: 'gallery' })}
                   alt={image.title}
                   fill
                   sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, 25vw"
@@ -258,7 +259,7 @@ export function GallerySection() {
               onClick={(e) => e.stopPropagation()}
             >
               <Image
-                src={`/images/gallery/${selectedImage.media}`}
+                src={resolveContentImageSrc(selectedImage.media, { folder: 'gallery' })}
                 alt={selectedImage.title}
                 width={1200}
                 height={800}

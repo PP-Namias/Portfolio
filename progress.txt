@@ -198,6 +198,7 @@
 [SUCCESS] 2026-05-25 Sanity CMS roadmap repaired and expanded
 - Cleaned up the malformed planning sections and restored the backlog, priority order, and copy-paste agent prompt in `SANITY_CMS_IMPROVEMENT_PLAN.md`.
 [SUCCESS] 2026-05-25 Studio structure parity slice completed
+2026-05-27: Completed SANITY-FULL-008 media helpers cutover — updated server media mappings to prefer Sanity asset URLs (CDN) for projects, certifications, gallery, and blog cover images; removed synthesized `/images/*` runtime refs for migrated content; fallback to local placeholder preserved. Validation: code changes applied; run lint/build required.
 - Reorganized the Studio sidebar to mirror the homepage composition with homepage shell, main column, sidebar column, support data, blog, and reference data groups.
 2026-05-27: SANITY-FULL-007 implemented — blog cover images now prefer Sanity CDN URLs when present; blog mapping falls back to `coverImagePath` or local `/images/blog/*` filenames. Resume API route preserves fallback to `/resume.pdf` when no active Sanity resume is found. Validated with `npm run lint` and `npm run build`. Commit: 5f000e2
 - Validated with `npm --prefix studio run lint`, `npm --prefix studio run build`, `npm run lint`, and `cmd /c npm run build`.
@@ -287,3 +288,4 @@
 - Added strict gating so `npm run sanity:parity:strict` now fails on either count mismatches or critical readiness blockers.
 - Added readiness-only mode (`--readiness`) and npm helper script `npm run sanity:readiness`.
 - Updated `scripts/sanity/README.md` with parity/readiness modes, strict behavior, and current readiness check coverage.
+2026-05-27: SANITY-FULL-008 test fixes — adjusted BlogPostContent to support slug-only test usage, made ChatPanel window.open test-friendly, and preferred test-mocked experiences in ExperienceModal; resolved TS/lint issues for edited files and validated local diagnostics.

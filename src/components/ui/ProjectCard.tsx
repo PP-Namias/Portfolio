@@ -6,6 +6,7 @@ import { motion, useReducedMotion } from 'framer-motion';
 import { ExternalLink, Github } from 'lucide-react';
 import { Project } from '@/types';
 import { Card } from './Card';
+import { resolveContentImageSrc } from '@/lib/media';
 
 interface ProjectCardProps {
   project: Project;
@@ -15,6 +16,7 @@ interface ProjectCardProps {
 export function ProjectCard({ project, index }: ProjectCardProps) {
   const projectUrl = project.liveURL || project.repositoryURL;
   const reduceMotion = useReducedMotion();
+  const projectImageSrc = resolveContentImageSrc(project.image, { folder: 'projects' });
 
   return (
     <motion.div
@@ -31,10 +33,10 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
     >
       <Card hover className="h-full flex flex-col">
         {/* Project Screenshot */}
-        {project.image && project.image !== 'placeholder.png' && (
+        {projectImageSrc && (
           <div className="relative -mx-5 -mt-5 mb-3 rounded-t-xl overflow-hidden">
             <Image
-              src={`/images/projects/${project.image}`}
+              src={projectImageSrc}
               alt={project.title}
               width={400}
               height={128}

@@ -1,4 +1,4 @@
-import path from 'node:path';
+// path import removed — we avoid constructing local `/images/*` refs in this slice
 
 import type {
   BlogPost,
@@ -148,18 +148,22 @@ function portableTextToParagraphs(blocks: unknown): string[] {
     .filter(Boolean);
 }
 
+/**
+ * Prefer canonical Sanity asset URLs when available. For migrated content
+ * we should return absolute asset URLs (CDN) and avoid synthesizing
+ * local `/images/*` runtime references here. When no Sanity URL is
+ * available, return an empty string so callers can fall back to a
+ * placeholder image or a controlled local fallback elsewhere.
+ */
 function resolveMediaPath(fileName?: string | null, url?: string | null): string {
   const normalizedUrl = String(url || '').trim();
   if (normalizedUrl) {
     return normalizedUrl;
   }
 
-  const normalizedFileName = String(fileName || '').trim();
-  if (normalizedFileName) {
-    return normalizedFileName;
-  }
-
-  return 'placeholder.png';
+  // Do not return local filenames here — return empty to indicate
+  // that no Sanity-hosted asset URL is present.
+  return '';
 }
 
 export async function getCmsContent(): Promise<CmsContent> {
@@ -231,9 +235,12 @@ export async function getCmsContent(): Promise<CmsContent> {
       previewVideoUrl?: string;
       imageFile?: string;
       imageUrl?: string;
-      galleryFiles?: string[];
+      galleryItems?: Array<{
+        file?: string;
+        url?: string;
+      }>;
     }>>(
-      '*[_type == "project"] | order(order asc, featuredRank asc, title asc){title,"slug":slug.current,summary,year,category,role,technologies,achievements,featuredRank,status,liveUrl,repositoryUrl,detailUrl,processUrl,previewVideoUrl,"imageFile":image.asset->originalFilename,"imageUrl":image.asset->url,"galleryFiles":gallery[]{asset->originalFilename}}'
+      '*[_type == "project"] | order(order asc, featuredRank asc, title asc){title,"slug":slug.current,summary,year,category,role,technologies,achievements,featuredRank,status,liveUrl,repositoryUrl,detailUrl,processUrl,previewVideoUrl,"imageFile":image.asset->originalFilename,"imageUrl":image.asset->url,"galleryItems":gallery[]{"file":asset->originalFilename,"url":asset->url}}'
     ),
     querySanity<Array<{
       title?: string;
@@ -254,8 +261,9 @@ export async function getCmsContent(): Promise<CmsContent> {
       image?: { asset?: { originalFilename?: string } };
       mediaPath?: string;
       mediaFile?: string;
+      mediaUrl?: string;
     }>>(
-      '*[_type == "galleryImage"] | order(order asc, capturedAt desc){title,mediaType,tags,capturedAt,"category":category->title,"mediaFile":image.asset->originalFilename,mediaPath}'
+      '*[_type == "galleryImage"] | order(order asc, capturedAt desc){title,mediaType,tags,capturedAt,"category":category->title,"mediaFile":image.asset->originalFilename,"mediaUrl":image.asset->url,mediaPath}'
     ),
     querySanity<Array<{
       title?: string;
@@ -317,8 +325,8 @@ export async function getCmsContent(): Promise<CmsContent> {
 
   const hero = {
     roles: (heroDoc?.heroRoles ?? []).filter(Boolean),
-    availabilityLabel: heroDoc?.availabilityLabel || fallbackCmsContent.hero.availabilityLabel,
-    profileImageUrl: heroDoc?.profileImageUrl || fallbackCmsContent.hero.profileImageUrl,
+    availabilityLabel: heroDoc?.availabilityLabel || '',
+    profileImageUrl: heroDoc?.profileImageUrl || '',
   };
 
   const about = {
@@ -327,7 +335,7 @@ export async function getCmsContent(): Promise<CmsContent> {
         ? aboutParagraphsFromPortable
         : aboutParagraphsFromLegacy.length > 0
           ? aboutParagraphsFromLegacy
-          : fallbackCmsContent.about.paragraphs,
+          : (fallbackCmsContent.profile.summary ? [fallbackCmsContent.profile.summary] : []),
   };
 
   const experiences: Experience[] = (experienceDocs ?? []).map((experience) => ({
@@ -348,7 +356,10 @@ export async function getCmsContent(): Promise<CmsContent> {
 
   const projects: Project[] = (projectDocs ?? []).map((project) => ({
     title: project.title || '',
-    image: resolveMediaPath(project.imageFile, project.imageUrl),
+    // Use the Sanity-provided image URL when present. Avoid creating
+    // local runtime `/images/*` references here — those will be
+    // removed as part of the media cutover.
+    image: project.imageUrl || resolveMediaPath(project.imageFile, project.imageUrl) || '/images/blog/placeholder.png',
     description: project.summary || '',
     repositoryURL: project.repositoryUrl || null,
     liveURL: project.liveUrl || null,
@@ -365,15 +376,16 @@ export async function getCmsContent(): Promise<CmsContent> {
     })),
     featuredRank: project.featuredRank || null,
     status: (project.status as Project['status']) || undefined,
-    gallery: (project.galleryFiles ?? []).map((galleryFile) => ({
-      image: galleryFile || '',
+    gallery: (project.galleryItems ?? []).map((galleryItem) => ({
+      image: galleryItem.url || galleryItem.file || '',
       caption: project.title || '',
     })),
   }));
 
   const certifications: Certification[] = (certificationDocs ?? []).map((certification, index) => ({
     title: certification.title || '',
-    image: resolveMediaPath(certification.imageFile, certification.imageUrl),
+    // Prefer the Sanity asset URL for certification images
+    image: certification.imageUrl || '',
     imageUrl: certification.imageUrl || '',
     issuer: certification.issuer || '',
     issuedAt: certification.issuedAt || '',
@@ -383,7 +395,8 @@ export async function getCmsContent(): Promise<CmsContent> {
   const galleryImages: GalleryItem[] = (galleryDocs ?? []).map((image) => ({
     title: image.title || '',
     mediaType: image.mediaType || 'Image',
-    media: resolveMediaPath(image.mediaFile, image.mediaPath),
+    // Use the Sanity-hosted media URL when available; otherwise empty.
+    media: image.mediaUrl || '',
     tags: image.tags || [],
     createdAt: image.capturedAt || '',
   }));
@@ -411,19 +424,14 @@ export async function getCmsContent(): Promise<CmsContent> {
     readTime: post.readTime || '5 min read',
     tags: post.tags || [],
     coverImage: (() => {
-      const resolved = resolveMediaPath(post.mainImageFile, post.mainImageUrl as string | undefined);
+      const resolved = post.mainImageUrl || resolveMediaPath(post.mainImageFile, post.mainImageUrl as string | undefined);
       if (typeof resolved === 'string' && /^https?:\/\//i.test(resolved)) {
         return resolved;
       }
 
-      if (post.coverImagePath) {
-        return `/images/blog/${path.basename(post.coverImagePath)}`;
-      }
-
-      if (resolved && resolved !== 'placeholder.png') {
-        return `/images/blog/${resolved}`;
-      }
-
+      // No Sanity-hosted cover image available — fall back to a local
+      // placeholder. We intentionally avoid synthesizing `/images/*`
+      // runtime refs for migrated content.
       return '/images/blog/placeholder.png';
     })(),
   }));
