@@ -148,8 +148,18 @@ function portableTextToParagraphs(blocks: unknown): string[] {
     .filter(Boolean);
 }
 
-function mapProjectImage(fileName?: string | null): string {
-  return fileName || 'placeholder.png';
+function resolveMediaPath(fileName?: string | null, url?: string | null): string {
+  const normalizedUrl = String(url || '').trim();
+  if (normalizedUrl) {
+    return normalizedUrl;
+  }
+
+  const normalizedFileName = String(fileName || '').trim();
+  if (normalizedFileName) {
+    return normalizedFileName;
+  }
+
+  return 'placeholder.png';
 }
 
 export async function getCmsContent(): Promise<CmsContent> {
@@ -205,7 +215,7 @@ export async function getCmsContent(): Promise<CmsContent> {
     ),
     querySanity<Array<{
       title?: string;
-      slug?: { current?: string };
+      slug?: string;
       summary?: string;
       year?: number;
       category?: string;
@@ -216,17 +226,21 @@ export async function getCmsContent(): Promise<CmsContent> {
       status?: string;
       liveUrl?: string;
       repositoryUrl?: string;
-      image?: { asset?: { originalFilename?: string } };
-      gallery?: Array<{ asset?: { originalFilename?: string } }>;
+      detailUrl?: string;
+      processUrl?: string;
+      previewVideoUrl?: string;
+      imageFile?: string;
+      imageUrl?: string;
+      galleryFiles?: string[];
     }>>(
-      '*[_type == "project"] | order(order asc, featuredRank asc, title asc){title,"slug":slug.current,summary,year,category,role,technologies,achievements,featuredRank,status,liveUrl,repositoryUrl,"imageFile":image.asset->originalFilename,"galleryFiles":gallery[]{asset->originalFilename}}'
+      '*[_type == "project"] | order(order asc, featuredRank asc, title asc){title,"slug":slug.current,summary,year,category,role,technologies,achievements,featuredRank,status,liveUrl,repositoryUrl,detailUrl,processUrl,previewVideoUrl,"imageFile":image.asset->originalFilename,"imageUrl":image.asset->url,"galleryFiles":gallery[]{asset->originalFilename}}'
     ),
     querySanity<Array<{
       title?: string;
       issuedAt?: string;
       tags?: string[];
-      issuer?: { title?: string };
-      image?: { asset?: { originalFilename?: string } };
+      issuer?: string;
+      imageFile?: string;
       imageUrl?: string;
     }>>(
       '*[_type == "certification"] | order(order asc, issuedAt desc){title,issuedAt,tags,"issuer":issuer->title,"imageFile":image.asset->originalFilename,"imageUrl":image.asset->url}'
@@ -333,12 +347,13 @@ export async function getCmsContent(): Promise<CmsContent> {
 
   const projects: Project[] = (projectDocs ?? []).map((project) => ({
     title: project.title || '',
-    image: mapProjectImage(project.image?.asset?.originalFilename),
+    image: resolveMediaPath(project.imageFile, project.imageUrl),
     description: project.summary || '',
     repositoryURL: project.repositoryUrl || null,
     liveURL: project.liveUrl || null,
-    processURL: null,
-    detailURL: project.liveUrl || null,
+    processURL: project.processUrl || null,
+    detailURL: project.detailUrl || project.liveUrl || project.repositoryUrl || null,
+    previewVideoURL: project.previewVideoUrl || null,
     tags: project.technologies || [],
     year: project.year || new Date().getFullYear(),
     category: project.category,
@@ -349,17 +364,17 @@ export async function getCmsContent(): Promise<CmsContent> {
     })),
     featuredRank: project.featuredRank || null,
     status: (project.status as Project['status']) || undefined,
-    gallery: (project.gallery ?? []).map((item) => ({
-      image: item.asset?.originalFilename || '',
+    gallery: (project.galleryFiles ?? []).map((galleryFile) => ({
+      image: galleryFile || '',
       caption: project.title || '',
     })),
   }));
 
   const certifications: Certification[] = (certificationDocs ?? []).map((certification, index) => ({
     title: certification.title || '',
-    image: certification.image?.asset?.originalFilename || '',
+    image: certification.imageFile || '',
     imageUrl: certification.imageUrl || '',
-    issuer: certification.issuer?.title || '',
+    issuer: certification.issuer || '',
     issuedAt: certification.issuedAt || '',
     tags: certification.tags || [],
   }));

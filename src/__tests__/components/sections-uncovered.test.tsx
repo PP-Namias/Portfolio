@@ -342,6 +342,68 @@ vi.mock('@/data/recommendations', () => ({
   ],
 }));
 
+vi.mock('@/hooks/useCmsContent', () => ({
+  useCmsContent: () => ({
+    profile: {
+      name: 'Jhon Keneth Ryan Namias',
+      title: 'Full Stack Engineer',
+      email: 'pp.namias@gmail.com',
+      summary: 'Paragraph one.\n\nParagraph two.\n\nParagraph three.',
+    },
+    hero: { roles: ['Full Stack Engineer'], availabilityLabel: 'Available', profileImageUrl: '/images/profile/me.jpg' },
+    about: { paragraphs: ['Paragraph one.', 'Paragraph two.', 'Paragraph three.'] },
+    projects: [
+      {
+        title: 'Featured App',
+        image: 'featured.png',
+        description: 'Main project',
+        repositoryURL: 'https://github.com/example/featured',
+        liveURL: 'https://featured.app',
+        processURL: 'https://docs.featured.app',
+        detailURL: 'https://featured.app/detail',
+        tags: ['React', 'TypeScript', 'Node.js', 'AI', 'Cloud'],
+        year: 2026,
+        category: 'AI Application',
+        role: 'Full Stack Developer',
+        featuredRank: 1,
+        status: 'completed',
+        impactMetrics: [{ label: 'Scale', value: '1000+ sessions' }],
+      },
+      { title: 'Proj 2', image: 'p2.png', description: 'Second project', repositoryURL: 'https://github.com/example/p2', liveURL: null, processURL: null, detailURL: 'https://github.com/example/p2', tags: ['React', 'Node.js', 'API'], year: 2025, category: 'Desktop Application', role: 'Software Engineer', status: 'completed' },
+      { title: 'Proj 3', image: 'p3.png', description: 'Third project', repositoryURL: null, liveURL: 'https://p3.app', processURL: null, detailURL: 'https://p3.app', tags: ['Next.js', 'TS', 'SSR'], year: 2025, category: 'Web Platform', role: 'Frontend Engineer', status: 'completed' },
+      { title: 'Proj 4', image: 'p4.png', description: 'Fourth project', repositoryURL: null, liveURL: null, processURL: null, detailURL: null, tags: ['Python', 'FastAPI', 'Docker'], year: 2024, category: 'Backend Service', role: 'Backend Engineer', status: 'completed' },
+      { title: 'Proj 5', image: 'p5.png', description: 'Fifth project', repositoryURL: null, liveURL: null, processURL: null, detailURL: null, tags: ['Go', 'Redis', 'Cloud'], year: 2024, category: 'Backend Service', role: 'Backend Engineer', status: 'completed' },
+    ],
+    certifications: [
+      { title: 'Cert 1', image: 'c1.png', issuer: 'Org A', issuedAt: '2025-01-01', tags: [] },
+      { title: 'Cert 2', image: 'c2.png', issuer: 'Org A', issuedAt: '2025-01-01', tags: [] },
+      { title: 'Cert 3', image: 'c3.png', issuer: 'Org B', issuedAt: '2025-01-01', tags: [] },
+      { title: 'Cert 4', image: 'c4.png', issuer: 'Org B', issuedAt: '2025-01-01', tags: [] },
+      { title: 'Cert 5', image: 'c5.png', issuer: 'Org C', issuedAt: '2025-01-01', tags: [] },
+      { title: 'Cert 6', image: 'c6.png', issuer: 'Org C', issuedAt: '2025-01-01', tags: [] },
+      { title: 'Cert 7', image: 'c7.png', issuer: 'Org C', issuedAt: '2025-01-01', tags: [] },
+    ],
+    experiences: [
+      { company: 'MASH', position: 'Project Manager', summary: 'Led delivery and architecture.', country: 'PH', modality: 'Hybrid', type: 'Full-time', startedAt: '2025-01-01', endedAt: null, technologies: ['React', 'Node.js'], highlights: ['Managed team'], achievements: ['Increased output'], relatedProjects: [], images: [] },
+      { company: 'X', position: 'Engineer', summary: 'Built systems', country: 'PH', modality: 'On-site', type: 'Full-time', startedAt: '2024-01-01', endedAt: '2024-12-01', technologies: ['Python'], highlights: ['Shipped features'], achievements: ['Reduced bugs'], relatedProjects: [], images: [] },
+    ],
+    galleryImages: [
+      { title: 'Img 1', mediaType: 'image', media: 'g1.png', tags: ['Event'], createdAt: '2024-01-01' },
+      { title: 'Img 2', mediaType: 'image', media: 'g2.png', tags: ['Event'], createdAt: '2024-01-01' },
+    ],
+    memberships: [{ name: 'Org Membership', url: 'https://example.com/membership', joinedAt: '2025-01-01' }],
+    recommendations: [{ quote: 'Excellent work.', name: 'Jane Doe', title: 'Lead Engineer', company: 'Tech Co' }],
+    socialLinks: [
+      { name: 'cal', icon: 'calendar', label: 'Schedule a Meeting', link: 'https://cal.com/pp-namias', featured: true },
+      { name: 'email', icon: 'mail', label: 'Email', link: 'mailto:pp.namias@gmail.com' },
+      { name: 'github', icon: 'github', label: 'GitHub', link: 'https://github.com/PP-Namias' },
+    ],
+    technologies: [ { name: 'TypeScript', logo: 'ts', category: 'Languages', proficiency: 5 } ],
+    techCategories: { Languages: [ { name: 'TypeScript', logo: 'ts', category: 'Languages', proficiency: 5 } ] },
+    blogPosts: [],
+  }),
+}));
+
 import { AboutSection } from '@/components/sections/AboutSection';
 import { CertificationsSection } from '@/components/sections/CertificationsSection';
 import { ConnectSection } from '@/components/sections/ConnectSection';

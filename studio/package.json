@@ -1,9 +1,9 @@
 {
-  "name": "ervhyne-portfolio-blog",
+  "name": "namias-portfolio-cms-studio",
   "private": true,
   "version": "1.0.0",
   "main": "package.json",
-  "license": "UNLICENSED",
+  "license": "MIT",
   "scripts": {
     "dev": "node ./scripts/run-with-root-env.mjs sanity dev",
     "start": "node ./scripts/run-with-root-env.mjs sanity start",

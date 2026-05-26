@@ -80,6 +80,9 @@ const securityHeaders = [
 const nextConfig = {
   output: isWindows ? undefined : 'standalone',
   poweredByHeader: false,
+  devIndicators: {
+    buildActivity: false,
+  },
   images: {
     remotePatterns: [
       {

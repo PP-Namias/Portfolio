@@ -26,13 +26,27 @@ function resolveProjectTarget(project: Project): string | null {
   return project.detailURL || project.liveURL || project.repositoryURL || null;
 }
 
+function getProjectPreviewSrc(image: string): string {
+  const normalizedImage = image.trim();
+  if (!normalizedImage || normalizedImage === 'placeholder.png') {
+    return '';
+  }
+
+  if (/^https?:\/\//i.test(normalizedImage)) {
+    return normalizedImage;
+  }
+
+  return `/images/projects/${normalizedImage}`;
+}
+
 function renderProjectPreviewMedia(project: Project, isPriority: boolean) {
-  const hasImagePreview = Boolean(project.image && project.image !== 'placeholder.png');
+  const previewSrc = getProjectPreviewSrc(project.image);
+  const hasImagePreview = Boolean(previewSrc);
 
   if (hasImagePreview) {
     return (
       <Image
-        src={`/images/projects/${project.image}`}
+        src={previewSrc}
         alt={project.title}
         fill
         sizes="(max-width: 768px) 100vw, 700px"
