@@ -1,4 +1,5 @@
 2026-05-26: Completed SANITY-FULL-004 profile/hero/about runtime cutover by extending the CMS content contract with hero/about payloads, wiring heroSection/aboutSection reads in the server loader with safe fallbacks, and removing legacy HeroSection dependency on local profile module.
+2026-05-27: SANITY-FULL-007 follow-up fix completed — resume modal and resume API fallback now default to the Sanity-hosted resume PDF URL (`https://cdn.sanity.io/files/nl0qw78w/production/529fd6d835d66c9d239aadd53f63a35932e8ac95.pdf`), section test mocks were expanded to satisfy CTA visibility conditions, and validation passed (`npm run test -- src/__tests__/components/sections-uncovered.test.tsx src/__tests__/components/ResumeModal.test.tsx src/__tests__/app/api/resume-route.test.ts`, `npm run lint`, `npm run build`).
 2026-05-26: SANITY-FULL-004 validation passed with `npm run lint` and `cmd /c npm run build`; readiness report unchanged with existing blockers (project detailUrl + missing about/site singleton docs).
 2026-05-26: Completed the import-verification parity cleanup slice by adding stale-document cleanup to the Sanity importer, rerunning dry-run/import/parity, and confirming all managed document counts are now in sync.
 2026-05-25: Tightened the autonomous continuation prompt so every slice, docs refinement, and prompt update is validated, committed, and immediately followed by the next slice.
@@ -198,6 +199,7 @@
 - Cleaned up the malformed planning sections and restored the backlog, priority order, and copy-paste agent prompt in `SANITY_CMS_IMPROVEMENT_PLAN.md`.
 [SUCCESS] 2026-05-25 Studio structure parity slice completed
 - Reorganized the Studio sidebar to mirror the homepage composition with homepage shell, main column, sidebar column, support data, blog, and reference data groups.
+2026-05-27: SANITY-FULL-007 implemented — blog cover images now prefer Sanity CDN URLs when present; blog mapping falls back to `coverImagePath` or local `/images/blog/*` filenames. Resume API route preserves fallback to `/resume.pdf` when no active Sanity resume is found. Validated with `npm run lint` and `npm run build`. Commit: 5f000e2
 - Validated with `npm --prefix studio run lint`, `npm --prefix studio run build`, `npm run lint`, and `cmd /c npm run build`.
 [SUCCESS] 2026-05-25 Preview parity and Windows build fallback slice completed
 - Updated Studio presentation labels so homepage and blog content explicitly point at the localhost routes.

@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { GET } from '@/app/api/resume/route';
 
 const fetchMock = vi.fn();
+const sanityResumeUrl = 'https://cdn.sanity.io/files/nl0qw78w/production/529fd6d835d66c9d239aadd53f63a35932e8ac95.pdf';
 
 describe('/api/resume route', () => {
   beforeEach(() => {
@@ -19,7 +20,7 @@ describe('/api/resume route', () => {
 
     const data = await response.json();
     expect(data).toEqual({
-      resumeUrl: '/resume.pdf',
+      resumeUrl: sanityResumeUrl,
       isActive: false,
     });
     expect(fetchMock).not.toHaveBeenCalled();
@@ -72,7 +73,7 @@ describe('/api/resume route', () => {
     const data = await response.json();
 
     expect(data).toEqual({
-      resumeUrl: '/resume.pdf',
+      resumeUrl: sanityResumeUrl,
       isActive: false,
       activeResumeCount: 0,
       hasMultipleActiveResumes: false,
@@ -89,7 +90,7 @@ describe('/api/resume route', () => {
     const data = await response.json();
 
     expect(data).toEqual({
-      resumeUrl: '/resume.pdf',
+      resumeUrl: sanityResumeUrl,
       isActive: false,
       activeResumeCount: 0,
       hasMultipleActiveResumes: false,

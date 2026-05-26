@@ -3,6 +3,8 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import React from 'react';
 import { ResumeModal } from '@/components/ui/ResumeModal';
 
+const sanityResumeUrl = 'https://cdn.sanity.io/files/nl0qw78w/production/529fd6d835d66c9d239aadd53f63a35932e8ac95.pdf';
+
 // Mock framer-motion
 vi.mock('framer-motion', () => {
   const R = require('react');
@@ -30,7 +32,7 @@ describe('ResumeModal', () => {
     globalThis.fetch = fetchMock as typeof fetch;
   });
 
-  const mockResumeResponse = (resumeUrl = '/sanity-resume.pdf') => {
+  const mockResumeResponse = (resumeUrl = sanityResumeUrl) => {
     fetchMock.mockResolvedValue({
       ok: true,
       json: async () => ({ resumeUrl, isActive: true }),
@@ -48,37 +50,37 @@ describe('ResumeModal', () => {
   });
 
   it('renders download PDF button', () => {
-    mockResumeResponse('/resume.pdf');
+    mockResumeResponse(sanityResumeUrl);
     render(<ResumeModal open={true} onClose={mockOnClose} />);
     const downloadLink = screen.getByText('Download PDF').closest('a');
-    expect(downloadLink).toHaveAttribute('href', '/resume.pdf');
+    expect(downloadLink).toHaveAttribute('href', sanityResumeUrl);
     expect(downloadLink).toHaveAttribute('download');
   });
 
   it('hydrates the resume URL from the runtime endpoint', async () => {
-    mockResumeResponse('/sanity-resume.pdf');
+    mockResumeResponse(sanityResumeUrl);
     render(<ResumeModal open={true} onClose={mockOnClose} />);
     const pdfIframe = screen.getByTitle('Resume PDF Viewer');
     expect(pdfIframe).toBeInTheDocument();
 
     expect(await screen.findByText('Download PDF')).toBeInTheDocument();
     expect(fetchMock).toHaveBeenCalledWith('/api/resume', expect.any(Object));
-    expect(pdfIframe).toHaveAttribute('src', '/sanity-resume.pdf#view=FitH');
+    expect(pdfIframe).toHaveAttribute('src', `${sanityResumeUrl}#view=FitH`);
   });
 
   it('has a fallback download link for unsupported browsers', () => {
-    mockResumeResponse('/resume.pdf');
+    mockResumeResponse(sanityResumeUrl);
     render(<ResumeModal open={true} onClose={mockOnClose} />);
     const fallbackText = screen.getByText(/doesn't support embedded PDF/i);
     expect(fallbackText).toBeInTheDocument();
 
     const fallbackLink = screen.getByText('Download Resume').closest('a');
-    expect(fallbackLink).toHaveAttribute('href', '/resume.pdf');
+    expect(fallbackLink).toHaveAttribute('href', sanityResumeUrl);
     expect(fallbackLink).toHaveAttribute('download');
   });
 
   it('has a close button that calls onClose', () => {
-    mockResumeResponse('/resume.pdf');
+    mockResumeResponse(sanityResumeUrl);
     render(<ResumeModal open={true} onClose={mockOnClose} />);
     // The ResumeModal toolbar has its own close button
     const closeButtons = screen.getAllByLabelText('Close');

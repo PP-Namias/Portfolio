@@ -403,6 +403,8 @@ vi.mock('@/hooks/useCmsContent', () => ({
     experiences: [
       { company: 'MASH', position: 'Project Manager', summary: 'Led delivery and architecture.', country: 'PH', modality: 'Hybrid', type: 'Full-time', startedAt: '2025-01-01', endedAt: null, technologies: ['React', 'Node.js'], highlights: ['Managed team'], achievements: ['Increased output'], relatedProjects: [], images: [] },
       { company: 'X', position: 'Engineer', summary: 'Built systems', country: 'PH', modality: 'On-site', type: 'Full-time', startedAt: '2024-01-01', endedAt: '2024-12-01', technologies: ['Python'], highlights: ['Shipped features'], achievements: ['Reduced bugs'], relatedProjects: [], images: [] },
+      { company: 'Y', position: 'Technician', summary: 'Maintained hardware', country: 'PH', modality: 'On-site', type: 'Full-time', startedAt: '2023-01-01', endedAt: '2023-12-01', technologies: ['Linux'], highlights: ['Improved uptime'], achievements: ['Award'], relatedProjects: [], images: [] },
+      { company: 'Z', position: 'Intern', summary: 'Supported delivery', country: 'PH', modality: 'Remote', type: 'Internship', startedAt: '2022-01-01', endedAt: '2022-12-01', technologies: ['HTML'], highlights: ['Learned fast'], achievements: ['Completed project'], relatedProjects: [], images: [] },
     ],
     galleryImages: [
       { title: 'Img 1', mediaType: 'image', media: 'g1.png', tags: ['Event'], createdAt: '2024-01-01' },
@@ -426,8 +428,28 @@ vi.mock('@/hooks/useCmsContent', () => ({
       { name: 'email', icon: 'mail', label: 'Email', link: 'mailto:pp.namias@gmail.com' },
       { name: 'github', icon: 'github', label: 'GitHub', link: 'https://github.com/PP-Namias' },
     ],
-    technologies: [ { name: 'TypeScript', logo: 'ts', category: 'Languages', proficiency: 5 } ],
-    techCategories: { Languages: [ { name: 'TypeScript', logo: 'ts', category: 'Languages', proficiency: 5 } ] },
+    technologies: [
+      { name: 'TypeScript', logo: 'ts', category: 'Languages', proficiency: 5 },
+      { name: 'Python', logo: 'py', category: 'Languages', proficiency: 5 },
+      { name: 'React', logo: 'react', category: 'Frontend', proficiency: 5 },
+      { name: 'Node.js', logo: 'node', category: 'Backend', proficiency: 5 },
+      { name: 'PostgreSQL', logo: 'pg', category: 'Database', proficiency: 4 },
+    ],
+    techCategories: {
+      Languages: [
+        { name: 'TypeScript', logo: 'ts', category: 'Languages', proficiency: 5 },
+        { name: 'Python', logo: 'py', category: 'Languages', proficiency: 5 },
+      ],
+      Frontend: [
+        { name: 'React', logo: 'react', category: 'Frontend', proficiency: 5 },
+      ],
+      Backend: [
+        { name: 'Node.js', logo: 'node', category: 'Backend', proficiency: 5 },
+      ],
+      Database: [
+        { name: 'PostgreSQL', logo: 'pg', category: 'Database', proficiency: 4 },
+      ],
+    },
     blogPosts: [],
   }),
 }));

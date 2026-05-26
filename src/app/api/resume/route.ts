@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 
-const fallbackResumeUrl = '/resume.pdf';
+const fallbackResumeUrl = 'https://cdn.sanity.io/files/nl0qw78w/production/529fd6d835d66c9d239aadd53f63a35932e8ac95.pdf';
 const sanityApiVersion = '2021-06-07';
 
 type ResumeQueryResult = {
