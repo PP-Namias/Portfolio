@@ -6,9 +6,13 @@ import { GraduationCap, ChevronDown, ChevronUp } from 'lucide-react';
 import { useCmsContent } from '@/hooks/useCmsContent';
 
 export function AboutSection() {
-  const { profile } = useCmsContent();
+  const { profile, about } = useCmsContent();
   const [showMore, setShowMore] = useState(false);
-  const paragraphs = profile.summary.split('\n\n');
+  const fallbackParagraphs = profile.summary
+    .split(/\n\n+/)
+    .map((paragraph) => paragraph.trim())
+    .filter(Boolean);
+  const paragraphs = about.paragraphs.length > 0 ? about.paragraphs : fallbackParagraphs;
 
   return (
     <motion.section

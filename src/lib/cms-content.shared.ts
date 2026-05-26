@@ -24,6 +24,14 @@ import type {
 
 export interface CmsContent {
   profile: Profile;
+  hero: {
+    roles: string[];
+    availabilityLabel: string;
+    profileImageUrl: string;
+  };
+  about: {
+    paragraphs: string[];
+  };
   experiences: Experience[];
   projects: Project[];
   certifications: Certification[];
@@ -49,6 +57,17 @@ export function buildTechCategories(technologies: Technology[]): Record<string, 
 
 export const fallbackCmsContent: CmsContent = {
   profile: profileData,
+  hero: {
+    roles: [profileData.title],
+    availabilityLabel: 'Available',
+    profileImageUrl: '/images/profile/me.jpg',
+  },
+  about: {
+    paragraphs: profileData.summary
+      .split(/\n\n+/)
+      .map((paragraph) => paragraph.trim())
+      .filter(Boolean),
+  },
   experiences: experienceData.map((experience) => ({
     ...experience,
     position: experience.position,

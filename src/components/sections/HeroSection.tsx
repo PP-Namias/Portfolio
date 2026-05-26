@@ -10,7 +10,6 @@ import {
   Calendar,
 } from 'lucide-react';
 import { FaGithub, FaInstagram, FaLinkedinIn, FaXTwitter } from 'react-icons/fa6';
-import { profile } from '@/data/profile';
 import { Button } from '@/components/ui/Button';
 import { VerifiedBadge } from '@/components/ui/VerifiedBadge';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
@@ -19,31 +18,11 @@ import { useModal } from '@/hooks/useModal';
 import { useCmsContent } from '@/hooks/useCmsContent';
 import { IS_BLOG_VISIBLE } from '@/lib/features';
 
-const roles = [
-  'Full Stack Engineer',
-  'AI Automation Specialist',
-  'Project Manager @ MASH',
-];
-
 const socialIconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   github: FaGithub,
   linkedin: FaLinkedinIn,
   x: FaXTwitter,
   instagram: FaInstagram,
-};
-
-const mainProfileImage = '/images/profile/Jhon%20Keneth%20Ryan%20Namias.jpg';
-
-const hoverProfileImages = [
-  '/images/profile/Jhon%20Keneth%20Ryan%20Namias%202.JPG',
-  '/images/profile/Jhon%20Keneth%20Ryan%20Namias%203.JPG',
-  mainProfileImage,
-];
-
-const pickRandomHoverImage = (currentImage: string) => {
-  const pool = hoverProfileImages.filter((image) => image !== currentImage);
-  const candidates = pool.length > 0 ? pool : hoverProfileImages;
-  return candidates[Math.floor(Math.random() * candidates.length)] ?? mainProfileImage;
 };
 
 /* Staggered entrance variants */
@@ -74,7 +53,9 @@ const photoVariants = {
 };
 
 export function HeroSection() {
-  const { profile, socialLinks } = useCmsContent();
+  const { profile, socialLinks, hero } = useCmsContent();
+  const roles = hero.roles.length > 0 ? hero.roles : [profile.title];
+  const mainProfileImage = hero.profileImageUrl;
   const [roleIndex, setRoleIndex] = useState(0);
   const [activeProfileImage, setActiveProfileImage] = useState(mainProfileImage);
   const { openModal } = useModal();
@@ -91,7 +72,7 @@ export function HeroSection() {
       setRoleIndex((prev) => (prev + 1) % roles.length);
     }, 3000);
     return () => clearInterval(interval);
-  }, []);
+  }, [roles.length]);
 
   const displayedSocials = socialLinks.filter((s) =>
     ['github', 'linkedin', 'x', 'instagram'].includes(s.name)
@@ -111,14 +92,14 @@ export function HeroSection() {
   );
 
   const handlePhotoMouseEnter = useCallback(() => {
-    setActiveProfileImage((currentImage) => pickRandomHoverImage(currentImage));
-  }, []);
+    setActiveProfileImage((currentImage) => (currentImage === mainProfileImage ? currentImage : mainProfileImage));
+  }, [mainProfileImage]);
 
   const handlePhotoMouseLeave = useCallback(() => {
     rotateX.set(0);
     rotateY.set(0);
     setActiveProfileImage(mainProfileImage);
-  }, [rotateX, rotateY]);
+  }, [mainProfileImage, rotateX, rotateY]);
 
   return (
     <motion.section
@@ -225,7 +206,7 @@ export function HeroSection() {
                   <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-green-500" />
                 </span>
                 {' '}
-                Available
+                {hero.availabilityLabel || 'Available'}
               </span>
             </div>
 

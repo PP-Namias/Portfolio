@@ -128,12 +128,32 @@ function portableTextToMarkdown(blocks: unknown): string {
   return lines.join('\n').trim();
 }
 
+function portableTextToParagraphs(blocks: unknown): string[] {
+  if (!Array.isArray(blocks)) {
+    return [];
+  }
+
+  return blocks
+    .map((block) => {
+      if (!block || typeof block !== 'object') {
+        return '';
+      }
+
+      const candidate = block as {
+        children?: Array<{ text?: string }>;
+      };
+
+      return candidate.children?.map((child) => child.text ?? '').join(' ').trim() ?? '';
+    })
+    .filter(Boolean);
+}
+
 function mapProjectImage(fileName?: string | null): string {
   return fileName || 'placeholder.png';
 }
 
 export async function getCmsContent(): Promise<CmsContent> {
-  const [profileDoc, heroDoc, techDoc, experienceDocs, projectDocs, certificationDocs, galleryDocs, blogDocs, membershipDocs, recommendationDocs] = await Promise.all([
+  const [profileDoc, heroDoc, aboutDoc, techDoc, experienceDocs, projectDocs, certificationDocs, galleryDocs, blogDocs, membershipDocs, recommendationDocs] = await Promise.all([
     querySanity<{
       fullName?: string;
       title?: string;
@@ -150,8 +170,17 @@ export async function getCmsContent(): Promise<CmsContent> {
     ),
     querySanity<{
       socialLinks?: Array<{ platform?: string; icon?: string; url?: string; placements?: string[] }>;
+      heroRoles?: string[];
+      availabilityLabel?: string;
+      profileImageUrl?: string;
     }>(
-      '*[_type == "heroSection"][0]{socialLinks[]{platform,icon,url,placements}}'
+      '*[_type == "heroSection"][0]{socialLinks[]{platform,icon,url,placements},heroRoles,availabilityLabel,"profileImageUrl":profileImage.asset->url}'
+    ),
+    querySanity<{
+      aboutContent?: unknown;
+      aboutParagraphs?: string[];
+    }>(
+      '*[_type == "aboutSection"][0]{aboutContent,aboutParagraphs}'
     ),
     querySanity<{
       technologies?: Technology[];
@@ -255,6 +284,8 @@ export async function getCmsContent(): Promise<CmsContent> {
 
   const technologies = techDoc.technologies ?? [];
   const socialLinks = (heroDoc?.socialLinks ?? []).map(mapSocialLink).filter(Boolean) as SocialLink[];
+  const aboutParagraphsFromPortable = portableTextToParagraphs(aboutDoc?.aboutContent);
+  const aboutParagraphsFromLegacy = (aboutDoc?.aboutParagraphs ?? []).map((paragraph) => String(paragraph).trim()).filter(Boolean);
 
   const profile: Profile = {
     name: profileDoc.fullName || fallbackCmsContent.profile.name,
@@ -267,6 +298,21 @@ export async function getCmsContent(): Promise<CmsContent> {
     summary: profileDoc.summary || fallbackCmsContent.profile.summary,
     highlights: profileDoc.highlights || fallbackCmsContent.profile.highlights,
     education: profileDoc.education || fallbackCmsContent.profile.education,
+  };
+
+  const hero = {
+    roles: (heroDoc?.heroRoles ?? []).filter(Boolean),
+    availabilityLabel: heroDoc?.availabilityLabel || fallbackCmsContent.hero.availabilityLabel,
+    profileImageUrl: heroDoc?.profileImageUrl || fallbackCmsContent.hero.profileImageUrl,
+  };
+
+  const about = {
+    paragraphs:
+      aboutParagraphsFromPortable.length > 0
+        ? aboutParagraphsFromPortable
+        : aboutParagraphsFromLegacy.length > 0
+          ? aboutParagraphsFromLegacy
+          : fallbackCmsContent.about.paragraphs,
   };
 
   const experiences: Experience[] = (experienceDocs ?? []).map((experience) => ({
@@ -355,6 +401,8 @@ export async function getCmsContent(): Promise<CmsContent> {
 
   return {
     profile,
+    hero,
+    about,
     experiences,
     projects,
     certifications,
