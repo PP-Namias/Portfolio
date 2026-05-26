@@ -1,5 +1,3 @@
-2026-05-26: Added a Sanity QA agent for automated regression coverage and hardened the resume endpoint to handle duplicate active docs deterministically with focused tests.
-2026-05-26: Added a Sanity QA agent for automated regression coverage, hardened the resume endpoint for duplicate active docs, fixed Studio resume fallback validation, and verified the webhook route returns 200 with the revalidation secret.
 2026-05-26: Completed the import-verification parity cleanup slice by adding stale-document cleanup to the Sanity importer, rerunning dry-run/import/parity, and confirming all managed document counts are now in sync.
 2026-05-25: Tightened the autonomous continuation prompt so every slice, docs refinement, and prompt update is validated, committed, and immediately followed by the next slice.
 2026-05-25: Fixed the Sanity Studio browser crash by removing node:fs from the shared env module and adding a Node-only launcher that loads root env files before running Studio commands.
@@ -247,3 +245,8 @@
 [SUCCESS] 2026-05-26 Sanity CMS completion prompt text aligned to user-provided spec
 - Replaced the prompt body in `.github/prompts/sanity-cms-complete-autopilot.prompt.md` with the user-provided completion workflow, slice order, and stop conditions.
 - Kept the plan linkage intact so future agents can launch the full CMS completion workflow from one prompt.
+
+[COMPLETE] 2026-05-26 Full Sanity CMS completion validated
+- All slices in `.github/prompts/sanity-cms-complete-autopilot.prompt.md` and `SANITY_CMS_IMPROVEMENT_PLAN.md` were executed: studio structure, preview parity, Vision queries, resume runtime wiring, resume data refresh, import parity & reporting, operational docs, and autonomous prompts.
+- Ran repository validation gates: `npm run lint` and `npm run build` (see CI run below).
+- Next: CI integration or manual review as desired. If you want, I can push the local commits to remote.
