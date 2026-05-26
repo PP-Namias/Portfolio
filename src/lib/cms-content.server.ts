@@ -266,14 +266,15 @@ export async function getCmsContent(): Promise<CmsContent> {
       tags?: string[];
       publishedAt?: string;
       coverImagePath?: string;
-      mainImage?: { asset?: { originalFilename?: string } };
+      mainImage?: { asset?: { originalFilename?: string; url?: string } };
       author?: { name?: string };
       categories?: Array<{ title?: string }>;
       sourceId?: string;
       published?: boolean;
       mainImageFile?: string;
+      mainImageUrl?: string;
     }>>(
-      '*[_type == "post" && published == true && defined(slug.current)] | order(publishedAt desc){title,"slug":slug.current,excerpt,readTime,body,tags,publishedAt,coverImagePath,"mainImageFile":mainImage.asset->originalFilename,"author":author->name,"categories":categories[]->title,sourceId,published}'
+      '*[_type == "post" && published == true && defined(slug.current)] | order(publishedAt desc){title,"slug":slug.current,excerpt,readTime,body,tags,publishedAt,coverImagePath,"mainImageFile":mainImage.asset->originalFilename,"mainImageUrl":mainImage.asset->url,"author":author->name,"categories":categories[]->title,sourceId,published}'
     ),
     querySanity<Array<{
       name?: string;
@@ -409,9 +410,22 @@ export async function getCmsContent(): Promise<CmsContent> {
     date: post.publishedAt || new Date().toISOString(),
     readTime: post.readTime || '5 min read',
     tags: post.tags || [],
-    coverImage: post.coverImagePath
-      ? `/images/blog/${path.basename(post.coverImagePath)}`
-      : `/images/blog/${post.mainImageFile || ''}`,
+    coverImage: (() => {
+      const resolved = resolveMediaPath(post.mainImageFile, post.mainImageUrl as string | undefined);
+      if (typeof resolved === 'string' && /^https?:\/\//i.test(resolved)) {
+        return resolved;
+      }
+
+      if (post.coverImagePath) {
+        return `/images/blog/${path.basename(post.coverImagePath)}`;
+      }
+
+      if (resolved && resolved !== 'placeholder.png') {
+        return `/images/blog/${resolved}`;
+      }
+
+      return '/images/blog/placeholder.png';
+    })(),
   }));
 
   return {
