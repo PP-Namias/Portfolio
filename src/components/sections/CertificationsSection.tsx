@@ -8,9 +8,21 @@ import { useCmsContent } from '@/hooks/useCmsContent';
 
 const INITIAL_COUNT = 6;
 
+function getCertificationImageSrc(cert: { image: string; imageUrl?: string }): string {
+  if (cert.imageUrl?.trim()) {
+    return cert.imageUrl.trim();
+  }
+
+  if (cert.image.trim()) {
+    return encodeURI(`/images/certifications/${cert.image.trim()}`);
+  }
+
+  return '/images/certifications/CS COUNCIL NAMIAS.png';
+}
+
 export function CertificationsSection() {
   const { certifications } = useCmsContent();
-  const [selectedCert, setSelectedCert] = useState<{ image: string; title: string } | null>(null);
+  const [selectedCert, setSelectedCert] = useState<{ image: string; imageUrl?: string; title: string } | null>(null);
   const [activeIssuer, setActiveIssuer] = useState('All');
   const [expanded, setExpanded] = useState(false);
 
@@ -76,11 +88,11 @@ export function CertificationsSection() {
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
             transition={{ delay: index * 0.03, duration: 0.3 }}
-            onClick={() => setSelectedCert({ image: cert.image, title: cert.title })}
+            onClick={() => setSelectedCert({ image: cert.image, imageUrl: cert.imageUrl, title: cert.title })}
           >
             <div className="aspect-[4/3] relative">
               <Image
-                src={`/images/certifications/${cert.image}`}
+                src={getCertificationImageSrc(cert)}
                 alt={cert.title}
                 fill
                 sizes="(max-width: 640px) 45vw, 200px"
@@ -142,7 +154,7 @@ export function CertificationsSection() {
                 <X className="h-5 w-5" />
               </button>
               <Image
-                src={`/images/certifications/${selectedCert.image}`}
+                src={getCertificationImageSrc(selectedCert)}
                 alt={selectedCert.title}
                 width={800}
                 height={600}

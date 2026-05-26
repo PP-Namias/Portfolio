@@ -198,8 +198,9 @@ export async function getCmsContent(): Promise<CmsContent> {
       tags?: string[];
       issuer?: { title?: string };
       image?: { asset?: { originalFilename?: string } };
+      imageUrl?: string;
     }>>(
-      '*[_type == "certification"] | order(order asc, issuedAt desc){title,issuedAt,tags,"issuer":issuer->title,"imageFile":image.asset->originalFilename}'
+      '*[_type == "certification"] | order(order asc, issuedAt desc){title,issuedAt,tags,"issuer":issuer->title,"imageFile":image.asset->originalFilename,"imageUrl":image.asset->url}'
     ),
     querySanity<Array<{
       title?: string;
@@ -311,6 +312,7 @@ export async function getCmsContent(): Promise<CmsContent> {
   const certifications: Certification[] = (certificationDocs ?? []).map((certification, index) => ({
     title: certification.title || '',
     image: certification.image?.asset?.originalFilename || '',
+    imageUrl: certification.imageUrl || '',
     issuer: certification.issuer?.title || '',
     issuedAt: certification.issuedAt || '',
     tags: certification.tags || [],

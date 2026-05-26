@@ -76,6 +76,7 @@ export interface Project {
 export interface Certification {
   title: string;
   image: string;
+  imageUrl?: string;
   issuer: string;
   issuedAt: string;
   tags: string[];

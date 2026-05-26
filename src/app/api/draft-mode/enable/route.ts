@@ -21,7 +21,23 @@ export async function GET(request: NextRequest) {
   const draftModeState = await draftMode()
   draftModeState.enable()
 
-  const redirectTarget = requestUrl.searchParams.get('redirect')?.trim() || '/'
+  // The Sanity Studio presentation tool passes preview params such as
+  // `sanity-preview-pathname`, `sanity-preview-secret`, and
+  // `sanity-preview-perspective`. When present, redirect back to the
+  // requested preview pathname on this origin and preserve those params so
+  // the Studio iframe can open the preview context correctly.
+  const sanityPath = requestUrl.searchParams.get('sanity-preview-pathname')?.trim()
+  const previewPath = requestUrl.searchParams.get('redirect')?.trim() || sanityPath || '/'
 
-  return NextResponse.redirect(new URL(redirectTarget, request.url))
+  const redirectUrl = new URL(previewPath, request.url)
+
+  // Forward any sanity-preview-* query params to the final redirect so the
+  // Studio presentation tool can carry context (secret, perspective).
+  for (const [key, value] of requestUrl.searchParams.entries()) {
+    if (key.startsWith('sanity-preview-')) {
+      redirectUrl.searchParams.set(key, value ?? '')
+    }
+  }
+
+  return NextResponse.redirect(redirectUrl)
 }

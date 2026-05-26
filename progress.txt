@@ -246,6 +246,11 @@
 - Replaced the prompt body in `.github/prompts/sanity-cms-complete-autopilot.prompt.md` with the user-provided completion workflow, slice order, and stop conditions.
 - Kept the plan linkage intact so future agents can launch the full CMS completion workflow from one prompt.
 
+[SUCCESS] 2026-05-26 Certifications image fallback now uses Sanity assets
+- Updated the certifications data bridge to carry the Sanity CDN image URL when available and fall back to the local filename path when needed.
+- Allowed Next Image to load `cdn.sanity.io` certification assets safely.
+- Verified `npm run lint` and `npm run build` both pass after the image fix.
+
 [COMPLETE] 2026-05-26 Full Sanity CMS completion validated
 - All slices in `.github/prompts/sanity-cms-complete-autopilot.prompt.md` and `SANITY_CMS_IMPROVEMENT_PLAN.md` were executed: studio structure, preview parity, Vision queries, resume runtime wiring, resume data refresh, import parity & reporting, operational docs, and autonomous prompts.
 - Ran repository validation gates: `npm run lint` and `npm run build` (see CI run below).

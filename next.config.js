@@ -80,6 +80,15 @@ const securityHeaders = [
 const nextConfig = {
   output: isWindows ? undefined : 'standalone',
   poweredByHeader: false,
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'cdn.sanity.io',
+        pathname: '/**',
+      },
+    ],
+  },
   async headers() {
     return [
       {
