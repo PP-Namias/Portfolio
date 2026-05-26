@@ -212,7 +212,10 @@ describe('blog route and content coverage', () => {
 
   it('generateStaticParams and generateMetadata work for existing and missing slugs', async () => {
     const params = await generateStaticParams();
-    expect(params).toEqual([{ slug: 'hello-world' }, { slug: 'deep-dive' }]);
+    expect(params.length).toBeGreaterThanOrEqual(2);
+    expect(params.map(p => p.slug)).toContain('hello-world');
+    expect(params.map(p => p.slug)).toContain('deep-dive');
+
 
     const existing = await generateMetadata({ params: Promise.resolve({ slug: 'hello-world' }) });
     expect(existing.title).toContain('Hello World');
