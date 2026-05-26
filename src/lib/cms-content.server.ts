@@ -372,7 +372,7 @@ export async function getCmsContent(): Promise<CmsContent> {
 
   const certifications: Certification[] = (certificationDocs ?? []).map((certification, index) => ({
     title: certification.title || '',
-    image: certification.imageFile || '',
+    image: resolveMediaPath(certification.imageFile, certification.imageUrl),
     imageUrl: certification.imageUrl || '',
     issuer: certification.issuer || '',
     issuedAt: certification.issuedAt || '',
@@ -382,7 +382,7 @@ export async function getCmsContent(): Promise<CmsContent> {
   const galleryImages: GalleryItem[] = (galleryDocs ?? []).map((image) => ({
     title: image.title || '',
     mediaType: image.mediaType || 'Image',
-    media: image.mediaFile || image.mediaPath || '',
+    media: resolveMediaPath(image.mediaFile, image.mediaPath),
     tags: image.tags || [],
     createdAt: image.capturedAt || '',
   }));
