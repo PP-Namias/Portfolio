@@ -253,6 +253,12 @@
 - Allowed Next Image to load `cdn.sanity.io` certification assets safely.
 - Verified `npm run lint` and `npm run build` both pass after the image fix.
 
+[SUCCESS] 2026-05-27 SANITY-FULL-005 projects/experience/certifications runtime cutover
+- Cut over `projects`, `experience`, and `certifications` runtime loaders to use the CMS-backed normalization layer and Sanity CDN image URLs when available, while preserving safe local fallbacks.
+- Added `resolveMediaPath()` mapping and updated `ProjectsSection` to prefer absolute CDN URLs with a local `/images/projects/*` fallback.
+- Updated tests to mock `useCmsContent()` for consistent test payloads.
+- Validation: `npm run lint`: PASS, `cmd /c npm run build`: PASS, targeted vitest `ProjectsSection` tests: PASS.
+
 [COMPLETE] 2026-05-26 Full Sanity CMS completion validated
 - All slices in `.github/prompts/sanity-cms-complete-autopilot.prompt.md` and `SANITY_CMS_IMPROVEMENT_PLAN.md` were executed: studio structure, preview parity, Vision queries, resume runtime wiring, resume data refresh, import parity & reporting, operational docs, and autonomous prompts.
 - Ran repository validation gates: `npm run lint` and `npm run build` (see CI run below).
