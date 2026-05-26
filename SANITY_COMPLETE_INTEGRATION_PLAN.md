@@ -1,7 +1,7 @@
 # Sanity CMS Full Integration Master Plan
 
 Last updated: 2026-05-27
-Status: Planning (execution not started)
+Status: In progress (slice execution started)
 
 ## Objective
 
@@ -25,6 +25,21 @@ After successful migration and parity verification, remove local hardcoded and l
 - Do not delete legacy local data until parity checklist passes.
 - Keep rollback points (tag or commit markers) before destructive deletion slices.
 - Keep schema changes backward compatible until cutover phase.
+
+## Migration Tracking Table
+
+| Slice ID | Scope | Status | Commit |
+| --- | --- | --- | --- |
+| SANITY-FULL-001 | Audit and map all runtime content sources | Complete | (pending current commit) |
+| SANITY-FULL-002 | Finalize missing schema fields/types | Not started | - |
+| SANITY-FULL-003 | Harden parity-report output and strict mode | Not started | - |
+| SANITY-FULL-004 | Cut over profile/hero/about runtime loaders | Not started | - |
+| SANITY-FULL-005 | Cut over projects/experience/certifications loaders | Not started | - |
+| SANITY-FULL-006 | Cut over gallery/memberships/recommendations/socials loaders | Not started | - |
+| SANITY-FULL-007 | Cut over blog and resume runtime path | Not started | - |
+| SANITY-FULL-008 | Cut over media helpers and remove local image runtime refs | Not started | - |
+| SANITY-FULL-009 | Remove legacy local data modules and fallback code | Not started | - |
+| SANITY-FULL-010 | Final QA, docs, and handoff cleanup | Not started | - |
 
 ## Phase-by-Phase Plan
 

@@ -255,3 +255,8 @@
 - All slices in `.github/prompts/sanity-cms-complete-autopilot.prompt.md` and `SANITY_CMS_IMPROVEMENT_PLAN.md` were executed: studio structure, preview parity, Vision queries, resume runtime wiring, resume data refresh, import parity & reporting, operational docs, and autonomous prompts.
 - Ran repository validation gates: `npm run lint` and `npm run build` (see CI run below).
 - Next: CI integration or manual review as desired. If you want, I can push the local commits to remote.
+
+[SUCCESS] 2026-05-27 SANITY-FULL-001 runtime content source audit completed
+- Added `SANITY_RUNTIME_CONTENT_AUDIT.md` with a file-level inventory of Sanity-first reads, JSON fallback chain, local media path dependencies, and env/studio alignment notes.
+- Updated `SANITY_COMPLETE_INTEGRATION_PLAN.md` status to in-progress and added a migration tracking table with SANITY-FULL-001 marked complete.
+- Prepared the follow-up path for SANITY-FULL-002 (schema/type parity) and SANITY-FULL-003 (parity hardening).
