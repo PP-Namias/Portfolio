@@ -31,8 +31,8 @@ After successful migration and parity verification, remove local hardcoded and l
 | Slice ID | Scope | Status | Commit |
 | --- | --- | --- | --- |
 | SANITY-FULL-001 | Audit and map all runtime content sources | Complete | 288d26b |
-| SANITY-FULL-002 | Finalize missing schema fields/types | Complete | (pending current commit) |
-| SANITY-FULL-003 | Harden parity-report output and strict mode | Not started | - |
+| SANITY-FULL-002 | Finalize missing schema fields/types | Complete | 63db28d |
+| SANITY-FULL-003 | Harden parity-report output and strict mode | Complete | (pending current commit) |
 | SANITY-FULL-004 | Cut over profile/hero/about runtime loaders | Not started | - |
 | SANITY-FULL-005 | Cut over projects/experience/certifications loaders | Not started | - |
 | SANITY-FULL-006 | Cut over gallery/memberships/recommendations/socials loaders | Not started | - |

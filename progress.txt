@@ -265,3 +265,9 @@
 - Added `SANITY_SCHEMA_TYPE_PARITY_AUDIT.md` with a schema vs runtime mapper vs app-type parity matrix across profile, experience, project, certification, gallery, socials, blog, resume, and singleton settings.
 - Documented prioritized gaps (project URL fields, WhatsApp social mapping, blog media path handling, singleton adoption) and defined an implementation track plan for follow-up slices.
 - Updated `SANITY_COMPLETE_INTEGRATION_PLAN.md` migration tracking table to record SANITY-FULL-001 commit hash and mark SANITY-FULL-002 complete pending this slice commit.
+
+[SUCCESS] 2026-05-27 SANITY-FULL-003 parity-report hardening and strict readiness checks completed
+- Hardened `scripts/sanity/parity-report.mjs` to run both count parity checks and readiness checks with clear READY/BLOCKED/WARN statuses and actionable guidance.
+- Added strict gating so `npm run sanity:parity:strict` now fails on either count mismatches or critical readiness blockers.
+- Added readiness-only mode (`--readiness`) and npm helper script `npm run sanity:readiness`.
+- Updated `scripts/sanity/README.md` with parity/readiness modes, strict behavior, and current readiness check coverage.
