@@ -30,8 +30,8 @@ After successful migration and parity verification, remove local hardcoded and l
 
 | Slice ID | Scope | Status | Commit |
 | --- | --- | --- | --- |
-| SANITY-FULL-001 | Audit and map all runtime content sources | Complete | (pending current commit) |
-| SANITY-FULL-002 | Finalize missing schema fields/types | Not started | - |
+| SANITY-FULL-001 | Audit and map all runtime content sources | Complete | 288d26b |
+| SANITY-FULL-002 | Finalize missing schema fields/types | Complete | (pending current commit) |
 | SANITY-FULL-003 | Harden parity-report output and strict mode | Not started | - |
 | SANITY-FULL-004 | Cut over profile/hero/about runtime loaders | Not started | - |
 | SANITY-FULL-005 | Cut over projects/experience/certifications loaders | Not started | - |
@@ -218,5 +218,7 @@ Commit format examples:
 ## Deliverables
 
 - This master plan file.
+- `SANITY_RUNTIME_CONTENT_AUDIT.md`.
+- `SANITY_SCHEMA_TYPE_PARITY_AUDIT.md`.
 - Slice-by-slice commits in git history.
 - Final completion report with clean working tree proof.
