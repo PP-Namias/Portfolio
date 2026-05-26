@@ -259,6 +259,12 @@
 - Updated tests to mock `useCmsContent()` for consistent test payloads.
 - Validation: `npm run lint`: PASS, `cmd /c npm run build`: PASS, targeted vitest `ProjectsSection` tests: PASS.
 
+[SUCCESS] 2026-05-27 SANITY-FULL-006 gallery/memberships/recommendations/socials runtime cutover
+- Cut over `galleryImages`, `memberships`, `recommendations`, and `socialLinks` to the CMS-backed normalization layer and resolved media paths via `resolveMediaPath()` so Sanity CDN URLs are preferred with safe local fallbacks.
+- Updated `src/lib/cms-content.server.ts` to normalize certification and gallery media via `resolveMediaPath()`.
+- Updated tests to mock `useCmsContent()` with fuller gallery, recommendations, and profile highlights payload.
+- Validation: `npm run lint`: PASS, `cmd /c npm run build`: PASS, targeted vitest section tests: PASS.
+
 [COMPLETE] 2026-05-26 Full Sanity CMS completion validated
 - All slices in `.github/prompts/sanity-cms-complete-autopilot.prompt.md` and `SANITY_CMS_IMPROVEMENT_PLAN.md` were executed: studio structure, preview parity, Vision queries, resume runtime wiring, resume data refresh, import parity & reporting, operational docs, and autonomous prompts.
 - Ran repository validation gates: `npm run lint` and `npm run build` (see CI run below).
