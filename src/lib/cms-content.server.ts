@@ -13,7 +13,8 @@ import type {
   Technology,
 } from '@/types';
 
-import { buildTechCategories, fallbackCmsContent, type CmsContent } from './cms-content.shared';
+import * as cmsShared from './cms-content.shared';
+import type { CmsContent } from './cms-content.shared';
 
 const sanityApiVersion = '2021-06-07';
 
@@ -301,8 +302,59 @@ export async function getCmsContent(): Promise<CmsContent> {
     ),
   ]);
 
+  // Helper to lazily load the fallback content only when needed.
+  let _fallback: CmsContent | null = null;
+  const getFallback = async () => {
+    if (_fallback) return _fallback;
+    // Prefer the exported test fallback when available.
+    if (cmsShared.fallbackCmsContent) {
+      _fallback = cmsShared.fallbackCmsContent;
+      return _fallback;
+    }
+    // Dynamically import JSON fallback content to avoid pulling large
+    // JSON files into the production bundle unless required.
+    const [blogData, certData, experienceData, galleryData, membershipData, profileData, projectData, recommendationData, socialData, techData] = await Promise.all([
+      import('../../portfolio-resources/data/blog.json').then((m) => (m.default ?? m)),
+      import('../../portfolio-resources/data/certifications.json').then((m) => (m.default ?? m)),
+      import('../../portfolio-resources/data/experiences.json').then((m) => (m.default ?? m)),
+      import('../../portfolio-resources/data/gallery.json').then((m) => (m.default ?? m)),
+      import('../../portfolio-resources/data/memberships.json').then((m) => (m.default ?? m)),
+      import('../../portfolio-resources/data/profile.json').then((m) => (m.default ?? m)),
+      import('../../portfolio-resources/data/projects.json').then((m) => (m.default ?? m)),
+      import('../../portfolio-resources/data/recommendations.json').then((m) => (m.default ?? m)),
+      import('../../portfolio-resources/data/socials.json').then((m) => (m.default ?? m)),
+      import('../../portfolio-resources/data/technologies.json').then((m) => (m.default ?? m)),
+    ]);
+
+    _fallback = {
+      profile: profileData,
+      experiences: experienceData.map((experience: any) => ({
+        ...experience,
+        position: experience.position,
+      })),
+      projects: projectData,
+      certifications: certData,
+      galleryImages: galleryData,
+      memberships: membershipData,
+      recommendations: recommendationData,
+      socialLinks: socialData,
+      technologies: techData,
+      techCategories: cmsShared.buildTechCategories(techData),
+      blogPosts: blogData,
+      hero: {
+        roles: [],
+        availabilityLabel: '',
+        profileImageUrl: '/images/profile/me.jpg',
+      },
+      about: {
+        paragraphs: profileData.summary ? [profileData.summary] : [],
+      },
+    } as CmsContent;
+    return _fallback;
+  };
+
   if (!profileDoc || !techDoc) {
-    return fallbackCmsContent;
+    return await getFallback();
   }
 
   const technologies = techDoc.technologies ?? [];
@@ -311,16 +363,16 @@ export async function getCmsContent(): Promise<CmsContent> {
   const aboutParagraphsFromLegacy = (aboutDoc?.aboutParagraphs ?? []).map((paragraph) => String(paragraph).trim()).filter(Boolean);
 
   const profile: Profile = {
-    name: profileDoc.fullName || fallbackCmsContent.profile.name,
-    title: profileDoc.title || fallbackCmsContent.profile.title,
-    email: profileDoc.email || fallbackCmsContent.profile.email,
-    phone: profileDoc.phone || fallbackCmsContent.profile.phone,
-    location: profileDoc.location || fallbackCmsContent.profile.location,
-    github: profileDoc.github || fallbackCmsContent.profile.github,
-    linkedin: profileDoc.linkedin || fallbackCmsContent.profile.linkedin,
-    summary: profileDoc.summary || fallbackCmsContent.profile.summary,
-    highlights: profileDoc.highlights || fallbackCmsContent.profile.highlights,
-    education: profileDoc.education || fallbackCmsContent.profile.education,
+    name: profileDoc.fullName || (await getFallback()).profile.name,
+    title: profileDoc.title || (await getFallback()).profile.title,
+    email: profileDoc.email || (await getFallback()).profile.email,
+    phone: profileDoc.phone || (await getFallback()).profile.phone,
+    location: profileDoc.location || (await getFallback()).profile.location,
+    github: profileDoc.github || (await getFallback()).profile.github,
+    linkedin: profileDoc.linkedin || (await getFallback()).profile.linkedin,
+    summary: profileDoc.summary || (await getFallback()).profile.summary,
+    highlights: profileDoc.highlights || (await getFallback()).profile.highlights,
+    education: profileDoc.education || (await getFallback()).profile.education,
   };
 
   const hero = {
@@ -335,7 +387,7 @@ export async function getCmsContent(): Promise<CmsContent> {
         ? aboutParagraphsFromPortable
         : aboutParagraphsFromLegacy.length > 0
           ? aboutParagraphsFromLegacy
-          : (fallbackCmsContent.profile.summary ? [fallbackCmsContent.profile.summary] : []),
+          : ((await getFallback()).profile.summary ? [(await getFallback()).profile.summary] : []),
   };
 
   const experiences: Experience[] = (experienceDocs ?? []).map((experience) => ({
@@ -448,7 +500,7 @@ export async function getCmsContent(): Promise<CmsContent> {
     recommendations,
     socialLinks,
     technologies,
-    techCategories: buildTechCategories(technologies),
+    techCategories: cmsShared.buildTechCategories(technologies),
     blogPosts,
   };
 }
