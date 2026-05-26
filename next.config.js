@@ -24,7 +24,7 @@ const contentSecurityPolicy = `
   img-src 'self' data: blob: https:;
   font-src 'self' data: https:;
   connect-src ${connectSrc};
-  frame-src 'self' https://cal.com https://*.cal.com;
+  frame-src 'self' https://cal.com https://*.cal.com https://cdn.sanity.io;
   object-src 'none';
   base-uri 'self';
   form-action 'self';
@@ -69,7 +69,10 @@ const securityHeaders = [
   },
   {
     key: 'Cross-Origin-Resource-Policy',
-    value: 'same-origin',
+    // Allow cross-origin media/assets (Sanity CDN) to be loaded by the site.
+    // This is required so <iframe> and other media requests to cdn.sanity.io
+    // are not blocked by the browser when the parent page sets COEP/COOP.
+    value: 'cross-origin',
   },
   {
     key: 'X-DNS-Prefetch-Control',
