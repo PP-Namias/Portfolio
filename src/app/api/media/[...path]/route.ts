@@ -1,6 +1,7 @@
 import { NextRequest } from 'next/server';
 import {
   decodeGatewayTarget,
+  getSanityAssetKind,
   isSanityCdnUrl,
   normalizeGatewayQuality,
   normalizeGatewayWidth,
@@ -10,7 +11,7 @@ import {
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
-function buildCacheControl(expiresAt?: number): string {
+function buildCacheControl(assetKind: 'image' | 'file' | 'unknown', expiresAt?: number): string {
   if (typeof expiresAt === 'number' && Number.isFinite(expiresAt)) {
     const remainingSeconds = Math.max(60, expiresAt - Math.floor(Date.now() / 1000));
     const maxAge = Math.min(3600, remainingSeconds);
@@ -18,7 +19,11 @@ function buildCacheControl(expiresAt?: number): string {
     return `public, max-age=${maxAge}, s-maxage=${Math.max(maxAge, 3600)}, stale-while-revalidate=604800`;
   }
 
-  return 'public, max-age=31536000, immutable, stale-while-revalidate=604800';
+  if (assetKind === 'file') {
+    return 'public, max-age=31536000, immutable, stale-while-revalidate=604800';
+  }
+
+  return 'public, max-age=86400, s-maxage=86400, stale-while-revalidate=604800';
 }
 
 function buildUpstreamUrl(targetUrl: string, width: number, quality: number): URL {
@@ -53,6 +58,7 @@ export async function GET(request: NextRequest, context: { params: { path?: stri
   }
 
   const requestUrl = new URL(request.url);
+  const assetKind = getSanityAssetKind(targetUrl);
   const width = normalizeGatewayWidth(requestUrl.searchParams.get('w'));
   const quality = normalizeGatewayQuality(requestUrl.searchParams.get('q'));
   const expiresAtParam = requestUrl.searchParams.get('exp');
@@ -88,7 +94,8 @@ export async function GET(request: NextRequest, context: { params: { path?: stri
     if (lastModified) headers.set('last-modified', lastModified);
     if (contentDisposition) headers.set('content-disposition', contentDisposition);
 
-    headers.set('cache-control', buildCacheControl(expiresAt));
+    headers.set('cache-control', buildCacheControl(assetKind, expiresAt));
+    headers.set('x-media-asset-kind', assetKind);
     headers.set('vary', 'accept');
     headers.set('cross-origin-resource-policy', 'same-origin');
     headers.set('x-content-type-options', 'nosniff');

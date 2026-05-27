@@ -48,6 +48,28 @@ export function isSanityCdnUrl(rawUrl: string): boolean {
   }
 }
 
+export function getSanityAssetKind(rawUrl: string): 'image' | 'file' | 'unknown' {
+  try {
+    const parsed = new URL(rawUrl);
+
+    if (parsed.hostname !== SANITY_CDN_HOST) {
+      return 'unknown';
+    }
+
+    if (parsed.pathname.startsWith('/files/')) {
+      return 'file';
+    }
+
+    if (parsed.pathname.startsWith('/images/')) {
+      return 'image';
+    }
+
+    return 'unknown';
+  } catch {
+    return 'unknown';
+  }
+}
+
 export function encodeGatewayTarget(rawUrl: string): string {
   return Buffer.from(rawUrl, 'utf8').toString('base64url');
 }
@@ -128,18 +150,13 @@ export function buildMediaGatewayUrl(
   }
 
   const encodedTarget = encodeGatewayTarget(normalized);
-  const width = typeof options.width === 'number' ? normalizeGatewayWidth(options.width) : undefined;
-  const quality = typeof options.quality === 'number' ? normalizeGatewayQuality(options.quality) : undefined;
+  const width = normalizeGatewayWidth(options.width ?? DEFAULT_WIDTH);
+  const quality = normalizeGatewayQuality(options.quality ?? DEFAULT_QUALITY);
   const signature = options.sign ? createMediaGatewaySignature({ targetUrl: normalized, width, quality }) : null;
   const query = new URLSearchParams();
 
-  if (typeof width === 'number') {
-    query.set('w', String(width));
-  }
-
-  if (typeof quality === 'number') {
-    query.set('q', String(quality));
-  }
+  query.set('w', String(width));
+  query.set('q', String(quality));
 
   if (signature) {
     query.set('exp', String(signature.exp));

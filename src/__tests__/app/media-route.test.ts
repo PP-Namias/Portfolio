@@ -33,6 +33,7 @@ describe('/api/media route', () => {
     expect(response.headers.get('content-type')).toBe('image/jpeg');
     expect(response.headers.get('etag')).toBe('etag-value');
     expect(response.headers.get('cache-control')).toContain('max-age=');
+    expect(response.headers.get('x-media-asset-kind')).toBe('image');
     expect(response.headers.get('x-robots-tag')).toBe('noindex, nofollow');
   });
 
@@ -51,5 +52,28 @@ describe('/api/media route', () => {
     const response = await GET(request, { params: { path: ['sanity', encoded] } });
 
     expect(response.status).toBe(400);
+  });
+
+  it('treats file assets as immutable cacheable responses', async () => {
+    delete process.env.SANITY_MEDIA_GATEWAY_SECRET;
+    const targetUrl = 'https://cdn.sanity.io/files/project/production/resume.pdf';
+    const gatewayUrl = buildMediaGatewayUrl(targetUrl);
+    const upstreamResponse = new Response('binary-pdf-data', {
+      status: 200,
+      headers: {
+        'content-type': 'application/pdf',
+      },
+    });
+
+    vi.mocked(fetch).mockResolvedValueOnce(upstreamResponse);
+
+    const request = new NextRequest(`http://localhost:3000${gatewayUrl}`);
+    const path = new URL(`http://localhost:3000${gatewayUrl}`).pathname.split('/').filter(Boolean).slice(2);
+
+    const response = await GET(request, { params: { path } });
+
+    expect(response.status).toBe(200);
+    expect(response.headers.get('cache-control')).toContain('immutable');
+    expect(response.headers.get('x-media-asset-kind')).toBe('file');
   });
 });
