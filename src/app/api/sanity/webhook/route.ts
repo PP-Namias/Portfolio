@@ -1,5 +1,6 @@
 import { revalidatePath } from 'next/cache';
 import { NextRequest, NextResponse } from 'next/server';
+import { clearCmsQueryCache } from '@/lib/cms-content.server';
 
 const REVALIDATE_PATHS = ['/', '/blog', '/blog/[slug]', '/sitemap.xml'] as const;
 
@@ -43,6 +44,16 @@ function revalidateCmsPaths(): void {
 export async function POST(request: NextRequest) {
   if (!isAuthorizedWebhookRequest(request)) {
     return withCorsHeaders(NextResponse.json({ error: 'Invalid webhook secret.' }, { status: 401 }));
+  }
+
+  // Clear any in-process query dedupe caches so subsequent requests
+  // fetch fresh content from Sanity immediately after a webhook.
+  try {
+    clearCmsQueryCache();
+  } catch (err) {
+    // Non-fatal — proceed to revalidate paths even if clearing fails.
+    // eslint-disable-next-line no-console
+    console.warn('Failed to clear CMS query cache', err);
   }
 
   revalidateCmsPaths();
