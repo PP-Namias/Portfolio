@@ -335,6 +335,22 @@ The first gateway slice is now implemented:
 - the Sanity webhook route now sends no-store and noindex headers for revalidation responses
 - the plan now includes a mermaid trust-boundary diagram and explicit runtime contract
 
+## Required environment variables
+
+- `NEXT_PUBLIC_SANITY_PROJECT_ID` — public project ID used by the app for server-side reads
+- `NEXT_PUBLIC_SANITY_DATASET` — public dataset name used by the app for server-side reads
+- `SANITY_API_READ_TOKEN` — server-only read token for private dataset access
+- `SANITY_REVALIDATE_SECRET` — shared secret for webhook and draft/revalidation endpoints
+- `SANITY_MEDIA_GATEWAY_SECRET` — optional signing secret for protected media URLs
+
+## Rollout and maintenance notes
+
+- Keep `/api/media/[...path]` as the only browser-facing media entry point for Sanity assets.
+- Start with blog cover images, then expand to projects, certifications, and gallery assets once the headers and cache behavior stay stable.
+- Preserve the existing fallback behavior until all intended asset groups are covered.
+- If the gateway contract changes, update this plan, `.env.example`, and the matching tests in the same slice.
+- Use the existing progress log and one-commit-per-slice workflow for future updates to keep the history traceable and the review surface small.
+
 ## Bottom line
 
 If your goal is a portfolio that looks like a modern, security-conscious backend system, the best practice is **not** a hacky hidden URL trick. It is a **server-side media gateway** with strict validation, server-only CMS access, optional signed URLs, and cache-aware delivery. That gives you a cleaner security story, better control, and a much more professional architecture.
