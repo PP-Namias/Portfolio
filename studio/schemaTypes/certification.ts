@@ -61,7 +61,6 @@ export default defineType({
     select: {
       title: 'title',
       subtitle: 'issuer.title',
-      media: 'image',
     },
   },
 })

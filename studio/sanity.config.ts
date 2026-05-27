@@ -159,22 +159,6 @@ export default defineConfig({
     visionTool(),
   ],
 
-  // Ensure the dev server normalizes any stray Windows EOL/backslash
-  // artifacts that may end up in the generated HTML runtime path.
-  // This plugin runs as part of Vite used by the Studio.
-  vite: {
-    plugins: [
-      {
-        name: 'fix-sanity-runtime-path-inline',
-        transformIndexHtml(html: string) {
-          let fixed = html.replace(/\r/g, '')
-          fixed = fixed.replace(/src="\/\.sanity\\+runtime/gi, 'src="/.sanity/runtime')
-          return fixed
-        },
-      },
-    ],
-  },
-
   document: {
     actions: (prev) =>
       prev.map((originalAction) =>
