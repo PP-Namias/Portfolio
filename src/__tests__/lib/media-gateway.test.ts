@@ -16,7 +16,8 @@ describe('media gateway helpers', () => {
     const encoded = encodeGatewayTarget(target);
 
     expect(decodeGatewayTarget(encoded)).toBe(target);
-    expect(isSanityCdnUrl(target)).toBe(true);
+    expect(isSanityCdnUrl(target)).toBe(false);
+    expect(isSanityCdnUrl('https://cdn.sanity.io/images/project/production/image-800x600.jpg')).toBe(true);
   });
 
   it('builds a same-origin gateway url for sanity assets', () => {

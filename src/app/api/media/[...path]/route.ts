@@ -89,6 +89,7 @@ export async function GET(request: NextRequest, context: { params: { path?: stri
     if (contentDisposition) headers.set('content-disposition', contentDisposition);
 
     headers.set('cache-control', buildCacheControl(expiresAt));
+    headers.set('vary', 'accept');
     headers.set('cross-origin-resource-policy', 'same-origin');
     headers.set('x-content-type-options', 'nosniff');
     headers.set('x-robots-tag', 'noindex, nofollow');

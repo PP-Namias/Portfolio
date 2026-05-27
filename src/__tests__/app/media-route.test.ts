@@ -21,7 +21,7 @@ describe('/api/media route', () => {
       },
     });
 
-    vi.mocked(fetch).mockResolvedValueOnce(upstreamResponse as Response);
+    vi.mocked(fetch).mockResolvedValueOnce(upstreamResponse);
 
     const request = new NextRequest(`http://localhost:3000${gatewayUrl}`);
     const path = new URL(`http://localhost:3000${gatewayUrl}`).pathname.split('/').filter(Boolean).slice(2);
@@ -39,6 +39,16 @@ describe('/api/media route', () => {
   it('rejects malformed asset targets', async () => {
     const request = new NextRequest('http://localhost:3000/api/media/sanity/invalid');
     const response = await GET(request, { params: { path: ['sanity', 'invalid'] } });
+
+    expect(response.status).toBe(400);
+  });
+
+  it('rejects crafted unsupported Sanity asset targets', async () => {
+    const malformedTarget = 'https://cdn.sanity.io/other/project/production/image-800x600.jpg';
+    const encoded = Buffer.from(malformedTarget, 'utf8').toString('base64url');
+    const request = new NextRequest(`http://localhost:3000/api/media/sanity/${encoded}`);
+
+    const response = await GET(request, { params: { path: ['sanity', encoded] } });
 
     expect(response.status).toBe(400);
   });

@@ -1,6 +1,7 @@
 import { createHmac, timingSafeEqual } from 'node:crypto';
 
 const SANITY_CDN_HOST = 'cdn.sanity.io';
+const SANITY_CDN_ALLOWED_PATH_PREFIXES = ['/images/', '/files/'];
 const MEDIA_ROUTE_PREFIX = '/api/media';
 const SANITY_NAMESPACE = 'sanity';
 const DEFAULT_GATEWAY_EXPIRY_SECONDS = 15 * 60;
@@ -35,7 +36,13 @@ export function normalizeGatewayQuality(value: unknown): number {
 export function isSanityCdnUrl(rawUrl: string): boolean {
   try {
     const parsed = new URL(rawUrl);
-    return parsed.protocol === 'https:' && parsed.hostname === SANITY_CDN_HOST;
+    return (
+      parsed.protocol === 'https:' &&
+      parsed.hostname === SANITY_CDN_HOST &&
+      SANITY_CDN_ALLOWED_PATH_PREFIXES.some((prefix) => parsed.pathname.startsWith(prefix)) &&
+      !parsed.search &&
+      !parsed.hash
+    );
   } catch {
     return false;
   }
@@ -140,5 +147,6 @@ export function buildMediaGatewayUrl(
   }
 
   const queryString = query.toString();
-  return `${MEDIA_ROUTE_PREFIX}/${SANITY_NAMESPACE}/${encodedTarget}${queryString ? `?${queryString}` : ''}`;
+  const querySuffix = queryString ? `?${queryString}` : '';
+  return `${MEDIA_ROUTE_PREFIX}/${SANITY_NAMESPACE}/${encodedTarget}${querySuffix}`;
 }

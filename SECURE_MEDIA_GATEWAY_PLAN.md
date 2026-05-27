@@ -307,6 +307,7 @@ The first gateway slice is now implemented:
 - shared media URL helpers live in `src/lib/media-gateway.ts`
 - Sanity-backed media now resolves through `src/app/api/media/[...path]/route.ts`
 - the content loader emits controlled gateway URLs for Sanity assets
+- the gateway only accepts expected Sanity CDN asset shapes and sets cache-safe headers
 - optional signature support is wired through `SANITY_MEDIA_GATEWAY_SECRET`
 - env documentation and targeted tests were added for the new flow
 
