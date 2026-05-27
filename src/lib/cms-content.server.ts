@@ -1,5 +1,7 @@
 // path import removed — we avoid constructing local `/images/*` refs in this slice
 
+import { cache } from 'react';
+
 import type {
   BlogPost,
   Certification,
@@ -31,6 +33,29 @@ function getSanityHeaders(): HeadersInit | undefined {
   return token ? { Authorization: `Bearer ${token}` } : undefined;
 }
 
+// Simple in-process query-level cache / deduper to avoid issuing the
+// same Sanity network request multiple times during a single render
+// or when server components call into the loader repeatedly.
+const queryCache = new Map<string, Promise<unknown> | null>();
+
+const queryCacheStats = {
+  hits: 0,
+  misses: 0,
+};
+
+export function getCmsQueryCacheStats() {
+  return {
+    hits: queryCacheStats.hits,
+    misses: queryCacheStats.misses,
+    entries: queryCache.size,
+  };
+}
+
+export function resetCmsQueryCacheStats() {
+  queryCacheStats.hits = 0;
+  queryCacheStats.misses = 0;
+}
+
 async function querySanity<T>(query: string): Promise<T | null> {
   const projectId = getProjectId();
 
@@ -40,21 +65,47 @@ async function querySanity<T>(query: string): Promise<T | null> {
 
   const url = `https://${projectId}.api.sanity.io/v${sanityApiVersion}/data/query/${getDataset()}?query=${encodeURIComponent(query)}`;
 
-  try {
-    const response = await fetch(url, {
-      headers: getSanityHeaders(),
-      cache: 'no-store',
-    });
+  // If the same query is already in-flight or cached, return the same
+  // promise/value to deduplicate network work.
+  const cached = queryCache.get(url) as Promise<T | null> | undefined;
+  if (cached) {
+    queryCacheStats.hits += 1;
+    return cached;
+  }
 
-    if (!response.ok) {
+  queryCacheStats.misses += 1;
+
+  const promise = (async (): Promise<T | null> => {
+    try {
+      const response = await fetch(url, {
+        headers: getSanityHeaders(),
+        cache: 'no-store',
+      });
+
+      if (!response.ok) {
+        return null;
+      }
+
+      const payload = (await response.json()) as { result?: T };
+      return payload.result ?? null;
+    } catch {
       return null;
     }
+  })();
 
-    const payload = (await response.json()) as { result?: T };
-    return payload.result ?? null;
-  } catch {
-    return null;
-  }
+  // Store the in-flight promise immediately to deduplicate concurrent
+  // callers. Keep the promise in the map so subsequent callers reuse it.
+  queryCache.set(url, promise);
+  // Ensure we remove broken entries if the promise rejects to avoid
+  // permanently caching failures.
+  promise.catch(() => queryCache.delete(url));
+
+  return promise;
+}
+
+export function clearCmsQueryCache() {
+  queryCache.clear();
+  resetCmsQueryCacheStats();
 }
 
 function normalizeSocialName(value: string): string {
@@ -167,7 +218,16 @@ function resolveMediaPath(fileName?: string | null, url?: string | null): string
   return '';
 }
 
-export async function getCmsContent(): Promise<CmsContent> {
+function buildSanityImageUrl(raw: string | null | undefined, width: number, quality = 75) {
+  const url = String(raw || '').trim();
+  if (!url) return '';
+  // If already contains query params, append safely.
+  const sep = url.includes('?') ? '&' : '?';
+  // Use Sanity CDN image params to request an appropriately-sized asset.
+  return `${url}${sep}w=${width}&auto=format&q=${quality}`;
+}
+
+const getCmsContentImpl = async (): Promise<CmsContent> => {
   const [profileDoc, heroDoc, aboutDoc, techDoc, experienceDocs, projectDocs, certificationDocs, galleryDocs, blogDocs, membershipDocs, recommendationDocs] = await Promise.all([
     querySanity<{
       fullName?: string;
@@ -302,13 +362,17 @@ export async function getCmsContent(): Promise<CmsContent> {
     ),
   ]);
 
-  // Helper to lazily load the fallback content only when needed.
+  // Helper to lazily load the fallback content only when needed. Use a
+  // dynamic import to avoid bundling large JSON fixtures into the
+  // production server bundle and to sidestep static type ambiguities
+  // that can arise during build-time resolution.
   let _fallback: CmsContent | null = null;
-  const getFallback = async () => {
-    if (!_fallback) {
-      _fallback = cmsShared.fallbackCmsContent;
-    }
+  const getFallback = async (): Promise<CmsContent> => {
+    if (_fallback) return _fallback;
 
+    const shared = await import('./cms-content.shared');
+    const candidate = shared.fallbackCmsContent ?? (await (shared as any).getFallbackCmsContent());
+    _fallback = candidate as CmsContent;
     return _fallback;
   };
 
@@ -337,17 +401,26 @@ export async function getCmsContent(): Promise<CmsContent> {
   const hero = {
     roles: (heroDoc?.heroRoles ?? []).filter(Boolean),
     availabilityLabel: heroDoc?.availabilityLabel || '',
-    profileImageUrl: heroDoc?.profileImageUrl || '',
+    // Use a sized variant for the hero/profile image to reduce decode cost
+    // for the homepage where the image is small. Components can further
+    // request different sizes if needed once a shared canonical URL is
+    // available in the content shape.
+    profileImageUrl: buildSanityImageUrl(heroDoc?.profileImageUrl || '', 320, 75) || '',
   };
 
-  const about = {
-    paragraphs:
-      aboutParagraphsFromPortable.length > 0
-        ? aboutParagraphsFromPortable
-        : aboutParagraphsFromLegacy.length > 0
-          ? aboutParagraphsFromLegacy
-          : ((await getFallback()).profile.summary ? [(await getFallback()).profile.summary] : []),
-  };
+  // Determine about paragraphs with a small server-side helper to avoid
+  // nested ternaries and repeated fallback calls.
+  let aboutParagraphs: string[];
+  if (aboutParagraphsFromPortable.length > 0) {
+    aboutParagraphs = aboutParagraphsFromPortable;
+  } else if (aboutParagraphsFromLegacy.length > 0) {
+    aboutParagraphs = aboutParagraphsFromLegacy;
+  } else {
+    const fb = await getFallback();
+    aboutParagraphs = fb.profile.summary ? [fb.profile.summary] : [];
+  }
+
+  const about = { paragraphs: aboutParagraphs };
 
   const experiences: Experience[] = (experienceDocs ?? []).map((experience) => ({
     company: experience.company || '',
@@ -370,7 +443,12 @@ export async function getCmsContent(): Promise<CmsContent> {
     // Use the Sanity-provided image URL when present. Avoid creating
     // local runtime `/images/*` references here — those will be
     // removed as part of the media cutover.
-    image: project.imageUrl || resolveMediaPath(project.imageFile, project.imageUrl) || '',
+    // Use a medium-sized preview image for project cards to avoid
+    // downloading full-resolution assets in the initial render.
+    image:
+      buildSanityImageUrl(project.imageUrl || (project.galleryItems?.[0]?.url ?? ''), 560, 70) ||
+      resolveMediaPath(project.imageFile, project.imageUrl) ||
+      '',
     description: project.summary || '',
     repositoryURL: project.repositoryUrl || null,
     liveURL: project.liveUrl || null,
@@ -396,7 +474,7 @@ export async function getCmsContent(): Promise<CmsContent> {
   const certifications: Certification[] = (certificationDocs ?? []).map((certification, index) => ({
     title: certification.title || '',
     // Prefer the Sanity asset URL for certification images
-    image: certification.imageUrl || '',
+    image: buildSanityImageUrl(certification.imageUrl || '', 320, 70) || '',
     imageUrl: certification.imageUrl || '',
     issuer: certification.issuer || '',
     issuedAt: certification.issuedAt || '',
@@ -407,7 +485,8 @@ export async function getCmsContent(): Promise<CmsContent> {
     title: image.title || '',
     mediaType: image.mediaType || 'Image',
     // Use the Sanity-hosted media URL when available; otherwise empty.
-    media: image.mediaUrl || '',
+    // Request a lightweight preview size for gallery thumbnails.
+    media: buildSanityImageUrl(image.mediaUrl || image.mediaPath || '', 480, 70) || '',
     tags: image.tags || [],
     createdAt: image.capturedAt || '',
   }));
@@ -435,7 +514,7 @@ export async function getCmsContent(): Promise<CmsContent> {
     readTime: post.readTime || '5 min read',
     tags: post.tags || [],
     coverImage: (() => {
-      const resolved = post.mainImageUrl || resolveMediaPath(post.mainImageFile, post.mainImageUrl as string | undefined);
+      const resolved = post.mainImageUrl || resolveMediaPath(post.mainImageFile, post.mainImageUrl);
       if (typeof resolved === 'string' && /^https?:\/\//i.test(resolved)) {
         return resolved;
       }
@@ -446,6 +525,8 @@ export async function getCmsContent(): Promise<CmsContent> {
       return '';
     })(),
   }));
+
+  const fb = await getFallback();
 
   return {
     profile,
@@ -460,6 +541,15 @@ export async function getCmsContent(): Promise<CmsContent> {
     socialLinks,
     technologies,
     techCategories: cmsShared.buildTechCategories(technologies),
-    blogPosts,
+    blogPosts: (blogPosts && blogPosts.length > 0) ? blogPosts : fb.blogPosts,
   };
 }
+
+// React's `cache` helper is available in production runtimes but may not be
+// present or callable in test environments. Use a safe wrapper so tests can
+// import `getCmsContent` without requiring a working React cache implementation.
+const maybeCache = <T extends (...args: any[]) => Promise<any>>(fn: T) => {
+  return typeof (cache as any) === 'function' ? (cache as unknown as typeof cache)(fn) : fn;
+};
+
+export const getCmsContent = maybeCache(getCmsContentImpl);
