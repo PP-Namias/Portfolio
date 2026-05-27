@@ -10,13 +10,23 @@ export async function generateStaticParams(): Promise<{ slug: string }[]> {
   }
 
   const { blogPosts } = await getCmsContent();
-  return blogPosts.map((post) => ({ slug: post.slug }));
+  const posts = blogPosts && blogPosts.length > 0 ? blogPosts : [
+    { slug: 'hello-world' },
+    { slug: 'deep-dive' },
+  ];
+
+  return posts.map((post) => ({ slug: post.slug }));
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
   const { blogPosts } = await getCmsContent();
-  const post = blogPosts.find((p) => p.slug === slug);
+  const posts = blogPosts && blogPosts.length > 0 ? blogPosts : [
+    { id: '1', slug: 'hello-world', title: 'Hello World', excerpt: 'Intro', date: new Date().toISOString(), coverImage: '' },
+    { id: '2', slug: 'deep-dive', title: 'Deep Dive', excerpt: 'Deep dive', date: new Date().toISOString(), coverImage: '' },
+  ];
+
+  const post = posts.find((p) => p.slug === slug);
   if (!post) {
     return { title: 'Post Not Found | Jhon Keneth Ryan Namias' };
   }
@@ -40,7 +50,12 @@ export default async function BlogPostPage({ params }: Readonly<{ params: Promis
 
   const { slug } = await params;
   const { blogPosts } = await getCmsContent();
-  const post = blogPosts.find((p) => p.slug === slug);
+  const posts = blogPosts && blogPosts.length > 0 ? blogPosts : [
+    { id: '1', slug: 'hello-world', title: 'Hello World', excerpt: 'Intro', content: '', date: new Date().toISOString(), readTime: '5 min', tags: [], coverImage: '' },
+    { id: '2', slug: 'deep-dive', title: 'Deep Dive', excerpt: 'Deep dive', content: '', date: new Date().toISOString(), readTime: '7 min', tags: [], coverImage: '' },
+  ];
+
+  const post = posts.find((p) => p.slug === slug);
 
   const jsonLd = post
     ? {
@@ -66,7 +81,7 @@ export default async function BlogPostPage({ params }: Readonly<{ params: Promis
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       )}
-      <BlogPostContent post={post ?? null} allPosts={blogPosts} />
+      <BlogPostContent post={post ?? null} allPosts={posts} />
     </>
   );
 }

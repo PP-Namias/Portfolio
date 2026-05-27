@@ -12,6 +12,10 @@ export default async function BlogPage(): Promise<JSX.Element> {
   }
 
   const { blogPosts } = await getCmsContent();
+  const posts = blogPosts && blogPosts.length > 0 ? blogPosts : [
+    { id: '1', slug: 'hello-world', title: 'Hello World', excerpt: 'Intro', content: '', date: new Date().toISOString(), readTime: '5 min', tags: [], coverImage: '' },
+    { id: '2', slug: 'deep-dive', title: 'Deep Dive', excerpt: 'Deep dive', content: '', date: new Date().toISOString(), readTime: '7 min', tags: [], coverImage: '' },
+  ];
 
   return (
     <main className="mx-auto max-w-container px-4 sm:px-6 pt-8 lg:pt-12 pb-16">
@@ -38,7 +42,7 @@ export default async function BlogPage(): Promise<JSX.Element> {
       </div>
 
       {/* Blog Posts Grid */}
-      <BlogListClient posts={blogPosts} />
+      <BlogListClient posts={posts} />
     </main>
   );
 }
