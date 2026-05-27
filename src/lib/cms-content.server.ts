@@ -15,6 +15,7 @@ import type {
   Technology,
 } from '@/types';
 
+import { buildMediaGatewayUrl } from './media-gateway';
 import * as cmsShared from './cms-content.shared';
 import type { CmsContent } from './cms-content.shared';
 
@@ -200,31 +201,15 @@ function portableTextToParagraphs(blocks: unknown): string[] {
     .filter(Boolean);
 }
 
-/**
- * Prefer canonical Sanity asset URLs when available. For migrated content
- * we should return absolute asset URLs (CDN) and avoid synthesizing
- * local `/images/*` runtime references here. When no Sanity URL is
- * available, return an empty string so callers can fall back to a
- * placeholder image or a controlled local fallback elsewhere.
- */
 function resolveMediaPath(fileName?: string | null, url?: string | null): string {
   const normalizedUrl = String(url || '').trim();
   if (normalizedUrl) {
-    return normalizedUrl;
+    return buildMediaGatewayUrl(normalizedUrl, { sign: true });
   }
 
   // Do not return local filenames here — return empty to indicate
   // that no Sanity-hosted asset URL is present.
   return '';
-}
-
-function buildSanityImageUrl(raw: string | null | undefined, width: number, quality = 75) {
-  const url = String(raw || '').trim();
-  if (!url) return '';
-  // If already contains query params, append safely.
-  const sep = url.includes('?') ? '&' : '?';
-  // Use Sanity CDN image params to request an appropriately-sized asset.
-  return `${url}${sep}w=${width}&auto=format&q=${quality}`;
 }
 
 const getCmsContentImpl = async (): Promise<CmsContent> => {
@@ -371,8 +356,8 @@ const getCmsContentImpl = async (): Promise<CmsContent> => {
     if (_fallback) return _fallback;
 
     const shared = await import('./cms-content.shared');
-    const candidate = shared.fallbackCmsContent ?? (await (shared as any).getFallbackCmsContent());
-    _fallback = candidate as CmsContent;
+    const candidate: CmsContent = shared.fallbackCmsContent ?? (await (shared as any).getFallbackCmsContent());
+    _fallback = candidate;
     return _fallback;
   };
 
@@ -405,7 +390,7 @@ const getCmsContentImpl = async (): Promise<CmsContent> => {
     // for the homepage where the image is small. Components can further
     // request different sizes if needed once a shared canonical URL is
     // available in the content shape.
-    profileImageUrl: buildSanityImageUrl(heroDoc?.profileImageUrl || '', 320, 75) || '',
+    profileImageUrl: buildMediaGatewayUrl(heroDoc?.profileImageUrl || '', { width: 320, quality: 75, sign: true }) || '',
   };
 
   // Determine about paragraphs with a small server-side helper to avoid
@@ -446,7 +431,7 @@ const getCmsContentImpl = async (): Promise<CmsContent> => {
     // Use a medium-sized preview image for project cards to avoid
     // downloading full-resolution assets in the initial render.
     image:
-      buildSanityImageUrl(project.imageUrl || (project.galleryItems?.[0]?.url ?? ''), 560, 70) ||
+      buildMediaGatewayUrl(project.imageUrl || (project.galleryItems?.[0]?.url ?? ''), { width: 560, quality: 70, sign: true }) ||
       resolveMediaPath(project.imageFile, project.imageUrl) ||
       '',
     description: project.summary || '',
@@ -474,7 +459,7 @@ const getCmsContentImpl = async (): Promise<CmsContent> => {
   const certifications: Certification[] = (certificationDocs ?? []).map((certification, index) => ({
     title: certification.title || '',
     // Prefer the Sanity asset URL for certification images
-    image: buildSanityImageUrl(certification.imageUrl || '', 320, 70) || '',
+    image: buildMediaGatewayUrl(certification.imageUrl || '', { width: 320, quality: 70, sign: true }) || '',
     imageUrl: certification.imageUrl || '',
     issuer: certification.issuer || '',
     issuedAt: certification.issuedAt || '',
@@ -486,7 +471,7 @@ const getCmsContentImpl = async (): Promise<CmsContent> => {
     mediaType: image.mediaType || 'Image',
     // Use the Sanity-hosted media URL when available; otherwise empty.
     // Request a lightweight preview size for gallery thumbnails.
-    media: buildSanityImageUrl(image.mediaUrl || image.mediaPath || '', 480, 70) || '',
+    media: buildMediaGatewayUrl(image.mediaUrl || image.mediaPath || '', { width: 480, quality: 70, sign: true }) || '',
     tags: image.tags || [],
     createdAt: image.capturedAt || '',
   }));
@@ -549,7 +534,7 @@ const getCmsContentImpl = async (): Promise<CmsContent> => {
 // present or callable in test environments. Use a safe wrapper so tests can
 // import `getCmsContent` without requiring a working React cache implementation.
 const maybeCache = <T extends (...args: any[]) => Promise<any>>(fn: T) => {
-  return typeof (cache as any) === 'function' ? (cache as unknown as typeof cache)(fn) : fn;
+  return typeof cache === 'function' ? cache(fn) : fn;
 };
 
 export const getCmsContent = maybeCache(getCmsContentImpl);

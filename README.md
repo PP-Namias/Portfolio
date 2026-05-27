@@ -76,6 +76,7 @@ SANITY_API_READ_TOKEN=your_sanity_read_token
 SANITY_API_WRITE_TOKEN=your_sanity_write_token
 SANITY_STUDIO_DEPLOY_TOKEN=your_studio_deploy_token
 SANITY_REVALIDATE_SECRET=your_revalidate_secret
+SANITY_MEDIA_GATEWAY_SECRET=your_media_gateway_secret
 SANITY_CUTOVER_ENABLED=true
 ```
 
