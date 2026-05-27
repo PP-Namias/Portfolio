@@ -8,6 +8,8 @@ function withCorsHeaders(response: NextResponse): NextResponse {
   response.headers.set('Access-Control-Allow-Origin', '*');
   response.headers.set('Access-Control-Allow-Methods', 'POST, OPTIONS');
   response.headers.set('Access-Control-Allow-Headers', 'content-type, x-sanity-webhook-secret, x-sanity-revalidate-secret');
+  response.headers.set('Cache-Control', 'no-store, max-age=0');
+  response.headers.set('X-Robots-Tag', 'noindex, nofollow');
   return response;
 }
 

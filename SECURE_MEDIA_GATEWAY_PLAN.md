@@ -311,6 +311,7 @@ The first gateway slice is now implemented:
 - image and file responses now use distinct cache behavior to match their delivery profile
 - optional signature support is wired through `SANITY_MEDIA_GATEWAY_SECRET`
 - env documentation and targeted tests were added for the new flow
+- the Sanity webhook route now sends no-store and noindex headers for revalidation responses
 
 ## Bottom line
 
