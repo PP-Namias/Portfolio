@@ -60,7 +60,7 @@ export const fallbackCmsContent: CmsContent = {
   hero: {
     roles: [profileData.title],
     availabilityLabel: 'Available',
-    profileImageUrl: '/images/profile/me.jpg',
+    profileImageUrl: '',
   },
   about: {
     paragraphs: profileData.summary

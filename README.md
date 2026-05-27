@@ -11,6 +11,7 @@ This repository powers [namias.tech](https://namias.tech), a production portfoli
 ### Highlights
 
 - Homepage-first architecture with modal flows for Resume, Experience, and Booking
+- Fully Sanity-driven content: all runtime reads are backed by Sanity CMS with CDN media delivery
 - AI chat endpoint at `/api/chat` using Gemini
 - Dark/light theme support with an accent color system
 - CI validation for lint, tests, and production build
@@ -21,6 +22,7 @@ This repository powers [namias.tech](https://namias.tech), a production portfoli
 - **Language:** TypeScript (strict)
 - **Styling:** Tailwind CSS + Framer Motion + Lucide React
 - **Theme:** `next-themes`
+- **CMS:** Sanity v3 (Studio + Content Lake + CDN)
 - **Content:** `react-markdown`, `remark-gfm`, `rehype-highlight`
 - **Testing:** Vitest + Testing Library + jsdom
 - **Hosting target:** AWS Amplify (`output: 'standalone'`)
@@ -55,6 +57,8 @@ Open [http://localhost:3000](http://localhost:3000).
 - `npm run sanity:import` — run Sanity import with idempotent upserts
 - `npm run sanity:parity` — compare expected source counts vs dataset counts
 - `npm run sanity:parity:strict` — same parity report, returns non-zero on mismatch
+- `npm run sanity:readiness` — readiness-only check (no count comparisons)
+- `npm --prefix studio run dev` — start Sanity Studio locally
 
 ## Environment variables
 

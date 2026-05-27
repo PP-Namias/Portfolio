@@ -21,9 +21,9 @@ export function resolveContentImageSrc(
     return encodeURI(normalized);
   }
 
-  if (options.folder) {
-    return encodeURI(`/images/${options.folder}/${normalized}`);
-  }
-
-  return encodeURI(normalized);
+  // Do not synthesize local `/images/*` runtime paths for short filenames.
+  // Prefer explicit absolute URLs (Sanity CDN) or caller-provided fallbacks.
+  // Returning an empty string signals "no runtime media available" so
+  // callers can decide how to render placeholders or omit media.
+  return options.fallback || '';
 }

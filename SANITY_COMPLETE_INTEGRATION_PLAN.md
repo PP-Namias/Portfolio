@@ -1,7 +1,7 @@
 # Sanity CMS Full Integration Master Plan
 
 Last updated: 2026-05-27
-Status: In progress (slice execution started)
+Status: Complete ✅ — all 10 slices executed and committed
 
 ## Objective
 
@@ -39,7 +39,7 @@ After successful migration and parity verification, remove local hardcoded and l
 | SANITY-FULL-007 | Cut over blog and resume runtime path | Complete | 5f000e2 |
 | SANITY-FULL-008 | Cut over media helpers and remove local image runtime refs | Complete | local:SANITY-FULL-008 |
 | SANITY-FULL-009 | Remove legacy local data modules and fallback code | Complete | e23cd2d |
-| SANITY-FULL-010 | Final QA, docs, and handoff cleanup | Not started | - |
+| SANITY-FULL-010 | Final QA, docs, and handoff cleanup | Complete | 09fdaaa |
 
 ## Phase-by-Phase Plan
 

@@ -344,7 +344,7 @@ export async function getCmsContent(): Promise<CmsContent> {
       hero: {
         roles: [],
         availabilityLabel: '',
-        profileImageUrl: '/images/profile/me.jpg',
+        profileImageUrl: '',
       },
       about: {
         paragraphs: profileData.summary ? [profileData.summary] : [],
@@ -411,7 +411,7 @@ export async function getCmsContent(): Promise<CmsContent> {
     // Use the Sanity-provided image URL when present. Avoid creating
     // local runtime `/images/*` references here — those will be
     // removed as part of the media cutover.
-    image: project.imageUrl || resolveMediaPath(project.imageFile, project.imageUrl) || '/images/blog/placeholder.png',
+    image: project.imageUrl || resolveMediaPath(project.imageFile, project.imageUrl) || '',
     description: project.summary || '',
     repositoryURL: project.repositoryUrl || null,
     liveURL: project.liveUrl || null,
@@ -484,7 +484,7 @@ export async function getCmsContent(): Promise<CmsContent> {
       // No Sanity-hosted cover image available — fall back to a local
       // placeholder. We intentionally avoid synthesizing `/images/*`
       // runtime refs for migrated content.
-      return '/images/blog/placeholder.png';
+      return '';
     })(),
   }));
 
