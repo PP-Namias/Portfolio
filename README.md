@@ -11,7 +11,8 @@ This repository powers [namias.tech](https://namias.tech), a production portfoli
 ### Highlights
 
 - Homepage-first architecture with modal flows for Resume, Experience, and Booking
-- Fully Sanity-driven content: all runtime reads are backed by Sanity CMS with CDN media delivery
+- Fully Sanity-driven content: all runtime reads are backed by Sanity CMS with controlled media delivery
+- Secure media gateway at `/api/media/[...path]` for Sanity-backed images and assets
 - AI chat endpoint at `/api/chat` using Gemini
 - Dark/light theme support with an accent color system
 - CI validation for lint, tests, and production build
@@ -81,6 +82,15 @@ SANITY_CUTOVER_ENABLED=true
 ```
 
 `.env.local` overrides `.env` for private values, and the Sanity migration runner loads both files automatically.
+
+### Secure media gateway
+
+Sanity-hosted images and files are routed through the app’s server-side media gateway instead of being exposed as raw backend URLs in the UI.
+
+- Browser-facing route: `/api/media/[...path]`
+- Optional signing secret: `SANITY_MEDIA_GATEWAY_SECRET`
+- Keep all Sanity credentials server-side only
+- Preserve the existing fallback paths while rollout is staged
 
 ## Quality checks
 
