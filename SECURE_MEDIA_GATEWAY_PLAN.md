@@ -52,6 +52,27 @@ A traditional reverse proxy is useful, but for this portfolio the stronger patte
 
 If an external reverse proxy or CDN is later added, it should sit in front of this gateway rather than replace it.
 
+## Trust boundary diagram
+
+```mermaid
+flowchart LR
+   Browser[Browser / Public UI] -->|same-origin requests| NextApp[Next.js app]
+   NextApp -->|resolved asset request| MediaRoute[/api/media/[...path]/route.ts/]
+   NextApp -->|server-only CMS reads| SanityAPI[(Sanity API / CDN)]
+   MediaRoute -->|validated, cache-aware fetch| SanityAPI
+   SanityAPI -->|asset bytes| MediaRoute
+   MediaRoute -->|sanitized response| Browser
+
+   Secrets[(SANITY_API_READ_TOKEN\nSANITY_REVALIDATE_SECRET\nSANITY_MEDIA_GATEWAY_SECRET)] -.server-only.-> NextApp
+```
+
+### Runtime contract
+
+- The browser may request only the app’s own media endpoint, not Sanity secrets or admin APIs.
+- The Next.js server may fetch Sanity data and Sanity-hosted assets, but only through server-side code.
+- The media route validates the request, resolves the target asset, and returns a cache-safe response.
+- Any signing secret stays in `.env` / `.env.local` and never enters the browser bundle.
+
 ## Security goals
 
 1. **No client-side secrets**
@@ -312,6 +333,7 @@ The first gateway slice is now implemented:
 - optional signature support is wired through `SANITY_MEDIA_GATEWAY_SECRET`
 - env documentation and targeted tests were added for the new flow
 - the Sanity webhook route now sends no-store and noindex headers for revalidation responses
+- the plan now includes a mermaid trust-boundary diagram and explicit runtime contract
 
 ## Bottom line
 
