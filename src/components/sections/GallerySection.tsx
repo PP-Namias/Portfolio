@@ -162,6 +162,7 @@ export function GallerySection() {
                   alt={image.title}
                   fill
                   sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, 25vw"
+                  loading="lazy"
                   className="object-cover group-hover:scale-105 transition-transform duration-500 ease-out brightness-[0.95] group-hover:brightness-100"
                 />
                 {/* Hover overlay with gradient */}
@@ -264,8 +265,8 @@ export function GallerySection() {
                 width={1200}
                 height={800}
                 sizes="(max-width: 768px) 100vw, 900px"
+                loading="eager"
                 className="w-full h-auto max-h-[80vh] object-contain rounded-lg"
-                priority
               />
               <div className="text-center mt-4">
                 <p className="text-sm font-medium text-white/90">

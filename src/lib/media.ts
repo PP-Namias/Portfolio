@@ -3,27 +3,43 @@ export interface ResolveContentImageSrcOptions {
   fallback?: string;
 }
 
+declare global {
+  // attach a process-lifetime cache to globalThis to avoid re-creating maps
+  var __resolveContentImageSrc_cache: Map<string, string> | undefined;
+}
+
 export function resolveContentImageSrc(
   value: string | null | undefined,
   options: ResolveContentImageSrcOptions = {}
 ): string {
   const normalized = String(value || '').trim();
 
+  // Simple in-memory memoization to avoid repeated string ops for high-frequency calls
+  // across render cycles. Keyed by normalized value + folder to keep cache small.
+  const cacheKey = `${normalized}::${options.folder || ''}`;
+  // ensure a process-lifetime cache exists on globalThis
+  globalThis.__resolveContentImageSrc_cache ??= new Map<string, string>();
+  const cache = globalThis.__resolveContentImageSrc_cache;
+  if (cache.has(cacheKey)) return cache.get(cacheKey) || '';
+
   if (!normalized || normalized === 'placeholder.png') {
-    return options.fallback || '';
+    const out = options.fallback || '';
+    cache.set(cacheKey, out);
+    return out;
   }
 
   if (/^https?:\/\//i.test(normalized)) {
+    cache.set(cacheKey, normalized);
     return normalized;
   }
 
   if (normalized.startsWith('/')) {
-    return encodeURI(normalized);
+    const out = encodeURI(normalized);
+    cache.set(cacheKey, out);
+    return out;
   }
 
-  // Do not synthesize local `/images/*` runtime paths for short filenames.
-  // Prefer explicit absolute URLs (Sanity CDN) or caller-provided fallbacks.
-  // Returning an empty string signals "no runtime media available" so
-  // callers can decide how to render placeholders or omit media.
-  return options.fallback || '';
+  const out = options.fallback || '';
+  cache.set(cacheKey, out);
+  return out;
 }

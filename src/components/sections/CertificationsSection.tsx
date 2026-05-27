@@ -92,6 +92,7 @@ export function CertificationsSection() {
                   alt={cert.title}
                   fill
                   sizes="(max-width: 640px) 45vw, 200px"
+                  loading="lazy"
                   className="object-cover transition-transform duration-300 group-hover:scale-105"
                 />
               ) : (
@@ -161,6 +162,7 @@ export function CertificationsSection() {
                   width={800}
                   height={600}
                   sizes="(max-width: 768px) 100vw, 672px"
+                  loading="eager"
                   className="w-full h-auto rounded-lg"
                 />
               ) : (
