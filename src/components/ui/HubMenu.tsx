@@ -98,7 +98,6 @@ export function HubMenu({ onClose, onOpenChat }: Readonly<HubMenuProps>) {
                     fill
                     sizes="44px"
                     className="object-cover"
-                    priority
                   />
                 ) : (
                   <div className="flex h-full w-full items-center justify-center bg-surface-light text-[11px] font-semibold text-text-muted-light dark:bg-surface-dark dark:text-text-muted-dark">

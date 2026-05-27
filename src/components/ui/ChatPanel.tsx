@@ -327,7 +327,6 @@ export function ChatPanel({ onBack, onClose, messages, setMessages }: Readonly<C
                   width={38}
                   height={38}
                   className="object-cover h-full w-full"
-                  priority
                 />
               ) : (
                 <div className="flex h-full w-full items-center justify-center bg-surface-light text-[10px] font-semibold text-text-muted-light dark:bg-surface-dark dark:text-text-muted-dark">
@@ -401,7 +400,6 @@ export function ChatPanel({ onBack, onClose, messages, setMessages }: Readonly<C
                       width={56}
                       height={56}
                       className="object-cover h-full w-full opacity-90"
-                      priority
                     />
                   ) : (
                     <div className="flex h-full w-full items-center justify-center bg-surface-light text-[12px] font-semibold text-text-muted-light dark:bg-surface-dark dark:text-text-muted-dark">
