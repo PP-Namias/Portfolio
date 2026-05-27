@@ -328,12 +328,16 @@ The first gateway slice is now implemented:
 - shared media URL helpers live in `src/lib/media-gateway.ts`
 - Sanity-backed media now resolves through `src/app/api/media/[...path]/route.ts`
 - the content loader emits controlled gateway URLs for Sanity assets
+- the shared image resolver rewrites CMS-hosted image URLs through the gateway so browser requests stay on the app origin
+- the shared image resolver is client-safe and keeps browser image requests on the app origin without importing server-only crypto helpers
 - the gateway only accepts expected Sanity CDN asset shapes and sets cache-safe headers
 - image and file responses now use distinct cache behavior to match their delivery profile
 - optional signature support is wired through `SANITY_MEDIA_GATEWAY_SECRET`
 - env documentation and targeted tests were added for the new flow
 - the Sanity webhook route now sends no-store and noindex headers for revalidation responses
 - the plan now includes a mermaid trust-boundary diagram and explicit runtime contract
+- the runtime resume flow now falls back to the local `/resume.pdf` asset when the CMS lookup is unavailable
+- direct `cdn.sanity.io` image allowances have been removed from the Next.js image policy so missed leaks fail closed during development
 
 ## Required environment variables
 

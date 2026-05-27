@@ -1,8 +1,10 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { GET } from '@/app/api/resume/route';
+import { buildMediaGatewayUrl } from '@/lib/media-gateway';
 
 const fetchMock = vi.fn();
 const sanityResumeUrl = 'https://cdn.sanity.io/files/nl0qw78w/production/529fd6d835d66c9d239aadd53f63a35932e8ac95.pdf';
+const fallbackResumeUrl = '/resume.pdf';
 
 describe('/api/resume route', () => {
   beforeEach(() => {
@@ -20,7 +22,7 @@ describe('/api/resume route', () => {
 
     const data = await response.json();
     expect(data).toEqual({
-      resumeUrl: sanityResumeUrl,
+      resumeUrl: fallbackResumeUrl,
       isActive: false,
     });
     expect(fetchMock).not.toHaveBeenCalled();
@@ -73,7 +75,7 @@ describe('/api/resume route', () => {
     const data = await response.json();
 
     expect(data).toEqual({
-      resumeUrl: sanityResumeUrl,
+      resumeUrl: fallbackResumeUrl,
       isActive: false,
       activeResumeCount: 0,
       hasMultipleActiveResumes: false,
@@ -90,10 +92,32 @@ describe('/api/resume route', () => {
     const data = await response.json();
 
     expect(data).toEqual({
-      resumeUrl: sanityResumeUrl,
+      resumeUrl: fallbackResumeUrl,
       isActive: false,
       activeResumeCount: 0,
       hasMultipleActiveResumes: false,
     });
+  });
+
+  it('rewrites a Sanity resume asset through the gateway', async () => {
+    vi.stubEnv('NEXT_PUBLIC_SANITY_PROJECT_ID', 'nl0qw78w');
+    vi.stubEnv('NEXT_PUBLIC_SANITY_DATASET', 'production');
+
+    fetchMock.mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        result: {
+          resumeUrl: sanityResumeUrl,
+          isActive: true,
+          fileName: 'Resume.pdf',
+          _id: 'resume-1',
+        },
+      }),
+    });
+
+    const response = await GET();
+    const data = await response.json();
+
+    expect(data.resumeUrl).toBe(buildMediaGatewayUrl(sanityResumeUrl, { sign: true }));
   });
 });

@@ -69,9 +69,8 @@ const securityHeaders = [
   },
   {
     key: 'Cross-Origin-Resource-Policy',
-    // Allow cross-origin media/assets (Sanity CDN) to be loaded by the site.
-    // This is required so <iframe> and other media requests to cdn.sanity.io
-    // are not blocked by the browser when the parent page sets COEP/COOP.
+    // Keep media delivery compatible with same-origin gateway responses and
+    // other approved cross-origin embeds used by the site.
     value: 'cross-origin',
   },
   {
@@ -87,13 +86,7 @@ const nextConfig = {
     buildActivity: false,
   },
   images: {
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: 'cdn.sanity.io',
-        pathname: '/**',
-      },
-    ],
+    remotePatterns: [],
   },
   async headers() {
     return [

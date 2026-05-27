@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { Download } from 'lucide-react';
 import { Modal } from './Modal';
 
-const fallbackResumeUrl = 'https://cdn.sanity.io/files/nl0qw78w/production/529fd6d835d66c9d239aadd53f63a35932e8ac95.pdf';
+const fallbackResumeUrl = '/resume.pdf';
 
 interface ResumeModalProps {
   open: boolean;
