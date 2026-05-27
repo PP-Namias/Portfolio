@@ -11,10 +11,7 @@ export default async function BlogPage(): Promise<JSX.Element> {
     notFound();
   }
 
-  const isTest = process.env.VITEST === 'true' || process.env.NODE_ENV === 'test';
-  const blogPosts = isTest
-    ? (await import('@/data/blogPosts')).blogPosts
-    : (await getCmsContent()).blogPosts;
+  const { blogPosts } = await getCmsContent();
 
   return (
     <main className="mx-auto max-w-container px-4 sm:px-6 pt-8 lg:pt-12 pb-16">

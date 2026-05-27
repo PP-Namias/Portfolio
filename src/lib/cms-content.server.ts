@@ -305,51 +305,10 @@ export async function getCmsContent(): Promise<CmsContent> {
   // Helper to lazily load the fallback content only when needed.
   let _fallback: CmsContent | null = null;
   const getFallback = async () => {
-    if (_fallback) return _fallback;
-    // Prefer the exported test fallback when available.
-    if (cmsShared.fallbackCmsContent) {
+    if (!_fallback) {
       _fallback = cmsShared.fallbackCmsContent;
-      return _fallback;
     }
-    // Dynamically import JSON fallback content to avoid pulling large
-    // JSON files into the production bundle unless required.
-    const [blogData, certData, experienceData, galleryData, membershipData, profileData, projectData, recommendationData, socialData, techData] = await Promise.all([
-      import('../../portfolio-resources/data/blog.json').then((m) => (m.default ?? m)),
-      import('../../portfolio-resources/data/certifications.json').then((m) => (m.default ?? m)),
-      import('../../portfolio-resources/data/experiences.json').then((m) => (m.default ?? m)),
-      import('../../portfolio-resources/data/gallery.json').then((m) => (m.default ?? m)),
-      import('../../portfolio-resources/data/memberships.json').then((m) => (m.default ?? m)),
-      import('../../portfolio-resources/data/profile.json').then((m) => (m.default ?? m)),
-      import('../../portfolio-resources/data/projects.json').then((m) => (m.default ?? m)),
-      import('../../portfolio-resources/data/recommendations.json').then((m) => (m.default ?? m)),
-      import('../../portfolio-resources/data/socials.json').then((m) => (m.default ?? m)),
-      import('../../portfolio-resources/data/technologies.json').then((m) => (m.default ?? m)),
-    ]);
 
-    _fallback = {
-      profile: profileData,
-      experiences: experienceData.map((experience: any) => ({
-        ...experience,
-        position: experience.position,
-      })),
-      projects: projectData,
-      certifications: certData,
-      galleryImages: galleryData,
-      memberships: membershipData,
-      recommendations: recommendationData,
-      socialLinks: socialData,
-      technologies: techData,
-      techCategories: cmsShared.buildTechCategories(techData),
-      blogPosts: blogData,
-      hero: {
-        roles: [],
-        availabilityLabel: '',
-        profileImageUrl: '',
-      },
-      about: {
-        paragraphs: profileData.summary ? [profileData.summary] : [],
-      },
-    } as CmsContent;
     return _fallback;
   };
 

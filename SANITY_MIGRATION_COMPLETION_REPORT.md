@@ -11,8 +11,8 @@
 
 The portfolio is now fully Sanity-driven for all runtime content. All 10 slices of the
 `SANITY_COMPLETE_INTEGRATION_PLAN.md` have been executed, validated, and committed.
-Local JSON files remain as test-only shims (via `fallbackCmsContent`) but are no longer
-imported by any production code path.
+The legacy JSON fixtures have been removed from the repo, and `fallbackCmsContent` now
+provides only an empty CMS-shaped fallback for tests and defensive rendering.
 
 ---
 
@@ -83,8 +83,8 @@ getCmsContent()  (src/lib/cms-content.server.ts)
      │       ├── membershipDocs     → membership collection
      │       └── recommendationDocs → recommendation collection
      │
-     └── fallbackCmsContent (test-only via portfolio-resources/data/*.json)
-             └── Used only when: NODE_ENV=test OR Sanity is unreachable
+          └── fallbackCmsContent (empty CMS-shaped fallback)
+               └── Used only when: NODE_ENV=test OR Sanity is unreachable
 ```
 
 ---
@@ -95,7 +95,7 @@ The following files are **no longer imported** in any production code path:
 
 | File | Previous Role | Current State |
 |---|---|---|
-| `src/data/blogPosts.ts` | Production data module | Test-only shim (fallbackCmsContent) |
+| `src/data/blogPosts.ts` | Production data module | Test-only shim (empty fallbackCmsContent) |
 | `src/data/certifications.ts` | Production data module | Test-only shim |
 | `src/data/experience.ts` | Production data module | Test-only shim |
 | `src/data/gallery.ts` | Production data module | Test-only shim |
@@ -105,11 +105,10 @@ The following files are **no longer imported** in any production code path:
 | `src/data/recommendations.ts` | Production data module | Test-only shim |
 | `src/data/socials.ts` | Production data module | Test-only shim |
 | `src/data/techStack.ts` | Production data module | Test-only shim |
-| `src/lib/cms-data.ts` | Legacy runtime re-export hub | Dead code (no production consumer) |
+| `src/lib/cms-data.ts` | Legacy runtime re-export hub | Archived metadata only |
 
-> **Note:** `portfolio-resources/data/*.json` files are **retained** as source of truth for
-> the migration import scripts (`npm run sanity:import`) and as test fallbacks.
-> They are safe to archive (move out of the runtime import path) in a future housekeeping pass.
+> **Note:** The legacy migration fixtures have now been archived/removed.
+> Historical migration details remain in the repo docs for reference only.
 
 ---
 

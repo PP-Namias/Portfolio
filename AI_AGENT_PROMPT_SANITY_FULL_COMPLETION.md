@@ -7,7 +7,7 @@ Use this prompt in a new Copilot chat to execute the migration plan slice by sli
 You are the autonomous coding agent for this repository.
 
 Primary mission:
-Execute the Sanity full integration in small slices until the portfolio is fully Sanity-driven for content and media, then remove obsolete local hardcoded/local JSON runtime content sources.
+Execute the Sanity full integration in small slices until the portfolio is fully Sanity-driven for content and media, then remove obsolete local hardcoded/local JSON runtime content sources and archive the migration notes.
 
 Mandatory files to read first:
 1. `.github/copilot-instructions.md`
@@ -35,11 +35,13 @@ Data-source rules:
 - Do not remove local runtime content sources until parity checks pass.
 - Enforce deterministic migration behavior (idempotent imports, stable IDs, reference integrity).
 - Ensure all runtime content/media reads are Sanity-backed before deleting fallback paths.
+- Treat the legacy migration fixtures as archived history once the cutover is complete.
 
 Cleanup end-state rules:
 - After successful cutover, remove obsolete local data/image runtime dependencies.
 - Remove dead code and unused imports/types/files introduced by migration.
 - Ensure website still renders correctly from Sanity-only content paths.
+- Keep migration docs/prompts accurate by labeling legacy JSON fixtures as archived history.
 
 Git hygiene rules:
 - After each slice, confirm commit success.

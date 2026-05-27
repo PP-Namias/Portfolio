@@ -90,24 +90,40 @@ vi.mock('@/hooks/useModal', () => ({
   }),
 }));
 
-vi.mock('@/data/experience', () => ({
-  experiences: [
-    {
-      position: 'Engineer',
-      company: 'Company A',
-      startedAt: '2024-01-01',
-      endedAt: null,
-      type: 'Full-time',
-      modality: 'Hybrid',
-      country: 'PH',
-      summary: 'Worked on automation.',
-      highlights: ['Built systems'],
-      achievements: ['Award'],
-      technologies: ['TypeScript'],
-      images: ['sample.png'],
-      relatedProjects: [],
+vi.mock('@/hooks/useCmsContent', () => ({
+  useCmsContent: () => ({
+    profile: {
+      name: 'Jhon Keneth Ryan Namias',
+      title: 'Full Stack Engineer',
+      email: 'pp.namias@gmail.com',
     },
-  ],
+    hero: {
+      profileImageUrl: 'https://cdn.example.com/profile.jpg',
+    },
+    socialLinks: [
+      { name: 'github', icon: 'github', label: 'PP-Namias', link: 'https://github.com/PP-Namias' },
+      { name: 'linkedin', icon: 'linkedin', label: 'LinkedIn', link: 'https://www.linkedin.com/in/pp-namias/' },
+      { name: 'x', icon: 'twitter', label: '@PP_Namias', link: 'https://x.com/PP_Namias' },
+      { name: 'instagram', icon: 'instagram', label: '@pp_namias', link: 'https://www.instagram.com/pp_namias/' },
+    ],
+    experiences: [
+      {
+        position: 'Engineer',
+        company: 'Company A',
+        startedAt: '2024-01-01',
+        endedAt: null,
+        type: 'Full-time',
+        modality: 'Hybrid',
+        country: 'PH',
+        summary: 'Worked on automation.',
+        highlights: ['Built systems'],
+        achievements: ['Award'],
+        technologies: ['TypeScript'],
+        images: ['sample.png'],
+        relatedProjects: [],
+      },
+    ],
+  }),
 }));
 
 import { AccentColorProvider } from '@/hooks/useAccentColor';

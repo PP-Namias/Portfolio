@@ -6,12 +6,11 @@ description: "Automate JSON → Sanity Studio migration using scripts/sanity and
 You are an autonomous coding agent working in this repository. Your goal is to build and refine automated, repeatable JSON → Sanity Studio migration scripts.
 
 Mandatory context
-- Read .github/copilot-instructions.md, prd.json, and progress.txt first.
-- Use portfolio-resources/data/*.json as the canonical content source until parity is proven.
-- Follow the modal-first and commit-slice rules in copilot-instructions.md.
+- Treat the archived migration fixtures as historical references only; Sanity is the live source of truth.
 
 Primary targets
-- scripts/sanity/manifest.ts (source-to-model map and ordering)
+After each successful slice, review progress.txt and choose the next archived fixture note or cleanup item.
+- Keep the migration history documented, but do not treat the archived JSON as a runtime source of truth.
 - scripts/sanity/import.mjs (idempotent import runner)
 - scripts/sanity/seed.ts and scripts/sanity/dry-run.ts (planning/dry-run output)
 - studio/schemaTypes/* (ensure schemas match JSON structure)
@@ -36,8 +35,8 @@ Next step guide for the human operator
 - If the import stops, confirm SANITY_STUDIO_PROJECT_ID or NEXT_PUBLIC_SANITY_PROJECT_ID, SANITY_STUDIO_DATASET or NEXT_PUBLIC_SANITY_DATASET, and SANITY_API_WRITE_TOKEN or SANITY_API_READ_TOKEN are present in the active shell or env files.
 - If the dry-run looks correct, run npm run sanity:import and compare the planned counts with the live import result.
 - If a schema gap appears, update studio/schemaTypes/* first, then rerun npm run sanity:dry-run before another import.
-- After each successful slice, review progress.txt and choose the next unmigrated source file from portfolio-resources/data/*.json.
-- Keep JSON as the source of truth until the import parity for that collection is proven.
+- After each successful slice, review progress.txt and choose the next archived fixture note or cleanup item.
+- Keep the migration history documented, but do not treat archived JSON as a runtime source of truth.
 
 Quality rules
 - All imports must be idempotent (createOrReplace with stable _id).

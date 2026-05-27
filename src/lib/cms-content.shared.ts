@@ -1,14 +1,3 @@
-import blogData from '../../portfolio-resources/data/blog.json';
-import certData from '../../portfolio-resources/data/certifications.json';
-import experienceData from '../../portfolio-resources/data/experiences.json';
-import galleryData from '../../portfolio-resources/data/gallery.json';
-import membershipData from '../../portfolio-resources/data/memberships.json';
-import profileData from '../../portfolio-resources/data/profile.json';
-import projectData from '../../portfolio-resources/data/projects.json';
-import recommendationData from '../../portfolio-resources/data/recommendations.json';
-import socialData from '../../portfolio-resources/data/socials.json';
-import techData from '../../portfolio-resources/data/technologies.json';
-
 import type {
   BlogPost,
   Certification,
@@ -55,33 +44,41 @@ export function buildTechCategories(technologies: Technology[]): Record<string, 
   }, {});
 }
 
+const emptyProfile: Profile = {
+  name: '',
+  title: '',
+  email: '',
+  phone: '',
+  location: '',
+  github: '',
+  linkedin: '',
+  summary: '',
+  highlights: {
+    yearsExperience: 0,
+    projectsCompleted: 0,
+    primaryTechnologies: [],
+  },
+  education: [],
+};
+
 export const fallbackCmsContent: CmsContent = {
-  profile: profileData,
+  profile: emptyProfile,
   hero: {
-    roles: [profileData.title],
-    availabilityLabel: 'Available',
+    roles: [],
+    availabilityLabel: '',
     profileImageUrl: '',
   },
   about: {
-    paragraphs: profileData.summary
-      .split(/\n\n+/)
-      .map((paragraph) => paragraph.trim())
-      .filter(Boolean),
+    paragraphs: [],
   },
-  experiences: experienceData.map((experience) => ({
-    ...experience,
-    position: experience.position,
-  })),
-  projects: projectData.map((project) => ({
-    ...project,
-    status: project.status as Project['status'],
-  })),
-  certifications: certData,
-  galleryImages: galleryData,
-  memberships: membershipData,
-  recommendations: recommendationData,
-  socialLinks: socialData,
-  technologies: techData,
-  techCategories: buildTechCategories(techData),
-  blogPosts: blogData,
+  experiences: [],
+  projects: [],
+  certifications: [],
+  galleryImages: [],
+  memberships: [],
+  recommendations: [],
+  socialLinks: [],
+  technologies: [],
+  techCategories: {},
+  blogPosts: [],
 };

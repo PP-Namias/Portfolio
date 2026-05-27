@@ -15,14 +15,15 @@ Your mission is to complete the Sanity CMS migration program end-to-end so the S
 4. `scripts/sanity/README.md`
 5. `studio/README.md`
 6. `studio/VISION_QUERIES.md`
-7. `portfolio-resources/data/*.json`
+7. Archived migration fixture notes
 8. `scripts/sanity/*.mjs`
 9. `src/app/**`
 10. `studio/sanity.config.ts`
 
 ## Source-of-truth rules
 
-- `portfolio-resources/data/*.json` remains the source of truth until parity is proven.
+- Sanity is the source of truth for runtime content.
+- Archived migration fixtures are historical migration references only.
 - Do not invent content, links, achievements, certificates, or dates.
 - Preserve the existing public fallback behavior unless a slice explicitly removes it.
 - Keep media filenames valid and use existing repo assets before introducing new ones.
@@ -93,8 +94,8 @@ When `npm run sanity:parity` reports mismatches, resolve them in this order:
 
 When resume content changes:
 
-1. Update `profile.json`, `experiences.json`, `projects.json`, `technologies.json`, and `certifications.json` first.
-2. Keep the latest resume wording, titles, and dates in the source JSON.
+1. Update the relevant Sanity documents first.
+2. Keep the latest resume wording, titles, and dates in Sanity.
 3. Preserve existing assets unless a real replacement asset is available.
 4. Re-run `sanity:dry-run`, `sanity:import`, and `sanity:parity`.
 5. Fix count drift before moving on.

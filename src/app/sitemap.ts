@@ -11,11 +11,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ];
   }
 
-  const isTest = process.env.VITEST === 'true' || process.env.NODE_ENV === 'test';
-
-  const blogPosts = isTest
-    ? (await import('@/data/blogPosts')).blogPosts
-    : (await getCmsContent()).blogPosts;
+  const { blogPosts } = await getCmsContent();
 
   const blogEntries = blogPosts.map((post) => ({
     url: `${BASE_URL}/blog/${post.slug}`,

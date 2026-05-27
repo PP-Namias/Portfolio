@@ -123,6 +123,26 @@ vi.mock('@/hooks/useModal', () => ({
   }),
 }));
 
+vi.mock('@/hooks/useCmsContent', () => ({
+  useCmsContent: () => ({
+    profile: {
+      name: 'Jhon Keneth Ryan Namias',
+      title: 'Full Stack Engineer',
+      email: 'pp.namias@gmail.com',
+    },
+    hero: {
+      profileImageUrl: 'https://cdn.example.com/profile.jpg',
+    },
+    socialLinks: [
+      { name: 'cal', icon: 'calendar', label: 'Schedule a Meeting', link: 'https://cal.com/pp-namias', featured: true },
+      { name: 'github', icon: 'github', label: 'PP-Namias', link: 'https://github.com/PP-Namias' },
+      { name: 'linkedin', icon: 'linkedin', label: 'LinkedIn', link: 'https://www.linkedin.com/in/pp-namias/' },
+      { name: 'x', icon: 'twitter', label: '@PP_Namias', link: 'https://x.com/PP_Namias' },
+      { name: 'instagram', icon: 'instagram', label: '@pp_namias', link: 'https://www.instagram.com/pp_namias/' },
+    ],
+  }),
+}));
+
 describe('HubMenu social icon fallback', () => {
   it('falls back to Share2 icon when a social icon mapping is missing', () => {
     render(<HubMenu onClose={vi.fn()} onOpenChat={vi.fn()} />);

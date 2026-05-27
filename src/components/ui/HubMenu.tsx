@@ -40,7 +40,6 @@ export function HubMenu({ onClose, onOpenChat }: Readonly<HubMenuProps>) {
   const menuRef = useRef<HTMLDivElement>(null);
   const profileImageSrc = resolveContentImageSrc(hero.profileImageUrl, {
     folder: 'profile',
-    fallback: '/images/profile/me.jpg',
   });
 
   const calLink = socialLinks.find((s) => s.name === 'cal');
@@ -92,14 +91,20 @@ export function HubMenu({ onClose, onOpenChat }: Readonly<HubMenuProps>) {
               transition={{ type: 'spring', stiffness: 200, damping: 15, delay: 0.1 }}
             >
               <div className="h-11 w-11 rounded-lg border border-border-light dark:border-border-dark overflow-hidden bg-white dark:bg-card-bg-dark shadow-sm">
-                <Image
-                  src={profileImageSrc}
-                  alt={profile.name}
-                  fill
-                  sizes="44px"
-                  className="object-cover"
-                  priority
-                />
+                {profileImageSrc ? (
+                  <Image
+                    src={profileImageSrc}
+                    alt={profile.name}
+                    fill
+                    sizes="44px"
+                    className="object-cover"
+                    priority
+                  />
+                ) : (
+                  <div className="flex h-full w-full items-center justify-center bg-surface-light text-[11px] font-semibold text-text-muted-light dark:bg-surface-dark dark:text-text-muted-dark">
+                    PN
+                  </div>
+                )}
               </div>
               <motion.div
                 className="absolute -bottom-1 -right-1 h-3.5 w-3.5 rounded-full bg-emerald-400 border-2 border-white dark:border-[#1C1C1E]"

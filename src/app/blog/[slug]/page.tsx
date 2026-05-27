@@ -9,13 +9,6 @@ export async function generateStaticParams(): Promise<{ slug: string }[]> {
     return [];
   }
 
-  const isTest = process.env.VITEST === 'true' || process.env.NODE_ENV === 'test';
-
-  if (isTest) {
-    const { blogPosts } = await import('@/data/blogPosts');
-    return blogPosts.map((post) => ({ slug: post.slug }));
-  }
-
   const { blogPosts } = await getCmsContent();
   return blogPosts.map((post) => ({ slug: post.slug }));
 }

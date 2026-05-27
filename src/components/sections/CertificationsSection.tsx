@@ -12,7 +12,6 @@ const INITIAL_COUNT = 6;
 function getCertificationImageSrc(cert: { image: string; imageUrl?: string }): string {
   return resolveContentImageSrc(cert.imageUrl || cert.image, {
     folder: 'certifications',
-    fallback: '/images/certifications/CS COUNCIL NAMIAS.png',
   });
 }
 
@@ -87,13 +86,19 @@ export function CertificationsSection() {
             onClick={() => setSelectedCert({ image: cert.image, imageUrl: cert.imageUrl, title: cert.title })}
           >
             <div className="aspect-[4/3] relative">
-              <Image
-                src={getCertificationImageSrc(cert)}
-                alt={cert.title}
-                fill
-                sizes="(max-width: 640px) 45vw, 200px"
-                className="object-cover transition-transform duration-300 group-hover:scale-105"
-              />
+              {getCertificationImageSrc(cert) ? (
+                <Image
+                  src={getCertificationImageSrc(cert)}
+                  alt={cert.title}
+                  fill
+                  sizes="(max-width: 640px) 45vw, 200px"
+                  className="object-cover transition-transform duration-300 group-hover:scale-105"
+                />
+              ) : (
+                <div className="flex h-full w-full items-center justify-center bg-surface-light text-xs font-medium text-text-muted-light dark:bg-surface-dark dark:text-text-muted-dark">
+                  No certificate image
+                </div>
+              )}
               <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
               <div className="absolute bottom-0 left-0 right-0 p-2.5">
                 <p className="text-[11px] font-medium text-white leading-tight line-clamp-2">
@@ -149,14 +154,20 @@ export function CertificationsSection() {
               >
                 <X className="h-5 w-5" />
               </button>
-              <Image
-                src={getCertificationImageSrc(selectedCert)}
-                alt={selectedCert.title}
-                width={800}
-                height={600}
-                sizes="(max-width: 768px) 100vw, 672px"
-                className="w-full h-auto rounded-lg"
-              />
+              {getCertificationImageSrc(selectedCert) ? (
+                <Image
+                  src={getCertificationImageSrc(selectedCert)}
+                  alt={selectedCert.title}
+                  width={800}
+                  height={600}
+                  sizes="(max-width: 768px) 100vw, 672px"
+                  className="w-full h-auto rounded-lg"
+                />
+              ) : (
+                <div className="flex h-[400px] w-full items-center justify-center rounded-lg bg-white/5 text-sm font-medium text-white/80">
+                  No certificate image available
+                </div>
+              )}
               <p className="text-center text-sm font-medium text-white/90 mt-3">
                 {selectedCert.title}
               </p>

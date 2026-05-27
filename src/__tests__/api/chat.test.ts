@@ -18,33 +18,49 @@ const mockGetGenerativeModel = vi.fn(() => ({
   startChat: mockStartChat,
 }));
 
+const mockCmsContent = vi.hoisted(() => ({
+  profile: {
+    name: 'Jhon Keneth Ryan Namias',
+    title: 'Full Stack Engineer & AI Automation Specialist',
+    email: 'pp.namias@gmail.com',
+    location: 'Manila, Philippines',
+    github: 'https://github.com/PP-Namias',
+    linkedin: 'https://www.linkedin.com/in/pp-namias/',
+    summary: 'Summary paragraph.',
+    highlights: {
+      yearsExperience: 5,
+      projectsCompleted: 20,
+      primaryTechnologies: ['React', 'TypeScript'],
+    },
+    education: [
+      {
+        degree: 'BS Computer Science',
+        institution: 'University of Caloocan City',
+        location: 'Caloocan City, Philippines',
+        startedAt: '2022-01-01',
+        endedAt: null,
+        gpa: '1.40',
+        honors: ["Dean's List"],
+        relevantCourses: ['Algorithms'],
+      },
+    ],
+  },
+  experiences: [{ company: 'Test Co', position: 'Dev', startedAt: '2025-01-01', endedAt: null }],
+  projects: [{ title: 'Test Project', year: 2025, repositoryURL: null, liveURL: null, tags: ['React'] }],
+  technologies: [{ name: 'TypeScript', category: 'Languages', proficiency: 5 }],
+  certifications: [{ title: 'Test Cert', issuer: 'Test Org', issuedAt: '2025', tags: [] }],
+  memberships: [{ name: 'PSIA', url: 'https://example.com', joinedAt: '2025-01-01' }],
+  socialLinks: [{ name: 'github', link: 'https://github.com/PP-Namias' }],
+}));
+
 vi.mock('@google/generative-ai', () => ({
   GoogleGenerativeAI: vi.fn(function () {
     return { getGenerativeModel: mockGetGenerativeModel };
   }),
 }));
 
-// Mock portfolio JSON data
-vi.mock('../../../../portfolio-resources/data/profile.json', () => ({
-  default: { name: 'Jhon Keneth Ryan Namias', title: 'Full Stack Engineer & AI Automation Specialist' },
-}));
-vi.mock('../../../../portfolio-resources/data/experiences.json', () => ({
-  default: [{ company: 'Test Co', position: 'Dev' }],
-}));
-vi.mock('../../../../portfolio-resources/data/projects.json', () => ({
-  default: [{ title: 'Test Project' }],
-}));
-vi.mock('../../../../portfolio-resources/data/technologies.json', () => ({
-  default: [{ name: 'TypeScript', category: 'Languages' }],
-}));
-vi.mock('../../../../portfolio-resources/data/certifications.json', () => ({
-  default: [{ title: 'Test Cert', issuer: 'Test Org', issuedAt: '2025' }],
-}));
-vi.mock('../../../../portfolio-resources/data/memberships.json', () => ({
-  default: [{ name: 'PSIA' }],
-}));
-vi.mock('../../../../portfolio-resources/data/socials.json', () => ({
-  default: [{ name: 'GitHub', link: 'https://github.com/PP-Namias' }],
+vi.mock('@/lib/cms-content.server', () => ({
+  getCmsContent: vi.fn(async () => mockCmsContent),
 }));
 
 import { GET, POST } from '@/app/api/chat/route';
@@ -413,8 +429,7 @@ describe('/api/chat route', () => {
   });
 
   it('returns location fallback when education data is unavailable', async () => {
-    const profileModule = await import('../../../portfolio-resources/data/profile.json');
-    const profile = profileModule.default as Record<string, unknown>;
+    const profile = mockCmsContent.profile as { education?: unknown };
     const originalEducation = profile.education;
     profile.education = undefined;
 

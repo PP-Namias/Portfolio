@@ -13,7 +13,7 @@ Create a practical, execution-ready plan to improve UX quality, credibility, con
 2. Projects behavior remains:
    - Hover/focus: smooth image zoom only
    - Click: direct navigation (`detailURL > liveURL > repositoryURL`)
-3. Content source of truth remains in `portfolio-resources/data/*.json`.
+3. Content source of truth is Sanity; the old migration fixtures are archived references.
 4. Existing routes stay minimal:
    - `/`
    - `/blog`
@@ -72,8 +72,8 @@ Create a practical, execution-ready plan to improve UX quality, credibility, con
 
 ### Phase 2 key tasks
 
-- Replace `recommendations.json` placeholder quotes with real testimonials.
-- Expand `blog.json` posts into authentic technical writeups.
+- Replace placeholder recommendations in Sanity with real testimonials.
+- Expand blog posts in Sanity into authentic technical writeups.
 - Enrich project cards with concise outcomes (impact, stack clarity, role clarity).
 - Validate all social/external links and metadata consistency.
 

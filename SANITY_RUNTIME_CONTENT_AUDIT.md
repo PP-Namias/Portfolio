@@ -54,8 +54,8 @@ Studio and environment alignment:
 1. `src/app/layout.tsx` calls `getCmsContent()` from `src/lib/cms-content.server.ts`.
 2. Result is injected via `CmsContentProvider` in `src/app/providers.tsx`.
 3. Sections/components read content from `useCmsContent()`.
-4. If Sanity core documents are missing/unavailable, `getCmsContent()` returns `fallbackCmsContent` from `src/lib/cms-content.shared.ts`.
-5. `fallbackCmsContent` is built from local JSON files in `portfolio-resources/data/*.json`.
+4. If Sanity core documents are missing/unavailable, `getCmsContent()` returns the empty `fallbackCmsContent` shape from `src/lib/cms-content.shared.ts`.
+5. The old local JSON fixture files have been removed; fallback content is now CMS-shaped only.
 
 Conclusion:
 - Runtime is Sanity-first, but still explicitly dual-source due to fallback JSON path.
@@ -64,16 +64,16 @@ Conclusion:
 
 | Domain | Primary Runtime Source | Fallback Source | Notes |
 | --- | --- | --- | --- |
-| Profile | Sanity `profile` document | `portfolio-resources/data/profile.json` | Hard dependency: fallback kicks in when `profile` or `techStack` missing. |
-| Experiences | Sanity `experience` | `portfolio-resources/data/experiences.json` | Normalized in server mapper. |
-| Projects | Sanity `project` | `portfolio-resources/data/projects.json` | UI still builds local image paths for project media. |
-| Certifications | Sanity `certification` | `portfolio-resources/data/certifications.json` | Section keeps local fallback image constant path. |
-| Gallery | Sanity `galleryImage` | `portfolio-resources/data/gallery.json` | UI still references local gallery image paths. |
-| Tech Stack | Sanity `techStack` | `portfolio-resources/data/technologies.json` | Required for non-fallback return path. |
-| Blog posts | Sanity `post` | `portfolio-resources/data/blog.json` | Cover image currently mapped to `/images/blog/*` local path. |
-| Memberships | Sanity `membership` | `portfolio-resources/data/memberships.json` | Fallback retained via shared content. |
-| Recommendations | Sanity `recommendation` | `portfolio-resources/data/recommendations.json` | Fallback retained via shared content. |
-| Social links | Sanity `heroSection.socialLinks` | `portfolio-resources/data/socials.json` | Runtime mapping normalizes icon/platform. |
+| Profile | Sanity `profile` document | Empty CMS-shaped fallback | Runtime fallback only fills the shape when Sanity is unavailable. |
+| Experiences | Sanity `experience` | Empty CMS-shaped fallback | Normalized in server mapper. |
+| Projects | Sanity `project` | Empty CMS-shaped fallback | UI reads Sanity asset URLs when present. |
+| Certifications | Sanity `certification` | Empty CMS-shaped fallback | Section keeps local fallback image constant path only for test fixtures. |
+| Gallery | Sanity `galleryImage` | Empty CMS-shaped fallback | UI reads Sanity media URLs when present. |
+| Tech Stack | Sanity `techStack` | Empty CMS-shaped fallback | Required for non-fallback return path. |
+| Blog posts | Sanity `post` | Empty CMS-shaped fallback | Cover image comes from Sanity asset URLs when available. |
+| Memberships | Sanity `membership` | Empty CMS-shaped fallback | Fallback retained only as an empty shape. |
+| Recommendations | Sanity `recommendation` | Empty CMS-shaped fallback | Fallback retained only as an empty shape. |
+| Social links | Sanity `heroSection.socialLinks` | Empty CMS-shaped fallback | Runtime mapping normalizes icon/platform. |
 | Resume | Sanity `resume` API route | `/resume.pdf` | Explicit local fallback remains active by design. |
 
 ## Runtime Local Asset Dependencies Still Present
@@ -101,12 +101,12 @@ Direct `/resume.pdf` local fallback:
 ## Legacy Local JSON Dependency Surface
 
 Primary fallback dependency chain:
-- `src/lib/cms-content.server.ts` -> `src/lib/cms-content.shared.ts` -> `portfolio-resources/data/*.json`
+- `src/lib/cms-content.server.ts` -> `src/lib/cms-content.shared.ts` -> empty fallback shape
 
 Legacy compatibility module:
-- `src/lib/cms-data.ts` imports all `portfolio-resources/data/*.json` and is re-exported by `src/data/*.ts`.
-- `src/data/*.ts` is still consumed broadly in tests.
-- Runtime direct `@/data/*` usage is mostly removed, but one runtime import remains in `src/components/sections/HeroSection.tsx`.
+- `src/lib/cms-data.ts` now documents the archived migration fixture catalog.
+- `src/data/*.ts` are test-only compatibility shims.
+- Runtime direct `@/data/*` usage has been removed from production paths.
 
 ## Environment and Connection Check
 

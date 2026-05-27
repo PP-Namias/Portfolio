@@ -89,7 +89,6 @@ export function ChatPanel({ onBack, onClose, messages, setMessages }: Readonly<C
   const { profile, hero } = useCmsContent();
   const profileImageSrc = resolveContentImageSrc(hero.profileImageUrl, {
     folder: 'profile',
-    fallback: '/images/profile/me.jpg',
   });
 
   const handleClearChat = useCallback(() => {
@@ -321,14 +320,20 @@ export function ChatPanel({ onBack, onClose, messages, setMessages }: Readonly<C
           <div className="relative flex-shrink-0">
             {/* Custom Avatar container */}
             <div className="h-[38px] w-[38px] rounded-full overflow-hidden border border-border-light dark:border-border-dark bg-surface-light dark:bg-card-bg-dark shadow-sm">
-              <Image
-                src={profileImageSrc}
-                alt={profile.name}
-                width={38}
-                height={38}
-                className="object-cover h-full w-full"
-                priority
-              />
+              {profileImageSrc ? (
+                <Image
+                  src={profileImageSrc}
+                  alt={profile.name}
+                  width={38}
+                  height={38}
+                  className="object-cover h-full w-full"
+                  priority
+                />
+              ) : (
+                <div className="flex h-full w-full items-center justify-center bg-surface-light text-[10px] font-semibold text-text-muted-light dark:bg-surface-dark dark:text-text-muted-dark">
+                  PN
+                </div>
+              )}
             </div>
             {/* Small AI Bot sub-badge */}
             <div className="absolute -bottom-1 -right-1 h-[18px] w-[18px] rounded-full bg-accent-pink flex items-center justify-center border-2 border-white dark:border-card-bg-dark shadow-sm">
@@ -389,14 +394,20 @@ export function ChatPanel({ onBack, onClose, messages, setMessages }: Readonly<C
             >
               <div className="relative mb-3">
                 <div className="h-14 w-14 rounded-full overflow-hidden border border-border-light dark:border-border-dark bg-white dark:bg-card-bg-dark shadow-sm">
-                  <Image
-                    src={profileImageSrc}
-                    alt={profile.name}
-                    width={56}
-                    height={56}
-                    className="object-cover h-full w-full opacity-90"
-                    priority
-                  />
+                  {profileImageSrc ? (
+                    <Image
+                      src={profileImageSrc}
+                      alt={profile.name}
+                      width={56}
+                      height={56}
+                      className="object-cover h-full w-full opacity-90"
+                      priority
+                    />
+                  ) : (
+                    <div className="flex h-full w-full items-center justify-center bg-surface-light text-[12px] font-semibold text-text-muted-light dark:bg-surface-dark dark:text-text-muted-dark">
+                      PN
+                    </div>
+                  )}
                 </div>
                 {/* AI Badge for Chat Empty state */}
                 <div className="absolute -bottom-1 -right-1 h-6 w-6 rounded-full bg-accent-pink flex items-center justify-center border-[2.5px] border-white dark:border-[#1A1A1C] shadow-sm">

@@ -11,7 +11,7 @@ Make the Sanity CMS easier to maintain, safer to re-run, and more useful for ong
 
 - The CMS is connected to the same project and dataset as the portfolio app.
 - The migration runner already supports dry-run and live import modes.
-- Core content types are mapped from `portfolio-resources/data/*.json` into Sanity documents.
+- Core content types now live in Sanity documents; the old JSON fixtures are archived migration references.
 - Assets are uploaded from the repo, including file names with spaces.
 - The Studio opens locally and uses the shared root environment configuration.
 
@@ -40,7 +40,7 @@ Keep aligning Studio schemas with the repository source data so the import stays
 
 Recommended improvements:
 
-- Keep verifying `portfolio-resources/data/*` against `studio/schemaTypes/*` one collection at a time.
+- Keep verifying Sanity documents against `studio/schemaTypes/*` one collection at a time.
 - Preserve optional source fields instead of dropping them during normalization.
 - Add missing schema fields only when the source data already contains meaningful content.
 - Keep stable ordering fields for experience, projects, certifications, gallery items, and posts.
@@ -198,7 +198,7 @@ Why this matters:
 
 ### 12. Refresh baseline profile data from the latest resume
 
-Align source content in `portfolio-resources/data/*.json` with the latest resume before the next live import.
+Align the Sanity content with the latest resume before the next live update.
 
 Recommended improvements:
 
