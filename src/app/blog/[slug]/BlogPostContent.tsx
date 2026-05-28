@@ -11,6 +11,7 @@ import { ArrowLeft, Clock, Calendar, ChevronLeft, ChevronRight } from 'lucide-re
 import { Card } from '@/components/ui/Card';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import { ReadingProgress } from '@/components/ui/ReadingProgress';
+import { formatDateUtc } from '@/lib/date';
 import type { BlogPost } from '@/types';
 
 const markdownComponents: any = {
@@ -143,15 +144,21 @@ export default function BlogPostContent({ post, allPosts, slug }: Readonly<BlogP
         <Card>
           {/* Cover Image */}
           <div className="-mx-5 -mt-5 mb-6 rounded-t-xl overflow-hidden">
-            <Image
-              src={postObj.coverImage}
-              alt={postObj.title}
-              width={800}
-              height={320}
-              sizes="(max-width: 768px) 100vw, 800px"
-              className="w-full h-48 sm:h-64 object-cover"
-              priority
-            />
+            {postObj.coverImage ? (
+              <Image
+                src={postObj.coverImage}
+                alt={postObj.title}
+                width={800}
+                height={320}
+                sizes="(max-width: 768px) 100vw, 800px"
+                className="w-full h-48 sm:h-64 object-cover"
+                priority
+              />
+            ) : (
+              <div className="flex h-48 sm:h-64 items-center justify-center bg-surface-light dark:bg-surface-dark text-xs text-text-muted-light dark:text-text-muted-dark">
+                Cover image unavailable
+              </div>
+            )}
           </div>
 
           {/* Tags */}
@@ -175,11 +182,7 @@ export default function BlogPostContent({ post, allPosts, slug }: Readonly<BlogP
           <div className="flex items-center gap-4 mt-3 mb-6 pb-6 border-b border-border-light dark:border-border-dark">
             <span className="flex items-center gap-1.5 text-xs text-text-muted-light dark:text-text-muted-dark">
               <Calendar className="h-3.5 w-3.5" />
-              {new Date(postObj.date).toLocaleDateString('en-US', {
-                month: 'long',
-                day: 'numeric',
-                year: 'numeric',
-              })}
+              {formatDateUtc(postObj.date, { month: 'long', day: 'numeric', year: 'numeric' })}
             </span>
             <span className="flex items-center gap-1.5 text-xs text-text-muted-light dark:text-text-muted-dark">
               <Clock className="h-3.5 w-3.5" />

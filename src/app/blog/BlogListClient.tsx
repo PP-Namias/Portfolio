@@ -7,6 +7,7 @@ import { motion } from 'framer-motion';
 import { Clock, Calendar, ChevronRight } from 'lucide-react';
 import { Card } from '@/components/ui/Card';
 import { BlogPost } from '@/types';
+import { formatDateUtc } from '@/lib/date';
 
 interface BlogListClientProps {
   posts: BlogPost[];
@@ -26,14 +27,20 @@ export default function BlogListClient({ posts }: BlogListClientProps) {
             <Card hover className="h-full flex flex-col cursor-pointer group">
               {/* Cover Image */}
               <div className="relative -mx-5 -mt-5 mb-4 rounded-t-xl overflow-hidden">
-                <Image
-                  src={post.coverImage}
-                  alt={post.title}
-                  width={400}
-                  height={160}
-                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                  className="w-full h-40 object-cover transition-transform duration-300 group-hover:scale-105"
-                />
+                {post.coverImage ? (
+                  <Image
+                    src={post.coverImage}
+                    alt={post.title}
+                    width={400}
+                    height={160}
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    className="w-full h-40 object-cover transition-transform duration-300 group-hover:scale-105"
+                  />
+                ) : (
+                  <div className="flex h-40 items-center justify-center bg-surface-light dark:bg-surface-dark text-xs text-text-muted-light dark:text-text-muted-dark">
+                    Cover image unavailable
+                  </div>
+                )}
               </div>
 
               {/* Tags */}
@@ -62,11 +69,7 @@ export default function BlogListClient({ posts }: BlogListClientProps) {
               <div className="flex items-center gap-3 mt-3 pt-3 border-t border-border-light dark:border-border-dark">
                 <span className="flex items-center gap-1 text-[11px] text-text-muted-light dark:text-text-muted-dark">
                   <Calendar className="h-3 w-3" />
-                  {new Date(post.date).toLocaleDateString('en-US', {
-                    month: 'short',
-                    day: 'numeric',
-                    year: 'numeric',
-                  })}
+                  {formatDateUtc(post.date, { month: 'short', day: 'numeric', year: 'numeric' })}
                 </span>
                 <span className="flex items-center gap-1 text-[11px] text-text-muted-light dark:text-text-muted-dark">
                   <Clock className="h-3 w-3" />

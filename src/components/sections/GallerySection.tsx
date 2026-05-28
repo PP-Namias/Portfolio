@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight, X, ChevronDown, ChevronUp } from 'lucide-react';
 import { useCmsContent } from '@/hooks/useCmsContent';
 import { resolveContentImageSrc } from '@/lib/media';
+import { formatDateUtc } from '@/lib/date';
 
 const INITIAL_COUNT = 9;
 
@@ -172,7 +173,7 @@ export function GallerySection() {
                   </span>
                   {image.createdAt && (
                     <span className="text-[11px] text-white/70 mt-0.5">
-                      {new Date(image.createdAt).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
+                      {formatDateUtc(image.createdAt, { month: 'short', year: 'numeric' })}
                     </span>
                   )}
                 </div>
@@ -274,7 +275,7 @@ export function GallerySection() {
                 </p>
                 {selectedImage.createdAt && (
                   <p className="text-xs text-white/50 mt-1">
-                    {new Date(selectedImage.createdAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+                    {formatDateUtc(selectedImage.createdAt, { month: 'long', day: 'numeric', year: 'numeric' })}
                   </p>
                 )}
               </div>
