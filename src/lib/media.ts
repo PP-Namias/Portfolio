@@ -44,10 +44,6 @@ function isSanityCdnUrl(rawUrl: string): boolean {
 }
 
 function encodeGatewayTarget(rawUrl: string): string {
-  if (typeof Buffer !== 'undefined') {
-    return Buffer.from(rawUrl, 'utf8').toString('base64url');
-  }
-
   const bytes = new TextEncoder().encode(rawUrl);
   let binary = '';
 
