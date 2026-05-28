@@ -14,36 +14,50 @@ const inter = Inter({
   variable: '--font-inter',
 });
 
-export const metadata: Metadata = {
-  title: 'Jhon Keneth Namias | Portfolio king of stuff',
-  description: 'Personal portfolio of Jhon Keneth Namias.',
-  metadataBase: new URL('https://namias.tech'),
-  openGraph: {
-    title: 'Jhon Keneth Namias | Portfolio king of stuff',
-    description: 'Personal portfolio of Jhon Keneth Namias.',
-    siteName: 'Jhon Keneth Namias Portfolio',
-    type: 'website',
-    locale: 'en_US',
-    images: [
-      {
-        url: '/og-image.svg',
-        width: 1200,
-        height: 630,
-        alt: 'Jhon Keneth Namias portfolio preview',
-      },
-    ],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Jhon Keneth Namias | Portfolio king of stuff',
-    description: 'Personal portfolio of Jhon Keneth Namias.',
-    images: ['/og-image.svg'],
-  },
-  icons: {
-    icon: '/favicon.svg',
-    apple: '/apple-touch-icon.svg',
-  },
-};
+const fallbackSeo = fallbackCmsContent.seoSettings;
+
+export async function generateMetadata(): Promise<Metadata> {
+  const cmsContent = await getCmsContent();
+  const seo = cmsContent.seoSettings || fallbackSeo;
+
+  return {
+    title: seo.siteTitle,
+    description: seo.siteDescription,
+    metadataBase: new URL(seo.canonicalUrl || fallbackSeo.canonicalUrl),
+    alternates: {
+      canonical: seo.canonicalUrl || fallbackSeo.canonicalUrl,
+    },
+    robots: {
+      index: !seo.noindex,
+      follow: !seo.nofollow,
+    },
+    openGraph: {
+      title: seo.siteTitle,
+      description: seo.siteDescription,
+      siteName: 'Jhon Keneth Namias Portfolio',
+      type: 'website',
+      locale: 'en_US',
+      images: [
+        {
+          url: seo.ogImageUrl || fallbackSeo.ogImageUrl,
+          width: 1200,
+          height: 630,
+          alt: 'Jhon Keneth Namias portfolio preview',
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: seo.siteTitle,
+      description: seo.siteDescription,
+      images: [seo.twitterImageUrl || seo.ogImageUrl || fallbackSeo.twitterImageUrl],
+    },
+    icons: {
+      icon: '/favicon.svg',
+      apple: '/apple-touch-icon.svg',
+    },
+  };
+}
 
 const jsonLd = {
   '@context': 'https://schema.org',

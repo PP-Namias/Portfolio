@@ -213,7 +213,7 @@ function resolveMediaPath(fileName?: string | null, url?: string | null): string
 }
 
 const getCmsContentImpl = async (): Promise<CmsContent> => {
-  const [profileDoc, heroDoc, aboutDoc, techDoc, experienceDocs, projectDocs, certificationDocs, galleryDocs, blogDocs, membershipDocs, recommendationDocs, siteSettingsDoc] = await Promise.all([
+  const [profileDoc, heroDoc, aboutDoc, techDoc, experienceDocs, projectDocs, certificationDocs, galleryDocs, blogDocs, membershipDocs, recommendationDocs, siteSettingsDoc, seoSettingsDoc] = await Promise.all([
     querySanity<{
       fullName?: string;
       title?: string;
@@ -395,6 +395,17 @@ const getCmsContentImpl = async (): Promise<CmsContent> => {
       };
     }>(
       '*[_type == "siteSettings"][0]{footer{leadText,linkLabel,copyright,backToPortfolioLabel,contactPrompt},blog{title,description,backLabel}}'
+    ),
+    querySanity<{
+      siteTitle?: string;
+      siteDescription?: string;
+      canonicalUrl?: string;
+      ogImageUrl?: string;
+      twitterImageUrl?: string;
+      noindex?: boolean;
+      nofollow?: boolean;
+    }>(
+      '*[_type == "seoSettings"][0]{siteTitle,siteDescription,canonicalUrl,"ogImageUrl":ogImage.asset->url,"twitterImageUrl":twitterImage.asset->url,noindex,nofollow}'
     ),
   ]);
 
@@ -593,6 +604,15 @@ const getCmsContentImpl = async (): Promise<CmsContent> => {
   const fb = await getFallback();
 
   return {
+    seoSettings: {
+      siteTitle: seoSettingsDoc?.siteTitle || fb.seoSettings.siteTitle,
+      siteDescription: seoSettingsDoc?.siteDescription || fb.seoSettings.siteDescription,
+      canonicalUrl: seoSettingsDoc?.canonicalUrl || fb.seoSettings.canonicalUrl,
+      ogImageUrl: seoSettingsDoc?.ogImageUrl || fb.seoSettings.ogImageUrl,
+      twitterImageUrl: seoSettingsDoc?.twitterImageUrl || fb.seoSettings.twitterImageUrl,
+      noindex: seoSettingsDoc?.noindex ?? fb.seoSettings.noindex,
+      nofollow: seoSettingsDoc?.nofollow ?? fb.seoSettings.nofollow,
+    },
     profile,
     siteSettings: {
       footer: {
