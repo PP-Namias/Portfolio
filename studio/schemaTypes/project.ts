@@ -188,6 +188,8 @@ export default defineType({
           {title: 'Completed', value: 'completed'},
           {title: 'In progress', value: 'in-progress'},
           {title: 'Prototype', value: 'prototype'},
+          {title: 'Draft', value: 'draft'},
+          {title: 'Archived', value: 'archived'},
         ],
       },
     }),
@@ -196,6 +198,16 @@ export default defineType({
     select: {
       title: 'title',
       subtitle: 'summary',
+      featured: 'featured',
+      status: 'status',
+    },
+    prepare(selection) {
+      const {title, subtitle, featured, status} = selection as {title?: string; subtitle?: string; featured?: boolean; status?: string}
+      const statusLabel = status ? status.replace(/-/g, ' ') : 'unspecified'
+      return {
+        title,
+        subtitle: [subtitle, statusLabel, featured ? 'featured' : null].filter(Boolean).join(' • '),
+      }
     },
   },
 })

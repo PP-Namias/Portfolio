@@ -134,16 +134,32 @@ export default defineType({
         },
       ],
     }),
+    defineField({
+      name: 'status',
+      title: 'Status',
+      type: 'string',
+      options: {
+        list: [
+          {title: 'Draft', value: 'draft'},
+          {title: 'Published', value: 'published'},
+          {title: 'Archived', value: 'archived'},
+          {title: 'Featured', value: 'featured'},
+          {title: 'Pinned', value: 'pinned'},
+        ],
+      },
+    }),
   ],
   preview: {
     select: {
       title: 'role',
       subtitle: 'company',
+      status: 'status',
     },
     prepare(selection) {
+      const {status} = selection as {status?: string}
       return {
         title: selection.title,
-        subtitle: selection.subtitle,
+        subtitle: [selection.subtitle, status].filter(Boolean).join(' • '),
       }
     },
   },

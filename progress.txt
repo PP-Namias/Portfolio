@@ -222,6 +222,10 @@
 - Added blog post metadata fields (`metaTitle`, `metaDescription`, `featured`) plus recommendation editorial fields (`featured`, `relationship`, `companyUrl`, `avatar`) and extra site settings copy fields for footer/blog labels.
 - Wired blog metadata generation and blog page/footer consumers to use the new Sanity-backed site settings and extended the CMS loader and app types to carry the new blog/testimonial fields.
 - Validated with `npm run lint` and `npm run build`.
+[SUCCESS] 2026-05-28 Site settings, status, and preview slice completed
+- Expanded `siteSettings` with announcement banner and empty-state copy fields, and updated the studio preview subtitle to reflect the broader content surface.
+- Added `status` fields plus preview summaries to `project` and `experience` so editorial state is visible in Studio.
+- Validated with `npm run lint` and `npm run build`.
 [SUCCESS] 2026-05-25 Vision query pack slice completed
 - Added a recommended inspection order to `studio/VISION_QUERIES.md` so homepage, resume, blog, and collection checks happen in a repeatable sequence.
 - Linked the Sanity improvement plan directly to the living query pack for easier maintenance.

@@ -126,12 +126,63 @@ export default defineType({
         }),
       ],
     }),
+    defineField({
+      name: 'announcementBanner',
+      title: 'Announcement banner',
+      type: 'object',
+      fields: [
+        defineField({
+          name: 'enabled',
+          title: 'Enabled',
+          type: 'boolean',
+          initialValue: false,
+        }),
+        defineField({
+          name: 'message',
+          title: 'Message',
+          type: 'text',
+          rows: 2,
+        }),
+        defineField({
+          name: 'linkLabel',
+          title: 'Link label',
+          type: 'string',
+        }),
+        defineField({
+          name: 'linkUrl',
+          title: 'Link URL',
+          type: 'url',
+        }),
+      ],
+    }),
+    defineField({
+      name: 'emptyStates',
+      title: 'Empty states',
+      type: 'object',
+      fields: [
+        defineField({
+          name: 'projects',
+          title: 'Projects empty state',
+          type: 'string',
+        }),
+        defineField({
+          name: 'blog',
+          title: 'Blog empty state',
+          type: 'string',
+        }),
+        defineField({
+          name: 'testimonials',
+          title: 'Testimonials empty state',
+          type: 'string',
+        }),
+      ],
+    }),
   ],
   preview: {
     prepare() {
       return {
         title: 'Site Settings',
-        subtitle: 'Homepage and footer copy',
+        subtitle: 'Homepage, blog, footer, and status copy',
       }
     },
   },
