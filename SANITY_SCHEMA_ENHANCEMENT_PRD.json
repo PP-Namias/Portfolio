@@ -185,5 +185,19 @@
     "maintainability": "Navigation, footer, and status handling are centralized and predictable.",
     "workflow": "Preview and revalidation notes stay documented alongside the schema."
   },
-  "nextStep": "Implement SCHEMA-001 and SCHEMA-002 first, then wire the profile singleton and media metadata into the runtime layer."
+  "agentContinuationPrompt": [
+    "Read SANITY_SCHEMA_ENHANCEMENT_PLAN.md, SANITY_SCHEMA_ENHANCEMENT_PRD.json, and progress.txt first.",
+    "Work in very small slices and treat each slice as a self-contained deliverable.",
+    "After every completed slice, docs-only tweak, prompt update, or refinement, run the relevant validation, stage all changes, and create one conventional local commit before starting the next slice.",
+    "Commit every update, every change, and every docs-only refinement so the history stays granular, reviewable, and easy to bisect.",
+    "Do not bundle unrelated slices together; one slice equals one local commit.",
+    "Start with SCHEMA-001 and SCHEMA-002: seoSettings and mediaSettings.",
+    "Then implement profile singleton adoption and asset metadata enrichment.",
+    "Then expand projects and experience schemas.",
+    "Then add blog metadata, navigation/footer management, and testimonial improvements.",
+    "Then expand siteSettings, add status fields, and add preview/revalidation helpers.",
+    "Do not move on to later schema or runtime work until the current slice is implemented, validated, recorded, and committed.",
+    "Preserve existing content and fallback behavior unless a slice explicitly replaces it.",
+    "After each commit, immediately continue to the next eligible slice unless a genuine blocker requires user input."
+  ]
 }
