@@ -5,6 +5,8 @@ import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight, X, ChevronDown, ChevronUp } from 'lucide-react';
 import { useCmsContent } from '@/hooks/useCmsContent';
+import { resolveContentImageSrc } from '@/lib/media';
+import { formatDateUtc } from '@/lib/date';
 
 const INITIAL_COUNT = 9;
 
@@ -157,10 +159,11 @@ export function GallerySection() {
                 className={`relative rounded-xl overflow-hidden group cursor-pointer focus:outline-none focus:ring-2 focus:ring-accent-pink focus:ring-offset-2 dark:focus:ring-offset-background-dark ${spanClass}`}
               >
                 <Image
-                  src={`/images/gallery/${image.media}`}
+                  src={resolveContentImageSrc(image.media, { folder: 'gallery' })}
                   alt={image.title}
                   fill
                   sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, 25vw"
+                  loading="lazy"
                   className="object-cover group-hover:scale-105 transition-transform duration-500 ease-out brightness-[0.95] group-hover:brightness-100"
                 />
                 {/* Hover overlay with gradient */}
@@ -170,7 +173,7 @@ export function GallerySection() {
                   </span>
                   {image.createdAt && (
                     <span className="text-[11px] text-white/70 mt-0.5">
-                      {new Date(image.createdAt).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
+                      {formatDateUtc(image.createdAt, { month: 'short', year: 'numeric' })}
                     </span>
                   )}
                 </div>
@@ -258,13 +261,13 @@ export function GallerySection() {
               onClick={(e) => e.stopPropagation()}
             >
               <Image
-                src={`/images/gallery/${selectedImage.media}`}
+                src={resolveContentImageSrc(selectedImage.media, { folder: 'gallery' })}
                 alt={selectedImage.title}
                 width={1200}
                 height={800}
                 sizes="(max-width: 768px) 100vw, 900px"
+                loading="eager"
                 className="w-full h-auto max-h-[80vh] object-contain rounded-lg"
-                priority
               />
               <div className="text-center mt-4">
                 <p className="text-sm font-medium text-white/90">
@@ -272,7 +275,7 @@ export function GallerySection() {
                 </p>
                 {selectedImage.createdAt && (
                   <p className="text-xs text-white/50 mt-1">
-                    {new Date(selectedImage.createdAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+                    {formatDateUtc(selectedImage.createdAt, { month: 'long', day: 'numeric', year: 'numeric' })}
                   </p>
                 )}
               </div>

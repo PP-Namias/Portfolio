@@ -14,6 +14,7 @@ interface ContactModalProps {
 type ContactFormState = {
   name: string;
   email: string;
+  topic: string;
   subject: string;
   message: string;
 };
@@ -25,6 +26,7 @@ const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const INITIAL_FORM: ContactFormState = {
   name: '',
   email: '',
+  topic: '',
   subject: '',
   message: '',
 };
@@ -58,6 +60,8 @@ const TOPIC_PRESETS = [
       'I would like to invite you to speak at our event/workshop. Here are the details:',
   },
 ] as const;
+
+const TOPIC_OPTIONS = ['', ...TOPIC_PRESETS.map((preset) => preset.label)] as const;
 
 function buildEmailLinks(form: ContactFormState, recipient: string, recipientName: string) {
   const subject = form.subject.trim() || `Inquiry from ${form.name.trim()}`;
@@ -128,6 +132,7 @@ export function ContactModal({ open, onClose }: Readonly<ContactModalProps>) {
       const nextDraft: ContactFormState = {
         name: typeof parsed.name === 'string' ? parsed.name : '',
         email: typeof parsed.email === 'string' ? parsed.email : '',
+        topic: typeof parsed.topic === 'string' ? parsed.topic : '',
         subject: typeof parsed.subject === 'string' ? parsed.subject : '',
         message: typeof parsed.message === 'string' ? parsed.message : '',
       };
@@ -135,6 +140,7 @@ export function ContactModal({ open, onClose }: Readonly<ContactModalProps>) {
       if (
         nextDraft.name ||
         nextDraft.email ||
+        nextDraft.topic ||
         nextDraft.subject ||
         nextDraft.message
       ) {
@@ -152,6 +158,7 @@ export function ContactModal({ open, onClose }: Readonly<ContactModalProps>) {
     const hasContent =
       form.name.trim().length > 0 ||
       form.email.trim().length > 0 ||
+      form.topic.trim().length > 0 ||
       form.subject.trim().length > 0 ||
       form.message.trim().length > 0;
 
@@ -262,8 +269,21 @@ export function ContactModal({ open, onClose }: Readonly<ContactModalProps>) {
   const handleTopicPreset = (preset: (typeof TOPIC_PRESETS)[number]) => {
     setForm((prev) => ({
       ...prev,
+      topic: preset.label,
       subject: preset.subject,
       message: prev.message.trim().length > 0 ? prev.message : `${preset.starter}\n\n`,
+    }));
+    setStatus('idle');
+  };
+
+  const handleTopicChange = (value: string) => {
+    const preset = TOPIC_PRESETS.find((item) => item.label === value);
+
+    setForm((prev) => ({
+      ...prev,
+      topic: value,
+      subject: preset?.subject ?? prev.subject,
+      message: preset && prev.message.trim().length === 0 ? `${preset.starter}\n\n` : prev.message,
     }));
     setStatus('idle');
   };
@@ -471,6 +491,28 @@ export function ContactModal({ open, onClose }: Readonly<ContactModalProps>) {
                     </p>
                   ) : null}
                 </div>
+              </div>
+
+              <div>
+                <label
+                  htmlFor="contact-modal-topic"
+                  className="mb-1.5 block text-sm font-medium text-text-primary-light dark:text-text-primary-dark"
+                >
+                  Topic
+                </label>
+                <select
+                  id="contact-modal-topic"
+                  name="topic"
+                  value={form.topic}
+                  onChange={(event) => handleTopicChange(event.target.value)}
+                  className="w-full rounded-lg border border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark px-3 py-2 text-sm text-text-primary-light dark:text-text-primary-dark focus:outline-none focus:ring-2 focus:ring-accent-pink"
+                >
+                  {TOPIC_OPTIONS.map((option) => (
+                    <option key={option || 'custom'} value={option}>
+                      {option || 'Choose a topic (optional)'}
+                    </option>
+                  ))}
+                </select>
               </div>
 
               <div>

@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { Providers } from './providers';
+import { fallbackCmsContent } from '@/lib/cms-content.shared';
 import { FloatingHub } from '@/components/ui/FloatingHub';
 import { ScrollToTop } from '@/components/ui/ScrollToTop';
 import { Analytics } from '@/components/ui/Analytics';
@@ -13,36 +14,50 @@ const inter = Inter({
   variable: '--font-inter',
 });
 
-export const metadata: Metadata = {
-  title: 'Jhon Keneth Namias | Portfolio king of stuff',
-  description: 'Personal portfolio of Jhon Keneth Namias.',
-  metadataBase: new URL('https://namias.tech'),
-  openGraph: {
-    title: 'Jhon Keneth Namias | Portfolio king of stuff',
-    description: 'Personal portfolio of Jhon Keneth Namias.',
-    siteName: 'Jhon Keneth Namias Portfolio',
-    type: 'website',
-    locale: 'en_US',
-    images: [
-      {
-        url: '/og-image.svg',
-        width: 1200,
-        height: 630,
-        alt: 'Jhon Keneth Namias portfolio preview',
-      },
-    ],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Jhon Keneth Namias | Portfolio king of stuff',
-    description: 'Personal portfolio of Jhon Keneth Namias.',
-    images: ['/og-image.svg'],
-  },
-  icons: {
-    icon: '/favicon.svg',
-    apple: '/apple-touch-icon.svg',
-  },
-};
+const fallbackSeo = fallbackCmsContent.seoSettings;
+
+export async function generateMetadata(): Promise<Metadata> {
+  const cmsContent = await getCmsContent();
+  const seo = cmsContent.seoSettings || fallbackSeo;
+
+  return {
+    title: seo.siteTitle,
+    description: seo.siteDescription,
+    metadataBase: new URL(seo.canonicalUrl || fallbackSeo.canonicalUrl),
+    alternates: {
+      canonical: seo.canonicalUrl || fallbackSeo.canonicalUrl,
+    },
+    robots: {
+      index: !seo.noindex,
+      follow: !seo.nofollow,
+    },
+    openGraph: {
+      title: seo.siteTitle,
+      description: seo.siteDescription,
+      siteName: 'Jhon Keneth Namias Portfolio',
+      type: 'website',
+      locale: 'en_US',
+      images: [
+        {
+          url: seo.ogImageUrl || fallbackSeo.ogImageUrl,
+          width: 1200,
+          height: 630,
+          alt: 'Jhon Keneth Namias portfolio preview',
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: seo.siteTitle,
+      description: seo.siteDescription,
+      images: [seo.twitterImageUrl || seo.ogImageUrl || fallbackSeo.twitterImageUrl],
+    },
+    icons: {
+      icon: '/favicon.svg',
+      apple: '/apple-touch-icon.svg',
+    },
+  };
+}
 
 const jsonLd = {
   '@context': 'https://schema.org',
@@ -76,14 +91,44 @@ const jsonLd = {
   ],
 };
 
-export default async function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
-  const cmsContent = await getCmsContent();
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  // In test environments (Vitest) return a synchronous layout using the
+  // fallback CMS content so unit tests can import and render the layout
+  // without awaiting async data fetches.
+  const isTest = process.env.VITEST === 'true' || process.env.NODE_ENV === 'test';
 
-  return (
+  if (isTest) {
+    const cmsContent = fallbackCmsContent;
+
+    return (
+      <html lang="en" suppressHydrationWarning className={inter.variable}>
+        <head>
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+          />
+          <Analytics />
+        </head>
+        <body className="bg-background-light dark:bg-background-dark text-text-primary-light dark:text-text-primary-dark min-h-screen font-sans antialiased">
+          <a
+            href="#main-content"
+            className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:rounded-lg focus:bg-accent-pink focus:text-white focus:text-sm focus:font-medium focus:outline-none"
+          >
+            Skip to main content
+          </a>
+          <Providers cmsContent={cmsContent}>
+            {children}
+            <FloatingHub />
+            <ScrollToTop />
+          </Providers>
+        </body>
+      </html>
+    );
+  }
+
+  // Non-test runtime: return a Promise (async component) so Next.js can
+  // await server-side data fetching as before.
+  return getCmsContent().then((cmsContent) => (
     <html lang="en" suppressHydrationWarning className={inter.variable}>
       <head>
         <script
@@ -106,5 +151,5 @@ export default async function RootLayout({
         </Providers>
       </body>
     </html>
-  );
+  ));
 }

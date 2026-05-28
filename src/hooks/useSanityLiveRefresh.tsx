@@ -4,12 +4,12 @@ import { useEffect, useRef } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 
 export const SANITY_LIVE_REFRESH_INTERVAL_MS = 45_000;
-const SANITY_REFRESH_PATHS = ['/', '/blog'];
+const SANITY_REFRESH_PATHS = new Set(['/', '/blog']);
 const MIN_REFRESH_GAP_MS = 5_000;
 
 function shouldRefreshPath(pathname: string): boolean {
   return (
-    SANITY_REFRESH_PATHS.includes(pathname) ||
+    SANITY_REFRESH_PATHS.has(pathname) ||
     pathname.startsWith('/blog/')
   );
 }
@@ -20,7 +20,8 @@ export function useSanityLiveRefresh() {
   const lastRefreshAtRef = useRef(0);
 
   useEffect(() => {
-    if (!shouldRefreshPath(pathname)) {
+    // If router or pathname aren't available (e.g. during tests), skip live refresh.
+    if (!router || !pathname || !shouldRefreshPath(pathname)) {
       return;
     }
 
@@ -45,15 +46,15 @@ export function useSanityLiveRefresh() {
       triggerRefresh();
     };
 
-    const intervalId = window.setInterval(triggerRefresh, SANITY_LIVE_REFRESH_INTERVAL_MS);
+    const intervalId = globalThis.setInterval(triggerRefresh, SANITY_LIVE_REFRESH_INTERVAL_MS);
 
     document.addEventListener('visibilitychange', handleVisibilityChange);
-    window.addEventListener('focus', handleFocus);
+    globalThis.addEventListener('focus', handleFocus);
 
     return () => {
-      window.clearInterval(intervalId);
+      globalThis.clearInterval(intervalId as unknown as number);
       document.removeEventListener('visibilitychange', handleVisibilityChange);
-      window.removeEventListener('focus', handleFocus);
+      globalThis.removeEventListener('focus', handleFocus);
     };
   }, [pathname, router]);
 }

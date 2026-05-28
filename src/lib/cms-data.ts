@@ -1,76 +1,22 @@
-import { BlogPost, Certification, Experience, GalleryItem, Membership, Profile, Project, ProjectStatus, Recommendation, SocialLink, Technology } from '@/types';
-
-import blogData from '../../portfolio-resources/data/blog.json';
-import certData from '../../portfolio-resources/data/certifications.json';
-import experienceData from '../../portfolio-resources/data/experiences.json';
-import galleryData from '../../portfolio-resources/data/gallery.json';
-import membershipData from '../../portfolio-resources/data/memberships.json';
-import profileData from '../../portfolio-resources/data/profile.json';
-import projectData from '../../portfolio-resources/data/projects.json';
-import recommendationData from '../../portfolio-resources/data/recommendations.json';
-import socialData from '../../portfolio-resources/data/socials.json';
-import techData from '../../portfolio-resources/data/technologies.json';
-
-const isProjectStatus = (value: unknown): value is ProjectStatus => {
-  return value === 'completed' || value === 'in-progress' || value === 'prototype';
-};
-
 export const isSanityCutoverEnabled = process.env.NEXT_PUBLIC_SANITY_CUTOVER_ENABLED === 'true';
 
-export type ContentSourceMode = 'json-fallback' | 'sanity-ready';
+export type ContentSourceMode = 'sanity-ready';
 
-export const contentSourceMode: ContentSourceMode = isSanityCutoverEnabled
-  ? 'sanity-ready'
-  : 'json-fallback';
+export const contentSourceMode: ContentSourceMode = 'sanity-ready';
 
 export const contentSourceCatalog = [
-  { sourceFile: 'portfolio-resources/data/profile.json', targetModel: 'profile singleton document' },
-  { sourceFile: 'portfolio-resources/data/experiences.json', targetModel: 'experience documents' },
-  { sourceFile: 'portfolio-resources/data/projects.json', targetModel: 'project documents' },
-  { sourceFile: 'portfolio-resources/data/certifications.json', targetModel: 'certification documents' },
-  { sourceFile: 'portfolio-resources/data/gallery.json', targetModel: 'galleryImage documents' },
-  { sourceFile: 'portfolio-resources/data/technologies.json', targetModel: 'techStack singleton document' },
-  { sourceFile: 'portfolio-resources/data/blog.json', targetModel: 'post documents' },
-  { sourceFile: 'portfolio-resources/data/socials.json', targetModel: 'heroSection.socialLinks nested array' },
-  { sourceFile: 'portfolio-resources/data/memberships.json', targetModel: 'membership documents' },
-  { sourceFile: 'portfolio-resources/data/recommendations.json', targetModel: 'recommendation documents' },
+  { sourceFile: 'profile (archived migration fixture)', targetModel: 'profile singleton document' },
+  { sourceFile: 'experiences (archived migration fixture)', targetModel: 'experience documents' },
+  { sourceFile: 'projects (archived migration fixture)', targetModel: 'project documents' },
+  { sourceFile: 'certifications (archived migration fixture)', targetModel: 'certification documents' },
+  { sourceFile: 'gallery (archived migration fixture)', targetModel: 'galleryImage documents' },
+  { sourceFile: 'technologies (archived migration fixture)', targetModel: 'techStack singleton document' },
+  { sourceFile: 'blog (archived migration fixture)', targetModel: 'post documents' },
+  { sourceFile: 'socials (archived migration fixture)', targetModel: 'heroSection.socialLinks nested array' },
+  { sourceFile: 'memberships (archived migration fixture)', targetModel: 'membership documents' },
+  { sourceFile: 'recommendations (archived migration fixture)', targetModel: 'recommendation documents' },
 ] as const;
 
 export const contentSourceSummary = contentSourceCatalog
   .map((entry) => `${entry.sourceFile} -> ${entry.targetModel}`)
   .join('\n');
-
-export const profile: Profile = profileData;
-
-export const experiences: Experience[] = experienceData.map((experience) => ({
-  ...experience,
-  position: experience.position,
-}));
-
-export const projects: Project[] = projectData.map((project) => ({
-  ...project,
-  status: isProjectStatus(project.status) ? project.status : undefined,
-}));
-
-export const certifications: Certification[] = certData;
-
-export const galleryImages: GalleryItem[] = galleryData;
-
-export const memberships: Membership[] = membershipData;
-
-export const recommendations: Recommendation[] = recommendationData;
-
-export const socialLinks: SocialLink[] = socialData;
-
-export const technologies: Technology[] = techData;
-
-export const techCategories = technologies.reduce<Record<string, Technology[]>>((acc, technology) => {
-  if (!acc[technology.category]) {
-    acc[technology.category] = [];
-  }
-
-  acc[technology.category].push(technology);
-  return acc;
-}, {});
-
-export const blogPosts: BlogPost[] = blogData;

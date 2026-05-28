@@ -95,33 +95,6 @@ vi.mock('@/lib/features', () => ({
   IS_BLOG_VISIBLE: true,
 }));
 
-vi.mock('@/data/blogPosts', () => ({
-  blogPosts: [
-    {
-      id: '1',
-      slug: 'hello-world',
-      title: 'Hello World',
-      excerpt: 'Intro post excerpt',
-      content: '# Hello\n\nThis is markdown content.',
-      date: '2026-01-10',
-      readTime: '5 min',
-      tags: ['AI', 'Web'],
-      coverImage: '/images/blog/hello-world.jpg',
-    },
-    {
-      id: '2',
-      slug: 'deep-dive',
-      title: 'Deep Dive',
-      excerpt: 'Advanced post excerpt',
-      content: '## Deep\n\nMore content.',
-      date: '2026-02-20',
-      readTime: '7 min',
-      tags: ['Cloud', 'Next.js'],
-      coverImage: '/images/blog/deep-dive.jpg',
-    },
-  ],
-}));
-
 import BlogLayout from '@/app/blog/layout';
 import BlogPage from '@/app/blog/page';
 import BlogListClient from '@/app/blog/BlogListClient';
@@ -167,13 +140,58 @@ describe('blog route and content coverage', () => {
   });
 
   it('BlogPostContent renders missing post fallback state', () => {
-    render(<BlogPostContent slug="missing-slug" />);
+    render(
+      <BlogPostContent
+        slug="missing-slug"
+        allPosts={[
+          {
+            id: '1',
+            slug: 'hello-world',
+            title: 'Hello World',
+            excerpt: 'Intro post excerpt',
+            content: '# Hello\n\nThis is markdown content.',
+            date: '2026-01-10',
+            readTime: '5 min',
+            tags: ['AI', 'Web'],
+            coverImage: '/images/blog/hello-world.jpg',
+          },
+        ]}
+      />
+    );
     expect(screen.getByText('Post Not Found')).toBeInTheDocument();
     expect(screen.getByText(/doesn't exist/i)).toBeInTheDocument();
   });
 
   it('BlogPostContent renders post content and navigation', () => {
-    render(<BlogPostContent slug="deep-dive" />);
+    render(
+      <BlogPostContent
+        slug="deep-dive"
+        allPosts={[
+          {
+            id: '1',
+            slug: 'hello-world',
+            title: 'Hello World',
+            excerpt: 'Intro post excerpt',
+            content: '# Hello\n\nThis is markdown content.',
+            date: '2026-01-10',
+            readTime: '5 min',
+            tags: ['AI', 'Web'],
+            coverImage: '/images/blog/hello-world.jpg',
+          },
+          {
+            id: '2',
+            slug: 'deep-dive',
+            title: 'Deep Dive',
+            excerpt: 'Advanced post excerpt',
+            content: '## Deep\n\nMore content.',
+            date: '2026-02-20',
+            readTime: '7 min',
+            tags: ['Cloud', 'Next.js'],
+            coverImage: '/images/blog/deep-dive.jpg',
+          },
+        ]}
+      />
+    );
 
     expect(screen.getByText('Deep Dive')).toBeInTheDocument();
     expect(screen.getByText('ReadingProgress')).toBeInTheDocument();
@@ -182,8 +200,9 @@ describe('blog route and content coverage', () => {
     expect(screen.getByText('Previous')).toBeInTheDocument();
   });
 
-  it('BlogPage renders title and list when blog is visible', () => {
-    render(<BlogPage />);
+  it('BlogPage renders title and list when blog is visible', async () => {
+    const element = await BlogPage();
+    render(element);
 
     expect(screen.getByText('Blog')).toBeInTheDocument();
     expect(screen.getByText(/Thoughts on AI/i)).toBeInTheDocument();
@@ -192,8 +211,11 @@ describe('blog route and content coverage', () => {
   });
 
   it('generateStaticParams and generateMetadata work for existing and missing slugs', async () => {
-    const params = generateStaticParams();
-    expect(params).toEqual([{ slug: 'hello-world' }, { slug: 'deep-dive' }]);
+    const params = await generateStaticParams();
+    expect(params.length).toBeGreaterThanOrEqual(2);
+    expect(params.map(p => p.slug)).toContain('hello-world');
+    expect(params.map(p => p.slug)).toContain('deep-dive');
+
 
     const existing = await generateMetadata({ params: Promise.resolve({ slug: 'hello-world' }) });
     expect(existing.title).toContain('Hello World');

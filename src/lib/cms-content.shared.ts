@@ -1,14 +1,3 @@
-import blogData from '../../portfolio-resources/data/blog.json';
-import certData from '../../portfolio-resources/data/certifications.json';
-import experienceData from '../../portfolio-resources/data/experiences.json';
-import galleryData from '../../portfolio-resources/data/gallery.json';
-import membershipData from '../../portfolio-resources/data/memberships.json';
-import profileData from '../../portfolio-resources/data/profile.json';
-import projectData from '../../portfolio-resources/data/projects.json';
-import recommendationData from '../../portfolio-resources/data/recommendations.json';
-import socialData from '../../portfolio-resources/data/socials.json';
-import techData from '../../portfolio-resources/data/technologies.json';
-
 import type {
   BlogPost,
   Certification,
@@ -23,7 +12,30 @@ import type {
 } from '@/types';
 
 export interface CmsContent {
+  seoSettings: {
+    siteTitle: string;
+    siteDescription: string;
+    canonicalUrl: string;
+    ogImageUrl: string;
+    twitterImageUrl: string;
+    noindex: boolean;
+    nofollow: boolean;
+  };
   profile: Profile;
+  siteSettings: {
+    footer: {
+      leadText: string;
+      linkLabel: string;
+      copyright: string;
+      backToPortfolioLabel: string;
+      contactPrompt: string;
+    };
+    blog: {
+      title: string;
+      description: string;
+      backLabel: string;
+    };
+  };
   hero: {
     roles: string[];
     availabilityLabel: string;
@@ -44,6 +56,37 @@ export interface CmsContent {
   blogPosts: BlogPost[];
 }
 
+export const fallbackBlogPosts: BlogPost[] = [
+  {
+    id: '1',
+    slug: 'hello-world',
+    title: 'Hello World',
+    excerpt: 'Intro',
+    content: '# Hello World\n\nThis is the first post in the portfolio blog.',
+    date: '2026-01-10',
+    readTime: '5 min',
+    tags: ['AI', 'Web'],
+    coverImage: '/images/blog/hello-world.jpg',
+    featured: true,
+    metaTitle: 'Hello World',
+    metaDescription: 'Intro post for the portfolio blog.',
+  },
+  {
+    id: '2',
+    slug: 'deep-dive',
+    title: 'Deep Dive',
+    excerpt: 'Deep dive',
+    content: '## Deep Dive\n\nA deeper look at the work behind the portfolio.',
+    date: '2026-02-20',
+    readTime: '7 min',
+    tags: ['Cloud', 'Next.js'],
+    coverImage: '/images/blog/deep-dive.jpg',
+    featured: false,
+    metaTitle: 'Deep Dive',
+    metaDescription: 'A deeper look at the work behind the portfolio.',
+  },
+];
+
 export function buildTechCategories(technologies: Technology[]): Record<string, Technology[]> {
   return technologies.reduce<Record<string, Technology[]>>((acc, technology) => {
     if (!acc[technology.category]) {
@@ -55,33 +98,66 @@ export function buildTechCategories(technologies: Technology[]): Record<string, 
   }, {});
 }
 
+const emptyProfile: Profile = {
+  name: '',
+  title: '',
+  email: '',
+  phone: '',
+  location: '',
+  github: '',
+  linkedin: '',
+  summary: '',
+  highlights: {
+    yearsExperience: 0,
+    projectsCompleted: 0,
+    primaryTechnologies: [],
+  },
+  education: [],
+  };
+
 export const fallbackCmsContent: CmsContent = {
-  profile: profileData,
+  seoSettings: {
+    siteTitle: 'Jhon Keneth Namias | Portfolio king of stuff',
+    siteDescription: 'Personal portfolio of Jhon Keneth Namias.',
+    canonicalUrl: 'https://namias.tech',
+    ogImageUrl: '/og-image.svg',
+    twitterImageUrl: '/og-image.svg',
+    noindex: false,
+    nofollow: false,
+  },
+  profile: emptyProfile,
+  siteSettings: {
+    footer: {
+      leadText: '',
+      linkLabel: '',
+      copyright: '',
+      backToPortfolioLabel: 'Back to Portfolio',
+      contactPrompt: 'Send a message',
+    },
+    blog: {
+      title: 'Blog',
+      description: 'Thoughts on AI, software engineering, cloud development, and more.',
+      backLabel: 'Back to Portfolio',
+    },
+  },
   hero: {
-    roles: [profileData.title],
-    availabilityLabel: 'Available',
-    profileImageUrl: '/images/profile/me.jpg',
+    roles: [],
+    availabilityLabel: '',
+    profileImageUrl: '',
   },
   about: {
-    paragraphs: profileData.summary
-      .split(/\n\n+/)
-      .map((paragraph) => paragraph.trim())
-      .filter(Boolean),
+    paragraphs: [],
   },
-  experiences: experienceData.map((experience) => ({
-    ...experience,
-    position: experience.position,
-  })),
-  projects: projectData.map((project) => ({
-    ...project,
-    status: project.status as Project['status'],
-  })),
-  certifications: certData,
-  galleryImages: galleryData,
-  memberships: membershipData,
-  recommendations: recommendationData,
-  socialLinks: socialData,
-  technologies: techData,
-  techCategories: buildTechCategories(techData),
-  blogPosts: blogData,
+  experiences: [],
+  projects: [],
+  certifications: [],
+  galleryImages: [],
+  memberships: [],
+  recommendations: [],
+  socialLinks: [],
+  technologies: [],
+  techCategories: {},
+  blogPosts: [],
 };
+
+fallbackCmsContent.blogPosts = fallbackBlogPosts;

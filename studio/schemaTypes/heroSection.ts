@@ -130,7 +130,7 @@ export default defineType({
               hidden: ({parent}) => parent?.platform === 'whatsapp',
               description: 'Supports https://, mailto:, tel:, wa.me, and other direct links.',
               validation: (Rule: any) =>
-                Rule.custom((value, context) => {
+                Rule.custom((value: unknown, context: any) => {
                   const platform = (context.parent as {platform?: string} | undefined)?.platform
                   if (platform === 'whatsapp') {
                     return true
@@ -150,7 +150,7 @@ export default defineType({
               hidden: ({parent}) => parent?.platform !== 'whatsapp',
               description: 'Use full number with country code, e.g. 639171234567 or +639171234567.',
               validation: (Rule: any) =>
-                Rule.custom((value, context) => {
+                Rule.custom((value: unknown, context: any) => {
                   const platform = (context.parent as {platform?: string} | undefined)?.platform
                   if (platform !== 'whatsapp') {
                     return true
@@ -210,7 +210,6 @@ export default defineType({
     select: {
       title: 'fullName',
       subtitle: 'title',
-      media: 'profileImage',
     },
   },
 })

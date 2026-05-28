@@ -6,6 +6,7 @@ import { motion, useReducedMotion } from 'framer-motion';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import { useCmsContent } from '@/hooks/useCmsContent';
 import { Project } from '@/types';
+import { resolveContentImageSrc } from '@/lib/media';
 
 const INITIAL_VISIBLE_PROJECTS = 4;
 
@@ -27,16 +28,7 @@ function resolveProjectTarget(project: Project): string | null {
 }
 
 function getProjectPreviewSrc(image: string): string {
-  const normalizedImage = image.trim();
-  if (!normalizedImage || normalizedImage === 'placeholder.png') {
-    return '';
-  }
-
-  if (/^https?:\/\//i.test(normalizedImage)) {
-    return normalizedImage;
-  }
-
-  return `/images/projects/${normalizedImage}`;
+  return resolveContentImageSrc(image, { folder: 'projects' });
 }
 
 function renderProjectPreviewMedia(project: Project, isPriority: boolean) {

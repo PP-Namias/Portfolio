@@ -13,6 +13,7 @@ import {
 import { motion } from 'framer-motion';
 import { Modal } from './Modal';
 import { useCmsContent } from '@/hooks/useCmsContent';
+import { resolveContentImageSrc } from '@/lib/media';
 
 interface ExperienceModalProps {
   open: boolean;
@@ -161,8 +162,8 @@ export function ExperienceModal({ open, onClose }: Readonly<ExperienceModalProps
                 >
                   {images.map((src, i) => (
                     <Image
-                      key={i}
-                      src={src}
+                      key={`${src}-${i}`}
+                      src={resolveContentImageSrc(src, { folder: 'experience' })}
                       alt={`${exp.company} — ${exp.position}`}
                       width={500}
                       height={300}

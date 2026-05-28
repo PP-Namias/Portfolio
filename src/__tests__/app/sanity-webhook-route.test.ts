@@ -18,14 +18,11 @@ describe('/api/sanity/webhook route', () => {
   });
 
   it('allows preflight requests for the studio action', async () => {
-    const request = new NextRequest('http://localhost:3000/api/sanity/webhook', {
-      method: 'OPTIONS',
-    });
-
-    const response = await OPTIONS(request);
+    const response = await OPTIONS();
 
     expect(response.status).toBe(204);
     expect(response.headers.get('access-control-allow-origin')).toBe('*');
+    expect(response.headers.get('cache-control')).toBe('no-store, max-age=0');
   });
 
   it('rejects requests with an invalid secret', async () => {
@@ -36,6 +33,7 @@ describe('/api/sanity/webhook route', () => {
     const response = await POST(request);
 
     expect(response.status).toBe(401);
+    expect(response.headers.get('x-robots-tag')).toBe('noindex, nofollow');
     expect(revalidatePathMock).not.toHaveBeenCalled();
   });
 
@@ -47,6 +45,7 @@ describe('/api/sanity/webhook route', () => {
     const response = await POST(request);
 
     expect(response.status).toBe(200);
+    expect(response.headers.get('cache-control')).toBe('no-store, max-age=0');
     expect(revalidatePathMock).toHaveBeenCalledWith('/', 'page');
     expect(revalidatePathMock).toHaveBeenCalledWith('/blog', 'page');
     expect(revalidatePathMock).toHaveBeenCalledWith('/blog/[slug]', 'page');

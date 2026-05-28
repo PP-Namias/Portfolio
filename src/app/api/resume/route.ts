@@ -1,6 +1,7 @@
+import { buildMediaGatewayUrl } from '@/lib/media-gateway';
 import { NextResponse } from 'next/server';
 
-const fallbackResumeUrl = 'https://cdn.sanity.io/files/nl0qw78w/production/529fd6d835d66c9d239aadd53f63a35932e8ac95.pdf';
+const fallbackResumeUrl = '/resume.pdf';
 const sanityApiVersion = '2021-06-07';
 
 type ResumeQueryResult = {
@@ -57,7 +58,7 @@ export async function GET() {
         ? [payload.result]
         : [];
     const selectedResume = activeResumes.find((resume) => typeof resume.resumeUrl === 'string' && resume.resumeUrl.trim().length > 0) ?? activeResumes[0];
-    const resumeUrl = selectedResume?.resumeUrl?.trim() || fallbackResumeUrl;
+    const resumeUrl = buildMediaGatewayUrl(selectedResume?.resumeUrl?.trim() || '', { sign: true }) || fallbackResumeUrl;
 
     return NextResponse.json({
       resumeUrl,

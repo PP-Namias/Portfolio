@@ -91,6 +91,90 @@ export default defineType({
           title: 'Copyright text',
           type: 'string',
         }),
+        defineField({
+          name: 'backToPortfolioLabel',
+          title: 'Back to portfolio label',
+          type: 'string',
+        }),
+        defineField({
+          name: 'contactPrompt',
+          title: 'Contact prompt',
+          type: 'string',
+        }),
+      ],
+    }),
+    defineField({
+      name: 'blog',
+      title: 'Blog',
+      type: 'object',
+      fields: [
+        defineField({
+          name: 'title',
+          title: 'Title',
+          type: 'string',
+        }),
+        defineField({
+          name: 'description',
+          title: 'Description',
+          type: 'text',
+          rows: 3,
+        }),
+        defineField({
+          name: 'backLabel',
+          title: 'Back label',
+          type: 'string',
+        }),
+      ],
+    }),
+    defineField({
+      name: 'announcementBanner',
+      title: 'Announcement banner',
+      type: 'object',
+      fields: [
+        defineField({
+          name: 'enabled',
+          title: 'Enabled',
+          type: 'boolean',
+          initialValue: false,
+        }),
+        defineField({
+          name: 'message',
+          title: 'Message',
+          type: 'text',
+          rows: 2,
+        }),
+        defineField({
+          name: 'linkLabel',
+          title: 'Link label',
+          type: 'string',
+        }),
+        defineField({
+          name: 'linkUrl',
+          title: 'Link URL',
+          type: 'url',
+        }),
+      ],
+    }),
+    defineField({
+      name: 'emptyStates',
+      title: 'Empty states',
+      type: 'object',
+      fields: [
+        defineField({
+          name: 'projects',
+          title: 'Projects empty state',
+          type: 'string',
+        }),
+        defineField({
+          name: 'blog',
+          title: 'Blog empty state',
+          type: 'string',
+        }),
+        defineField({
+          name: 'testimonials',
+          title: 'Testimonials empty state',
+          type: 'string',
+        }),
       ],
     }),
   ],
@@ -98,7 +182,7 @@ export default defineType({
     prepare() {
       return {
         title: 'Site Settings',
-        subtitle: 'Homepage and footer copy',
+        subtitle: 'Homepage, blog, footer, and status copy',
       }
     },
   },

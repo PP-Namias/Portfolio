@@ -20,7 +20,7 @@
       "Redesigning the public UI beyond what is required to consume CMS data.",
       "Replacing the existing portfolio architecture with a different framework.",
       "Manually entering content as the primary migration method.",
-      "Deleting the JSON source of truth before parity and cutover are complete."
+      "Deleting the archived migration fixtures before parity and cutover are complete."
     ]
   },
   "changeRequest": {
@@ -28,7 +28,7 @@
     "pivotDate": "2026-05-25",
     "supersedesPRDVersion": "2.4.0",
     "reason": [
-      "Make Sanity the working CMS for the portfolio content in portfolio-resources/data",
+      "Make Sanity the working CMS for the portfolio content historically stored in the repo fixtures",
       "Establish reliable studio, preview, slug, and reference wiring before migrating content",
       "Automate content population with repeatable scripts instead of manual entry",
       "Keep the existing Next.js app stable while the data source is switched over",
@@ -37,77 +37,77 @@
   },
   "contentInventory": [
     {
-      "source": "portfolio-resources/data/profile.json",
+      "source": "profile (archived migration fixture)",
       "currentType": "Global profile content",
       "targetModel": "New singleton profile document",
       "keyFields": ["name", "title", "email", "phone", "location", "github", "linkedin", "summary", "highlights", "education"],
       "notes": "Currently has no matching Sanity schema; must be modeled explicitly or folded into a singleton profile document."
     },
     {
-      "source": "portfolio-resources/data/experiences.json",
+      "source": "experiences (archived migration fixture)",
       "currentType": "Experience collection",
       "targetModel": "experience documents",
       "keyFields": ["company", "position", "summary", "country", "modality", "type", "startedAt", "endedAt", "technologies", "highlights", "achievements", "relatedProjects", "images"],
       "notes": "Already represented by studio/schemaTypes/experience.ts, but field normalization is needed because the schema uses role/company and the JSON uses position/company."
     },
     {
-      "source": "portfolio-resources/data/projects.json",
+      "source": "projects (archived migration fixture)",
       "currentType": "Project collection",
       "targetModel": "project documents",
       "keyFields": ["title", "image", "description", "repositoryURL", "liveURL", "processURL", "detailURL", "tags", "year", "category", "role", "impactMetrics", "featuredRank", "status", "gallery"],
       "notes": "Already represented by studio/schemaTypes/project.ts, but slug, ordering, and link precedence must be preserved during migration."
     },
     {
-      "source": "portfolio-resources/data/certifications.json",
+      "source": "certifications (archived migration fixture)",
       "currentType": "Certification collection",
       "targetModel": "certification documents plus issuer/category references",
       "keyFields": ["title", "image", "issuer", "issuedAt", "tags"],
       "notes": "Current schema covers certification, certificationCategory, and certificationIssuer, but the JSON has a flatter shape that must be normalized into references."
     },
     {
-      "source": "portfolio-resources/data/gallery.json",
+      "source": "gallery (archived migration fixture)",
       "currentType": "Gallery collection",
       "targetModel": "galleryImage documents plus galleryCategory references",
       "keyFields": ["title", "mediaType", "media", "tags", "createdAt"],
       "notes": "Current schema covers galleryImage and galleryCategory, but the import must preserve file names with spaces and encode media paths safely."
     },
     {
-      "source": "portfolio-resources/data/technologies.json",
+      "source": "technologies (archived migration fixture)",
       "currentType": "Technology list",
       "targetModel": "techStack singleton document",
       "keyFields": ["name", "logo", "category", "proficiency"],
       "notes": "Current techStack schema groups technologies by category; the migration must transform the flat JSON into category buckets."
     },
     {
-      "source": "portfolio-resources/data/blog.json",
+      "source": "blog (archived migration fixture)",
       "currentType": "Blog post collection",
       "targetModel": "post documents plus author/category references",
       "keyFields": ["id", "slug", "title", "excerpt", "content", "date", "readTime", "tags", "coverImage"],
       "notes": "Current post, author, and category schemas exist; slug uniqueness and publication flags must be normalized for editorial use."
     },
     {
-      "source": "portfolio-resources/data/socials.json",
+      "source": "socials (archived migration fixture)",
       "currentType": "Social link collection",
       "targetModel": "New social links singleton or heroSection nested array",
       "keyFields": ["name", "icon", "label", "link", "featured"],
       "notes": "No standalone schema exists yet; decide whether to keep social links embedded in heroSection or create a dedicated singleton."
     },
     {
-      "source": "portfolio-resources/data/memberships.json",
+      "source": "memberships (archived migration fixture)",
       "currentType": "Membership collection",
       "targetModel": "New membership documents or singleton array",
       "keyFields": ["name", "url", "joinedAt"],
       "notes": "No matching Sanity schema exists yet; this should be added if membership content is part of the CMS cutover."
     },
     {
-      "source": "portfolio-resources/data/recommendations.json",
+      "source": "recommendations (archived migration fixture)",
       "currentType": "Recommendation collection",
       "targetModel": "New recommendation documents or singleton array",
       "keyFields": ["quote", "name", "title", "company"],
       "notes": "Currently empty in the repo; plan should support parity import first and editorial cleanup later."
     },
     {
-      "source": "portfolio-resources/data/hero and site copy",
+      "source": "hero and site copy (Sanity-managed content)",
       "currentType": "Homepage singleton content",
       "targetModel": "heroSection, aboutSection, siteSettings, resume",
       "keyFields": ["fullName", "title", "heroRoles", "location", "contactEmail", "socialLinks", "aboutContent", "education", "section headings", "action labels"],
@@ -175,7 +175,7 @@
     },
     {
       "phase": "Phase 4: Migration Script System",
-      "objective": "Automate population of Sanity from the JSON source of truth with deterministic, repeatable scripts.",
+      "objective": "Automate population of Sanity from the archived migration fixture set with deterministic, repeatable scripts.",
       "deliverables": [
         "Migration entry point for seed/import operations",
         "Dry-run mode with verbose report output",
@@ -255,7 +255,7 @@
   ],
   "phase1ModelMap": [
     {
-      "sourceFile": "portfolio-resources/data/profile.json",
+      "sourceFile": "profile (archived migration fixture)",
       "sanityModel": "New singleton profile document",
       "action": "Create a dedicated profile schema or fold the content into an explicit singleton document.",
       "transformNotes": [
@@ -265,7 +265,7 @@
       ]
     },
     {
-      "sourceFile": "portfolio-resources/data/experiences.json",
+      "sourceFile": "experiences (archived migration fixture)",
       "sanityModel": "experience documents",
       "action": "Use the existing experience schema and normalize field names where JSON and schema differ.",
       "transformNotes": [
@@ -275,7 +275,7 @@
       ]
     },
     {
-      "sourceFile": "portfolio-resources/data/projects.json",
+      "sourceFile": "projects (archived migration fixture)",
       "sanityModel": "project documents",
       "action": "Use the existing project schema and preserve the current link priority order.",
       "transformNotes": [
@@ -285,7 +285,7 @@
       ]
     },
     {
-      "sourceFile": "portfolio-resources/data/certifications.json",
+      "sourceFile": "certifications (archived migration fixture)",
       "sanityModel": "certification documents plus certificationIssuer and certificationCategory references",
       "action": "Normalize the flat JSON into referenced documents.",
       "transformNotes": [
@@ -295,7 +295,7 @@
       ]
     },
     {
-      "sourceFile": "portfolio-resources/data/gallery.json",
+      "sourceFile": "gallery (archived migration fixture)",
       "sanityModel": "galleryImage documents plus galleryCategory references",
       "action": "Import each gallery item as a document and resolve the category reference.",
       "transformNotes": [
@@ -305,7 +305,7 @@
       ]
     },
     {
-      "sourceFile": "portfolio-resources/data/technologies.json",
+      "sourceFile": "technologies (archived migration fixture)",
       "sanityModel": "techStack singleton document",
       "action": "Bucket the flat technology list into category groups inside the singleton structure.",
       "transformNotes": [
@@ -315,7 +315,7 @@
       ]
     },
     {
-      "sourceFile": "portfolio-resources/data/blog.json",
+      "sourceFile": "blog (archived migration fixture)",
       "sanityModel": "post documents plus author and category references",
       "action": "Import as blog posts and normalize publication state and references.",
       "transformNotes": [
@@ -325,7 +325,7 @@
       ]
     },
     {
-      "sourceFile": "portfolio-resources/data/socials.json",
+      "sourceFile": "socials (archived migration fixture)",
       "sanityModel": "heroSection nested array",
       "action": "Keep social links nested under heroSection for Phase 1 so the homepage can remain the single source of truth for hero contact actions.",
       "transformNotes": [
@@ -336,7 +336,7 @@
       ]
     },
     {
-      "sourceFile": "portfolio-resources/data/memberships.json",
+      "sourceFile": "memberships (archived migration fixture)",
       "sanityModel": "New membership documents or singleton array",
       "action": "Add a membership schema if the content should be editable in Sanity.",
       "transformNotes": [
@@ -346,7 +346,7 @@
       ]
     },
     {
-      "sourceFile": "portfolio-resources/data/recommendations.json",
+      "sourceFile": "recommendations (archived migration fixture)",
       "sanityModel": "New recommendation documents or singleton array",
       "action": "Support the empty placeholder dataset now and replace it later with real testimonials.",
       "transformNotes": [
@@ -356,7 +356,7 @@
       ]
     },
     {
-      "sourceFile": "portfolio-resources/data/hero and site copy",
+      "sourceFile": "hero and site copy (Sanity-managed content)",
       "sanityModel": "heroSection, aboutSection, siteSettings, and resume singleton documents",
       "action": "Keep homepage copy in singleton documents and align it with the app's content model.",
       "transformNotes": [
@@ -423,7 +423,7 @@
       "galleryCategory",
       "blockContent"
     ],
-    "currentContentSource": "portfolio-resources/data/*.json",
+    "currentContentSource": "Sanity documents",
     "appDataLayer": "src/data/*.ts imports file-based JSON directly today",
     "missingAutomation": "No migration or seed scripts currently exist in the repo",
     "missingIntegration": "The root app still reads from static JSON rather than Sanity",
@@ -464,7 +464,7 @@
       ],
       "technicalNotes": {
         "files": [
-          "portfolio-resources/data/*.json",
+          "archived migration fixtures",
           "studio/schemaTypes/*.ts",
           "src/types/index.ts",
           "studio/sanity.config.ts",
@@ -536,7 +536,7 @@
       "phase": "Phase 4: Migration Automation",
       "status": "Not Started",
       "acceptanceCriteria": [
-        "Create repeatable scripts that can seed or refresh Sanity from the JSON source of truth",
+        "Create repeatable scripts that can seed or refresh Sanity from the archived migration fixture set",
         "Support dry-run mode so the import can be verified before writing data",
         "Upload or map media assets and preserve image references correctly",
         "Resolve document references, singleton updates, and slug fields without duplicate writes",
@@ -547,7 +547,7 @@
         "files": [
           "scripts/**/*.ts",
           "scripts/**/*.js",
-          "portfolio-resources/data/*.json",
+          "archived migration fixtures",
           "studio/static/",
           "sanity.config.ts"
         ],

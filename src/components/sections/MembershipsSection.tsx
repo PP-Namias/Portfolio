@@ -4,6 +4,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { ExternalLink } from 'lucide-react';
 import { useCmsContent } from '@/hooks/useCmsContent';
+import { formatDateUtc } from '@/lib/date';
 
 export function MembershipsSection() {
   const { memberships } = useCmsContent();
@@ -35,7 +36,7 @@ export function MembershipsSection() {
             <div>
               <span className="leading-snug">{membership.name}</span>
               <p className="text-xs text-text-muted-light dark:text-text-muted-dark mt-0.5">
-                Since {new Date(membership.joinedAt).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
+                Since {formatDateUtc(membership.joinedAt, { month: 'short', year: 'numeric' })}
               </p>
             </div>
           </motion.a>

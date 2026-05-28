@@ -543,15 +543,12 @@ describe('uncovered section components', () => {
     expect(screen.queryByRole('dialog', { name: 'Cert 1' })).not.toBeInTheDocument();
   });
 
-  it('ConnectSection opens booking and contact modals from CTAs', () => {
+  it('ConnectSection opens booking modal from CTAs', () => {
     render(<ConnectSection />);
     expect(screen.getByText('Connect')).toBeInTheDocument();
 
     fireEvent.click(screen.getByText('Schedule a Meeting'));
     expect(openModalMock).toHaveBeenCalledWith('booking');
-
-    fireEvent.click(screen.getByText('Send Email'));
-    expect(openModalMock).toHaveBeenCalledWith('contact');
 
     expect(screen.getByText('GitHub')).toBeInTheDocument();
   });

@@ -13,24 +13,25 @@ const footerSocialIcons: Record<string, React.ComponentType<{ className?: string
 };
 
 export function Footer() {
-  const { profile, socialLinks } = useCmsContent();
+  const { profile, socialLinks, siteSettings } = useCmsContent();
   const { openModal } = useModal();
   const footerSocials = socialLinks.filter((link) =>
     ['github', 'linkedin', 'x', 'instagram'].includes(link.name)
   );
+  const footerCopy = siteSettings.footer;
 
   return (
     <footer className="mt-8 pb-8 pt-6 border-t border-border-light dark:border-border-dark">
       <div className="flex flex-col items-center gap-4">
         {/* Final CTA */}
         <p className="text-sm text-text-secondary-light dark:text-text-secondary-dark text-center">
-          Interested in working together?{' '}
+          {footerCopy.leadText || 'Interested in working together?'}{' '}
           <button
             type="button"
             onClick={() => openModal('contact')}
             className="text-accent-pink hover:text-accent-pink-hover dark:hover:text-accent-pink-hover-dark font-medium transition-colors"
           >
-            Send a message
+            {footerCopy.contactPrompt || 'Send a message'}
           </button>
         </p>
         <div className="flex items-center gap-3">
@@ -52,7 +53,7 @@ export function Footer() {
           })}
         </div>
         <p className="text-xs text-text-muted-light dark:text-text-muted-dark">
-          &copy; {new Date().getFullYear()} {profile.name}
+          &copy; {new Date().getFullYear()} {footerCopy.copyright || profile.name}
         </p>
       </div>
     </footer>

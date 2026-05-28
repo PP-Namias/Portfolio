@@ -24,7 +24,7 @@ const contentSecurityPolicy = `
   img-src 'self' data: blob: https:;
   font-src 'self' data: https:;
   connect-src ${connectSrc};
-  frame-src 'self' https://cal.com https://*.cal.com;
+  frame-src 'self' https://cal.com https://*.cal.com https://cdn.sanity.io;
   object-src 'none';
   base-uri 'self';
   form-action 'self';
@@ -69,7 +69,9 @@ const securityHeaders = [
   },
   {
     key: 'Cross-Origin-Resource-Policy',
-    value: 'same-origin',
+    // Keep media delivery compatible with same-origin gateway responses and
+    // other approved cross-origin embeds used by the site.
+    value: 'cross-origin',
   },
   {
     key: 'X-DNS-Prefetch-Control',
@@ -84,13 +86,7 @@ const nextConfig = {
     buildActivity: false,
   },
   images: {
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: 'cdn.sanity.io',
-        pathname: '/**',
-      },
-    ],
+    remotePatterns: [],
   },
   async headers() {
     return [

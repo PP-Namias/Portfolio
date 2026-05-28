@@ -17,6 +17,7 @@ import { HubMenuItem } from './HubMenuItem';
 import { useModal } from '@/hooks/useModal';
 import { useCmsContent } from '@/hooks/useCmsContent';
 import { IS_BLOG_VISIBLE } from '@/lib/features';
+import { resolveContentImageSrc } from '@/lib/media';
 
 interface HubMenuProps {
   onClose: () => void;
@@ -35,8 +36,11 @@ const socialIconMap: Record<string, ComponentType<{ className?: string }>> = {
 export function HubMenu({ onClose, onOpenChat }: Readonly<HubMenuProps>) {
   const [connectExpanded, setConnectExpanded] = useState(false);
   const { openModal } = useModal();
-  const { profile, socialLinks } = useCmsContent();
+  const { profile, socialLinks, hero } = useCmsContent();
   const menuRef = useRef<HTMLDivElement>(null);
+  const profileImageSrc = resolveContentImageSrc(hero.profileImageUrl, {
+    folder: 'profile',
+  });
 
   const calLink = socialLinks.find((s) => s.name === 'cal');
   const connectLinks = socialLinks.filter((s) =>
@@ -87,14 +91,19 @@ export function HubMenu({ onClose, onOpenChat }: Readonly<HubMenuProps>) {
               transition={{ type: 'spring', stiffness: 200, damping: 15, delay: 0.1 }}
             >
               <div className="h-11 w-11 rounded-lg border border-border-light dark:border-border-dark overflow-hidden bg-white dark:bg-card-bg-dark shadow-sm">
-                <Image
-                  src="/images/profile/Jhon%20Keneth%20Ryan%20Namias.jpg"
-                  alt={profile.name}
-                  fill
-                  sizes="44px"
-                  className="object-cover"
-                  priority
-                />
+                {profileImageSrc ? (
+                  <Image
+                    src={profileImageSrc}
+                    alt={profile.name}
+                    fill
+                    sizes="44px"
+                    className="object-cover"
+                  />
+                ) : (
+                  <div className="flex h-full w-full items-center justify-center bg-surface-light text-[11px] font-semibold text-text-muted-light dark:bg-surface-dark dark:text-text-muted-dark">
+                    PN
+                  </div>
+                )}
               </div>
               <motion.div
                 className="absolute -bottom-1 -right-1 h-3.5 w-3.5 rounded-full bg-emerald-400 border-2 border-white dark:border-[#1C1C1E]"
@@ -134,9 +143,11 @@ export function HubMenu({ onClose, onOpenChat }: Readonly<HubMenuProps>) {
       <div className="h-px bg-gradient-to-r from-transparent via-accent-pink/20 to-transparent" />
 
       {/* Menu Items */}
+      {/* eslint-disable-next-line jsx-a11y/role-has-required-aria-props */}
       <div
         ref={menuRef}
         className="py-2 overflow-y-auto chat-scrollbar flex-1 touch-pan-y"
+        role="menu"
         aria-label="Quick actions menu"
         tabIndex={-1}
         onKeyDown={handleKeyDown}
@@ -234,7 +245,7 @@ export function HubMenu({ onClose, onOpenChat }: Readonly<HubMenuProps>) {
                       animate={{ opacity: 1, scale: 1 }}
                       transition={{ delay: i * 0.05, type: 'spring', stiffness: 300, damping: 15 }}
                     >
-                      <Icon className="h-4 w-4" />
+                      <Icon className="h-3.5 w-3.5" />
                     </motion.a>
                   );
                 })}

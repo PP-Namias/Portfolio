@@ -72,6 +72,13 @@ export default defineType({
       rows: 3,
     }),
     defineField({
+      name: 'featuredStory',
+      title: 'Featured story',
+      type: 'text',
+      rows: 4,
+      description: 'A short narrative that can be shown in richer modal or long-form views.',
+    }),
+    defineField({
       name: 'highlights',
       title: 'Highlights',
       type: 'array',
@@ -93,18 +100,66 @@ export default defineType({
       name: 'images',
       title: 'Images',
       type: 'array',
-      of: [{type: 'string'}],
+      of: [
+        {
+          type: 'image',
+          options: {hotspot: true},
+          fields: [
+            defineField({
+              name: 'alt',
+              title: 'Alt text',
+              type: 'string',
+            }),
+            defineField({
+              name: 'caption',
+              title: 'Caption',
+              type: 'string',
+            }),
+            defineField({
+              name: 'credit',
+              title: 'Credit',
+              type: 'string',
+            }),
+            defineField({
+              name: 'source',
+              title: 'Source',
+              type: 'string',
+            }),
+            defineField({
+              name: 'license',
+              title: 'License',
+              type: 'string',
+            }),
+          ],
+        },
+      ],
+    }),
+    defineField({
+      name: 'status',
+      title: 'Status',
+      type: 'string',
+      options: {
+        list: [
+          {title: 'Draft', value: 'draft'},
+          {title: 'Published', value: 'published'},
+          {title: 'Archived', value: 'archived'},
+          {title: 'Featured', value: 'featured'},
+          {title: 'Pinned', value: 'pinned'},
+        ],
+      },
     }),
   ],
   preview: {
     select: {
       title: 'role',
       subtitle: 'company',
+      status: 'status',
     },
     prepare(selection) {
+      const {status} = selection as {status?: string}
       return {
         title: selection.title,
-        subtitle: selection.subtitle,
+        subtitle: [selection.subtitle, status].filter(Boolean).join(' • '),
       }
     },
   },

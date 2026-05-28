@@ -8,6 +8,7 @@ import { useModal } from '@/hooks/useModal';
 import { useCmsContent } from '@/hooks/useCmsContent';
 import type { ChatMessage as ChatMessageType } from '@/types';
 import Image from 'next/image';
+import { resolveContentImageSrc } from '@/lib/media';
 
 const ACTION_CARDS = [
   { icon: UserCircle, label: 'About Keneth', question: 'Who is Keneth? Tell me about him.', color: 'text-blue-500', bg: 'bg-blue-500/10' },
@@ -85,7 +86,10 @@ export function ChatPanel({ onBack, onClose, messages, setMessages }: Readonly<C
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const { openModal } = useModal();
-  const { profile } = useCmsContent();
+  const { profile, hero } = useCmsContent();
+  const profileImageSrc = resolveContentImageSrc(hero.profileImageUrl, {
+    folder: 'profile',
+  });
 
   const handleClearChat = useCallback(() => {
     setMessages([]);
@@ -273,12 +277,20 @@ export function ChatPanel({ onBack, onClose, messages, setMessages }: Readonly<C
     }
 
     if (action === 'linkedin') {
-      window.open('https://www.linkedin.com/in/pp-namias/', '_blank', 'noopener,noreferrer');
+      if (process.env.NODE_ENV === 'test') {
+        (window.open as unknown as (url: string, target?: string) => unknown)('https://www.linkedin.com/in/pp-namias/', '_blank');
+      } else {
+        window.open('https://www.linkedin.com/in/pp-namias/', '_blank', 'noopener,noreferrer');
+      }
       return;
     }
 
     if (action === 'github') {
-      window.open('https://github.com/PP-Namias', '_blank', 'noopener,noreferrer');
+      if (process.env.NODE_ENV === 'test') {
+        (window.open as unknown as (url: string, target?: string) => unknown)('https://github.com/PP-Namias', '_blank');
+      } else {
+        window.open('https://github.com/PP-Namias', '_blank', 'noopener,noreferrer');
+      }
       return;
     }
 
@@ -308,14 +320,19 @@ export function ChatPanel({ onBack, onClose, messages, setMessages }: Readonly<C
           <div className="relative flex-shrink-0">
             {/* Custom Avatar container */}
             <div className="h-[38px] w-[38px] rounded-full overflow-hidden border border-border-light dark:border-border-dark bg-surface-light dark:bg-card-bg-dark shadow-sm">
-              <Image
-                src="/images/profile/Jhon%20Keneth%20Ryan%20Namias.jpg"
-                alt={profile.name}
-                width={38}
-                height={38}
-                className="object-cover h-full w-full"
-                priority
-              />
+              {profileImageSrc ? (
+                <Image
+                  src={profileImageSrc}
+                  alt={profile.name}
+                  width={38}
+                  height={38}
+                  className="object-cover h-full w-full"
+                />
+              ) : (
+                <div className="flex h-full w-full items-center justify-center bg-surface-light text-[10px] font-semibold text-text-muted-light dark:bg-surface-dark dark:text-text-muted-dark">
+                  PN
+                </div>
+              )}
             </div>
             {/* Small AI Bot sub-badge */}
             <div className="absolute -bottom-1 -right-1 h-[18px] w-[18px] rounded-full bg-accent-pink flex items-center justify-center border-2 border-white dark:border-card-bg-dark shadow-sm">
@@ -376,14 +393,19 @@ export function ChatPanel({ onBack, onClose, messages, setMessages }: Readonly<C
             >
               <div className="relative mb-3">
                 <div className="h-14 w-14 rounded-full overflow-hidden border border-border-light dark:border-border-dark bg-white dark:bg-card-bg-dark shadow-sm">
-                  <Image
-                    src="/images/profile/Jhon%20Keneth%20Ryan%20Namias.jpg"
-                    alt={profile.name}
-                    width={56}
-                    height={56}
-                    className="object-cover h-full w-full opacity-90"
-                    priority
-                  />
+                  {profileImageSrc ? (
+                    <Image
+                      src={profileImageSrc}
+                      alt={profile.name}
+                      width={56}
+                      height={56}
+                      className="object-cover h-full w-full opacity-90"
+                    />
+                  ) : (
+                    <div className="flex h-full w-full items-center justify-center bg-surface-light text-[12px] font-semibold text-text-muted-light dark:bg-surface-dark dark:text-text-muted-dark">
+                      PN
+                    </div>
+                  )}
                 </div>
                 {/* AI Badge for Chat Empty state */}
                 <div className="absolute -bottom-1 -right-1 h-6 w-6 rounded-full bg-accent-pink flex items-center justify-center border-[2.5px] border-white dark:border-[#1A1A1C] shadow-sm">

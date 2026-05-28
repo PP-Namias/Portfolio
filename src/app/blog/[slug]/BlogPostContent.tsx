@@ -5,47 +5,47 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
-import type { Components } from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeHighlight from 'rehype-highlight';
 import { ArrowLeft, Clock, Calendar, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Card } from '@/components/ui/Card';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import { ReadingProgress } from '@/components/ui/ReadingProgress';
+import { formatDateUtc } from '@/lib/date';
 import type { BlogPost } from '@/types';
 
-const markdownComponents: Components = {
-  h2: ({ children }) => (
+const markdownComponents: any = {
+  h2: ({ children }: { children: React.ReactNode }) => (
     <h2 className="text-lg font-semibold text-text-primary-light dark:text-text-primary-dark mt-8 mb-3">
       {children}
     </h2>
   ),
-  h3: ({ children }) => (
+  h3: ({ children }: { children: React.ReactNode }) => (
     <h3 className="text-base font-semibold text-text-primary-light dark:text-text-primary-dark mt-6 mb-2">
       {children}
     </h3>
   ),
-  p: ({ children }) => (
+  p: ({ children }: { children: React.ReactNode }) => (
     <p className="text-sm text-text-secondary-light dark:text-text-secondary-dark leading-relaxed my-3">
       {children}
     </p>
   ),
-  ul: ({ children }) => (
+  ul: ({ children }: { children: React.ReactNode }) => (
     <ul className="my-3 space-y-1.5 pl-5 list-disc">
       {children}
     </ul>
   ),
-  ol: ({ children }) => (
+  ol: ({ children }: { children: React.ReactNode }) => (
     <ol className="my-3 space-y-1.5 pl-5 list-decimal">
       {children}
     </ol>
   ),
-  strong: ({ children }) => (
+  strong: ({ children }: { children: React.ReactNode }) => (
     <strong className="font-semibold text-text-primary-light dark:text-text-primary-dark">
       {children}
     </strong>
   ),
-  a: ({ href, children }) => (
+  a: ({ href, children }: { href?: string; children: React.ReactNode }) => (
     <a
       href={href}
       target="_blank"
@@ -55,19 +55,19 @@ const markdownComponents: Components = {
       {children}
     </a>
   ),
-  code: ({ className, children }) => {
+  code: ({ className, children }: { className?: string; children: React.ReactNode }) => {
     const isBlock = className?.includes('language-');
     if (isBlock) {
       return <code className="text-xs text-text-secondary-light dark:text-text-secondary-dark">{children}</code>;
     }
     return <code className="text-accent-pink bg-surface-light dark:bg-surface-dark px-1.5 py-0.5 rounded text-xs">{children}</code>;
   },
-  pre: ({ children }) => (
+  pre: ({ children }: { children: React.ReactNode }) => (
     <pre className="bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark rounded-lg p-4 my-4 overflow-x-auto">
       {children}
     </pre>
   ),
-  blockquote: ({ children }) => (
+  blockquote: ({ children }: { children: React.ReactNode }) => (
     <blockquote className="border-l-2 border-accent-pink pl-4 my-4 italic text-text-muted-light dark:text-text-muted-dark">
       {children}
     </blockquote>
@@ -75,14 +75,23 @@ const markdownComponents: Components = {
 };
 
 interface BlogPostContentProps {
-  post: BlogPost | null;
-  allPosts: BlogPost[];
+  post?: BlogPost | null;
+  allPosts?: BlogPost[];
+  slug?: string;
+  backLabel?: string;
 }
 
-export default function BlogPostContent({ post, allPosts }: Readonly<BlogPostContentProps>) {
-  const postIndex = post ? allPosts.findIndex((p) => p.slug === post.slug) : -1;
+export default function BlogPostContent({ post, allPosts, slug, backLabel }: Readonly<BlogPostContentProps>) {
+  let resolvedAll = allPosts;
+  let resolvedPost = post ?? null;
 
-  if (!post) {
+  if (!resolvedPost && typeof slug === 'string' && resolvedAll) {
+    resolvedPost = resolvedAll.find((p) => p.slug === slug) ?? null;
+  }
+
+  const postIndex = resolvedPost ? (resolvedAll ?? []).findIndex((p) => p.slug === resolvedPost.slug) : -1;
+
+  if (!resolvedPost) {
     return (
       <main className="mx-auto max-w-container px-4 sm:px-6 pt-8 lg:pt-12 pb-16">
         <div className="flex items-center justify-between mb-8">
@@ -91,7 +100,7 @@ export default function BlogPostContent({ post, allPosts }: Readonly<BlogPostCon
             className="inline-flex items-center gap-2 text-sm text-text-muted-light dark:text-text-muted-dark hover:text-accent-pink dark:hover:text-accent-pink transition-colors duration-200"
           >
             <ArrowLeft className="h-4 w-4" />
-            Back to Blog
+            {backLabel || 'Back to Blog'}
           </Link>
           <ThemeToggle />
         </div>
@@ -106,9 +115,11 @@ export default function BlogPostContent({ post, allPosts }: Readonly<BlogPostCon
       </main>
     );
   }
+  const all = resolvedAll ?? [];
+  const postObj = resolvedPost;
 
-  const prevPost = postIndex > 0 ? allPosts[postIndex - 1] : null;
-  const nextPost = postIndex < allPosts.length - 1 ? allPosts[postIndex + 1] : null;
+  const prevPost = postIndex > 0 ? all[postIndex - 1] : null;
+  const nextPost = postIndex < all.length - 1 ? all[postIndex + 1] : null;
 
   return (
     <main className="mx-auto max-w-container px-4 sm:px-6 pt-8 lg:pt-12 pb-16">
@@ -119,10 +130,10 @@ export default function BlogPostContent({ post, allPosts }: Readonly<BlogPostCon
         <Link
           href="/blog"
           className="inline-flex items-center gap-2 text-sm text-text-muted-light dark:text-text-muted-dark hover:text-accent-pink dark:hover:text-accent-pink transition-colors duration-200"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          Back to Blog
-        </Link>
+          >
+            <ArrowLeft className="h-4 w-4" />
+            {backLabel || 'Back to Blog'}
+          </Link>
         <ThemeToggle />
       </div>
 
@@ -134,20 +145,26 @@ export default function BlogPostContent({ post, allPosts }: Readonly<BlogPostCon
         <Card>
           {/* Cover Image */}
           <div className="-mx-5 -mt-5 mb-6 rounded-t-xl overflow-hidden">
-            <Image
-              src={post.coverImage}
-              alt={post.title}
-              width={800}
-              height={320}
-              sizes="(max-width: 768px) 100vw, 800px"
-              className="w-full h-48 sm:h-64 object-cover"
-              priority
-            />
+            {postObj.coverImage ? (
+              <Image
+                src={postObj.coverImage}
+                alt={postObj.title}
+                width={800}
+                height={320}
+                sizes="(max-width: 768px) 100vw, 800px"
+                className="w-full h-48 sm:h-64 object-cover"
+                priority
+              />
+            ) : (
+              <div className="flex h-48 sm:h-64 items-center justify-center bg-surface-light dark:bg-surface-dark text-xs text-text-muted-light dark:text-text-muted-dark">
+                Cover image unavailable
+              </div>
+            )}
           </div>
 
           {/* Tags */}
           <div className="flex flex-wrap gap-1.5 mb-4">
-            {post.tags.map((tag) => (
+            {postObj.tags.map((tag) => (
               <span
                 key={tag}
                 className="text-[11px] font-medium px-2.5 py-0.5 rounded-full bg-accent-pink/10 text-accent-pink border border-accent-pink/20"
@@ -159,22 +176,18 @@ export default function BlogPostContent({ post, allPosts }: Readonly<BlogPostCon
 
           {/* Title */}
           <h1 className="text-xl sm:text-2xl font-bold text-text-primary-light dark:text-text-primary-dark leading-tight">
-            {post.title}
+            {postObj.title}
           </h1>
 
           {/* Meta */}
           <div className="flex items-center gap-4 mt-3 mb-6 pb-6 border-b border-border-light dark:border-border-dark">
             <span className="flex items-center gap-1.5 text-xs text-text-muted-light dark:text-text-muted-dark">
               <Calendar className="h-3.5 w-3.5" />
-              {new Date(post.date).toLocaleDateString('en-US', {
-                month: 'long',
-                day: 'numeric',
-                year: 'numeric',
-              })}
+              {formatDateUtc(postObj.date, { month: 'long', day: 'numeric', year: 'numeric' })}
             </span>
             <span className="flex items-center gap-1.5 text-xs text-text-muted-light dark:text-text-muted-dark">
               <Clock className="h-3.5 w-3.5" />
-              {post.readTime}
+              {postObj.readTime}
             </span>
           </div>
 
@@ -185,7 +198,7 @@ export default function BlogPostContent({ post, allPosts }: Readonly<BlogPostCon
               rehypePlugins={[rehypeHighlight]}
               components={markdownComponents}
             >
-              {post.content}
+              {postObj.content}
             </ReactMarkdown>
           </div>
         </Card>

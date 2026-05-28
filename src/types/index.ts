@@ -18,6 +18,9 @@ export interface Profile {
   github: string;
   linkedin: string;
   summary: string;
+  avatarUrl?: string;
+  resumeUrl?: string;
+  availabilityLabel?: string;
   highlights: {
     yearsExperience: number;
     projectsCompleted: number;
@@ -30,6 +33,7 @@ export interface Experience {
   company: string;
   position: string;
   summary: string;
+  featuredStory?: string;
   country: string;
   modality: string;
   type: string;
@@ -58,6 +62,10 @@ export interface Project {
   title: string;
   image: string;
   description: string;
+  challenge?: string;
+  solution?: string;
+  result?: string;
+  featured?: boolean;
   repositoryURL: string | null;
   liveURL: string | null;
   processURL: string | null;
@@ -94,6 +102,10 @@ export interface Recommendation {
   name: string;
   title: string;
   company: string;
+  featured?: boolean;
+  relationship?: string;
+  companyUrl?: string;
+  avatarUrl?: string;
 }
 
 export interface Membership {
@@ -128,6 +140,9 @@ export interface BlogPost {
   readTime: string;
   tags: string[];
   coverImage: string;
+  featured?: boolean;
+  metaTitle?: string;
+  metaDescription?: string;
 }
 
 export interface ChatMessage {

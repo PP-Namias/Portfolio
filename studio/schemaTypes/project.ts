@@ -32,6 +32,24 @@ export default defineType({
       rows: 4,
     }),
     defineField({
+      name: 'challenge',
+      title: 'Challenge',
+      type: 'text',
+      rows: 3,
+    }),
+    defineField({
+      name: 'solution',
+      title: 'Solution',
+      type: 'text',
+      rows: 3,
+    }),
+    defineField({
+      name: 'result',
+      title: 'Result',
+      type: 'text',
+      rows: 3,
+    }),
+    defineField({
       name: 'year',
       title: 'Year',
       type: 'number',
@@ -40,6 +58,12 @@ export default defineType({
       name: 'category',
       title: 'Category',
       type: 'string',
+    }),
+    defineField({
+      name: 'featured',
+      title: 'Featured',
+      type: 'boolean',
+      initialValue: false,
     }),
     defineField({
       name: 'role',
@@ -64,12 +88,81 @@ export default defineType({
       title: 'Cover image',
       type: 'image',
       options: {hotspot: true},
+      fields: [
+        defineField({
+          name: 'alt',
+          title: 'Alt text',
+          type: 'string',
+        }),
+        defineField({
+          name: 'caption',
+          title: 'Caption',
+          type: 'string',
+        }),
+        defineField({
+          name: 'credit',
+          title: 'Credit',
+          type: 'string',
+        }),
+        defineField({
+          name: 'source',
+          title: 'Source',
+          type: 'string',
+        }),
+        defineField({
+          name: 'license',
+          title: 'License',
+          type: 'string',
+        }),
+        defineField({
+          name: 'dominantColor',
+          title: 'Dominant color',
+          type: 'string',
+        }),
+      ],
     }),
     defineField({
       name: 'gallery',
       title: 'Gallery',
       type: 'array',
-      of: [{type: 'image', options: {hotspot: true}}],
+      of: [
+        {
+          type: 'image',
+          options: {hotspot: true},
+          fields: [
+            defineField({
+              name: 'alt',
+              title: 'Alt text',
+              type: 'string',
+            }),
+            defineField({
+              name: 'caption',
+              title: 'Caption',
+              type: 'string',
+            }),
+            defineField({
+              name: 'credit',
+              title: 'Credit',
+              type: 'string',
+            }),
+            defineField({
+              name: 'source',
+              title: 'Source',
+              type: 'string',
+            }),
+            defineField({
+              name: 'license',
+              title: 'License',
+              type: 'string',
+            }),
+            defineField({
+              name: 'dominantColor',
+              title: 'Dominant color',
+              type: 'string',
+            }),
+          ],
+        },
+      ],
     }),
     defineField({
       name: 'liveUrl',
@@ -95,6 +188,8 @@ export default defineType({
           {title: 'Completed', value: 'completed'},
           {title: 'In progress', value: 'in-progress'},
           {title: 'Prototype', value: 'prototype'},
+          {title: 'Draft', value: 'draft'},
+          {title: 'Archived', value: 'archived'},
         ],
       },
     }),
@@ -103,7 +198,16 @@ export default defineType({
     select: {
       title: 'title',
       subtitle: 'summary',
-      media: 'image',
+      featured: 'featured',
+      status: 'status',
+    },
+    prepare(selection) {
+      const {title, subtitle, featured, status} = selection as {title?: string; subtitle?: string; featured?: boolean; status?: string}
+      const statusLabel = status ? status.replace(/-/g, ' ') : 'unspecified'
+      return {
+        title,
+        subtitle: [subtitle, statusLabel, featured ? 'featured' : null].filter(Boolean).join(' • '),
+      }
     },
   },
 })

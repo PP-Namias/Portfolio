@@ -11,6 +11,8 @@ This repository powers [namias.tech](https://namias.tech), a production portfoli
 ### Highlights
 
 - Homepage-first architecture with modal flows for Resume, Experience, and Booking
+- Fully Sanity-driven content: all runtime reads are backed by Sanity CMS with controlled media delivery
+- Secure media gateway at `/api/media/[...path]` for Sanity-backed images and assets
 - AI chat endpoint at `/api/chat` using Gemini
 - Dark/light theme support with an accent color system
 - CI validation for lint, tests, and production build
@@ -21,6 +23,7 @@ This repository powers [namias.tech](https://namias.tech), a production portfoli
 - **Language:** TypeScript (strict)
 - **Styling:** Tailwind CSS + Framer Motion + Lucide React
 - **Theme:** `next-themes`
+- **CMS:** Sanity v3 (Studio + Content Lake + CDN)
 - **Content:** `react-markdown`, `remark-gfm`, `rehype-highlight`
 - **Testing:** Vitest + Testing Library + jsdom
 - **Hosting target:** AWS Amplify (`output: 'standalone'`)
@@ -55,6 +58,8 @@ Open [http://localhost:3000](http://localhost:3000).
 - `npm run sanity:import` — run Sanity import with idempotent upserts
 - `npm run sanity:parity` — compare expected source counts vs dataset counts
 - `npm run sanity:parity:strict` — same parity report, returns non-zero on mismatch
+- `npm run sanity:readiness` — readiness-only check (no count comparisons)
+- `npm --prefix studio run dev` — start Sanity Studio locally
 
 ## Environment variables
 
@@ -72,10 +77,20 @@ SANITY_API_READ_TOKEN=your_sanity_read_token
 SANITY_API_WRITE_TOKEN=your_sanity_write_token
 SANITY_STUDIO_DEPLOY_TOKEN=your_studio_deploy_token
 SANITY_REVALIDATE_SECRET=your_revalidate_secret
+SANITY_MEDIA_GATEWAY_SECRET=your_media_gateway_secret
 SANITY_CUTOVER_ENABLED=true
 ```
 
 `.env.local` overrides `.env` for private values, and the Sanity migration runner loads both files automatically.
+
+### Secure media gateway
+
+Sanity-hosted images and files are routed through the app’s server-side media gateway instead of being exposed as raw backend URLs in the UI.
+
+- Browser-facing route: `/api/media/[...path]`
+- Optional signing secret: `SANITY_MEDIA_GATEWAY_SECRET`
+- Keep all Sanity credentials server-side only
+- Preserve the existing fallback paths while rollout is staged
 
 ## Quality checks
 

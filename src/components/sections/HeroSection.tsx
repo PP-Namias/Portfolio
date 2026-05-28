@@ -103,7 +103,7 @@ export function HeroSection() {
 
   return (
     <motion.section
-      className="relative"
+      className="relative py-1 sm:py-2"
       variants={containerVariants}
       initial="hidden"
       animate="visible"
@@ -111,7 +111,7 @@ export function HeroSection() {
 
       {/* Controls — top-right corner */}
       <motion.div
-        className="mb-5 flex w-full items-center justify-end gap-2 md:absolute md:right-0 md:top-1 md:z-10 md:mb-0 md:w-auto"
+        className="mb-4 flex w-full items-center justify-end gap-2 md:absolute md:right-0 md:top-1 md:z-10 md:mb-0 md:w-auto"
         variants={itemVariants}
       >
         <ColorSchemePicker />
@@ -161,11 +161,11 @@ export function HeroSection() {
         </motion.div>
 
         {/* Identity + Actions */}
-        <div className="flex-1 min-w-0 space-y-4 sm:space-y-5">
+          <div className="flex-1 min-w-0 space-y-4 sm:space-y-5">
           {/* Name + Role block */}
           <div>
             <motion.h1
-              className="text-[1.85rem] sm:text-[2.05rem] font-bold text-text-primary-light dark:text-text-primary-dark inline-flex items-center flex-wrap justify-center sm:justify-start leading-[1.18] tracking-tight"
+              className="text-[1.7rem] sm:text-[2.05rem] font-bold text-text-primary-light dark:text-text-primary-dark inline-flex items-center flex-wrap justify-center sm:justify-start leading-[1.15] tracking-tight"
               variants={itemVariants}
             >
               {profile.name}
@@ -195,7 +195,7 @@ export function HeroSection() {
           >
             <div className="flex flex-wrap items-center justify-center sm:justify-start gap-3.5">
               <div className="flex items-center gap-1.5">
-                <MapPin className="h-3.5 w-3.5 text-text-muted-light dark:text-text-muted-dark" />
+                <MapPin className="h-4 w-4 text-text-muted-light dark:text-text-muted-dark" />
                 <span className="text-[13px] sm:text-sm text-text-muted-light dark:text-text-muted-dark">
                   {profile.location}
                 </span>
@@ -228,13 +228,13 @@ export function HeroSection() {
                     transition={{ delay: 0.5 + i * 0.04, type: 'spring', stiffness: 300, damping: 20 }}
                     whileHover={{ y: -1 }}
                   >
-                    <Icon className="h-[15.5px] w-[15.5px]" />
+                    <Icon className="h-4 w-4" />
                   </motion.a>
                 );
               })}
               {IS_BLOG_VISIBLE && (
                 <>
-                  <span className="mx-1 h-3.5 w-px bg-border-light dark:bg-border-dark" />
+                    <span className="mx-1 h-4 w-px bg-border-light dark:bg-border-dark" />
                   <motion.a
                     href="/blog"
                     className="h-7 rounded-md px-2 flex items-center gap-1 text-[12px] font-medium text-text-muted-light dark:text-text-muted-dark hover:text-accent-pink hover:bg-accent-pink/5 transition-colors"
@@ -251,8 +251,8 @@ export function HeroSection() {
           </motion.div>
 
           {/* CTAs — single row, clear hierarchy */}
-          <motion.div
-            className="flex flex-wrap items-center justify-center sm:justify-start gap-2.5 sm:gap-3"
+            <motion.div
+            className="flex flex-wrap items-center justify-center sm:justify-start gap-2 sm:gap-3 max-w-full"
             variants={itemVariants}
           >
             <Button

@@ -114,7 +114,7 @@ Every task MUST follow: **ANALYZE → PLAN → IMPLEMENT → VALIDATE → REPORT
 
 ```
 ├── .github/copilot-instructions.md   # THIS FILE
-├── portfolio-resources/               # SOURCE OF TRUTH for all content
+├── portfolio-resources/               # Archived migration fixtures and source assets
 │   ├── assets/images/{certifications,gallery,projects}/
 │   ├── assets/documents/{resume.pdf,resume.docx,resume.tex}
 │   └── data/*.json                    # 10 JSON data files
@@ -150,7 +150,7 @@ Every task MUST follow: **ANALYZE → PLAN → IMPLEMENT → VALIDATE → REPORT
 
 ## 📊 DATA ARCHITECTURE
 
-**Source of truth:** `portfolio-resources/data/*.json` → `src/data/*.ts` (typed) → Components
+**Source of truth:** Sanity documents → `src/lib/cms-content.server.ts` → Components
 
 **Image flow:** `portfolio-resources/assets/images/` → `public/images/` (copied) → `<Image src="/images/...">`
 
@@ -169,7 +169,7 @@ When adding new images, copy to both `portfolio-resources/` and `public/images/`
 - **Education:** BS Computer Science, University of Caloocan City (2021–present), GWA 1.40
 - **Data:** 10 experiences, 7 projects, 45 technologies (6 categories), 28 certifications, 22 gallery images, 8 social links, 2 memberships
 
-All content details are in `portfolio-resources/data/*.json`. **Never use placeholder data.**
+The archived content details live in the migration notes and archived fixture references. **Never use placeholder data.**
 
 ⚠️ `recommendations.json` contains **placeholder data** — needs real testimonials from actual colleagues.
 
@@ -245,7 +245,7 @@ Remaining unchecked items (everything else is done):
 ## ⚠️ GOTCHAS
 
 1. **Font:** Use `next/font/google` ONLY — never `@import` in CSS
-2. **Data:** All content from `portfolio-resources/data/*.json` — no hardcoded content
+2. **Data:** All runtime content comes from Sanity-backed reads; archived fixtures are for migration history only.
 3. **Social links:** From `socials.json` — never hardcode URLs
 4. **Metadata:** Name "Jhon Keneth Ryan Namias", domain "namias.tech", email `pp.namias@gmail.com`
 5. **CSS transitions on `*`:** Avoid — causes performance issues on theme switch
