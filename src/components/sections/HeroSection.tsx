@@ -103,7 +103,7 @@ export function HeroSection() {
 
   return (
     <motion.section
-      className="relative"
+      className="relative py-1 sm:py-2"
       variants={containerVariants}
       initial="hidden"
       animate="visible"
@@ -111,7 +111,7 @@ export function HeroSection() {
 
       {/* Controls — top-right corner */}
       <motion.div
-        className="mb-5 flex w-full items-center justify-end gap-2 md:absolute md:right-0 md:top-1 md:z-10 md:mb-0 md:w-auto"
+        className="mb-4 flex w-full items-center justify-end gap-2 md:absolute md:right-0 md:top-1 md:z-10 md:mb-0 md:w-auto"
         variants={itemVariants}
       >
         <ColorSchemePicker />
@@ -161,11 +161,11 @@ export function HeroSection() {
         </motion.div>
 
         {/* Identity + Actions */}
-        <div className="flex-1 min-w-0 space-y-4 sm:space-y-5">
+          <div className="flex-1 min-w-0 space-y-4 sm:space-y-5">
           {/* Name + Role block */}
           <div>
             <motion.h1
-              className="text-[1.85rem] sm:text-[2.05rem] font-bold text-text-primary-light dark:text-text-primary-dark inline-flex items-center flex-wrap justify-center sm:justify-start leading-[1.18] tracking-tight"
+              className="text-[1.7rem] sm:text-[2.05rem] font-bold text-text-primary-light dark:text-text-primary-dark inline-flex items-center flex-wrap justify-center sm:justify-start leading-[1.15] tracking-tight"
               variants={itemVariants}
             >
               {profile.name}
@@ -251,8 +251,8 @@ export function HeroSection() {
           </motion.div>
 
           {/* CTAs — single row, clear hierarchy */}
-          <motion.div
-            className="flex flex-wrap items-center justify-center sm:justify-start gap-2.5 sm:gap-3"
+            <motion.div
+            className="flex flex-wrap items-center justify-center sm:justify-start gap-2 sm:gap-3 max-w-full"
             variants={itemVariants}
           >
             <Button
