@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Mail, Calendar, ExternalLink } from 'lucide-react';
+import { Calendar, ExternalLink } from 'lucide-react';
 import {
   FaDiscord,
   FaFacebookF,
@@ -17,7 +17,6 @@ import { useCmsContent } from '@/hooks/useCmsContent';
 const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   calendar: Calendar,
   github: FaGithub,
-  mail: Mail,
   linkedin: FaLinkedinIn,
   facebook: FaFacebookF,
   discord: FaDiscord,
@@ -49,35 +48,17 @@ export function ConnectSection() {
 
       {/* Primary CTA — elevated above social links */}
       <div className="flex flex-wrap items-center gap-2 mb-3.5">
-        {socialLinks.filter(link => link.name === 'cal').map((link, index) => {
-          const Icon = iconMap[link.icon] || ExternalLink;
-          return (
-            <motion.button
-              key={link.name}
-              onClick={() => openModal('booking')}
-              initial={{ opacity: 0, y: 10 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.05, duration: 0.3 }}
-              className="flex items-center gap-1.5 px-4 py-2.5 text-sm font-medium rounded-lg transition-colors duration-200 group bg-accent-pink text-white hover:bg-accent-pink-hover shadow-sm shadow-accent-pink/20"
-            >
-              <Icon className="h-3.5 w-3.5" />
-              <span>{link.label}</span>
-            </motion.button>
-          );
-        })}
-
         <motion.button
           type="button"
-          onClick={() => openModal('contact')}
+          onClick={() => openModal('booking')}
           initial={{ opacity: 0, y: 10 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ delay: 0.05, duration: 0.3 }}
           className="flex items-center gap-1.5 px-4 py-2.5 text-sm font-medium rounded-lg transition-colors duration-200 group border border-accent-pink/30 text-accent-pink hover:bg-accent-pink/10"
         >
-          <Mail className="h-3.5 w-3.5" />
-          <span>Send Email</span>
+          <Calendar className="h-3.5 w-3.5" />
+          <span>Schedule a Meeting</span>
         </motion.button>
       </div>
 
