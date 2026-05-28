@@ -64,12 +64,71 @@ export default defineType({
       title: 'Cover image',
       type: 'image',
       options: {hotspot: true},
+      fields: [
+        defineField({
+          name: 'alt',
+          title: 'Alt text',
+          type: 'string',
+        }),
+        defineField({
+          name: 'caption',
+          title: 'Caption',
+          type: 'string',
+        }),
+        defineField({
+          name: 'credit',
+          title: 'Credit',
+          type: 'string',
+        }),
+        defineField({
+          name: 'source',
+          title: 'Source',
+          type: 'string',
+        }),
+        defineField({
+          name: 'license',
+          title: 'License',
+          type: 'string',
+        }),
+      ],
     }),
     defineField({
       name: 'gallery',
       title: 'Gallery',
       type: 'array',
-      of: [{type: 'image', options: {hotspot: true}}],
+      of: [
+        {
+          type: 'image',
+          options: {hotspot: true},
+          fields: [
+            defineField({
+              name: 'alt',
+              title: 'Alt text',
+              type: 'string',
+            }),
+            defineField({
+              name: 'caption',
+              title: 'Caption',
+              type: 'string',
+            }),
+            defineField({
+              name: 'credit',
+              title: 'Credit',
+              type: 'string',
+            }),
+            defineField({
+              name: 'source',
+              title: 'Source',
+              type: 'string',
+            }),
+            defineField({
+              name: 'license',
+              title: 'License',
+              type: 'string',
+            }),
+          ],
+        },
+      ],
     }),
     defineField({
       name: 'liveUrl',

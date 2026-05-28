@@ -50,6 +50,31 @@ export default defineType({
       rows: 6,
     }),
     defineField({
+      name: 'avatar',
+      title: 'Avatar',
+      type: 'image',
+      options: {hotspot: true},
+      fields: [
+        defineField({
+          name: 'alt',
+          title: 'Alt text',
+          type: 'string',
+        }),
+      ],
+    }),
+    defineField({
+      name: 'availabilityLabel',
+      title: 'Availability label',
+      type: 'string',
+      description: 'Used when the profile should communicate availability outside the hero section.',
+    }),
+    defineField({
+      name: 'resumeUrl',
+      title: 'Resume URL',
+      type: 'url',
+      description: 'Optional direct resume link for profile-level fallback and editor reference.',
+    }),
+    defineField({
       name: 'highlights',
       title: 'Highlights',
       type: 'object',

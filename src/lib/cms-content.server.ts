@@ -223,10 +223,13 @@ const getCmsContentImpl = async (): Promise<CmsContent> => {
       github?: string;
       linkedin?: string;
       summary?: string;
+      avatarUrl?: string;
+      resumeUrl?: string;
+      availabilityLabel?: string;
       highlights?: Profile['highlights'];
       education?: Profile['education'];
     }>(
-      '*[_type == "profile"][0]{fullName,title,email,phone,location,github,linkedin,summary,highlights,education}'
+      '*[_type == "profile"][0]{fullName,title,email,phone,location,github,linkedin,summary,"avatarUrl":avatar.asset->url,resumeUrl,availabilityLabel,highlights,education}'
     ),
     querySanity<{
       socialLinks?: Array<{ platform?: string; icon?: string; url?: string; placements?: string[] }>;
@@ -281,12 +284,22 @@ const getCmsContentImpl = async (): Promise<CmsContent> => {
       previewVideoUrl?: string;
       imageFile?: string;
       imageUrl?: string;
+      imageAlt?: string;
+      imageCaption?: string;
+      imageCredit?: string;
+      imageSource?: string;
+      imageLicense?: string;
       galleryItems?: Array<{
         file?: string;
         url?: string;
+        alt?: string;
+        caption?: string;
+        credit?: string;
+        source?: string;
+        license?: string;
       }>;
     }>>(
-      '*[_type == "project"] | order(order asc, featuredRank asc, title asc){title,"slug":slug.current,summary,year,category,role,technologies,achievements,featuredRank,status,liveUrl,repositoryUrl,detailUrl,processUrl,previewVideoUrl,"imageFile":image.asset->originalFilename,"imageUrl":image.asset->url,"galleryItems":gallery[]{"file":asset->originalFilename,"url":asset->url}}'
+      '*[_type == "project"] | order(order asc, featuredRank asc, title asc){title,"slug":slug.current,summary,year,category,role,technologies,achievements,featuredRank,status,liveUrl,repositoryUrl,detailUrl,processUrl,previewVideoUrl,"imageFile":image.asset->originalFilename,"imageUrl":image.asset->url,"imageAlt":image.alt,"imageCaption":image.caption,"imageCredit":image.credit,"imageSource":image.source,"imageLicense":image.license,"galleryItems":gallery[]{"file":asset->originalFilename,"url":asset->url,alt,caption,credit,source,license}}'
     ),
     querySanity<Array<{
       title?: string;
@@ -295,8 +308,13 @@ const getCmsContentImpl = async (): Promise<CmsContent> => {
       issuer?: string;
       imageFile?: string;
       imageUrl?: string;
+      alt?: string;
+      caption?: string;
+      credit?: string;
+      source?: string;
+      license?: string;
     }>>(
-      '*[_type == "certification"] | order(order asc, issuedAt desc){title,issuedAt,tags,"issuer":issuer->title,"imageFile":image.asset->originalFilename,"imageUrl":image.asset->url}'
+      '*[_type == "certification"] | order(order asc, issuedAt desc){title,issuedAt,tags,"issuer":issuer->title,"imageFile":image.asset->originalFilename,"imageUrl":image.asset->url,alt,caption,credit,source,license}'
     ),
     querySanity<Array<{
       title?: string;
@@ -308,8 +326,13 @@ const getCmsContentImpl = async (): Promise<CmsContent> => {
       mediaPath?: string;
       mediaFile?: string;
       mediaUrl?: string;
+      alt?: string;
+      caption?: string;
+      credit?: string;
+      source?: string;
+      license?: string;
     }>>(
-      '*[_type == "galleryImage"] | order(order asc, capturedAt desc){title,mediaType,tags,capturedAt,"category":category->title,"mediaFile":image.asset->originalFilename,"mediaUrl":image.asset->url,mediaPath}'
+      '*[_type == "galleryImage"] | order(order asc, capturedAt desc){title,mediaType,tags,capturedAt,"category":category->title,"mediaFile":image.asset->originalFilename,"mediaUrl":image.asset->url,mediaPath,alt,caption,credit,source,license}'
     ),
     querySanity<Array<{
       title?: string;
@@ -379,6 +402,9 @@ const getCmsContentImpl = async (): Promise<CmsContent> => {
     github: profileDoc.github || (await getFallback()).profile.github,
     linkedin: profileDoc.linkedin || (await getFallback()).profile.linkedin,
     summary: profileDoc.summary || (await getFallback()).profile.summary,
+    avatarUrl: profileDoc.avatarUrl || undefined,
+    resumeUrl: profileDoc.resumeUrl || undefined,
+    availabilityLabel: profileDoc.availabilityLabel || undefined,
     highlights: profileDoc.highlights || (await getFallback()).profile.highlights,
     education: profileDoc.education || (await getFallback()).profile.education,
   };
@@ -390,7 +416,8 @@ const getCmsContentImpl = async (): Promise<CmsContent> => {
     // for the homepage where the image is small. Components can further
     // request different sizes if needed once a shared canonical URL is
     // available in the content shape.
-    profileImageUrl: buildMediaGatewayUrl(heroDoc?.profileImageUrl || '', { width: 320, quality: 75, sign: true }) || '',
+    profileImageUrl:
+      buildMediaGatewayUrl(heroDoc?.profileImageUrl || profileDoc.avatarUrl || '', { width: 320, quality: 75, sign: true }) || '',
   };
 
   // Determine about paragraphs with a small server-side helper to avoid
@@ -420,9 +447,7 @@ const getCmsContentImpl = async (): Promise<CmsContent> => {
     highlights: experience.highlights || [],
     achievements: experience.achievements || [],
     relatedProjects: [],
-    images: (experience.images || [])
-      .map((image) => buildMediaGatewayUrl(image, { width: 960, quality: 72, sign: true }) || image)
-      .filter(Boolean),
+    images: experience.images || [],
   }));
 
   const projects: Project[] = (projectDocs ?? []).map((project) => ({
@@ -436,6 +461,11 @@ const getCmsContentImpl = async (): Promise<CmsContent> => {
       buildMediaGatewayUrl(project.imageUrl || (project.galleryItems?.[0]?.url ?? ''), { width: 560, quality: 70, sign: true }) ||
       resolveMediaPath(project.imageFile, project.imageUrl) ||
       '',
+    imageAlt: project.imageAlt || project.title,
+    imageCaption: project.imageCaption || '',
+    imageCredit: project.imageCredit || '',
+    imageSource: project.imageSource || '',
+    imageLicense: project.imageLicense || '',
     description: project.summary || '',
     repositoryURL: project.repositoryUrl || null,
     liveURL: project.liveUrl || null,
@@ -454,7 +484,11 @@ const getCmsContentImpl = async (): Promise<CmsContent> => {
     status: (project.status as Project['status']) || undefined,
     gallery: (project.galleryItems ?? []).map((galleryItem) => ({
       image: galleryItem.url || galleryItem.file || '',
-      caption: project.title || '',
+      caption: galleryItem.caption || project.title || '',
+      alt: galleryItem.alt || galleryItem.caption || project.title || '',
+      credit: galleryItem.credit || '',
+      source: galleryItem.source || '',
+      license: galleryItem.license || '',
     })),
   }));
 
@@ -463,6 +497,11 @@ const getCmsContentImpl = async (): Promise<CmsContent> => {
     // Prefer the Sanity asset URL for certification images
     image: buildMediaGatewayUrl(certification.imageUrl || '', { width: 320, quality: 70, sign: true }) || '',
     imageUrl: certification.imageUrl || '',
+    alt: certification.alt || certification.title || '',
+    caption: certification.caption || '',
+    credit: certification.credit || '',
+    source: certification.source || '',
+    license: certification.license || '',
     issuer: certification.issuer || '',
     issuedAt: certification.issuedAt || '',
     tags: certification.tags || [],
@@ -474,6 +513,11 @@ const getCmsContentImpl = async (): Promise<CmsContent> => {
     // Use the Sanity-hosted media URL when available; otherwise empty.
     // Request a lightweight preview size for gallery thumbnails.
     media: buildMediaGatewayUrl(image.mediaUrl || image.mediaPath || '', { width: 480, quality: 70, sign: true }) || '',
+    alt: image.alt || image.title || '',
+    caption: image.caption || '',
+    credit: image.credit || '',
+    source: image.source || '',
+    license: image.license || '',
     tags: image.tags || [],
     createdAt: image.capturedAt || '',
   }));

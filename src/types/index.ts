@@ -18,6 +18,9 @@ export interface Profile {
   github: string;
   linkedin: string;
   summary: string;
+  avatarUrl?: string;
+  resumeUrl?: string;
+  availabilityLabel?: string;
   highlights: {
     yearsExperience: number;
     projectsCompleted: number;
