@@ -245,7 +245,7 @@ export function HubMenu({ onClose, onOpenChat }: Readonly<HubMenuProps>) {
                       animate={{ opacity: 1, scale: 1 }}
                       transition={{ delay: i * 0.05, type: 'spring', stiffness: 300, damping: 15 }}
                     >
-                      <Icon className="h-4 w-4" />
+                      <Icon className="h-3.5 w-3.5" />
                     </motion.a>
                   );
                 })}

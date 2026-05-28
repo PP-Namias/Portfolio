@@ -195,7 +195,7 @@ export function HeroSection() {
           >
             <div className="flex flex-wrap items-center justify-center sm:justify-start gap-3.5">
               <div className="flex items-center gap-1.5">
-                <MapPin className="h-3.5 w-3.5 text-text-muted-light dark:text-text-muted-dark" />
+                <MapPin className="h-4 w-4 text-text-muted-light dark:text-text-muted-dark" />
                 <span className="text-[13px] sm:text-sm text-text-muted-light dark:text-text-muted-dark">
                   {profile.location}
                 </span>
@@ -228,13 +228,13 @@ export function HeroSection() {
                     transition={{ delay: 0.5 + i * 0.04, type: 'spring', stiffness: 300, damping: 20 }}
                     whileHover={{ y: -1 }}
                   >
-                    <Icon className="h-[15.5px] w-[15.5px]" />
+                    <Icon className="h-4 w-4" />
                   </motion.a>
                 );
               })}
               {IS_BLOG_VISIBLE && (
                 <>
-                  <span className="mx-1 h-3.5 w-px bg-border-light dark:bg-border-dark" />
+                    <span className="mx-1 h-4 w-px bg-border-light dark:bg-border-dark" />
                   <motion.a
                     href="/blog"
                     className="h-7 rounded-md px-2 flex items-center gap-1 text-[12px] font-medium text-text-muted-light dark:text-text-muted-dark hover:text-accent-pink hover:bg-accent-pink/5 transition-colors"

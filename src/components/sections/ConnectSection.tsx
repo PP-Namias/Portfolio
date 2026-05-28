@@ -61,7 +61,7 @@ export function ConnectSection() {
               transition={{ delay: index * 0.05, duration: 0.3 }}
               className="flex items-center gap-1.5 px-4 py-2.5 text-sm font-medium rounded-lg transition-colors duration-200 group bg-accent-pink text-white hover:bg-accent-pink-hover shadow-sm shadow-accent-pink/20"
             >
-              <Icon className="h-4 w-4" />
+              <Icon className="h-3.5 w-3.5" />
               <span>{link.label}</span>
             </motion.button>
           );
@@ -76,7 +76,7 @@ export function ConnectSection() {
           transition={{ delay: 0.05, duration: 0.3 }}
           className="flex items-center gap-1.5 px-4 py-2.5 text-sm font-medium rounded-lg transition-colors duration-200 group border border-accent-pink/30 text-accent-pink hover:bg-accent-pink/10"
         >
-          <Mail className="h-4 w-4" />
+          <Mail className="h-3.5 w-3.5" />
           <span>Send Email</span>
         </motion.button>
       </div>

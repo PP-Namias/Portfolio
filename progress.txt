@@ -233,6 +233,9 @@
 - Added an explicit topic selector to the contact modal so the existing preset flow can drive subject/message defaults without extra friction.
 - Kept the draft, copy, Gmail, and Outlook behaviors intact while making the modal flow more structured.
 - Validated with `npm run test -- src/__tests__/hooks/useModal.test.tsx src/__tests__/components/sections-uncovered.test.tsx`, `npm run lint`, and `npm run build`.
+[SUCCESS] 2026-05-28 Website improvement IMP-002 completed
+- Normalized icon sizing and visual weight across hero, connect, and hub menu surfaces for a more cohesive action system.
+- Validated with `npm run test -- src/__tests__/components/sections-uncovered.test.tsx`, `npm run lint`, and `npm run build`.
 [SUCCESS] 2026-05-25 Vision query pack slice completed
 - Added a recommended inspection order to `studio/VISION_QUERIES.md` so homepage, resume, blog, and collection checks happen in a repeatable sequence.
 - Linked the Sanity improvement plan directly to the living query pack for easier maintenance.

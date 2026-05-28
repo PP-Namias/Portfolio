@@ -32,7 +32,7 @@ export function HubMenuItem({
   const content = (
     <>
       <div className={`h-10 w-10 rounded-xl ${iconBgClass} flex items-center justify-center flex-shrink-0 transition-transform duration-200 group-hover:scale-110`}>
-        <Icon className={`h-5 w-5 ${iconColorClass} transition-transform duration-200`} />
+        <Icon className={`h-4 w-4 ${iconColorClass} transition-transform duration-200`} />
       </div>
       <div className="flex-1 min-w-0">
         <p className="text-sm font-medium text-text-primary-light dark:text-text-primary-dark group-hover:text-accent-pink transition-colors duration-200">
@@ -42,7 +42,7 @@ export function HubMenuItem({
           {subtitle}
         </p>
       </div>
-      <ChevronRight className="h-3.5 w-3.5 text-text-muted-light/0 dark:text-text-muted-dark/0 group-hover:text-text-muted-light dark:group-hover:text-text-muted-dark transition-all duration-200 -translate-x-1 group-hover:translate-x-0 flex-shrink-0" />
+      <ChevronRight className="h-4 w-4 text-text-muted-light/0 dark:text-text-muted-dark/0 group-hover:text-text-muted-light dark:group-hover:text-text-muted-dark transition-all duration-200 -translate-x-1 group-hover:translate-x-0 flex-shrink-0" />
     </>
   );
 
