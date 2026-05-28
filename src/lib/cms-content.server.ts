@@ -420,7 +420,9 @@ const getCmsContentImpl = async (): Promise<CmsContent> => {
     highlights: experience.highlights || [],
     achievements: experience.achievements || [],
     relatedProjects: [],
-    images: experience.images || [],
+    images: (experience.images || [])
+      .map((image) => buildMediaGatewayUrl(image, { width: 960, quality: 72, sign: true }) || image)
+      .filter(Boolean),
   }));
 
   const projects: Project[] = (projectDocs ?? []).map((project) => ({
@@ -499,15 +501,8 @@ const getCmsContentImpl = async (): Promise<CmsContent> => {
     readTime: post.readTime || '5 min read',
     tags: post.tags || [],
     coverImage: (() => {
-      const resolved = post.mainImageUrl || resolveMediaPath(post.mainImageFile, post.mainImageUrl);
-      if (typeof resolved === 'string' && /^https?:\/\//i.test(resolved)) {
-        return resolved;
-      }
-
-      // No Sanity-hosted cover image available — fall back to a local
-      // placeholder. We intentionally avoid synthesizing `/images/*`
-      // runtime refs for migrated content.
-      return '';
+      const resolved = buildMediaGatewayUrl(post.mainImageUrl || '', { width: 960, quality: 72, sign: true });
+      return resolved || '';
     })(),
   }));
 
