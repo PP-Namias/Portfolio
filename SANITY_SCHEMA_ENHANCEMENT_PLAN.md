@@ -219,27 +219,29 @@ Suggested fields:
 Use this prompt to continue the schema enhancement work slice by slice.
 
 ```text
-Read SANITY_SCHEMA_ENHANCEMENT_PLAN.md, SANITY_SCHEMA_ENHANCEMENT_PRD.json, and progress.txt first.
+Read SANITY_SCHEMA_ENHANCEMENT_PLAN.md, SANITY_SCHEMA_ENHANCEMENT_PRD.json, progress.txt, studio/schemaTypes/*, src/lib/cms-content.server.ts, src/types/index.ts, and any affected components first.
 
 Work in small slices only. Do not start implementation until the current slice is fully understood.
 
 For each slice:
-1. Read the files that control the slice.
+1. Read the controlling files for that slice.
 2. Make the smallest focused change that satisfies the slice.
-3. Run the narrowest relevant validation first, then run npm run lint and npm run build if the repository was touched.
-4. Update progress.txt with the completed slice and validation results.
+3. Run the narrowest relevant validation first, then run `npm run lint` and `npm run build` if the repository was touched.
+4. Update `progress.txt` with the completed slice and validation results.
 5. Commit the slice with one conventional commit message.
 6. Move immediately to the next slice only after the current slice is validated and committed.
 
-Rules:
-- Start with seoSettings and mediaSettings.
-- Then formalize profile and asset metadata.
-- Then expand projects and experience.
+Execution rules:
+- Start with `seoSettings` and `mediaSettings`.
+- Add `profile` adoption and asset metadata enrichment next.
+- Then expand `projects` and `experience`.
 - Then improve blog metadata, navigation/footer links, and testimonials.
-- Then expand siteSettings, content status fields, and preview helpers.
+- Then expand `siteSettings`, content status fields, and preview/revalidation helpers.
+- Update runtime loaders and component consumers when schema changes require it.
+- Preserve existing content and fallback behavior unless a slice explicitly replaces it.
 - Do not bundle unrelated tasks into the same slice.
 - Do not skip validation or commit steps.
-- Update the plan if a slice changes the roadmap.
+- Update this plan if a slice changes the roadmap.
 
 Stop only when the current slice is complete or a genuine blocker requires user input.
 ```
