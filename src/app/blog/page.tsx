@@ -4,8 +4,8 @@ import { notFound } from 'next/navigation';
 import { ArrowLeft } from 'lucide-react';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import { IS_BLOG_VISIBLE } from '@/lib/features';
+import { fallbackBlogPosts } from '@/lib/cms-content.shared';
 import BlogListClient from './BlogListClient';
-import type { BlogPost } from '@/types';
 
 export default async function BlogPage(): Promise<JSX.Element> {
   if (!IS_BLOG_VISIBLE) {
@@ -14,10 +14,7 @@ export default async function BlogPage(): Promise<JSX.Element> {
 
   const { blogPosts, siteSettings } = await getCmsContent();
   const blogCopy = siteSettings.blog;
-  const posts = blogPosts && blogPosts.length > 0 ? blogPosts : [
-    { id: '1', slug: 'hello-world', title: 'Hello World', excerpt: 'Intro', content: '', date: new Date().toISOString(), readTime: '5 min', tags: [], coverImage: '' },
-    { id: '2', slug: 'deep-dive', title: 'Deep Dive', excerpt: 'Deep dive', content: '', date: new Date().toISOString(), readTime: '7 min', tags: [], coverImage: '' },
-  ] as BlogPost[];
+  const posts = blogPosts && blogPosts.length > 0 ? blogPosts : fallbackBlogPosts;
 
   return (
     <main className="mx-auto max-w-container px-4 sm:px-6 pt-8 lg:pt-12 pb-16">

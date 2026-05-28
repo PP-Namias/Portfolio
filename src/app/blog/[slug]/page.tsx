@@ -2,8 +2,8 @@ import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getCmsContent } from '@/lib/cms-content.server';
 import { IS_BLOG_VISIBLE } from '@/lib/features';
+import { fallbackBlogPosts } from '@/lib/cms-content.shared';
 import BlogPostContent from './BlogPostContent';
-import type { BlogPost } from '@/types';
 
 export async function generateStaticParams(): Promise<{ slug: string }[]> {
   if (!IS_BLOG_VISIBLE) {
@@ -11,10 +11,7 @@ export async function generateStaticParams(): Promise<{ slug: string }[]> {
   }
 
   const { blogPosts } = await getCmsContent();
-  const posts = blogPosts && blogPosts.length > 0 ? blogPosts : [
-    { slug: 'hello-world' },
-    { slug: 'deep-dive' },
-  ];
+  const posts = blogPosts && blogPosts.length > 0 ? blogPosts : fallbackBlogPosts;
 
   return posts.map((post) => ({ slug: post.slug }));
 }
@@ -22,11 +19,7 @@ export async function generateStaticParams(): Promise<{ slug: string }[]> {
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
   const { blogPosts } = await getCmsContent();
-  const fallbackPosts: BlogPost[] = [
-    { id: '1', slug: 'hello-world', title: 'Hello World', excerpt: 'Intro', content: '', date: new Date().toISOString(), readTime: '5 min', tags: [], coverImage: '' },
-    { id: '2', slug: 'deep-dive', title: 'Deep Dive', excerpt: 'Deep dive', content: '', date: new Date().toISOString(), readTime: '7 min', tags: [], coverImage: '' },
-  ];
-  const posts = blogPosts && blogPosts.length > 0 ? blogPosts : fallbackPosts;
+  const posts = blogPosts && blogPosts.length > 0 ? blogPosts : fallbackBlogPosts;
 
   const post = posts.find((p) => p.slug === slug);
   if (!post) {
@@ -57,10 +50,7 @@ export default async function BlogPostPage({ params }: Readonly<{ params: Promis
   const { slug } = await params;
   const { blogPosts, siteSettings } = await getCmsContent();
   const blogCopy = siteSettings.blog;
-  const posts = blogPosts && blogPosts.length > 0 ? blogPosts : [
-    { id: '1', slug: 'hello-world', title: 'Hello World', excerpt: 'Intro', content: '', date: new Date().toISOString(), readTime: '5 min', tags: [], coverImage: '' },
-    { id: '2', slug: 'deep-dive', title: 'Deep Dive', excerpt: 'Deep dive', content: '', date: new Date().toISOString(), readTime: '7 min', tags: [], coverImage: '' },
-  ];
+  const posts = blogPosts && blogPosts.length > 0 ? blogPosts : fallbackBlogPosts;
 
   const post = posts.find((p) => p.slug === slug);
 
