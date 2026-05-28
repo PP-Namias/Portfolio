@@ -76,6 +76,8 @@ NEXT_PUBLIC_SANITY_PROJECT_ID=nl0qw78w
 NEXT_PUBLIC_SANITY_DATASET=production
 SANITY_STUDIO_PROJECT_ID=nl0qw78w
 SANITY_STUDIO_DATASET=production
+NEXT_PUBLIC_SITE_URL=https://namias.jkrbn99.workers.dev
+NEXT_PUBLIC_SANITY_STUDIO_URL=https://your-sanity-studio-url.sanity.studio
 SANITY_API_READ_TOKEN=your_sanity_read_token
 SANITY_API_WRITE_TOKEN=your_sanity_write_token
 SANITY_STUDIO_DEPLOY_TOKEN=your_studio_deploy_token
@@ -102,6 +104,16 @@ Use the root Cloudflare worker for the portfolio app and the separate `studio/` 
 - Root app deploys through `opennextjs-cloudflare`
 - Studio deploys from `studio/` as its own Sanity app
 - Add `NEXT_PUBLIC_SANITY_STUDIO_URL` if you want the `/studio` landing page to open a hosted editor URL directly
+
+### GitHub secrets map
+
+- `CLOUDFLARE_API_TOKEN` -> Cloudflare Workers API token
+- `CLOUDFLARE_ACCOUNT_ID` -> `4bd772a73fb69e405e81422ee07a34a6`
+- `SANITY_STUDIO_DEPLOY_TOKEN` -> Sanity deploy token
+- `NEXT_PUBLIC_SANITY_PROJECT_ID` -> `nl0qw78w`
+- `NEXT_PUBLIC_SANITY_DATASET` -> `production`
+- `SANITY_REVALIDATE_SECRET` -> your random secret string
+- `NEXT_PUBLIC_SITE_URL` -> deployed worker URL
 
 ## Quality checks
 
