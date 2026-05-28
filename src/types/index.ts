@@ -33,6 +33,7 @@ export interface Experience {
   company: string;
   position: string;
   summary: string;
+  featuredStory?: string;
   country: string;
   modality: string;
   type: string;
@@ -61,6 +62,10 @@ export interface Project {
   title: string;
   image: string;
   description: string;
+  challenge?: string;
+  solution?: string;
+  result?: string;
+  featured?: boolean;
   repositoryURL: string | null;
   liveURL: string | null;
   processURL: string | null;

@@ -32,6 +32,24 @@ export default defineType({
       rows: 4,
     }),
     defineField({
+      name: 'challenge',
+      title: 'Challenge',
+      type: 'text',
+      rows: 3,
+    }),
+    defineField({
+      name: 'solution',
+      title: 'Solution',
+      type: 'text',
+      rows: 3,
+    }),
+    defineField({
+      name: 'result',
+      title: 'Result',
+      type: 'text',
+      rows: 3,
+    }),
+    defineField({
       name: 'year',
       title: 'Year',
       type: 'number',
@@ -40,6 +58,12 @@ export default defineType({
       name: 'category',
       title: 'Category',
       type: 'string',
+    }),
+    defineField({
+      name: 'featured',
+      title: 'Featured',
+      type: 'boolean',
+      initialValue: false,
     }),
     defineField({
       name: 'role',
@@ -90,6 +114,11 @@ export default defineType({
           title: 'License',
           type: 'string',
         }),
+        defineField({
+          name: 'dominantColor',
+          title: 'Dominant color',
+          type: 'string',
+        }),
       ],
     }),
     defineField({
@@ -124,6 +153,11 @@ export default defineType({
             defineField({
               name: 'license',
               title: 'License',
+              type: 'string',
+            }),
+            defineField({
+              name: 'dominantColor',
+              title: 'Dominant color',
               type: 'string',
             }),
           ],

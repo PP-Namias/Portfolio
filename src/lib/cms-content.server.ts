@@ -259,19 +259,24 @@ const getCmsContentImpl = async (): Promise<CmsContent> => {
       employmentType?: string;
       workModel?: string;
       summary?: string;
+      featuredStory?: string;
       highlights?: string[];
       tags?: string[];
       achievements?: string[];
       images?: string[];
     }>>(
-      '*[_type == "experience"] | order(order asc, startDate desc){role,company,location,startDate,endDate,employmentType,workModel,summary,highlights,tags,achievements,images}'
+      '*[_type == "experience"] | order(order asc, startDate desc){role,company,location,startDate,endDate,employmentType,workModel,summary,featuredStory,highlights,tags,achievements,images}'
     ),
     querySanity<Array<{
       title?: string;
       slug?: string;
       summary?: string;
+      challenge?: string;
+      solution?: string;
+      result?: string;
       year?: number;
       category?: string;
+      featured?: boolean;
       role?: string;
       technologies?: string[];
       achievements?: string[];
@@ -299,7 +304,7 @@ const getCmsContentImpl = async (): Promise<CmsContent> => {
         license?: string;
       }>;
     }>>(
-      '*[_type == "project"] | order(order asc, featuredRank asc, title asc){title,"slug":slug.current,summary,year,category,role,technologies,achievements,featuredRank,status,liveUrl,repositoryUrl,detailUrl,processUrl,previewVideoUrl,"imageFile":image.asset->originalFilename,"imageUrl":image.asset->url,"imageAlt":image.alt,"imageCaption":image.caption,"imageCredit":image.credit,"imageSource":image.source,"imageLicense":image.license,"galleryItems":gallery[]{"file":asset->originalFilename,"url":asset->url,alt,caption,credit,source,license}}'
+      '*[_type == "project"] | order(order asc, featuredRank asc, title asc){title,"slug":slug.current,summary,challenge,solution,result,year,category,featured,role,technologies,achievements,featuredRank,status,liveUrl,repositoryUrl,detailUrl,processUrl,previewVideoUrl,"imageFile":image.asset->originalFilename,"imageUrl":image.asset->url,"imageAlt":image.alt,"imageCaption":image.caption,"imageCredit":image.credit,"imageSource":image.source,"imageLicense":image.license,"galleryItems":gallery[]{"file":asset->originalFilename,"url":asset->url,alt,caption,credit,source,license}}'
     ),
     querySanity<Array<{
       title?: string;
@@ -438,6 +443,7 @@ const getCmsContentImpl = async (): Promise<CmsContent> => {
     company: experience.company || '',
     position: experience.role || '',
     summary: experience.summary || '',
+    featuredStory: experience.featuredStory || undefined,
     country: experience.location || '',
     modality: experience.workModel || '',
     type: experience.employmentType || '',
@@ -467,6 +473,10 @@ const getCmsContentImpl = async (): Promise<CmsContent> => {
     imageSource: project.imageSource || '',
     imageLicense: project.imageLicense || '',
     description: project.summary || '',
+    challenge: project.challenge || undefined,
+    solution: project.solution || undefined,
+    result: project.result || undefined,
+    featured: project.featured || false,
     repositoryURL: project.repositoryUrl || null,
     liveURL: project.liveUrl || null,
     processURL: project.processUrl || null,

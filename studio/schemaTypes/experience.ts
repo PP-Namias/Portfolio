@@ -72,6 +72,13 @@ export default defineType({
       rows: 3,
     }),
     defineField({
+      name: 'featuredStory',
+      title: 'Featured story',
+      type: 'text',
+      rows: 4,
+      description: 'A short narrative that can be shown in richer modal or long-form views.',
+    }),
+    defineField({
       name: 'highlights',
       title: 'Highlights',
       type: 'array',
@@ -93,7 +100,39 @@ export default defineType({
       name: 'images',
       title: 'Images',
       type: 'array',
-      of: [{type: 'string'}],
+      of: [
+        {
+          type: 'image',
+          options: {hotspot: true},
+          fields: [
+            defineField({
+              name: 'alt',
+              title: 'Alt text',
+              type: 'string',
+            }),
+            defineField({
+              name: 'caption',
+              title: 'Caption',
+              type: 'string',
+            }),
+            defineField({
+              name: 'credit',
+              title: 'Credit',
+              type: 'string',
+            }),
+            defineField({
+              name: 'source',
+              title: 'Source',
+              type: 'string',
+            }),
+            defineField({
+              name: 'license',
+              title: 'License',
+              type: 'string',
+            }),
+          ],
+        },
+      ],
     }),
   ],
   preview: {
