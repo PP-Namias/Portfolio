@@ -91,6 +91,39 @@ export default defineType({
           title: 'Copyright text',
           type: 'string',
         }),
+        defineField({
+          name: 'backToPortfolioLabel',
+          title: 'Back to portfolio label',
+          type: 'string',
+        }),
+        defineField({
+          name: 'contactPrompt',
+          title: 'Contact prompt',
+          type: 'string',
+        }),
+      ],
+    }),
+    defineField({
+      name: 'blog',
+      title: 'Blog',
+      type: 'object',
+      fields: [
+        defineField({
+          name: 'title',
+          title: 'Title',
+          type: 'string',
+        }),
+        defineField({
+          name: 'description',
+          title: 'Description',
+          type: 'text',
+          rows: 3,
+        }),
+        defineField({
+          name: 'backLabel',
+          title: 'Back label',
+          type: 'string',
+        }),
       ],
     }),
   ],

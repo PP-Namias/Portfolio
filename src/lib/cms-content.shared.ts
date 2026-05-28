@@ -13,6 +13,20 @@ import type {
 
 export interface CmsContent {
   profile: Profile;
+  siteSettings: {
+    footer: {
+      leadText: string;
+      linkLabel: string;
+      copyright: string;
+      backToPortfolioLabel: string;
+      contactPrompt: string;
+    };
+    blog: {
+      title: string;
+      description: string;
+      backLabel: string;
+    };
+  };
   hero: {
     roles: string[];
     availabilityLabel: string;
@@ -63,6 +77,20 @@ const emptyProfile: Profile = {
 
 export const fallbackCmsContent: CmsContent = {
   profile: emptyProfile,
+  siteSettings: {
+    footer: {
+      leadText: '',
+      linkLabel: '',
+      copyright: '',
+      backToPortfolioLabel: 'Back to Portfolio',
+      contactPrompt: 'Send a message',
+    },
+    blog: {
+      title: 'Blog',
+      description: 'Thoughts on AI, software engineering, cloud development, and more.',
+      backLabel: 'Back to Portfolio',
+    },
+  },
   hero: {
     roles: [],
     availabilityLabel: '',

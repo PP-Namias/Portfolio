@@ -29,6 +29,23 @@ export default defineType({
       description: 'A brief summary of the blog post',
     }),
     defineField({
+      name: 'metaTitle',
+      title: 'Meta title',
+      type: 'string',
+    }),
+    defineField({
+      name: 'metaDescription',
+      title: 'Meta description',
+      type: 'text',
+      rows: 3,
+    }),
+    defineField({
+      name: 'featured',
+      title: 'Featured',
+      type: 'boolean',
+      initialValue: false,
+    }),
+    defineField({
       name: 'sourceId',
       title: 'Source ID',
       type: 'string',
@@ -93,13 +110,6 @@ export default defineType({
       type: 'boolean',
       initialValue: false,
       description: 'Set to true to publish this post',
-    }),
-    defineField({
-      name: 'featured',
-      title: 'Featured',
-      type: 'boolean',
-      initialValue: false,
-      description: 'Featured posts will appear prominently on the blog',
     }),
   ],
   preview: {

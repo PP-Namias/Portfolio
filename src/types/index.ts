@@ -102,6 +102,10 @@ export interface Recommendation {
   name: string;
   title: string;
   company: string;
+  featured?: boolean;
+  relationship?: string;
+  companyUrl?: string;
+  avatarUrl?: string;
 }
 
 export interface Membership {
@@ -136,6 +140,9 @@ export interface BlogPost {
   readTime: string;
   tags: string[];
   coverImage: string;
+  featured?: boolean;
+  metaTitle?: string;
+  metaDescription?: string;
 }
 
 export interface ChatMessage {

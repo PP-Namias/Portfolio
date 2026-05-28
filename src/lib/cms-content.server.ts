@@ -213,7 +213,7 @@ function resolveMediaPath(fileName?: string | null, url?: string | null): string
 }
 
 const getCmsContentImpl = async (): Promise<CmsContent> => {
-  const [profileDoc, heroDoc, aboutDoc, techDoc, experienceDocs, projectDocs, certificationDocs, galleryDocs, blogDocs, membershipDocs, recommendationDocs] = await Promise.all([
+  const [profileDoc, heroDoc, aboutDoc, techDoc, experienceDocs, projectDocs, certificationDocs, galleryDocs, blogDocs, membershipDocs, recommendationDocs, siteSettingsDoc] = await Promise.all([
     querySanity<{
       fullName?: string;
       title?: string;
@@ -353,10 +353,13 @@ const getCmsContentImpl = async (): Promise<CmsContent> => {
       categories?: Array<{ title?: string }>;
       sourceId?: string;
       published?: boolean;
+      featured?: boolean;
+      metaTitle?: string;
+      metaDescription?: string;
       mainImageFile?: string;
       mainImageUrl?: string;
     }>>(
-      '*[_type == "post" && published == true && defined(slug.current)] | order(publishedAt desc){title,"slug":slug.current,excerpt,readTime,body,tags,publishedAt,coverImagePath,"mainImageFile":mainImage.asset->originalFilename,"mainImageUrl":mainImage.asset->url,"author":author->name,"categories":categories[]->title,sourceId,published}'
+      '*[_type == "post" && published == true && defined(slug.current)] | order(publishedAt desc){title,"slug":slug.current,excerpt,readTime,body,tags,publishedAt,coverImagePath,featured,metaTitle,metaDescription,"mainImageFile":mainImage.asset->originalFilename,"mainImageUrl":mainImage.asset->url,"author":author->name,"categories":categories[]->title,sourceId,published}'
     ),
     querySanity<Array<{
       name?: string;
@@ -370,8 +373,28 @@ const getCmsContentImpl = async (): Promise<CmsContent> => {
       name?: string;
       title?: string;
       company?: string;
+      featured?: boolean;
+      relationship?: string;
+      companyUrl?: string;
+      avatarUrl?: string;
     }>>(
-      '*[_type == "recommendation"] | order(_createdAt asc){quote,name,title,company}'
+      '*[_type == "recommendation"] | order(_createdAt asc){quote,name,title,company,featured,relationship,companyUrl,"avatarUrl":avatar.asset->url}'
+    ),
+    querySanity<{
+      footer?: {
+        leadText?: string;
+        linkLabel?: string;
+        copyright?: string;
+        backToPortfolioLabel?: string;
+        contactPrompt?: string;
+      };
+      blog?: {
+        title?: string;
+        description?: string;
+        backLabel?: string;
+      };
+    }>(
+      '*[_type == "siteSettings"][0]{footer{leadText,linkLabel,copyright,backToPortfolioLabel,contactPrompt},blog{title,description,backLabel}}'
     ),
   ]);
 
@@ -543,6 +566,10 @@ const getCmsContentImpl = async (): Promise<CmsContent> => {
     name: recommendation.name || '',
     title: recommendation.title || '',
     company: recommendation.company || '',
+    featured: recommendation.featured || false,
+    relationship: recommendation.relationship || '',
+    companyUrl: recommendation.companyUrl || '',
+    avatarUrl: recommendation.avatarUrl || '',
   }));
 
   const blogPosts: BlogPost[] = (blogDocs ?? []).map((post, index) => ({
@@ -558,12 +585,29 @@ const getCmsContentImpl = async (): Promise<CmsContent> => {
       const resolved = buildMediaGatewayUrl(post.mainImageUrl || '', { width: 960, quality: 72, sign: true });
       return resolved || '';
     })(),
+    featured: post.featured || false,
+    metaTitle: post.metaTitle || '',
+    metaDescription: post.metaDescription || '',
   }));
 
   const fb = await getFallback();
 
   return {
     profile,
+    siteSettings: {
+      footer: {
+        leadText: siteSettingsDoc?.footer?.leadText || '',
+        linkLabel: siteSettingsDoc?.footer?.linkLabel || '',
+        copyright: siteSettingsDoc?.footer?.copyright || '',
+        backToPortfolioLabel: siteSettingsDoc?.footer?.backToPortfolioLabel || 'Back to Portfolio',
+        contactPrompt: siteSettingsDoc?.footer?.contactPrompt || 'Send a message',
+      },
+      blog: {
+        title: siteSettingsDoc?.blog?.title || 'Blog',
+        description: siteSettingsDoc?.blog?.description || 'Thoughts on AI, software engineering, cloud development, and more.',
+        backLabel: siteSettingsDoc?.blog?.backLabel || 'Back to Portfolio',
+      },
+    },
     hero,
     about,
     experiences,

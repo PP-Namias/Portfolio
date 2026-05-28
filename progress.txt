@@ -218,7 +218,10 @@
 - Updated Studio presentation labels so homepage and blog content explicitly point at the localhost routes.
 - Swapped the Open Graph and Twitter metadata images to the static public SVG preview asset.
 - Made `next.config.js` use standalone output on non-Windows platforms so the local Windows build can complete without the standalone packaging race.
-- Validated with `npm run lint` and `npm run build` after clearing stale build workers.
+[SUCCESS] 2026-05-28 Blog, testimonial, and site settings slice completed
+- Added blog post metadata fields (`metaTitle`, `metaDescription`, `featured`) plus recommendation editorial fields (`featured`, `relationship`, `companyUrl`, `avatar`) and extra site settings copy fields for footer/blog labels.
+- Wired blog metadata generation and blog page/footer consumers to use the new Sanity-backed site settings and extended the CMS loader and app types to carry the new blog/testimonial fields.
+- Validated with `npm run lint` and `npm run build`.
 [SUCCESS] 2026-05-25 Vision query pack slice completed
 - Added a recommended inspection order to `studio/VISION_QUERIES.md` so homepage, resume, blog, and collection checks happen in a repeatable sequence.
 - Linked the Sanity improvement plan directly to the living query pack for easier maintenance.

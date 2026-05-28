@@ -78,9 +78,10 @@ interface BlogPostContentProps {
   post?: BlogPost | null;
   allPosts?: BlogPost[];
   slug?: string;
+  backLabel?: string;
 }
 
-export default function BlogPostContent({ post, allPosts, slug }: Readonly<BlogPostContentProps>) {
+export default function BlogPostContent({ post, allPosts, slug, backLabel }: Readonly<BlogPostContentProps>) {
   let resolvedAll = allPosts;
   let resolvedPost = post ?? null;
 
@@ -99,7 +100,7 @@ export default function BlogPostContent({ post, allPosts, slug }: Readonly<BlogP
             className="inline-flex items-center gap-2 text-sm text-text-muted-light dark:text-text-muted-dark hover:text-accent-pink dark:hover:text-accent-pink transition-colors duration-200"
           >
             <ArrowLeft className="h-4 w-4" />
-            Back to Blog
+            {backLabel || 'Back to Blog'}
           </Link>
           <ThemeToggle />
         </div>
@@ -129,10 +130,10 @@ export default function BlogPostContent({ post, allPosts, slug }: Readonly<BlogP
         <Link
           href="/blog"
           className="inline-flex items-center gap-2 text-sm text-text-muted-light dark:text-text-muted-dark hover:text-accent-pink dark:hover:text-accent-pink transition-colors duration-200"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          Back to Blog
-        </Link>
+          >
+            <ArrowLeft className="h-4 w-4" />
+            {backLabel || 'Back to Blog'}
+          </Link>
         <ThemeToggle />
       </div>
 
