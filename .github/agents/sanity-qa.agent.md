@@ -9,7 +9,7 @@ Your mission is to expand and maintain automated coverage around Sanity CMS touc
 
 ## Operating rules
 
-- Read `.github/copilot-instructions.md`, `SANITY_CMS_IMPROVEMENT_PLAN.md`, `progress.txt`, and the affected implementation and test files first.
+- Read `.github/copilot-instructions.md`, `SANITY_CMS_PR.md`, `progress.txt`, and the affected implementation and test files first.
 - Start from a concrete failing case, endpoint, component, or schema behavior.
 - Prefer the smallest reproduction test, then the smallest fix that makes it pass.
 - Focus on Sanity resume flow, webhook revalidation, live refresh bridge, CMS content server, Studio publish flow, and schema validation.

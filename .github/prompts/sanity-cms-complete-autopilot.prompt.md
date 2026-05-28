@@ -10,7 +10,7 @@ Your mission is to complete the Sanity CMS migration program end-to-end so the S
 ## Mandatory first reads
 
 1. `.github/copilot-instructions.md`
-2. `SANITY_CMS_IMPROVEMENT_PLAN.md`
+2. `SANITY_CMS_PR.md`
 3. `progress.txt`
 4. `scripts/sanity/README.md`
 5. `studio/README.md`
@@ -109,7 +109,7 @@ When resume content changes:
 
 ## Documentation policy
 
-- Keep `SANITY_CMS_IMPROVEMENT_PLAN.md` updated when the roadmap changes.
+- Keep `SANITY_CMS_PR.md` updated when the roadmap changes.
 - Keep `scripts/sanity/README.md` updated with commands, env vars, and recovery steps.
 - Keep `progress.txt` updated after every successful slice.
 - If a new prompt file is created, link it from the plan so future agents can find it quickly.
@@ -139,7 +139,7 @@ If blocked, report:
 Use this in a new chat to continue from the current state:
 
 ```prompt
-Read .github/copilot-instructions.md, SANITY_CMS_IMPROVEMENT_PLAN.md, progress.txt, and the current Sanity QA agent prompt first.
+Read .github/copilot-instructions.md, SANITY_CMS_PR.md, progress.txt, and the current Sanity QA agent prompt first.
 Continue the Sanity CMS completion work slice by slice.
 The resume publish flow and webhook refresh are already working, so pick the next unresolved slice from the prompt order and implement only that slice.
 Keep the worktree clean by validating each slice, updating progress.txt, and creating exactly one conventional commit per slice.
