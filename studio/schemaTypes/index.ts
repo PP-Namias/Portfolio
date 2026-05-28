@@ -9,6 +9,8 @@ import author from './author'
 import heroSection from './heroSection'
 import aboutSection from './aboutSection'
 import profile from './profile'
+import seoSettings from './seoSettings'
+import mediaSettings from './mediaSettings'
 import experience from './experience'
 import recommendation from './recommendation'
 import project from './project'
@@ -30,6 +32,8 @@ export const schemaTypes = [
   heroSection,
   aboutSection,
   profile,
+  seoSettings,
+  mediaSettings,
   experience,
   recommendation,
   project,
