@@ -1,0 +1,189 @@
+{
+  "projectName": "Portfolio - Sanity Schema Enhancement",
+  "version": "1.0.0",
+  "branchName": "feature/sanity-schema-enhancement",
+  "description": "Priority-driven Sanity schema expansion plan to improve SEO, media handling, profile consistency, editorial control, and content maintainability for the portfolio.",
+  "owner": "AI Agent (Ralph)",
+  "startedDate": "2026-05-28",
+  "targetCompletion": "2026-06-10",
+  "planSummary": {
+    "goal": "Expand the Sanity content model so the portfolio becomes easier to manage, safer to maintain, and more flexible for future editorial updates.",
+    "approach": [
+      "Start with site-wide SEO and media settings so the most reused concerns are centralized first.",
+      "Formalize the profile singleton as the canonical identity/contact source.",
+      "Enrich asset metadata and the most important showcase content types (projects and experience).",
+      "Improve blog metadata, navigation/footer links, and testimonial handling.",
+      "Expand siteSettings and add content status / preview helpers once core content structure is stable."
+    ],
+    "nonGoals": [
+      "Rewriting the portfolio UI beyond what is needed to consume the new schema fields.",
+      "Removing existing content sources before the new schema paths are validated.",
+      "Adding unrelated CMS collections that do not support the portfolio directly."
+    ]
+  },
+  "priorityPlan": [
+    {
+      "id": "SCHEMA-001",
+      "title": "Add seoSettings singleton",
+      "priority": 1,
+      "status": "Not Started",
+      "why": "Controls metadata and search behavior centrally.",
+      "deliverables": [
+        "seoSettings schema",
+        "SEO field defaults",
+        "Runtime wiring plan for site metadata"
+      ],
+      "acceptanceCriteria": [
+        "Site title, description, canonical URL, and social preview settings are editable in Sanity.",
+        "Noindex / nofollow behavior can be controlled without code changes."
+      ]
+    },
+    {
+      "id": "SCHEMA-002",
+      "title": "Add mediaSettings singleton",
+      "priority": 1,
+      "status": "Not Started",
+      "why": "Standardizes media defaults and improves accessibility consistency.",
+      "deliverables": [
+        "mediaSettings schema",
+        "Fallback image and alt guidance fields",
+        "Image quality and aspect preset fields"
+      ],
+      "acceptanceCriteria": [
+        "Media defaults are centrally managed.",
+        "Asset metadata can be reused across sections without duplicating logic."
+      ]
+    },
+    {
+      "id": "SCHEMA-003",
+      "title": "Formalize profile singleton",
+      "priority": 1,
+      "status": "Not Started",
+      "why": "Creates one authoritative source for identity and contact details.",
+      "deliverables": [
+        "profile schema alignment",
+        "Contact and social link canonical fields",
+        "Resume and availability fields"
+      ],
+      "acceptanceCriteria": [
+        "Name, title, bio, avatar, and contact methods live in one profile record.",
+        "The runtime can consume the profile as a single source of truth."
+      ]
+    },
+    {
+      "id": "SCHEMA-004",
+      "title": "Enrich asset metadata",
+      "priority": 1,
+      "status": "Not Started",
+      "why": "Improves accessibility, editorial quality, and reuse of media.",
+      "deliverables": [
+        "alt text, caption, credit, source, license fields",
+        "hotspot/focal point support",
+        "dominant color metadata where useful"
+      ],
+      "acceptanceCriteria": [
+        "Media-bearing schemas can carry editorial metadata consistently.",
+        "The UI can surface richer image information where needed."
+      ]
+    },
+    {
+      "id": "SCHEMA-005",
+      "title": "Expand projects and experience",
+      "priority": 1,
+      "status": "Not Started",
+      "why": "These are the strongest portfolio showcase areas.",
+      "deliverables": [
+        "Project challenge/solution/result and featured media",
+        "Project sort order, status, and impact metrics",
+        "Experience achievements, tools, logo, gallery, and story fields"
+      ],
+      "acceptanceCriteria": [
+        "Projects and experience can tell a richer story without hardcoding in the app.",
+        "The schemas support featured content and editorial ordering."
+      ]
+    },
+    {
+      "id": "SCHEMA-006",
+      "title": "Improve blog metadata and link centralization",
+      "priority": 2,
+      "status": "Not Started",
+      "why": "Blog and global links benefit from better editorial control.",
+      "deliverables": [
+        "Blog SEO/editor fields",
+        "Navigation and footer link source",
+        "Related content references"
+      ],
+      "acceptanceCriteria": [
+        "Blog posts can be published with better metadata.",
+        "Navigation/footer links are centrally managed."
+      ]
+    },
+    {
+      "id": "SCHEMA-007",
+      "title": "Replace placeholder recommendations",
+      "priority": 2,
+      "status": "Not Started",
+      "why": "Testimonials need to be editor-managed and credible.",
+      "deliverables": [
+        "Testimonial/recommendation editorial model",
+        "Featured flag and relationship context",
+        "Migration plan for real content"
+      ],
+      "acceptanceCriteria": [
+        "Placeholder content can be replaced with real entries.",
+        "The model is simple enough for ongoing maintenance."
+      ]
+    },
+    {
+      "id": "SCHEMA-008",
+      "title": "Expand siteSettings and status fields",
+      "priority": 3,
+      "status": "Not Started",
+      "why": "Helps keep copy and editorial intent centralized.",
+      "deliverables": [
+        "Section copy and CTA label fields",
+        "Empty state and banner copy",
+        "draft/published/archived/featured/pinned status model"
+      ],
+      "acceptanceCriteria": [
+        "Global copy and content state can be adjusted in Sanity.",
+        "Content lifecycle is explicit in the schema."
+      ]
+    },
+    {
+      "id": "SCHEMA-009",
+      "title": "Add preview and revalidation helpers",
+      "priority": 3,
+      "status": "Not Started",
+      "why": "Supports safer editorial workflows after content structure is expanded.",
+      "deliverables": [
+        "Preview path documentation fields",
+        "Content sync marker fields",
+        "Webhook/revalidation notes"
+      ],
+      "acceptanceCriteria": [
+        "Preview and refresh flows remain documented in the CMS.",
+        "Operational content is discoverable in Studio."
+      ]
+    }
+  ],
+  "implementationOrder": [
+    "seoSettings singleton",
+    "mediaSettings singleton",
+    "profile singleton",
+    "asset metadata enrichment",
+    "projects and experience expansion",
+    "blog metadata and nav/footer centralization",
+    "testimonials / recommendations",
+    "siteSettings and content status fields",
+    "preview and revalidation helpers"
+  ],
+  "successMetrics": {
+    "editorialControl": "The most reused site-wide concerns live in Sanity, not hardcoded in the app.",
+    "mediaQuality": "Assets have consistent metadata and fallback behavior.",
+    "contentFlexibility": "Projects, experience, and blog content can evolve without code churn.",
+    "maintainability": "Navigation, footer, and status handling are centralized and predictable.",
+    "workflow": "Preview and revalidation notes stay documented alongside the schema."
+  },
+  "nextStep": "Implement SCHEMA-001 and SCHEMA-002 first, then wire the profile singleton and media metadata into the runtime layer."
+}
