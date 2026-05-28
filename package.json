@@ -28,6 +28,9 @@
     "lint": "next lint",
     "test": "vitest run",
     "test:watch": "vitest",
+    "cloudflare:build": "opennextjs-cloudflare build --dangerouslyUseUnsupportedNextVersion",
+    "cloudflare:dev": "wrangler dev",
+    "cloudflare:deploy": "opennextjs-cloudflare deploy --dangerouslyUseUnsupportedNextVersion",
     "sanity:dry-run": "node ./scripts/sanity/import.mjs --dry-run",
     "sanity:import": "node ./scripts/sanity/import.mjs",
     "sanity:parity": "node ./scripts/sanity/parity-report.mjs",
@@ -49,6 +52,7 @@
     "remark-gfm": "^4.0.1"
   },
   "devDependencies": {
+    "@opennextjs/cloudflare": "^1.19.11",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^14.6.1",
@@ -62,6 +66,7 @@
     "eslint-config-next": "14.2.35",
     "jsdom": "^28.1.0",
     "postcss": "^8.5.15",
+    "wrangler": "^4.86.0",
     "tailwindcss": "^3.4.17",
     "typescript": "^5.7.3",
     "vitest": "^4.0.18"

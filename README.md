@@ -26,7 +26,7 @@ This repository powers [namias.tech](https://namias.tech), a production portfoli
 - **CMS:** Sanity v3 (Studio + Content Lake + CDN)
 - **Content:** `react-markdown`, `remark-gfm`, `rehype-highlight`
 - **Testing:** Vitest + Testing Library + jsdom
-- **Hosting target:** AWS Amplify (`output: 'standalone'`)
+- **Hosting target:** Cloudflare Workers via OpenNext
 
 ## Local development
 
@@ -59,6 +59,9 @@ Open [http://localhost:3000](http://localhost:3000).
 - `npm run sanity:parity` — compare expected source counts vs dataset counts
 - `npm run sanity:parity:strict` — same parity report, returns non-zero on mismatch
 - `npm run sanity:readiness` — readiness-only check (no count comparisons)
+- `npm run cloudflare:build` — build and adapt the app for Cloudflare Workers
+- `npm run cloudflare:dev` — preview the production build in Wrangler
+- `npm run cloudflare:deploy` — build and deploy to Cloudflare Workers
 - `npm --prefix studio run dev` — start Sanity Studio locally
 
 ## Environment variables
@@ -91,6 +94,14 @@ Sanity-hosted images and files are routed through the app’s server-side media 
 - Optional signing secret: `SANITY_MEDIA_GATEWAY_SECRET`
 - Keep all Sanity credentials server-side only
 - Preserve the existing fallback paths while rollout is staged
+
+### Cloudflare deployment
+
+Use the root Cloudflare worker for the portfolio app and the separate `studio/` package for the CMS editor.
+
+- Root app deploys through `opennextjs-cloudflare`
+- Studio deploys from `studio/` as its own Sanity app
+- Add `NEXT_PUBLIC_SANITY_STUDIO_URL` if you want the `/studio` landing page to open a hosted editor URL directly
 
 ## Quality checks
 
