@@ -19,6 +19,7 @@ Deploy the Sanity CMS integration on Cloudflare so this portfolio has a working 
 - The remaining blocker is Cloudflare/Sanity secret and dashboard setup.
 - The root website build passes.
 - The Studio build passes.
+- Hosted Studio URL: `https://namias-cms.sanity.studio/`
 
 ## What Needs To Exist
 
@@ -111,6 +112,7 @@ npm --prefix studio run deploy
 - `NEXT_PUBLIC_SANITY_DATASET`
 - `SANITY_REVALIDATE_SECRET`
 - `NEXT_PUBLIC_SITE_URL`
+- `NEXT_PUBLIC_SANITY_STUDIO_URL`
 
 ## Best Practice Notes
 
@@ -137,7 +139,8 @@ npm --prefix studio run deploy
 2. Revoke any exposed Cloudflare token and replace it with the new one.
 3. In Cloudflare, ensure the `namias` Worker has an active URL.
 4. In Sanity, confirm the studio deploy token and webhook secret.
-5. Merge the branch to `main` to trigger auto-deploy.
+5. Update `NEXT_PUBLIC_SANITY_STUDIO_URL` to `https://namias-cms.sanity.studio/`.
+6. Merge the branch to `main` to trigger auto-deploy.
 
 ## Risks
 

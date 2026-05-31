@@ -14,7 +14,7 @@ const projectId = requireStudioEnv('SANITY_STUDIO_PROJECT_ID', 'NEXT_PUBLIC_SANI
 const dataset = requireStudioEnv('SANITY_STUDIO_DATASET', 'NEXT_PUBLIC_SANITY_DATASET')
 
 const homePageLocation = (title: string) => ({
-  message: 'This document previews on the localhost homepage (`/`).',
+  message: 'This document previews on the portfolio homepage (`/`).',
   tone: 'positive' as const,
   locations: [
     {
@@ -25,7 +25,7 @@ const homePageLocation = (title: string) => ({
 })
 
 const blogPostLocation = {
-  message: 'This document previews in the localhost blog route (`/blog`).',
+  message: 'This document previews in the portfolio blog route (`/blog`).',
   tone: 'positive' as const,
   locations: [
     {
@@ -37,7 +37,7 @@ const blogPostLocation = {
 
 export default defineConfig({
   name: 'default',
-  title: 'Namias CMS Studio',
+  title: 'Namias CMS | Interview Studio',
 
   projectId,
   dataset,
@@ -50,7 +50,7 @@ export default defineConfig({
           .items([
             S.listItem().title('Homepage').child(
               S.list()
-                .title('Homepage')
+                .title('Homepage Story')
                 .items([
                   S.listItem().title('Hero & shell').child(
                     S.list()
@@ -97,7 +97,7 @@ export default defineConfig({
             ),
             S.listItem().title('Support Data').child(
               S.list()
-                .title('Support Data')
+                .title('Support Data & Proof')
                 .items([
                   S.listItem().title('Profile').child(S.document().schemaType('profile').documentId('profile')),
                   S.listItem().title('Memberships').child(S.documentTypeList('membership').title('Memberships')),
@@ -106,7 +106,7 @@ export default defineConfig({
             ),
             S.listItem().title('Blog').child(
               S.list()
-                .title('Blog')
+                .title('Blog Publishing')
                 .items([
                   S.listItem().title('Posts').child(S.documentTypeList('post').title('Posts')),
                   S.listItem().title('Authors').child(S.documentTypeList('author').title('Authors')),
@@ -115,7 +115,7 @@ export default defineConfig({
             ),
             S.listItem().title('Reference Data').child(
               S.list()
-                .title('Reference Data')
+                .title('Reference Data & Taxonomy')
                 .items([
                   S.listItem()
                     .title('Certification Categories')

@@ -14,6 +14,8 @@ Context:
 - The repo has a `/studio` landing page in the main app.
 - Cloudflare config uses `wrangler.jsonc` with `nodejs_compat` and `.open-next` assets.
 - Sanity webhook revalidation already exists at `src/app/api/sanity/webhook/route.ts`.
+- The hosted Studio URL is `https://namias-cms.sanity.studio/`.
+- The studio CLI config should include `appId: 'rpjnth2yentmovjzzw6tx0xe'`.
 
 Tasks:
 1. Install dependencies and refresh `package-lock.json`.
@@ -21,6 +23,7 @@ Tasks:
 3. Verify the root app still builds and the new `/studio` page renders.
 4. Verify the Studio package still builds and can be deployed separately.
 5. Confirm the new docs match the real deployment flow.
+6. Ensure the portfolio `/studio` landing page points to the hosted Studio URL.
 
 Deliverables:
 - Exact files changed.
