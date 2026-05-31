@@ -160,12 +160,37 @@ count(*[_type == "post" && published == true])
 
 ```groq
 {
-  "homepageCount": count(*[_type in ["heroSection", "aboutSection", "profile", "techStack", "siteSettings", "resume"]]),
-  "blogCount": count(*[_type == "post" && defined(slug.current)]),
-  "projectCount": count(*[_type == "project"]),
-  "experienceCount": count(*[_type == "experience"]),
-  "certificationCount": count(*[_type == "certification"]),
-  "galleryCount": count(*[_type == "galleryImage"])
+  "homepageShell": *[_type in ["heroSection", "aboutSection", "profile", "techStack", "siteSettings", "resume"]]{
+    _type,
+    _id,
+    "label": coalesce(title, fullName, siteTitle)
+  },
+  "blogPosts": *[_type == "post" && defined(slug.current)] | order(publishedAt desc){
+    _id,
+    title,
+    "slug": slug.current,
+    published,
+    featured
+  },
+  "featuredProjects": *[_type == "project" && featured == true] | order(order asc, featuredRank asc, title asc){
+    _id,
+    title,
+    order,
+    featuredRank,
+    status
+  },
+  "experienceTimeline": *[_type == "experience"] | order(order asc, startDate desc){
+    _id,
+    role,
+    company,
+    status
+  },
+  "certificationStrip": *[_type == "certification"] | order(order asc, issuedAt desc){
+    _id,
+    title,
+    "issuer": issuer->title,
+    issuedAt
+  }
 }
 ```
 

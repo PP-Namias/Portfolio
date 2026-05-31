@@ -134,9 +134,9 @@ export default defineConfig({
               S.list()
                 .title('Interview Demo')
                 .items([
-                  S.listItem().title('Vision Walkthrough').child(S.document().schemaType('siteSettings').documentId('siteSettings')),
-                  S.listItem().title('Homepage Live Preview').child(S.document().schemaType('heroSection').documentId('heroSection')),
-                  S.listItem().title('Blog Live Preview').child(S.documentTypeList('post').title('Posts')),
+                  S.listItem().title('1. Preview Foundation').child(S.document().schemaType('siteSettings').documentId('siteSettings')),
+                  S.listItem().title('2. Homepage Live Preview').child(S.document().schemaType('heroSection').documentId('heroSection')),
+                  S.listItem().title('3. Blog Live Preview').child(S.documentTypeList('post').title('Posts')),
                 ])
             ),
           ])
