@@ -7,7 +7,8 @@ Use these queries in Sanity Vision when checking homepage structure, preview par
 1. Run the homepage shell queries first to confirm the structure and preview labels.
 2. Check the resume selection queries next to confirm the active file and fallback URL.
 3. Use the blog and collection queries to verify counts and ordering before and after imports.
-4. Finish with the reference and support data query to confirm the homepage inputs stay aligned.
+4. Finish with the interview demo queries to confirm the content model is ready for presentation.
+5. Use the reference and support data query to confirm the homepage inputs stay aligned.
 
 ## Homepage shell
 
@@ -83,6 +84,16 @@ count(*[_type == "post" && published == true])
 ```
 
 ```groq
+*[_type == "project" && featured == true] | order(order asc, featuredRank asc, title asc){
+  _id,
+  title,
+  order,
+  featuredRank,
+  status
+}
+```
+
+```groq
 *[_type == "experience"] | order(order asc, startDate desc){
   _id,
   role,
@@ -90,6 +101,16 @@ count(*[_type == "post" && published == true])
   location,
   startDate,
   endDate
+}
+```
+
+```groq
+*[_type == "experience" && defined(featuredStory)] | order(order asc, startDate desc){
+  _id,
+  role,
+  company,
+  status,
+  "storyLength": length(featuredStory)
 }
 ```
 
@@ -104,6 +125,17 @@ count(*[_type == "post" && published == true])
 ```
 
 ```groq
+*[_type == "certification" && defined(credentialUrl)] | order(order asc, issuedAt desc){
+  _id,
+  title,
+  "issuer": issuer->title,
+  "category": category->title,
+  issuedAt,
+  credentialUrl
+}
+```
+
+```groq
 *[_type == "galleryImage"] | order(order asc, capturedAt desc){
   _id,
   title,
@@ -111,6 +143,39 @@ count(*[_type == "post" && published == true])
   "category": category->title,
   capturedAt,
   tags
+}
+```
+
+```groq
+*[_type == "galleryImage" && defined(image.asset)] | order(order asc, capturedAt desc){
+  _id,
+  title,
+  mediaType,
+  "category": category->title,
+  capturedAt
+}
+```
+
+## Interview demo
+
+```groq
+{
+  "homepageCount": count(*[_type in ["heroSection", "aboutSection", "profile", "techStack", "siteSettings", "resume"]]),
+  "blogCount": count(*[_type == "post" && defined(slug.current)]),
+  "projectCount": count(*[_type == "project"]),
+  "experienceCount": count(*[_type == "experience"]),
+  "certificationCount": count(*[_type == "certification"]),
+  "galleryCount": count(*[_type == "galleryImage"])
+}
+```
+
+```groq
+{
+  "previewTargets": *[_type in ["heroSection", "aboutSection", "siteSettings", "post"]][]{
+    _type,
+    _id,
+    "label": coalesce(title, fullName, siteTitle)
+  }
 }
 ```
 

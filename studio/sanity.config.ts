@@ -35,6 +35,8 @@ const blogPostLocation = {
   ],
 }
 
+const demoGroupTitle = 'Interview Demo'
+
 export default defineConfig({
   name: 'default',
   title: 'Namias CMS | Interview Studio',
@@ -126,6 +128,15 @@ export default defineConfig({
                   S.listItem()
                     .title('Gallery Categories')
                     .child(S.documentTypeList('galleryCategory').title('Gallery Categories')),
+                ])
+            ),
+            S.listItem().title(demoGroupTitle).child(
+              S.list()
+                .title('Interview Demo')
+                .items([
+                  S.listItem().title('Vision Walkthrough').child(S.document().schemaType('siteSettings').documentId('siteSettings')),
+                  S.listItem().title('Homepage Live Preview').child(S.document().schemaType('heroSection').documentId('heroSection')),
+                  S.listItem().title('Blog Live Preview').child(S.documentTypeList('post').title('Posts')),
                 ])
             ),
           ])
