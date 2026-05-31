@@ -92,4 +92,21 @@ export default defineType({
       subtitle: 'category.title',
     },
   },
+  orderings: [
+    {
+      title: 'Order, Asc',
+      name: 'orderAsc',
+      by: [{field: 'order', direction: 'asc'}],
+    },
+    {
+      title: 'Captured Date, New',
+      name: 'capturedAtDesc',
+      by: [{field: 'capturedAt', direction: 'desc'}],
+    },
+    {
+      title: 'Title, A-Z',
+      name: 'titleAsc',
+      by: [{field: 'title', direction: 'asc'}],
+    },
+  ],
 })
