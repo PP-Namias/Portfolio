@@ -11,6 +11,15 @@ Deploy the Sanity CMS integration on Cloudflare so this portfolio has a working 
 - The current Cloudflare build is failing during `npx opennextjs-cloudflare build`.
 - The existing app uses Next.js 14, which is already a deployment constraint to validate against Cloudflare/OpenNext compatibility.
 
+## Working Status
+
+- Root app Cloudflare build is wired through OpenNext.
+- `/studio` exists as a portfolio landing route for the CMS.
+- Automated deployment is configured in GitHub Actions.
+- The remaining blocker is Cloudflare/Sanity secret and dashboard setup.
+- The root website build passes.
+- The Studio build passes.
+
 ## What Needs To Exist
 
 - A deployable Cloudflare app build.
@@ -61,6 +70,55 @@ Deploy the Sanity CMS integration on Cloudflare so this portfolio has a working 
    - Confirm Studio access.
    - Confirm content updates propagate.
 
+## Runbook
+
+### Local website
+
+```bash
+npm run build
+```
+
+### Local Studio
+
+```bash
+npm --prefix studio run build
+```
+
+### Cloudflare worker build
+
+```bash
+npm run cloudflare:build
+```
+
+### Cloudflare worker deploy
+
+```bash
+npm run cloudflare:deploy
+```
+
+### Sanity Studio deploy
+
+```bash
+npm --prefix studio run deploy
+```
+
+## Required GitHub Secrets
+
+- `CLOUDFLARE_API_TOKEN`
+- `CLOUDFLARE_ACCOUNT_ID`
+- `SANITY_STUDIO_DEPLOY_TOKEN`
+- `NEXT_PUBLIC_SANITY_PROJECT_ID`
+- `NEXT_PUBLIC_SANITY_DATASET`
+- `SANITY_REVALIDATE_SECRET`
+- `NEXT_PUBLIC_SITE_URL`
+
+## Best Practice Notes
+
+- Keep real secrets out of the repository.
+- Use `.env.example` for copy-paste defaults.
+- Revoke and replace any exposed token before deploying.
+- Prefer a dedicated hosted Studio URL when you are ready to present the CMS publicly.
+
 ## Verification Checklist
 
 - `npm run sanity:dry-run`
@@ -70,6 +128,16 @@ Deploy the Sanity CMS integration on Cloudflare so this portfolio has a working 
 - Deployed site loads without runtime errors
 - Sanity-powered content is visible
 - Webhook revalidation works after content edits
+- GitHub Actions deploy workflow runs on `main`
+- Cloudflare workers.dev URL is enabled or a custom domain is attached
+
+## Dashboard Steps
+
+1. Add the GitHub secrets listed above.
+2. Revoke any exposed Cloudflare token and replace it with the new one.
+3. In Cloudflare, ensure the `namias` Worker has an active URL.
+4. In Sanity, confirm the studio deploy token and webhook secret.
+5. Merge the branch to `main` to trigger auto-deploy.
 
 ## Risks
 
@@ -106,4 +174,25 @@ Required output:
 - Explain the build issue and the fix.
 - Confirm the verification commands you ran.
 - Call out anything still blocked or needing a Cloudflare dashboard change.
+```
+
+## Next Agent Prompt
+
+```text
+Continue from the current feature/sanity-cloudflare-deploy branch.
+
+Goal:
+Keep the Cloudflare and Sanity Studio deployment working, then verify the repo is ready for PR and auto-deploy.
+
+Tasks:
+1. Verify the root website build.
+2. Verify the Sanity Studio build.
+3. Confirm the docs match the actual deployment flow.
+4. Keep the deployment plan updated with any new blockers or dashboard steps.
+5. Do not store any real secrets in the repo.
+
+Output:
+- What passed.
+- What still needs dashboard changes.
+- Whether the branch is PR-ready.
 ```

@@ -84,6 +84,8 @@ SANITY_STUDIO_DEPLOY_TOKEN=your_studio_deploy_token
 SANITY_REVALIDATE_SECRET=your_revalidate_secret
 SANITY_MEDIA_GATEWAY_SECRET=your_media_gateway_secret
 SANITY_CUTOVER_ENABLED=true
+CLOUDFLARE_API_TOKEN=your_cloudflare_api_token
+CLOUDFLARE_ACCOUNT_ID=4bd772a73fb69e405e81422ee07a34a6
 ```
 
 `.env.local` overrides `.env` for private values, and the Sanity migration runner loads both files automatically.
@@ -114,6 +116,13 @@ Use the root Cloudflare worker for the portfolio app and the separate `studio/` 
 - `NEXT_PUBLIC_SANITY_DATASET` -> `production`
 - `SANITY_REVALIDATE_SECRET` -> your random secret string
 - `NEXT_PUBLIC_SITE_URL` -> deployed worker URL
+
+### Best practice
+
+- Keep real values in `.env.local` only.
+- Use `.env.example` as the copy-paste template.
+- Put deployment credentials in GitHub Actions secrets, not in the repo.
+- Revoke the Cloudflare token you pasted here and create a new one before deploy.
 
 ## Quality checks
 
