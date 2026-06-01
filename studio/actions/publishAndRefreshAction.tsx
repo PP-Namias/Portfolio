@@ -52,14 +52,17 @@ export function createPublishAndRefreshAction(
       return null
     }
 
+    const originalDisabled = Boolean(originalResult.disabled)
+    const publishDisabled = Boolean(publish.disabled)
+
     return {
       ...originalResult,
       label: isPublishing ? 'Publishing…' : originalResult.label,
-      disabled: originalResult.disabled || publish.disabled || isPublishing,
+      disabled: originalDisabled || publishDisabled || isPublishing,
       onHandle: () => {
         refreshTriggeredRef.current = false
         setIsPublishing(true)
-        originalResult.onHandle()
+        originalResult.onHandle?.()
       },
     }
   }

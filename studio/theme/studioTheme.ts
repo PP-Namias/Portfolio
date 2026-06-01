@@ -2,6 +2,7 @@
  * Studio theme tokens. Applied to the studio shell via the `theme` config
  * key in `sanity.config.ts`. Pairs with the portfolio's accent palette.
  */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export const studioTheme = {
   color: {
     dark: {
@@ -24,9 +25,5 @@ export const studioTheme = {
       bold: 700,
     },
   },
-  radius: {
-    sm: 6,
-    md: 10,
-    lg: 14,
-  },
-} as const
+  radius: [6, 10, 14],
+} as any

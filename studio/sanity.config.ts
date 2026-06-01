@@ -187,8 +187,9 @@ export default defineConfig({
           : originalAction,
       ),
     ],
-    badges: (prev, {documentType}) => {
-      if (!documentType) return prev
+    badges: (prev, context) => {
+      const schemaType = (context as {schemaType?: string}).schemaType
+      if (!schemaType) return prev
       return [...prev, ...studioBadges]
     },
     newDocumentOptions: (prev, {creationContext}) => {
@@ -203,18 +204,10 @@ export default defineConfig({
     types: schemaTypes,
     templates: [
       ...Object.values(templateRegistry).flat(),
-    ],
+    ] as any,
   },
 
   components: {
     welcome: Welcome,
   },
 })
-
-declare module 'sanity' {
-  interface StudioConfig {
-    components?: {
-      welcome?: typeof Welcome
-    }
-  }
-}

@@ -1,5 +1,5 @@
 import React, {useMemo} from 'react'
-import {useDocumentPane, useFormValue} from 'sanity'
+import {useFormValue} from 'sanity'
 
 type SeoFields = {
   title?: string
@@ -39,7 +39,6 @@ function getSiteUrl(): string {
 }
 
 export function SeoPreview() {
-  const {documentId, documentType} = useDocumentPane() as {documentId?: string; documentType?: string}
   const values = (useFormValue([]) || {}) as Record<string, unknown>
 
   const seo: SeoFields = useMemo(() => {
@@ -137,12 +136,6 @@ export function SeoPreview() {
           </ul>
         )}
       </div>
-
-      {documentId && documentType ? (
-        <div style={{fontSize: 11, color: 'rgba(0,0,0,0.45)'}}>
-          Document: {documentType}#{documentId}
-        </div>
-      ) : null}
     </div>
   )
 }

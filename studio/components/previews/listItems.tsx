@@ -1,9 +1,20 @@
 import React from 'react'
-import type {ListItemProps} from 'sanity'
 
 import {formatDuration} from '../../utils/text'
 
-export function ProjectListItem(props: ListItemProps) {
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
+type ListItemPropsLike = {
+  title?: React.ReactNode
+  subtitle?: React.ReactNode
+  media?: React.ReactNode
+  status?: unknown
+  featured?: boolean
+  startDate?: unknown
+  endDate?: unknown
+}
+
+export function ProjectListItem(props: ListItemPropsLike & Record<string, any>) {
   const {title, subtitle, media, status, featured} = props
   const statusColor: Record<string, string> = {
     completed: '#22c55e',
@@ -42,15 +53,15 @@ export function ProjectListItem(props: ListItemProps) {
             flexShrink: 0,
           }}
         >
-          {(title || 'P').charAt(0).toUpperCase()}
+          {(String(title ?? 'P')).charAt(0).toUpperCase()}
         </div>
       )}
       <div style={{flex: 1, minWidth: 0}}>
         <div style={{fontWeight: 600, fontSize: 14, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'}}>
-          {title}
+          {title as React.ReactNode}
         </div>
         <div style={{fontSize: 12, color: 'rgba(255,255,255,0.55)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'}}>
-          {subtitle}
+          {subtitle as React.ReactNode}
         </div>
       </div>
       {status ? (
@@ -60,20 +71,20 @@ export function ProjectListItem(props: ListItemProps) {
             fontWeight: 700,
             letterSpacing: 1,
             textTransform: 'uppercase',
-            color: statusColor[status as string] || 'rgba(255,255,255,0.6)',
+            color: statusColor[String(status)] || 'rgba(255,255,255,0.6)',
             padding: '2px 8px',
             borderRadius: 999,
             background: 'rgba(255,255,255,0.06)',
           }}
         >
-          {status}
+          {String(status)}
         </span>
       ) : null}
     </div>
   )
 }
 
-export function ExperienceListItem(props: ListItemProps) {
+export function ExperienceListItem(props: ListItemPropsLike & Record<string, any>) {
   const {title, subtitle, status, startDate, endDate} = props
   const duration = formatDuration(startDate as unknown, endDate as unknown)
 
@@ -93,14 +104,14 @@ export function ExperienceListItem(props: ListItemProps) {
           flexShrink: 0,
         }}
       >
-        {(title || 'X').charAt(0).toUpperCase()}
+        {(String(title ?? 'X')).charAt(0).toUpperCase()}
       </div>
       <div style={{flex: 1, minWidth: 0}}>
         <div style={{fontWeight: 600, fontSize: 14, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'}}>
-          {title}
+          {title as React.ReactNode}
         </div>
         <div style={{fontSize: 12, color: 'rgba(255,255,255,0.55)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'}}>
-          {subtitle}
+          {subtitle as React.ReactNode}
         </div>
       </div>
       {duration ? (
@@ -126,7 +137,7 @@ export function ExperienceListItem(props: ListItemProps) {
   )
 }
 
-export function PostListItem(props: ListItemProps) {
+export function PostListItem(props: ListItemPropsLike & Record<string, any>) {
   const {title, subtitle, status, media} = props
 
   return (
@@ -153,9 +164,9 @@ export function PostListItem(props: ListItemProps) {
       )}
       <div style={{flex: 1, minWidth: 0}}>
         <div style={{fontWeight: 600, fontSize: 14, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'}}>
-          {title}
+          {title as React.ReactNode}
         </div>
-        <div style={{fontSize: 12, color: 'rgba(255,255,255,0.55)'}}>{subtitle}</div>
+        <div style={{fontSize: 12, color: 'rgba(255,255,255,0.55)'}}>{subtitle as React.ReactNode}</div>
       </div>
       {status ? (
         <span

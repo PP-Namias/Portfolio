@@ -11,18 +11,18 @@ export default defineType({
       type: 'array',
       description: 'Rich text shown in the About section.',
       of: [
-        defineField({
+        {
           type: 'block',
           styles: [{title: 'Normal', value: 'normal'}],
-          lists: [],
+          lists: [] as never[],
           marks: {
             decorators: [
               {title: 'Strong', value: 'strong'},
               {title: 'Emphasis', value: 'em'},
             ],
-            annotations: [],
+            annotations: [] as never[],
           },
-        }),
+        } as any,
       ],
     }),
     defineField({

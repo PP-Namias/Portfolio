@@ -1,8 +1,7 @@
 import React, {useState} from 'react'
 import {useDocumentOperation, type DocumentActionComponent, type DocumentActionProps} from 'sanity'
 
-import {getStudioEnvSnapshot} from '../../env'
-import {getWebhookTriggerUrl} from '../../env'
+import {getStudioEnvSnapshot, getWebhookTriggerUrl} from '../env'
 
 const REVALIDATE_PATHS = ['/', '/blog', '/blog/[slug]', '/sitemap.xml', '/projects', '/projects/[slug]']
 
@@ -102,11 +101,18 @@ export const publishAndRevalidateAction: DocumentActionComponent = (props: Docum
     }
   }
 
+  const draftPublishAt = (draft as {publishAt?: string} | undefined)?.publishAt
+  const isScheduledInFuture =
+    typeof draftPublishAt === 'string' && new Date(draftPublishAt).getTime() > Date.now()
+
   return {
     label: isPublishing ? 'Publishing…' : 'Publish & revalidate',
-    disabled: Boolean(publish.disabled) || isPublishing || Boolean(draft?.publishAt && new Date(draft.publishAt) > new Date()),
+    disabled: Boolean(publish.disabled) || isPublishing || isScheduledInFuture,
     icon: () => '↻',
-    onHandle: () => setShowConfirm(true),
+    onHandle: () => {
+      setShowConfirm(true)
+      onComplete?.()
+    },
   }
 }
 
@@ -130,7 +136,7 @@ export const PublishAndRevalidateDialog = ({
         body: JSON.stringify({documentId, documentType, source: 'sanity-studio'}),
       })
     } catch {
-      // Swallow — webhook errors should not block the demo.
+      // Swallow - webhook errors should not block the demo.
     } finally {
       onResolved()
     }
@@ -142,7 +148,7 @@ export const PublishAndRevalidateDialog = ({
 
   return (
     <ConfirmDialog
-      paths={REVALIDATE_PATHS as unknown as string[]}
+      paths={REVALIDATE_PATHS as string[]}
       documentId={documentId}
       documentType={documentType}
       onCancel={() => {

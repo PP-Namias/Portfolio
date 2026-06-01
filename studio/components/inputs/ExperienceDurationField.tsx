@@ -3,10 +3,13 @@ import {set, type StringInputProps} from 'sanity'
 
 import {formatDuration, parseDateLike} from '../../utils/text'
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 export function ExperienceDurationField(props: StringInputProps) {
-  const {value, document, onChange} = props
-  const startDate = (document?.startDate as unknown) ?? null
-  const endDate = (document?.endDate as unknown) ?? null
+  const {value, onChange} = props
+  const document = (props as unknown as {document?: any}).document
+  const startDate = document?.startDate ?? null
+  const endDate = document?.endDate ?? null
 
   const start = parseDateLike(startDate)
   if (!start) {
@@ -25,7 +28,7 @@ export function ExperienceDurationField(props: StringInputProps) {
     )
   }
 
-  const computed = formatDuration(startDate, endDate) || value || ''
+  const computed = formatDuration(startDate, endDate) || (value as string) || ''
 
   return (
     <div style={{display: 'flex', flexDirection: 'column', gap: 6}}>
