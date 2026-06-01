@@ -23,12 +23,12 @@ const contentSecurityPolicy = `
   style-src 'self' 'unsafe-inline';
   img-src 'self' data: blob: https:;
   font-src 'self' data: https:;
-  connect-src ${connectSrc};
-  frame-src 'self' https://cal.com https://*.cal.com https://cdn.sanity.io;
+  connect-src ${connectSrc} https://namias-cms.sanity.studio https://*.sanity.studio https://*.api.sanity.io;
+  frame-src 'self' https://cal.com https://*.cal.com https://cdn.sanity.io https://namias-cms.sanity.studio https://*.sanity.studio;
   object-src 'none';
   base-uri 'self';
   form-action 'self';
-  frame-ancestors 'self';
+  frame-ancestors 'self' https://namias-cms.sanity.studio https://*.sanity.studio;
   manifest-src 'self';
   worker-src 'self' blob:;
   upgrade-insecure-requests;
@@ -47,10 +47,7 @@ const securityHeaders = [
     key: 'X-Content-Type-Options',
     value: 'nosniff',
   },
-  {
-    key: 'X-Frame-Options',
-    value: 'SAMEORIGIN',
-  },
+
   {
     key: 'X-XSS-Protection',
     value: '1; mode=block',
