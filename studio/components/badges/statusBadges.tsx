@@ -1,4 +1,4 @@
-import type {DocumentBadgeComponent, DocumentBadgeDescription} from 'sanity'
+import type {DocumentBadgeComponent} from 'sanity'
 
 type Doc = {
   _updatedAt?: string
@@ -33,64 +33,69 @@ function isExpiredSoon(doc: Doc): boolean {
   return ms > 0 && ms < 90 * DAY_MS
 }
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
+function readDoc(props: any): Doc {
+  return (props?.document ?? props) as Doc
+}
+
 export const draftBadge: DocumentBadgeComponent = (props) => {
-  const doc = props.document as unknown as Doc
+  const doc = readDoc(props)
   if (doc.published) return null
   return {
     label: 'Draft',
-    color: 'gray',
+    color: 'gray' as const,
     title: 'Document has not been published yet.',
-  }
+  } as any
 }
 
 export const publishedBadge: DocumentBadgeComponent = (props) => {
-  const doc = props.document as unknown as Doc
+  const doc = readDoc(props)
   if (!doc.published) return null
   return {
     label: 'Live',
-    color: 'green',
+    color: 'success' as const,
     title: 'Document is published and visible on the marketing site.',
-  }
+  } as any
 }
 
 export const scheduledBadge: DocumentBadgeComponent = (props) => {
-  const doc = props.document as unknown as Doc
+  const doc = readDoc(props)
   if (!isScheduled(doc)) return null
   return {
     label: `Scheduled ${new Date(doc.publishAt as string).toLocaleDateString()}`,
-    color: 'blue',
+    color: 'primary' as const,
     title: 'Will publish automatically at the scheduled time.',
-  }
+  } as any
 }
 
 export const staleBadge: DocumentBadgeComponent = (props) => {
-  const doc = props.document as unknown as Doc
+  const doc = readDoc(props)
   if (!isStale(doc)) return null
   return {
     label: 'Stale',
-    color: 'amber',
+    color: 'warning' as const,
     title: 'Document has not been updated in 30+ days. Review and refresh.',
-  }
+  } as any
 }
 
 export const expiringSoonBadge: DocumentBadgeComponent = (props) => {
-  const doc = props.document as unknown as Doc
+  const doc = readDoc(props)
   if (!isExpiredSoon(doc)) return null
   return {
     label: 'Expiring soon',
-    color: 'red',
+    color: 'danger' as const,
     title: 'Certification expires within 90 days. Renew or update before it lapses.',
-  }
+  } as any
 }
 
 export const featuredBadge: DocumentBadgeComponent = (props) => {
-  const doc = props.document as unknown as Doc
+  const doc = readDoc(props)
   if (!doc.featured) return null
   return {
     label: 'Featured',
-    color: 'purple',
+    color: 'primary' as const,
     title: 'Document is featured on the marketing site.',
-  }
+  } as any
 }
 
 export const studioBadges: DocumentBadgeComponent[] = [
@@ -101,5 +106,3 @@ export const studioBadges: DocumentBadgeComponent[] = [
   expiringSoonBadge,
   featuredBadge,
 ]
-
-export type {DocumentBadgeDescription, Doc}

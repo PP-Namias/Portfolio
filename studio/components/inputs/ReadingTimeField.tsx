@@ -3,9 +3,12 @@ import {set, type StringInputProps} from 'sanity'
 
 import {countPortableTextWords, estimateReadingTime} from '../../utils/text'
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 export function ReadingTimeField(props: StringInputProps) {
-  const {value, document, onChange} = props
-  const body = (document?.body as unknown) ?? null
+  const {value, onChange} = props
+  const document = (props as unknown as {document?: any}).document
+  const body = document?.body ?? null
   const words = countPortableTextWords(body)
   const computed = words > 0 ? estimateReadingTime(body) : ''
 
@@ -42,7 +45,7 @@ export function ReadingTimeField(props: StringInputProps) {
       <input
         aria-label="Computed reading time (read-only)"
         readOnly
-        value={value || computed}
+        value={(value as string) || computed}
         onChange={(event) => onChange(set(event.target.value))}
         style={{
           width: '100%',

@@ -1,5 +1,7 @@
 import type {InitialValueTemplateItem} from 'sanity'
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 const today = () => new Date().toISOString().slice(0, 10)
 
 function slugify(input: string): string {
@@ -18,7 +20,7 @@ export const projectTemplates: InitialValueTemplateItem[] = [
     title: 'New project (draft)',
     description: 'Project with status=draft and current year pre-filled.',
     schemaType: 'project',
-    value: ({title}) => ({
+    value: ({title}: {title?: string}) => ({
       title: title || 'New project',
       slug: {current: slugify(title || 'new-project'), _type: 'slug'},
       status: 'draft',
@@ -28,13 +30,13 @@ export const projectTemplates: InitialValueTemplateItem[] = [
       gallery: [],
       technologies: [],
     }),
-  },
+  } as any,
   {
     id: 'project-featured',
     title: 'New project (featured)',
     description: 'Project with status=completed and featured=true.',
     schemaType: 'project',
-    value: ({title}) => ({
+    value: ({title}: {title?: string}) => ({
       title: title || 'New featured project',
       slug: {current: slugify(title || 'new-featured-project'), _type: 'slug'},
       status: 'completed',
@@ -44,7 +46,7 @@ export const projectTemplates: InitialValueTemplateItem[] = [
       gallery: [],
       technologies: [],
     }),
-  },
+  } as any,
 ]
 
 export const experienceTemplates: InitialValueTemplateItem[] = [
@@ -64,7 +66,7 @@ export const experienceTemplates: InitialValueTemplateItem[] = [
       tags: [],
       images: [],
     }),
-  },
+  } as any,
 ]
 
 export const certificationTemplates: InitialValueTemplateItem[] = [
@@ -77,7 +79,7 @@ export const certificationTemplates: InitialValueTemplateItem[] = [
       issuedAt: today(),
       neverExpires: false,
     }),
-  },
+  } as any,
 ]
 
 export const postTemplates: InitialValueTemplateItem[] = [
@@ -86,7 +88,7 @@ export const postTemplates: InitialValueTemplateItem[] = [
     title: 'New blog post (draft)',
     description: 'Post with published=false and publishedAt=today.',
     schemaType: 'post',
-    value: ({title}) => ({
+    value: ({title}: {title?: string}) => ({
       title: title || 'New post',
       slug: {current: slugify(title || 'new-post'), _type: 'slug'},
       published: false,
@@ -95,7 +97,7 @@ export const postTemplates: InitialValueTemplateItem[] = [
       tags: [],
       categories: [],
     }),
-  },
+  } as any,
 ]
 
 export const templateRegistry: Record<string, InitialValueTemplateItem[]> = {

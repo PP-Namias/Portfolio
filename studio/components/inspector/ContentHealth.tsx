@@ -1,5 +1,5 @@
 import React, {useMemo} from 'react'
-import {useDocumentPane, useFormValue} from 'sanity'
+import {useFormValue} from 'sanity'
 
 type Doc = Record<string, unknown>
 
@@ -64,10 +64,8 @@ function getReferenceTypes(value: unknown): {broken: number; total: number} {
 }
 
 export function ContentHealth() {
-  const {documentId, documentType} = useDocumentPane() as {documentId?: string; documentType?: string}
   const values = (useFormValue([]) || {}) as Doc
-
-  const typeName = documentType || (values._type as string) || 'unknown'
+  const typeName = (values._type as string) || 'unknown'
 
   const wordMetric = useMemo(() => {
     const range = WORD_RANGES[typeName as keyof typeof WORD_RANGES]
@@ -139,12 +137,6 @@ export function ContentHealth() {
         status={ageDays == null ? 'warn' : ageDays > 30 ? 'warn' : 'ok'}
         hint={ageDays != null && ageDays > 30 ? 'Consider a refresh to keep content current.' : 'Recently edited.'}
       />
-
-      {documentId && documentType ? (
-        <div style={{fontSize: 11, color: 'rgba(0,0,0,0.45)'}}>
-          {documentType}#{documentId}
-        </div>
-      ) : null}
     </div>
   )
 }

@@ -1,5 +1,4 @@
 import {type DocumentActionComponent, type DocumentActionProps} from 'sanity'
-import {usePerspective} from 'sanity/lib/perspective'
 
 const PERSPECTIVES = ['published', 'drafts', 'previewDrafts'] as const
 type Perspective = (typeof PERSPECTIVES)[number]
@@ -20,7 +19,9 @@ function getCurrentPerspective(): Perspective {
   if (typeof document === 'undefined') {
     return 'published'
   }
-  const cookie = document.cookie.split('; ').find((c) => c.startsWith('sanity-preview-perspective='))
+  const cookie = document.cookie
+    .split('; ')
+    .find((c) => c.startsWith('sanity-preview-perspective='))
   if (!cookie) {
     return 'published'
   }
@@ -36,11 +37,16 @@ function setPerspectiveCookie(p: Perspective) {
   document.cookie = `sanity-preview-perspective=${p}; expires=${expires}; path=/; SameSite=Lax`
 }
 
-export const perspectiveSwitcherAction: DocumentActionComponent = (props: DocumentActionProps) => {
-  void usePerspective
-
+export const perspectiveSwitcherAction: DocumentActionComponent = (
+  _props: DocumentActionProps,
+) => {
   const current = getCurrentPerspective()
-  const next: Perspective = current === 'published' ? 'previewDrafts' : current === 'previewDrafts' ? 'drafts' : 'published'
+  const next: Perspective =
+    current === 'published'
+      ? 'previewDrafts'
+      : current === 'previewDrafts'
+        ? 'drafts'
+        : 'published'
 
   return {
     label: `Perspective: ${PERSPECTIVE_LABELS[current]}`,
@@ -55,21 +61,22 @@ export const perspectiveSwitcherAction: DocumentActionComponent = (props: Docume
   }
 }
 
-export const perspectiveActions: DocumentActionComponent[] = PERSPECTIVES.map((p) => ({
-  label: PERSPECTIVE_LABELS[p],
-  icon: () => (p === currentSafe() ? '●' : '○'),
-  tooltip: PERSPECTIVE_DESCRIPTIONS[p],
-  onHandle: () => {
-    setPerspectiveCookie(p)
-    if (typeof window !== 'undefined') {
-      window.location.reload()
-    }
+export const perspectiveActions: DocumentActionComponent[] = PERSPECTIVES.map(
+  (p) => (props: DocumentActionProps) => {
+    const current = getCurrentPerspective()
+    return {
+      label: PERSPECTIVE_LABELS[p],
+      icon: () => (p === current ? '●' : '○'),
+      tooltip: PERSPECTIVE_DESCRIPTIONS[p],
+      onHandle: () => {
+        setPerspectiveCookie(p)
+        if (typeof window !== 'undefined') {
+          window.location.reload()
+        }
+      },
+    } as ReturnType<DocumentActionComponent>
   },
-}))
-
-function currentSafe(): Perspective {
-  return getCurrentPerspective()
-}
+)
 
 export {PERSPECTIVE_LABELS, PERSPECTIVE_DESCRIPTIONS}
 export type {Perspective}
