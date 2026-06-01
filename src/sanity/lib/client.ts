@@ -1,18 +1,22 @@
 import {createClient, type ClientConfig, type SanityClient} from '@sanity/client'
 
-import {getStudioEnvSnapshot} from '../../studio/env'
+export const API_VERSION = '2026-02-19'
 
-export const API_VERSION = '2025-10-21'
+function readEnv(name: string, fallback?: string): string {
+  const value = process.env[name]
+  if (typeof value === 'string' && value.trim().length > 0) return value.trim()
+  if (fallback) return fallback
+  throw new Error(`Missing required env var: ${name}`)
+}
 
 let cachedClient: SanityClient | null = null
 let cachedPreviewClient: SanityClient | null = null
 let cachedReadClient: SanityClient | null = null
 
 function baseConfig(useCdn: boolean): ClientConfig {
-  const env = getStudioEnvSnapshot()
   return {
-    projectId: env.projectId,
-    dataset: env.dataset,
+    projectId: readEnv('NEXT_PUBLIC_SANITY_PROJECT_ID', 'nl0qw78w'),
+    dataset: readEnv('NEXT_PUBLIC_SANITY_DATASET', 'production'),
     apiVersion: API_VERSION,
     useCdn,
     perspective: 'published',
@@ -42,10 +46,10 @@ export function getReadClient(): SanityClient {
   if (cachedReadClient) {
     return cachedReadClient
   }
-  const env = getStudioEnvSnapshot()
+  const readToken = process.env.SANITY_API_READ_TOKEN
   cachedReadClient = createClient({
     ...baseConfig(false),
-    token: env.readToken,
+    token: readToken,
     perspective: 'published',
   })
   return cachedReadClient

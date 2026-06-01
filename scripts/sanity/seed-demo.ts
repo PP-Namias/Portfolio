@@ -37,7 +37,22 @@ const heroSeed = {
   ],
 }
 
-const projectSeed = [
+interface ProjectSeed {
+  _id: string
+  _type: string
+  title: string
+  slug: {_type: string; current: string}
+  summary: string
+  year: number
+  status: string
+  featured: boolean
+  featuredRank: number
+  role: string
+  technologies: string[]
+  achievements?: string[]
+}
+
+const projectSeed: ProjectSeed[] = [
   {
     _id: 'project-namias-portfolio',
     _type: 'project',
@@ -64,10 +79,21 @@ const projectSeed = [
     featuredRank: 2,
     role: 'Sole engineer',
     technologies: ['Next.js', 'OpenAI', 'Gemini', 'Upstash Redis'],
+    achievements: ['Cut average response time by 38%', 'Handled 12k user turns in 30 days'],
   },
 ]
 
-const certSeed = [
+interface CertSeed {
+  _id: string
+  _type: string
+  title: string
+  issuer: {_type: string; _ref: string}
+  issuedAt: string
+  neverExpires: boolean
+  expiresAt?: string
+}
+
+const certSeed: CertSeed[] = [
   {
     _id: 'cert-meta-front-end',
     _type: 'certification',
