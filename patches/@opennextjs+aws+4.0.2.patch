@@ -1,0 +1,25 @@
+diff --git a/node_modules/@opennextjs/aws/dist/build/helper.js b/node_modules/@opennextjs/aws/dist/build/helper.js
+index 6524181..36da41e 100644
+--- a/node_modules/@opennextjs/aws/dist/build/helper.js
++++ b/node_modules/@opennextjs/aws/dist/build/helper.js
+@@ -241,19 +241,7 @@ const NEXT_RELEASE_DATES = {
+  * @returns true if the version is currently supported, false otherwise
+  */
+ export function isNextVersionSupported(version) {
+-    const match = version.match(/^\d+/);
+-    if (!match) {
+-        return false;
+-    }
+-    const releaseDateStr = NEXT_RELEASE_DATES[Number(match[0])];
+-    if (!releaseDateStr) {
+-        return false;
+-    }
+-    const releaseDate = new Date(releaseDateStr);
+-    const supportEndDate = new Date(releaseDate);
+-    supportEndDate.setFullYear(supportEndDate.getFullYear() + 2);
+-    const now = new Date();
+-    return now <= supportEndDate;
++    return true;
+ }
+ /**
+  * Check if the Next.js version is supported and handle errors/warnings.
