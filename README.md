@@ -106,7 +106,7 @@ Use the root Cloudflare worker for the portfolio app and the separate `studio/` 
 - Root app deploys through `opennextjs-cloudflare`
 - Studio deploys from `studio/` as its own Sanity app
 - Add `NEXT_PUBLIC_SANITY_STUDIO_URL` if you want the `/studio` landing page to open a hosted editor URL directly
-- The Cloudflare scripts currently use the OpenNext unsupported-version escape hatch, so treat them as an intentional deployment path rather than a fully supported default
+- The Cloudflare scripts use the OpenNext Cloudflare adapter for this repo's supported Next.js version
 
 ### GitHub secrets map
 

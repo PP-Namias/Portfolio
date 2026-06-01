@@ -26,26 +26,27 @@ export function createPublishAndRefreshAction(
 ): DocumentActionComponent {
   return function PublishAndRefreshAction(props: DocumentActionProps) {
     const originalResult = originalAction(props)
-    const {publish} = useDocumentOperation(props.id, props.type)
+    const {id, type, draft, onComplete} = props
+    const {publish} = useDocumentOperation(id, type)
     const [isPublishing, setIsPublishing] = useState(false)
     const refreshTriggeredRef = useRef(false)
 
     useEffect(() => {
-      if (!isPublishing || props.draft || refreshTriggeredRef.current) {
+      if (!isPublishing || draft || refreshTriggeredRef.current) {
         return
       }
 
       refreshTriggeredRef.current = true
 
-      void triggerWebsiteRefresh(props.id, props.type)
+      void triggerWebsiteRefresh(id, type)
         .catch(() => {
           // Ignore webhook errors so publish still completes.
         })
         .finally(() => {
           setIsPublishing(false)
-          props.onComplete?.()
+          onComplete?.()
         })
-    }, [isPublishing, props.draft, props.id, props.type, props.onComplete])
+    }, [draft, id, isPublishing, onComplete, type])
 
     if (!originalResult) {
       return null

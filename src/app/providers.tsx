@@ -15,6 +15,8 @@ interface ProvidersProps {
 }
 
 export function Providers({ children, cmsContent }: ProvidersProps) {
+  const showLiveRefreshBridge = process.env.NODE_ENV !== 'test';
+
   return (
     <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
       <AccentColorProvider>
@@ -30,7 +32,7 @@ export function Providers({ children, cmsContent }: ProvidersProps) {
                 wheelMultiplier: 1,
               }}
             >
-              <SanityLiveRefreshBridge />
+              {showLiveRefreshBridge ? <SanityLiveRefreshBridge /> : null}
               {children}
             </ReactLenis>
           </ModalProvider>

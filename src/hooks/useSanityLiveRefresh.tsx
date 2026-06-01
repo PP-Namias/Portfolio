@@ -15,13 +15,12 @@ function shouldRefreshPath(pathname: string): boolean {
 }
 
 export function useSanityLiveRefresh() {
+  const lastRefreshAtRef = useRef(0);
   const router = useRouter();
   const pathname = usePathname();
-  const lastRefreshAtRef = useRef(0);
 
   useEffect(() => {
-    // If router or pathname aren't available (e.g. during tests), skip live refresh.
-    if (!router || !pathname || !shouldRefreshPath(pathname)) {
+    if (!pathname || !shouldRefreshPath(pathname)) {
       return;
     }
 

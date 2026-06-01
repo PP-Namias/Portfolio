@@ -28,7 +28,9 @@ describe('useSanityLiveRefresh', () => {
   });
 
   it('refreshes the route on the polling interval', () => {
-    render(<TestHarness />);
+    act(() => {
+      render(<TestHarness />);
+    });
 
     expect(refreshMock).not.toHaveBeenCalled();
 
@@ -40,7 +42,9 @@ describe('useSanityLiveRefresh', () => {
   });
 
   it('refreshes when the tab regains focus', () => {
-    render(<TestHarness />);
+    act(() => {
+      render(<TestHarness />);
+    });
 
     act(() => {
       window.dispatchEvent(new Event('focus'));

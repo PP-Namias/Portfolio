@@ -18,7 +18,13 @@ export function Footer() {
   const footerSocials = socialLinks.filter((link) =>
     ['github', 'linkedin', 'x', 'instagram'].includes(link.name)
   );
-  const footerCopy = siteSettings.footer;
+  const footerCopy = siteSettings?.footer ?? {
+    leadText: '',
+    linkLabel: '',
+    copyright: '',
+    backToPortfolioLabel: 'Back to Portfolio',
+    contactPrompt: 'Send a message',
+  };
 
   return (
     <footer className="mt-8 pb-8 pt-6 border-t border-border-light dark:border-border-dark">
