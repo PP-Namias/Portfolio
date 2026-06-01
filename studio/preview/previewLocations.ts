@@ -8,7 +8,7 @@ export type RouteMap = {
 
 function homeLocation(title: string) {
   return defineLocations({
-    message: `This document previews on the portfolio homepage (\\`/\\`).`,
+    message: 'This document previews on the portfolio homepage (`/`).',
     tone: 'positive' as const,
     locations: [
       {
