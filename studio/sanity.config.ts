@@ -6,6 +6,7 @@ import {schemaTypes} from './schemaTypes'
 import {createPublishAndRefreshAction} from './actions/publishAndRefreshAction'
 import {perspectiveSwitcherAction} from './actions/perspectiveSwitcher'
 import {previewLocations} from './preview/previewLocations'
+import {templateRegistry} from './templates'
 import {getDraftModeEnablePath, getStudioPreviewOrigin, loadStudioEnvironment, requireStudioEnv} from './env'
 
 loadStudioEnvironment()
@@ -190,6 +191,9 @@ export default defineConfig({
 
   schema: {
     types: schemaTypes,
+    templates: [
+      ...Object.values(templateRegistry).flat(),
+    ],
   },
 })
 
