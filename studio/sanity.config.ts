@@ -8,6 +8,9 @@ import {perspectiveSwitcherAction} from './actions/perspectiveSwitcher'
 import {previewLocations} from './preview/previewLocations'
 import {templateRegistry} from './templates'
 import {studioBadges} from './components/badges/statusBadges'
+import {Welcome} from './components/Welcome'
+import {OnboardingTour} from './components/Onboarding'
+import {studioTheme} from './theme/studioTheme'
 import {getDraftModeEnablePath, getStudioPreviewOrigin, loadStudioEnvironment, requireStudioEnv} from './env'
 
 loadStudioEnvironment()
@@ -47,6 +50,12 @@ export default defineConfig({
 
   projectId,
   dataset,
+
+  theme: studioTheme,
+
+  components: {
+    router: undefined,
+  },
 
   plugins: [
     structureTool({
@@ -200,6 +209,11 @@ export default defineConfig({
       ...Object.values(templateRegistry).flat(),
     ],
   },
+
+  components: {
+    ...(undefined as unknown as Record<string, unknown>),
+    welcome: Welcome,
+  } as Record<string, unknown>,
 })
 
 const blogPostLocation = {
