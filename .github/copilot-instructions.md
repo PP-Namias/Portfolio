@@ -1,4 +1,4 @@
-# Copilot Instructions — Portfolio (Next.js 14)
+# Copilot Instructions — Portfolio (Next.js)
 
 ## AI Agent: Claude Opus 4.6 via VS Code Copilot
 
@@ -39,6 +39,7 @@ This portfolio uses a **modal-first** approach. **Never create a new page/route*
 | `/blog`        | Page | Blog listing (SEO-critical, server component) |
 | `/blog/[slug]` | Page | Individual blog posts (SEO-critical, SSG)     |
 | `/api/chat`    | API  | Gemini AI chatbot endpoint                    |
+| `/studio`      | Page | Studio landing page with hosted editor link   |
 
 **Current Modals (managed by `ModalProvider` in `src/hooks/useModal.tsx`):**
 

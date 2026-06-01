@@ -11,14 +11,65 @@ import React from 'react';
 
 interface ProvidersProps {
   readonly children: React.ReactNode;
-  readonly cmsContent: CmsContent;
+  readonly cmsContent?: CmsContent;
 }
 
 export function Providers({ children, cmsContent }: ProvidersProps) {
+  const showLiveRefreshBridge = process.env.NODE_ENV !== 'test';
+  const resolvedCmsContent = cmsContent ?? {
+    seoSettings: {
+      siteTitle: '',
+      siteDescription: '',
+      canonicalUrl: 'https://namias.tech',
+      ogImageUrl: '/og-image.svg',
+      twitterImageUrl: '/og-image.svg',
+      noindex: false,
+      nofollow: false,
+    },
+    profile: {
+      name: '',
+      title: '',
+      email: '',
+      phone: '',
+      location: '',
+      github: '',
+      linkedin: '',
+      summary: '',
+      highlights: { yearsExperience: 0, projectsCompleted: 0, primaryTechnologies: [] },
+      education: [],
+    },
+    siteSettings: {
+      footer: {
+        leadText: '',
+        linkLabel: '',
+        copyright: '',
+        backToPortfolioLabel: 'Back to Portfolio',
+        contactPrompt: 'Send a message',
+      },
+      blog: {
+        title: 'Blog',
+        description: '',
+        backLabel: 'Back to Portfolio',
+      },
+    },
+    hero: { roles: [], availabilityLabel: '', profileImageUrl: '' },
+    about: { paragraphs: [] },
+    experiences: [],
+    projects: [],
+    certifications: [],
+    galleryImages: [],
+    memberships: [],
+    recommendations: [],
+    socialLinks: [],
+    technologies: [],
+    techCategories: {},
+    blogPosts: [],
+  } as CmsContent;
+
   return (
     <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
       <AccentColorProvider>
-        <CmsContentProvider value={cmsContent}>
+          <CmsContentProvider value={resolvedCmsContent}>
           <ModalProvider>
             <ReactLenis
               root
@@ -30,7 +81,7 @@ export function Providers({ children, cmsContent }: ProvidersProps) {
                 wheelMultiplier: 1,
               }}
             >
-              <SanityLiveRefreshBridge />
+              {showLiveRefreshBridge ? <SanityLiveRefreshBridge /> : null}
               {children}
             </ReactLenis>
           </ModalProvider>

@@ -44,8 +44,9 @@ function buildError(status: number, message: string): Response {
   });
 }
 
-export async function GET(request: NextRequest, context: { params: { path?: string[] } }) {
-  const [namespace, encodedTarget] = context.params.path ?? [];
+export async function GET(request: NextRequest, context: { params: Promise<{ path?: string[] }> }) {
+  const { path } = await context.params;
+  const [namespace, encodedTarget] = path ?? [];
 
   if (namespace !== 'sanity' || !encodedTarget) {
     return buildError(404, 'Not found');

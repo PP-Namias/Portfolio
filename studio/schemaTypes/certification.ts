@@ -90,4 +90,21 @@ export default defineType({
       subtitle: 'issuer.title',
     },
   },
+  orderings: [
+    {
+      title: 'Order, Asc',
+      name: 'orderAsc',
+      by: [{field: 'order', direction: 'asc'}],
+    },
+    {
+      title: 'Issued Date, New',
+      name: 'issuedAtDesc',
+      by: [{field: 'issuedAt', direction: 'desc'}],
+    },
+    {
+      title: 'Title, A-Z',
+      name: 'titleAsc',
+      by: [{field: 'title', direction: 'asc'}],
+    },
+  ],
 })

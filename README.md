@@ -19,14 +19,14 @@ This repository powers [namias.tech](https://namias.tech), a production portfoli
 
 ## Core stack
 
-- **Framework:** Next.js 14 (App Router)
+- **Framework:** Next.js 16 (App Router)
 - **Language:** TypeScript (strict)
 - **Styling:** Tailwind CSS + Framer Motion + Lucide React
 - **Theme:** `next-themes`
 - **CMS:** Sanity v3 (Studio + Content Lake + CDN)
 - **Content:** `react-markdown`, `remark-gfm`, `rehype-highlight`
 - **Testing:** Vitest + Testing Library + jsdom
-- **Hosting target:** AWS Amplify (`output: 'standalone'`)
+- **Hosting target:** Cloudflare Workers via OpenNext
 
 ## Local development
 
@@ -59,6 +59,9 @@ Open [http://localhost:3000](http://localhost:3000).
 - `npm run sanity:parity` — compare expected source counts vs dataset counts
 - `npm run sanity:parity:strict` — same parity report, returns non-zero on mismatch
 - `npm run sanity:readiness` — readiness-only check (no count comparisons)
+- `npm run cloudflare:build` — build and adapt the app for Cloudflare Workers
+- `npm run cloudflare:dev` — preview the production build in Wrangler
+- `npm run cloudflare:deploy` — build and deploy to Cloudflare Workers
 - `npm --prefix studio run dev` — start Sanity Studio locally
 
 ## Environment variables
@@ -73,12 +76,16 @@ NEXT_PUBLIC_SANITY_PROJECT_ID=nl0qw78w
 NEXT_PUBLIC_SANITY_DATASET=production
 SANITY_STUDIO_PROJECT_ID=nl0qw78w
 SANITY_STUDIO_DATASET=production
+NEXT_PUBLIC_SITE_URL=https://namias.jkrbn99.workers.dev
+NEXT_PUBLIC_SANITY_STUDIO_URL=https://your-sanity-studio-url.sanity.studio
 SANITY_API_READ_TOKEN=your_sanity_read_token
 SANITY_API_WRITE_TOKEN=your_sanity_write_token
 SANITY_STUDIO_DEPLOY_TOKEN=your_studio_deploy_token
 SANITY_REVALIDATE_SECRET=your_revalidate_secret
 SANITY_MEDIA_GATEWAY_SECRET=your_media_gateway_secret
 SANITY_CUTOVER_ENABLED=true
+CLOUDFLARE_API_TOKEN=your_cloudflare_api_token
+CLOUDFLARE_ACCOUNT_ID=4bd772a73fb69e405e81422ee07a34a6
 ```
 
 `.env.local` overrides `.env` for private values, and the Sanity migration runner loads both files automatically.
@@ -91,6 +98,32 @@ Sanity-hosted images and files are routed through the app’s server-side media 
 - Optional signing secret: `SANITY_MEDIA_GATEWAY_SECRET`
 - Keep all Sanity credentials server-side only
 - Preserve the existing fallback paths while rollout is staged
+
+### Cloudflare deployment
+
+Use the root Cloudflare worker for the portfolio app and the separate `studio/` package for the CMS editor.
+
+- Root app deploys through `opennextjs-cloudflare`
+- Studio deploys from `studio/` as its own Sanity app
+- Add `NEXT_PUBLIC_SANITY_STUDIO_URL` if you want the `/studio` landing page to open a hosted editor URL directly
+- The Cloudflare scripts use the OpenNext Cloudflare adapter for this repo's supported Next.js version
+
+### GitHub secrets map
+
+- `CLOUDFLARE_API_TOKEN` -> Cloudflare Workers API token
+- `CLOUDFLARE_ACCOUNT_ID` -> `4bd772a73fb69e405e81422ee07a34a6`
+- `SANITY_STUDIO_DEPLOY_TOKEN` -> Sanity deploy token
+- `NEXT_PUBLIC_SANITY_PROJECT_ID` -> `nl0qw78w`
+- `NEXT_PUBLIC_SANITY_DATASET` -> `production`
+- `SANITY_REVALIDATE_SECRET` -> your random secret string
+- `NEXT_PUBLIC_SITE_URL` -> deployed worker URL
+
+### Best practice
+
+- Keep real values in `.env.local` only.
+- Use `.env.example` as the copy-paste template.
+- Put deployment credentials in GitHub Actions secrets, not in the repo.
+- If a Cloudflare token was ever shared outside your secret store, revoke it and create a new one before deploy.
 
 ## Quality checks
 

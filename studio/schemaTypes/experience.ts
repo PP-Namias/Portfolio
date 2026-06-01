@@ -163,4 +163,21 @@ export default defineType({
       }
     },
   },
+  orderings: [
+    {
+      title: 'Order, Asc',
+      name: 'orderAsc',
+      by: [{field: 'order', direction: 'asc'}],
+    },
+    {
+      title: 'Start Date, New',
+      name: 'startDateDesc',
+      by: [{field: 'startDate', direction: 'desc'}],
+    },
+    {
+      title: 'Company, A-Z',
+      name: 'companyAsc',
+      by: [{field: 'company', direction: 'asc'}],
+    },
+  ],
 })

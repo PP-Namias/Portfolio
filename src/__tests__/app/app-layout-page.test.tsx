@@ -78,6 +78,7 @@ import Home from '@/app/page';
 import { Providers } from '@/app/providers';
 import ErrorPage from '@/app/error';
 import NotFoundPage from '@/app/not-found';
+import { fallbackCmsContent } from '@/lib/cms-content.shared';
 
 describe('app layout and page coverage', () => {
   beforeEach(() => {
@@ -86,7 +87,7 @@ describe('app layout and page coverage', () => {
 
   it('Providers wraps children with theme and lenis wrappers', () => {
     render(
-      <Providers>
+      <Providers cmsContent={fallbackCmsContent}>
         <div>Children</div>
       </Providers>
     );

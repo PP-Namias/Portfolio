@@ -210,4 +210,21 @@ export default defineType({
       }
     },
   },
+  orderings: [
+    {
+      title: 'Order, Asc',
+      name: 'orderAsc',
+      by: [{field: 'order', direction: 'asc'}],
+    },
+    {
+      title: 'Featured Rank, Asc',
+      name: 'featuredRankAsc',
+      by: [{field: 'featuredRank', direction: 'asc'}],
+    },
+    {
+      title: 'Title, A-Z',
+      name: 'titleAsc',
+      by: [{field: 'title', direction: 'asc'}],
+    },
+  ],
 })

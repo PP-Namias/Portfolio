@@ -11,6 +11,12 @@ Congratulations, you have now installed the Sanity Content Studio, an open-sourc
 - Homepage content previews against `/`, and blog posts preview against `/blog` so the Studio routes stay aligned with the localhost app.
 - Use [VISION_QUERIES.md](VISION_QUERIES.md) for repeatable Vision checks across homepage, resume, blog, and collection parity.
 
+## Cloudflare deployment
+
+- The portfolio app is deployed separately through OpenNext on Cloudflare Workers.
+- The Studio should be deployed as its own Sanity app and linked from the portfolio `/studio` route.
+- Set `NEXT_PUBLIC_SANITY_STUDIO_URL` in the root app if you want the landing page button to open the hosted Studio directly.
+
 Now you can do the following things:
 
 - [Read “getting started” in the docs](https://www.sanity.io/docs/introduction/getting-started?utm_source=readme)
