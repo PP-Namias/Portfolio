@@ -1,31 +1,48 @@
-# Namias CMS Studio
+# Architecture notes
 
-Congratulations, you have now installed the Sanity Content Studio, an open-source real-time content editing environment connected to the Sanity backend.
+The Sanity Studio at `namias-cms.sanity.studio` is the editorial surface for the portfolio. It is built with:
 
-## Local setup
+- **Sanity 4.22** with a custom structure, presentation tool, and vision tool.
+- **TypeScript** end-to-end, no `.js` files in `studio/` except eslint config and runner scripts.
+- **React 19** and **styled-components** for the studio shell.
 
-- The studio reads the same Sanity env values as the root app from `.env` / `.env.local` in the repository root.
-- Preview mode points to `http://localhost:3000` by default, or to `NEXT_PUBLIC_SITE_URL` when that variable is set.
-- The presentation tool uses `/api/draft-mode/enable` to turn on draft mode before opening the preview.
-- The publish action also pings `/api/sanity/webhook` after a successful publish so the website can refresh and revalidate immediately.
-- Homepage content previews against `/`, and blog posts preview against `/blog` so the Studio routes stay aligned with the localhost app.
-- Use [VISION_QUERIES.md](VISION_QUERIES.md) for repeatable Vision checks across homepage, resume, blog, and collection parity.
+## Plugin stack
 
-## Cloudflare deployment
+- `structureTool` - replaces the default navigation with a curated content map.
+- `presentationTool` - previews and Visual Editing on `namias.tech`.
+- `visionTool` - GROQ playground.
 
-- The portfolio app is deployed separately through OpenNext on Cloudflare Workers.
-- The Studio should be deployed as its own Sanity app and linked from the portfolio `/studio` route.
-- Set `NEXT_PUBLIC_SANITY_STUDIO_URL` in the root app if you want the landing page button to open the hosted Studio directly.
+## Document actions
 
-Now you can do the following things:
+1. `perspectiveSwitcherAction` - cookie-based perspective switcher (published / drafts / previewDrafts).
+2. `createPublishAndRefreshAction` - wraps the default publish action to call the revalidation webhook.
 
-- [Read “getting started” in the docs](https://www.sanity.io/docs/introduction/getting-started?utm_source=readme)
-- [Join the Sanity community](https://www.sanity.io/community/join?utm_source=readme)
-- [Extend and build plugins](https://www.sanity.io/docs/content-studio/extending?utm_source=readme)
+## Document badges
 
-## Scripts
+- Draft / Live
+- Scheduled
+- Stale (30+ days untouched)
+- Expiring soon (certification within 90 days)
+- Featured
 
-- `npm run dev` — start the studio locally
-- `npm run lint` — lint the studio package
-- `npm run build` — build the studio for production
-- `npm run start` — run the built studio locally
+## Validations
+
+Centralized in `studio/validation/rules.ts`:
+- `headlineLength` - SEO-friendly character bounds.
+- `httpsOnly` - url fields prefer https.
+- `dateOrder` - cross-field date validation.
+- `uniqueSlug` - slug shape and uniqueness.
+- `requireAltText` - 4+ char alt on every image.
+- `summaryLength` - tunable per type.
+
+## Sanity Functions
+
+- `scheduled-publish/` - runs every 5 min, promotes posts/projects with `publishAt <= now`.
+- `broken-refs/` - runs every 6h, counts broken references per document.
+- `auto-tag-images/` - stubs an image-tagging pipeline triggered on `sanity.imageAsset.create`.
+
+## Real-time
+
+- Marketing site uses `next-sanity` Live Content API in `src/sanity/lib/live.ts`.
+- `<SanityField>` component tags every renderable field with `data-sanity="<docId>.<type>.<path>"` for Visual Editing overlay targeting.
+- `?sanity-edit=1` on the marketing site enables the popover and pop-in links to the studio.
