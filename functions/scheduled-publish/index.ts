@@ -1,17 +1,16 @@
 /**
  * Sanity Function: scheduled-publish
  *
- * Triggers: scheduled (_scheduledAt in document mutation payload)
+ * Scheduled trigger (every 5 minutes). Promotes any `post` or `project`
+ * whose `publishAt` is in the past by setting `published: true` and
+ * stamping `publishedAt` with the current time.
  *
- * This file is a deployable Sanity Function. It runs server-side on the
- * Sanity platform whenever a document mutation is scheduled. It promotes
- * any post or project whose publishAt is in the past.
- *
- * Deploy:
- *   cd functions/scheduled-publish
- *   npx sanity functions deploy scheduled-publish
+ * Trigger: scheduled (cron `*/5 * * * *`)
+ * Inputs: none (queries the dataset)
+ * Outputs: {promoted: number, ids: string[]}
  */
 import {createClient} from '@sanity/client'
+import {scheduledEventHandler} from '@sanity/functions'
 
 type ScheduledDoc = {
   _id: string
@@ -19,20 +18,19 @@ type ScheduledDoc = {
   publishAt?: string
 }
 
-const client = createClient({
-  projectId: process.env.SANITY_STUDIO_PROJECT_ID || 'nl0qw78w',
-  dataset: process.env.SANITY_STUDIO_DATASET || 'production',
-  apiVersion: '2025-10-21',
-  useCdn: false,
-  token: process.env.SANITY_API_WRITE_TOKEN,
-})
+export const handler = scheduledEventHandler(async ({context}) => {
+  const client = createClient({
+    ...context.clientOptions,
+    useCdn: false,
+    apiVersion: '2026-02-19',
+  })
 
-export async function scheduledPublish(_event: unknown) {
   const now = new Date().toISOString()
   const query = `*[_type in ["post", "project"] && defined(publishAt) && publishAt <= $now && published != true]`
   const docs = await client.fetch<ScheduledDoc[]>(query, {now})
+
   if (docs.length === 0) {
-    return {promoted: 0}
+    return {promoted: 0, ranAt: now}
   }
 
   const transaction = client.transaction()
@@ -41,7 +39,9 @@ export async function scheduledPublish(_event: unknown) {
   }
   await transaction.commit()
 
-  return {promoted: docs.length, ids: docs.map((d) => d._id)}
-}
-
-export default scheduledPublish
+  return {
+    promoted: docs.length,
+    ids: docs.map((d) => d._id),
+    ranAt: now,
+  }
+})
