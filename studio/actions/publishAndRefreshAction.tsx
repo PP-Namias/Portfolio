@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react'
+import {useEffect, useRef, useState} from 'react'
 import {useDocumentOperation, type DocumentActionComponent, type DocumentActionProps} from 'sanity'
 
 import {getWebhookTriggerUrl} from '../env'

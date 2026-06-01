@@ -1,7 +1,5 @@
 import type {Rule, ValidationContext} from 'sanity'
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 type ValidatorFactory = (options?: Record<string, unknown>) => any
 type RuleFactory = (rule: any) => any
 

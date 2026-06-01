@@ -2,8 +2,6 @@ import React from 'react'
 
 import {formatDuration} from '../../utils/text'
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 type ListItemPropsLike = {
   title?: React.ReactNode
   subtitle?: React.ReactNode

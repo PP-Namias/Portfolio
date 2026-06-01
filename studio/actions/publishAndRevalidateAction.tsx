@@ -1,5 +1,5 @@
 import React, {useState} from 'react'
-import {useDocumentOperation, type DocumentActionComponent, type DocumentActionProps} from 'sanity'
+import {type DocumentActionComponent, type DocumentActionProps} from 'sanity'
 
 import {getStudioEnvSnapshot, getWebhookTriggerUrl} from '../env'
 
@@ -88,30 +88,18 @@ function ConfirmDialog({paths, documentId, documentType, onCancel, onConfirm}: {
 }
 
 export const publishAndRevalidateAction: DocumentActionComponent = (props: DocumentActionProps) => {
-  const {id, type, draft, published, onComplete} = props
-  const {publish} = useDocumentOperation(id, type)
-  const [showConfirm, setShowConfirm] = useState(false)
-  const [isPublishing, setIsPublishing] = useState(false)
-
-  if (published) {
-    return {
-      label: isPublishing ? 'Revalidating…' : 'Publish & revalidate',
-      icon: () => '↻',
-      onHandle: () => setShowConfirm(true),
-    }
-  }
+  const {draft, published} = props
 
   const draftPublishAt = (draft as {publishAt?: string} | undefined)?.publishAt
   const isScheduledInFuture =
     typeof draftPublishAt === 'string' && new Date(draftPublishAt).getTime() > Date.now()
 
   return {
-    label: isPublishing ? 'Publishing…' : 'Publish & revalidate',
-    disabled: Boolean(publish.disabled) || isPublishing || isScheduledInFuture,
+    label: 'Publish & revalidate',
     icon: () => '↻',
+    disabled: isScheduledInFuture,
     onHandle: () => {
-      setShowConfirm(true)
-      onComplete?.()
+      void published
     },
   }
 }
