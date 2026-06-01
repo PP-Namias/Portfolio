@@ -1,11 +1,12 @@
 import type {NextRequest} from 'next/server'
 import {NextResponse} from 'next/server'
 
-import {getStudioEnvSnapshot} from '../../../studio/env'
-
 export const runtime = 'nodejs'
 
 const REVALIDATE_PATHS = ['/', '/blog', '/blog/[slug]', '/sitemap.xml'] as const
+
+const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || 'nl0qw78w'
+const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET || 'production'
 
 function withCors(response: NextResponse): NextResponse {
   response.headers.set('Access-Control-Allow-Origin', '*')
@@ -17,7 +18,6 @@ function withCors(response: NextResponse): NextResponse {
 }
 
 function isDraftModeEnabled(): boolean {
-  const env = getStudioEnvSnapshot()
   const cookie = process.env.SANITY_DRAFT_COOKIE_NAME || 'sanity-preview'
   return Boolean(process.env[cookie])
 }
@@ -28,10 +28,7 @@ export function GET(request: NextRequest) {
       NextResponse.json({
         ok: true,
         enabled: isDraftModeEnabled(),
-        env: {
-          projectId: getStudioEnvSnapshot().projectId,
-          dataset: getStudioEnvSnapshot().dataset,
-        },
+        env: {projectId, dataset},
         revalidatePaths: REVALIDATE_PATHS,
       }),
     )

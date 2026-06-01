@@ -56,7 +56,7 @@ export function SanityField({
     ? buildStudioEditHref(documentId, documentType, fieldPath)
     : undefined
 
-  const Component = As as ComponentType<{
+  const Component = As as unknown as ComponentType<{
     className?: string
     'data-sanity'?: string
     'data-sanity-editable'?: string
@@ -75,5 +75,3 @@ export function SanityField({
     </Component>
   )
 }
-
-export type {SanityFieldContext, SanityFieldPath}
