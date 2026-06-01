@@ -1,0 +1,17 @@
+{
+  "name": "@pp-namias/sanity-functions",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Sanity Functions for the Namias CMS showcase (scheduled-publish, broken-refs, auto-tag-images).",
+  "main": "index.ts",
+  "type": "module",
+  "scripts": {
+    "deploy:scheduled-publish": "cd scheduled-publish && npx sanity functions deploy scheduled-publish",
+    "deploy:broken-refs": "cd broken-refs && npx sanity functions deploy broken-refs",
+    "deploy:auto-tag-images": "cd auto-tag-images && npx sanity functions deploy auto-tag-images",
+    "deploy:all": "npm run deploy:scheduled-publish && npm run deploy:broken-refs && npm run deploy:auto-tag-images"
+  },
+  "dependencies": {
+    "@sanity/client": "^7.6.0"
+  }
+}
