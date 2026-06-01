@@ -20,6 +20,19 @@ import resume from './resume'
 import siteSettings from './siteSettings'
 import techStack from './techStack'
 
+export {
+  DOCUMENT_META,
+  DOCUMENT_KIND,
+  DOCUMENT_KIND_LABELS,
+  REFERENCEABLE_TYPES,
+  COLLECTION_TYPES,
+  SINGLETON_TYPES,
+  PREVIEWABLE_TYPES,
+  getDocumentMeta,
+  isReferenceableType,
+} from './_registry'
+export type {DocumentKind, DocumentMeta} from './_registry'
+
 export const schemaTypes = [
   heroSection,
   aboutSection,

@@ -7,6 +7,33 @@ const defaultEnvValues: Record<string, string> = {
   NEXT_PUBLIC_SANITY_DATASET: 'production',
 }
 
+const ENV_REGISTRY = {
+  projectId: ['SANITY_STUDIO_PROJECT_ID', 'NEXT_PUBLIC_SANITY_PROJECT_ID'],
+  dataset: ['SANITY_STUDIO_DATASET', 'NEXT_PUBLIC_SANITY_DATASET'],
+  revalidateSecret: [
+    'SANITY_STUDIO_REVALIDATE_SECRET',
+    'SANITY_REVALIDATE_SECRET',
+    'NEXT_PUBLIC_SANITY_REVALIDATE_SECRET',
+  ],
+  siteUrl: ['NEXT_PUBLIC_SITE_URL'],
+  studioUrl: ['SANITY_STUDIO_URL', 'NEXT_PUBLIC_SANITY_STUDIO_URL'],
+  readToken: ['SANITY_API_READ_TOKEN', 'NEXT_PUBLIC_SANITY_READ_TOKEN'],
+} as const
+
+export type EnvKey = keyof typeof ENV_REGISTRY
+
+export type StudioEnvSnapshot = {
+  projectId: string
+  dataset: string
+  revalidateSecret?: string
+  siteUrl: string
+  studioUrl?: string
+  readToken?: string
+  loaded: boolean
+}
+
+let cachedSnapshot: StudioEnvSnapshot | null = null
+
 function getEnvValue(name: string): string | undefined {
   const value = processEnv?.[name]
 
@@ -49,6 +76,7 @@ export function loadStudioEnvironment() {
   )
 
   environmentLoaded = true
+  cachedSnapshot = null
 }
 
 export function requireStudioEnv(...names: string[]): string {
@@ -97,4 +125,56 @@ export function getWebhookTriggerUrl(): string {
   }
 
   return url.toString()
+}
+
+function firstDefined(...candidates: (string | undefined)[]): string | undefined {
+  for (const candidate of candidates) {
+    if (candidate) {
+      return candidate
+    }
+  }
+  return undefined
+}
+
+export function getStudioEnvSnapshot(): StudioEnvSnapshot {
+  if (cachedSnapshot) {
+    return cachedSnapshot
+  }
+
+  loadStudioEnvironment()
+
+  cachedSnapshot = {
+    projectId: requireStudioEnv('SANITY_STUDIO_PROJECT_ID', 'NEXT_PUBLIC_SANITY_PROJECT_ID'),
+    dataset: requireStudioEnv('SANITY_STUDIO_DATASET', 'NEXT_PUBLIC_SANITY_DATASET'),
+    revalidateSecret: firstDefined(
+      getEnvValue('SANITY_STUDIO_REVALIDATE_SECRET'),
+      getEnvValue('SANITY_REVALIDATE_SECRET'),
+      getEnvValue('NEXT_PUBLIC_SANITY_REVALIDATE_SECRET'),
+    ),
+    siteUrl: getEnvValue('NEXT_PUBLIC_SITE_URL') || 'http://localhost:3000',
+    studioUrl: firstDefined(getEnvValue('SANITY_STUDIO_URL'), getEnvValue('NEXT_PUBLIC_SANITY_STUDIO_URL')),
+    readToken: firstDefined(getEnvValue('SANITY_API_READ_TOKEN'), getEnvValue('NEXT_PUBLIC_SANITY_READ_TOKEN')),
+    loaded: true,
+  }
+
+  return cachedSnapshot
+}
+
+export function describeEnvForDebug(): Record<EnvKey, {set: boolean; source?: string}> {
+  loadStudioEnvironment()
+
+  return Object.fromEntries(
+    Object.entries(ENV_REGISTRY).map(([key, candidates]) => {
+      const found = candidates
+        .map((name) => ({name, value: getEnvValue(name)}))
+        .find((entry) => Boolean(entry.value))
+      return [
+        key,
+        {
+          set: Boolean(found),
+          source: found?.name,
+        },
+      ]
+    }),
+  ) as Record<EnvKey, {set: boolean; source?: string}>
 }
