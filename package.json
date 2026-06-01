@@ -2,7 +2,7 @@
   "name": "pp-namias-portfolio",
   "version": "1.0.0",
   "private": true,
-  "description": "Official personal portfolio of Jhon Keneth Ryan Namias (PP Namias), built with Next.js 14, TypeScript, Tailwind CSS, and AI-powered chat.",
+  "description": "Official personal portfolio of Jhon Keneth Ryan Namias (PP Namias), built with Next.js, TypeScript, Tailwind CSS, and AI-powered chat.",
   "author": "Jhon Keneth Ryan Namias (PP Namias) <pp.namias@gmail.com>",
   "license": "MIT",
   "homepage": "https://namias.tech",

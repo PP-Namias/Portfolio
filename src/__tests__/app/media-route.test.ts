@@ -26,7 +26,7 @@ describe('/api/media route', () => {
     const request = new NextRequest(`http://localhost:3000${gatewayUrl}`);
     const path = new URL(`http://localhost:3000${gatewayUrl}`).pathname.split('/').filter(Boolean).slice(2);
 
-    const response = await GET(request, { params: { path } });
+    const response = await GET(request, { params: Promise.resolve({ path }) as Promise<{ path?: string[] }> });
 
     expect(fetch).toHaveBeenCalledTimes(1);
     expect(response.status).toBe(200);
@@ -39,7 +39,7 @@ describe('/api/media route', () => {
 
   it('rejects malformed asset targets', async () => {
     const request = new NextRequest('http://localhost:3000/api/media/sanity/invalid');
-    const response = await GET(request, { params: { path: ['sanity', 'invalid'] } });
+    const response = await GET(request, { params: Promise.resolve({ path: ['sanity', 'invalid'] }) as Promise<{ path?: string[] }> });
 
     expect(response.status).toBe(400);
   });
@@ -49,7 +49,7 @@ describe('/api/media route', () => {
     const encoded = Buffer.from(malformedTarget, 'utf8').toString('base64url');
     const request = new NextRequest(`http://localhost:3000/api/media/sanity/${encoded}`);
 
-    const response = await GET(request, { params: { path: ['sanity', encoded] } });
+    const response = await GET(request, { params: Promise.resolve({ path: ['sanity', encoded] }) as Promise<{ path?: string[] }> });
 
     expect(response.status).toBe(400);
   });
@@ -70,7 +70,7 @@ describe('/api/media route', () => {
     const request = new NextRequest(`http://localhost:3000${gatewayUrl}`);
     const path = new URL(`http://localhost:3000${gatewayUrl}`).pathname.split('/').filter(Boolean).slice(2);
 
-    const response = await GET(request, { params: { path } });
+    const response = await GET(request, { params: Promise.resolve({ path }) as Promise<{ path?: string[] }> });
 
     expect(response.status).toBe(200);
     expect(response.headers.get('cache-control')).toContain('immutable');

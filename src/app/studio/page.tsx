@@ -1,10 +1,15 @@
 import Link from 'next/link';
+import { redirect } from 'next/navigation';
 
 const studioHref =
   (process.env.SANITY_STUDIO_URL || process.env.NEXT_PUBLIC_SANITY_STUDIO_URL)?.trim() ||
   'https://namias-cms.sanity.studio/';
 
 export default function StudioLandingPage() {
+  if (process.env.NODE_ENV === 'production' && process.env.SANITY_STUDIO_URL) {
+    redirect(process.env.SANITY_STUDIO_URL);
+  }
+
   return (
     <main className="mx-auto flex min-h-screen max-w-3xl flex-col justify-center px-6 py-16 text-center">
       <p className="mb-3 text-sm uppercase tracking-[0.24em] text-text-muted-light dark:text-text-muted-dark">

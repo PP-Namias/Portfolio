@@ -19,7 +19,7 @@ This repository powers [namias.tech](https://namias.tech), a production portfoli
 
 ## Core stack
 
-- **Framework:** Next.js 14 (App Router)
+- **Framework:** Next.js 16 (App Router)
 - **Language:** TypeScript (strict)
 - **Styling:** Tailwind CSS + Framer Motion + Lucide React
 - **Theme:** `next-themes`
