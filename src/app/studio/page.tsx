@@ -1,6 +1,8 @@
 import Link from 'next/link';
 
-const studioHref = process.env.NEXT_PUBLIC_SANITY_STUDIO_URL?.trim() || '/studio';
+const studioHref =
+  (process.env.SANITY_STUDIO_URL || process.env.NEXT_PUBLIC_SANITY_STUDIO_URL)?.trim() ||
+  'https://namias-cms.sanity.studio/';
 
 export default function StudioLandingPage() {
   return (
@@ -18,7 +20,7 @@ export default function StudioLandingPage() {
         <a
           href={studioHref}
           target="_blank"
-          rel="noreferrer"
+          rel="noopener noreferrer"
           className="rounded-lg bg-accent-pink px-5 py-3 text-sm font-medium text-white transition-colors hover:bg-accent-pink-hover"
         >
           Open Studio
