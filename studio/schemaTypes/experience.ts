@@ -1,5 +1,8 @@
 import {defineField, defineType} from 'sanity'
 
+import {ExperienceDurationField} from '../components/inputs/ExperienceDurationField'
+import {httpsOnly, requireAltText, summaryLength} from '../validation/rules'
+
 export default defineType({
   name: 'experience',
   title: 'Experience',
@@ -40,6 +43,15 @@ export default defineType({
       description: 'Use a date string or Present.',
     }),
     defineField({
+      name: 'computedDuration',
+      title: 'Duration (auto)',
+      type: 'string',
+      readOnly: true,
+      hidden: ({parent}) => !parent?.startDate,
+      description: 'Auto-computed from startDate and endDate.',
+      components: {input: ExperienceDurationField},
+    }),
+    defineField({
       name: 'employmentType',
       title: 'Employment type',
       type: 'string',
@@ -70,6 +82,7 @@ export default defineType({
       title: 'Summary',
       type: 'text',
       rows: 3,
+      validation: summaryLength(),
     }),
     defineField({
       name: 'featuredStory',
@@ -109,6 +122,7 @@ export default defineType({
               name: 'alt',
               title: 'Alt text',
               type: 'string',
+              validation: requireAltText,
             }),
             defineField({
               name: 'caption',
@@ -153,13 +167,20 @@ export default defineType({
     select: {
       title: 'role',
       subtitle: 'company',
+      startDate: 'startDate',
+      endDate: 'endDate',
       status: 'status',
     },
     prepare(selection) {
-      const {status} = selection as {status?: string}
+      const {status, startDate, endDate} = selection as {
+        status?: string
+        startDate?: string
+        endDate?: string
+      }
+      const dates = [startDate, endDate].filter(Boolean).join(' → ')
       return {
         title: selection.title,
-        subtitle: [selection.subtitle, status].filter(Boolean).join(' • '),
+        subtitle: [selection.subtitle, dates, status].filter(Boolean).join(' • '),
       }
     },
   },

@@ -1,5 +1,8 @@
 import {defineField, defineType} from 'sanity'
 
+import {ReadingTimeField} from '../components/inputs/ReadingTimeField'
+import {requireAltText, summaryLength, uniqueSlug} from '../validation/rules'
+
 export default defineType({
   name: 'post',
   title: 'Blog Post',
@@ -19,7 +22,7 @@ export default defineType({
         source: 'title',
         maxLength: 96,
       },
-      validation: (Rule) => Rule.required(),
+      validation: uniqueSlug,
     }),
     defineField({
       name: 'excerpt',
@@ -27,6 +30,7 @@ export default defineType({
       type: 'text',
       rows: 3,
       description: 'A brief summary of the blog post',
+      validation: summaryLength({min: 40, max: 280}),
     }),
     defineField({
       name: 'metaTitle',
@@ -56,6 +60,15 @@ export default defineType({
       type: 'string',
     }),
     defineField({
+      name: 'computedReadingTime',
+      title: 'Reading time (auto)',
+      type: 'string',
+      readOnly: true,
+      hidden: ({parent}) => !parent?.body,
+      description: 'Auto-computed from the body word count.',
+      components: {input: ReadingTimeField},
+    }),
+    defineField({
       name: 'mainImage',
       title: 'Main image',
       type: 'image',
@@ -67,8 +80,9 @@ export default defineType({
           name: 'alt',
           type: 'string',
           title: 'Alternative Text',
-        }
-      ]
+          validation: requireAltText,
+        },
+      ],
     }),
     defineField({
       name: 'coverImagePath',
@@ -105,6 +119,12 @@ export default defineType({
       initialValue: () => new Date().toISOString(),
     }),
     defineField({
+      name: 'publishAt',
+      title: 'Scheduled publish at',
+      type: 'datetime',
+      description: 'Set this to schedule the post to go live later. Leave empty to publish immediately on click.',
+    }),
+    defineField({
       name: 'published',
       title: 'Published',
       type: 'boolean',
@@ -116,10 +136,19 @@ export default defineType({
     select: {
       title: 'title',
       author: 'author.name',
+      published: 'published',
+      publishAt: 'publishAt',
     },
     prepare(selection) {
-      const {author} = selection
-      return {...selection, subtitle: author && `by ${author}`}
+      const {author, published, publishAt} = selection as {
+        author?: string
+        published?: boolean
+        publishAt?: string
+      }
+      const flags = [published ? 'published' : 'draft', publishAt ? 'scheduled' : null]
+        .filter(Boolean)
+        .join(' • ')
+      return {...selection, subtitle: [author ? `by ${author}` : null, flags].filter(Boolean).join(' • ')}
     },
   },
   orderings: [

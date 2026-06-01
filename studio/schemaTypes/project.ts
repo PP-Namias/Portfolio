@@ -1,5 +1,7 @@
 import {defineField, defineType} from 'sanity'
 
+import {httpsOnly, requireAltText, summaryLength, uniqueSlug} from '../validation/rules'
+
 export default defineType({
   name: 'project',
   title: 'Project',
@@ -24,12 +26,14 @@ export default defineType({
         source: 'title',
         maxLength: 96,
       },
+      validation: uniqueSlug,
     }),
     defineField({
       name: 'summary',
       title: 'Summary',
       type: 'text',
       rows: 4,
+      validation: summaryLength({min: 60, max: 320}),
     }),
     defineField({
       name: 'challenge',
@@ -93,6 +97,7 @@ export default defineType({
           name: 'alt',
           title: 'Alt text',
           type: 'string',
+          validation: requireAltText,
         }),
         defineField({
           name: 'caption',
@@ -134,6 +139,7 @@ export default defineType({
               name: 'alt',
               title: 'Alt text',
               type: 'string',
+              validation: requireAltText,
             }),
             defineField({
               name: 'caption',
@@ -168,11 +174,15 @@ export default defineType({
       name: 'liveUrl',
       title: 'Live URL',
       type: 'url',
+      hidden: ({parent}) => parent?.status === 'concept' || parent?.status === 'draft',
+      description: 'Hidden for concept/draft projects. Use https:// only.',
+      validation: httpsOnly,
     }),
     defineField({
       name: 'repositoryUrl',
       title: 'Repository URL',
       type: 'url',
+      validation: httpsOnly,
     }),
     defineField({
       name: 'featuredRank',
@@ -193,6 +203,12 @@ export default defineType({
         ],
       },
     }),
+    defineField({
+      name: 'publishAt',
+      title: 'Scheduled publish at',
+      type: 'datetime',
+      description: 'Set this to schedule the project to go live later.',
+    }),
   ],
   preview: {
     select: {
@@ -200,13 +216,23 @@ export default defineType({
       subtitle: 'summary',
       featured: 'featured',
       status: 'status',
+      publishAt: 'publishAt',
     },
     prepare(selection) {
-      const {title, subtitle, featured, status} = selection as {title?: string; subtitle?: string; featured?: boolean; status?: string}
+      const {title, subtitle, featured, status, publishAt} = selection as {
+        title?: string
+        subtitle?: string
+        featured?: boolean
+        status?: string
+        publishAt?: string
+      }
       const statusLabel = status ? status.replace(/-/g, ' ') : 'unspecified'
+      const flags = [statusLabel, featured ? 'featured' : null, publishAt ? 'scheduled' : null]
+        .filter(Boolean)
+        .join(' • ')
       return {
         title,
-        subtitle: [subtitle, statusLabel, featured ? 'featured' : null].filter(Boolean).join(' • '),
+        subtitle: [subtitle, flags].filter(Boolean).join(' • '),
       }
     },
   },

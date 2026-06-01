@@ -1,5 +1,7 @@
 import {defineField, defineType} from 'sanity'
 
+import {dateOrder, requireAltText} from '../validation/rules'
+
 export default defineType({
   name: 'certification',
   title: 'Certification',
@@ -31,9 +33,24 @@ export default defineType({
       type: 'date',
     }),
     defineField({
+      name: 'expiresAt',
+      title: 'Expires at',
+      type: 'date',
+      hidden: ({parent}) => parent?.neverExpires === true,
+      validation: dateOrder('issuedAt'),
+    }),
+    defineField({
+      name: 'neverExpires',
+      title: 'Never expires',
+      type: 'boolean',
+      initialValue: false,
+      description: 'When enabled, the expiresAt field is hidden.',
+    }),
+    defineField({
       name: 'credentialUrl',
       title: 'Credential URL',
       type: 'url',
+      hidden: ({parent}) => parent?.neverExpires === true,
     }),
     defineField({
       name: 'category',
@@ -60,6 +77,7 @@ export default defineType({
           name: 'alt',
           title: 'Alt text',
           type: 'string',
+          validation: requireAltText,
         }),
         defineField({
           name: 'caption',
@@ -88,6 +106,14 @@ export default defineType({
     select: {
       title: 'title',
       subtitle: 'issuer.title',
+      issuedAt: 'issuedAt',
+    },
+    prepare(selection) {
+      const {issuedAt} = selection as {issuedAt?: string}
+      return {
+        ...selection,
+        subtitle: [selection.subtitle, issuedAt].filter(Boolean).join(' • '),
+      }
     },
   },
   orderings: [
