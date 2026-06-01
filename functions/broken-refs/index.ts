@@ -1,19 +1,18 @@
 /**
  * Sanity Function: broken-refs
  *
- * Scans all documents for references to missing documents and surfaces a
- * 'brokenRefs' count on the parent document. Designed to be triggered on
- * a schedule (every 6h) or on document mutations.
+ * Scheduled trigger (every 6 hours). Scans every document for references
+ * to missing documents and patches a `brokenRefsCount` onto the parent
+ * so the content health panel can surface it.
+ *
+ * Trigger: scheduled (cron `0 */6 * * *`)
+ * Inputs: none
+ * Outputs: {scanned, flagged, fixes: [{_id, brokenCount}]}
  */
 import {createClient} from '@sanity/client'
+import {scheduledEventHandler} from '@sanity/functions'
 
-const client = createClient({
-  projectId: process.env.SANITY_STUDIO_PROJECT_ID || 'nl0qw78w',
-  dataset: process.env.SANITY_STUDIO_DATASET || 'production',
-  apiVersion: '2025-10-21',
-  useCdn: false,
-  token: process.env.SANITY_API_WRITE_TOKEN,
-})
+type DocRef = {_id: string; _type: string}
 
 function collectRefs(node: unknown, refs: Set<string>): void {
   if (!node || typeof node !== 'object') {
@@ -34,10 +33,14 @@ function collectRefs(node: unknown, refs: Set<string>): void {
   }
 }
 
-export async function brokenRefs(_event: unknown) {
-  const allDocs = await client.fetch<{_id: string; _type: string; refs: string[]}[]>(
-    `*[]{ "_id": _id, "_type": _type, "refs": array::unique([].concat(*[_ref in [^.^]])) }`,
-  )
+export const handler = scheduledEventHandler(async ({context}) => {
+  const client = createClient({
+    ...context.clientOptions,
+    useCdn: false,
+    apiVersion: '2026-02-19',
+  })
+
+  const allDocs = await client.fetch<DocRef[]>(`*[_id != null]{_id, _type}`)
   const allIds = new Set(allDocs.map((d) => d._id))
   const fixes: {_id: string; brokenCount: number}[] = []
 
@@ -62,6 +65,4 @@ export async function brokenRefs(_event: unknown) {
   await transaction.commit()
 
   return {scanned: allDocs.length, flagged: fixes.length, fixes}
-}
-
-export default brokenRefs
+})

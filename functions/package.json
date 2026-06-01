@@ -2,16 +2,20 @@
   "name": "@pp-namias/sanity-functions",
   "version": "1.0.0",
   "private": true,
-  "description": "Sanity Functions for the Namias CMS showcase (scheduled-publish, broken-refs, auto-tag-images).",
-  "main": "index.ts",
   "type": "module",
+  "description": "Sanity Functions for the Namias CMS showcase (scheduled-publish, broken-refs, auto-tag-images).",
   "scripts": {
-    "deploy:scheduled-publish": "cd scheduled-publish && npx sanity functions deploy scheduled-publish",
-    "deploy:broken-refs": "cd broken-refs && npx sanity functions deploy broken-refs",
-    "deploy:auto-tag-images": "cd auto-tag-images && npx sanity functions deploy auto-tag-images",
-    "deploy:all": "npm run deploy:scheduled-publish && npm run deploy:broken-refs && npm run deploy:auto-tag-images"
+    "deploy": "npx sanity@latest blueprints deploy",
+    "plan": "npx sanity@latest blueprints plan",
+    "logs": "npx sanity@latest blueprints logs",
+    "destroy": "npx sanity@latest blueprints destroy",
+    "test:scheduled-publish": "npx sanity@latest functions test scheduled-publish --data '{}'",
+    "test:broken-refs": "npx sanity@latest functions test broken-refs --data '{}'",
+    "test:auto-tag-images": "npx sanity@latest functions test auto-tag-images --data '{\"data\":{\"asset\":{\"_id\":\"image-abc123\",\"url\":\"https://example.com/x.jpg\"}}}'"
   },
   "dependencies": {
-    "@sanity/client": "^7.6.0"
+    "@sanity/client": "^7.6.0",
+    "@sanity/functions": "^1.0.0",
+    "sanity": "^4.22.0"
   }
 }
