@@ -3,8 +3,6 @@ import {set, type StringInputProps} from 'sanity'
 
 import {countPortableTextWords, estimateReadingTime} from '../../utils/text'
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 export function ReadingTimeField(props: StringInputProps) {
   const {value, onChange} = props
   const document = (props as unknown as {document?: any}).document

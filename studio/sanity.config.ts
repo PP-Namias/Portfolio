@@ -2,6 +2,7 @@ import {defineConfig} from 'sanity'
 import {defineLocations, presentationTool} from 'sanity/presentation'
 import {structureTool} from 'sanity/structure'
 import {visionTool} from '@sanity/vision'
+import {assist} from '@sanity/assist'
 import {schemaTypes} from './schemaTypes'
 import {createPublishAndRefreshAction} from './actions/publishAndRefreshAction'
 import {perspectiveSwitcherAction} from './actions/perspectiveSwitcher'
@@ -176,6 +177,7 @@ export default defineConfig({
       },
     }),
     visionTool(),
+    assist(),
   ],
 
   document: {

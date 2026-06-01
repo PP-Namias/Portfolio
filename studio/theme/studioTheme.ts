@@ -1,29 +1,36 @@
 /**
- * Studio theme tokens. Applied to the studio shell via the `theme` config
- * key in `sanity.config.ts`. Pairs with the portfolio's accent palette.
+ * Studio theme tokens. Pairs with the portfolio's accent palette.
+ *
+ * Uses `buildLegacyTheme` from sanity - it takes CSS custom properties and
+ * returns a fully-formed `StudioTheme` with both `color.light` and
+ * `color.dark` variants, so the studio shell never crashes on missing keys.
+ *
+ * The shell is mostly light by default. The dark color tokens are inferred
+ * from the same custom properties by the Sanity UI primitives.
  */
-/* eslint-disable @typescript-eslint/no-explicit-any */
-export const studioTheme = {
-  color: {
-    dark: {
-      '--card-bg': '#0e0e10',
-      '--card-fg': '#f5f5f7',
-      '--card-border': 'rgba(255,255,255,0.08)',
-      '--accent': '#ff63a5',
-      '--accent-fg': '#ffffff',
-      '--positive': '#22c55e',
-      '--caution': '#f59e0b',
-      '--critical': '#ef4444',
-    },
-  },
-  font: {
-    family: 'Inter, ui-sans-serif, system-ui, sans-serif',
-    weights: {
-      regular: 400,
-      medium: 500,
-      semibold: 600,
-      bold: 700,
-    },
-  },
-  radius: [6, 10, 14],
-} as any
+import {buildLegacyTheme} from 'sanity'
+
+export const studioTheme = buildLegacyTheme({
+  '--black': '#0e0e10',
+  '--white': '#ffffff',
+  '--gray-base': '#5e5e5e',
+  '--gray': '#8a8a8a',
+  '--brand-primary': '#ff63a5',
+  '--component-bg': '#ffffff',
+  '--component-text-color': '#1f1f1f',
+  '--default-button-color': '#5e5e5e',
+  '--default-button-primary-color': '#ff63a5',
+  '--default-button-success-color': '#22c55e',
+  '--default-button-warning-color': '#f59e0b',
+  '--default-button-danger-color': '#ef4444',
+  '--focus-color': '#ff63a5',
+  '--main-navigation-color': '#0e0e10',
+  '--main-navigation-color--inverted': '#ffffff',
+  '--state-info-color': '#6366f1',
+  '--state-success-color': '#22c55e',
+  '--state-warning-color': '#f59e0b',
+  '--state-danger-color': '#ef4444',
+  '--font-family-base': "'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif",
+  '--font-family-monospace':
+    "'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace",
+})

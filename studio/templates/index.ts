@@ -1,7 +1,5 @@
 import type {InitialValueTemplateItem} from 'sanity'
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 const today = () => new Date().toISOString().slice(0, 10)
 
 function slugify(input: string): string {

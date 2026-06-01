@@ -33,7 +33,6 @@ function isExpiredSoon(doc: Doc): boolean {
   return ms > 0 && ms < 90 * DAY_MS
 }
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
 function readDoc(props: any): Doc {
   return (props?.document ?? props) as Doc
 }
