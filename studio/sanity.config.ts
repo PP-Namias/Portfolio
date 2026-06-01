@@ -7,6 +7,7 @@ import {createPublishAndRefreshAction} from './actions/publishAndRefreshAction'
 import {perspectiveSwitcherAction} from './actions/perspectiveSwitcher'
 import {previewLocations} from './preview/previewLocations'
 import {templateRegistry} from './templates'
+import {studioBadges} from './components/badges/statusBadges'
 import {getDraftModeEnablePath, getStudioPreviewOrigin, loadStudioEnvironment, requireStudioEnv} from './env'
 
 loadStudioEnvironment()
@@ -181,6 +182,10 @@ export default defineConfig({
           : originalAction,
       ),
     ],
+    badges: (prev, {documentType}) => {
+      if (!documentType) return prev
+      return [...prev, ...studioBadges]
+    },
     newDocumentOptions: (prev, {creationContext}) => {
       if (creationContext.type === 'global') {
         return prev
