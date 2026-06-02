@@ -15,6 +15,7 @@ import {Welcome} from './components/Welcome'
 import {OnboardingTour} from './components/Onboarding'
 import {studioTheme} from './theme/studioTheme'
 import {skillsToolPlugin} from './plugins/skillsTool'
+import {savedQueriesToolPlugin} from './vision/SavedQueriesView'
 import {deskStructure} from './structure/deskStructure'
 import {getDraftModeEnablePath, getStudioPreviewOrigin, loadStudioEnvironment, requireStudioEnv} from './env'
 
@@ -92,6 +93,7 @@ export default defineConfig({
     visionTool(),
     assist(),
     skillsToolPlugin(),
+    savedQueriesToolPlugin(),
   ],
 
   document: {
