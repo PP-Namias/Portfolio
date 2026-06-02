@@ -6,6 +6,8 @@ import {assist} from '@sanity/assist'
 import {schemaTypes} from './schemaTypes'
 import {createPublishAndRefreshAction} from './actions/publishAndRefreshAction'
 import {perspectiveSwitcherAction} from './actions/perspectiveSwitcher'
+import {viewOnSiteAction} from './actions/viewOnSiteAction'
+import {openInPresentationAction} from './actions/openInPresentationAction'
 import {previewLocations} from './preview/previewLocations'
 import {templateRegistry} from './templates'
 import {studioBadges} from './components/badges/statusBadges'
@@ -185,6 +187,8 @@ export default defineConfig({
   document: {
     actions: (prev) => [
       perspectiveSwitcherAction,
+      viewOnSiteAction,
+      openInPresentationAction,
       ...prev.map((originalAction) =>
         originalAction.action === 'publish'
           ? createPublishAndRefreshAction(originalAction)
