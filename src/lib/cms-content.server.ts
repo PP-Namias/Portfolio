@@ -235,7 +235,7 @@ function resolveMediaPath(fileName?: string | null, url?: string | null): string
 }
 
 const getCmsContentImpl = async (): Promise<CmsContent> => {
-  const [profileDoc, heroDoc, aboutDoc, techDoc, experienceDocs, projectDocs, certificationDocs, galleryDocs, blogDocs, membershipDocs, recommendationDocs, siteSettingsDoc, seoSettingsDoc] = await Promise.all([
+  const [profileDoc, heroDoc, aboutDoc, techDoc, experienceDocs, projectDocs, certificationDocs, galleryDocs, blogDocs, membershipDocs, recommendationDocs, siteSettingsDoc] = await Promise.all([
     querySanity<{
       fullName?: string;
       title?: string;
@@ -415,19 +415,26 @@ const getCmsContentImpl = async (): Promise<CmsContent> => {
         description?: string;
         backLabel?: string;
       };
-    }>(
-      '*[_type == "siteSettings"][0]{footer{leadText,linkLabel,copyright,backToPortfolioLabel,contactPrompt},blog{title,description,backLabel}}'
-    ),
-    querySanity<{
-      siteTitle?: string;
-      siteDescription?: string;
+      siteName?: string;
+      siteTagline?: string;
+      ownerName?: string;
+      ownerShortName?: string;
+      contactEmail?: string;
+      themeColor?: string;
+      primaryAccent?: string;
+      secondaryAccent?: string;
+      defaultMetaTitle?: string;
+      defaultMetaDescription?: string;
       canonicalUrl?: string;
+      ogTitle?: string;
+      ogDescription?: string;
       ogImageUrl?: string;
+      ogImageSquareUrl?: string;
       twitterImageUrl?: string;
-      noindex?: boolean;
-      nofollow?: boolean;
+      robotsNoindex?: boolean;
+      robotsNofollow?: boolean;
     }>(
-      '*[_type == "seoSettings"][0]{siteTitle,siteDescription,canonicalUrl,"ogImageUrl":ogImage.asset->url,"twitterImageUrl":twitterImage.asset->url,noindex,nofollow}'
+      '*[_type == "siteSettings"][0]{footer{leadText,linkLabel,copyright,backToPortfolioLabel,contactPrompt},blog{title,description,backLabel},siteName,siteTagline,ownerName,ownerShortName,contactEmail,themeColor,primaryAccent,secondaryAccent,defaultMetaTitle,defaultMetaDescription,canonicalUrl,ogTitle,ogDescription,"ogImageUrl":ogImage.asset->url,"ogImageSquareUrl":ogImageSquare.asset->url,"twitterImageUrl":twitterImage.asset->url,robotsNoindex,robotsNofollow}'
     ),
   ]);
 
@@ -627,13 +634,20 @@ const getCmsContentImpl = async (): Promise<CmsContent> => {
 
   return {
     seoSettings: {
-      siteTitle: seoSettingsDoc?.siteTitle || fb.seoSettings.siteTitle,
-      siteDescription: seoSettingsDoc?.siteDescription || fb.seoSettings.siteDescription,
-      canonicalUrl: seoSettingsDoc?.canonicalUrl || fb.seoSettings.canonicalUrl,
-      ogImageUrl: seoSettingsDoc?.ogImageUrl || fb.seoSettings.ogImageUrl,
-      twitterImageUrl: seoSettingsDoc?.twitterImageUrl || fb.seoSettings.twitterImageUrl,
-      noindex: seoSettingsDoc?.noindex ?? fb.seoSettings.noindex,
-      nofollow: seoSettingsDoc?.nofollow ?? fb.seoSettings.nofollow,
+      // Prefer the new siteSettings.ogImage (the big branded card); fall
+      // back to the static /og-image.svg served from /public, and finally
+      // to the empty fallback.
+      siteTitle:
+        siteSettingsDoc?.ogTitle || siteSettingsDoc?.defaultMetaTitle ||
+        fb.seoSettings.siteTitle,
+      siteDescription:
+        siteSettingsDoc?.ogDescription || siteSettingsDoc?.defaultMetaDescription ||
+        fb.seoSettings.siteDescription,
+      canonicalUrl: siteSettingsDoc?.canonicalUrl || fb.seoSettings.canonicalUrl,
+      ogImageUrl: siteSettingsDoc?.ogImageUrl || fb.seoSettings.ogImageUrl,
+      twitterImageUrl: siteSettingsDoc?.twitterImageUrl || siteSettingsDoc?.ogImageUrl || fb.seoSettings.twitterImageUrl,
+      noindex: siteSettingsDoc?.robotsNoindex ?? fb.seoSettings.noindex,
+      nofollow: siteSettingsDoc?.robotsNofollow ?? fb.seoSettings.nofollow,
     },
     profile,
     siteSettings: {

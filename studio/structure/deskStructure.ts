@@ -109,6 +109,12 @@ export function deskStructure(S: StructureBuilder) {
               S.listItem()
                 .title('Site Settings')
                 .child(S.document().schemaType('siteSettings').documentId('siteSettings')),
+              S.listItem()
+                .title('SEO Settings')
+                .child(S.document().schemaType('seoSettings').documentId('seoSettings')),
+              S.listItem()
+                .title('Media Settings')
+                .child(S.document().schemaType('mediaSettings').documentId('mediaSettings')),
             ]),
         ),
       S.listItem()
