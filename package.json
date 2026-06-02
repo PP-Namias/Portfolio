@@ -59,7 +59,8 @@
     "react-markdown": "^10.1.0",
     "rehype-highlight": "^7.0.2",
     "remark-gfm": "^4.0.1",
-    "styled-components": "^6.4.2"
+    "styled-components": "^6.4.2",
+    "swr": "^2.4.1"
   },
   "devDependencies": {
     "@opennextjs/cloudflare": "^1.19.11",
