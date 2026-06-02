@@ -98,9 +98,62 @@ export const postTemplates: InitialValueTemplateItem[] = [
   } as any,
 ]
 
+export const membershipTemplates: InitialValueTemplateItem[] = [
+  {
+    id: 'membership-new',
+    title: 'New membership',
+    description: 'Membership with joinedAt=today.',
+    schemaType: 'membership',
+    value: ({title}: {title?: string}) => ({
+      name: title || 'New membership',
+      joinedAt: today(),
+    }),
+  } as any,
+]
+
+export const recommendationTemplates: InitialValueTemplateItem[] = [
+  {
+    id: 'recommendation-featured',
+    title: 'New recommendation (featured)',
+    description: 'Recommendation with featured=true.',
+    schemaType: 'recommendation',
+    value: ({title}: {title?: string}) => ({
+      name: title || 'New recommender',
+      featured: true,
+    }),
+  } as any,
+  {
+    id: 'recommendation-draft',
+    title: 'New recommendation (draft)',
+    description: 'Recommendation with featured=false.',
+    schemaType: 'recommendation',
+    value: ({title}: {title?: string}) => ({
+      name: title || 'New recommender',
+      featured: false,
+    }),
+  } as any,
+]
+
+export const galleryImageTemplates: InitialValueTemplateItem[] = [
+  {
+    id: 'gallery-image-new',
+    title: 'New gallery image',
+    description: 'Image with order=0 and tags=[] pre-filled.',
+    schemaType: 'galleryImage',
+    value: ({title}: {title?: string}) => ({
+      title: title || 'New gallery image',
+      order: 0,
+      tags: [],
+    }),
+  } as any,
+]
+
 export const templateRegistry: Record<string, InitialValueTemplateItem[]> = {
   project: projectTemplates,
   experience: experienceTemplates,
   certification: certificationTemplates,
   post: postTemplates,
+  membership: membershipTemplates,
+  recommendation: recommendationTemplates,
+  galleryImage: galleryImageTemplates,
 }
