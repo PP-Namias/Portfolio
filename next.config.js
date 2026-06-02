@@ -84,6 +84,10 @@ const nextConfig = {
   },
   images: {
     remotePatterns: [],
+    localPatterns: [
+      {pathname: '/api/media/sanity/**'},
+      {pathname: '/og-image.svg'},
+    ],
   },
   async headers() {
     return [

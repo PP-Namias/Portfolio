@@ -3,10 +3,22 @@ import {beforeEach, describe, expect, it, vi} from 'vitest'
 
 const enableMock = vi.fn()
 
-vi.mock('next/headers', () => ({
-  draftMode: () => ({
-    enable: enableMock,
-  }),
+vi.mock('next-sanity/draft-mode', () => ({
+  defineEnableDraftMode: () => {
+    const handler = (request: NextRequest) => {
+      const url = new URL(request.url)
+      const secret = url.searchParams.get('secret')
+      const redirect = url.searchParams.get('redirect') ?? '/'
+
+      if (secret !== process.env.SANITY_REVALIDATE_SECRET) {
+        return new Response('Invalid secret', {status: 401})
+      }
+
+      enableMock()
+      return Response.redirect(new URL(redirect, url.origin), 307)
+    }
+    return {GET: handler}
+  },
 }))
 
 import {GET} from '@/app/api/draft-mode/enable/route'
