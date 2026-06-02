@@ -120,6 +120,15 @@ export function BookingModal({ open, onClose }: Readonly<BookingModalProps>) {
           title={`Book a ${selectedEvent} meeting with PP Namias`}
           allow="payment"
           loading="lazy"
+          // Cal.com's embed widget requires allow-scripts (runs its
+          // booking UI) and allow-same-origin (so the widget sees its
+          // own cookies/storage). The combination is documented by
+          // eslint-plugin-react as a sandbox-defeating pattern, but it
+          // is safe here because embedUrl is on a different origin
+          // (cal.com) than the parent (namias.tech): the iframe treats
+          // itself as same-origin to cal.com, not to us.
+          // eslint-disable-next-line react-doctor/iframe-missing-sandbox
+          sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox"
           onLoad={() => setIsEmbedLoading(false)}
         />
       </div>
