@@ -15,6 +15,7 @@ import {Welcome} from './components/Welcome'
 import {OnboardingTour} from './components/Onboarding'
 import {studioTheme} from './theme/studioTheme'
 import {skillsToolPlugin} from './plugins/skillsTool'
+import {deskStructure} from './structure/deskStructure'
 import {getDraftModeEnablePath, getStudioPreviewOrigin, loadStudioEnvironment, requireStudioEnv} from './env'
 
 loadStudioEnvironment()
@@ -46,8 +47,6 @@ const blogPostLocation = {
   ],
 }
 
-const demoGroupTitle = 'Interview Demo'
-
 export default defineConfig({
   name: 'default',
   title: 'Namias CMS | Interview Studio',
@@ -59,96 +58,7 @@ export default defineConfig({
 
   plugins: [
     structureTool({
-      structure: (S) =>
-        S.list()
-          .title('Content')
-          .items([
-            S.listItem().title('Homepage').child(
-              S.list()
-                .title('Homepage Story')
-                .items([
-                  S.listItem().title('Hero & shell').child(
-                    S.list()
-                      .title('Hero & shell')
-                      .items([
-                        S.listItem()
-                          .title('Hero Section')
-                          .child(S.document().schemaType('heroSection').documentId('heroSection')),
-                        S.listItem()
-                          .title('Resume')
-                          .child(S.documentTypeList('resume').title('Resume')),
-                        S.listItem()
-                          .title('Site Settings')
-                          .child(S.document().schemaType('siteSettings').documentId('siteSettings')),
-                      ])
-                  ),
-                  S.listItem().title('Main column').child(
-                    S.list()
-                      .title('Main column')
-                      .items([
-                        S.listItem()
-                          .title('About Section')
-                          .child(S.document().schemaType('aboutSection').documentId('aboutSection')),
-                        S.listItem()
-                          .title('Tech Stack')
-                          .child(S.document().schemaType('techStack').documentId('techStack')),
-                        S.listItem().title('Projects').child(S.documentTypeList('project').title('Projects')),
-                      ])
-                  ),
-                  S.listItem().title('Sidebar column').child(
-                    S.list()
-                      .title('Sidebar column')
-                      .items([
-                        S.listItem().title('Experience').child(S.documentTypeList('experience').title('Experience')),
-                        S.listItem().title('Certifications').child(S.documentTypeList('certification').title('Certifications')),
-                        S.listItem().title('Gallery').child(S.documentTypeList('galleryImage').title('Gallery')),
-                      ])
-                  ),
-                ])
-            ),
-            S.listItem().title('Support Data').child(
-              S.list()
-                .title('Support Data & Proof')
-                .items([
-                  S.listItem().title('Profile').child(S.document().schemaType('profile').documentId('profile')),
-                  S.listItem().title('Memberships').child(S.documentTypeList('membership').title('Memberships')),
-                  S.listItem().title('Recommendations').child(S.documentTypeList('recommendation').title('Recommendations')),
-                ])
-            ),
-            S.listItem().title('Blog').child(
-              S.list()
-                .title('Blog Publishing')
-                .items([
-                  S.listItem().title('Posts').child(S.documentTypeList('post').title('Posts')),
-                  S.listItem().title('Authors').child(S.documentTypeList('author').title('Authors')),
-                  S.listItem().title('Categories').child(S.documentTypeList('category').title('Categories')),
-                ])
-            ),
-            S.listItem().title('Reference Data').child(
-              S.list()
-                .title('Reference Data & Taxonomy')
-                .items([
-                  S.listItem()
-                    .title('Certification Categories')
-                    .child(S.documentTypeList('certificationCategory').title('Certification Categories')),
-                  S.listItem()
-                    .title('Certification Issuers')
-                    .child(S.documentTypeList('certificationIssuer').title('Certification Issuers')),
-                  S.listItem()
-                    .title('Gallery Categories')
-                    .child(S.documentTypeList('galleryCategory').title('Gallery Categories')),
-                ])
-            ),
-            S.listItem().title(demoGroupTitle).child(
-              S.list()
-                .title('Interview Demo')
-                .items([
-                  S.listItem().title('1. Preview Foundation').child(S.document().schemaType('siteSettings').documentId('siteSettings')),
-                  S.listItem().title('2. Homepage Live Preview').child(S.document().schemaType('heroSection').documentId('heroSection')),
-                  S.listItem().title('3. Blog Live Preview').child(S.documentTypeList('post').title('Posts')),
-                ])
-            ),
-          ])
+      structure: (S) => deskStructure(S),
     }),
     presentationTool({
       title: 'Presentation',
