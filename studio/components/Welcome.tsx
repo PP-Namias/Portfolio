@@ -5,6 +5,8 @@ const QUICK_ACTIONS = [
   {title: 'New post', description: 'Spin up a draft post with smart defaults.', type: 'post', tone: '#6366f1'},
   {title: 'New certification', description: 'Add a certification with a 90-day expiry nudge.', type: 'certification', tone: '#22c55e'},
   {title: 'Browse skills', description: '42 step-by-step recipes for common tasks.', href: '/studio/skills', tone: '#0ea5e9'},
+  {title: 'Open Presentation', description: 'Edit content on the live site with click-to-edit.', href: '/studio/presentation', tone: '#a855f7'},
+  {title: 'Saved Queries', description: '5 curated GROQ queries for audits + health checks.', href: '/studio/saved-queries', tone: '#f59e0b'},
 ]
 
 export function Welcome() {
@@ -54,7 +56,7 @@ export function Welcome() {
       >
         {QUICK_ACTIONS.map((action) => {
           const href = action.href ?? `/studio/intent/create?type=${action.type}`
-          const label = action.href ? 'skills' : action.type
+          const label = action.href ? 'tool' : action.type
           return (
             <a
               key={action.title}
