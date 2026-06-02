@@ -103,9 +103,14 @@ export function RecommendationsCarousel() {
 
       {recommendations.length > 1 && (
         <div className="flex items-center gap-1.5 mt-4">
-          {recommendations.map((_, index) => (
+          {recommendations.map((recommendation, index) => (
             <button
-              key={`${recommendations[index]?.name || 'recommendation'}-${index}`}
+              // recommendation.name is the stable identity for a
+              // dot; the index is the click target, not the React
+              // key. We still capture index in the click handler
+              // closure (handleDotClick(index)) and the aria-label,
+              // but the key itself is the name.
+              key={recommendation.name || `recommendation-${index}`}
               type="button"
               onClick={() => handleDotClick(index)}
               className={`h-1.5 rounded-full transition-all duration-300 ${
