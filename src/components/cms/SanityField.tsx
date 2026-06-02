@@ -1,46 +1,6 @@
-import type {ComponentType, ReactNode} from 'react'
-
-export type SanityFieldPath = {
-  documentId: string
-  documentType: string
-  fieldPath: string
-}
-
-export type SanityFieldContext = SanityFieldPath & {
-  editable: boolean
-}
-
-export type SanityFieldProps = {
-  documentId: string
-  documentType: string
-  fieldPath: string
-  editable?: boolean
-  children: ReactNode
-  className?: string
-  as?: keyof JSX.IntrinsicElements
-}
-
-const PROJECT_ID = 'nl0qw78w'
-
-export function buildStudioEditHref(
-  documentId: string,
-  documentType: string,
-  fieldPath: string,
-): string {
-  const params = new URLSearchParams({
-    doc: `${documentType}:${documentId}`,
-    path: fieldPath,
-  })
-  return `https://namias-cms.sanity.studio/intent/edit?${params.toString()}`
-}
-
-export function buildSanityDataAttribute(
-  documentId: string,
-  documentType: string,
-  fieldPath: string,
-): string {
-  return `data-sanity="${documentId}.${documentType}.${fieldPath.replace(/\./g, '|')}|${PROJECT_ID}"`
-}
+import type {ComponentType} from 'react'
+import {buildSanityDataAttribute, buildStudioEditHref} from './sanity-field.lib'
+import type {SanityFieldProps} from './sanity-field.types'
 
 export function SanityField({
   documentId,
@@ -61,7 +21,7 @@ export function SanityField({
     'data-sanity'?: string
     'data-sanity-editable'?: string
     'data-sanity-edit-href'?: string
-    children?: ReactNode
+    children?: React.ReactNode
   }>
 
   return (

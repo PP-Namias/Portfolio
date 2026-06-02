@@ -1,2 +1,3 @@
-export {SanityField, buildSanityDataAttribute, buildStudioEditHref} from './SanityField'
-export type {SanityFieldContext, SanityFieldPath, SanityFieldProps} from './SanityField'
+export {SanityField} from './SanityField'
+export {buildSanityDataAttribute, buildStudioEditHref} from './sanity-field.lib'
+export type {SanityFieldContext, SanityFieldPath, SanityFieldProps} from './sanity-field.types'
