@@ -1,4 +1,4 @@
-import React, {useMemo} from 'react'
+import React, {useEffect, useMemo, useState} from 'react'
 import {useFormValue} from 'sanity'
 
 type Doc = Record<string, unknown>
@@ -101,9 +101,15 @@ export function ContentHealth() {
   }, [values])
 
   const lastEdited = values._updatedAt as string | undefined
-  const ageDays = useMemo(() => {
-    if (!lastEdited) return null
-    return Math.floor((Date.now() - new Date(lastEdited).getTime()) / (1000 * 60 * 60 * 24))
+  const [ageDays, setAgeDays] = useState<number | null>(null)
+  useEffect(() => {
+    if (!lastEdited) {
+      setAgeDays(null)
+      return
+    }
+    setAgeDays(
+      Math.floor((Date.now() - new Date(lastEdited).getTime()) / (1000 * 60 * 60 * 24)),
+    )
   }, [lastEdited])
 
   return (
