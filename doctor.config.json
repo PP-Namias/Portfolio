@@ -1,0 +1,44 @@
+{
+  "$schema": "https://react.doctor/schema/doctor.config.json",
+  "deadCode": false,
+  "ignore": {
+    "paths": [
+      "node_modules/**",
+      ".next/**",
+      ".open-next/**",
+      ".wrangler/**",
+      "out/**",
+      "coverage/**",
+      "studio/**",
+      "scripts/**",
+      "**/*.test.ts",
+      "**/*.test.tsx",
+      "src/__tests__/**"
+    ],
+    "tags": [
+      "design",
+      "test-noise"
+    ]
+  },
+  "rules": {
+    "react-doctor/no-giant-component": "error",
+    "react-doctor/exhaustive-deps": "error",
+    "react-doctor/effect-needs-cleanup": "error",
+    "react-doctor/no-array-index-as-key": "error",
+    "react-doctor/no-chain-state-updates": "error",
+    "react-doctor/no-conditional-effect": "error",
+    "react-doctor/no-usememo-simple-expression": "warn",
+    "react-doctor/use-lazy-motion": "warn",
+    "react-doctor/button-has-type": "warn",
+    "react-doctor/no-danger": "error",
+    "react-doctor/iframe-missing-sandbox": "error",
+    "react-doctor/no-fetch-in-effect": "error",
+    "react-doctor/no-effect-chain": "error",
+    "react-doctor/no-multi-comp": "warn"
+  },
+  "report": {
+    "topRulesPerCategory": 5,
+    "showFileLocations": true,
+    "color": "auto"
+  }
+}
