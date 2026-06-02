@@ -1,0 +1,80 @@
+React Doctor v0.2.16
+
+  
+
+  Bugs > 4 errors, 27 warnings
+  Security > 5 errors
+  Performance > 1 warning
+  Accessibility > 2 warnings
+  Maintainability > 4 warnings
+
+  43 issues
+
+  ────────────────────────────────────────────────────────────
+  Top 3 errors you should fix
+
+  ✗ Bugs: Array index used as a key ×2
+    Your users can see & submit the wrong data when this list
+    reorders or filters, so use a stable id like
+    `key={item.id}`, not the array index "i".
+    → Use a stable id from the item, like `key={item.id}` or
+    `key={item.slug}`. Index keys break when the list reorders
+    or filters.
+
+    src/components/sections/AboutSection.tsx:39
+    ┌──────────────────────────────────────────────────────────────┐
+    │   38 |             <p                                        │
+    │ > 39 |               key={`${paragraph.slice(0, 16)}-${i}`}  │
+    │      |               ^                                       │
+    │   40 |               className="text-[14px] sm:text-[15px] [0m… │
+    └──────────────────────────────────────────────────────────────┘
+
+  ✗ Security: iframe missing sandbox attribute ×2
+    An `<iframe>` with no `sandbox` is a security hole: the
+    embedded page gets full access to your site.
+    → Add `sandbox=""` (or a curated value) to your iframe.
+
+    src/components/ui/ResumeModal.tsx:76
+    ┌──────────────────────────────────────────────────────────────┐
+    │   75 |       <div className="flex-1 h-[calc(92vh-60px)] min[0m… │
+    │ > 76 |         <iframe                                       │
+    │      |          ^                                            │
+    │   77 |           src={`${resumeUrl}#view=FitH`}              │
+    └──────────────────────────────────────────────────────────────┘
+
+  ✗ Security: Use of dangerouslySetInnerHTML ×3
+    `dangerouslySetInnerHTML` is an XSS hole that runs
+    attacker-controlled HTML in your users' browsers.
+    → Render trusted content as React children rather than
+    injecting raw HTML.
+
+    src/app/blog/[slug]/page.tsx:78
+    ┌──────────────────────────────────────────────────────────────┐
+    │   77 |           type="application/ld+json"                  │
+    │ > 78 |           dangerouslySetInnerHTML={{ __html: JSON.st[0m… │
+    │      |           ^                                           │
+    │   79 |         />                                            │
+    └──────────────────────────────────────────────────────────────┘
+
+
+  +1 more rule and +34 optional warnings — run npx react-doctor@latest --verbose for details
+
+  ┌─────┐  92 / 100 Great
+  │ ◠ ◠ │  ██████████████████████████████████████████████▓▓░░
+  │  ▽  │  React Doctor (https://react.doctor)
+  └─────┘
+
+  You could improve +3% by fixing the top 3 issues
+
+  ────────────────────────────────────────────────────────────
+
+  Share: https://react.doctor/share?p=pp-namias-portfolio&s=92&e=9&w=34&f=22
+  Tell others how you did on socials
+
+  Docs: https://www.react.doctor/docs
+  Learn more about fixing issues, setting up CI/CD, and configuring rules with a config file
+
+  GitHub: https://github.com/millionco/react-doctor
+  Report issues and star the repository!
+
+√ Scanned 51 files in 1.5s [~4 workers]
