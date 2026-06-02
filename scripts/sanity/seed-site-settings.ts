@@ -15,9 +15,8 @@
  * with the same smart defaults (no data loss for any other docs).
  */
 import {createClient, type SanityClient} from '@sanity/client'
-import {readFileSync} from 'node:fs'
-import {fileURLToPath} from 'node:url'
-import {dirname, resolve} from 'node:path'
+import {readFileSync, existsSync} from 'node:fs'
+import {resolve} from 'node:path'
 
 const projectId = process.env.SANITY_STUDIO_PROJECT_ID || 'nl0qw78w'
 const dataset = process.env.SANITY_STUDIO_DATASET || 'production'
@@ -37,8 +36,18 @@ const client: SanityClient = createClient({
   token: writeToken,
 })
 
-const __dirname = dirname(fileURLToPath(import.meta.url))
-const ogImagePath = resolve(__dirname, '..', '..', 'public', 'og-image.svg')
+const __dirname = process.cwd()
+const ogImagePath = (() => {
+  const candidates = [
+    resolve(__dirname, 'public', 'og-image.svg'),
+    resolve(__dirname, '..', 'public', 'og-image.svg'),
+    resolve(__dirname, '..', '..', 'public', 'og-image.svg'),
+  ]
+  for (const p of candidates) {
+    if (existsSync(p)) return p
+  }
+  return candidates[candidates.length - 1]
+})()
 
 async function uploadOgImage(): Promise<{_type: 'image'; asset: {_type: 'reference'; _ref: string}}> {
   const fileBuffer = readFileSync(ogImagePath)
