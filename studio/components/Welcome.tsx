@@ -4,6 +4,7 @@ const QUICK_ACTIONS = [
   {title: 'New project', description: 'Start from a featured or draft template.', type: 'project', tone: '#ff63a5'},
   {title: 'New post', description: 'Spin up a draft post with smart defaults.', type: 'post', tone: '#6366f1'},
   {title: 'New certification', description: 'Add a certification with a 90-day expiry nudge.', type: 'certification', tone: '#22c55e'},
+  {title: 'Browse skills', description: '42 step-by-step recipes for common tasks.', href: '/studio/skills', tone: '#0ea5e9'},
 ]
 
 export function Welcome() {
@@ -51,37 +52,41 @@ export function Welcome() {
           maxWidth: 880,
         }}
       >
-        {QUICK_ACTIONS.map((action) => (
-          <a
-            key={action.title}
-            href={`/studio/intent/create?type=${action.type}`}
-            style={{
-              padding: 20,
-              borderRadius: 14,
-              background: 'rgba(255,255,255,0.04)',
-              border: '1px solid rgba(255,255,255,0.08)',
-              textAlign: 'left',
-              color: 'inherit',
-              textDecoration: 'none',
-              transition: 'transform 120ms ease, background 120ms ease',
-            }}
-          >
-            <div
+        {QUICK_ACTIONS.map((action) => {
+          const href = action.href ?? `/studio/intent/create?type=${action.type}`
+          const label = action.href ? 'skills' : action.type
+          return (
+            <a
+              key={action.title}
+              href={href}
               style={{
-                fontSize: 11,
-                fontWeight: 700,
-                letterSpacing: 2,
-                textTransform: 'uppercase',
-                color: action.tone,
-                marginBottom: 8,
+                padding: 20,
+                borderRadius: 14,
+                background: 'rgba(255,255,255,0.04)',
+                border: '1px solid rgba(255,255,255,0.08)',
+                textAlign: 'left',
+                color: 'inherit',
+                textDecoration: 'none',
+                transition: 'transform 120ms ease, background 120ms ease',
               }}
             >
-              {action.type}
-            </div>
-            <div style={{fontSize: 18, fontWeight: 700, marginBottom: 6}}>{action.title}</div>
-            <div style={{fontSize: 13, color: 'rgba(245,245,247,0.6)'}}>{action.description}</div>
-          </a>
-        ))}
+              <div
+                style={{
+                  fontSize: 11,
+                  fontWeight: 700,
+                  letterSpacing: 2,
+                  textTransform: 'uppercase',
+                  color: action.tone,
+                  marginBottom: 8,
+                }}
+              >
+                {label}
+              </div>
+              <div style={{fontSize: 18, fontWeight: 700, marginBottom: 6}}>{action.title}</div>
+              <div style={{fontSize: 13, color: 'rgba(245,245,247,0.6)'}}>{action.description}</div>
+            </a>
+          )
+        })}
       </div>
 
       <div
