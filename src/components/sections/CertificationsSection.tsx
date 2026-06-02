@@ -61,6 +61,7 @@ export function CertificationsSection() {
       <div className="flex flex-wrap gap-1.5 mb-4">
         {issuers.map((issuer) => (
           <button
+            type="button"
             key={issuer}
             onClick={() => setActiveIssuer(issuer)}
             className={`text-xs font-medium px-2.5 py-1 rounded-full transition-all duration-200 ${
@@ -117,6 +118,7 @@ export function CertificationsSection() {
       {/* Expand / Collapse */}
       {hasMore && (
         <button
+          type="button"
           onClick={() => setExpanded((prev) => !prev)}
           className="flex items-center gap-1 mx-auto mt-3 text-xs font-medium text-text-muted-light dark:text-text-muted-dark hover:text-accent-pink dark:hover:text-accent-pink transition-colors"
         >
@@ -149,6 +151,7 @@ export function CertificationsSection() {
               onClick={(e) => e.stopPropagation()}
             >
               <button
+                type="button"
                 onClick={() => setSelectedCert(null)}
                 className="absolute -top-10 right-0 p-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors"
                 aria-label="Close"
