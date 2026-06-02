@@ -103,7 +103,6 @@ export function ContentHealth() {
   const lastEdited = values._updatedAt as string | undefined
   const ageDays = useMemo(() => {
     if (!lastEdited) return null
-    // eslint-disable-next-line react-hooks/purity
     return Math.floor((Date.now() - new Date(lastEdited).getTime()) / (1000 * 60 * 60 * 24))
   }, [lastEdited])
 
