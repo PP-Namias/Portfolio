@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react';
 
 export interface AccentScheme {
   name: string;
@@ -66,8 +66,19 @@ export function AccentColorProvider({ children }: { children: React.ReactNode })
     localStorage.setItem(STORAGE_KEY, newScheme.name);
   }, []);
 
+  // Memoize the context value so consumers don't re-render on
+  // every parent render. Without useMemo, the { scheme, setScheme,
+  // mounted } object literal is a new reference every render and
+  // react-doctor's jsx-no-constructed-context-values rule flags
+  // it (every consumer subscribes to the new value, defeating the
+  // point of the context).
+  const value = useMemo<AccentColorContextValue>(
+    () => ({ scheme, setScheme, mounted }),
+    [scheme, setScheme, mounted],
+  );
+
   return (
-    <AccentColorContext.Provider value={{ scheme, setScheme, mounted }}>
+    <AccentColorContext.Provider value={value}>
       {children}
     </AccentColorContext.Provider>
   );
