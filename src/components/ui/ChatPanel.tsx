@@ -310,6 +310,7 @@ export function ChatPanel({ onBack, onClose, messages, setMessages }: Readonly<C
       <div className="flex items-center justify-between px-4 py-3 border-b border-border-light dark:border-border-dark bg-white dark:bg-card-bg-dark">
         <div className="flex items-center gap-2">
           <button
+            type="button"
             onClick={onBack}
             className="h-8 w-8 rounded-full flex items-center justify-center text-text-muted-light dark:text-text-muted-dark hover:bg-surface-light dark:hover:bg-surface-dark transition-colors"
             aria-label="Back to menu"
@@ -356,6 +357,7 @@ export function ChatPanel({ onBack, onClose, messages, setMessages }: Readonly<C
         <div className="flex items-center gap-0.5">
           {messages.length > 0 && (
             <button
+              type="button"
               onClick={handleClearChat}
               className="flex items-center gap-1 h-7 px-2 rounded-full text-text-muted-light dark:text-text-muted-dark hover:bg-red-500/10 hover:text-red-500 transition-colors"
               aria-label="Clear chat history"
@@ -366,6 +368,7 @@ export function ChatPanel({ onBack, onClose, messages, setMessages }: Readonly<C
             </button>
           )}
           <button
+            type="button"
             onClick={onClose}
             className="h-8 w-8 rounded-full flex items-center justify-center text-text-muted-light dark:text-text-muted-dark hover:bg-surface-light dark:hover:bg-surface-dark transition-colors"
             aria-label="Close chat"
@@ -422,6 +425,7 @@ export function ChatPanel({ onBack, onClose, messages, setMessages }: Readonly<C
                   const Icon = card.icon;
                   return (
                     <button
+                      type="button"
                       key={card.label}
                       onClick={() => sendMessage(card.question)}
                       className="flex items-center gap-2.5 p-2.5 rounded-xl border border-border-light dark:border-border-dark hover:border-accent-pink/40 hover:bg-accent-pink/5 transition-all text-left group"
@@ -454,6 +458,7 @@ export function ChatPanel({ onBack, onClose, messages, setMessages }: Readonly<C
           >
             {followUpSuggestions.map((q) => (
               <button
+                type="button"
                 key={q}
                 onClick={() => sendMessage(q)}
                 className="text-[11px] px-2.5 py-1 rounded-full border border-border-light dark:border-border-dark text-text-secondary-light dark:text-text-secondary-dark hover:border-accent-pink hover:text-accent-pink transition-all hover:shadow-sm"
@@ -475,6 +480,7 @@ export function ChatPanel({ onBack, onClose, messages, setMessages }: Readonly<C
             <div className="flex items-center gap-2 text-xs text-red-500 bg-red-500/10 rounded-lg px-3 py-2">
               <span>{error}</span>
               <button
+                type="button"
                 onClick={() => {
                   setError(null);
                   if (messages.length > 0) {
@@ -510,6 +516,7 @@ export function ChatPanel({ onBack, onClose, messages, setMessages }: Readonly<C
             placeholder="Ask about skills, projects, experience..."
             maxLength={500}
             disabled={isLoading}
+            aria-label="Chat message"
             className="flex-1 bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark rounded-full px-4 py-2 text-sm text-text-primary-light dark:text-text-primary-dark placeholder:text-text-muted-light dark:placeholder:text-text-muted-dark focus:outline-none focus:ring-1 focus:ring-accent-pink disabled:opacity-50"
           />
           <button
