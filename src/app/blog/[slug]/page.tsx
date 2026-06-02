@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import { getCmsContent } from '@/lib/cms-content.server';
 import { IS_BLOG_VISIBLE } from '@/lib/features';
 import { fallbackBlogPosts } from '@/lib/cms-content.shared';
+import { JsonLd } from '@/components/seo/JsonLd';
 import BlogPostContent from './BlogPostContent';
 
 export async function generateStaticParams(): Promise<{ slug: string }[]> {
@@ -72,12 +73,7 @@ export default async function BlogPostPage({ params }: Readonly<{ params: Promis
 
   return (
     <>
-      {jsonLd && (
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-        />
-      )}
+      <JsonLd data={jsonLd} id="blog-post-jsonld" />
       <BlogPostContent post={post ?? null} allPosts={posts} backLabel={blogCopy.backLabel || 'Back to Blog'} />
     </>
   );
