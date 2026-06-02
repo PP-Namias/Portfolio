@@ -17,6 +17,7 @@ import { ColorSchemePicker } from '@/components/ui/ColorSchemePicker';
 import { useModal } from '@/hooks/useModal';
 import { useCmsContent } from '@/hooks/useCmsContent';
 import { IS_BLOG_VISIBLE } from '@/lib/features';
+import { sanityField } from '@/utils/sanity-data-attribute';
 
 const socialIconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   github: FaGithub,
@@ -167,6 +168,7 @@ export function HeroSection() {
             <motion.h1
               className="text-[1.7rem] sm:text-[2.05rem] font-bold text-text-primary-light dark:text-text-primary-dark inline-flex items-center flex-wrap justify-center sm:justify-start leading-[1.15] tracking-tight"
               variants={itemVariants}
+              {...sanityField({id: 'profile', type: 'profile'}, 'fullName')}
             >
               {profile.name}
               <VerifiedBadge />
@@ -181,6 +183,7 @@ export function HeroSection() {
                   animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
                   exit={{ opacity: 0, y: -12, filter: 'blur(4px)' }}
                   transition={{ duration: 0.35 }}
+                  {...sanityField({id: 'heroSection', type: 'heroSection'}, 'heroRoles', roleIndex)}
                 >
                   {roles[roleIndex]}
                 </motion.p>
