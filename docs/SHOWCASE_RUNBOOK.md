@@ -6,23 +6,35 @@ A five-minute, replayable walkthrough of the Namias CMS at `https://namias-cms.s
 
 1. Open the studio at `https://namias-cms.sanity.studio` and sign in.
 2. Open the marketing site at `https://namias.tech?sanity-edit=1` in a second window. The `sanity-edit=1` flag enables Visual Editing overlays.
-3. In a third tab, open the Vision tool inside the studio (`Vision` in the sidebar).
+3. In a third tab, open the **Presentation** tool from the studio top nav.
 4. Optional: open the terminal and run `npx wrangler tail namias --format=pretty` to live-watch the worker logs.
+
+## Top nav (5s)
+
+> "Four built-in tools plus three custom tools, each in the top nav."
+
+- **Content** (structure tool) - page-first IA, max 2 levels deep.
+- **Presentation** - live preview with click-to-edit on `https://namias.tech`.
+- **Vision** - GROQ query editor.
+- **Skills** (custom) - 42 step-by-step recipes for common tasks.
+- **Saved Queries** (custom) - 5 curated GROQ queries for audits.
+- (Plus: **AI Assist** in every text field.)
 
 ## The 5-minute walkthrough
 
 ### Beat 1 - Welcome screen (15s)
 
-> "This is not the default Sanity studio. It is branded, role-aware, and ships with a guided tour."
+> "This is not the default Sanity studio. It is branded, role-aware, and ships with 6 quick-action cards plus an onboarding tour."
 
-- Land on `/studio` after sign-in. Show the branded welcome screen with quick-action cards.
-- Click "Show me the demo". The 4-step tour pops.
+- Land on `/studio` after sign-in. Show the branded welcome screen.
+- 6 cards: New project, New post, New certification, Browse skills, Open Presentation, Saved Queries.
+- Click "Show me the demo". The 4-task onboarding tour pops.
 
 ### Beat 2 - Edit a field, see it live (45s)
 
 > "Editing the hero in the studio shows up on namias.tech within a second. No refresh, no deploy."
 
-- From the sidebar, open **Content → Homepage → Hero & shell → Hero Section**.
+- From the sidebar, open **Pages → Homepage → Hero Section**.
 - Change the `title` (primary title) to include a marker, e.g. `Full Stack Engineer (live demo)`.
 - Switch to the marketing site tab. The change is visible without a refresh.
 
@@ -33,6 +45,7 @@ A five-minute, replayable walkthrough of the Namias CMS at `https://namias-cms.s
 - On the marketing site, click any text in the hero (with `?sanity-edit=1` in the URL).
 - The popover shows "Edit in Studio". Click it.
 - The studio opens at the same field. The jump-link uses the `data-sanity` attribute we wired in EPIC-1.
+- Alternatively, in the studio, click the **Open in Presentation** action in the document action menu.
 
 ### Beat 4 - Publish & revalidate (60s)
 
@@ -47,15 +60,17 @@ A five-minute, replayable walkthrough of the Namias CMS at `https://namias-cms.s
 
 > "The studio is not just a database with a UI. It actively tells you what is stale, missing, or scheduled."
 
-- From the sidebar, open any **Project**. The list shows a Featured badge, status pill, and a status field on the document.
+- From the sidebar, open any **Project** under **Pages → Homepage → Projects**. The list shows a Featured badge, status pill, and a status field on the document.
 - Open the right-side inspector and find the **Content health** panel (EPIC-4): word count, alt text, references, last-edited.
-- Show **Vision** tool and run a GROQ query that the marketing site uses, e.g. `*[_type=='heroSection'][0]{title, "headline": title}`.
+- Click the **Saved Queries** tool in the top nav. Show the "Stale content" query. Click **Copy**, paste into Vision, and run.
+- Show the **Skills** tool. Open the `use-status-badges.md` skill. Walk through the 6 badge colors.
 
 ### Beat 6 - AI assist and scheduled publishing (60s)
 
 > "AI does not auto-save. It suggests. And scheduled publishing runs on a serverless function, not a cron."
 
-- Create a new post from the Blog list using the **New blog post (draft)** template.
+- Open the **Quick Start** group in the sidebar. Click **New post (click + to create)**.
+- Use the **New blog post (draft)** template.
 - Set the `excerpt` to a long paragraph.
 - In a long-form field, trigger AI assist (custom action wired in `studio/ai/prompts.ts`). Show the prompt template and the output.
 - Set `publishAt` to 5 minutes from now and save. Show that the document is now flagged **Scheduled** in the list view.
@@ -75,3 +90,18 @@ npx sanity exec ../scripts/sanity/seed-demo.ts --with-user-token
 ```
 
 See `scripts/sanity/seed-demo.ts` for the seed dataset.
+
+## Deep links for the demo
+
+| Action | URL |
+|---|---|
+| Welcome screen | `/studio` |
+| Structure tool | `/studio/structure` |
+| Hero Section | `/studio/structure/singleton%3AheroSection;heroSection` |
+| Projects list | `/studio/structure/project` |
+| Posts list | `/studio/structure/post` |
+| Presentation | `/studio/presentation` |
+| Skills | `/studio/skills` |
+| Saved Queries | `/studio/saved-queries` |
+| Vision | `/studio/vision` |
+
