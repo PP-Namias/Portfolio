@@ -1,5 +1,5 @@
 import {defineConfig} from 'sanity'
-import {defineLocations, presentationTool} from 'sanity/presentation'
+import {presentationTool} from 'sanity/presentation'
 import {structureTool} from 'sanity/structure'
 import {visionTool} from '@sanity/vision'
 import {assist} from '@sanity/assist'
@@ -26,28 +26,6 @@ const presentationEnablePath = getDraftModeEnablePath()
 const projectId = requireStudioEnv('SANITY_STUDIO_PROJECT_ID', 'NEXT_PUBLIC_SANITY_PROJECT_ID')
 const dataset = requireStudioEnv('SANITY_STUDIO_DATASET', 'NEXT_PUBLIC_SANITY_DATASET')
 
-const homePageLocation = (title: string) => ({
-  message: 'This document previews on the portfolio homepage (`/`).',
-  tone: 'positive' as const,
-  locations: [
-    {
-      title,
-      href: '/',
-    },
-  ],
-})
-
-const blogPostLocation = {
-  message: 'This document previews in the portfolio blog route (`/blog`).',
-  tone: 'positive' as const,
-  locations: [
-    {
-      title: 'Blog',
-      href: '/blog',
-    },
-  ],
-}
-
 export default defineConfig({
   name: 'default',
   title: 'Namias CMS | Interview Studio',
@@ -71,22 +49,7 @@ export default defineConfig({
       },
       resolve: {
         locations: {
-          heroSection: defineLocations(homePageLocation('Hero Section')),
-          aboutSection: defineLocations(homePageLocation('About Section')),
-          profile: defineLocations(homePageLocation('About Section')),
-          techStack: defineLocations(homePageLocation('Tech Stack')),
-          experience: defineLocations(homePageLocation('Experience')),
-          project: defineLocations(homePageLocation('Projects')),
-          certification: defineLocations(homePageLocation('Certifications')),
-          galleryImage: defineLocations(homePageLocation('Gallery')),
-          membership: defineLocations(homePageLocation('Memberships')),
-          recommendation: defineLocations(homePageLocation('Recommendations')),
-          resume: defineLocations(homePageLocation('Resume')),
-          siteSettings: defineLocations(homePageLocation('Site Settings')),
-          post: defineLocations(blogPostLocation),
-          ...Object.fromEntries(
-            Object.entries(previewLocations).map(([type, locations]) => [type, locations]),
-          ),
+          ...previewLocations,
         },
       },
     }),
