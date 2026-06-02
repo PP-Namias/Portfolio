@@ -38,12 +38,13 @@ function parseFrontmatter(raw: string): {frontmatter: SkillFrontmatter; body: st
 const modules = import.meta.glob<string>('../../skills/*.md', {
   eager: true,
   query: '?raw',
+  import: 'default',
 })
 
 const raw: Skill[] = Object.entries(modules)
   .map(([path, content]) => {
     const slug = path.replace(/^.*\//, '').replace(/\.md$/, '')
-    const {frontmatter, body} = parseFrontmatter(content as unknown as string)
+    const {frontmatter, body} = parseFrontmatter(content as string)
     return {slug, frontmatter, body}
   })
   .sort((a, b) => a.slug.localeCompare(b.slug))
