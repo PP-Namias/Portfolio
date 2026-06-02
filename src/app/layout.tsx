@@ -7,6 +7,7 @@ import { fallbackCmsContent } from '@/lib/cms-content.shared';
 import { FloatingHub } from '@/components/ui/FloatingHub';
 import { ScrollToTop } from '@/components/ui/ScrollToTop';
 import { Analytics } from '@/components/ui/Analytics';
+import { JsonLd } from '@/components/seo/JsonLd';
 import { getCmsContent } from '@/lib/cms-content.server';
 import './globals.css';
 
@@ -105,10 +106,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
     return (
       <html lang="en" suppressHydrationWarning className={inter.variable}>
         <head>
-          <script
-            type="application/ld+json"
-            dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-          />
+          <JsonLd data={jsonLd} id="layout-jsonld-test" />
           <Analytics />
         </head>
         <body className="bg-background-light dark:bg-background-dark text-text-primary-light dark:text-text-primary-dark min-h-screen font-sans antialiased">
@@ -134,14 +132,11 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
   const [cmsContent, isDraftMode] = await Promise.all([getCmsContent(), draftMode().then((d) => d.isEnabled)]);
 
   return (
-    <html lang="en" suppressHydrationWarning className={inter.variable}>
-      <head>
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-        />
-        <Analytics />
-      </head>
+      <html lang="en" suppressHydrationWarning className={inter.variable}>
+        <head>
+          <JsonLd data={jsonLd} id="layout-jsonld-runtime" />
+          <Analytics />
+        </head>
       <body className="bg-background-light dark:bg-background-dark text-text-primary-light dark:text-text-primary-dark min-h-screen font-sans antialiased">
         <a
           href="#main-content"
