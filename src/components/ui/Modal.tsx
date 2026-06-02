@@ -4,6 +4,13 @@ import React, { useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
 
+// Focusable-selector for the Tab-trap effect below. Pulled out
+// to a constant so the string content does not get matched by
+// the linter's <button>-shaped rule (false positive: it scans
+// the source text, not the runtime DOM).
+const FOCUSABLE_SELECTOR =
+  'a[href], button:not([disabled]), input:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+
 interface ModalProps {
   open: boolean;
   onClose: () => void;
@@ -43,9 +50,12 @@ export function Modal({ open, onClose, title, children, fullScreen = false, desc
     if (!open) return;
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key !== 'Tab' || !panelRef.current) return;
-      const focusable = panelRef.current.querySelectorAll<HTMLElement>(
-        'a[href], button:not([disabled]), input:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
-      );
+      // The CSS selector below contains a literal element name
+      // (used to match focusable controls). The linter scans
+      // the source text and reports a false positive on the
+      // string. The runtime DOM query is correct.
+      // eslint-disable-next-line react-doctor/button-has-type
+      const focusable = panelRef.current.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR);
       if (focusable.length === 0) return;
       const first = focusable[0];
       const last = focusable[focusable.length - 1];
@@ -107,6 +117,7 @@ export function Modal({ open, onClose, title, children, fullScreen = false, desc
                   {title}
                 </h2>
                 <button
+                  type="button"
                   onClick={onClose}
                   className="h-8 w-8 rounded-full flex items-center justify-center text-text-muted-light dark:text-text-muted-dark hover:bg-surface-light dark:hover:bg-surface-dark transition-colors"
                   aria-label="Close modal"
@@ -119,6 +130,7 @@ export function Modal({ open, onClose, title, children, fullScreen = false, desc
             {/* No title — just show close button */}
             {!title && (
               <button
+                type="button"
                 onClick={onClose}
                 className="absolute top-3 right-3 z-10 h-8 w-8 rounded-full flex items-center justify-center text-text-muted-light dark:text-text-muted-dark hover:bg-surface-light dark:hover:bg-surface-dark transition-colors bg-white/80 dark:bg-card-bg-dark/80 backdrop-blur-sm"
                 aria-label="Close modal"
