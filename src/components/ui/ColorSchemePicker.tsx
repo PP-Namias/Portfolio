@@ -70,6 +70,13 @@ export function ColorSchemePicker() {
       {isOpen && (
         <div
           className="absolute right-0 top-10 z-30 w-44 rounded-xl border border-border-light bg-white p-1.5 shadow-lg dark:border-border-dark dark:bg-card-bg-dark"
+          // The listbox ARIA pattern requires an explicit role
+          // (no native element provides it). A native <select>
+          // would lose the custom option rendering (color
+          // preview + label + checkmark), and <ul> ships with
+          // listitem semantics that conflict with the
+          // aria-selected/role="option" children.
+          // eslint-disable-next-line react-doctor/prefer-tag-over-role
           role="listbox"
           aria-label="Accent color options"
         >

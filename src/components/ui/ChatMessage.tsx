@@ -87,6 +87,7 @@ export function ChatMessage({ message, onAction }: ChatMessageProps) {
               return (
                 <button
                   key={a.action}
+                  type="button"
                   onClick={() => onAction?.(a.action)}
                   className="inline-flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-full bg-accent-pink/10 text-accent-pink hover:bg-accent-pink/20 transition-colors"
                 >
