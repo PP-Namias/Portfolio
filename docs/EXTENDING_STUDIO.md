@@ -165,9 +165,146 @@ export const AI_ACTIONS = {
 
 Then enable the AI assist plugin in `sanity.config.ts` and bind the `experience` type to the actions above.
 
+## 9. Add a template
+
+Templates pre-fill a new document so the editor doesn't start from a blank form.
+
+```ts
+// studio/templates/index.ts
+export const managerTemplates: InitialValueTemplateItem[] = [
+  {
+    id: 'manager-current',
+    title: 'New manager (current)',
+    description: 'Manager marked as current role.',
+    schemaType: 'manager',
+    value: () => ({status: 'current', joinedAt: today()}),
+  } as any,
+]
+```
+
+Then add the array to the `templateRegistry`:
+
+```ts
+export const templateRegistry: Record<string, InitialValueTemplateItem[]> = {
+  // ...existing
+  manager: managerTemplates,
+}
+```
+
+The template shows up in the **Create new** dropdown on the manager list.
+
+## 10. Add a GROQ saved query
+
+```ts
+// studio/vision/queries.ts
+export const visionQueries = {
+  // ...existing
+  managerCoverage: {
+    title: 'Manager coverage',
+    description: 'Managers grouped by department.',
+    query: /* groq */ `
+*[_type == "manager"] | order(department asc) {
+  _id, name, department, "reports": count(*[_type=="report" && manager._ref == ^._id])
+}
+    `.trim(),
+  },
+}
+```
+
+The Saved Queries tool auto-discovers the new entry.
+
+## 11. Add a skill (recipe)
+
+Drop a Markdown file under `studio/skills/<slug>.md`:
+
+```md
+---
+title: Add a Manager
+trigger: "add manager", "new manager"
+audience: editors
+time: 2 min
+---
+
+# Add a Manager
+
+## What it does
+Creates a new entry in the `manager` collection.
+
+## Steps
+1. Open **Pages > Profile > Managers**.
+2. Click **Create new**.
+3. Fill the form. **Name** is required.
+4. Publish.
+
+## Common mistakes
+- Forgetting to set the **Department** reference.
+
+## Related skills
+- `add-a-reference-data-type.md`
+```
+
+The Skills tool auto-discovers the file. No rebuild required.
+
+## 12. Add a custom tool
+
+Custom tools appear in the studio's top nav.
+
+```ts
+// studio/plugins/myTool/index.ts
+import {definePlugin, type Tool} from 'sanity'
+import {StarIcon} from '@sanity/icons'
+import {MyToolView} from './MyToolView'
+
+const myTool: Tool = {
+  name: 'my-tool',
+  title: 'My Tool',
+  icon: StarIcon,
+  component: MyToolView,
+}
+
+export const myToolPlugin = definePlugin(() => ({
+  name: 'my-tool',
+  tools: [myTool],
+}))
+```
+
+Register in `sanity.config.ts`:
+
+```ts
+plugins: [myToolPlugin()],
+```
+
+The new tool shows up in the top nav as **My Tool**.
+
+## 13. Add a presentation tool landing page
+
+The left navigator of the Presentation tool can be replaced:
+
+```ts
+// studio/presentation/PresentationNavigator.tsx
+export function PresentationNavigator() {
+  return (
+    <Box padding={4}>
+      <Heading size={3}>Welcome to Presentation</Heading>
+      <Text>Pick a document on the left, edit on the right.</Text>
+    </Box>
+  )
+}
+```
+
+Wire it in `sanity.config.ts`:
+
+```ts
+presentationTool({
+  // ...existing
+  components: {unstable_navigator: {component: PresentationNavigator}},
+})
+```
+
 ## After any change
 
 - Run `cd studio && npm run lint`.
 - Run `cd studio && npx tsc --noEmit` (or `npm run build`).
 - Reload the studio tab.
 - Commit. PR validation re-runs the Quality Check.
+
