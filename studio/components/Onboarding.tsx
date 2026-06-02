@@ -1,29 +1,51 @@
 import React, {useEffect, useState} from 'react'
 
-const STEPS = [
+const TASKS = [
   {
-    title: 'Edit a field',
-    body: 'Open "Hero Section" from the sidebar. Change the headline. Save. The marketing site will reflect this within a second.',
+    id: 'edit-hero',
+    title: 'Edit your hero',
+    body: 'Open Pages > Homepage > Hero Section. Change the headline or your name. Save. Your change is visible on the live site within a second.',
     target: '/studio/structure/singleton%3AheroSection;heroSection',
+    cta: 'Open hero',
   },
   {
-    title: 'See it live',
-    body: 'Click "Open preview" to open the live marketing site with draft mode enabled. The change you just made is visible without a refresh.',
-    target: '/studio/presentation',
+    id: 'add-project',
+    title: 'Add a project',
+    body: 'Open Pages > Homepage > Projects. Click + to create a new project. Use the "Featured" template and fill title + summary.',
+    target: '/studio/structure/project',
+    cta: 'Open projects',
   },
   {
-    title: 'Publish and revalidate',
-    body: 'Back in the studio, click "Publish & revalidate" on Hero Section. Confirm the modal. The site revalidates and the live URL updates.',
+    id: 'add-cert',
+    title: 'Add a certification',
+    body: 'Open Pages > Homepage > Certifications. Click +. Fill title, issuer, and issue date. The expiry badge will track the renewal date automatically.',
+    target: '/studio/structure/certification',
+    cta: 'Open certifications',
+  },
+  {
+    id: 'publish-something',
+    title: 'Publish something',
+    body: 'Open a document. Edit a field. Click "Publish & revalidate". Confirm the modal. The marketing site revalidates the affected route within a second.',
     target: '/studio/structure/singleton%3AheroSection;heroSection',
-  },
-  {
-    title: 'Schedule a post',
-    body: 'Create a new post from the Blog list. Set publishAt to 5 minutes from now. Save. The Sanity Function will publish it on time.',
-    target: '/studio/structure/post',
+    cta: 'Open editor',
   },
 ]
 
 const STORAGE_KEY = 'namias-onboarding-tour-completed'
+const REQUEST_KEY = 'namias-onboarding-tour'
+
+function getStep(): number {
+  if (typeof window === 'undefined') return 0
+  const raw = window.localStorage.getItem(REQUEST_KEY + '-step')
+  if (!raw) return 0
+  const n = Number(raw)
+  return Number.isFinite(n) ? Math.max(0, Math.min(TASKS.length - 1, n)) : 0
+}
+
+function persistStep(n: number) {
+  if (typeof window === 'undefined') return
+  window.localStorage.setItem(REQUEST_KEY + '-step', String(n))
+}
 
 export function OnboardingTour() {
   const [open, setOpen] = useState(false)
@@ -31,17 +53,19 @@ export function OnboardingTour() {
 
   useEffect(() => {
     if (typeof window === 'undefined') return
-    const requested = window.localStorage.getItem('namias-onboarding-tour') === 'requested'
+    const requested = window.localStorage.getItem(REQUEST_KEY) === 'requested'
     const completed = window.localStorage.getItem(STORAGE_KEY) === 'true'
     if (requested && !completed) {
       setOpen(true)
-      window.localStorage.removeItem('namias-onboarding-tour')
+      setStep(getStep())
+      window.localStorage.removeItem(REQUEST_KEY)
     }
   }, [])
 
   if (!open) return null
 
-  const current = STEPS[step]!
+  const current = TASKS[step]!
+  const isLast = step === TASKS.length - 1
 
   return (
     <div
@@ -58,7 +82,7 @@ export function OnboardingTour() {
     >
       <div
         style={{
-          maxWidth: 520,
+          maxWidth: 540,
           background: '#0e0e10',
           color: '#fff',
           borderRadius: 16,
@@ -66,9 +90,24 @@ export function OnboardingTour() {
           boxShadow: '0 30px 80px rgba(0,0,0,0.5)',
         }}
       >
-        <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16}}>
-          <div style={{fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', color: '#ff63a5'}}>
-            Tour · step {step + 1} of {STEPS.length}
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginBottom: 16,
+          }}
+        >
+          <div
+            style={{
+              fontSize: 11,
+              fontWeight: 700,
+              letterSpacing: 2,
+              textTransform: 'uppercase',
+              color: '#ff63a5',
+            }}
+          >
+            Onboarding · task {step + 1} of {TASKS.length}
           </div>
           <button
             type="button"
@@ -76,16 +115,38 @@ export function OnboardingTour() {
               window.localStorage.setItem(STORAGE_KEY, 'true')
               setOpen(false)
             }}
-            style={{background: 'transparent', border: 'none', color: 'rgba(255,255,255,0.6)', cursor: 'pointer'}}
+            style={{
+              background: 'transparent',
+              border: 'none',
+              color: 'rgba(255,255,255,0.6)',
+              cursor: 'pointer',
+              fontSize: 13,
+            }}
           >
-            Skip
+            Skip tour
           </button>
         </div>
         <h2 style={{fontSize: 22, fontWeight: 700, margin: 0}}>{current.title}</h2>
-        <p style={{marginTop: 12, color: 'rgba(255,255,255,0.75)', lineHeight: 1.6, fontSize: 14}}>{current.body}</p>
-        <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 24}}>
+        <p
+          style={{
+            marginTop: 12,
+            color: 'rgba(255,255,255,0.75)',
+            lineHeight: 1.6,
+            fontSize: 14,
+          }}
+        >
+          {current.body}
+        </p>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginTop: 24,
+          }}
+        >
           <div style={{display: 'flex', gap: 6}}>
-            {STEPS.map((_, i) => (
+            {TASKS.map((_, i) => (
               <span
                 key={i}
                 style={{
@@ -101,7 +162,11 @@ export function OnboardingTour() {
             {step > 0 ? (
               <button
                 type="button"
-                onClick={() => setStep((s) => s - 1)}
+              onClick={() => {
+                const next = step - 1
+                setStep(next)
+                persistStep(next)
+              }}
                 style={{
                   padding: '8px 14px',
                   borderRadius: 8,
@@ -117,10 +182,13 @@ export function OnboardingTour() {
             <button
               type="button"
               onClick={() => {
-                if (step === STEPS.length - 1) {
+                if (isLast) {
                   window.localStorage.setItem(STORAGE_KEY, 'true')
                   setOpen(false)
                 } else {
+                  const next = step + 1
+                  setStep(next)
+                  persistStep(next)
                   window.location.href = current.target
                 }
               }}
@@ -134,7 +202,7 @@ export function OnboardingTour() {
                 cursor: 'pointer',
               }}
             >
-              {step === STEPS.length - 1 ? 'Done' : 'Open'}
+              {isLast ? 'Done' : current.cta + ' →'}
             </button>
           </div>
         </div>
