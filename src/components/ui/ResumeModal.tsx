@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
+import useSWR from 'swr';
 import { Download } from 'lucide-react';
 import { Modal } from './Modal';
 
@@ -12,38 +13,26 @@ interface ResumeModalProps {
 }
 
 export function ResumeModal({ open, onClose }: Readonly<ResumeModalProps>) {
-  const [resumeUrl, setResumeUrl] = useState(fallbackResumeUrl);
+  // SWR-based lazy resume URL lookup. The key is null when the
+  // modal is closed (SWR skips the fetch entirely), and is
+  // '/api/resume' once it opens. SWR owns the abort/retry
+  // lifecycle internally (it cancels in-flight requests when
+  // the key changes or the component unmounts), so we never
+  // write a useEffect for data fetching.
+  const { data } = useSWR<{ resumeUrl?: string }>(
+    open ? '/api/resume' : null,
+    async (url: string) => {
+      const res = await fetch(url);
+      if (!res.ok) throw new Error(`resume url fetch failed: ${res.status}`);
+      return (await res.json()) as { resumeUrl?: string };
+    },
+    { revalidateOnFocus: false, dedupingInterval: 30_000 },
+  );
 
-  useEffect(() => {
-    if (!open) {
-      return;
-    }
-
-    const controller = new AbortController();
-
-    const loadResumeUrl = async () => {
-      try {
-        const response = await fetch('/api/resume', { signal: controller.signal });
-
-        if (!response.ok) {
-          return;
-        }
-
-        const data = (await response.json()) as { resumeUrl?: string };
-        if (typeof data.resumeUrl === 'string' && data.resumeUrl.trim().length > 0) {
-          setResumeUrl(data.resumeUrl.trim());
-        }
-      } catch {
-        // Keep the fallback URL when the runtime cannot resolve the CMS value yet.
-      }
-    };
-
-    void loadResumeUrl();
-
-    return () => {
-      controller.abort();
-    };
-  }, [open]);
+  const resumeUrl =
+    (typeof data?.resumeUrl === 'string' && data.resumeUrl.trim().length > 0
+      ? data.resumeUrl.trim()
+      : null) ?? fallbackResumeUrl;
 
   return (
     <Modal open={open} onClose={onClose} fullScreen>
