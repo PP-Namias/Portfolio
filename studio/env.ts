@@ -1,5 +1,9 @@
 let environmentLoaded = false
 const processEnv = typeof process !== 'undefined' ? process.env : undefined
+const metaEnv =
+  typeof import.meta !== 'undefined' && typeof (import.meta as {env?: Record<string, string>}).env === 'object'
+    ? (import.meta as {env: Record<string, string>}).env
+    : undefined
 const defaultEnvValues: Record<string, string> = {
   SANITY_STUDIO_PROJECT_ID: 'nl0qw78w',
   NEXT_PUBLIC_SANITY_PROJECT_ID: 'nl0qw78w',
@@ -35,6 +39,10 @@ export type StudioEnvSnapshot = {
 let cachedSnapshot: StudioEnvSnapshot | null = null
 
 function getEnvValue(name: string): string | undefined {
+  const fromMeta = metaEnv?.[name]
+  if (typeof fromMeta === 'string' && fromMeta.trim().length > 0) {
+    return fromMeta.trim()
+  }
   const value = processEnv?.[name]
 
   if (typeof value !== 'string') {
@@ -102,7 +110,9 @@ export function requireStudioEnv(...names: string[]): string {
 }
 
 export function getStudioPreviewOrigin(): string {
-  return getEnvValue('NEXT_PUBLIC_SITE_URL') || 'http://localhost:3000'
+  const fromEnv = getEnvValue('NEXT_PUBLIC_SITE_URL')
+  if (fromEnv) return fromEnv
+  return 'https://namias.tech'
 }
 
 export function getDraftModeEnablePath(): string {

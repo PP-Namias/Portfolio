@@ -13,6 +13,6 @@ export default defineCliConfig({
   },
   deployment: {
     appId: 'rpjnth2yentmovjzzw6tx0xe',
-    autoUpdates: true,
+    autoUpdates: false,
   },
 })
