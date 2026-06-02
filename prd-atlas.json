@@ -1,0 +1,527 @@
+﻿{
+  "project": "Namias CMS - Showcase Studio",
+  "codeName": "atlas",
+  "version": "1.0.0",
+  "owner": "Jhon Keneth Ryan Namias (PP Namias)",
+  "contact": "pp.namias@gmail.com",
+  "lastUpdated": "2026-06-01",
+  "links": {
+    "studio": "https://namias-cms.sanity.studio",
+    "marketing": "https://namias.tech",
+    "repo": "https://github.com/PP-Namias/Portfolio",
+    "sanityManage": "https://www.sanity.io/manage/project/nl0qw78w"
+  },
+  "summary": "Turn the deployed Sanity Studio into a live, opinionated CMS showcase that demonstrates real-time editing, visual editing on the live marketing site, smart content workflows, AI-assisted authoring, and editorial-grade validation. The deliverable is one Sanity Studio at namias-cms.sanity.studio and one Next.js marketing site at namias.tech that talk to each other in real time.",
+  "narrative": "Higher-ups land on the studio URL, sign in, and see a branded, role-aware CMS with a custom welcome screen and a live editor. They pick a project card, edit a title, and watch the marketing site update in front of them without a refresh. They open the live marketing site, click on the hero text, and edit it inline. They see a draft banner, scheduled publish, and an AI assist suggestion. They inspect a document and see content health, broken-reference detection, and a publish-and-revalidate action. None of this is a stock Sanity Studio - every surface is intentionally designed to show editorial craft.",
+  "principles": [
+    "Editorial speed over engineering surface area - the editor path is the shortest path.",
+    "Real-time by default - every save is visible to the site within 200ms; no manual webhook choreography in front of the user.",
+    "Smart, not clever - automation explains itself in plain language next to the field it touches.",
+    "Branded, not skinned - the studio reads like PP Namias product, not like stock Sanity.",
+    "Reversible - every custom action can be undone, every override has an escape hatch."
+  ],
+  "personas": [
+    {
+      "id": "P-EDITOR",
+      "label": "Solo editor (PP Namias)",
+      "goals": [
+        "Push portfolio content to production in under 30 seconds.",
+        "Trust that live preview matches production 1:1.",
+        "Never lose a draft to a publish/revalidate race."
+      ],
+      "painPointsToday": [
+        "Manual publish + revalidate is a two-step ritual.",
+        "Live preview fidelity is partial.",
+        "No quick way to see what is scheduled, stale, or unpublished."
+      ]
+    },
+    {
+      "id": "P-REVIEWER",
+      "label": "Reviewer / Hiring manager",
+      "goals": [
+        "Understand the depth of CMS craft in under 5 minutes.",
+        "See real-time + visual editing working on the live site.",
+        "Trust that production data flow is end-to-end correct."
+      ],
+      "painPointsToday": [
+        "Default Sanity studios do not look distinctive.",
+        "Hard to tell from screenshots whether real-time actually works."
+      ]
+    },
+    {
+      "id": "P-DEV",
+      "label": "Future contributor / agency dev",
+      "goals": [
+        "Read the studio config and understand the schema in minutes.",
+        "Extend the studio without re-reading every plugin.",
+        "Run a full local + preview environment with one command."
+      ],
+      "painPointsToday": [
+        "Schema sprawl with no type registry.",
+        "No documented extension points."
+      ]
+    }
+  ],
+  "successMetrics": {
+    "primary": [
+      "Time from edit-in-studio to live-on-marketing-site under 2 seconds on a warm cache.",
+      "Zero manual refreshes required during a normal editing session.",
+      "All 6 demo flows in the showcase runbook complete in under 5 minutes total."
+    ],
+    "secondary": [
+      "All content actions succeed without 4xx/5xx in studio logs for 7 days.",
+      "Document inspector surfaces at least 3 actionable insights per document type.",
+      "AI assist acceptance rate above 30% on hero/about/certification copy."
+    ],
+    "demo": [
+      "Live visual editing demo passes on the first take.",
+      "Presentation tool opens the marketing homepage in 1 click.",
+      "Custom welcome screen renders within 600ms on cold load."
+    ]
+  },
+  "antiPatterns": [
+    "Stacking every Sanity plugin in the config because they exist.",
+    "Hiding the schema behind a deep custom structure that obscures content types.",
+    "Async work that blocks the editor path (e.g., full revalidation on every keystroke).",
+    "Polling for live updates instead of using Sanity Live Content API + Perspectives.",
+    "Re-implementing native Sanity features (badges, validation, comments) by hand."
+  ],
+  "epics": [
+    {
+      "id": "EPIC-0",
+      "title": "Foundation reset",
+      "status": "in-progress",
+      "summary": "Baseline that everything else builds on. Most of this is already shipped via PR #248; this epic captures the inventory and gaps.",
+      "value": "high",
+      "complexity": "low",
+      "stories": [
+        {
+          "id": "S-0.1",
+          "title": "Confirm deploy",
+          "done": true,
+          "evidence": "PR #248 - all 10 checks green, worker ce4f72fd live."
+        },
+        {
+          "id": "S-0.2",
+          "title": "Centralize env access",
+          "done": false,
+          "details": "Move all `process.env.*` reads in studio/ into `loadStudioEnvironment()` in `studio/env.ts` and add a typed env registry.",
+          "files": ["studio/env.ts", "studio/sanity.cli.ts", "studio/sanity.config.ts"]
+        },
+        {
+          "id": "S-0.3",
+          "title": "Type registry",
+          "done": false,
+          "details": "Export a single `schemaTypes` index plus a `documentKind` enum and a `referenceableTypes` array so custom widgets can iterate the schema without string duplication.",
+          "files": ["studio/schemaTypes/index.ts", "studio/schemaTypes/_registry.ts"]
+        }
+      ]
+    },
+    {
+      "id": "EPIC-1",
+      "title": "Real-time + visual editing",
+      "status": "planned",
+      "summary": "Wire the marketing site to Sanity Live Content API and turn on Visual Editing overlays so editors click text on namias.tech and edit it in the studio without leaving the page.",
+      "value": "high",
+      "complexity": "medium",
+      "businessOutcome": "The single most impressive thing to show a reviewer. They edit a string on the live site.",
+      "stories": [
+        {
+          "id": "S-1.1",
+          "title": "Sanity Live Content API on the marketing site",
+          "done": false,
+          "details": "Switch the existing Sanity client to `next-sanity` Live Content API in `src/sanity/lib/client.ts`. Use `defineLive` + `sanityFetch` with `perspective: 'previewDrafts'` and revalidate on every change via the `tag` system.",
+          "files": ["src/sanity/lib/client.ts", "src/sanity/lib/live.ts", "src/app/api/draft/route.ts"],
+          "acceptance": [
+            "Editing `heroSection.headline` reflects on / within 1 second.",
+            "Publishing a draft triggers revalidation; the live page updates without a manual refresh."
+          ]
+        },
+        {
+          "id": "S-1.2",
+          "title": "Visual Editing overlays",
+          "done": false,
+          "details": "Add `<SanityLive />` + `<VisualEditing />` from `next-sanity` to the root layout. Tag every rendered field with a `data-sanity` attribute using a single `<SanityField />` helper so the overlay can find the right document/field.",
+          "files": ["src/app/layout.tsx", "src/components/cms/SanityField.tsx", "src/sanity/lib/overlays.ts"],
+          "acceptance": [
+            "Clicking a paragraph on namias.tech with `?sanity-edit=1` opens a popover with 'Edit in Studio'.",
+            "The popover deep-links into the studio at the right document + field."
+          ]
+        },
+        {
+          "id": "S-1.3",
+          "title": "Perspective switcher in the studio",
+          "done": false,
+          "details": "Add a `perspectiveSwitcher` action (published / drafts / previewDrafts) so reviewers can see what the marketing site would render at each perspective.",
+          "files": ["studio/actions/perspectiveSwitcher.tsx", "studio/sanity.config.ts"],
+          "acceptance": [
+            "Switching to 'Drafts' shows unpublished changes in the list view.",
+            "Switching back to 'Published' shows what the live site sees."
+          ]
+        },
+        {
+          "id": "S-1.4",
+          "title": "Preview origins for every preview-able document",
+          "done": false,
+          "details": "In Presentation tool, add a route resolver so any document opens a preview at the correct URL on namias.tech. Currently only heroSection + post are routed; extend to project, experience, certification, galleryImage.",
+          "files": ["studio/sanity.config.ts", "studio/env.ts"]
+        }
+      ]
+    },
+    {
+      "id": "EPIC-2",
+      "title": "Smart authoring UX",
+      "status": "planned",
+      "summary": "Custom input components, validation, computed fields, and document templates that make editing fast and safe.",
+      "value": "high",
+      "complexity": "medium",
+      "businessOutcome": "Shows that the schema is not just stored - it is opinionated.",
+      "stories": [
+        {
+          "id": "S-2.1",
+          "title": "Computed 'duration' field on experience",
+          "done": false,
+          "details": "Read-only field that shows the human-readable duration (e.g. '2y 4m') next to the start/end dates. Implemented as a custom input that subscribes to startDate/endDate.",
+          "files": ["studio/components/inputs/ExperienceDuration.tsx", "studio/schemaTypes/experience.ts"]
+        },
+        {
+          "id": "S-2.2",
+          "title": "Computed 'reading time' on blog post",
+          "done": false,
+          "details": "Reads Portable Text body, counts words, renders 'X min read' as a read-only field below the title.",
+          "files": ["studio/components/inputs/ReadingTime.tsx", "studio/schemaTypes/post.ts"]
+        },
+        {
+          "id": "S-2.3",
+          "title": "Custom SEO inspector with live SERP preview",
+          "done": false,
+          "details": "Replaces the default SEO panel with a custom inspector that renders a Google-style SERP preview from `seoTitle` + `seoDescription` + `seoImage`. Highlights missing fields. Adds a Twitter / OG preview tab.",
+          "files": ["studio/components/inspector/SeoPreview.tsx", "studio/components/inspector/SocialPreview.tsx"]
+        },
+        {
+          "id": "S-2.4",
+          "title": "Validation rules across the schema",
+          "done": false,
+          "details": "Async validation for: heroSection.headline length 10-90, project.liveUrl https-only when set, certification.issueDate < expiryDate, post.slug unique-against-existing. Surface as field-level warnings, not blocking errors, except slug uniqueness which is a hard rule.",
+          "files": ["studio/validation/**"]
+        },
+        {
+          "id": "S-2.5",
+          "title": "Document templates with smart defaults",
+          "done": false,
+          "details": "Initial-value-templates for project (slug auto-derived from title, status=draft, year=current), experience (startDate=today), certification (issueDate=today, neverExpires=false). Lets editors click 'New project' and only change what matters.",
+          "files": ["studio/templates/**"]
+        },
+        {
+          "id": "S-2.6",
+          "title": "Conditional fields",
+          "done": false,
+          "details": "Hide `project.liveUrl` when `status === 'concept'`. Show `certification.credentialUrl` only when `neverExpires === false`. Use the built-in `hidden` callback pattern; no custom plugin needed.",
+          "files": ["studio/schemaTypes/project.ts", "studio/schemaTypes/certification.ts"]
+        }
+      ]
+    },
+    {
+      "id": "EPIC-3",
+      "title": "Workflow + collaboration",
+      "status": "planned",
+      "summary": "Comments, tasks, document status badges, and a one-click publish-and-revalidate action wired to a serverless function.",
+      "value": "high",
+      "complexity": "medium",
+      "businessOutcome": "Demonstrates that the studio supports a real editorial process, not just CRUD.",
+      "stories": [
+        {
+          "id": "S-3.1",
+          "title": "Status badges on every document list",
+          "done": false,
+          "details": "Add `draft`, `scheduled`, `stale (>30 days)`, `missing-seo` badges using the `documentBadges` API. Color-code: gray (draft), blue (scheduled), amber (stale), red (missing required).",
+          "files": ["studio/components/badges/**"]
+        },
+        {
+          "id": "S-3.2",
+          "title": "Comments on every document",
+          "done": false,
+          "details": "Enable the `comments` plugin in `sanity.config.ts` so reviewers can leave inline feedback on Portable Text fields.",
+          "files": ["studio/sanity.config.ts"]
+        },
+        {
+          "id": "S-3.3",
+          "title": "Tasks for editorial follow-up",
+          "done": false,
+          "details": "Enable the `tasks` plugin. Pre-seed sample tasks on first launch (e.g. 'Add OG image to project X', 'Confirm certification expiry').",
+          "files": ["studio/sanity.config.ts", "studio/seed/tasks.ts"]
+        },
+        {
+          "id": "S-3.4",
+          "title": "Publish + revalidate action (already started in PR #248)",
+          "done": "partial",
+          "details": "Already exists at `studio/actions/publishAndRefreshAction.tsx`. Extend to also call a Sanity Function for cache invalidation and to update `document.lastPublishedAt`. Show a confirmation modal that previews what will be revalidated.",
+          "files": ["studio/actions/publishAndRefreshAction.tsx", "studio/sanity.config.ts"]
+        },
+        {
+          "id": "S-3.5",
+          "title": "Scheduled publishing",
+          "done": false,
+          "details": "Add a `publishAt` datetime field on posts and projects. The `publishAndRefreshAction` honours the field; a Sanity Function promotes scheduled documents on time.",
+          "files": ["studio/schemaTypes/post.ts", "studio/schemaTypes/project.ts", "functions/scheduled-publish/**"]
+        }
+      ]
+    },
+    {
+      "id": "EPIC-4",
+      "title": "Intelligence + automation",
+      "status": "planned",
+      "summary": "AI assist for copy, content-health insights, broken-reference detection, and Sanity Functions for backend automation.",
+      "value": "high",
+      "complexity": "medium",
+      "businessOutcome": "Shows the studio is not just a database with a UI - it actively helps.",
+      "stories": [
+        {
+          "id": "S-4.1",
+          "title": "AI assist for hero / about / certification copy",
+          "done": false,
+          "details": "Add the `ai-assist` plugin with three custom actions: 'Shorten', 'Rephrase professionally', 'Generate 3 variants for tone: confident'. The action writes to the active field, never auto-saves.",
+          "files": ["studio/sanity.config.ts", "studio/ai/prompts.ts"]
+        },
+        {
+          "id": "S-4.2",
+          "title": "Content-health inspector",
+          "done": false,
+          "details": "Custom inspector panel that shows: word count vs. recommended range, missing alt text on images, broken references, last-edited date, and a 'Refresh preview' button.",
+          "files": ["studio/components/inspector/ContentHealth.tsx"]
+        },
+        {
+          "id": "S-4.3",
+          "title": "Broken-reference detection",
+          "done": false,
+          "details": "Scheduled Sanity Function that scans for references to missing documents and surfaces a 'Broken references: 3' badge on the parent document.",
+          "files": ["functions/broken-refs/**"]
+        },
+        {
+          "id": "S-4.4",
+          "title": "Auto-tag images on upload",
+          "done": false,
+          "details": "Sanity Function triggered on `sanity.imageAsset.create` that calls the image-tagging API and patches `asset.metadata.labels` with the result. Shows up in the asset inspector.",
+          "files": ["functions/auto-tag-images/**"]
+        }
+      ]
+    },
+    {
+      "id": "EPIC-5",
+      "title": "Branded studio + demo polish",
+      "status": "planned",
+      "summary": "Custom welcome screen, custom nav, role-aware items, branded login, and a guided 5-minute demo runbook.",
+      "value": "high",
+      "complexity": "low",
+      "businessOutcome": "First impression: this is a product, not a default studio.",
+      "stories": [
+        {
+          "id": "S-5.1",
+          "title": "Custom welcome screen",
+          "done": false,
+          "details": "Replace the default studio welcome with a branded hero, latest edits across the org, three quick-action cards (new project, new post, new certification), and a 'Show me the demo' button that runs the guided tour.",
+          "files": ["studio/components/Welcome.tsx", "studio/sanity.config.ts"]
+        },
+        {
+          "id": "S-5.2",
+          "title": "Guided demo tour",
+          "done": false,
+          "details": "First-time visitors see a 4-step overlay tour (edit a field, see it live, publish-and-revalidate, schedule a post). Uses the `sanity-onboarding` plugin or a custom overlay built with Floating UI.",
+          "files": ["studio/components/Onboarding.tsx", "studio/sanity.config.ts"]
+        },
+        {
+          "id": "S-5.3",
+          "title": "Custom document list previews",
+          "done": false,
+          "details": "Replace default list items with rich previews: project shows cover image + status badge, experience shows company + duration, post shows title + reading time + cover.",
+          "files": ["studio/components/previews/**"]
+        },
+        {
+          "id": "S-5.4",
+          "title": "Studio theme",
+          "done": false,
+          "details": "Light + dark themes using the portfolio's existing accent palette (pink + slate). Logo on the sidebar header. Branded favicon.",
+          "files": ["studio/sanity.config.ts", "public/favicon.svg"]
+        }
+      ]
+    },
+    {
+      "id": "EPIC-6",
+      "title": "Showcase runbook",
+      "status": "planned",
+      "summary": "Five-minute demo script and assets that can be handed to a reviewer and replayed end-to-end.",
+      "value": "high",
+      "complexity": "low",
+      "businessOutcome": "The artifact you actually hand to higher-ups. A replayable demo.",
+      "stories": [
+        {
+          "id": "S-6.1",
+          "title": "Demo script (markdown)",
+          "done": false,
+          "details": "Step-by-step script with screenshots, timestamps, and the exact click sequence to show: live edit, visual editing, publish-and-revalidate, scheduled publish, AI assist.",
+          "files": ["docs/SHOWCASE_RUNBOOK.md"]
+        },
+        {
+          "id": "S-6.2",
+          "title": "Seed data",
+          "done": false,
+          "details": "A 'Reset demo data' script in the studio that wipes content and re-seeds a realistic portfolio dataset, so the demo can be reset before any presentation.",
+          "files": ["scripts/sanity/seed-demo.ts"]
+        },
+        {
+          "id": "S-6.3",
+          "title": "Loom-style screencast",
+          "done": "deferred",
+          "details": "Recorded walkthrough that lives in the repo and on the marketing site. Cut to 3 minutes, no audio explanations - just the screen."
+        }
+      ]
+    }
+  ],
+  "phasePlan": [
+    {
+      "id": "PHASE-1",
+      "label": "Make it real-time",
+      "epics": ["EPIC-0", "EPIC-1"],
+      "definitionOfDone": [
+        "Editing in the studio shows up on the marketing site within 1 second.",
+        "Click-to-edit on the live site opens the studio at the right field.",
+        "Drafts vs published perspectives work in the list view."
+      ]
+    },
+    {
+      "id": "PHASE-2",
+      "label": "Make it smart",
+      "epics": ["EPIC-2", "EPIC-3"],
+      "definitionOfDone": [
+        "Every document type has at least one computed/derived field and one validation rule.",
+        "Publish-and-revalidate is a single click with a confirmation preview.",
+        "Comments + tasks work end-to-end."
+      ]
+    },
+    {
+      "id": "PHASE-3",
+      "label": "Make it intelligent",
+      "epics": ["EPIC-4"],
+      "definitionOfDone": [
+        "AI assist actions are available on every long-text field.",
+        "Content-health inspector renders for every document type.",
+        "At least one Sanity Function is deployed and observable in the manage console."
+      ]
+    },
+    {
+      "id": "PHASE-4",
+      "label": "Make it presentable",
+      "epics": ["EPIC-5", "EPIC-6"],
+      "definitionOfDone": [
+        "Branded welcome screen + tour render in under 600ms on cold load.",
+        "Showcase runbook script is rehearsable end-to-end in under 5 minutes.",
+        "Reset-demo-data script is in the studio toolbar."
+      ]
+    }
+  ],
+  "dependencies": {
+    "sanityPackages": [
+      "sanity",
+      "@sanity/vision",
+      "sanity-plugin-comments",
+      "sanity-plugin-tasks",
+      "sanity-plugin-ai-assist",
+      "sanity-plugin-onboarding",
+      "next-sanity",
+      "@sanity/functions"
+    ],
+    "studioPlugins": [
+      "structureTool",
+      "presentationTool",
+      "visionTool",
+      "comments",
+      "tasks",
+      "ai-assist",
+      "scheduledPublishing"
+    ],
+    "externalServices": [
+      "Sanity Live Content API (real-time SSE)",
+      "Sanity Functions (serverless triggers)",
+      "Cloudflare Pages (studio static build)",
+      "Cloudflare Workers (marketing site)"
+    ],
+    "envVars": [
+      "SANITY_STUDIO_PROJECT_ID",
+      "SANITY_STUDIO_DATASET",
+      "SANITY_STUDIO_DEPLOY_TOKEN",
+      "SANITY_REVALIDATE_SECRET",
+      "NEXT_PUBLIC_SANITY_PROJECT_ID",
+      "NEXT_PUBLIC_SANITY_DATASET",
+      "NEXT_PUBLIC_SANITY_STUDIO_URL",
+      "NEXT_PUBLIC_SITE_URL"
+    ]
+  },
+  "risks": [
+    {
+      "id": "R-1",
+      "title": "Live Content API rate limits",
+      "mitigation": "Cache the client per-request; debounce updates; fall back to on-demand revalidation if Live API errors persist."
+    },
+    {
+      "id": "R-2",
+      "title": "Custom plugins may drift from Sanity versions",
+      "mitigation": "Pin sanity to a single minor; subscribe to sanity release notes; keep custom plugin surface area small."
+    },
+    {
+      "id": "R-3",
+      "title": "Visual Editing overlays need DOM-stable markup",
+      "mitigation": "Render fields through a single <SanityField> helper; avoid splitting a single Sanity field across multiple React nodes."
+    },
+    {
+      "id": "R-4",
+      "title": "Sanity Functions cold start",
+      "mitigation": "Keep functions stateless; co-locate any heavy data in the dataset; observe via the manage console before declaring done."
+    },
+    {
+      "id": "R-5",
+      "title": "Demo data drift over time",
+      "mitigation": "Reset-demo-data script in the studio toolbar; schedule a reminder before every presentation."
+    }
+  ],
+  "deliverables": {
+    "studio": [
+      "Branded welcome screen with quick actions and guided tour.",
+      "Live + visual editing wired to namias.tech.",
+      "Comments, tasks, badges on every document type.",
+      "Publish + revalidate action with confirmation preview.",
+      "Scheduled publishing via Sanity Functions.",
+      "AI assist actions for long-form copy.",
+      "Custom list previews and document inspector panels."
+    ],
+    "marketingSite": [
+      "Live Content API integration in src/sanity/lib/live.ts.",
+      "Visual Editing overlays on hero, about, projects, experience, certifications, gallery, blog.",
+      "Draft mode banner with 'View draft' / 'View published' toggle.",
+      "Per-field edit affordances via <SanityField>."
+    ],
+    "backend": [
+      "Sanity Function for scheduled publishing.",
+      "Sanity Function for broken-reference detection.",
+      "Sanity Function for auto-tagging uploaded images.",
+      "Webhook handler at /api/sanity/webhook for revalidation."
+    ],
+    "docs": [
+      "docs/SHOWCASE_RUNBOOK.md - 5-minute demo script.",
+      "docs/STUDIO_ARCHITECTURE.md - schema + plugin map.",
+      "docs/EXTENDING_STUDIO.md - how to add a field, a validation, an action.",
+      "Updated README in studio/ with the new command set."
+    ]
+  },
+  "rolloutStrategy": {
+    "approach": "Ship one phase per PR. Each PR is independently demoable.",
+    "cadence": "One phase per week, demoable on Friday.",
+    "demoGate": "Each phase ships with a 60-second Loom-style screencast appended to the showcase runbook."
+  },
+  "openQuestions": [
+    "Is the team OK using Sanity's hosted Functions, or do we self-host them on Cloudflare Workers?",
+    "Should the studio be deployed to a custom domain (cms.namias.tech) per the existing plan, or stay on namias-cms.sanity.studio?",
+    "Do we want the AI assist to use Sanity's hosted models or a custom Gemini / OpenAI key from the existing portfolio?",
+    "Should the showcase runbook live in the repo or in a public Notion?",
+    "How are credentials for the seed/demo data reset handled - hard-coded or env-injected?"
+  ]
+}
