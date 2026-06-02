@@ -66,6 +66,7 @@ export function BookingModal({ open, onClose }: Readonly<BookingModalProps>) {
           <div className="flex items-center gap-1.5">
             {EVENT_TYPES.map((event) => (
               <button
+                type="button"
                 key={event.slug}
                 onClick={() => setSelectedEvent(event.slug)}
                 className={`text-xs font-medium px-3 py-1 rounded-full transition-colors ${
@@ -90,6 +91,7 @@ export function BookingModal({ open, onClose }: Readonly<BookingModalProps>) {
             Open in Cal.com
           </a>
           <button
+            type="button"
             onClick={onClose}
             className="h-7 w-7 rounded-full flex items-center justify-center text-text-muted-light dark:text-text-muted-dark hover:bg-surface-light dark:hover:bg-surface-dark transition-colors text-lg"
             aria-label="Close"
