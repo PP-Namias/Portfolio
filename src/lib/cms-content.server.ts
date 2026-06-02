@@ -1,6 +1,7 @@
 // path import removed — we avoid constructing local `/images/*` refs in this slice
 
 import { cache } from 'react';
+import { draftMode } from 'next/headers';
 
 import type {
   BlogPost,
@@ -18,8 +19,9 @@ import type {
 import { buildMediaGatewayUrl } from './media-gateway';
 import * as cmsShared from './cms-content.shared';
 import type { CmsContent } from './cms-content.shared';
+import { getPublicClient, getPreviewClient } from '@/sanity/lib/client';
 
-const sanityApiVersion = '2021-06-07';
+const sanityApiVersion = '2026-02-19';
 
 function getProjectId(): string | null {
   return process.env.NEXT_PUBLIC_SANITY_PROJECT_ID?.trim() || process.env.SANITY_PROJECT_ID?.trim() || null;
@@ -31,7 +33,7 @@ function getDataset(): string {
 
 function getSanityHeaders(): HeadersInit | undefined {
   const token = process.env.SANITY_API_READ_TOKEN?.trim();
-  return token ? { Authorization: `Bearer ${token}` } : undefined;
+  return token ? {Authorization: `Bearer ${token}`} : undefined;
 }
 
 // Simple in-process query-level cache / deduper to avoid issuing the
@@ -57,18 +59,36 @@ export function resetCmsQueryCacheStats() {
   queryCacheStats.misses = 0;
 }
 
+/**
+ * Pick the right client for the current request. When the Sanity Studio
+ * Presentation tool has enabled draft mode we use the preview client
+ * (perspective: previewDrafts, useCdn: false, read token) so the iframe
+ * shows draft content. Otherwise we hit the public CDN client.
+ */
+async function pickClient() {
+  const {isEnabled} = await draftMode();
+  if (!isEnabled) return getPublicClient();
+  return getPreviewClient().withConfig({
+    token: process.env.SANITY_API_READ_TOKEN?.trim() || undefined,
+    useCdn: false,
+    perspective: 'previewDrafts',
+    stega: {
+      studioUrl: '/studio',
+    },
+  });
+}
+
 async function querySanity<T>(query: string): Promise<T | null> {
   const projectId = getProjectId();
+  if (!projectId) return null;
 
-  if (!projectId) {
-    return null;
-  }
+  // Build a per-request cache key that includes the current perspective
+  // so a draft-mode refetch doesn't reuse a published snapshot.
+  const {isEnabled} = await draftMode();
+  const perspective = isEnabled ? 'previewDrafts' : 'published';
+  const cacheKey = `${perspective}::${query}`;
 
-  const url = `https://${projectId}.api.sanity.io/v${sanityApiVersion}/data/query/${getDataset()}?query=${encodeURIComponent(query)}`;
-
-  // If the same query is already in-flight or cached, return the same
-  // promise/value to deduplicate network work.
-  const cached = queryCache.get(url) as Promise<T | null> | undefined;
+  const cached = queryCache.get(cacheKey) as Promise<T | null> | undefined;
   if (cached) {
     queryCacheStats.hits += 1;
     return cached;
@@ -78,28 +98,30 @@ async function querySanity<T>(query: string): Promise<T | null> {
 
   const promise = (async (): Promise<T | null> => {
     try {
-      const response = await fetch(url, {
-        headers: getSanityHeaders(),
-        cache: 'no-store',
-      });
-
-      if (!response.ok) {
+      const client = await pickClient();
+      const result = await client.fetch<T | null>(query);
+      return (result as T | null) ?? null;
+    } catch (err) {
+      // Fallback to legacy HTTP fetch if the client-based fetch fails
+      // (e.g. transient connection issue during server boot).
+      try {
+        const url = `https://${projectId}.api.sanity.io/v${sanityApiVersion}/data/query/${getDataset()}?query=${encodeURIComponent(query)}`;
+        const response = await fetch(url, {
+          headers: getSanityHeaders(),
+          cache: 'no-store',
+        });
+        if (!response.ok) return null;
+        const payload = (await response.json()) as {result?: T};
+        return payload.result ?? null;
+      } catch {
+        if (process.env.NODE_ENV !== 'test') console.warn('[cms] query failed', err);
         return null;
       }
-
-      const payload = (await response.json()) as { result?: T };
-      return payload.result ?? null;
-    } catch {
-      return null;
     }
   })();
 
-  // Store the in-flight promise immediately to deduplicate concurrent
-  // callers. Keep the promise in the map so subsequent callers reuse it.
-  queryCache.set(url, promise);
-  // Ensure we remove broken entries if the promise rejects to avoid
-  // permanently caching failures.
-  promise.catch(() => queryCache.delete(url));
+  queryCache.set(cacheKey, promise);
+  promise.catch(() => queryCache.delete(cacheKey));
 
   return promise;
 }

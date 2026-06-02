@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
+import { draftMode } from 'next/headers';
+import { VisualEditing } from 'next-sanity';
 import { Providers } from './providers';
 import { fallbackCmsContent } from '@/lib/cms-content.shared';
 import { FloatingHub } from '@/components/ui/FloatingHub';
@@ -91,7 +93,7 @@ const jsonLd = {
   ],
 };
 
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   // In test environments (Vitest) return a synchronous layout using the
   // fallback CMS content so unit tests can import and render the layout
   // without awaiting async data fetches.
@@ -126,9 +128,12 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     );
   }
 
-  // Non-test runtime: return a Promise (async component) so Next.js can
-  // await server-side data fetching as before.
-  return getCmsContent().then((cmsContent) => (
+  // Non-test runtime: fetch CMS content and check draft-mode status so the
+  // Presentation tool iframe can handshake with the marketing site and
+  // trigger refetches on save.
+  const [cmsContent, isDraftMode] = await Promise.all([getCmsContent(), draftMode().then((d) => d.isEnabled)]);
+
+  return (
     <html lang="en" suppressHydrationWarning className={inter.variable}>
       <head>
         <script
@@ -144,12 +149,13 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         >
           Skip to main content
         </a>
-        <Providers cmsContent={cmsContent}>
+        <Providers cmsContent={cmsContent} isDraftMode={isDraftMode}>
           {children}
           <FloatingHub />
           <ScrollToTop />
+          {isDraftMode ? <VisualEditing /> : null}
         </Providers>
       </body>
     </html>
-  ));
+  );
 }

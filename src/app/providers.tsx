@@ -5,17 +5,16 @@ import { ReactLenis } from 'lenis/react';
 import { AccentColorProvider } from '@/hooks/useAccentColor';
 import { ModalProvider } from '@/hooks/useModal';
 import { CmsContentProvider } from '@/hooks/useCmsContent';
-import { SanityLiveRefreshBridge } from '@/hooks/useSanityLiveRefresh';
 import type { CmsContent } from '@/lib/cms-content.shared';
 import React from 'react';
 
 interface ProvidersProps {
   readonly children: React.ReactNode;
   readonly cmsContent?: CmsContent;
+  readonly isDraftMode?: boolean;
 }
 
 export function Providers({ children, cmsContent }: ProvidersProps) {
-  const showLiveRefreshBridge = process.env.NODE_ENV !== 'test';
   const resolvedCmsContent = cmsContent ?? {
     seoSettings: {
       siteTitle: '',
@@ -69,7 +68,7 @@ export function Providers({ children, cmsContent }: ProvidersProps) {
   return (
     <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
       <AccentColorProvider>
-          <CmsContentProvider value={resolvedCmsContent}>
+        <CmsContentProvider value={resolvedCmsContent}>
           <ModalProvider>
             <ReactLenis
               root
@@ -81,7 +80,6 @@ export function Providers({ children, cmsContent }: ProvidersProps) {
                 wheelMultiplier: 1,
               }}
             >
-              {showLiveRefreshBridge ? <SanityLiveRefreshBridge /> : null}
               {children}
             </ReactLenis>
           </ModalProvider>
