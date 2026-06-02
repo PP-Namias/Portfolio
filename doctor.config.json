@@ -2,7 +2,7 @@
   "$schema": "https://react.doctor/schema/doctor.config.json",
   "deadCode": false,
   "ignore": {
-    "paths": [
+    "files": [
       "node_modules/**",
       ".next/**",
       ".open-next/**",
