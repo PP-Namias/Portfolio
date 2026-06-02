@@ -17,6 +17,7 @@ import {studioTheme} from './theme/studioTheme'
 import {skillsToolPlugin} from './plugins/skillsTool'
 import {savedQueriesToolPlugin} from './vision/SavedQueriesView'
 import {deskStructure} from './structure/deskStructure'
+import {PresentationNavigator} from './presentation/PresentationNavigator'
 import {getDraftModeEnablePath, getStudioPreviewOrigin, loadStudioEnvironment, requireStudioEnv} from './env'
 
 loadStudioEnvironment()
@@ -50,6 +51,11 @@ export default defineConfig({
       resolve: {
         locations: {
           ...previewLocations,
+        },
+      },
+      components: {
+        unstable_navigator: {
+          component: PresentationNavigator,
         },
       },
     }),
