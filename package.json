@@ -36,7 +36,13 @@
     "sanity:import": "node ./scripts/sanity/import.mjs",
     "sanity:parity": "node ./scripts/sanity/parity-report.mjs",
     "sanity:parity:strict": "node ./scripts/sanity/parity-report.mjs --strict",
-    "sanity:readiness": "node ./scripts/sanity/parity-report.mjs --readiness"
+    "sanity:readiness": "node ./scripts/sanity/parity-report.mjs --readiness",
+    "doctor": "react-doctor",
+    "doctor:verbose": "react-doctor --verbose",
+    "doctor:json": "react-doctor --json > .react-doctor/report.json",
+    "doctor:baseline": "react-doctor --json > .react-doctor/baseline.json",
+    "doctor:check": "react-doctor --json --fail-on error",
+    "doctor:diff": "react-doctor --diff"
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
