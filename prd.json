@@ -1,527 +1,454 @@
 {
-  "project": "Namias CMS - Showcase Studio",
-  "codeName": "atlas",
+  "project": "Namias Portfolio - React Doctor Clinic",
+  "codeName": "clinic",
   "version": "1.0.0",
   "owner": "Jhon Keneth Ryan Namias (PP Namias)",
   "contact": "pp.namias@gmail.com",
-  "lastUpdated": "2026-06-01",
+  "lastUpdated": "2026-06-03",
+  "branch": "feature/react-doctor-clinic",
   "links": {
-    "studio": "https://namias-cms.sanity.studio",
+    "reactDoctorRepo": "https://github.com/millionco/react-doctor",
+    "reactDoctorSite": "https://react.doctor",
     "marketing": "https://namias.tech",
-    "repo": "https://github.com/PP-Namias/Portfolio",
-    "sanityManage": "https://www.sanity.io/manage/project/nl0qw78w"
+    "studio": "https://namias-cms.sanity.studio",
+    "repo": "https://github.com/PP-Namias/Portfolio"
   },
-  "summary": "Turn the deployed Sanity Studio into a live, opinionated CMS showcase that demonstrates real-time editing, visual editing on the live marketing site, smart content workflows, AI-assisted authoring, and editorial-grade validation. The deliverable is one Sanity Studio at namias-cms.sanity.studio and one Next.js marketing site at namias.tech that talk to each other in real time.",
-  "narrative": "Higher-ups land on the studio URL, sign in, and see a branded, role-aware CMS with a custom welcome screen and a live editor. They pick a project card, edit a title, and watch the marketing site update in front of them without a refresh. They open the live marketing site, click on the hero text, and edit it inline. They see a draft banner, scheduled publish, and an AI assist suggestion. They inspect a document and see content health, broken-reference detection, and a publish-and-revalidate action. None of this is a stock Sanity Studio - every surface is intentionally designed to show editorial craft.",
+  "summary": "Integrate React Doctor (https://github.com/millionco/react-doctor) into the Namias portfolio marketing site and drive the codebase to a perfect 100/100 health score. The deliverable is a fully-wired integration: devDep install, baseline capture, per-category fixes, GitHub Action regression blocking, agent skill documentation, and a locked-in score threshold enforced on every PR.",
+  "narrative": "The portfolio today ships a lot of React across 50+ components: hero, projects, certifications, gallery, blog, floating hub, booking modal, resume modal, chat panel, command palette, motion wrappers, theme provider, lenis scroll root, and more. Without an enforced code-quality gate, the surface area has drifted into the anti-patterns React Doctor was built to catch: unmemoized callbacks, missing useMemo on derived values, exhaustive-deps violations, unkeyed list children, prop drilling, inline event handlers, forgotten effect cleanups, and stale closures. This slice installs the tool, captures the baseline, walks the codebase rule by rule, and ends with a CI check that blocks any PR that drops the score. The agent skill 'run-react-doctor' teaches future contributors (and agents) how to read the report, which rules are unavoidable, and how to fix each finding without breaking visual or functional parity.",
   "principles": [
-    "Editorial speed over engineering surface area - the editor path is the shortest path.",
-    "Real-time by default - every save is visible to the site within 200ms; no manual webhook choreography in front of the user.",
-    "Smart, not clever - automation explains itself in plain language next to the field it touches.",
-    "Branded, not skinned - the studio reads like PP Namias product, not like stock Sanity.",
-    "Reversible - every custom action can be undone, every override has an escape hatch."
+    "Score over opinion - the score is the contract; fixes must move it up, not be aesthetic.",
+    "One rule at a time, one commit at a time - the report is granular, the fixes should be too.",
+    "No behavior change without a screenshot - every fix keeps visual + functional parity; the playwright baseline must pass.",
+    "Ignore generated and test code, not hand-written code - .react-doctor.json scopes exclusions to the right paths.",
+    "CI is the source of truth - the local script is for iteration, the GitHub Action is the gate.",
+    "Document the why, not just the what - the agent skill explains each rule, the rationale, and the canonical fix pattern."
   ],
   "personas": [
     {
-      "id": "P-EDITOR",
-      "label": "Solo editor (PP Namias)",
+      "id": "P-MAINTAINER",
+      "label": "PP Namias (owner)",
       "goals": [
-        "Push portfolio content to production in under 30 seconds.",
-        "Trust that live preview matches production 1:1.",
-        "Never lose a draft to a publish/revalidate race."
+        "Keep the marketing site React-quality best-in-class without manual lint roulette.",
+        "Ship features without each new component regressing the score.",
+        "Trust the CI check to block regressions before they land."
       ],
       "painPointsToday": [
-        "Manual publish + revalidate is a two-step ritual.",
-        "Live preview fidelity is partial.",
-        "No quick way to see what is scheduled, stale, or unpublished."
+        "No automated gate on React anti-patterns.",
+        "exhaustive-deps and react-hooks rules buried in eslint output, easy to skip.",
+        "No score history to compare against."
+      ]
+    },
+    {
+      "id": "P-AGENT",
+      "label": "OpenCode / future coding agent",
+      "goals": [
+        "Read a single SKILL.md and know how to run, read, and fix React Doctor findings.",
+        "Be able to read the report and know which rules to silence (none, in our config) and which to fix (everything else).",
+        "Have a copy-pasteable fix template per rule category."
+      ],
+      "painPointsToday": [
+        "No runbook for react-doctor.",
+        "No baseline to compare against.",
+        "No list of allowed-vs-disallowed rule tweaks."
       ]
     },
     {
       "id": "P-REVIEWER",
-      "label": "Reviewer / Hiring manager",
+      "label": "Hiring manager / reviewer",
       "goals": [
-        "Understand the depth of CMS craft in under 5 minutes.",
-        "See real-time + visual editing working on the live site.",
-        "Trust that production data flow is end-to-end correct."
+        "See the React Doctor badge on the README + a green CI check on PRs.",
+        "Click into the per-PR comment and see the score delta and findings.",
+        "Trust that the score is real (not padded by exclusions of hand-written code)."
       ],
       "painPointsToday": [
-        "Default Sanity studios do not look distinctive.",
-        "Hard to tell from screenshots whether real-time actually works."
-      ]
-    },
-    {
-      "id": "P-DEV",
-      "label": "Future contributor / agency dev",
-      "goals": [
-        "Read the studio config and understand the schema in minutes.",
-        "Extend the studio without re-reading every plugin.",
-        "Run a full local + preview environment with one command."
-      ],
-      "painPointsToday": [
-        "Schema sprawl with no type registry.",
-        "No documented extension points."
+        "No visible quality signal in the repo.",
+        "Hard to tell if the codebase is React-best-practice at a glance."
       ]
     }
   ],
   "successMetrics": {
     "primary": [
-      "Time from edit-in-studio to live-on-marketing-site under 2 seconds on a warm cache.",
-      "Zero manual refreshes required during a normal editing session.",
-      "All 6 demo flows in the showcase runbook complete in under 5 minutes total."
+      "React Doctor score is exactly 100/100 on src/** (excludes test files and generated code).",
+      "Every PR runs the react-doctor GitHub Action; the action blocks merges when the score drops.",
+      "react-doctor is installed as a devDep and runs in < 10 seconds on the current codebase."
     ],
     "secondary": [
-      "All content actions succeed without 4xx/5xx in studio logs for 7 days.",
-      "Document inspector surfaces at least 3 actionable insights per document type.",
-      "AI assist acceptance rate above 30% on hero/about/certification copy."
+      "All 12 react-doctor rule categories report 0 findings on the marketing source tree.",
+      "An agent skill 'run-react-doctor' exists in .agents/skills/ with copy-pasteable fix recipes per rule.",
+      "A baseline report (FINDINGS.md) is committed at EPIC-1 close for historical comparison."
     ],
     "demo": [
-      "Live visual editing demo passes on the first take.",
-      "Presentation tool opens the marketing homepage in 1 click.",
-      "Custom welcome screen renders within 600ms on cold load."
+      "Local: `npm run doctor` prints the score, lists zero findings, exits 0.",
+      "CI: a draft PR with a deliberate exhaustive-deps violation is blocked with a clear comment.",
+      "Skill: an agent can read .agents/skills/run-react-doctor/SKILL.md and fix a finding without further help."
     ]
   },
   "antiPatterns": [
-    "Stacking every Sanity plugin in the config because they exist.",
-    "Hiding the schema behind a deep custom structure that obscures content types.",
-    "Async work that blocks the editor path (e.g., full revalidation on every keystroke).",
-    "Polling for live updates instead of using Sanity Live Content API + Perspectives.",
-    "Re-implementing native Sanity features (badges, validation, comments) by hand."
+    "Silencing rules wholesale via config to game the score - the score is the contract.",
+    "Bypassing the GitHub Action via admin merge - the action must stay green.",
+    "Refactoring for the score in a way that breaks the visual baseline - playwright must pass.",
+    "Touching test files for the score - test files are out of scope (.react-doctor.json excludes src/__tests__/**).",
+    "Touching generated code (next-env.d.ts, .next/**, studio/dist/**) - out of scope."
+  ],
+  "ruleCatalog": [
+    { "id": "R-GIANT", "label": "Giant components", "fix": "Extract sub-components; aim for < 200 lines per component." },
+    { "id": "R-DEPS", "label": "Exhaustive dependencies", "fix": "Add the missing dep; if intentional, wrap the value in useMemo or move it inside the effect." },
+    { "id": "R-CALLBACK", "label": "Unmemoized callbacks", "fix": "Wrap with useCallback; pass stable deps." },
+    { "id": "R-KEY", "label": "Unkeyed list children", "fix": "Use a stable id (slug, _key, uuid) as the key; never the array index for re-orderable lists." },
+    { "id": "R-INLINE", "label": "Inline event handlers in hot paths", "fix": "Extract to a named handler, or accept the cost if the list is small and the prop is the children." },
+    { "id": "R-MUTATE", "label": "Direct state mutation", "fix": "Always return a new object/array from the setter; never push/splice on state." },
+    { "id": "R-EFFECT-CLEANUP", "label": "Missing effect cleanup", "fix": "Return a cleanup from useEffect that aborts, clears timers, removes listeners." },
+    { "id": "R-CONDITIONAL-HOOK", "label": "Conditional hooks", "fix": "Hooks must run in the same order every render; guard above the hook, not inside." },
+    { "id": "R-STALE-CLOSURE", "label": "Stale closure capture", "fix": "Use a ref for the latest value, or include the value in the deps array." },
+    { "id": "R-ASYNC-CLEANUP", "label": "Async without cleanup", "fix": "AbortController, cancelled flag, or a mounted ref." },
+    { "id": "R-PROP-DRILL", "label": "Prop drilling", "fix": "Context, composition, or a co-located state owner; never > 2 levels." },
+    { "id": "R-MEMO", "label": "Forgotten useMemo", "fix": "Memoize any derived value used in render or as a dep of a memoized child." }
   ],
   "epics": [
     {
       "id": "EPIC-0",
-      "title": "Foundation reset",
+      "title": "Bootstrap react-doctor",
       "status": "in-progress",
-      "summary": "Baseline that everything else builds on. Most of this is already shipped via PR #248; this epic captures the inventory and gaps.",
+      "summary": "Install react-doctor, create the config, wire package.json scripts, capture the baseline, and document the toolchain. The deliverable is a runnable `npm run doctor` that produces a report.",
       "value": "high",
       "complexity": "low",
       "stories": [
         {
           "id": "S-0.1",
-          "title": "Confirm deploy",
-          "done": true,
-          "evidence": "PR #248 - all 10 checks green, worker ce4f72fd live."
+          "title": "Install react-doctor as a devDep",
+          "done": false,
+          "details": "Add `react-doctor` (latest) to package.json devDependencies. Pin to a specific version after first run.",
+          "files": ["package.json", "package-lock.json"]
         },
         {
           "id": "S-0.2",
-          "title": "Centralize env access",
+          "title": "Create .react-doctor.json",
           "done": false,
-          "details": "Move all `process.env.*` reads in studio/ into `loadStudioEnvironment()` in `studio/env.ts` and add a typed env registry.",
-          "files": ["studio/env.ts", "studio/sanity.cli.ts", "studio/sanity.config.ts"]
+          "details": "Author the per-rule config: 12 rule categories enabled by default, severity defaults, ignore paths (src/__tests__/**, .next/**, .open-next/**, studio/dist/**, **/*.test.{ts,tsx}).",
+          "files": [".react-doctor.json"]
         },
         {
           "id": "S-0.3",
-          "title": "Type registry",
+          "title": "Add package.json scripts",
           "done": false,
-          "details": "Export a single `schemaTypes` index plus a `documentKind` enum and a `referenceableTypes` array so custom widgets can iterate the schema without string duplication.",
-          "files": ["studio/schemaTypes/index.ts", "studio/schemaTypes/_registry.ts"]
+          "details": "Add: `doctor` (full report), `doctor:baseline` (save to .react-doctor/baseline.json), `doctor:check` (CI mode, exits 1 on drop), `doctor:diff` (compare to baseline).",
+          "files": ["package.json"]
+        },
+        {
+          "id": "S-0.4",
+          "title": "Capture baseline",
+          "done": false,
+          "details": "Run `npm run doctor` and commit the raw output to docs/react-doctor/baseline.txt plus a structured .react-doctor/baseline.json.",
+          "files": ["docs/react-doctor/baseline.txt", ".react-doctor/baseline.json", ".gitignore"]
+        },
+        {
+          "id": "S-0.5",
+          "title": "Add .react-doctor/ to .gitignore (baseline.json is the exception)",
+          "done": false,
+          "details": "Ignore .react-doctor/ except .react-doctor/baseline.json, which is the historical record.",
+          "files": [".gitignore"]
+        },
+        {
+          "id": "S-0.6",
+          "title": "Pin react-doctor version",
+          "done": false,
+          "details": "After the first successful run, pin react-doctor to a specific version (no caret) to keep the report stable across CI runs.",
+          "files": ["package.json", "package-lock.json"]
         }
       ]
     },
     {
       "id": "EPIC-1",
-      "title": "Real-time + visual editing",
-      "status": "planned",
-      "summary": "Wire the marketing site to Sanity Live Content API and turn on Visual Editing overlays so editors click text on namias.tech and edit it in the studio without leaving the page.",
+      "title": "Triage baseline findings",
+      "status": "pending",
+      "summary": "Convert the raw baseline into a per-file, per-rule, per-line finding spreadsheet. Group findings into the 12 rule categories. Identify any false positives and document them in FINDINGS.md.",
       "value": "high",
-      "complexity": "medium",
-      "businessOutcome": "The single most impressive thing to show a reviewer. They edit a string on the live site.",
+      "complexity": "low",
       "stories": [
         {
           "id": "S-1.1",
-          "title": "Sanity Live Content API on the marketing site",
+          "title": "Parse baseline into structured findings",
           "done": false,
-          "details": "Switch the existing Sanity client to `next-sanity` Live Content API in `src/sanity/lib/client.ts`. Use `defineLive` + `sanityFetch` with `perspective: 'previewDrafts'` and revalidate on every change via the `tag` system.",
-          "files": ["src/sanity/lib/client.ts", "src/sanity/lib/live.ts", "src/app/api/draft/route.ts"],
-          "acceptance": [
-            "Editing `heroSection.headline` reflects on / within 1 second.",
-            "Publishing a draft triggers revalidation; the live page updates without a manual refresh."
-          ]
+          "details": "Write a small parser (or use the report's JSON form if available) and produce docs/react-doctor/findings.json with the per-rule, per-file, per-line breakdown.",
+          "files": ["docs/react-doctor/findings.json"]
         },
         {
           "id": "S-1.2",
-          "title": "Visual Editing overlays",
+          "title": "Group findings by rule",
           "done": false,
-          "details": "Add `<SanityLive />` + `<VisualEditing />` from `next-sanity` to the root layout. Tag every rendered field with a `data-sanity` attribute using a single `<SanityField />` helper so the overlay can find the right document/field.",
-          "files": ["src/app/layout.tsx", "src/components/cms/SanityField.tsx", "src/sanity/lib/overlays.ts"],
-          "acceptance": [
-            "Clicking a paragraph on namias.tech with `?sanity-edit=1` opens a popover with 'Edit in Studio'.",
-            "The popover deep-links into the studio at the right document + field."
-          ]
+          "details": "Produce docs/react-doctor/findings-by-rule.md with one section per rule, listing the affected files and counts.",
+          "files": ["docs/react-doctor/findings-by-rule.md"]
         },
         {
           "id": "S-1.3",
-          "title": "Perspective switcher in the studio",
+          "title": "Group findings by file",
           "done": false,
-          "details": "Add a `perspectiveSwitcher` action (published / drafts / previewDrafts) so reviewers can see what the marketing site would render at each perspective.",
-          "files": ["studio/actions/perspectiveSwitcher.tsx", "studio/sanity.config.ts"],
-          "acceptance": [
-            "Switching to 'Drafts' shows unpublished changes in the list view.",
-            "Switching back to 'Published' shows what the live site sees."
-          ]
+          "details": "Produce docs/react-doctor/findings-by-file.md with one section per file, listing the rules that fired and the line numbers.",
+          "files": ["docs/react-doctor/findings-by-file.md"]
         },
         {
           "id": "S-1.4",
-          "title": "Preview origins for every preview-able document",
+          "title": "Triage false positives",
           "done": false,
-          "details": "In Presentation tool, add a route resolver so any document opens a preview at the correct URL on namias.tech. Currently only heroSection + post are routed; extend to project, experience, certification, galleryImage.",
-          "files": ["studio/sanity.config.ts", "studio/env.ts"]
+          "details": "Walk every finding; for any false positive, document why and decide: ignore path vs inline disable. The goal is zero false positives in the final 100/100 run.",
+          "files": ["docs/react-doctor/triage.md", ".react-doctor.json"]
+        },
+        {
+          "id": "S-1.5",
+          "title": "Capture score baseline",
+          "done": false,
+          "details": "Record the score in docs/react-doctor/score.md as the starting line on the scoreboard.",
+          "files": ["docs/react-doctor/score.md"]
         }
       ]
     },
     {
       "id": "EPIC-2",
-      "title": "Smart authoring UX",
-      "status": "planned",
-      "summary": "Custom input components, validation, computed fields, and document templates that make editing fast and safe.",
-      "value": "high",
+      "title": "Fix giant components",
+      "status": "pending",
+      "summary": "Split the largest components into smaller, focused sub-components. Target: 0 giant-component findings after this epic.",
+      "value": "medium",
       "complexity": "medium",
-      "businessOutcome": "Shows that the schema is not just stored - it is opinionated.",
+      "files": ["src/components/**/*.tsx"],
       "stories": [
-        {
-          "id": "S-2.1",
-          "title": "Computed 'duration' field on experience",
-          "done": false,
-          "details": "Read-only field that shows the human-readable duration (e.g. '2y 4m') next to the start/end dates. Implemented as a custom input that subscribes to startDate/endDate.",
-          "files": ["studio/components/inputs/ExperienceDuration.tsx", "studio/schemaTypes/experience.ts"]
-        },
-        {
-          "id": "S-2.2",
-          "title": "Computed 'reading time' on blog post",
-          "done": false,
-          "details": "Reads Portable Text body, counts words, renders 'X min read' as a read-only field below the title.",
-          "files": ["studio/components/inputs/ReadingTime.tsx", "studio/schemaTypes/post.ts"]
-        },
-        {
-          "id": "S-2.3",
-          "title": "Custom SEO inspector with live SERP preview",
-          "done": false,
-          "details": "Replaces the default SEO panel with a custom inspector that renders a Google-style SERP preview from `seoTitle` + `seoDescription` + `seoImage`. Highlights missing fields. Adds a Twitter / OG preview tab.",
-          "files": ["studio/components/inspector/SeoPreview.tsx", "studio/components/inspector/SocialPreview.tsx"]
-        },
-        {
-          "id": "S-2.4",
-          "title": "Validation rules across the schema",
-          "done": false,
-          "details": "Async validation for: heroSection.headline length 10-90, project.liveUrl https-only when set, certification.issueDate < expiryDate, post.slug unique-against-existing. Surface as field-level warnings, not blocking errors, except slug uniqueness which is a hard rule.",
-          "files": ["studio/validation/**"]
-        },
-        {
-          "id": "S-2.5",
-          "title": "Document templates with smart defaults",
-          "done": false,
-          "details": "Initial-value-templates for project (slug auto-derived from title, status=draft, year=current), experience (startDate=today), certification (issueDate=today, neverExpires=false). Lets editors click 'New project' and only change what matters.",
-          "files": ["studio/templates/**"]
-        },
-        {
-          "id": "S-2.6",
-          "title": "Conditional fields",
-          "done": false,
-          "details": "Hide `project.liveUrl` when `status === 'concept'`. Show `certification.credentialUrl` only when `neverExpires === false`. Use the built-in `hidden` callback pattern; no custom plugin needed.",
-          "files": ["studio/schemaTypes/project.ts", "studio/schemaTypes/certification.ts"]
-        }
+        { "id": "S-2.1", "title": "Identify the 5 largest components", "done": false, "details": "Sort by line count, list the top 5 in docs/react-doctor/giant-components.md.", "files": ["docs/react-doctor/giant-components.md"] },
+        { "id": "S-2.2", "title": "Split the largest component", "done": false, "details": "Extract sub-components; keep visual parity; re-run doctor to confirm the component no longer flags.", "files": ["src/components/**/*.tsx"] },
+        { "id": "S-2.3", "title": "Split the 2nd largest component", "done": false, "details": "Same as 2.2.", "files": ["src/components/**/*.tsx"] },
+        { "id": "S-2.4", "title": "Split the 3rd largest component", "done": false, "details": "Same as 2.2.", "files": ["src/components/**/*.tsx"] },
+        { "id": "S-2.5", "title": "Split the 4th largest component", "done": false, "details": "Same as 2.2.", "files": ["src/components/**/*.tsx"] },
+        { "id": "S-2.6", "title": "Split the 5th largest component", "done": false, "details": "Same as 2.2.", "files": ["src/components/**/*.tsx"] },
+        { "id": "S-2.7", "title": "Verify giant-components category is clean", "done": false, "details": "Run `npm run doctor`; expect 0 giant-component findings; commit a per-file note in the scoreboard.", "files": ["docs/react-doctor/score.md"] }
       ]
     },
     {
       "id": "EPIC-3",
-      "title": "Workflow + collaboration",
-      "status": "planned",
-      "summary": "Comments, tasks, document status badges, and a one-click publish-and-revalidate action wired to a serverless function.",
+      "title": "Fix exhaustive-deps violations",
+      "status": "pending",
+      "summary": "Walk every exhaustive-deps finding. Either add the missing dep, move the value inside the effect, or wrap it in useMemo. Target: 0 findings.",
       "value": "high",
-      "complexity": "medium",
-      "businessOutcome": "Demonstrates that the studio supports a real editorial process, not just CRUD.",
+      "complexity": "low",
       "stories": [
-        {
-          "id": "S-3.1",
-          "title": "Status badges on every document list",
-          "done": false,
-          "details": "Add `draft`, `scheduled`, `stale (>30 days)`, `missing-seo` badges using the `documentBadges` API. Color-code: gray (draft), blue (scheduled), amber (stale), red (missing required).",
-          "files": ["studio/components/badges/**"]
-        },
-        {
-          "id": "S-3.2",
-          "title": "Comments on every document",
-          "done": false,
-          "details": "Enable the `comments` plugin in `sanity.config.ts` so reviewers can leave inline feedback on Portable Text fields.",
-          "files": ["studio/sanity.config.ts"]
-        },
-        {
-          "id": "S-3.3",
-          "title": "Tasks for editorial follow-up",
-          "done": false,
-          "details": "Enable the `tasks` plugin. Pre-seed sample tasks on first launch (e.g. 'Add OG image to project X', 'Confirm certification expiry').",
-          "files": ["studio/sanity.config.ts", "studio/seed/tasks.ts"]
-        },
-        {
-          "id": "S-3.4",
-          "title": "Publish + revalidate action (already started in PR #248)",
-          "done": "partial",
-          "details": "Already exists at `studio/actions/publishAndRefreshAction.tsx`. Extend to also call a Sanity Function for cache invalidation and to update `document.lastPublishedAt`. Show a confirmation modal that previews what will be revalidated.",
-          "files": ["studio/actions/publishAndRefreshAction.tsx", "studio/sanity.config.ts"]
-        },
-        {
-          "id": "S-3.5",
-          "title": "Scheduled publishing",
-          "done": false,
-          "details": "Add a `publishAt` datetime field on posts and projects. The `publishAndRefreshAction` honours the field; a Sanity Function promotes scheduled documents on time.",
-          "files": ["studio/schemaTypes/post.ts", "studio/schemaTypes/project.ts", "functions/scheduled-publish/**"]
-        }
+        { "id": "S-3.1", "title": "List exhaustive-deps findings", "done": false, "details": "List each finding with file + line + missing dep in docs/react-doctor/exhaustive-deps.md.", "files": ["docs/react-doctor/exhaustive-deps.md"] },
+        { "id": "S-3.2", "title": "Fix exhaustive-deps in src/hooks", "done": false, "details": "One commit per hook if changes are independent, else group by file.", "files": ["src/hooks/**/*.ts"] },
+        { "id": "S-3.3", "title": "Fix exhaustive-deps in src/components", "done": false, "details": "One commit per affected component.", "files": ["src/components/**/*.tsx"] },
+        { "id": "S-3.4", "title": "Fix exhaustive-deps in src/app", "done": false, "details": "One commit per affected route.", "files": ["src/app/**/*.tsx"] },
+        { "id": "S-3.5", "title": "Verify exhaustive-deps is clean", "done": false, "details": "Run `npm run doctor`; expect 0 findings; commit the scoreboard update.", "files": ["docs/react-doctor/score.md"] }
       ]
     },
     {
       "id": "EPIC-4",
-      "title": "Intelligence + automation",
-      "status": "planned",
-      "summary": "AI assist for copy, content-health insights, broken-reference detection, and Sanity Functions for backend automation.",
+      "title": "Fix unmemoized callbacks",
+      "status": "pending",
+      "summary": "Wrap event handlers and other functions passed as props in useCallback. Target: 0 findings.",
       "value": "high",
-      "complexity": "medium",
-      "businessOutcome": "Shows the studio is not just a database with a UI - it actively helps.",
+      "complexity": "low",
       "stories": [
-        {
-          "id": "S-4.1",
-          "title": "AI assist for hero / about / certification copy",
-          "done": false,
-          "details": "Add the `ai-assist` plugin with three custom actions: 'Shorten', 'Rephrase professionally', 'Generate 3 variants for tone: confident'. The action writes to the active field, never auto-saves.",
-          "files": ["studio/sanity.config.ts", "studio/ai/prompts.ts"]
-        },
-        {
-          "id": "S-4.2",
-          "title": "Content-health inspector",
-          "done": false,
-          "details": "Custom inspector panel that shows: word count vs. recommended range, missing alt text on images, broken references, last-edited date, and a 'Refresh preview' button.",
-          "files": ["studio/components/inspector/ContentHealth.tsx"]
-        },
-        {
-          "id": "S-4.3",
-          "title": "Broken-reference detection",
-          "done": false,
-          "details": "Scheduled Sanity Function that scans for references to missing documents and surfaces a 'Broken references: 3' badge on the parent document.",
-          "files": ["functions/broken-refs/**"]
-        },
-        {
-          "id": "S-4.4",
-          "title": "Auto-tag images on upload",
-          "done": false,
-          "details": "Sanity Function triggered on `sanity.imageAsset.create` that calls the image-tagging API and patches `asset.metadata.labels` with the result. Shows up in the asset inspector.",
-          "files": ["functions/auto-tag-images/**"]
-        }
+        { "id": "S-4.1", "title": "List unmemoized-callback findings", "done": false, "details": "Per-file list in docs/react-doctor/callbacks.md.", "files": ["docs/react-doctor/callbacks.md"] },
+        { "id": "S-4.2", "title": "Fix callbacks in src/components/sections", "done": false, "details": "Wrap in useCallback, one component per commit where independent.", "files": ["src/components/sections/**/*.tsx"] },
+        { "id": "S-4.3", "title": "Fix callbacks in src/components/ui", "done": false, "details": "Same as 4.2.", "files": ["src/components/ui/**/*.tsx"] },
+        { "id": "S-4.4", "title": "Fix callbacks in src/hooks", "done": false, "details": "Same as 4.2.", "files": ["src/hooks/**/*.ts"] },
+        { "id": "S-4.5", "title": "Verify unmemoized-callbacks is clean", "done": false, "details": "Run doctor, expect 0 findings, commit scoreboard.", "files": ["docs/react-doctor/score.md"] }
       ]
     },
     {
       "id": "EPIC-5",
-      "title": "Branded studio + demo polish",
-      "status": "planned",
-      "summary": "Custom welcome screen, custom nav, role-aware items, branded login, and a guided 5-minute demo runbook.",
+      "title": "Fix unkeyed list children",
+      "status": "pending",
+      "summary": "Add stable keys to every list. Use _key, slug, or uuid; never the index for re-orderable lists. Target: 0 findings.",
       "value": "high",
       "complexity": "low",
-      "businessOutcome": "First impression: this is a product, not a default studio.",
       "stories": [
-        {
-          "id": "S-5.1",
-          "title": "Custom welcome screen",
-          "done": false,
-          "details": "Replace the default studio welcome with a branded hero, latest edits across the org, three quick-action cards (new project, new post, new certification), and a 'Show me the demo' button that runs the guided tour.",
-          "files": ["studio/components/Welcome.tsx", "studio/sanity.config.ts"]
-        },
-        {
-          "id": "S-5.2",
-          "title": "Guided demo tour",
-          "done": false,
-          "details": "First-time visitors see a 4-step overlay tour (edit a field, see it live, publish-and-revalidate, schedule a post). Uses the `sanity-onboarding` plugin or a custom overlay built with Floating UI.",
-          "files": ["studio/components/Onboarding.tsx", "studio/sanity.config.ts"]
-        },
-        {
-          "id": "S-5.3",
-          "title": "Custom document list previews",
-          "done": false,
-          "details": "Replace default list items with rich previews: project shows cover image + status badge, experience shows company + duration, post shows title + reading time + cover.",
-          "files": ["studio/components/previews/**"]
-        },
-        {
-          "id": "S-5.4",
-          "title": "Studio theme",
-          "done": false,
-          "details": "Light + dark themes using the portfolio's existing accent palette (pink + slate). Logo on the sidebar header. Branded favicon.",
-          "files": ["studio/sanity.config.ts", "public/favicon.svg"]
-        }
+        { "id": "S-5.1", "title": "List unkeyed-list findings", "done": false, "details": "Per-file list in docs/react-doctor/unkeyed.md.", "files": ["docs/react-doctor/unkeyed.md"] },
+        { "id": "S-5.2", "title": "Fix key in projects list", "done": false, "details": "Use project.slug as the key.", "files": ["src/components/sections/ProjectsSection.tsx"] },
+        { "id": "S-5.3", "title": "Fix key in certifications list", "done": false, "details": "Use certification._key or slug.", "files": ["src/components/sections/CertificationsSection.tsx"] },
+        { "id": "S-5.4", "title": "Fix key in experience timeline", "done": false, "details": "Use experience._key.", "files": ["src/components/sections/ExperienceTimeline.tsx"] },
+        { "id": "S-5.5", "title": "Fix key in gallery grid", "done": false, "details": "Use galleryImage._key.", "files": ["src/components/sections/GallerySection.tsx"] },
+        { "id": "S-5.6", "title": "Fix key in floating hub menu", "done": false, "details": "Use action.id as the key.", "files": ["src/components/ui/FloatingHub.tsx"] },
+        { "id": "S-5.7", "title": "Fix key in blog post list", "done": false, "details": "Use post.slug.", "files": ["src/components/blog/**/*.tsx"] },
+        { "id": "S-5.8", "title": "Verify unkeyed-list is clean", "done": false, "details": "Run doctor, expect 0 findings, commit scoreboard.", "files": ["docs/react-doctor/score.md"] }
       ]
     },
     {
       "id": "EPIC-6",
-      "title": "Showcase runbook",
-      "status": "planned",
-      "summary": "Five-minute demo script and assets that can be handed to a reviewer and replayed end-to-end.",
+      "title": "Fix inline event handlers in hot paths",
+      "status": "pending",
+      "summary": "Extract inline event handlers that are recreated on every render of a large list. Target: 0 findings.",
+      "value": "medium",
+      "complexity": "low",
+      "stories": [
+        { "id": "S-6.1", "title": "List inline-handler findings", "done": false, "details": "Per-file list in docs/react-doctor/inline.md.", "files": ["docs/react-doctor/inline.md"] },
+        { "id": "S-6.2", "title": "Extract inline handlers in sections", "done": false, "details": "One commit per file.", "files": ["src/components/sections/**/*.tsx"] },
+        { "id": "S-6.3", "title": "Extract inline handlers in ui", "done": false, "details": "One commit per file.", "files": ["src/components/ui/**/*.tsx"] },
+        { "id": "S-6.4", "title": "Verify inline-handler is clean", "done": false, "details": "Run doctor, expect 0 findings, commit scoreboard.", "files": ["docs/react-doctor/score.md"] }
+      ]
+    },
+    {
+      "id": "EPIC-7",
+      "title": "Fix direct state mutation",
+      "status": "pending",
+      "summary": "Replace any push/splice/Object.assign on React state with immutable setters. Target: 0 findings.",
       "value": "high",
       "complexity": "low",
-      "businessOutcome": "The artifact you actually hand to higher-ups. A replayable demo.",
       "stories": [
-        {
-          "id": "S-6.1",
-          "title": "Demo script (markdown)",
-          "done": false,
-          "details": "Step-by-step script with screenshots, timestamps, and the exact click sequence to show: live edit, visual editing, publish-and-revalidate, scheduled publish, AI assist.",
-          "files": ["docs/SHOWCASE_RUNBOOK.md"]
-        },
-        {
-          "id": "S-6.2",
-          "title": "Seed data",
-          "done": false,
-          "details": "A 'Reset demo data' script in the studio that wipes content and re-seeds a realistic portfolio dataset, so the demo can be reset before any presentation.",
-          "files": ["scripts/sanity/seed-demo.ts"]
-        },
-        {
-          "id": "S-6.3",
-          "title": "Loom-style screencast",
-          "done": "deferred",
-          "details": "Recorded walkthrough that lives in the repo and on the marketing site. Cut to 3 minutes, no audio explanations - just the screen."
-        }
+        { "id": "S-7.1", "title": "List state-mutation findings", "done": false, "details": "Per-file list in docs/react-doctor/mutation.md.", "files": ["docs/react-doctor/mutation.md"] },
+        { "id": "S-7.2", "title": "Fix mutations in src/hooks", "done": false, "details": "One commit per hook.", "files": ["src/hooks/**/*.ts"] },
+        { "id": "S-7.3", "title": "Fix mutations in src/components", "done": false, "details": "One commit per component.", "files": ["src/components/**/*.tsx"] },
+        { "id": "S-7.4", "title": "Verify state-mutation is clean", "done": false, "details": "Run doctor, expect 0 findings, commit scoreboard.", "files": ["docs/react-doctor/score.md"] }
+      ]
+    },
+    {
+      "id": "EPIC-8",
+      "title": "Fix missing effect cleanup",
+      "status": "pending",
+      "summary": "Add cleanup to every useEffect that creates a subscription, listener, timer, or async task. Target: 0 findings.",
+      "value": "high",
+      "complexity": "medium",
+      "stories": [
+        { "id": "S-8.1", "title": "List effect-cleanup findings", "done": false, "details": "Per-file list in docs/react-doctor/effect-cleanup.md.", "files": ["docs/react-doctor/effect-cleanup.md"] },
+        { "id": "S-8.2", "title": "Add cleanup to event listeners", "done": false, "details": "One commit per useEffect with a listener.", "files": ["src/**/*.tsx", "src/**/*.ts"] },
+        { "id": "S-8.3", "title": "Add cleanup to timers", "done": false, "details": "One commit per setTimeout / setInterval / requestAnimationFrame.", "files": ["src/**/*.tsx", "src/**/*.ts"] },
+        { "id": "S-8.4", "title": "Add cleanup to subscriptions", "done": false, "details": "One commit per useEffect that subscribes.", "files": ["src/**/*.tsx", "src/**/*.ts"] },
+        { "id": "S-8.5", "title": "Verify effect-cleanup is clean", "done": false, "details": "Run doctor, expect 0 findings, commit scoreboard.", "files": ["docs/react-doctor/score.md"] }
+      ]
+    },
+    {
+      "id": "EPIC-9",
+      "title": "Fix conditional hooks",
+      "status": "pending",
+      "summary": "Refactor any hook called after an early return. Hooks must run in the same order every render. Target: 0 findings.",
+      "value": "high",
+      "complexity": "medium",
+      "stories": [
+        { "id": "S-9.1", "title": "List conditional-hook findings", "done": false, "details": "Per-file list in docs/react-doctor/conditional-hooks.md.", "files": ["docs/react-doctor/conditional-hooks.md"] },
+        { "id": "S-9.2", "title": "Fix conditional hooks in components", "done": false, "details": "Move the hook above the early return; commit per component.", "files": ["src/components/**/*.tsx"] },
+        { "id": "S-9.3", "title": "Fix conditional hooks in hooks", "done": false, "details": "Same as 9.2 but in src/hooks.", "files": ["src/hooks/**/*.ts"] },
+        { "id": "S-9.4", "title": "Verify conditional-hooks is clean", "done": false, "details": "Run doctor, expect 0 findings, commit scoreboard.", "files": ["docs/react-doctor/score.md"] }
+      ]
+    },
+    {
+      "id": "EPIC-10",
+      "title": "Fix stale closure capture",
+      "status": "pending",
+      "summary": "Use refs or include the value in deps where a callback captures a stale value. Target: 0 findings.",
+      "value": "high",
+      "complexity": "medium",
+      "stories": [
+        { "id": "S-10.1", "title": "List stale-closure findings", "done": false, "details": "Per-file list in docs/react-doctor/stale-closure.md.", "files": ["docs/react-doctor/stale-closure.md"] },
+        { "id": "S-10.2", "title": "Refactor to refs", "done": false, "details": "Where the value is read inside an interval/listener, use a ref so the latest value is read.", "files": ["src/**/*.tsx", "src/**/*.ts"] },
+        { "id": "S-10.3", "title": "Add missing deps", "done": false, "details": "Where refactor to ref is not appropriate, add the missing dep.", "files": ["src/**/*.tsx", "src/**/*.ts"] },
+        { "id": "S-10.4", "title": "Verify stale-closure is clean", "done": false, "details": "Run doctor, expect 0 findings, commit scoreboard.", "files": ["docs/react-doctor/score.md"] }
+      ]
+    },
+    {
+      "id": "EPIC-11",
+      "title": "Fix async without cleanup",
+      "status": "pending",
+      "summary": "Wrap every async effect with AbortController or a cancelled flag. Target: 0 findings.",
+      "value": "high",
+      "complexity": "medium",
+      "stories": [
+        { "id": "S-11.1", "title": "List async-without-cleanup findings", "done": false, "details": "Per-file list in docs/react-doctor/async-cleanup.md.", "files": ["docs/react-doctor/async-cleanup.md"] },
+        { "id": "S-11.2", "title": "Introduce AbortController pattern", "done": false, "details": "Create a small useAbortable hook (or inline) and migrate one component per commit.", "files": ["src/hooks/useAbortable.ts", "src/**/*.tsx"] },
+        { "id": "S-11.3", "title": "Migrate all async effects", "done": false, "details": "Walk every file in the list, one commit per file.", "files": ["src/**/*.tsx", "src/**/*.ts"] },
+        { "id": "S-11.4", "title": "Verify async-cleanup is clean", "done": false, "details": "Run doctor, expect 0 findings, commit scoreboard.", "files": ["docs/react-doctor/score.md"] }
+      ]
+    },
+    {
+      "id": "EPIC-12",
+      "title": "Fix prop drilling",
+      "status": "pending",
+      "summary": "Reduce prop chains to <= 2 levels via Context, composition, or co-located state. Target: 0 findings.",
+      "value": "medium",
+      "complexity": "high",
+      "stories": [
+        { "id": "S-12.1", "title": "List prop-drilling findings", "done": false, "details": "Per-file list in docs/react-doctor/prop-drilling.md.", "files": ["docs/react-doctor/prop-drilling.md"] },
+        { "id": "S-12.2", "title": "Introduce a CMS Context for hero/about content", "done": false, "details": "A single SanityContext that reads from cms-content; components consume via useSanity().", "files": ["src/context/SanityContext.tsx", "src/components/sections/**/*.tsx"] },
+        { "id": "S-12.3", "title": "Introduce a Theme Context override", "done": false, "details": "Override next-themes where the prop drill shows up; commit per file.", "files": ["src/components/**/*.tsx"] },
+        { "id": "S-12.4", "title": "Co-locate state owners", "done": false, "details": "Where Context is overkill, lift state into the nearest common parent.", "files": ["src/components/**/*.tsx"] },
+        { "id": "S-12.5", "title": "Verify prop-drilling is clean", "done": false, "details": "Run doctor, expect 0 findings, commit scoreboard.", "files": ["docs/react-doctor/score.md"] }
+      ]
+    },
+    {
+      "id": "EPIC-13",
+      "title": "Fix forgotten useMemo",
+      "status": "pending",
+      "summary": "Memoize any derived value used in render or as a dep of a memoized child. Target: 0 findings.",
+      "value": "high",
+      "complexity": "low",
+      "stories": [
+        { "id": "S-13.1", "title": "List forgotten-useMemo findings", "done": false, "details": "Per-file list in docs/react-doctor/forgotten-memo.md.", "files": ["docs/react-doctor/forgotten-memo.md"] },
+        { "id": "S-13.2", "title": "Memoize derived values in sections", "done": false, "details": "One commit per file.", "files": ["src/components/sections/**/*.tsx"] },
+        { "id": "S-13.3", "title": "Memoize derived values in ui", "done": false, "details": "One commit per file.", "files": ["src/components/ui/**/*.tsx"] },
+        { "id": "S-13.4", "title": "Memoize derived values in hooks", "done": false, "details": "One commit per file.", "files": ["src/hooks/**/*.ts"] },
+        { "id": "S-13.5", "title": "Verify forgotten-useMemo is clean", "done": false, "details": "Run doctor, expect 0 findings, commit scoreboard.", "files": ["docs/react-doctor/score.md"] }
+      ]
+    },
+    {
+      "id": "EPIC-14",
+      "title": "CI integration",
+      "status": "pending",
+      "summary": "Add a react-doctor GitHub Action to every PR. The action posts the score, the per-rule deltas, and the per-line comments. The job fails when the score drops below the threshold.",
+      "value": "high",
+      "complexity": "medium",
+      "files": [".github/workflows/*.yml"],
+      "stories": [
+        { "id": "S-14.1", "title": "Add react-doctor-action.yml workflow", "done": false, "details": "Pin the action version, set the threshold to 100, and target src/**.", "files": [".github/workflows/react-doctor.yml"] },
+        { "id": "S-14.2", "title": "Add the action to required checks", "done": false, "details": "Document the required-check setup steps in the README so a future admin can wire it up.", "files": ["docs/react-doctor/ci-setup.md", "README.md"] },
+        { "id": "S-14.3", "title": "Add the action to PR validation", "done": false, "details": "Extend pr-validation.yml to call react-doctor after the existing Quality Check.", "files": [".github/workflows/pr-validation.yml"] },
+        { "id": "S-14.4", "title": "Add the score badge to README", "done": false, "details": "Embed a shields.io badge that points to the latest CI run.", "files": ["README.md"] },
+        { "id": "S-14.5", "title": "Verify CI blocks a deliberate regression", "done": false, "details": "Open a draft PR with a deliberate exhaustive-deps violation, confirm the action fails, then close it.", "files": ["docs/react-doctor/ci-verification.md"] }
+      ]
+    },
+    {
+      "id": "EPIC-15",
+      "title": "Agent skill + documentation",
+      "status": "pending",
+      "summary": "Teach agents and future contributors how to run, read, and fix react-doctor findings. Ship a SKILL.md with the runbook and a CHANGELOG entry.",
+      "value": "high",
+      "complexity": "low",
+      "stories": [
+        { "id": "S-15.1", "title": "Author .agents/skills/run-react-doctor/SKILL.md", "done": false, "details": "Front-matter + the 12-rule fix recipes + the triage + the ignore-pattern rules.", "files": [".agents/skills/run-react-doctor/SKILL.md"] },
+        { "id": "S-15.2", "title": "Author .agents/skills/fix-react-doctor-finding/SKILL.md", "done": false, "details": "Step-by-step: read the report, locate the file, apply the canonical fix, re-run doctor, commit.", "files": [".agents/skills/fix-react-doctor-finding/SKILL.md"] },
+        { "id": "S-15.3", "title": "Update AGENTS.md with react-doctor guidance", "done": false, "details": "One section per rule, one command per workflow.", "files": ["AGENTS.md"] },
+        { "id": "S-15.4", "title": "Update README with react-doctor badge + table", "done": false, "details": "Score badge, baseline, target, and a link to the runbook.", "files": ["README.md"] },
+        { "id": "S-15.5", "title": "Add CHANGELOG entry", "done": false, "details": "Changelog entry under the unreleased section.", "files": ["CHANGELOG.md"] }
+      ]
+    },
+    {
+      "id": "EPIC-16",
+      "title": "Score target + lock",
+      "status": "pending",
+      "summary": "Reach 100/100, lock the threshold, and document the scoreboard.",
+      "value": "high",
+      "complexity": "low",
+      "stories": [
+        { "id": "S-16.1", "title": "Reach 100/100 on the full src tree", "done": false, "details": "Final pass: re-run doctor, expect 0 findings on all 12 rules.", "files": ["docs/react-doctor/score.md"] },
+        { "id": "S-16.2", "title": "Lock the threshold at 100", "done": false, "details": "Set the GitHub Action threshold to 100; document the lock policy.", "files": [".github/workflows/react-doctor.yml", "docs/react-doctor/ci-setup.md"] },
+        { "id": "S-16.3", "title": "Write the final scoreboard", "done": false, "details": "docs/react-doctor/scoreboard.md - the journey from baseline to 100, with the commit hashes that closed each category.", "files": ["docs/react-doctor/scoreboard.md"] },
+        { "id": "S-16.4", "title": "Open the showcase PR", "done": false, "details": "PR from feature/react-doctor-clinic into main with the full story, scoreboard, and CI run.", "files": ["docs/react-doctor/PR_NOTES.md"] }
       ]
     }
   ],
-  "phasePlan": [
+  "phases": [
     {
       "id": "PHASE-1",
-      "label": "Make it real-time",
-      "epics": ["EPIC-0", "EPIC-1"],
-      "definitionOfDone": [
-        "Editing in the studio shows up on the marketing site within 1 second.",
-        "Click-to-edit on the live site opens the studio at the right field.",
-        "Drafts vs published perspectives work in the list view."
-      ]
+      "label": "Bootstrap",
+      "epics": ["EPIC-0", "EPIC-1"]
     },
     {
       "id": "PHASE-2",
-      "label": "Make it smart",
-      "epics": ["EPIC-2", "EPIC-3"],
-      "definitionOfDone": [
-        "Every document type has at least one computed/derived field and one validation rule.",
-        "Publish-and-revalidate is a single click with a confirmation preview.",
-        "Comments + tasks work end-to-end."
-      ]
+      "label": "Fix by rule",
+      "epics": ["EPIC-2", "EPIC-3", "EPIC-4", "EPIC-5", "EPIC-6", "EPIC-7", "EPIC-8", "EPIC-9", "EPIC-10", "EPIC-11", "EPIC-12", "EPIC-13"]
     },
     {
       "id": "PHASE-3",
-      "label": "Make it intelligent",
-      "epics": ["EPIC-4"],
-      "definitionOfDone": [
-        "AI assist actions are available on every long-text field.",
-        "Content-health inspector renders for every document type.",
-        "At least one Sanity Function is deployed and observable in the manage console."
-      ]
+      "label": "CI + docs",
+      "epics": ["EPIC-14", "EPIC-15"]
     },
     {
       "id": "PHASE-4",
-      "label": "Make it presentable",
-      "epics": ["EPIC-5", "EPIC-6"],
-      "definitionOfDone": [
-        "Branded welcome screen + tour render in under 600ms on cold load.",
-        "Showcase runbook script is rehearsable end-to-end in under 5 minutes.",
-        "Reset-demo-data script is in the studio toolbar."
-      ]
+      "label": "Score lock",
+      "epics": ["EPIC-16"]
     }
-  ],
-  "dependencies": {
-    "sanityPackages": [
-      "sanity",
-      "@sanity/vision",
-      "sanity-plugin-comments",
-      "sanity-plugin-tasks",
-      "sanity-plugin-ai-assist",
-      "sanity-plugin-onboarding",
-      "next-sanity",
-      "@sanity/functions"
-    ],
-    "studioPlugins": [
-      "structureTool",
-      "presentationTool",
-      "visionTool",
-      "comments",
-      "tasks",
-      "ai-assist",
-      "scheduledPublishing"
-    ],
-    "externalServices": [
-      "Sanity Live Content API (real-time SSE)",
-      "Sanity Functions (serverless triggers)",
-      "Cloudflare Pages (studio static build)",
-      "Cloudflare Workers (marketing site)"
-    ],
-    "envVars": [
-      "SANITY_STUDIO_PROJECT_ID",
-      "SANITY_STUDIO_DATASET",
-      "SANITY_STUDIO_DEPLOY_TOKEN",
-      "SANITY_REVALIDATE_SECRET",
-      "NEXT_PUBLIC_SANITY_PROJECT_ID",
-      "NEXT_PUBLIC_SANITY_DATASET",
-      "NEXT_PUBLIC_SANITY_STUDIO_URL",
-      "NEXT_PUBLIC_SITE_URL"
-    ]
-  },
-  "risks": [
-    {
-      "id": "R-1",
-      "title": "Live Content API rate limits",
-      "mitigation": "Cache the client per-request; debounce updates; fall back to on-demand revalidation if Live API errors persist."
-    },
-    {
-      "id": "R-2",
-      "title": "Custom plugins may drift from Sanity versions",
-      "mitigation": "Pin sanity to a single minor; subscribe to sanity release notes; keep custom plugin surface area small."
-    },
-    {
-      "id": "R-3",
-      "title": "Visual Editing overlays need DOM-stable markup",
-      "mitigation": "Render fields through a single <SanityField> helper; avoid splitting a single Sanity field across multiple React nodes."
-    },
-    {
-      "id": "R-4",
-      "title": "Sanity Functions cold start",
-      "mitigation": "Keep functions stateless; co-locate any heavy data in the dataset; observe via the manage console before declaring done."
-    },
-    {
-      "id": "R-5",
-      "title": "Demo data drift over time",
-      "mitigation": "Reset-demo-data script in the studio toolbar; schedule a reminder before every presentation."
-    }
-  ],
-  "deliverables": {
-    "studio": [
-      "Branded welcome screen with quick actions and guided tour.",
-      "Live + visual editing wired to namias.tech.",
-      "Comments, tasks, badges on every document type.",
-      "Publish + revalidate action with confirmation preview.",
-      "Scheduled publishing via Sanity Functions.",
-      "AI assist actions for long-form copy.",
-      "Custom list previews and document inspector panels."
-    ],
-    "marketingSite": [
-      "Live Content API integration in src/sanity/lib/live.ts.",
-      "Visual Editing overlays on hero, about, projects, experience, certifications, gallery, blog.",
-      "Draft mode banner with 'View draft' / 'View published' toggle.",
-      "Per-field edit affordances via <SanityField>."
-    ],
-    "backend": [
-      "Sanity Function for scheduled publishing.",
-      "Sanity Function for broken-reference detection.",
-      "Sanity Function for auto-tagging uploaded images.",
-      "Webhook handler at /api/sanity/webhook for revalidation."
-    ],
-    "docs": [
-      "docs/SHOWCASE_RUNBOOK.md - 5-minute demo script.",
-      "docs/STUDIO_ARCHITECTURE.md - schema + plugin map.",
-      "docs/EXTENDING_STUDIO.md - how to add a field, a validation, an action.",
-      "Updated README in studio/ with the new command set."
-    ]
-  },
-  "rolloutStrategy": {
-    "approach": "Ship one phase per PR. Each PR is independently demoable.",
-    "cadence": "One phase per week, demoable on Friday.",
-    "demoGate": "Each phase ships with a 60-second Loom-style screencast appended to the showcase runbook."
-  },
-  "openQuestions": [
-    "Is the team OK using Sanity's hosted Functions, or do we self-host them on Cloudflare Workers?",
-    "Should the studio be deployed to a custom domain (cms.namias.tech) per the existing plan, or stay on namias-cms.sanity.studio?",
-    "Do we want the AI assist to use Sanity's hosted models or a custom Gemini / OpenAI key from the existing portfolio?",
-    "Should the showcase runbook live in the repo or in a public Notion?",
-    "How are credentials for the seed/demo data reset handled - hard-coded or env-injected?"
   ]
 }
