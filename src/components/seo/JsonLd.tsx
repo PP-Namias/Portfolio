@@ -29,17 +29,24 @@ type JsonLdProps = {
  *
  * If you need to embed user-submitted HTML, do not use this component.
  * Use a sanitizer (DOMPurify) and a separate, audited entry point.
+ *
+ * The `no-danger` rule is suppressed on a single line below with
+ * `// eslint-disable-next-line react-doctor/no-danger` (the plugin
+ * namespace is `react-doctor`, not `react`; the rule id is
+ * `react-doctor/no-danger`).
  */
-// eslint-disable-next-line react/no-danger
 export function JsonLd({ data, id }: JsonLdProps): JSX.Element | null {
   if (!data) return null;
   return (
     <script
       id={id}
       type="application/ld+json"
-      // The disable above is scoped to this single line; the rule
-      // stays enforced everywhere else in the codebase.
-      // eslint-disable-next-line react/no-danger
+      // The disable below is scoped to this single line; the rule
+      // stays enforced everywhere else in the codebase. The plugin
+      // name is 'react-doctor', not 'react' (react-doctor exports
+      // its rules under its own namespace and aliases them in
+      // doctor.config.json).
+      // eslint-disable-next-line react-doctor/no-danger
       dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }}
     />
   );
