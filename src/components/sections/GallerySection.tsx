@@ -127,6 +127,7 @@ export function GallerySection() {
       <div className="flex flex-wrap gap-1.5 mb-4">
         {filterTags.map((tag) => (
           <button
+            type="button"
             key={tag}
             onClick={() => setActiveTag(tag)}
             className={`text-xs font-medium px-2.5 py-1 rounded-full transition-all duration-200 ${
@@ -192,6 +193,7 @@ export function GallerySection() {
           transition={{ delay: 0.3 }}
         >
           <button
+            type="button"
             onClick={() => setExpanded((prev) => !prev)}
             className="flex items-center gap-1 text-xs font-medium text-text-muted-light dark:text-text-muted-dark hover:text-accent-pink dark:hover:text-accent-pink transition-colors"
           >
@@ -220,6 +222,7 @@ export function GallerySection() {
           >
             {/* Close button */}
             <button
+              type="button"
               onClick={() => setSelectedIndex(null)}
               className="absolute top-4 right-4 z-10 p-2 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors"
               aria-label="Close lightbox"
@@ -234,6 +237,7 @@ export function GallerySection() {
 
             {/* Previous button */}
             <button
+              type="button"
               onClick={(e) => { e.stopPropagation(); goToPrev(); }}
               className="absolute left-2 sm:left-4 z-10 p-2 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors"
               aria-label="Previous image"
@@ -243,6 +247,7 @@ export function GallerySection() {
 
             {/* Next button */}
             <button
+              type="button"
               onClick={(e) => { e.stopPropagation(); goToNext(); }}
               className="absolute right-2 sm:right-4 z-10 p-2 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors"
               aria-label="Next image"
