@@ -7,10 +7,20 @@ const mediaLimiter = createRateLimiter({
   windowMs: 60_000,
 });
 
+const MAX_PAYLOAD_BYTES = 1_024;
+
 export async function GET(
   request: NextRequest,
   context: { params: Promise<{ path?: string[] }> },
 ) {
+  const contentLength = request.headers.get('content-length');
+  if (contentLength && Number(contentLength) > 0) {
+    return new Response('GET requests must not include a body.', {
+      status: 400,
+      headers: { 'content-type': 'text/plain; charset=utf-8' },
+    });
+  }
+
   const ip = getClientIp(request);
 
   if (await mediaLimiter.isRateLimited(ip)) {

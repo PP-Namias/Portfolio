@@ -8,6 +8,7 @@ const liveLimiter = createRateLimiter({
   windowMs: 900_000,
 });
 
+const MAX_PAYLOAD_BYTES = 1_024;
 const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || 'nl0qw78w';
 const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET || 'production';
 
@@ -20,6 +21,16 @@ function withCors(response: NextResponse): NextResponse {
 }
 
 export async function GET(request: NextRequest) {
+  const contentLength = request.headers.get('content-length');
+  if (contentLength && Number(contentLength) > 0) {
+    return withCors(
+      NextResponse.json(
+        { error: 'GET requests must not include a body.' },
+        { status: 400 },
+      ),
+    );
+  }
+
   const ip = getClientIp(request);
 
   if (await liveLimiter.isRateLimited(ip)) {
