@@ -89,6 +89,10 @@ const chatLimiter = createRateLimiter({
   windowMs: 60_000,
 });
 
+const MAX_PAYLOAD_BYTES = 10_240;
+const MAX_HISTORY_LENGTH = 20;
+const MAX_HISTORY_CONTENT_LENGTH = 2_000;
+
 // --- Input Sanitization ---
 function stripHtml(str: string): string {
   return str.replace(/<[^>]*>/g, '');
@@ -534,6 +538,15 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Check payload size before parsing
+    const contentLength = request.headers.get('content-length');
+    if (contentLength && Number(contentLength) > MAX_PAYLOAD_BYTES) {
+      return NextResponse.json(
+        { error: 'Payload too large. Maximum 10KB.' },
+        { status: 413 },
+      );
+    }
+
     // Parse body
     const body = await request.json().catch(() => null);
     if (!body || typeof body.message !== 'string') {
@@ -567,7 +580,21 @@ export async function POST(request: NextRequest) {
     }
 
     // Conversation history (optional, for context)
-    const history: Array<{ role: string; content: string }> = Array.isArray(body.history) ? body.history : [];
+    const rawHistory: Array<{ role?: unknown; content?: unknown }> = Array.isArray(body.history) ? body.history : [];
+
+    // Validate and sanitise history
+    const history: Array<{ role: string; content: string }> = [];
+    for (const entry of rawHistory.slice(0, MAX_HISTORY_LENGTH)) {
+      if (typeof entry.role === 'string' && typeof entry.content === 'string') {
+        const sanitisedContent = stripHtml(entry.content).trim();
+        if (sanitisedContent.length > 0) {
+          history.push({
+            role: entry.role,
+            content: sanitisedContent.slice(0, MAX_HISTORY_CONTENT_LENGTH),
+          });
+        }
+      }
+    }
 
     // Gemini API call
     const apiKey = process.env.GOOGLE_GEMINI_API_KEY;
