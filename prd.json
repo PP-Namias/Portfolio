@@ -1,0 +1,319 @@
+{
+  "project": "Namias Portfolio - Security Hardening",
+  "codeName": "hardening",
+  "version": "1.0.0",
+  "owner": "Jhon Keneth Ryan Namias (PP Namias)",
+  "contact": "pp.namias@gmail.com",
+  "lastUpdated": "2026-06-03",
+  "branch": "Security-Hardening",
+  "links": {
+    "marketing": "https://namias.tech",
+    "studio": "https://namias-cms.sanity.studio",
+    "repo": "https://github.com/PP-Namias/Portfolio"
+  },
+  "summary": "Harden the Namias portfolio against common web vulnerabilities. Add rate limiting to every API endpoint, scan for and remove any hardcoded secrets, centralise env-var access, sanitise every user input, reject oversized payloads, and run a full audit. Every story ships as its own commit so the hardening delta is fully traceable.",
+  "narrative": "The portfolio exposes 6 API endpoints across Sanity content, media delivery, chat, resume, draft-mode, and webhooks. None currently have rate limiting beyond the chat endpoint's built-in limiter. Hardcoded secrets, oversized payloads, and unsanitised inputs are attack vectors that must be closed before the site scales. This slice retrofits every route with a shared rate-limiter, scans the entire monorepo for leaked keys, verifies env-var hygiene, sanitises all user-facing inputs, rejects any payload exceeding safe size limits, and produces a full audit report.",
+  "principles": [
+    "Every endpoint is rate-limited - there is no unprotected route.",
+    "Zero hardcoded secrets in tracked files - every key lives in an env var or GitHub secret.",
+    "Every user input is validated at the boundary - type-check, length-check, reject malformed.",
+    "Oversized payloads are rejected before processing - no endpoint accepts more than it needs.",
+    "The audit is the deliverable - findings are documented and fixed, not just reported."
+  ],
+  "personas": [
+    {
+      "id": "P-SECURITY",
+      "label": "Security reviewer",
+      "goals": [
+        "Verify every API route has rate limiting before merge.",
+        "Confirm no keys, tokens, or passwords exist in tracked source files.",
+        "See a single audit report that enumerates every finding and fix."
+      ],
+      "painPointsToday": [
+        "No rate limiting at the application layer on 5 of 6 endpoints.",
+        "No systematic scan for leaked secrets has ever been run.",
+        "No documented security posture for the marketing site."
+      ]
+    },
+    {
+      "id": "P-DEV",
+      "label": "Future contributor",
+      "goals": [
+        "Know what env vars exist without reading every file.",
+        "Add a new endpoint and know the rate-limiting pattern.",
+        "Trust that CI will catch a hardcoded secret before merge."
+      ],
+      "painPointsToday": [
+        "Env vars are scattered across 8+ modules with no single registry.",
+        "No reusable rate-limiter module exists outside of /api/chat.",
+        "Input sanitisation is ad-hoc and not documented."
+      ]
+    },
+    {
+      "id": "P-OWNER",
+      "label": "PP Namias (owner)",
+      "goals": [
+        "Ship security hardening without breaking existing functionality.",
+        "Have a single audit document to share with collaborators.",
+        "Know that the site can withstand basic abuse (brute-force, large payloads)."
+      ],
+      "painPointsToday": [
+        "No visibility into whether endpoints are protected.",
+        "Unsure if secrets were ever committed and need rotation.",
+        "No documented security baseline for the marketing site."
+      ]
+    }
+  ],
+  "epics": [
+    {
+      "id": "EPIC-0",
+      "title": "Rate limiting foundation",
+      "status": "planned",
+      "summary": "Build a reusable, parameterised rate-limiter module and apply it to every API route. Auth-adjacent routes (draft-mode enable, live status, webhook) get 5 attempts per 15 minutes. Public routes (chat, resume, media) get higher limits.",
+      "value": "critical",
+      "complexity": "medium",
+      "files": ["src/lib/rate-limiter.ts", "src/app/api/**/route.ts"],
+      "stories": [
+        {
+          "id": "S-0.1",
+          "title": "Create reusable rate-limiter module at src/lib/rate-limiter.ts",
+          "done": false,
+          "details": "Extract the Upstash/in-memory dual strategy from src/app/api/chat/lib/rateLimiter.ts into a generic module. Accept parameters: namespace (string, for Redis key scoping), limit (number), windowMs (number). Export a single `createRateLimiter({ namespace, limit, windowMs })` factory returning `isRateLimited(ip: string): Promise<boolean>`. Keep the Upstash fallback chain identical to the chat limiter.",
+          "files": ["src/lib/rate-limiter.ts"],
+          "acceptance": ["Existing chat rate limiter import can be replaced without changing its behaviour."]
+        },
+        {
+          "id": "S-0.2",
+          "title": "Update /api/chat to use shared rate-limiter",
+          "done": false,
+          "details": "Rewrite src/app/api/chat/route.ts to import from src/lib/rate-limiter instead of src/app/api/chat/lib/rateLimiter.ts. Keep the existing limit: 10 requests per 60 seconds. Remove the old chat-specific rateLimiter.ts (its logic lives in the shared module now).",
+          "files": ["src/app/api/chat/route.ts", "src/app/api/chat/lib/rateLimiter.ts"],
+          "acceptance": ["Chat endpoint still rate-limited at 10/60s.", "Old chat rateLimiter.ts deleted."]
+        },
+        {
+          "id": "S-0.3",
+          "title": "Add rate limiting to /api/resume",
+          "done": false,
+          "details": "Apply the shared rate-limiter with limit=30 per 60 seconds (resume URL lookups are called once per modal open, not chat-frequency). Add getClientIp helper or import from shared utility.",
+          "files": ["src/app/api/resume/route.ts"],
+          "acceptance": ["Resume endpoint returns 429 when called 31+ times in 60 seconds."]
+        },
+        {
+          "id": "S-0.4",
+          "title": "Add rate limiting to /api/media/[...path]",
+          "done": false,
+          "details": "Apply the shared rate-limiter with limit=100 per 60 seconds (images load in batches on page render). Use IP-based limiting from x-forwarded-for.",
+          "files": ["src/app/api/media/[...path]/route.ts"],
+          "acceptance": ["Media endpoint returns 429 when called 101+ times in 60 seconds."]
+        },
+        {
+          "id": "S-0.5",
+          "title": "Add strict rate limiting to /api/sanity/webhook (auth route)",
+          "done": false,
+          "details": "Apply the shared rate-limiter with limit=5 per 900 seconds (15 minutes). The webhook is called by Sanity CMS on content changes — it should never receive bursts above 5 per 15 minutes. Also check that the existing secret-based authorisation is not bypassed by rate-limiting first.",
+          "files": ["src/app/api/sanity/webhook/route.ts"],
+          "acceptance": ["Webhook returns 429 when called 6+ times in 15 minutes."]
+        },
+        {
+          "id": "S-0.6",
+          "title": "Add strict rate limiting to /api/sanity/live (auth route)",
+          "done": false,
+          "details": "Apply the shared rate-limiter with limit=5 per 900 seconds. This endpoint is called by the Sanity Presentation tool's status probe.",
+          "files": ["src/app/api/sanity/live/route.ts"],
+          "acceptance": ["Live endpoint returns 429 when called 6+ times in 15 minutes."]
+        },
+        {
+          "id": "S-0.7",
+          "title": "Add strict rate limiting to /api/draft-mode/enable (auth route)",
+          "done": false,
+          "details": "Apply the shared rate-limiter with limit=5 per 900 seconds. This endpoint enables preview mode and is called by the Presentation tool iframe.",
+          "files": ["src/app/api/draft-mode/enable/route.ts"],
+          "acceptance": ["Draft-mode endpoint returns 429 when called 6+ times in 15 minutes."]
+        }
+      ]
+    },
+    {
+      "id": "EPIC-1",
+      "title": "Hardcoded secrets scan",
+      "status": "planned",
+      "summary": "Scan every tracked file in the monorepo for hardcoded API keys, tokens, passwords, and other secrets. Run both a broad regex scan and a targeted var-name scan. Document every finding. If any real secrets are found, rotate them and purge them from Git history.",
+      "value": "critical",
+      "complexity": "medium",
+      "files": ["docs/security/scan-report.md"],
+      "stories": [
+        {
+          "id": "S-1.1",
+          "title": "Run broad regex scan for known key patterns",
+          "done": false,
+          "details": "Use grep to search all tracked files (excluding .git, node_modules, .next) for patterns matching common key formats: AIza[0-9A-Za-z_-]{35} (Google), sk-[0-9a-zA-Z]{20,} (OpenAI), ghp_[0-9a-zA-Z]{36} (GitHub PAT), xox[bpras]-[0-9a-zA-Z]{10,} (Slack), AKIA[0-9A-Z]{16} (AWS), and any 32+ char hex/base64 string assigned to a var named key/token/secret/password. Write results to docs/security/scan-report.md.",
+          "files": ["docs/security/scan-report.md"],
+          "acceptance": ["Report lists every match with file:line:column. Report states 'No secrets found' if clean."]
+        },
+        {
+          "id": "S-1.2",
+          "title": "Run targeted var-name scan for `key`/`token`/`secret`/`password`/`passwd` assignments",
+          "done": false,
+          "details": "Search for const/let/var declarations containing 'key', 'token', 'secret', 'password', 'passwd' where the value is a string literal longer than 8 characters. Any hit must be inspected — if it is a real credential, move it to .env (or .env.local) and add the var to .env.example. If it is a test/placeholder value, note it in the report.",
+          "files": ["docs/security/scan-report.md"],
+          "acceptance": ["Report has a section for each match with verdict (real / test / false-positive)."]
+        }
+      ]
+    },
+    {
+      "id": "EPIC-2",
+      "title": "Environment variable hygiene",
+      "status": "planned",
+      "summary": "Verify every env var used in the codebase is documented in .env.example, no sensitive var is exposed via NEXT_PUBLIC_, .gitignore covers all secret files, and GitHub Actions workflows do not echo secrets into logs.",
+      "value": "high",
+      "complexity": "low",
+      "files": [".env.example", ".gitignore", ".github/workflows/*.yml"],
+      "stories": [
+        {
+          "id": "S-2.1",
+          "title": "Reconcile .env.example with all process.env reads in source",
+          "done": false,
+          "details": "Grep all `process.env.*` reads across src/ and studio/, extract the variable names, deduplicate, and compare against .env.example. Add any missing vars to .env.example with a placeholder comment. Remove any vars from .env.example that are no longer used.",
+          "files": [".env.example"],
+          "acceptance": [".env.example contains every variable referenced in source, and no unused variables."]
+        },
+        {
+          "id": "S-2.2",
+          "title": "Verify NEXT_PUBLIC_ prefix safety",
+          "done": false,
+          "details": "Review every NEXT_PUBLIC_ variable to confirm it is safe for client exposure. By definition, NEXT_PUBLIC_ vars are inlined at build time into the JS bundle. The current set: SANITY_PROJECT_ID, SANITY_DATASET, SANITY_STUDIO_URL, SANITY_CUTOVER_ENABLED, UMAMI_WEBSITE_ID, UMAMI_SCRIPT_URL, UMAMI_HOST_URL, UMAMI_DOMAINS, SITE_URL. Each should be documented as public in .env.example. Flag any that should not be public.",
+          "files": [".env.example"],
+          "acceptance": ["Every NEXT_PUBLIC_ var is annotated as 'safe to expose in browser' in .env.example."]
+        },
+        {
+          "id": "S-2.3",
+          "title": "Verify .gitignore covers all secret-file patterns",
+          "done": false,
+          "details": "Check that .env, .env.*, .dev.vars, .wrangler/, and any credential-bearing file patterns are in .gitignore. Confirm no .env file was ever tracked by checking git ls-files for .env*.",
+          "files": [".gitignore"],
+          "acceptance": [".gitignore excludes all current env patterns. No .env* file is tracked in Git."]
+        },
+        {
+          "id": "S-2.4",
+          "title": "Audit GitHub Actions workflows for secret leakage",
+          "done": false,
+          "details": "Review every .github/workflows/*.yml for steps that might echo secret values into logs. Confirm all tokens use ${{ secrets.* }} syntax. Check that the react-doctor workflow (just added) does not echo the report JSON into logs (it parses it in node, which is safe).",
+          "files": [".github/workflows/*.yml"],
+          "acceptance": ["No workflow step echoes a secret value directly. All tokens use GitHub secrets syntax."]
+        }
+      ]
+    },
+    {
+      "id": "EPIC-3",
+      "title": "Input sanitisation & payload limits",
+      "status": "planned",
+      "summary": "Every API endpoint that accepts user input must validate type, length, and structure before processing. Reject oversized payloads at the earliest possible point.",
+      "value": "critical",
+      "complexity": "medium",
+      "files": ["src/app/api/**/route.ts"],
+      "stories": [
+        {
+          "id": "S-3.1",
+          "title": "Sanitise and bound /api/chat input",
+          "done": false,
+          "details": "The chat endpoint already validates message length at 500 chars and checks for string type. Add: strip HTML tags from message and history content (to prevent XSS in future chat-ui rendering), limit history array to 20 entries, limit each history content to 2000 chars, reject message if it contains only whitespace after trim. Add a global 10KB payload limit on the request body.",
+          "files": ["src/app/api/chat/route.ts"],
+          "acceptance": ["HTML tags in message are stripped. History > 20 entries is truncated. Payload > 10KB returns 413."]
+        },
+        {
+          "id": "S-3.2",
+          "title": "Sanitise and bound /api/sanity/webhook input",
+          "done": false,
+          "details": "The webhook currently reads headers and query params but does not parse a body. Add: validate that the request body (if present) does not exceed 100KB (webhook payloads can include the full document), validate content-type is application/json, and reject any body that is not valid JSON.",
+          "files": ["src/app/api/sanity/webhook/route.ts"],
+          "acceptance": ["Non-JSON body returns 400. Body > 100KB returns 413."]
+        },
+        {
+          "id": "S-3.3",
+          "title": "Add payload size limits to all remaining endpoints",
+          "done": false,
+          "details": "Add explicit content-length checks to every route: /api/resume (no body expected — reject any body), /api/media/[...path] (no body expected, reject any body), /api/sanity/live (no body expected, reject any body), /api/draft-mode/enable (handled by next-sanity — verify it already has protection; if not, add 10KB limit). Use a shared helper function.",
+          "files": ["src/app/api/resume/route.ts", "src/app/api/media/[...path]/route.ts", "src/app/api/sanity/live/route.ts", "src/app/api/draft-mode/enable/route.ts"],
+          "acceptance": ["Endpoints that expect no body return 400 when a body is sent."]
+        }
+      ]
+    },
+    {
+      "id": "EPIC-4",
+      "title": "Security audit & report",
+      "status": "planned",
+      "summary": "Run a comprehensive security audit covering all the changes in EPIC-0 through EPIC-3 plus a broader review of cookie flags, CSP headers, dependency vulnerabilities, and TLS configuration. Produce a single audit document.",
+      "value": "high",
+      "complexity": "medium",
+      "files": ["docs/security/audit.md"],
+      "stories": [
+        {
+          "id": "S-4.1",
+          "title": "Run automated npm audit and review dependencies",
+          "done": false,
+          "details": "Run npm audit on both root package.json and studio/package.json. Document any critical/high vulnerabilities. If fixable with npm audit fix, do it. If not, document the advisory and mitigation.",
+          "files": ["docs/security/audit.md"],
+          "acceptance": ["Audit report lists every vulnerability, its severity, and whether it was fixed or documented as a risk."]
+        },
+        {
+          "id": "S-4.2",
+          "title": "Review HTTP security headers (CSP, HSTS, X-Frame-Options, etc.)",
+          "done": false,
+          "details": "Check next.config.js and the Cloudflare Workers response for security headers. The site currently serves behind Workers; verify that headers like X-Content-Type-Options, X-Frame-Options, Referrer-Policy, Permissions-Policy, and Strict-Transport-Security are set either in Workers config, next.config.js, or a middleware. If missing, add them.",
+          "files": ["docs/security/audit.md", "middleware.ts", "next.config.ts"],
+          "acceptance": ["Audit report has a section on each header with 'Set' or 'Missing' status. Missing headers are added to next.config.ts or middleware."]
+        },
+        {
+          "id": "S-4.3",
+          "title": "Review secure cookie flags (draft-mode, sessionStorage usage)",
+          "done": false,
+          "details": "Check that draft-mode cookies set HttpOnly, Secure, SameSite=Lax. Review client-side sessionStorage usage (hub_interacted, booking event key) — these are not sensitive but should be documented. Confirm no auth tokens are stored in sessionStorage or localStorage.",
+          "files": ["docs/security/audit.md"],
+          "acceptance": ["Audit report documents cookie flags and storage usage. Any missing flags are flagged for fix."]
+        },
+        {
+          "id": "S-4.4",
+          "title": "Write final security audit report",
+          "done": false,
+          "details": "Compile all findings from S-4.1 through S-4.3 and the completed fixes from EPIC-0..3 into docs/security/audit.md. Include: endpoints covered, rate-limit tiers, secrets scan result, env-var hygiene status, input sanitisation coverage, payload limits, header status, cookie flags, and dependency vulnerabilities. End with an overall security posture summary.",
+          "files": ["docs/security/audit.md"],
+          "acceptance": ["Audit report is a standalone document that fully describes the security posture of the marketing site."]
+        }
+      ]
+    }
+  ],
+  "phases": [
+    {
+      "id": "PHASE-0",
+      "label": "Bootstrap",
+      "epics": ["EPIC-0", "EPIC-1"],
+      "definitionOfDone": [
+        "All 7 endpoints have rate limiting applied.",
+        "Hardcoded secrets scan report exists with no real secrets found.",
+        "Every finding is documented."
+      ]
+    },
+    {
+      "id": "PHASE-1",
+      "label": "Hygiene & sanitisation",
+      "epics": ["EPIC-2", "EPIC-3"],
+      "definitionOfDone": [
+        ".env.example matches every process.env read in source.",
+        "All NEXT_PUBLIC_ vars are verified safe.",
+        ".gitignore covers all secret-file patterns.",
+        "GitHub workflows audited for secret leakage.",
+        "Every endpoint sanitises input and rejects oversized payloads."
+      ]
+    },
+    {
+      "id": "PHASE-2",
+      "label": "Audit & lock",
+      "epics": ["EPIC-4"],
+      "definitionOfDone": [
+        "Security audit report covers all categories.",
+        "Any missing security headers are added.",
+        "Dependency vulnerabilities are fixed or documented.",
+        "Cookie flags are reviewed and corrected if needed."
+      ]
+    }
+  ]
+}
