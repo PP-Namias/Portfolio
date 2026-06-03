@@ -1,5 +1,6 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { NextRequest, NextResponse } from 'next/server';
+import { createRateLimiter, getClientIp } from '@/lib/rate-limiter';
 
 import profileData from '../../../../portfolio-resources/data/profile.json';
 import experiencesData from '../../../../portfolio-resources/data/experiences.json';
@@ -82,22 +83,11 @@ interface MembershipData {
 }
 
 // --- Rate Limiting ---
-const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
-const RATE_LIMIT = 10;
-const RATE_WINDOW_MS = 60_000;
-
-function isRateLimited(ip: string): boolean {
-  const now = Date.now();
-  const entry = rateLimitMap.get(ip);
-
-  if (!entry || now > entry.resetAt) {
-    rateLimitMap.set(ip, { count: 1, resetAt: now + RATE_WINDOW_MS });
-    return false;
-  }
-
-  entry.count++;
-  return entry.count > RATE_LIMIT;
-}
+const chatLimiter = createRateLimiter({
+  namespace: 'chat',
+  limit: 10,
+  windowMs: 60_000,
+});
 
 // --- Input Sanitization ---
 function stripHtml(str: string): string {
@@ -535,12 +525,9 @@ export async function POST(request: NextRequest) {
 
   try {
     // Rate limit by IP
-    const ip =
-      request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
-      request.headers.get('x-real-ip') ||
-      'unknown';
+    const ip = getClientIp(request);
 
-    if (isRateLimited(ip)) {
+    if (await chatLimiter.isRateLimited(ip)) {
       return NextResponse.json(
         { error: 'Too many requests. Please wait a moment and try again.' },
         { status: 429 }
