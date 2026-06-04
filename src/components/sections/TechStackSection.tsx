@@ -59,6 +59,7 @@ export function TechStackSection() {
 
       {categories.length > INITIAL_CATEGORIES && (
         <button
+          type="button"
           onClick={() => setExpanded((prev) => !prev)}
           className="flex items-center gap-1 mx-auto mt-3 text-xs font-medium text-text-muted-light dark:text-text-muted-dark hover:text-accent-pink dark:hover:text-accent-pink transition-colors"
         >

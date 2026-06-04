@@ -11,6 +11,7 @@ export function ThemeToggle() {
   if (!mounted) {
     return (
       <button
+        type="button"
         className="rounded-lg p-2 transition-colors duration-200 hover:bg-surface-light dark:hover:bg-card-bg-dark"
         aria-label="Toggle theme"
       >
@@ -21,6 +22,7 @@ export function ThemeToggle() {
 
   return (
     <button
+      type="button"
       onClick={toggleTheme}
       className={cn(
         'rounded-lg p-2 transition-colors duration-200',

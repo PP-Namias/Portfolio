@@ -276,6 +276,7 @@ export function HubMenu({ onClose, onOpenChat }: Readonly<HubMenuProps>) {
         transition={{ delay: 0.4 }}
       >
         <button
+          type="button"
           onClick={() => { openModal('booking'); onClose(); }}
           className="w-full flex items-center justify-center gap-1.5 text-xs text-text-muted-light dark:text-text-muted-dark hover:text-accent-pink transition-colors group"
         >

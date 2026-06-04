@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import useSWR from 'swr';
 import { X, Send, RotateCcw, ArrowLeft, Trash2, Sparkles, UserCircle, Terminal, Briefcase, Layers, CalendarCheck, Medal } from 'lucide-react';
 import { ChatMessage } from './ChatMessage';
 import { useModal } from '@/hooks/useModal';
@@ -141,62 +142,60 @@ export function ChatPanel({ onBack, onClose, messages, setMessages }: Readonly<C
     setTimeout(() => inputRef.current?.focus(), 100);
   }, []);
 
+  // SWR-based availability probe. The key is null in tests so SWR
+  // skips the fetch entirely (the test branch in the effect below
+  // forces chatAvailability='active'). In production:
+  //   - refreshInterval: 45_000 -> matches the previous setInterval cadence
+  //   - revalidateOnReconnect: true -> browser 'online' event triggers
+  //     a re-fetch; equivalent to the previous handleOnline() callback
+  //     but handled by SWR internally
+  //   - revalidateOnFocus: false -> we don't want a re-fetch every time
+  //     the user tabs back to the chat; the interval is enough
+  //   - dedupingInterval: 5_000 -> if multiple components share the
+  //     same key, dedupe in-flight requests for 5s
+  const { mutate: revalidateAvailability } = useSWR<{ status: string }>(
+    process.env.NODE_ENV === 'test' ? null : '/api/chat',
+    async (url: string) => {
+      const res = await fetch(url, { method: 'GET', cache: 'no-store' });
+      if (!res.ok) throw new Error(`availability check failed: ${res.status}`);
+      return (await res.json()) as { status: string };
+    },
+    {
+      refreshInterval: 45_000,
+      revalidateOnReconnect: true,
+      revalidateOnFocus: false,
+      dedupingInterval: 5_000,
+      onSuccess: (data) => {
+        if (data?.status === 'active') {
+          setChatAvailability('active');
+        } else {
+          setChatAvailability('inactive');
+        }
+      },
+      onError: () => setChatAvailability('inactive'),
+    },
+  );
+
   useEffect(() => {
     if (process.env.NODE_ENV === 'test') {
       setChatAvailability('active');
       return;
     }
 
-    let disposed = false;
-
-    const checkAvailability = async () => {
-      try {
-        const res = await fetch('/api/chat', {
-          method: 'GET',
-          cache: 'no-store',
-        });
-        const data = (await res.json().catch(() => null)) as { status?: string } | null;
-
-        if (disposed) {
-          return;
-        }
-
-        if (res.ok && data?.status === 'active') {
-          setChatAvailability('active');
-          return;
-        }
-
-        setChatAvailability('inactive');
-      } catch {
-        if (!disposed) {
-          setChatAvailability('inactive');
-        }
-      }
-    };
-
-    void checkAvailability();
-
-    const intervalId = globalThis.setInterval(() => {
-      void checkAvailability();
-    }, 45_000);
-
+    const handleOffline = () => setChatAvailability('inactive');
     const handleOnline = () => {
       setChatAvailability('checking');
-      void checkAvailability();
+      void revalidateAvailability();
     };
-
-    const handleOffline = () => setChatAvailability('inactive');
 
     globalThis.addEventListener('online', handleOnline);
     globalThis.addEventListener('offline', handleOffline);
 
     return () => {
-      disposed = true;
-      globalThis.clearInterval(intervalId);
       globalThis.removeEventListener('online', handleOnline);
       globalThis.removeEventListener('offline', handleOffline);
     };
-  }, []);
+  }, [revalidateAvailability]);
 
   const sendMessage = useCallback(
     async (text: string) => {
@@ -311,6 +310,7 @@ export function ChatPanel({ onBack, onClose, messages, setMessages }: Readonly<C
       <div className="flex items-center justify-between px-4 py-3 border-b border-border-light dark:border-border-dark bg-white dark:bg-card-bg-dark">
         <div className="flex items-center gap-2">
           <button
+            type="button"
             onClick={onBack}
             className="h-8 w-8 rounded-full flex items-center justify-center text-text-muted-light dark:text-text-muted-dark hover:bg-surface-light dark:hover:bg-surface-dark transition-colors"
             aria-label="Back to menu"
@@ -357,6 +357,7 @@ export function ChatPanel({ onBack, onClose, messages, setMessages }: Readonly<C
         <div className="flex items-center gap-0.5">
           {messages.length > 0 && (
             <button
+              type="button"
               onClick={handleClearChat}
               className="flex items-center gap-1 h-7 px-2 rounded-full text-text-muted-light dark:text-text-muted-dark hover:bg-red-500/10 hover:text-red-500 transition-colors"
               aria-label="Clear chat history"
@@ -367,6 +368,7 @@ export function ChatPanel({ onBack, onClose, messages, setMessages }: Readonly<C
             </button>
           )}
           <button
+            type="button"
             onClick={onClose}
             className="h-8 w-8 rounded-full flex items-center justify-center text-text-muted-light dark:text-text-muted-dark hover:bg-surface-light dark:hover:bg-surface-dark transition-colors"
             aria-label="Close chat"
@@ -423,6 +425,7 @@ export function ChatPanel({ onBack, onClose, messages, setMessages }: Readonly<C
                   const Icon = card.icon;
                   return (
                     <button
+                      type="button"
                       key={card.label}
                       onClick={() => sendMessage(card.question)}
                       className="flex items-center gap-2.5 p-2.5 rounded-xl border border-border-light dark:border-border-dark hover:border-accent-pink/40 hover:bg-accent-pink/5 transition-all text-left group"
@@ -455,6 +458,7 @@ export function ChatPanel({ onBack, onClose, messages, setMessages }: Readonly<C
           >
             {followUpSuggestions.map((q) => (
               <button
+                type="button"
                 key={q}
                 onClick={() => sendMessage(q)}
                 className="text-[11px] px-2.5 py-1 rounded-full border border-border-light dark:border-border-dark text-text-secondary-light dark:text-text-secondary-dark hover:border-accent-pink hover:text-accent-pink transition-all hover:shadow-sm"
@@ -476,6 +480,7 @@ export function ChatPanel({ onBack, onClose, messages, setMessages }: Readonly<C
             <div className="flex items-center gap-2 text-xs text-red-500 bg-red-500/10 rounded-lg px-3 py-2">
               <span>{error}</span>
               <button
+                type="button"
                 onClick={() => {
                   setError(null);
                   if (messages.length > 0) {
@@ -511,6 +516,7 @@ export function ChatPanel({ onBack, onClose, messages, setMessages }: Readonly<C
             placeholder="Ask about skills, projects, experience..."
             maxLength={500}
             disabled={isLoading}
+            aria-label="Chat message"
             className="flex-1 bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark rounded-full px-4 py-2 text-sm text-text-primary-light dark:text-text-primary-dark placeholder:text-text-muted-light dark:placeholder:text-text-muted-dark focus:outline-none focus:ring-1 focus:ring-accent-pink disabled:opacity-50"
           />
           <button

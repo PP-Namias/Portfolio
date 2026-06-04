@@ -140,3 +140,7 @@ dist
 # Vite logs files
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+
+# react-doctor working dir (transient reports, diff artifacts)
+# The canonical historical baseline lives in docs/react-doctor/baseline.{json,txt}
+.react-doctor/

@@ -66,6 +66,7 @@ export function BookingModal({ open, onClose }: Readonly<BookingModalProps>) {
           <div className="flex items-center gap-1.5">
             {EVENT_TYPES.map((event) => (
               <button
+                type="button"
                 key={event.slug}
                 onClick={() => setSelectedEvent(event.slug)}
                 className={`text-xs font-medium px-3 py-1 rounded-full transition-colors ${
@@ -90,6 +91,7 @@ export function BookingModal({ open, onClose }: Readonly<BookingModalProps>) {
             Open in Cal.com
           </a>
           <button
+            type="button"
             onClick={onClose}
             className="h-7 w-7 rounded-full flex items-center justify-center text-text-muted-light dark:text-text-muted-dark hover:bg-surface-light dark:hover:bg-surface-dark transition-colors text-lg"
             aria-label="Close"
@@ -120,6 +122,15 @@ export function BookingModal({ open, onClose }: Readonly<BookingModalProps>) {
           title={`Book a ${selectedEvent} meeting with PP Namias`}
           allow="payment"
           loading="lazy"
+          // Cal.com's embed widget requires allow-scripts (runs its
+          // booking UI) and allow-same-origin (so the widget sees its
+          // own cookies/storage). The combination is documented by
+          // eslint-plugin-react as a sandbox-defeating pattern, but it
+          // is safe here because embedUrl is on a different origin
+          // (cal.com) than the parent (namias.tech): the iframe treats
+          // itself as same-origin to cal.com, not to us.
+          // eslint-disable-next-line react-doctor/iframe-missing-sandbox
+          sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox"
           onLoad={() => setIsEmbedLoading(false)}
         />
       </div>

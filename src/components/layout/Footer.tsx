@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import { FaGithub, FaInstagram, FaLinkedinIn, FaXTwitter } from 'react-icons/fa6';
 import { useModal } from '@/hooks/useModal';
 import { useCmsContent } from '@/hooks/useCmsContent';
@@ -12,9 +12,15 @@ const footerSocialIcons: Record<string, React.ComponentType<{ className?: string
   instagram: FaInstagram,
 };
 
+// Computed once at module load. Re-computing on every render
+// would risk SSR vs client drift across the year boundary
+// (Dec 31 23:59 vs Jan 1 00:00).
+const CURRENT_YEAR = new Date().getFullYear();
+
 export function Footer() {
   const { profile, socialLinks, siteSettings } = useCmsContent();
   const { openModal } = useModal();
+  const [year, setYear] = useState(CURRENT_YEAR);
   const footerSocials = socialLinks.filter((link) =>
     ['github', 'linkedin', 'x', 'instagram'].includes(link.name)
   );
@@ -25,6 +31,12 @@ export function Footer() {
     backToPortfolioLabel: 'Back to Portfolio',
     contactPrompt: 'Send a message',
   };
+
+  useEffect(() => {
+    if (year !== new Date().getFullYear()) {
+      setYear(new Date().getFullYear());
+    }
+  }, [year]);
 
   return (
     <footer className="mt-8 pb-8 pt-6 border-t border-border-light dark:border-border-dark">
@@ -59,7 +71,7 @@ export function Footer() {
           })}
         </div>
         <p className="text-xs text-text-muted-light dark:text-text-muted-dark">
-          &copy; {new Date().getFullYear()} {footerCopy.copyright || profile.name}
+          &copy; {year} {footerCopy.copyright || profile.name}
         </p>
       </div>
     </footer>

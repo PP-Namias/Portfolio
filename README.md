@@ -2,7 +2,24 @@
 
 | Profile | Details |
 | --- | --- |
-| ![Jhon Keneth Ryan Namias profile image](./public/images/profile/PP%20Namias.png) | **Jhon Keneth Ryan Namias (PP Namias)** <br />  Project Manager @ MASH · Full Stack Engineer & AI Automation Specialist · Manila, Philippines · Available for collaboration [![Resume](https://img.shields.io/badge/Resume-View%20PDF-db2777?style=for-the-badge)](./public/resume.pdf) [![Book a Call](https://img.shields.io/badge/Book%20a%20Call-Cal.com-111827?style=for-the-badge&logo=calendar&logoColor=white)](https://cal.com/pp-namias) [![Email](https://img.shields.io/badge/Email-pp.namias%40gmail.com-2563eb?style=for-the-badge&logo=gmail&logoColor=white)](mailto:pp.namias@gmail.com) [![Live Portfolio](https://img.shields.io/badge/Live%20Portfolio-namias.tech-16a34a?style=flat-square&logo=vercel&logoColor=white)](https://namias.tech) [![GitHub](https://img.shields.io/badge/GitHub-PP--Namias-181717?style=flat-square&logo=github)](https://github.com/PP-Namias) [![LinkedIn](https://img.shields.io/badge/LinkedIn-pp--namias-0A66C2?style=flat-square&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/pp-namias/) ![License](https://img.shields.io/badge/License-MIT-f59e0b?style=flat-square) |
+| ![Jhon Keneth Ryan Namias profile image](./public/images/profile/PP%20Namias.png) | **Jhon Keneth Ryan Namias (PP Namias)** <br />  Project Manager @ MASH · Full Stack Engineer & AI Automation Specialist · Manila, Philippines · Available for collaboration [![Resume](https://img.shields.io/badge/Resume-View%20PDF-db2777?style=for-the-badge)](./public/resume.pdf) [![Book a Call](https://img.shields.io/badge/Book%20a%20Call-Cal.com-111827?style=for-the-badge&logo=calendar&logoColor=white)](https://cal.com/pp-namias) [![Email](https://img.shields.io/badge/Email-pp.namias%40gmail.com-2563eb?style=for-the-badge&logo=gmail&logoColor=white)](mailto:pp.namias@gmail.com) [![Live Portfolio](https://img.shields.io/badge/Live%20Portfolio-namias.tech-16a34a?style=flat-square&logo=vercel&logoColor=white)](https://namias.tech) [![GitHub](https://img.shields.io/badge/GitHub-PP--Namias-181717?style=flat-square&logo=github)](https://github.com/PP-Namias) [![LinkedIn](https://img.shields.io/badge/LinkedIn-pp--namias-0A66C2?style=flat-square&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/pp-namias/) ![License](https://img.shields.io/badge/License-MIT-f59e0b?style=flat-square) ![react-doctor](https://img.shields.io/badge/react--doctor-100%2F100-22c55e?style=flat-square) |
+
+## About this repository
+
+This repository powers [namias.tech](https://namias.tech), a production portfolio built with a modal-first UX, modern animation system, and automated quality checks.
+
+### Quality gates
+
+| Check | Tool | Threshold | Where |
+|---|---|---|---|
+| Lint | ESLint 9 (flat config) | 0 errors | `.github/workflows/pr-validation.yml` |
+| Type | `tsc --noEmit` | 0 errors | `.github/workflows/pr-validation.yml` |
+| Tests | Vitest + Testing Library | 29/29 files, 266/266 tests | `.github/workflows/pr-validation.yml` |
+| **React quality** | **react-doctor 0.2.16** | **100/100 (0 findings)** | **`.github/workflows/react-doctor.yml`** |
+
+The react-doctor gate was introduced in the clinic slice. See [`docs/react-doctor/scoreboard.md`](./docs/react-doctor/scoreboard.md) for the journey from 91/100 baseline to 100/100, [`docs/react-doctor/PR_NOTES.md`](./docs/react-doctor/PR_NOTES.md) for the slice narrative, and [`.agents/skills/run-react-doctor/SKILL.md`](./.agents/skills/run-react-doctor/SKILL.md) for the runbook.
+
+
 
 ## About this repository
 

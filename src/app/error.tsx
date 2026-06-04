@@ -56,6 +56,7 @@ export default function Error({
         className="flex flex-wrap justify-center gap-3 mt-8"
       >
         <button
+          type="button"
           onClick={reset}
           className="inline-flex items-center gap-2 rounded-lg px-6 py-2.5 text-sm font-medium bg-accent-pink text-white hover:bg-accent-pink-hover transition-colors shadow-sm"
         >

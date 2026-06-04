@@ -36,7 +36,13 @@
     "sanity:import": "node ./scripts/sanity/import.mjs",
     "sanity:parity": "node ./scripts/sanity/parity-report.mjs",
     "sanity:parity:strict": "node ./scripts/sanity/parity-report.mjs --strict",
-    "sanity:readiness": "node ./scripts/sanity/parity-report.mjs --readiness"
+    "sanity:readiness": "node ./scripts/sanity/parity-report.mjs --readiness",
+    "doctor": "react-doctor",
+    "doctor:verbose": "react-doctor --verbose",
+    "doctor:json": "react-doctor --json > .react-doctor/report.json",
+    "doctor:baseline": "react-doctor --json > .react-doctor/baseline.json",
+    "doctor:check": "react-doctor --json --fail-on error",
+    "doctor:diff": "react-doctor --diff"
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
@@ -53,7 +59,8 @@
     "react-markdown": "^10.1.0",
     "rehype-highlight": "^7.0.2",
     "remark-gfm": "^4.0.1",
-    "styled-components": "^6.4.2"
+    "styled-components": "^6.4.2",
+    "swr": "^2.4.1"
   },
   "devDependencies": {
     "@opennextjs/cloudflare": "^1.19.11",
@@ -72,6 +79,7 @@
     "eslint-config-next": "16.2.6",
     "jsdom": "^28.1.0",
     "patch-package": "^8.0.1",
+    "react-doctor": "0.2.16",
     "tailwindcss": "^3.4.17",
     "typescript": "^5.7.3",
     "vitest": "^4.0.18",

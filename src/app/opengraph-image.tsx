@@ -1,3 +1,8 @@
+/* eslint-disable react-doctor/only-export-components */
+// Next.js App Router metadata file conventions: the runtime,
+// size, and contentType named exports are required alongside
+// the default image-generating component. They are not
+// co-located logic — they are Next.js file-level metadata.
 import { ImageResponse } from 'next/og';
 
 export const runtime = 'edge';
