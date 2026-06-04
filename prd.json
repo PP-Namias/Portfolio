@@ -1,10 +1,10 @@
 {
   "project": "Namias Portfolio - Smart Caching Performance Optimization",
   "codeName": "smart-caching",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "owner": "Jhon Keneth Ryan Namias (PP Namias)",
   "contact": "pp.namias@gmail.com",
-  "lastUpdated": "2026-06-04",
+  "lastUpdated": "2026-06-05",
   "branch": "performance/smart-caching",
   "links": {
     "marketing": "https://namias.tech",
@@ -68,10 +68,11 @@
       "value": "high",
       "complexity": "low",
       "stories": [
-        { "id": "S-0.1", "title": "Create caching PRD and strategy document", "done": false, "details": "Write prd.json with caching plan. Create docs/performance/caching-strategy.md defining L1-L4 cache layers, TTL values, invalidation triggers, and performance targets.", "files": ["prd.json", "docs/performance/caching-strategy.md"] },
-        { "id": "S-0.2", "title": "Audit current caching state", "done": false, "details": "Inventory all pages, API routes, and data fetches. Document current Cache-Control headers, SWR config, revalidation settings. Measure baseline TTFB, cache hit rates, and Lighthouse scores.", "files": ["docs/performance/audit.md"] },
-        { "id": "S-0.3", "title": "Create cache utility library with TTL and stale-while-revalidate", "done": false, "details": "Create src/lib/cache.ts with: TTL-based in-memory cache, stale-while-revalidate pattern, cache key generation with tag prefix, bulk invalidation by tag, and optional Upstash Redis backend.", "files": ["src/lib/cache.ts"] },
-        { "id": "S-0.4", "title": "Add cache configuration to env.example", "done": false, "details": "Add CACHE_TTL_DEFAULT, CACHE_TTL_STALE, REDIS_CACHE_URL, REDIS_CACHE_TOKEN to .env.example. Document cache env vars.", "files": [".env.example"] }
+        { "id": "S-0.1", "title": "Create caching PRD and strategy document", "done": true, "details": "Write prd.json with caching plan. Create docs/performance/caching-strategy.md defining L1-L4 cache layers, TTL values, invalidation triggers, and performance targets.", "files": ["prd.json", "docs/performance/caching-strategy.md"] },
+        { "id": "S-0.2", "title": "Audit current caching state", "done": true, "details": "Inventory all pages, API routes, and data fetches. Document current Cache-Control headers, SWR config, revalidation settings. Measure baseline TTFB, cache hit rates, and Lighthouse scores.", "files": ["docs/performance/audit.md"] },
+        { "id": "S-0.3", "title": "Create cache utility library with TTL and stale-while-revalidate", "done": true, "details": "Create src/lib/cache.ts with: TTL-based in-memory cache, stale-while-revalidate pattern, cache key generation with tag prefix, bulk invalidation by tag, and optional Upstash Redis backend.", "files": ["src/lib/cache.ts"] },
+        { "id": "S-0.4", "title": "Add cache configuration to env.example", "done": true, "details": "Add CACHE_TTL_DEFAULT, CACHE_TTL_STALE, REDIS_CACHE_URL, REDIS_CACHE_TOKEN to .env.example. Document cache env vars.", "files": [".env.example"] },
+        { "id": "S-0.5", "title": "Integrate Upstash Redis as distributed L2 cache layer", "done": false, "details": "Install @upstash/redis. Create src/lib/redis-cache.ts as Redis-backed cache layer. Update src/lib/cache.ts to fallback L1->L2. Add Redis connection env vars to .env.example.", "files": ["src/lib/redis-cache.ts", "src/lib/cache.ts", ".env.example"] }
       ]
     },
     {
@@ -82,11 +83,11 @@
       "value": "high",
       "complexity": "high",
       "stories": [
-        { "id": "S-1.1", "title": "Wrap CMS content fetcher with in-memory cache", "done": false, "details": "Update src/lib/cms-content.server.ts to use the cache utility. Cache all CMS queries with TTL=300s. Serve stale content while revalidating in background. Add cache tags per content type.", "files": ["src/lib/cms-content.server.ts", "src/lib/cache.ts"] },
-        { "id": "S-1.2", "title": "Add Sanity CDN cache headers and use CDN API", "done": false, "details": "Ensure Sanity client uses CDN URL for read queries. Add perspective=published for public queries. Configure @sanity/client with useCdn=true.", "files": ["src/lib/sanity.ts", "src/lib/sanity.image.ts"] },
-        { "id": "S-1.3", "title": "Implement tag-based webhook cache invalidation", "done": false, "details": "Update webhook route to accept Sanity tag-based invalidation. Parse webhook payload for document type/ID, build cache tags, and invalidate matching cache entries.", "files": ["src/app/api/sanity/webhook/route.ts", "src/lib/cache.ts"] },
-        { "id": "S-1.4", "title": "Add stale-while-revalidate headers to CMS data responses", "done": false, "details": "Add Cache-Control: stale-while-revalidate=60 to all CMS data fetches. Ensure SWR period is 60s with max-age of 300s.", "files": ["src/lib/cms-content.server.ts"] },
-        { "id": "S-1.5", "title": "Reduce SWR revalidation frequency on client components", "done": false, "details": "Update all useSWR hooks with dedupingInterval=5000, revalidateIfStale=true, revalidateOnFocus=false. Add errorRetryCount=2 and errorRetryInterval=10000.", "files": ["src/**/*.tsx", "src/**/*.ts"] }
+        { "id": "S-1.1", "title": "Wrap CMS content fetcher with in-memory cache", "done": true, "details": "Update src/lib/cms-content.server.ts to use the cache utility. Cache all CMS queries with TTL=300s. Serve stale content while revalidating in background. Add cache tags per content type.", "files": ["src/lib/cms-content.server.ts", "src/lib/cache.ts"] },
+        { "id": "S-1.2", "title": "Add Sanity CDN cache headers and use CDN API", "done": true, "details": "Ensure Sanity client uses CDN URL for read queries. Add perspective=published for public queries. Configure @sanity/client with useCdn=true.", "files": ["src/lib/sanity.ts", "src/lib/sanity.image.ts"] },
+        { "id": "S-1.3", "title": "Implement tag-based webhook cache invalidation", "done": true, "details": "Update webhook route to accept Sanity tag-based invalidation. Parse webhook payload for document type/ID, build cache tags, and invalidate matching cache entries.", "files": ["src/app/api/sanity/webhook/route.ts", "src/lib/cache.ts"] },
+        { "id": "S-1.4", "title": "Add stale-while-revalidate headers to CMS data responses", "done": true, "details": "Add Cache-Control: stale-while-revalidate=60 to all CMS data fetches. Ensure SWR period is 60s with max-age of 300s.", "files": ["src/lib/cms-content.server.ts"] },
+        { "id": "S-1.5", "title": "Reduce SWR revalidation frequency on client components", "done": true, "details": "Update all useSWR hooks with dedupingInterval=5000, revalidateIfStale=true, revalidateOnFocus=false. Add errorRetryCount=2 and errorRetryInterval=10000.", "files": ["src/**/*.tsx", "src/**/*.ts"] }
       ]
     },
     {
@@ -97,12 +98,11 @@
       "value": "high",
       "complexity": "high",
       "stories": [
-        { "id": "S-2.1", "title": "Add Cache-Control headers to GET /api/resume", "done": false, "details": "Add public, max-age=300, stale-while-revalidate=60, s-maxage=600 to /api/resume. Add ETag based on resume URL hash.", "files": ["src/app/api/resume/route.ts"] },
-        { "id": "S-2.2", "title": "Add cache headers to /api/media/[...path]", "done": false, "details": "Add public, max-age=31536000, immutable for media assets. Add CDN-Cache: hit for cached assets.", "files": ["src/app/api/media/[...path]/route.ts"] },
-        { "id": "S-2.3", "title": "Add cache headers to /api/chat health endpoint", "done": false, "details": "Add no-cache for POST /api/chat but public, max-age=60 for GET health check. Add Surrogate-Control header for edge caching.", "files": ["src/app/api/chat/route.ts"] },
+        { "id": "S-2.1", "title": "Add Cache-Control headers to GET /api/resume", "done": true, "details": "Add public, max-age=300, stale-while-revalidate=60, s-maxage=600 to /api/resume. Add ETag based on resume URL hash.", "files": ["src/app/api/resume/route.ts"] },
+        { "id": "S-2.2", "title": "Add cache headers to /api/media/[...path]", "done": true, "details": "Already has public, max-age=31536000, immutable for files. Add CDN-Cache: hit for cached assets.", "files": ["src/app/api/media/[...path]/route.ts"] },
+        { "id": "S-2.3", "title": "Add cache headers to /api/chat health endpoint", "done": false, "details": "Add no-cache for POST /api/chat but public, max-age=60 for GET health check. Add Surrogate-Control header for edge caching.", "files": ["src/app/api/chat/route.ts", "src/app/api/sanity/live/route.ts"] },
         { "id": "S-2.4", "title": "Add cache headers to /api/sanity/live", "done": false, "details": "Add no-cache, no-store, must-revalidate for live/preview endpoints.", "files": ["src/app/api/sanity/live/route.ts"] },
-        { "id": "S-2.5", "title": "Implement Upstash Redis response caching for API routes", "done": false, "details": "Create src/lib/api-cache.ts with Redis-backed response caching. Cache GET responses with configurable TTL per route. Fall back to in-memory if Redis unavailable.", "files": ["src/lib/api-cache.ts"] },
-        { "id": "S-2.6", "title": "Add cache tags and conditional requests", "done": false, "details": "Add ETag headers to all GET API responses. Handle If-None-Match returning 304. Add Cache-Tag header for CDN-based invalidation.", "files": ["src/lib/api-cache.ts", "src/app/api/resume/route.ts", "src/app/api/media/[...path]/route.ts"] }
+        { "id": "S-2.5", "title": "Implement Redis distributed cache layer", "done": false, "details": "Create src/lib/redis-cache.ts with @upstash/redis. Update src/lib/cache.ts multi-layer: check L1 (in-memory), then L2 (Redis), then fetch. Fall back to L1-only if Redis unavailable.", "files": ["src/lib/redis-cache.ts", "src/lib/cache.ts", ".env.example"] }
       ]
     },
     {
