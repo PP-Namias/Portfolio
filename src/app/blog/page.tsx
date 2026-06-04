@@ -7,6 +7,8 @@ import { IS_BLOG_VISIBLE } from '@/lib/features';
 import { fallbackBlogPosts } from '@/lib/cms-content.shared';
 import BlogListClient from './BlogListClient';
 
+export const revalidate = 3600;
+
 export default async function BlogPage(): Promise<JSX.Element> {
   if (!IS_BLOG_VISIBLE) {
     notFound();

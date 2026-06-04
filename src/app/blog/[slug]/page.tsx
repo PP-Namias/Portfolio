@@ -6,6 +6,10 @@ import { fallbackBlogPosts } from '@/lib/cms-content.shared';
 import { JsonLd } from '@/components/seo/JsonLd';
 import BlogPostContent from './BlogPostContent';
 
+export const revalidate = 3600;
+
+export const dynamicParams = true;
+
 export async function generateStaticParams(): Promise<{ slug: string }[]> {
   if (!IS_BLOG_VISIBLE) {
     return [];
