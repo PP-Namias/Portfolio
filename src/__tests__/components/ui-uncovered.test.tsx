@@ -219,11 +219,12 @@ describe('uncovered UI components', () => {
     expect(screen.getByLabelText('Verified')).toBeInTheDocument();
   });
 
-  it('Footer renders CTA, social links and copyright', () => {
+  it('Footer renders social links, copyright, and last-updated timestamp', () => {
     render(<Footer />);
-    expect(screen.getByText(/Interested in working together/i)).toBeInTheDocument();
-    expect(screen.getByText(/Interested in working together/i)).toBeInTheDocument();
-    expect(screen.getByText(new RegExp(String(new Date().getFullYear())))).toBeInTheDocument();
+    const yearRegex = new RegExp(`\\b${new Date().getFullYear()}\\b`);
+    expect(screen.getAllByText(yearRegex).length).toBeGreaterThan(0);
+    expect(screen.getByText(/Last updated/i)).toBeInTheDocument();
+    expect(screen.getByText(/Last updated/i).querySelector('time')).toHaveAttribute('datetime');
   });
 
   it('ColorSchemePicker opens options and selects a scheme', async () => {

@@ -70,8 +70,7 @@ vi.mock('@/components/sections/TechStackSection', () => ({ TechStackSection: () 
 vi.mock('@/components/sections/ProjectsSection', () => ({ ProjectsSection: () => <div>ProjectsSection</div> }));
 vi.mock('@/components/sections/CertificationsSection', () => ({ CertificationsSection: () => <div>CertificationsSection</div> }));
 vi.mock('@/components/sections/ExperienceTimeline', () => ({ ExperienceTimeline: () => <div>ExperienceTimeline</div> }));
-vi.mock('@/components/sections/ConnectSection', () => ({ ConnectSection: () => <div>ConnectSection</div> }));
-vi.mock('@/components/sections/GallerySection', () => ({ GallerySection: () => <div>GallerySection</div> }));
+vi.mock('@/components/sections/EducationSection', () => ({ EducationSection: () => <div>EducationSection</div> }));
 vi.mock('@/components/layout/Footer', () => ({ Footer: () => <div>FooterSection</div> }));
 vi.mock('@/components/ui/Card', () => ({
   Card: ({ children, className }: { children: React.ReactNode; className?: string }) => (
@@ -118,7 +117,7 @@ describe('app layout and page coverage', () => {
     expect(screen.getByTestId('scroll-to-top')).toBeInTheDocument();
   });
 
-  it('Home page renders all major section blocks', () => {
+  it('Home page renders all major section blocks in the 2-column resume layout', () => {
     render(<Home />);
 
     expect(screen.getByText('HeroSection')).toBeInTheDocument();
@@ -126,26 +125,36 @@ describe('app layout and page coverage', () => {
     expect(screen.getByText('TechStackSection')).toBeInTheDocument();
     expect(screen.getByText('ProjectsSection')).toBeInTheDocument();
     expect(screen.getByText('ExperienceTimeline')).toBeInTheDocument();
-    expect(screen.getByText('ConnectSection')).toBeInTheDocument();
+    expect(screen.getByText('EducationSection')).toBeInTheDocument();
     expect(screen.getByText('CertificationsSection')).toBeInTheDocument();
-    expect(screen.getByText('GallerySection')).toBeInTheDocument();
     expect(screen.getByText('FooterSection')).toBeInTheDocument();
   });
 
-  it('Home page clears sticky side under mobile width branch', async () => {
-    Object.defineProperty(globalThis, 'innerWidth', {
-      configurable: true,
-      value: 768,
-    });
+  it('Home page uses a 2-column grid with no sticky sidebars', () => {
+    const { container } = render(<Home />);
 
+    const grid = container.querySelector(String.raw`.lg\:grid-cols-\[38\%_1fr\]`);
+    expect(grid).toBeInTheDocument();
+    const stickyBlocks = container.querySelectorAll(String.raw`.lg\:sticky`);
+    expect(stickyBlocks.length).toBe(0);
+  });
+
+  it('Home page section blocks are organized as left-column (skills/education/certs) and right-column (about/experience/projects)', () => {
     render(<Home />);
 
-    fireEvent(globalThis as unknown as Window, new Event('resize'));
+    const skills = screen.getByText('TechStackSection').closest('section');
+    const education = screen.getByText('EducationSection').closest('section');
+    const certs = screen.getByText('CertificationsSection').closest('section');
+    const about = screen.getByText('AboutSection').closest('section');
+    const experience = screen.getByText('ExperienceTimeline').closest('section');
+    const projects = screen.getByText('ProjectsSection').closest('section');
 
-    await waitFor(() => {
-      const stickyBlocks = document.querySelectorAll(String.raw`.lg\:sticky`);
-      expect(stickyBlocks.length).toBe(0);
-    });
+    expect(skills?.getAttribute('data-section')).toBe('skills');
+    expect(education?.getAttribute('data-section')).toBe('education');
+    expect(certs?.getAttribute('data-section')).toBe('certifications');
+    expect(about?.getAttribute('data-section')).toBe('about');
+    expect(experience?.getAttribute('data-section')).toBe('experience');
+    expect(projects?.getAttribute('data-section')).toBe('projects');
   });
 
   it('Error page logs error and supports reset action', () => {

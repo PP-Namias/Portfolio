@@ -483,7 +483,7 @@ describe('uncovered section components', () => {
 
   it('TechStackSection renders categories and expands all', () => {
     render(<TechStackSection />);
-    expect(screen.getByText('Tech Stack')).toBeInTheDocument();
+    expect(screen.getByText('Skills')).toBeInTheDocument();
     expect(screen.getByText(/View all/i)).toBeInTheDocument();
 
     fireEvent.click(screen.getByText(/View all/i));

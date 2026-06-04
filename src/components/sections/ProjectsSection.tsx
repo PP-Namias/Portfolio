@@ -197,9 +197,9 @@ export function ProjectsSection() {
       viewport={{ once: true, margin: '-50px' }}
       transition={sectionTransition}
     >
-      <h2 className="mb-2 text-lg font-semibold text-text-primary-light dark:text-text-primary-dark">
-        Projects{' '}
-        <span className="ml-2 inline-flex items-center rounded-md bg-accent-pink/10 px-1.5 py-0.5 align-middle text-xs font-medium text-accent-pink">
+      <h2 id="projects-heading" className="text-[11px] font-bold uppercase tracking-[0.14em] text-accent-pink border-b border-border-light dark:border-border-dark pb-2 mb-3 flex items-center gap-2">
+        Projects
+        <span className="text-[10px] font-medium px-1.5 py-0.5 rounded-md bg-accent-pink/10 text-accent-pink ml-1 normal-case tracking-normal">
           {projects.length}
         </span>
       </h2>

@@ -50,9 +50,9 @@ export function CertificationsSection() {
       viewport={{ once: true, margin: '-50px' }}
       transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
     >
-      <h2 className="text-lg font-semibold text-text-primary-light dark:text-text-primary-dark mb-4">
-        Certifications{' '}
-        <span className="text-xs font-medium px-1.5 py-0.5 rounded-md bg-accent-pink/10 text-accent-pink ml-2 align-middle">
+      <h2 id="certifications-heading" className="text-[11px] font-bold uppercase tracking-[0.14em] text-accent-pink border-b border-border-light dark:border-border-dark pb-2 mb-4 flex items-center gap-2">
+        Certifications
+        <span className="text-[10px] font-medium px-1.5 py-0.5 rounded-md bg-accent-pink/10 text-accent-pink ml-1 normal-case tracking-normal">
           {certifications.length}
         </span>
       </h2>

@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { GraduationCap, ChevronDown, ChevronUp } from 'lucide-react';
+import { ChevronDown, ChevronUp } from 'lucide-react';
 import { useCmsContent } from '@/hooks/useCmsContent';
 
 export function AboutSection() {
@@ -22,11 +22,10 @@ export function AboutSection() {
       viewport={{ once: true, margin: '-50px' }}
       transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
     >
-      <h2 className="text-lg font-semibold text-text-primary-light dark:text-text-primary-dark mb-3.5">
+      <h2 id="about-heading" className="text-[11px] font-bold uppercase tracking-[0.14em] text-accent-pink border-b border-border-light dark:border-border-dark pb-2 mb-3.5">
         About
       </h2>
       <div className="space-y-4">
-        {/* Summary text — capped at 2 paragraphs with Read more */}
         <motion.div
           className="space-y-3"
           initial={{ opacity: 0, y: 10 }}
@@ -36,15 +35,6 @@ export function AboutSection() {
         >
           {(showMore ? paragraphs : paragraphs.slice(0, 2)).map((paragraph) => (
             <p
-              // Paragraphs come from a stable CMS source (profile.summary
-              // split on blank lines, or about.paragraphs). The full
-              // text is a stable identity for React's reconciler; using
-              // a slice of the first 16 chars + index broke when the
-              // visible list was reduced from "all paragraphs" to
-              // "first 2" via .slice(0, 2), because the same paragraph
-              // at index 0 and at index 2 shared the same slice key.
-              // The full string is short (<= ~200 chars in practice)
-              // and is itself a stable identifier.
               key={paragraph}
               className="text-[14px] sm:text-[15px] text-text-secondary-light dark:text-text-secondary-dark leading-[1.75]"
             >
@@ -66,54 +56,6 @@ export function AboutSection() {
             )}
           </button>
         )}
-
-        {/* Education */}
-        {profile.education.map((edu) => {
-          const startYear = new Date(edu.startedAt).getFullYear();
-          const endLabel = edu.endedAt ? new Date(edu.endedAt).getFullYear() : 'Present';
-          return (
-            <motion.div
-              // institution + degree + startedAt is unique per education
-              // entry in practice (you cannot have two simultaneous
-              // degrees at the same institution); no index tie-breaker
-              // needed.
-              key={`${edu.institution}-${edu.degree}-${edu.startedAt}`}
-              className="mt-3"
-              initial={{ opacity: 0, y: 10 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.1, duration: 0.3 }}
-            >
-              <div className="flex items-start gap-2">
-                <GraduationCap className="h-4 w-4 text-accent-pink mt-0.5 flex-shrink-0" />
-                <div>
-                  <p className="text-[15px] font-medium text-text-primary-light dark:text-text-primary-dark leading-snug">
-                    {edu.degree}
-                  </p>
-                  <p className="text-[12px] sm:text-xs text-text-muted-light dark:text-text-muted-dark">
-                    {edu.institution} — {edu.location}
-                  </p>
-                  <p className="text-[12px] sm:text-xs text-text-muted-light dark:text-text-muted-dark mt-0.5">
-                    {startYear} – {endLabel} · GWA: {edu.gpa}
-                  </p>
-                </div>
-              </div>
-              {edu.honors.length > 0 && (
-                <div className="flex flex-wrap gap-1.5 mt-2 ml-6">
-                  {edu.honors.map((honor) => (
-                    <span
-                      key={honor}
-                      className="text-xs font-medium px-2 py-0.5 rounded-full bg-accent-pink/10 text-accent-pink"
-                    >
-                      {honor}
-                    </span>
-                  ))}
-                </div>
-              )}
-
-            </motion.div>
-          );
-        })}
       </div>
     </motion.section>
   );
