@@ -1,192 +1,158 @@
 {
-  "project": "Namias Portfolio - Smart Caching Performance Optimization",
-  "codeName": "smart-caching",
-  "version": "1.1.0",
+  "project": "Namias Portfolio - One-Page Refactor",
+  "codeName": "one-page-portfolio",
+  "version": "1.0.0",
   "owner": "Jhon Keneth Ryan Namias (PP Namias)",
   "contact": "pp.namias@gmail.com",
   "lastUpdated": "2026-06-05",
-  "branch": "performance/smart-caching",
+  "branch": "refactor/one-page-portfolio",
   "links": {
     "marketing": "https://namias.tech",
     "studio": "https://namias-cms.sanity.studio",
-    "repo": "https://github.com/PP-Namias/Portfolio",
-    "lighthouse": "https://pagespeed.web.dev/analysis?url=https://namias.tech"
+    "repo": "https://github.com/PP-Namias/Portfolio"
   },
-  "summary": "Implement a comprehensive multi-layer caching strategy for the Namias portfolio to achieve sub-100ms TTFB, instant navigation, and offline resilience. This PRD covers server-side caching (in-memory, Upstash Redis, CDN), client-side caching (SWR, localStorage, service worker), static page optimization (ISR, SSG, pre-rendering), and media/image caching — all with measurable performance targets and monitoring.",
-  "narrative": "The Namias portfolio is a Next.js 16 App Router site with Sanity CMS, 6 API routes, 50+ components, and Cal.com/Umami third-party integrations. While the site already uses SWR for client-side data fetching and SSG for blog pages, there is no systematic caching strategy. Content from Sanity is fetched fresh on every render, API responses lack cache headers, static pages are regenerated on every deploy, and there's no in-memory cache layer. This PRD introduces a multi-tier caching architecture: L1 (in-memory TTL cache for CMS data), L2 (Upstash Redis for API response caching), L3 (CDN edge cache via Vercel), and L4 (browser cache via service worker and SWR). Each layer has configured TTLs, invalidation strategies, and monitoring.",
+  "summary": "Collapse the Namias portfolio into a true single-page application. The root page is a self-contained resume-style site where every section (hero, about, experience, projects, contact, blog) is inline or triggered as a modal. Remove the /blog and /blog/[slug] routes entirely; old URLs 301-redirect to / with an auto-open modal query parameter. Keep /studio (Sanity CMS) and /api/* (backend). The result: simplicity, direct access, and a resume-like reading flow.",
+  "narrative": "The portfolio is a Next.js 16 App Router site with Sanity CMS. The current public surface is /, /blog, /blog/[slug], and /studio. The / route already has all the resume-like sections inline (hero, about, tech stack, projects, experience, connect, certifications, gallery). The /blog and /blog/[slug] pages are full-page routes that compete for attention and add SEO/spam surface. The owner wants a clean resume-style experience: scroll once, see everything, and have blog content available as a modal without leaving the page. This refactor removes the /blog routes, wires blog content into two stacked modals (list + detail), updates all internal links to open modals instead of navigating, and adds 301 redirects for SEO preservation. The visual layout (two-column 62%/38% grid) stays intact — only the routing and modal wiring change.",
   "principles": [
-    "Cache everything — every response should have an explicit Cache-Control strategy.",
-    "Stale-while-revalidate — serve stale content instantly while fetching fresh data in the background.",
-    "Tag-based invalidation — Sanity webhooks trigger targeted cache purges by content type.",
-    "Measurable targets — every caching layer has a performance target (TTFB, cache hit rate, time-to-interactive).",
-    "No behaviour change — caching must be transparent to users and not change any visible behaviour.",
-    "Offline first — service worker caches critical assets for instant repeat visits.",
-    "Each cache layer is a commit — infrastructure, implementation, and verification each get their own commit."
+    "One scroll, one page — visitors should never need to leave / to consume any content.",
+    "Modals, not routes — long-form content (blog, contact, booking) is presented in modals, not new pages.",
+    "Preserve SEO — old /blog and /blog/[slug] URLs 301 to / with a query param that auto-opens the right modal.",
+    "Resume-like readability — keep the existing 62%/38% two-column grid; sections flow top to bottom.",
+    "No new public surface — the only public routes are /, /studio, and /api/*. No new pages.",
+    "Each slice is a commit — page removal, modal creation, link rewiring, redirects, sitemap, tests, docs are all separate commits.",
+    "No behaviour change for studio/api — Sanity CMS and backend routes are untouched."
   ],
   "personas": [
     {
       "id": "P-OWNER",
       "label": "PP Namias (owner)",
-      "goals": ["Achieve Lighthouse Performance score of 95+", "Demonstrate advanced caching architecture as a portfolio talking point", "Ensure instant page loads for hiring managers visiting the site"],
-      "painPointsToday": ["No systematic caching strategy", "API calls have no cache headers", "Sanity content refetched on every render", "No offline support", "No performance monitoring dashboard"]
+      "goals": ["Single-page portfolio with all content accessible from /", "Resume-like simplicity for hiring managers", "Preserve SEO of existing /blog URLs"],
+      "painPointsToday": ["Two competing public surfaces (/ and /blog)", "Blog list and detail pages dilute the main portfolio focus", "Visitors may not scroll through all sections if they navigate away to /blog"]
     },
     {
       "id": "P-VISITOR",
-      "label": "Portfolio visitor (hiring manager)",
-      "goals": ["Pages load instantly on first visit", "Navigation between pages is instant", "Site works offline or on slow connections"],
-      "painPointsToday": ["API calls visible in network tab with no caching", "Page transitions show loading states unnecessarily", "Images load slowly on slow connections"]
+      "label": "Hiring manager / portfolio reviewer",
+      "goals": ["See all relevant info in one place", "Read blog posts without losing the portfolio context", "Quickly find the resume download"],
+      "painPointsToday": ["Has to navigate to /blog to read posts, loses the home page context", "Back-button churn between / and /blog", "Two-column layout already exists but is split across pages"]
     },
     {
       "id": "P-AGENT",
       "label": "OpenCode / future coding agent",
-      "goals": ["Understand caching architecture from a single SKILL.md", "Know which cache layers exist and how to configure TTLs", "Know how to invalidate cache when content changes"],
-      "painPointsToday": ["No caching documentation", "No cache utility library to reuse", "No performance baseline to compare against"]
+      "goals": ["Single page route to test", "No surprising route handling in the public surface", "Clear modal trigger pattern (openModal('blog') etc.)"],
+      "painPointsToday": ["Multiple page routes to reason about", "Need to know which modals exist and how to open them"]
     }
   ],
   "successMetrics": {
     "primary": [
-      "Lighthouse Performance score >= 95",
-      "API response time < 50ms (p95) for cached endpoints",
-      "TTFB < 100ms for all pages",
-      "Cache hit rate > 80% for Sanity CMS content",
-      "Sub-50ms page transitions via instant navigation"
+      "Only one public page route (/), plus /studio and /api/*",
+      "All 100% of internal /blog links open a modal, none navigate",
+      "All old /blog and /blog/[slug] URLs return HTTP 301 to /",
+      "Zero visible behaviour change for the home page"
     ],
     "secondary": [
-      "Service worker caching critical assets for offline access",
-      "Performance dashboard at docs/performance/dashboard.md",
-      "All API responses have explicit Cache-Control headers",
-      "Sanity webhooks trigger targeted cache invalidation",
-      "In-memory cache reduces Sanity API calls by 90%"
+      "Lighthouse Performance score unchanged or improved",
+      "All existing 266 tests still pass",
+      "Sitemap contains only / and /studio",
+      "AGENTS.md updated with the new routing model"
     ]
   },
   "epics": [
     {
       "id": "EPIC-0",
-      "title": "Cache strategy & infrastructure",
+      "title": "Audit & plan",
       "status": "planned",
-      "summary": "Audit current caching state, define the multi-layer architecture, create cache utility library with TTL support, and document the strategy.",
+      "summary": "Inventory all routes, internal links, and external integrations that reference /blog or /contact. Document the route removal plan and the modal-trigger contract.",
       "value": "high",
       "complexity": "low",
       "stories": [
-        { "id": "S-0.1", "title": "Create caching PRD and strategy document", "done": true, "details": "Write prd.json with caching plan. Create docs/performance/caching-strategy.md defining L1-L4 cache layers, TTL values, invalidation triggers, and performance targets.", "files": ["prd.json", "docs/performance/caching-strategy.md"] },
-        { "id": "S-0.2", "title": "Audit current caching state", "done": true, "details": "Inventory all pages, API routes, and data fetches. Document current Cache-Control headers, SWR config, revalidation settings. Measure baseline TTFB, cache hit rates, and Lighthouse scores.", "files": ["docs/performance/audit.md"] },
-        { "id": "S-0.3", "title": "Create cache utility library with TTL and stale-while-revalidate", "done": true, "details": "Create src/lib/cache.ts with: TTL-based in-memory cache, stale-while-revalidate pattern, cache key generation with tag prefix, bulk invalidation by tag, and optional Upstash Redis backend.", "files": ["src/lib/cache.ts"] },
-        { "id": "S-0.4", "title": "Add cache configuration to env.example", "done": true, "details": "Add CACHE_TTL_DEFAULT, CACHE_TTL_STALE, REDIS_CACHE_URL, REDIS_CACHE_TOKEN to .env.example. Document cache env vars.", "files": [".env.example"] },
-        { "id": "S-0.5", "title": "Integrate Upstash Redis as distributed L2 cache layer", "done": true, "details": "Install @upstash/redis. Create src/lib/redis-cache.ts as Redis-backed cache layer. Update src/lib/cache.ts to fallback L1->L2. Add Redis connection env vars to .env.example.", "files": ["src/lib/redis-cache.ts", "src/lib/cache.ts", ".env.example"] }
+        { "id": "S-0.1", "title": "Inventory all references to /blog and /contact", "done": false, "details": "Grep the codebase for href='/blog, Link to /blog, /blog/[slug] in tests, sitemap entries, revalidatePath calls, and Sanity webhooks. Produce a one-page report at docs/refactor/one-page/route-inventory.md.", "files": ["docs/refactor/one-page/route-inventory.md"] },
+        { "id": "S-0.2", "title": "Define modal trigger contract", "done": false, "details": "Document the openModal(name) contract, the new modal names ('blog', 'blog-post'), and the URL ?modal=blog&slug=foo convention for auto-open. Save to docs/refactor/one-page/modal-contract.md.", "files": ["docs/refactor/one-page/modal-contract.md"] }
       ]
     },
     {
       "id": "EPIC-1",
-      "title": "Sanity CMS data caching",
-      "status": "completed",
-      "summary": "Implement multi-layer caching for Sanity CMS content: in-memory TTL cache (L1), CDN-aware fetch with SWR (L2), tag-based webhook invalidation, and stale-while-revalidate patterns.",
+      "title": "Build blog modals",
+      "status": "planned",
+      "summary": "Create BlogListModal and BlogPostModal that read from the existing CMS content provider. Mount both inside ModalProvider alongside the existing modals (resume, experience, booking, contact, project).",
       "value": "high",
-      "complexity": "high",
+      "complexity": "medium",
       "stories": [
-        { "id": "S-1.1", "title": "Wrap CMS content fetcher with in-memory cache", "done": true, "details": "Update src/lib/cms-content.server.ts to use the cache utility. Cache all CMS queries with TTL=300s. Serve stale content while revalidating in background. Add cache tags per content type.", "files": ["src/lib/cms-content.server.ts", "src/lib/cache.ts"] },
-        { "id": "S-1.2", "title": "Add Sanity CDN cache headers and use CDN API", "done": true, "details": "Ensure Sanity client uses CDN URL for read queries. Add perspective=published for public queries. Configure @sanity/client with useCdn=true.", "files": ["src/lib/sanity.ts", "src/lib/sanity.image.ts"] },
-        { "id": "S-1.3", "title": "Implement tag-based webhook cache invalidation", "done": true, "details": "Update webhook route to accept Sanity tag-based invalidation. Parse webhook payload for document type/ID, build cache tags, and invalidate matching cache entries.", "files": ["src/app/api/sanity/webhook/route.ts", "src/lib/cache.ts"] },
-        { "id": "S-1.4", "title": "Add stale-while-revalidate headers to CMS data responses", "done": true, "details": "Add Cache-Control: stale-while-revalidate=60 to all CMS data fetches. Ensure SWR period is 60s with max-age of 300s.", "files": ["src/lib/cms-content.server.ts"] },
-        { "id": "S-1.5", "title": "Reduce SWR revalidation frequency on client components", "done": true, "details": "Update all useSWR hooks with dedupingInterval=5000, revalidateIfStale=true, revalidateOnFocus=false. Add errorRetryCount=2 and errorRetryInterval=10000.", "files": ["src/**/*.tsx", "src/**/*.ts"] }
+        { "id": "S-1.1", "title": "Create BlogListModal component", "done": false, "details": "Create src/components/ui/BlogListModal.tsx. Use the existing Modal primitive. Read blogPosts from useCmsContent. Render a scrollable list of cards. Each card opens BlogPostModal with the post slug.", "files": ["src/components/ui/BlogListModal.tsx"] },
+        { "id": "S-1.2", "title": "Create BlogPostModal component", "done": false, "details": "Create src/components/ui/BlogPostModal.tsx. Use the existing Modal primitive. Take a slug prop. Find the post in useCmsContent.blogPosts. Render title, date, readTime, tags, coverImage, body (portableTextToMarkdown or similar). Back button returns to the list.", "files": ["src/components/ui/BlogPostModal.tsx"] },
+        { "id": "S-1.3", "title": "Mount the new modals in ModalProvider", "done": false, "details": "Update src/hooks/useModal.tsx to mount BlogListModal and BlogPostModal. Extend the ModalName union type to include 'blog' and 'blog-post'. Track activeBlogSlug in context state.", "files": ["src/hooks/useModal.tsx", "src/types/index.ts"] }
       ]
     },
     {
       "id": "EPIC-2",
-      "title": "API route caching",
-      "status": "completed",
-      "summary": "Add cache headers to all API route responses: CDN caching for GET endpoints, Redis response caching, conditional requests with ETags, and cache tagging for targeted invalidation.",
+      "title": "Rewire internal links",
+      "status": "planned",
+      "summary": "Replace every href='/blog' and Link to /blog with a button or trigger that opens the blog modal. Remove the now-unused BlogListClient and BlogPostContent components (or keep them as modal internals).",
       "value": "high",
-      "complexity": "high",
+      "complexity": "medium",
       "stories": [
-        { "id": "S-2.1", "title": "Add Cache-Control headers to GET /api/resume", "done": true, "details": "Add public, max-age=300, stale-while-revalidate=60, s-maxage=600 to /api/resume. Add ETag based on resume URL hash.", "files": ["src/app/api/resume/route.ts"] },
-        { "id": "S-2.2", "title": "Add cache headers to /api/media/[...path]", "done": true, "details": "Already has public, max-age=31536000, immutable for files. Add CDN-Cache: hit for cached assets.", "files": ["src/app/api/media/[...path]/route.ts"] },
-        { "id": "S-2.3", "title": "Add cache headers to /api/chat health endpoint", "done": true, "details": "Add no-cache for POST /api/chat but public, max-age=60 for GET health check. Add Surrogate-Control header for edge caching.", "files": ["src/app/api/chat/route.ts", "src/app/api/sanity/live/route.ts"] },
-        { "id": "S-2.4", "title": "Add cache headers to /api/sanity/live", "done": true, "details": "Add no-cache, no-store, must-revalidate for live/preview endpoints.", "files": ["src/app/api/sanity/live/route.ts"] },
-        { "id": "S-2.5", "title": "Implement Redis distributed cache layer", "done": true, "details": "Create src/lib/redis-cache.ts with @upstash/redis. Update src/lib/cache.ts multi-layer: check L1 (in-memory), then L2 (Redis), then fetch. Fall back to L1-only if Redis unavailable.", "files": ["src/lib/redis-cache.ts", "src/lib/cache.ts", ".env.example"] }
+        { "id": "S-2.1", "title": "Rewire HubMenu blog link to open the modal", "done": false, "details": "Update src/components/ui/HubMenu.tsx: change the 'Read Blog' item to call openModal('blog') on click instead of navigating to /blog.", "files": ["src/components/ui/HubMenu.tsx"] },
+        { "id": "S-2.2", "title": "Rewire HeroSection blog CTA to open the modal", "done": false, "details": "Update src/components/sections/HeroSection.tsx: change the 'Read blog' link to call openModal('blog') on click.", "files": ["src/components/sections/HeroSection.tsx"] },
+        { "id": "S-2.3", "title": "Remove or repurpose BlogListClient and BlogPostContent", "done": false, "details": "Delete src/app/blog/BlogListClient.tsx, src/app/blog/[slug]/BlogPostContent.tsx, and the directory src/app/blog if no longer needed. Or reuse them as internal templates for the modals (prefer delete to keep the codebase small).", "files": ["src/app/blog/BlogListClient.tsx", "src/app/blog/[slug]/BlogPostContent.tsx", "src/app/blog/"] }
       ]
     },
     {
       "id": "EPIC-3",
-      "title": "Static page & ISR optimization",
-      "status": "completed",
-      "summary": "Optimize static page generation: ISR for blog pages with content-based revalidation, SSG for all static pages, pre-render critical pages at build time, and add Cache-Control headers to all static assets.",
+      "title": "Delete /blog routes and add 301 redirects",
+      "status": "planned",
+      "summary": "Delete src/app/blog/page.tsx and src/app/blog/[slug]/page.tsx. Add a 301 redirect from /blog and /blog/[slug] to /?modal=blog[&slug=...]. Use next.config.js redirects.",
       "value": "high",
-      "complexity": "medium",
+      "complexity": "low",
       "stories": [
-        { "id": "S-3.1", "title": "Add ISR revalidation to blog pages with on-demand revalidation", "done": true, "details": "Add revalidate=3600 to blog/[slug]/page.tsx. Implement on-demand revalidation via webhook for individual posts. Add generateStaticParams with all published slugs.", "files": ["src/app/blog/[slug]/page.tsx", "src/app/api/sanity/webhook/route.ts"] },
-        { "id": "S-3.2", "title": "Add static generation to project pages with content-based revalidation", "done": true, "details": "Project pages not yet implemented — will be created in future PR. Blog ISR covers the primary dynamic content.", "files": [] },
-        { "id": "S-3.3", "title": "Add Cache-Control headers for static assets in next.config.js", "done": true, "details": "Add Cache-Control: public, max-age=31536000, immutable for _next/static/* assets. Add Cache-Control: public, max-age=3600, s-maxage=86400 for pages.", "files": ["next.config.js"] },
-        { "id": "S-3.4", "title": "Pre-render all static pages at build time with generateStaticParams", "done": true, "details": "Add generateStaticParams to all dynamic routes. Ensure blog/[slug] pre-rendered at build time.", "files": ["src/app/blog/[slug]/page.tsx"] },
-        { "id": "S-3.5", "title": "Optimize metadata and font caching", "done": true, "details": "Add Cache-Control headers for fonts. Optimize metadata generation with cached queries. Add preconnect hints for third-party origins.", "files": ["src/app/layout.tsx", "next.config.js"] }
+        { "id": "S-3.1", "title": "Delete the /blog routes", "done": false, "details": "Remove src/app/blog/page.tsx and src/app/blog/[slug]/page.tsx (and the blog directory if empty).", "files": ["src/app/blog/"] },
+        { "id": "S-3.2", "title": "Add 301 redirects in next.config.js", "done": false, "details": "Add redirects: /blog -> /?modal=blog (permanent), /blog/:slug -> /?modal=blog&slug=:slug (permanent).", "files": ["next.config.js"] },
+        { "id": "S-3.3", "title": "Auto-open the blog modal on root when ?modal= is set", "done": false, "details": "In the root page or a small client wrapper, read the URL search params on mount. If modal=blog, call openModal('blog'). If modal=blog and slug is set, call openModal('blog-post', slug) and also open the list behind it (or just open the post directly).", "files": ["src/app/page.tsx", "src/app/ModalAutoOpen.tsx"] }
       ]
     },
     {
       "id": "EPIC-4",
-      "title": "Client-side caching & instant navigation",
-      "status": "completed",
-      "summary": "Optimize client-side data fetching with SWR configuration, implement localStorage cache for Sanity data, add route prefetching for critical pages, and create a service worker for offline asset caching.",
-      "value": "high",
-      "complexity": "high",
+      "title": "Sitemap, webhooks, SEO cleanup",
+      "status": "planned",
+      "summary": "Remove /blog entries from the sitemap. Remove /blog revalidation paths from the Sanity webhook. Update the live endpoint paths constant. Update robots meta if needed.",
+      "value": "medium",
+      "complexity": "low",
       "stories": [
-        { "id": "S-4.1", "title": "Create global SWR configuration with sensible defaults", "done": true, "details": "Create src/lib/swr-config.tsx with SWRConfig provider: dedupingInterval=5000, revalidateIfStale=true, revalidateOnFocus=false, errorRetryCount=2, keepPreviousData=true.", "files": ["src/lib/swr-config.tsx", "src/app/layout.tsx"] },
-        { "id": "S-4.2", "title": "Implement localStorage cache for non-critical Sanity data", "done": true, "details": "Create src/lib/local-cache.ts with localStorage-backed cache for Sanity content. Cache keyed by content type. TTL=3600s. Used for non-critical UI data.", "files": ["src/lib/local-cache.ts"] },
-        { "id": "S-4.3", "title": "Add route prefetching for critical pages", "done": true, "details": "Next.js Link component provides automatic route prefetching by default.", "files": [] },
-        { "id": "S-4.4", "title": "Create service worker for offline asset caching", "done": true, "details": "Create public/sw.js with: cache-first for static assets, network-first for API routes. Register service worker in Providers component.", "files": ["public/sw.js", "src/app/providers.tsx"] },
-        { "id": "S-4.5", "title": "Add prefetch and preconnect hints to document head", "done": true, "details": "Add dns-prefetch for Sanity CDN, Umami, Google Fonts. Add preconnect for critical origins.", "files": ["src/app/layout.tsx", "next.config.js"] }
+        { "id": "S-4.1", "title": "Trim sitemap to / and /studio", "done": false, "details": "Update src/app/sitemap.ts to remove the /blog entry and the blogEntries loop. Keep only the static / and /studio entries.", "files": ["src/app/sitemap.ts"] },
+        { "id": "S-4.2", "title": "Remove /blog revalidation from webhooks", "done": false, "details": "Update src/app/api/sanity/webhook/route.ts and src/app/api/sanity/live/route.ts to remove /blog and /blog/[slug] from REVALIDATE_PATHS. Keep the cms:blog cache tag invalidation so the in-memory CMS cache still updates when posts change.", "files": ["src/app/api/sanity/webhook/route.ts", "src/app/api/sanity/live/route.ts"] }
       ]
     },
     {
       "id": "EPIC-5",
-      "title": "Image & media caching optimization",
-      "status": "completed",
-      "summary": "Optimize image and media delivery: configure Next.js Image with remote patterns and caching, add cache headers to media gateway, implement responsive images, and cache Sanity CDN images.",
-      "value": "medium",
+      "title": "Tests & verification",
+      "status": "planned",
+      "summary": "Update the 4 test files that assert the old /blog link/URL behaviour. Add new tests for the blog modal and the 301 redirect. Verify typecheck, lint, build, and the 266 existing tests still pass.",
+      "value": "high",
       "complexity": "medium",
       "stories": [
-        { "id": "S-5.1", "title": "Configure Next.js Image with remote patterns and proper caching", "done": true, "details": "Add remotePatterns for Sanity CDN images in next.config.js. Set deviceSizes and imageSizes for responsive images.", "files": ["next.config.js"] },
-        { "id": "S-5.2", "title": "Add immutable cache headers to media gateway responses", "done": true, "details": "Add Cache-Control: public, max-age=31536000, immutable to /api/media/[...path]. Already implemented by buildCacheControl(assetKind, expiresAt).", "files": ["src/app/api/media/[...path]/route.ts"] },
-        { "id": "S-5.3", "title": "Optimize Sanity image URLs with CDN parameters", "done": true, "details": "Media gateway (buildMediaGatewayUrl) already appends auto=format, w, q parameters. Sanity CDN handles format negotiation.", "files": ["src/lib/media-gateway.ts"] },
-        { "id": "S-5.4", "title": "Add lazy loading and fetchpriority attributes to images", "done": true, "details": "Next.js Image component applies lazy loading by default. Components use next/image which handles this automatically.", "files": [] }
+        { "id": "S-5.1", "title": "Update tests that reference /blog links", "done": false, "details": "Update src/__tests__/components/ui-uncovered.test.tsx, src/__tests__/components/HubMenu.blogVisible.test.tsx, src/__tests__/app/app-layout-page.test.tsx, and any other test that asserts href='/blog' to instead assert that clicking opens the blog modal.", "files": ["src/__tests__/components/ui-uncovered.test.tsx", "src/__tests__/components/HubMenu.blogVisible.test.tsx", "src/__tests__/app/app-layout-page.test.tsx"] },
+        { "id": "S-5.2", "title": "Add tests for the blog modal and the 301 redirect", "done": false, "details": "Create src/__tests__/components/BlogListModal.test.tsx and BlogPostModal.test.tsx. Verify the modal renders the post list / detail. Verify the next.config.js redirects object contains the 301 mappings.", "files": ["src/__tests__/components/BlogListModal.test.tsx", "src/__tests__/components/BlogPostModal.test.tsx"] },
+        { "id": "S-5.3", "title": "Full verification", "done": false, "details": "Run npx tsc --noEmit, npm run lint, npm run test -- --run, npm run doctor:check. All must pass with zero errors.", "files": [] }
       ]
     },
     {
       "id": "EPIC-6",
-      "title": "CDN & edge cache configuration",
-      "status": "completed",
-      "summary": "Configure CDN caching at the edge: Vercel cache rules, Cloudflare Workers cache configuration, Cache-Control headers review, Surrogate-Key based purging, and CDN performance optimization.",
-      "value": "high",
-      "complexity": "medium",
-      "stories": [
-        { "id": "S-6.1", "title": "Review and standardize Cache-Control headers across all responses", "done": false, "details": "Audit every response. Create a cache header matrix: page type, cache status, max-age, s-maxage, stale-while-revalidate, private/public. Standardize all responses.", "files": ["next.config.js", "docs/performance/caching-strategy.md"] },
-        { "id": "S-6.2", "title": "Add CDN-Cache and edge cache headers", "done": false, "details": "Add CDN-Cache-Control headers for Vercel edge. Set appropriate edge TTL values. Document in caching strategy.", "files": ["next.config.js"] },
-        { "id": "S-6.3", "title": "Configure open-next edge caching rules", "done": false, "details": "Update open-next.config.ts with static asset caching rules. Configure cache policies for different route patterns.", "files": ["open-next.config.ts"] },
-        { "id": "S-6.4", "title": "Add surrogate-key based cache purging via webhook", "done": false, "details": "Implement Surrogate-Key header on cacheable responses. Update webhook to send purge requests for affected keys.", "files": ["src/lib/api-cache.ts", "src/app/api/sanity/webhook/route.ts"] }
-      ]
-    },
-    {
-      "id": "EPIC-7",
-      "title": "Performance monitoring & verification",
-      "status": "completed",
-      "summary": "Create performance monitoring: cache hit/miss metrics, performance dashboard, Lighthouse baseline, cache health endpoint, and comprehensive report.",
-      "value": "medium",
+      "title": "Documentation",
+      "status": "planned",
+      "summary": "Update AGENTS.md with the new routing model. Add docs/refactor/one-page/ summary. Mark the new 'one-page-portfolio' skill entry.",
+      "value": "low",
       "complexity": "low",
       "stories": [
-        { "id": "S-7.1", "title": "Create cache health monitoring endpoint", "done": true, "details": "Create GET /api/performance/cache with cache hit/miss counts per layer, TTL configs, active entries, and Redis status.", "files": ["src/app/api/performance/cache/route.ts"] },
-        { "id": "S-7.2", "title": "Create performance dashboard with cache metrics", "done": true, "details": "Write docs/performance/dashboard.md with cache hit rate, API response times, page load metrics, and Lighthouse scores.", "files": ["docs/performance/dashboard.md"] },
-        { "id": "S-7.3", "title": "Run Lighthouse audit and document baseline", "done": true, "details": "Baseline audit documented in docs/performance/audit.md. Running Lighthouse requires production deploy.", "files": ["docs/performance/audit.md"] },
-        { "id": "S-7.4", "title": "Add caching documentation to AGENTS.md and create skill", "done": true, "details": "Add 'smart-caching' entry to AGENTS.md with architecture summary and cache health endpoint.", "files": ["AGENTS.md"] },
-        { "id": "S-7.5", "title": "Update README with performance badges", "done": true, "details": "README updated with performance and caching section.", "files": ["README.md"] }
+        { "id": "S-6.1", "title": "Update AGENTS.md with the one-page skill entry", "done": false, "details": "Add 'one-page-portfolio' to the skills list in AGENTS.md. Document the new modal trigger contract and the public route surface.", "files": ["AGENTS.md"] },
+        { "id": "S-6.2", "title": "Add one-page architecture summary", "done": false, "details": "Create docs/refactor/one-page/architecture.md with a one-page diagram and a table of modal triggers.", "files": ["docs/refactor/one-page/architecture.md"] }
       ]
     }
   ],
   "phases": [
-    { "id": "PHASE-1", "label": "Strategy & audit", "epics": ["EPIC-0"], "status": "completed" },
-    { "id": "PHASE-2", "label": "CMS caching", "epics": ["EPIC-1"], "status": "completed" },
-    { "id": "PHASE-3", "label": "API caching", "epics": ["EPIC-2"], "status": "completed" },
-    { "id": "PHASE-4", "label": "Static optimization", "epics": ["EPIC-3"], "status": "completed" },
-    { "id": "PHASE-5", "label": "Client caching", "epics": ["EPIC-4"], "status": "completed" },
-    { "id": "PHASE-6", "label": "Image & media", "epics": ["EPIC-5"], "status": "completed" },
-    { "id": "PHASE-7", "label": "CDN & edge", "epics": ["EPIC-6"], "status": "completed" },
-    { "id": "PHASE-8", "label": "Monitoring", "epics": ["EPIC-7"], "status": "completed" }
+    { "id": "PHASE-1", "label": "Audit & plan", "epics": ["EPIC-0"], "status": "planned" },
+    { "id": "PHASE-2", "label": "Build modals", "epics": ["EPIC-1"], "status": "planned" },
+    { "id": "PHASE-3", "label": "Rewire links", "epics": ["EPIC-2"], "status": "planned" },
+    { "id": "PHASE-4", "label": "Delete routes & redirect", "epics": ["EPIC-3"], "status": "planned" },
+    { "id": "PHASE-5", "label": "SEO cleanup", "epics": ["EPIC-4"], "status": "planned" },
+    { "id": "PHASE-6", "label": "Tests & verification", "epics": ["EPIC-5"], "status": "planned" },
+    { "id": "PHASE-7", "label": "Documentation", "epics": ["EPIC-6"], "status": "planned" }
   ]
 }
