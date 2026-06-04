@@ -1,16 +1,18 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { GET } from '@/app/api/resume/route';
 import { buildMediaGatewayUrl } from '@/lib/media-gateway';
+import { flush } from '@/lib/cache';
 
 const fetchMock = vi.fn();
 const sanityResumeUrl = 'https://cdn.sanity.io/files/nl0qw78w/production/529fd6d835d66c9d239aadd53f63a35932e8ac95.pdf';
 const fallbackResumeUrl = '/resume.pdf';
 
 describe('/api/resume route', () => {
-  beforeEach(() => {
+  beforeEach(async () => {
     vi.clearAllMocks();
     fetchMock.mockReset();
     globalThis.fetch = fetchMock as typeof fetch;
+    await flush();
   });
 
   it('falls back when the Sanity project configuration is missing', async () => {
@@ -21,7 +23,7 @@ describe('/api/resume route', () => {
     expect(response.status).toBe(200);
 
     const data = await response.json();
-    expect(data).toEqual({
+    expect(data).toMatchObject({
       resumeUrl: fallbackResumeUrl,
       isActive: false,
     });

@@ -140,4 +140,4 @@ export async function stats(): Promise<{
   };
 }
 
-export { keyFor, DEFAULT_TTL_MS, DEFAULT_STALE_MS };
+export { DEFAULT_TTL_MS, DEFAULT_STALE_MS };
