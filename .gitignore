@@ -144,3 +144,12 @@ vite.config.ts.timestamp-*
 # react-doctor working dir (transient reports, diff artifacts)
 # The canonical historical baseline lives in docs/react-doctor/baseline.{json,txt}
 .react-doctor/
+
+# PentestAgent cloned repo (not committed — use setup script)
+/pentestagent/
+.pentestagent/
+
+# PentestAgent transient findings and artifacts
+# The canonical findings live in docs/security/pentestagent/findings/
+docs/security/pentestagent/loot/
+docs/security/pentestagent/knowledge/
