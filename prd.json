@@ -105,7 +105,7 @@
     {
       "id": "EPIC-0",
       "title": "Bootstrap PentestAgent infrastructure",
-      "status": "pending",
+      "status": "completed",
       "summary": "Clone PentestAgent repo, set up Python venv, create .env config, create directory structure for custom playbooks and findings, and document the setup. Since the local environment is Python 3.8 (PentestAgent requires 3.10+), the CI pipeline will be the primary execution environment, but all config and playbooks are authored and committed.",
       "value": "high",
       "complexity": "low",
@@ -164,7 +164,7 @@
     {
       "id": "EPIC-1",
       "title": "Reconnaissance playbooks & scanning",
-      "status": "pending",
+      "status": "completed",
       "summary": "Create PentestAgent playbooks for reconnaissance: URL enumeration, technology fingerprinting, route discovery, JS endpoint extraction, subdomain discovery, and directory enumeration. Run scans against the live portfolio site and document findings.",
       "value": "high",
       "complexity": "medium",
@@ -216,7 +216,7 @@
     {
       "id": "EPIC-2",
       "title": "Vulnerability scanning playbooks",
-      "status": "pending",
+      "status": "completed",
       "summary": "Create PentestAgent playbooks for OWASP Top 10 vulnerability scanning: XSS, CSRF, SSRF, injection attacks, security misconfiguration, and sensitive data exposure. Run scans, categorise findings, and document results.",
       "value": "high",
       "complexity": "high",
@@ -275,7 +275,7 @@
     {
       "id": "EPIC-3",
       "title": "API security testing playbooks",
-      "status": "pending",
+      "status": "completed",
       "summary": "Create PentestAgent playbooks specifically for testing the 6 API endpoints: rate limiting, authentication bypass, input validation, payload limits, CORS configuration, and HTTP method testing. Run scans and document findings.",
       "value": "high",
       "complexity": "high",
@@ -334,7 +334,7 @@
     {
       "id": "EPIC-4",
       "title": "Infrastructure & configuration security",
-      "status": "pending",
+      "status": "completed",
       "summary": "Verification of the security infrastructure: HTTP security headers, CSP analysis, cookie security, TLS/SSL configuration, Cloudflare Workers security, Vercel configuration, DNS security, and CDN configuration.",
       "value": "high",
       "complexity": "medium",
@@ -386,7 +386,7 @@
     {
       "id": "EPIC-5",
       "title": "CI/CD security integration",
-      "status": "pending",
+      "status": "completed",
       "summary": "Integrate PentestAgent scans into the CI/CD pipeline: PR checks, scheduled scans, artifact generation, and security dashboard updates. Every scan run produces a timestamped report stored as a CI artifact.",
       "value": "high",
       "complexity": "medium",
@@ -431,7 +431,7 @@
     {
       "id": "EPIC-6",
       "title": "Remediation of findings",
-      "status": "pending",
+      "status": "completed",
       "summary": "Walk through every finding from EPIC-1 through EPIC-4, remediate each one, and re-verify. Each remediation gets its own commit. Track the status in a findings ledger.",
       "value": "high",
       "complexity": "high",
@@ -483,7 +483,7 @@
     {
       "id": "EPIC-7",
       "title": "Security documentation & dashboard",
-      "status": "pending",
+      "status": "completed",
       "summary": "Create the comprehensive security documentation: security dashboard, posture score, security.txt, security policy, agent skill, and README badges. This is the showcase layer that demonstrates the security engineering work.",
       "value": "medium",
       "complexity": "low",
@@ -528,7 +528,7 @@
     {
       "id": "EPIC-8",
       "title": "Final verification & showcase PR",
-      "status": "pending",
+      "status": "completed",
       "summary": "Final verification run of all playbooks, generation of the final comprehensive security report, and creation of the showcase PR from security/pentestagent into main.",
       "value": "high",
       "complexity": "low",
