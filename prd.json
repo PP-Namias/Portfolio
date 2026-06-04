@@ -1,355 +1,192 @@
 {
-  "project": "Namias Portfolio - PentestAgent Security Hardening",
-  "codeName": "pentestagent",
-  "version": "2.0.0",
+  "project": "Namias Portfolio - Smart Caching Performance Optimization",
+  "codeName": "smart-caching",
+  "version": "1.0.0",
   "owner": "Jhon Keneth Ryan Namias (PP Namias)",
   "contact": "pp.namias@gmail.com",
   "lastUpdated": "2026-06-04",
-  "branch": "security/pentestagent",
+  "branch": "performance/smart-caching",
   "links": {
-    "pentestagentRepo": "https://github.com/GH05TCREW/pentestagent",
-    "pentestagentDocs": "https://github.com/GH05TCREW/pentestagent#readme",
     "marketing": "https://namias.tech",
     "studio": "https://namias-cms.sanity.studio",
-    "repo": "https://github.com/PP-Namias/Portfolio"
+    "repo": "https://github.com/PP-Namias/Portfolio",
+    "lighthouse": "https://pagespeed.web.dev/analysis?url=https://namias.tech"
   },
-  "summary": "Integrate PentestAgent (https://github.com/GH05TCREW/pentestagent) — an AI agent framework for black-box security testing — into the Namias portfolio to achieve top-tier security posture. Deliverables include automated reconnaissance playbooks, vulnerability scanning, API security testing, CI/CD security gates, remediation of all findings, code-level hardening, and a comprehensive security dashboard showcasing the portfolio as a capstone security engineering project.",
-  "narrative": "The Namias portfolio is a Next.js App Router marketing site with 50+ components, 6 API routes (chat, resume, media, sanity webhook, sanity live, draft-mode), Sanity CMS integration, Cal.com booking embeds, and Umami analytics. With this growing surface area, a proactive security posture is essential — not just defensive hardening (rate limiting, input sanitisation, env hygiene) but continuous automated black-box testing via PentestAgent. PentestAgent is a Python-based AI agent framework that orchestrates LLM-driven security agents for reconnaissance, vulnerability scanning, exploitation, and reporting. This slice installs PentestAgent, creates the configuration, writes custom playbooks for the portfolio's attack surface, runs the scans, remediates every finding hardens the codebase at the source level, and integrates the results into CI/CD and a security dashboard. The deliverable is a reference-grade security programme that hiring managers can inspect as proof of the owner's security engineering skills.",
+  "summary": "Implement a comprehensive multi-layer caching strategy for the Namias portfolio to achieve sub-100ms TTFB, instant navigation, and offline resilience. This PRD covers server-side caching (in-memory, Upstash Redis, CDN), client-side caching (SWR, localStorage, service worker), static page optimization (ISR, SSG, pre-rendering), and media/image caching — all with measurable performance targets and monitoring.",
+  "narrative": "The Namias portfolio is a Next.js 16 App Router site with Sanity CMS, 6 API routes, 50+ components, and Cal.com/Umami third-party integrations. While the site already uses SWR for client-side data fetching and SSG for blog pages, there is no systematic caching strategy. Content from Sanity is fetched fresh on every render, API responses lack cache headers, static pages are regenerated on every deploy, and there's no in-memory cache layer. This PRD introduces a multi-tier caching architecture: L1 (in-memory TTL cache for CMS data), L2 (Upstash Redis for API response caching), L3 (CDN edge cache via Vercel), and L4 (browser cache via service worker and SWR). Each layer has configured TTLs, invalidation strategies, and monitoring.",
   "principles": [
-    "Defence in depth — PentestAgent complements existing rate-limiting, input sanitisation, and env hygiene from the Security-Hardening branch.",
-    "Every finding is a commit — scan results, remediation commits, and re-verification each get their own commit for auditability.",
-    "Playbooks are reusable — each PentestAgent playbook targets a specific attack vector and can be re-run on demand.",
-    "CI is the enforcement point — automated scans run on every PR and on a schedule; failures block merges.",
-    "Document the journey — the security dashboard shows the full posture, not just the final score.",
-    "No behaviour change without verification — every remediation is verified by re-running the relevant scan.",
-    "Code hardening is layered — middleware-level protections complement application-level input validation.",
-    "Security is part of the portfolio brand — the website itself demonstrates security engineering excellence."
+    "Cache everything — every response should have an explicit Cache-Control strategy.",
+    "Stale-while-revalidate — serve stale content instantly while fetching fresh data in the background.",
+    "Tag-based invalidation — Sanity webhooks trigger targeted cache purges by content type.",
+    "Measurable targets — every caching layer has a performance target (TTFB, cache hit rate, time-to-interactive).",
+    "No behaviour change — caching must be transparent to users and not change any visible behaviour.",
+    "Offline first — service worker caches critical assets for instant repeat visits.",
+    "Each cache layer is a commit — infrastructure, implementation, and verification each get their own commit."
   ],
   "personas": [
     {
       "id": "P-OWNER",
       "label": "PP Namias (owner)",
-      "goals": [
-        "Demonstrate top-tier security engineering by making the portfolio itself the capstone project.",
-        "Have automated security scans that prove the site is hardened against OWASP Top 10 vectors.",
-        "Showcase a security dashboard that hiring managers can inspect.",
-        "Achieve 95+ posture score with zero critical vulnerabilities."
-      ],
-      "painPointsToday": [
-        "No automated security scanning beyond npm audit.",
-        "No black-box testing against the live site.",
-        "No security dashboard or posture score to show.",
-        "No code-level security middleware for headers, CSP, or cookies."
-      ]
+      "goals": ["Achieve Lighthouse Performance score of 95+", "Demonstrate advanced caching architecture as a portfolio talking point", "Ensure instant page loads for hiring managers visiting the site"],
+      "painPointsToday": ["No systematic caching strategy", "API calls have no cache headers", "Sanity content refetched on every render", "No offline support", "No performance monitoring dashboard"]
+    },
+    {
+      "id": "P-VISITOR",
+      "label": "Portfolio visitor (hiring manager)",
+      "goals": ["Pages load instantly on first visit", "Navigation between pages is instant", "Site works offline or on slow connections"],
+      "painPointsToday": ["API calls visible in network tab with no caching", "Page transitions show loading states unnecessarily", "Images load slowly on slow connections"]
     },
     {
       "id": "P-AGENT",
       "label": "OpenCode / future coding agent",
-      "goals": [
-        "Read a single SKILL.md and know how to run, read, and fix PentestAgent findings.",
-        "Be able to re-run any scan playbook and interpret the results.",
-        "Know which findings are fixable and which require architectural changes.",
-        "Understand the security middleware stack and how to extend it."
-      ],
-      "painPointsToday": [
-        "No runbook for PentestAgent.",
-        "No baseline scan results to compare against.",
-        "No list of acceptable vs blocked playbook patterns.",
-        "No documented code-level security controls."
-      ]
-    },
-    {
-      "id": "P-REVIEWER",
-      "label": "Hiring manager / security reviewer",
-      "goals": [
-        "See a comprehensive security dashboard with scan results, posture score, and fix commit history.",
-        "Click into any finding and see the remediation commit.",
-        "Trust that the security programme is real (not just documentation).",
-        "Inspect code-level security controls (middleware, headers, CSP)."
-      ],
-      "painPointsToday": [
-        "No visible security posture signal in the repo.",
-        "Hard to distinguish between documented intentions and actual security controls.",
-        "No way to verify the site is tested regularly.",
-        "No evidence of proactive security engineering at the code level."
-      ]
+      "goals": ["Understand caching architecture from a single SKILL.md", "Know which cache layers exist and how to configure TTLs", "Know how to invalidate cache when content changes"],
+      "painPointsToday": ["No caching documentation", "No cache utility library to reuse", "No performance baseline to compare against"]
     }
   ],
   "successMetrics": {
     "primary": [
-      "Every OWASP Top 10 category is covered by at least one PentestAgent playbook.",
-      "All API endpoints pass black-box testing with zero high-severity findings.",
-      "A scheduled CI workflow runs PentestAgent scans weekly and posts results as a CI artifact.",
-      "A security dashboard exists at docs/security/dashboard.md showing posture score and fix history.",
-      "HTTP security headers middleware is implemented and verified.",
-      "CSP is configured with no unsafe-inline in production.",
-      "Rate limiting middleware protects all API routes.",
-      "Posture score >= 95/100."
+      "Lighthouse Performance score >= 95",
+      "API response time < 50ms (p95) for cached endpoints",
+      "TTFB < 100ms for all pages",
+      "Cache hit rate > 80% for Sanity CMS content",
+      "Sub-50ms page transitions via instant navigation"
     ],
     "secondary": [
-      "Each playbook has a documented runbook in docs/security/playbooks/.",
-      "All findings are tracked in a findings ledger with status, severity, and fix commit.",
-      "The security.txt file is deployed at /.well-known/security.txt.",
-      "README has visible security posture badges.",
-      "A machine-readable security.json endpoint is available."
-    ],
-    "demo": [
-      "Local: pentestagent run -t https://namias.tech --playbook portfolio_recon yields structured findings.",
-      "CI: A PR with a deliberate security regression is blocked by the PentestAgent check.",
-      "Dashboard: docs/security/dashboard.md shows green/amber/red per category with history.",
-      "Headers: curl -I https://namias.tech shows CSP, HSTS, X-Frame-Options, etc."
+      "Service worker caching critical assets for offline access",
+      "Performance dashboard at docs/performance/dashboard.md",
+      "All API responses have explicit Cache-Control headers",
+      "Sanity webhooks trigger targeted cache invalidation",
+      "In-memory cache reduces Sanity API calls by 90%"
     ]
   },
-  "antiPatterns": [
-    "Running PentestAgent against production without proper rate-limiting safeguards — scans must respect robots.txt and use reasonable delays.",
-    "Committing API keys or secrets in PentestAgent config files — all secrets go in .env.",
-    "Silencing findings without fixing them — every legitimate finding must have a corresponding remediation commit.",
-    "Touching production data during scans — scans run against the live site but only use GET/HEAD for recon and safe POST payloads for API testing.",
-    "PentestAgent findings becoming stale — scans must be re-runnable and results timestamped.",
-    "Adding security headers without testing their impact on functionality.",
-    "Rate limiting that blocks legitimate users — limits must account for normal usage patterns."
-  ],
-  "attackSurface": [
-    { "id": "AS-API", "label": "API Routes", "description": "/api/chat, /api/resume, /api/media, /api/sanity/webhook, /api/sanity/live, /api/draft-mode/enable", "risk": "high" },
-    { "id": "AS-FORM", "label": "User Forms", "description": "Chat input, contact form, booking modal", "risk": "high" },
-    { "id": "AS-AUTH", "label": "Authentication", "description": "Draft-mode auth, Sanity webhook secret, Cal.com OAuth", "risk": "high" },
-    { "id": "AS-THIRD", "label": "Third-Party Integrations", "description": "Cal.com iframe, Sanity CMS, Umami analytics, Google Fonts, Google Gemini for chat", "risk": "medium" },
-    { "id": "AS-CLIENT", "label": "Client-Side Storage", "description": "localStorage (accent-color, hub_interacted, booking_event_*), session storage", "risk": "low" },
-    { "id": "AS-INFRA", "label": "Infrastructure", "description": "Vercel hosting, Cloudflare Workers, DNS, SSL/TLS, HTTP security headers", "risk": "medium" },
-    { "id": "AS-DEP", "label": "Dependencies", "description": "npm packages, Python packages (PentestAgent), Docker images", "risk": "medium" },
-    { "id": "AS-HEADER", "label": "HTTP Headers & CSP", "description": "Content-Security-Policy, HSTS, X-Frame-Options, cookie flags", "risk": "medium" },
-    { "id": "AS-RATE", "label": "Rate Limiting", "description": "API endpoint abuse, brute force, DoS via chat endpoint", "risk": "high" }
-  ],
   "epics": [
     {
       "id": "EPIC-0",
-      "title": "Bootstrap PentestAgent infrastructure",
-      "status": "completed",
-      "summary": "Clone PentestAgent repo, set up Python venv, create .env config, create directory structure for custom playbooks and findings, and document the setup. Since the local environment is Python 3.8 (PentestAgent requires 3.10+), the CI pipeline will be the primary execution environment, but all config and playbooks are authored and committed.",
+      "title": "Cache strategy & infrastructure",
+      "status": "planned",
+      "summary": "Audit current caching state, define the multi-layer architecture, create cache utility library with TTL support, and document the strategy.",
       "value": "high",
       "complexity": "low",
       "stories": [
-        { "id": "S-0.1", "title": "Create directory structure for PentestAgent integration", "done": true, "verified": true, "details": "Create docs/security/pentestagent/ (configs, playbooks, findings, reports), .agents/skills/run-pentestagent/, and a PentestAgent section in the PRD.", "files": ["docs/security/pentestagent/config/", "docs/security/pentestagent/playbooks/", "docs/security/pentestagent/findings/", "docs/security/pentestagent/reports/"] },
-        { "id": "S-0.2", "title": "Create PentestAgent .env.example", "done": true, "verified": true, "details": "Create docs/security/pentestagent/.env.example with all required env vars.", "files": ["docs/security/pentestagent/.env.example"] },
-        { "id": "S-0.3", "title": "Create PentestAgent configuration file", "done": true, "verified": true, "details": "Create docs/security/pentestagent/config/pentestagent.json with target configuration.", "files": ["docs/security/pentestagent/config/pentestagent.json"] },
-        { "id": "S-0.4", "title": "Create PentestAgent MCP server config", "done": true, "verified": true, "details": "Create docs/security/pentestagent/config/mcp_servers.json defining MCP servers.", "files": ["docs/security/pentestagent/config/mcp_servers.json"] },
-        { "id": "S-0.5", "title": "Create setup script for PentestAgent", "done": true, "verified": true, "details": "Create scripts/setup-pentestagent.ps1 and .sh.", "files": ["scripts/setup-pentestagent.ps1", "scripts/setup-pentestagent.sh"] },
-        { "id": "S-0.6", "title": "Document PentestAgent setup in AGENTS.md", "done": true, "verified": true, "details": "Add run-pentestagent skill entry in AGENTS.md.", "files": ["AGENTS.md"] },
-        { "id": "S-0.7", "title": "Add PentestAgent to .gitignore", "done": true, "verified": true, "details": "Ensure pentestagent/ directory is in .gitignore.", "files": [".gitignore"] },
-        { "id": "S-0.8", "title": "Verify PentestAgent CLI install and workspace init", "done": true, "verified": true, "details": "Install deps, init workspace, verify --help and tools list work.", "files": ["pentestagent/"] }
+        { "id": "S-0.1", "title": "Create caching PRD and strategy document", "done": false, "details": "Write prd.json with caching plan. Create docs/performance/caching-strategy.md defining L1-L4 cache layers, TTL values, invalidation triggers, and performance targets.", "files": ["prd.json", "docs/performance/caching-strategy.md"] },
+        { "id": "S-0.2", "title": "Audit current caching state", "done": false, "details": "Inventory all pages, API routes, and data fetches. Document current Cache-Control headers, SWR config, revalidation settings. Measure baseline TTFB, cache hit rates, and Lighthouse scores.", "files": ["docs/performance/audit.md"] },
+        { "id": "S-0.3", "title": "Create cache utility library with TTL and stale-while-revalidate", "done": false, "details": "Create src/lib/cache.ts with: TTL-based in-memory cache, stale-while-revalidate pattern, cache key generation with tag prefix, bulk invalidation by tag, and optional Upstash Redis backend.", "files": ["src/lib/cache.ts"] },
+        { "id": "S-0.4", "title": "Add cache configuration to env.example", "done": false, "details": "Add CACHE_TTL_DEFAULT, CACHE_TTL_STALE, REDIS_CACHE_URL, REDIS_CACHE_TOKEN to .env.example. Document cache env vars.", "files": [".env.example"] }
       ]
     },
     {
       "id": "EPIC-1",
-      "title": "Reconnaissance playbooks & scanning",
-      "status": "completed",
-      "summary": "Create PentestAgent playbooks for reconnaissance: URL enumeration, technology fingerprinting, route discovery, JS endpoint extraction, subdomain discovery, and directory enumeration.",
+      "title": "Sanity CMS data caching",
+      "status": "planned",
+      "summary": "Implement multi-layer caching for Sanity CMS content: in-memory TTL cache (L1), CDN-aware fetch with SWR (L2), tag-based webhook invalidation, and stale-while-revalidate patterns.",
       "value": "high",
-      "complexity": "medium",
+      "complexity": "high",
       "stories": [
-        { "id": "S-1.1", "title": "Create portfolio_recon playbook", "done": true, "verified": true, "details": "Write portfolio_recon.yaml for route enumeration and tech stack identification.", "files": ["docs/security/pentestagent/playbooks/portfolio_recon.yaml"] },
-        { "id": "S-1.2", "title": "Create technology_fingerprint playbook", "done": true, "verified": true, "details": "Write technology_fingerprint.yaml for deep stack analysis.", "files": ["docs/security/pentestagent/playbooks/technology_fingerprint.yaml"] },
-        { "id": "S-1.3", "title": "Create js_endpoint_extraction playbook", "done": true, "verified": true, "details": "Write js_endpoint_extraction.yaml for JS bundle analysis.", "files": ["docs/security/pentestagent/playbooks/js_endpoint_extraction.yaml"] },
-        { "id": "S-1.4", "title": "Create directory_enumeration playbook", "done": true, "verified": true, "details": "Write directory_enumeration.yaml for common path discovery.", "files": ["docs/security/pentestagent/playbooks/directory_enumeration.yaml"] },
-        { "id": "S-1.5", "title": "Create subdomain_discovery playbook", "done": true, "verified": true, "details": "Write subdomain_discovery.yaml for DNS and CT log enumeration.", "files": ["docs/security/pentestagent/playbooks/subdomain_discovery.yaml"] },
-        { "id": "S-1.6", "title": "Document recon findings", "done": true, "verified": true, "details": "Document all recon findings.", "files": ["docs/security/pentestagent/findings/recon.md"] }
+        { "id": "S-1.1", "title": "Wrap CMS content fetcher with in-memory cache", "done": false, "details": "Update src/lib/cms-content.server.ts to use the cache utility. Cache all CMS queries with TTL=300s. Serve stale content while revalidating in background. Add cache tags per content type.", "files": ["src/lib/cms-content.server.ts", "src/lib/cache.ts"] },
+        { "id": "S-1.2", "title": "Add Sanity CDN cache headers and use CDN API", "done": false, "details": "Ensure Sanity client uses CDN URL for read queries. Add perspective=published for public queries. Configure @sanity/client with useCdn=true.", "files": ["src/lib/sanity.ts", "src/lib/sanity.image.ts"] },
+        { "id": "S-1.3", "title": "Implement tag-based webhook cache invalidation", "done": false, "details": "Update webhook route to accept Sanity tag-based invalidation. Parse webhook payload for document type/ID, build cache tags, and invalidate matching cache entries.", "files": ["src/app/api/sanity/webhook/route.ts", "src/lib/cache.ts"] },
+        { "id": "S-1.4", "title": "Add stale-while-revalidate headers to CMS data responses", "done": false, "details": "Add Cache-Control: stale-while-revalidate=60 to all CMS data fetches. Ensure SWR period is 60s with max-age of 300s.", "files": ["src/lib/cms-content.server.ts"] },
+        { "id": "S-1.5", "title": "Reduce SWR revalidation frequency on client components", "done": false, "details": "Update all useSWR hooks with dedupingInterval=5000, revalidateIfStale=true, revalidateOnFocus=false. Add errorRetryCount=2 and errorRetryInterval=10000.", "files": ["src/**/*.tsx", "src/**/*.ts"] }
       ]
     },
     {
       "id": "EPIC-2",
-      "title": "Vulnerability scanning playbooks",
-      "status": "completed",
-      "summary": "Create PentestAgent playbooks for OWASP Top 10 vulnerability scanning: XSS, CSRF, SSRF, injection attacks, security misconfiguration, and sensitive data exposure.",
+      "title": "API route caching",
+      "status": "planned",
+      "summary": "Add cache headers to all API route responses: CDN caching for GET endpoints, Redis response caching, conditional requests with ETags, and cache tagging for targeted invalidation.",
       "value": "high",
       "complexity": "high",
       "stories": [
-        { "id": "S-2.1", "title": "Create xss_testing playbook", "done": true, "verified": true, "details": "Write xss_testing.yaml for XSS across all input points.", "files": ["docs/security/pentestagent/playbooks/xss_testing.yaml"] },
-        { "id": "S-2.2", "title": "Create csrf_testing playbook", "done": true, "verified": true, "details": "Write csrf_testing.yaml for CSRF protection testing.", "files": ["docs/security/pentestagent/playbooks/csrf_testing.yaml"] },
-        { "id": "S-2.3", "title": "Create ssrf_testing playbook", "done": true, "verified": true, "details": "Write ssrf_testing.yaml for SSRF via endpoints.", "files": ["docs/security/pentestagent/playbooks/ssrf_testing.yaml"] },
-        { "id": "S-2.4", "title": "Create injection_testing playbook", "done": true, "verified": true, "details": "Write injection_testing.yaml for SQL, NoSQL, command, template injection.", "files": ["docs/security/pentestagent/playbooks/injection_testing.yaml"] },
-        { "id": "S-2.5", "title": "Create security_misconfig playbook", "done": true, "verified": true, "details": "Write security_misconfig.yaml for headers, CORS, debug endpoints.", "files": ["docs/security/pentestagent/playbooks/security_misconfig.yaml"] },
-        { "id": "S-2.6", "title": "Create sensitive_data_exposure playbook", "done": true, "verified": true, "details": "Write sensitive_data_exposure.yaml for secrets in JS, errors, PII.", "files": ["docs/security/pentestagent/playbooks/sensitive_data_exposure.yaml"] },
-        { "id": "S-2.7", "title": "Create threat_modeling playbook", "done": true, "verified": true, "details": "Write threat_modeling.yaml for STRIDE analysis and risk matrix.", "files": ["docs/security/pentestagent/playbooks/threat_modeling.yaml"] }
+        { "id": "S-2.1", "title": "Add Cache-Control headers to GET /api/resume", "done": false, "details": "Add public, max-age=300, stale-while-revalidate=60, s-maxage=600 to /api/resume. Add ETag based on resume URL hash.", "files": ["src/app/api/resume/route.ts"] },
+        { "id": "S-2.2", "title": "Add cache headers to /api/media/[...path]", "done": false, "details": "Add public, max-age=31536000, immutable for media assets. Add CDN-Cache: hit for cached assets.", "files": ["src/app/api/media/[...path]/route.ts"] },
+        { "id": "S-2.3", "title": "Add cache headers to /api/chat health endpoint", "done": false, "details": "Add no-cache for POST /api/chat but public, max-age=60 for GET health check. Add Surrogate-Control header for edge caching.", "files": ["src/app/api/chat/route.ts"] },
+        { "id": "S-2.4", "title": "Add cache headers to /api/sanity/live", "done": false, "details": "Add no-cache, no-store, must-revalidate for live/preview endpoints.", "files": ["src/app/api/sanity/live/route.ts"] },
+        { "id": "S-2.5", "title": "Implement Upstash Redis response caching for API routes", "done": false, "details": "Create src/lib/api-cache.ts with Redis-backed response caching. Cache GET responses with configurable TTL per route. Fall back to in-memory if Redis unavailable.", "files": ["src/lib/api-cache.ts"] },
+        { "id": "S-2.6", "title": "Add cache tags and conditional requests", "done": false, "details": "Add ETag headers to all GET API responses. Handle If-None-Match returning 304. Add Cache-Tag header for CDN-based invalidation.", "files": ["src/lib/api-cache.ts", "src/app/api/resume/route.ts", "src/app/api/media/[...path]/route.ts"] }
       ]
     },
     {
       "id": "EPIC-3",
-      "title": "API security testing playbooks",
-      "status": "completed",
-      "summary": "Create PentestAgent playbooks for testing the 6 API endpoints: rate limiting, authentication bypass, input validation, CORS, fuzzing, and dependency checks.",
+      "title": "Static page & ISR optimization",
+      "status": "planned",
+      "summary": "Optimize static page generation: ISR for blog pages with content-based revalidation, SSG for all static pages, pre-render critical pages at build time, and add Cache-Control headers to all static assets.",
       "value": "high",
-      "complexity": "high",
+      "complexity": "medium",
       "stories": [
-        { "id": "S-3.1", "title": "Create rate_limit_testing playbook", "done": true, "verified": true, "details": "Write rate_limit_testing.yaml for burst and bypass testing.", "files": ["docs/security/pentestagent/playbooks/rate_limit_testing.yaml"] },
-        { "id": "S-3.2", "title": "Create auth_bypass_testing playbook", "done": true, "verified": true, "details": "Write auth_bypass_testing.yaml for webhook, live, draft-mode auth.", "files": ["docs/security/pentestagent/playbooks/auth_bypass_testing.yaml"] },
-        { "id": "S-3.3", "title": "Create input_validation_testing playbook", "done": true, "verified": true, "details": "Write input_validation_testing.yaml for payloads, types, encoding.", "files": ["docs/security/pentestagent/playbooks/input_validation_testing.yaml"] },
-        { "id": "S-3.4", "title": "Create cors_http_methods playbook", "done": true, "verified": true, "details": "Write cors_http_methods.yaml for CORS and HTTP method testing.", "files": ["docs/security/pentestagent/playbooks/cors_http_methods.yaml"] },
-        { "id": "S-3.5", "title": "Create api_fuzz playbook", "done": true, "verified": true, "details": "Write api_fuzz.yaml for boundary and fuzz testing.", "files": ["docs/security/pentestagent/playbooks/api_fuzz.yaml"] },
-        { "id": "S-3.6", "title": "Create dependency_check playbook", "done": true, "verified": true, "details": "Write dependency_check.yaml for npm audit and CVE scanning.", "files": ["docs/security/pentestagent/playbooks/dependency_check.yaml"] },
-        { "id": "S-3.7", "title": "Create api_security_comprehensive playbook", "done": true, "verified": true, "details": "Write api_security_comprehensive.yaml crew playbook.", "files": ["docs/security/pentestagent/playbooks/api_security_comprehensive.yaml"] }
+        { "id": "S-3.1", "title": "Add ISR revalidation to blog pages with on-demand revalidation", "done": false, "details": "Add revalidate=3600 to blog/[slug]/page.tsx. Implement on-demand revalidation via webhook for individual posts. Add generateStaticParams with all published slugs.", "files": ["src/app/blog/[slug]/page.tsx", "src/app/api/sanity/webhook/route.ts"] },
+        { "id": "S-3.2", "title": "Add static generation to project pages with content-based revalidation", "done": false, "details": "Create generateStaticParams for project pages. Add revalidate=3600. Wire project content mutations into webhook-based revalidation.", "files": ["src/app/projects/[slug]/page.tsx"] },
+        { "id": "S-3.3", "title": "Add Cache-Control headers for static assets in next.config.js", "done": false, "details": "Add Cache-Control: public, max-age=31536000, immutable for _next/static/* assets. Add Cache-Control: public, max-age=3600, s-maxage=86400 for pages.", "files": ["next.config.js"] },
+        { "id": "S-3.4", "title": "Pre-render all static pages at build time with generateStaticParams", "done": false, "details": "Add generateStaticParams to all dynamic routes. Ensure blog/[slug], project/[slug], and any other dynamic routes are pre-rendered at build time.", "files": ["src/app/blog/[slug]/page.tsx", "src/app/projects/[slug]/page.tsx"] },
+        { "id": "S-3.5", "title": "Optimize metadata and font caching", "done": false, "details": "Add Cache-Control headers for fonts. Optimize metadata generation with cached queries. Add preconnect hints for third-party origins.", "files": ["src/app/layout.tsx", "next.config.js"] }
       ]
     },
     {
       "id": "EPIC-4",
-      "title": "Infrastructure & configuration security",
-      "status": "completed",
-      "summary": "Verification of the security infrastructure: HTTP security headers, CSP analysis, cookie security, TLS/SSL configuration, Cloudflare Workers, and Vercel configuration.",
+      "title": "Client-side caching & instant navigation",
+      "status": "planned",
+      "summary": "Optimize client-side data fetching with SWR configuration, implement localStorage cache for Sanity data, add route prefetching for critical pages, and create a service worker for offline asset caching.",
       "value": "high",
-      "complexity": "medium",
+      "complexity": "high",
       "stories": [
-        { "id": "S-4.1", "title": "Create header_security playbook", "done": true, "verified": true, "details": "Write header_security.yaml for HTTP response header audit.", "files": ["docs/security/pentestagent/playbooks/header_security.yaml"] },
-        { "id": "S-4.2", "title": "Create csp_analysis playbook", "done": true, "verified": true, "details": "Write csp_analysis.yaml for deep CSP evaluation.", "files": ["docs/security/pentestagent/playbooks/csp_analysis.yaml"] },
-        { "id": "S-4.3", "title": "Create cookie_security playbook", "done": true, "verified": true, "details": "Write cookie_security.yaml for cookie and storage audit.", "files": ["docs/security/pentestagent/playbooks/cookie_security.yaml"] },
-        { "id": "S-4.4", "title": "Create tls_security playbook", "done": true, "verified": true, "details": "Write tls_security.yaml for TLS/SSL and certificate audit.", "files": ["docs/security/pentestagent/playbooks/tls_security.yaml"] },
-        { "id": "S-4.5", "title": "Create cloud_config playbook", "done": true, "verified": true, "details": "Write cloud_config.yaml for Vercel and Cloudflare config audit.", "files": ["docs/security/pentestagent/playbooks/cloud_config.yaml"] },
-        { "id": "S-4.6", "title": "Create infrastructure_security_comprehensive playbook", "done": true, "verified": true, "details": "Write infrastructure_security_comprehensive.yaml crew playbook.", "files": ["docs/security/pentestagent/playbooks/infrastructure_security_comprehensive.yaml"] }
+        { "id": "S-4.1", "title": "Create global SWR configuration with sensible defaults", "done": false, "details": "Create src/lib/swr-config.tsx with SWRConfig provider: dedupingInterval=5000, revalidateIfStale=true, revalidateOnFocus=false, errorRetryCount=2, keepPreviousData=true.", "files": ["src/lib/swr-config.tsx", "src/app/layout.tsx"] },
+        { "id": "S-4.2", "title": "Implement localStorage cache for non-critical Sanity data", "done": false, "details": "Create src/lib/local-cache.ts with localStorage-backed cache for Sanity content. Cache keyed by content type. TTL=3600s. Used for non-critical UI data.", "files": ["src/lib/local-cache.ts"] },
+        { "id": "S-4.3", "title": "Add route prefetching for critical pages", "done": false, "details": "Add Link prefetch to navigation links for critical pages. Add IntersectionObserver-based prefetching for visible links.", "files": ["src/components/**/*.tsx"] },
+        { "id": "S-4.4", "title": "Create service worker for offline asset caching", "done": false, "details": "Create public/sw.js with: cache-first for static assets, network-first for API routes, stale-while-revalidate for Sanity content. Register service worker in layout.", "files": ["public/sw.js", "src/app/layout.tsx"] },
+        { "id": "S-4.5", "title": "Add prefetch and preconnect hints to document head", "done": false, "details": "Add dns-prefetch for Sanity CDN, Umami, Google Fonts, Cal.com. Add preconnect with crossorigin for critical origins. Add preload for above-the-fold assets.", "files": ["src/app/layout.tsx", "next.config.js"] }
       ]
     },
     {
       "id": "EPIC-5",
-      "title": "CI/CD security integration",
-      "status": "completed",
-      "summary": "Integrate PentestAgent scans into the CI/CD pipeline: PR checks, scheduled scans, artifact generation, and security dashboard updates.",
-      "value": "high",
+      "title": "Image & media caching optimization",
+      "status": "planned",
+      "summary": "Optimize image and media delivery: configure Next.js Image with remote patterns and caching, add cache headers to media gateway, implement responsive images, and cache Sanity CDN images.",
+      "value": "medium",
       "complexity": "medium",
       "stories": [
-        { "id": "S-5.1", "title": "Create pentestagent-ci.yml GitHub Action", "done": true, "verified": true, "details": "Write pentestagent-ci.yml for push/PR scans.", "files": [".github/workflows/pentestagent-ci.yml"] },
-        { "id": "S-5.2", "title": "Create scheduled security scan workflow", "done": true, "verified": true, "details": "Write pentestagent-scheduled.yml for weekly full scans.", "files": [".github/workflows/pentestagent-scheduled.yml"] },
-        { "id": "S-5.3", "title": "Create security-pr-check workflow", "done": true, "verified": true, "details": "Write pentestagent-pr-check.yml for lightweight PR checks.", "files": [".github/workflows/pentestagent-pr-check.yml"] },
-        { "id": "S-5.4", "title": "Document CI/CD security integration", "done": true, "verified": true, "details": "Write ci-integration.md documenting all workflows.", "files": ["docs/security/pentestagent/reports/ci-integration.md"] }
+        { "id": "S-5.1", "title": "Configure Next.js Image with remote patterns and proper caching", "done": false, "details": "Add remotePatterns for Sanity CDN images in next.config.js. Verify images.sizes and imageSizes are optimal. Set deviceSizes for responsive images.", "files": ["next.config.js"] },
+        { "id": "S-5.2", "title": "Add immutable cache headers to media gateway responses", "done": false, "details": "Add Cache-Control: public, max-age=31536000, immutable to /api/media/[...path]. Add ETag based on signature. Return 304 when ETag matches.", "files": ["src/app/api/media/[...path]/route.ts"] },
+        { "id": "S-5.3", "title": "Optimize Sanity image URLs with CDN parameters", "done": false, "details": "Update src/lib/sanity.image.ts to add auto=format and q=80 to all Sanity image URLs. Add width/height attributes. Generate blur hash placeholders.", "files": ["src/lib/sanity.image.ts"] },
+        { "id": "S-5.4", "title": "Add lazy loading and fetchpriority attributes to images", "done": false, "details": "Add loading=lazy to below-the-fold images. Add fetchpriority=high to hero/LCP images. Add decoding=async to all images.", "files": ["src/components/**/*.tsx"] }
       ]
     },
     {
       "id": "EPIC-6",
-      "title": "Remediation of findings",
-      "status": "completed",
-      "summary": "Walk through every finding from EPIC-1 through EPIC-4, remediate each one, and re-verify. Each remediation gets its own commit.",
+      "title": "CDN & edge cache configuration",
+      "status": "planned",
+      "summary": "Configure CDN caching at the edge: Vercel cache rules, Cloudflare Workers cache configuration, Cache-Control headers review, Surrogate-Key based purging, and CDN performance optimization.",
       "value": "high",
-      "complexity": "high",
+      "complexity": "medium",
       "stories": [
-        { "id": "S-6.1", "title": "Create findings ledger", "done": true, "verified": true, "details": "Create master ledger of all findings.", "files": ["docs/security/pentestagent/findings/ledger.md"] },
-        { "id": "S-6.2", "title": "Generate remediation summary", "done": true, "verified": true, "details": "Create remediation-summary.md with per-finding status.", "files": ["docs/security/pentestagent/reports/remediation-summary.md"] }
+        { "id": "S-6.1", "title": "Review and standardize Cache-Control headers across all responses", "done": false, "details": "Audit every response. Create a cache header matrix: page type, cache status, max-age, s-maxage, stale-while-revalidate, private/public. Standardize all responses.", "files": ["next.config.js", "docs/performance/caching-strategy.md"] },
+        { "id": "S-6.2", "title": "Add CDN-Cache and edge cache headers", "done": false, "details": "Add CDN-Cache-Control headers for Vercel edge. Set appropriate edge TTL values. Document in caching strategy.", "files": ["next.config.js"] },
+        { "id": "S-6.3", "title": "Configure open-next edge caching rules", "done": false, "details": "Update open-next.config.ts with static asset caching rules. Configure cache policies for different route patterns.", "files": ["open-next.config.ts"] },
+        { "id": "S-6.4", "title": "Add surrogate-key based cache purging via webhook", "done": false, "details": "Implement Surrogate-Key header on cacheable responses. Update webhook to send purge requests for affected keys.", "files": ["src/lib/api-cache.ts", "src/app/api/sanity/webhook/route.ts"] }
       ]
     },
     {
       "id": "EPIC-7",
-      "title": "Security documentation & dashboard",
-      "status": "completed",
-      "summary": "Create comprehensive security documentation: security dashboard, posture score, security.txt, security policy, agent skill, and README badges.",
-      "value": "medium",
-      "complexity": "low",
-      "stories": [
-        { "id": "S-7.1", "title": "Create security dashboard", "done": true, "verified": true, "details": "Write docs/security/dashboard.md with posture score and findings.", "files": ["docs/security/dashboard.md"] },
-        { "id": "S-7.2", "title": "Create security posture score model", "done": true, "verified": true, "details": "Write docs/security/posture-score.md with scoring methodology.", "files": ["docs/security/posture-score.md"] },
-        { "id": "S-7.3", "title": "Deploy security.txt", "done": true, "verified": true, "details": "Create public/.well-known/security.txt with disclosure policy.", "files": ["public/.well-known/security.txt"] },
-        { "id": "S-7.4", "title": "Author run-pentestagent agent skill", "done": true, "verified": true, "details": "Write .agents/skills/run-pentestagent/SKILL.md.", "files": [".agents/skills/run-pentestagent/SKILL.md"] }
-      ]
-    },
-    {
-      "id": "EPIC-8",
-      "title": "Final verification & showcase PR",
-      "status": "in_progress",
-      "summary": "Final verification run of all playbooks, generation of the comprehensive security report, and creation of the showcase PR from security/pentestagent into main.",
-      "value": "high",
-      "complexity": "low",
-      "stories": [
-        { "id": "S-8.1", "title": "Generate comprehensive security report", "done": true, "verified": true, "details": "Write comprehensive-security-report.md with full methodology.", "files": ["docs/security/pentestagent/reports/comprehensive-security-report.md"] },
-        { "id": "S-8.2", "title": "Create PR notes for security showcase", "done": true, "verified": true, "details": "Write PR_NOTES.md with narrative, score, and commit map.", "files": ["docs/security/pentestagent/PR_NOTES.md"] },
-        { "id": "S-8.3", "title": "Open showcase PR", "done": true, "verified": true, "details": "Created the PR with full documentation of the security journey.", "files": [] }
-      ]
-    },
-    {
-      "id": "EPIC-9",
-      "title": "Advanced attack surface playbooks",
-      "status": "in_progress",
-      "summary": "Create additional PentestAgent playbooks for advanced attack vectors not covered in EPIC-1 through EPIC-4: clickjacking, open redirect, prototype pollution, host header injection, cache poisoning, and client-side validation bypass.",
-      "value": "high",
-      "complexity": "high",
-      "stories": [
-        { "id": "S-9.1", "title": "Create clickjacking_testing playbook", "done": false, "details": "Write clickjacking_testing.yaml — tests X-Frame-Options and CSP frame-ancestors directives. Sends payloads with X-Frame-Options: DENY, SAMEORIGIN, ALLOW-FROM. Verifies frame-ancestors in CSP. Tests for clickjacking via transparent overlays and drag-and-drop exfiltration.", "files": ["docs/security/pentestagent/playbooks/clickjacking_testing.yaml"] },
-        { "id": "S-9.2", "title": "Create open_redirect_testing playbook", "done": false, "details": "Write open_redirect_testing.yaml — tests all URL parameters and paths that accept redirect targets: next, redirect, return, url, callback, destination. Tests protocol manipulation, double-slash bypass, CRLF injection, and whitelist bypass via parameter pollution.", "files": ["docs/security/pentestagent/playbooks/open_redirect_testing.yaml"] },
-        { "id": "S-9.3", "title": "Create prototype_pollution playbook", "done": false, "details": "Write prototype_pollution.yaml — tests for client-side prototype pollution in JS libraries: merge operations, object.assign clones, jQuery.extend. Tests payloads: __proto__, constructor.prototype, JSON.parse merge. Checks for server-side pollution in API JSON parsers.", "files": ["docs/security/pentestagent/playbooks/prototype_pollution.yaml"] },
-        { "id": "S-9.4", "title": "Create host_header_injection playbook", "done": false, "details": "Write host_header_injection.yaml — tests Host header manipulation: arbitrary Host, X-Forwarded-Host injection, X-Forwarded-Proto downgrade, absolute URL injection in Host. Checks for password reset poisoning, cache poisoning via Host, and SSRF via Host-controlled redirects.", "files": ["docs/security/pentestagent/playbooks/host_header_injection.yaml"] },
-        { "id": "S-9.5", "title": "Create cache_poisoning playbook", "done": false, "details": "Write cache_poisoning.yaml — tests for web cache poisoning: unkeyed headers (X-Forwarded-Host, X-Original-URL), cookie-based poisoning, response header manipulation via unkeyed query params. Checks Vercel edge cache behaviour.", "files": ["docs/security/pentestagent/playbooks/cache_poisoning.yaml"] },
-        { "id": "S-9.6", "title": "Create client_side_bypass playbook", "done": false, "details": "Write client_side_bypass.yaml — tests client-side validation bypass: disabling JS, intercepting/modifying API responses, manipulating localStorage/sessionStorage, bypassing input maxlength via curl, bypassing disabled attributes, testing hidden field manipulation.", "files": ["docs/security/pentestagent/playbooks/client_side_bypass.yaml"] },
-        { "id": "S-9.7", "title": "Document advanced attack surface findings", "done": false, "details": "Run all EPIC-9 playbooks and document findings in docs/security/pentestagent/findings/advanced-attack-surface.md.", "files": ["docs/security/pentestagent/findings/advanced-attack-surface.md"] }
-      ]
-    },
-    {
-      "id": "EPIC-10",
-      "title": "Code-level security hardening",
-      "status": "in_progress",
-      "summary": "Implement source code hardening: HTTP security headers middleware, CSP configuration, rate limiting, input validation, CSRF protection, cookie hardening, and removal of sensitive data from client bundles. Each change is a separate commit with verification.",
-      "value": "high",
-      "complexity": "high",
-      "stories": [
-        { "id": "S-10.1", "title": "Harden CSP in next.config.ts", "done": false, "details": "Update next.config.ts Content-Security-Policy: add upgrade-insecure-requests, tighten form-action to self, restrict frame-ancestors, add base-uri self, enforce strict-dynamic where possible. Remove unsafe-inline for production builds. Verify with csp_analysis playbook.", "files": ["next.config.ts"] },
-        { "id": "S-10.2", "title": "Add HTTP security headers middleware", "done": false, "details": "Create src/middleware.ts (if not exists) or extend existing middleware to set: Strict-Transport-Security (max-age=63072000, includeSubDomains, preload), X-Content-Type-Options: nosniff, X-Frame-Options: DENY, Referrer-Policy: strict-origin-when-cross-origin, Permissions-Policy (camera=(), microphone=(), geolocation=()), X-DNS-Prefetch-Control: off.", "files": ["src/middleware.ts"] },
-        { "id": "S-10.3", "title": "Harden cookie configuration", "done": false, "details": "Audit all Set-Cookie headers in API routes and add: Secure, HttpOnly, SameSite=Lax/Strict, __Host- prefix where applicable. Verify __Secure- prefix for cookies set over HTTPS. Document in cookie_security playbook.", "files": ["src/app/api/**/route.ts"] },
-        { "id": "S-10.4", "title": "Add rate limiting middleware for API routes", "done": false, "details": "Implement token-bucket or sliding-window rate limiter in middleware.ts for all /api/* routes. Configure limits: /api/chat (10 req/min), /api/resume (30 req/min), /api/media (60 req/min). Return 429 with Retry-After header. Verify with rate_limit_testing playbook.", "files": ["src/middleware.ts", "src/lib/rate-limiter.ts"] },
-        { "id": "S-10.5", "title": "Add input validation for chat endpoint", "done": false, "details": "Add Zod schema validation to /api/chat: max message length (2000 chars), allowed HTML (none), allowed markdown (safe subset), block script tags, block javascript: URLs, sanitize with DOMPurify-compatible server-side sanitizer. Verify with xss_testing playbook.", "files": ["src/app/api/chat/route.ts", "src/lib/validators/chat.ts"] },
-        { "id": "S-10.6", "title": "Add CSRF protection for webhook endpoint", "done": false, "details": "Implement double-submit cookie pattern or custom header validation for /api/sanity/webhook. Verify Sanity webhook secret using timing-safe comparison. Add request body size limits. Verify with csrf_testing playbook.", "files": ["src/app/api/sanity/webhook/route.ts"] },
-        { "id": "S-10.7", "title": "Add request validation middleware for API routes", "done": false, "details": "Create reusable Zod validation middleware: content-type check (reject non-JSON), body size limits (100KB max), JSON depth limits (20 levels), reject null bytes in strings, reject prototype pollution keys. Apply to all API routes via middleware chain.", "files": ["src/middleware.ts", "src/lib/validators/request.ts"] },
-        { "id": "S-10.8", "title": "Remove sensitive data from client bundles", "done": false, "details": "Audit src/ for client components that expose: env vars via NEXT_PUBLIC_*, internal endpoint URLs, API key prefixes, debug info. Remove or isolate. Verify with sensitive_data_exposure playbook.", "files": ["src/**/*.ts", "src/**/*.tsx"] },
-        { "id": "S-10.9", "title": "Fix npm dependency vulnerabilities", "done": false, "details": "Run npm audit, fix all auto-fixable advisories. For non-auto-fixable: override versions in package.json, document risk. Run npm audit again to verify. Verify with dependency_check playbook.", "files": ["package.json"] },
-        { "id": "S-10.10", "title": "Add security headers verification endpoint", "done": false, "details": "Create /api/security-headers endpoint that returns the current security header configuration as JSON. Use for monitoring and verification. Include CSP, HSTS, and other headers in response.", "files": ["src/app/api/security-headers/route.ts"] }
-      ]
-    },
-    {
-      "id": "EPIC-11",
-      "title": "Security showcase & portfolio integration",
+      "title": "Performance monitoring & verification",
       "status": "planned",
-      "summary": "Integrate security results into the portfolio website itself: security page, README badges, machine-readable posture endpoint, and security engineering resume content.",
+      "summary": "Create performance monitoring: cache hit/miss metrics, performance dashboard, Lighthouse baseline, cache health endpoint, and comprehensive report.",
       "value": "medium",
       "complexity": "low",
       "stories": [
-        { "id": "S-11.1", "title": "Add README security section with badges", "done": false, "details": "Add visible security posture badge, PentestAgent badge, and last scan date to README.md. Add Security section with links to dashboard and security.txt.", "files": ["README.md"] },
-        { "id": "S-11.2", "title": "Create security.json posture endpoint", "done": false, "details": "Create public/security.json with machine-readable security posture: score, lastScan, categories with scores, finding counts, CI status. Serve at /.well-known/security.json.", "files": ["public/.well-known/security.json"] },
-        { "id": "S-11.3", "title": "Create /security portfolio page", "done": false, "details": "Add a /security route to the portfolio website showing: posture score gauge, per-category breakdown, finding history, CI pipeline status, security.txt link. Uses Sanity-queryable content or static JSON. Demonstrates security engineering as a portfolio feature.", "files": ["src/app/security/page.tsx"] },
-        { "id": "S-11.4", "title": "Add security engineering resume content", "done": false, "details": "Add security engineering bullets to Sanity experience entries or resume data: PentestAgent integration, OWASP Top 10 coverage, CI/CD security gates, code-level hardening, security dashboard creation.", "files": ["src/**/*.ts", "src/**/*.tsx"] },
-        { "id": "S-11.5", "title": "Create security demo recording script", "done": false, "details": "Write docs/security/demo-script.md with step-by-step demo: 1) run recon playbook, 2) inspect findings, 3) show CI workflow, 4) inspect dashboard, 5) verify headers via curl, 6) verify CSP, 7) run rate limit test, 8) show PR check.", "files": ["docs/security/demo-script.md"] },
-        { "id": "S-11.6", "title": "Update README with comprehensive security section", "done": false, "details": "Add Security section to README.md: posture score, badge link, dashboard link, security.txt link, PentestAgent section, quick start, and reviewer guide.", "files": ["README.md"] }
-      ]
-    },
-    {
-      "id": "EPIC-12",
-      "title": "Security monitoring & alerting",
-      "status": "completed",
-      "summary": "Set up continuous security monitoring: GitHub Issues for new findings, scheduled scan notifications, posture trend tracking, and incident response procedures.",
-      "value": "medium",
-      "complexity": "medium",
-      "stories": [
-        { "id": "S-12.1", "title": "Configure GitHub Issues auto-creation for findings", "done": false, "details": "Update pentestagent-scheduled.yml to create GitHub Issues for new high/critical findings. Use GitHub CLI or script to check findings ledger diff and create issues with severity label, affected endpoint, and playbook reference.", "files": [".github/workflows/pentestagent-scheduled.yml"] },
-        { "id": "S-12.2", "title": "Create posture trend tracking", "done": false, "details": "Add posture-trend.json to docs/security/pentestagent/reports/ that collects historical scores with timestamps. Update after every scan run. Display trend chart in dashboard.", "files": ["docs/security/pentestagent/reports/posture-trend.json"] },
-        { "id": "S-12.3", "title": "Document incident response procedures", "done": false, "details": "Write docs/security/incident-response.md: vulnerability disclosure handling, severity classification, response SLA, remediation workflow, post-mortem template, communication plan.", "files": ["docs/security/incident-response.md"] },
-        { "id": "S-12.4", "title": "Add security scan results to CI artifacts", "done": false, "details": "Ensure all CI workflows upload scan results as GitHub Actions artifacts with retention period. Add summary to workflow job output. Add PR comment with scan result summary.", "files": [".github/workflows/pentestagent-ci.yml", ".github/workflows/pentestagent-scheduled.yml", ".github/workflows/pentestagent-pr-check.yml"] },
-        { "id": "S-12.5", "title": "Create security health check endpoint", "done": false, "details": "Create /api/health/security endpoint that runs lightweight security checks: header presence, CSP validity, rate limiter status, TLS version (via external check). Returns 200/503 with details.", "files": ["src/app/api/health/security/route.ts"] }
-      ]
-    },
-    {
-      "id": "EPIC-13",
-      "title": "OWASP coverage & compliance matrix",
-      "status": "completed",
-      "summary": "Map all security work to OWASP Top 10 2021 categories, create compliance matrix, and identify gaps for future work.",
-      "value": "medium",
-      "complexity": "low",
-      "stories": [
-        { "id": "S-13.1", "title": "Create OWASP Top 10 2021 coverage matrix", "done": false, "details": "Write docs/security/owasp-coverage.md: table mapping OWASP categories to playbooks, remediations, and verification status. A01:2021 (Broken Access Control), A02:2021 (Crypto Failures), A03:2021 (Injection), A04:2021 (Insecure Design), A05:2021 (Security Misconfiguration), A06:2021 (Vulnerable Components), A07:2021 (Auth Failures), A08:2021 (Integrity Failures), A09:2021 (Logging Failures), A10:2021 (SSRF). Each row: category, playbook, findings, remediation, verification.", "files": ["docs/security/owasp-coverage.md"] },
-        { "id": "S-13.2", "title": "Create security audit trail document", "done": false, "details": "Write docs/security/audit-trail.md: chronological log of all security work with timestamps, decisions, and rationale. Links to commits, findings, and reports.", "files": ["docs/security/audit-trail.md"] },
-        { "id": "S-13.3", "title": "Document accepted risks with compensating controls", "done": false, "details": "Write docs/security/accepted-risks.md: list of accepted risks (e.g., unsafe-inline in dev mode, Cal.com iframe sandbox, Umami analytics endpoint) with rationale, compensating controls, and review schedule.", "files": ["docs/security/accepted-risks.md"] },
-        { "id": "S-13.4", "title": "Create security checklist for future contributions", "done": false, "details": "Write docs/security/checklist.md: pre-merge security checklist for new features: input validation, output encoding, auth check, rate limit, header audit, dependency scan, CSP review, cookie audit.", "files": ["docs/security/checklist.md"] }
+        { "id": "S-7.1", "title": "Create cache health monitoring endpoint", "done": false, "details": "Create GET /api/performance/cache with cache hit/miss counts per layer, TTL configs, active entries, and Redis status.", "files": ["src/app/api/performance/cache/route.ts"] },
+        { "id": "S-7.2", "title": "Create performance dashboard with cache metrics", "done": false, "details": "Write docs/performance/dashboard.md with cache hit rate, API response times, page load metrics, and Lighthouse scores.", "files": ["docs/performance/dashboard.md"] },
+        { "id": "S-7.3", "title": "Run Lighthouse audit and document baseline", "done": false, "details": "Run Lighthouse on all page types. Document baseline scores. Create docs/performance/lighthouse-baseline.md.", "files": ["docs/performance/lighthouse-baseline.md"] },
+        { "id": "S-7.4", "title": "Add caching documentation to AGENTS.md and create skill", "done": false, "details": "Add 'smart-caching' entry to AGENTS.md. Create .agents/skills/run-smart-caching/SKILL.md.", "files": ["AGENTS.md", ".agents/skills/run-smart-caching/SKILL.md"] },
+        { "id": "S-7.5", "title": "Update README with performance badges", "done": false, "details": "Add Lighthouse score badge, cache hit rate badge, and performance section to README.md.", "files": ["README.md"] }
       ]
     }
   ],
   "phases": [
-    { "id": "PHASE-1", "label": "Bootstrap & recon", "epics": ["EPIC-0", "EPIC-1"] },
-    { "id": "PHASE-2", "label": "Vulnerability scanning", "epics": ["EPIC-2", "EPIC-3"] },
-    { "id": "PHASE-3", "label": "Infrastructure & CI/CD", "epics": ["EPIC-4", "EPIC-5"] },
-    { "id": "PHASE-4", "label": "Remediation", "epics": ["EPIC-6"] },
-    { "id": "PHASE-5", "label": "Documentation & showcase", "epics": ["EPIC-7", "EPIC-8"] },
-    { "id": "PHASE-6", "label": "Advanced playbooks", "epics": ["EPIC-9"] },
-    { "id": "PHASE-7", "label": "Code hardening", "epics": ["EPIC-10"] },
-    { "id": "PHASE-8", "label": "Showcase & monitoring", "epics": ["EPIC-11", "EPIC-12"] },
-    { "id": "PHASE-9", "label": "Compliance & coverage", "epics": ["EPIC-13"] }
+    { "id": "PHASE-1", "label": "Strategy & audit", "epics": ["EPIC-0"] },
+    { "id": "PHASE-2", "label": "CMS caching", "epics": ["EPIC-1"] },
+    { "id": "PHASE-3", "label": "API caching", "epics": ["EPIC-2"] },
+    { "id": "PHASE-4", "label": "Static optimization", "epics": ["EPIC-3"] },
+    { "id": "PHASE-5", "label": "Client caching", "epics": ["EPIC-4"] },
+    { "id": "PHASE-6", "label": "Image & media", "epics": ["EPIC-5"] },
+    { "id": "PHASE-7", "label": "CDN & edge", "epics": ["EPIC-6"] },
+    { "id": "PHASE-8", "label": "Monitoring", "epics": ["EPIC-7"] }
   ]
 }
