@@ -6,6 +6,7 @@ This file is the entry point for any agent (opencode, future coding agents, or h
 
 - `run-react-doctor` — how to read the react-doctor report, the 12-rule catalog, the score model
 - `fix-react-doctor-finding` — step-by-step fix workflow for one finding
+- `run-pentestagent` — how to set up, configure, and run PentestAgent AI security scans against the portfolio
 - `add-a-new-skill` — how to add another agent skill
 - `add-an-experience`, `add-a-project`, `add-a-certification`, `add-a-blog-post` — content workflows
 - `update-the-hero` — hero block editing
@@ -21,6 +22,18 @@ This file is the entry point for any agent (opencode, future coding agents, or h
 - Find the canonical fix pattern for each rule in the `run-react-doctor` skill
 
 If you change code in `src/**` and the score drops, follow `fix-react-doctor-finding` and commit the fix in the same PR.
+
+## Security testing (PentestAgent)
+
+- Tool: [PentestAgent](https://github.com/GH05TCREW/pentestagent) — AI agent framework for black-box security testing
+- Config: `docs/security/pentestagent/config/`
+- Playbooks: `docs/security/pentestagent/playbooks/` (recon, XSS, CSRF, SSRF, injection, API fuzz, rate limiting, and more)
+- Setup: `scripts/setup-pentestagent.ps1` (Windows) or `scripts/setup-pentestagent.sh` (Unix)
+- CI gate: `.github/workflows/pentestagent-ci.yml`, `.github/workflows/pentestagent-scheduled.yml`, `.github/workflows/pentestagent-pr-check.yml`
+- Dashboard: `docs/security/dashboard.md`
+- Skill: `run-pentestagent`
+
+Local Python 3.8 is insufficient (3.10+ required). The CI pipeline is the primary execution environment. See the `run-pentestagent` skill for setup and playbook execution instructions.
 
 ## Commit hygiene
 
