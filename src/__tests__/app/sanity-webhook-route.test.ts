@@ -47,8 +47,8 @@ describe('/api/sanity/webhook route', () => {
     expect(response.status).toBe(200);
     expect(response.headers.get('cache-control')).toBe('no-store, max-age=0');
     expect(revalidatePathMock).toHaveBeenCalledWith('/', 'page');
-    expect(revalidatePathMock).toHaveBeenCalledWith('/blog', 'page');
-    expect(revalidatePathMock).toHaveBeenCalledWith('/blog/[slug]', 'page');
     expect(revalidatePathMock).toHaveBeenCalledWith('/sitemap.xml', 'page');
+    expect(revalidatePathMock).not.toHaveBeenCalledWith('/blog', 'page');
+    expect(revalidatePathMock).not.toHaveBeenCalledWith('/blog/[slug]', 'page');
   });
 });

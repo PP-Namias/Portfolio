@@ -29,8 +29,14 @@ vi.mock('next/link', () => ({
   ),
 }));
 
+vi.mock('next/navigation', () => ({
+  useSearchParams: () => new URLSearchParams(),
+  useRouter: () => ({ push: vi.fn(), replace: vi.fn(), refresh: vi.fn(), back: vi.fn(), forward: vi.fn() }),
+  usePathname: () => '/',
+}));
+
 vi.mock('next/font/google', () => ({
-  Inter: () => ({ variable: 'mock-inter' }),
+  Inter: () => ({ variable: 'mock-inter', className: 'mock-inter', style: {} }),
 }));
 
 vi.mock('next-themes', () => ({
@@ -161,6 +167,6 @@ describe('app layout and page coverage', () => {
 
     expect(screen.getByText('Page not found')).toBeInTheDocument();
     expect(screen.getByText('Back to Home').closest('a')).toHaveAttribute('href', '/');
-    expect(screen.getByText('Blog').closest('a')).toHaveAttribute('href', '/blog');
+    expect(screen.getByText('Blog').closest('a')).toHaveAttribute('href', '/?modal=blog');
   });
 });

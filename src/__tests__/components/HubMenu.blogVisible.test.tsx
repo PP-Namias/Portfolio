@@ -139,24 +139,25 @@ describe('HubMenu with blog feature enabled', () => {
     vi.clearAllMocks();
   });
 
-  it('renders blog menu item with internal href', () => {
+  it('renders blog menu item that opens the blog modal', () => {
     render(<HubMenu onClose={mockOnClose} onOpenChat={mockOnOpenChat} />);
 
     expect(screen.getByText('Read Blog')).toBeInTheDocument();
     expect(screen.getByText('Latest articles & tutorials')).toBeInTheDocument();
 
-    const blogLink = screen.getByText('Read Blog').closest('a');
-    expect(blogLink).toHaveAttribute('href', '/blog');
+    const blogButton = screen.getByText('Read Blog').closest('button');
+    expect(blogButton).toBeInTheDocument();
+    expect(blogButton).not.toHaveAttribute('href', '/blog');
   });
 
-  it('closes menu when blog item is clicked', () => {
+  it('opens blog modal and closes menu when blog item is clicked', () => {
     render(<HubMenu onClose={mockOnClose} onOpenChat={mockOnOpenChat} />);
 
-    const blogLink = screen.getByText('Read Blog').closest('a');
-    blogLink?.addEventListener('click', (event) => event.preventDefault());
-    if (blogLink) {
-      fireEvent.click(blogLink);
+    const blogButton = screen.getByText('Read Blog').closest('button');
+    if (blogButton) {
+      fireEvent.click(blogButton);
     }
     expect(mockOnClose).toHaveBeenCalledTimes(1);
+    expect(mockOpenModal).toHaveBeenCalledWith('blog');
   });
 });
