@@ -1,158 +1,237 @@
 {
-  "project": "Namias Portfolio - One-Page Refactor",
-  "codeName": "one-page-portfolio",
+  "project": "Namias Portfolio - One-Page Resume-Style Refactor",
+  "codeName": "one-page-resume",
   "version": "1.0.0",
   "owner": "Jhon Keneth Ryan Namias (PP Namias)",
   "contact": "pp.namias@gmail.com",
   "lastUpdated": "2026-06-05",
-  "branch": "refactor/one-page-portfolio",
+  "branch": "refactor/one-page-resume",
+  "buildsOn": "refactor/one-page-portfolio (PR #256, draft - blog modals + 301 redirects, build broken on CI)",
   "links": {
     "marketing": "https://namias.tech",
     "studio": "https://namias-cms.sanity.studio",
     "repo": "https://github.com/PP-Namias/Portfolio"
   },
-  "summary": "Collapse the Namias portfolio into a true single-page application. The root page is a self-contained resume-style site where every section (hero, about, experience, projects, contact, blog) is inline or triggered as a modal. Remove the /blog and /blog/[slug] routes entirely; old URLs 301-redirect to / with an auto-open modal query parameter. Keep /studio (Sanity CMS) and /api/* (backend). The result: simplicity, direct access, and a resume-like reading flow.",
-  "narrative": "The portfolio is a Next.js 16 App Router site with Sanity CMS. The current public surface is /, /blog, /blog/[slug], and /studio. The / route already has all the resume-like sections inline (hero, about, tech stack, projects, experience, connect, certifications, gallery). The /blog and /blog/[slug] pages are full-page routes that compete for attention and add SEO/spam surface. The owner wants a clean resume-style experience: scroll once, see everything, and have blog content available as a modal without leaving the page. This refactor removes the /blog routes, wires blog content into two stacked modals (list + detail), updates all internal links to open modals instead of navigating, and adds 301 redirects for SEO preservation. The visual layout (two-column 62%/38% grid) stays intact — only the routing and modal wiring change.",
+  "summary": "Convert the Namias portfolio into a true one-page resume. All content lives on / and is presented in a compact 2-column resume layout (header on top, ~38% left column for contact/skills/education, ~62% right column for summary/experience/projects). Deep content (resume PDF, blog list, blog post, project detail, role detail, contact form, booking) opens as modals. /blog was already removed in the precursor branch; /contact was never a route (always a modal). No new routes are added. The precursor branch's modal work is folded in; this branch adds the Suspense boundary fix that unblocks the failing CI checks (CodeQL, Vercel, Workers Builds) and the visual redesign.",
+  "narrative": "The portfolio is a Next.js 16 App Router site. The current public surface is /, /studio, and /api/*. PR #256 (precursor) removed /blog and added blog modals, but it broke the static prerender of /_not-found because useSearchParams() in ModalAutoOpen is not wrapped in a Suspense boundary. This causes CodeQL Analysis, Vercel, and Workers Builds to all fail with the same error. This branch fixes that build error and, in parallel, redesigns the / page to feel like a clean, scannable resume. The current 2-column grid with sticky sidebars is replaced by a tighter compact 2-column layout that reads top-to-bottom. The goal: simplicity and directness. A visitor lands on / and sees the equivalent of a one-page CV with everything reachable in two clicks (or zero, for inline details).",
   "principles": [
-    "One scroll, one page — visitors should never need to leave / to consume any content.",
-    "Modals, not routes — long-form content (blog, contact, booking) is presented in modals, not new pages.",
-    "Preserve SEO — old /blog and /blog/[slug] URLs 301 to / with a query param that auto-opens the right modal.",
-    "Resume-like readability — keep the existing 62%/38% two-column grid; sections flow top to bottom.",
-    "No new public surface — the only public routes are /, /studio, and /api/*. No new pages.",
-    "Each slice is a commit — page removal, modal creation, link rewiring, redirects, sitemap, tests, docs are all separate commits.",
-    "No behaviour change for studio/api — Sanity CMS and backend routes are untouched."
+    "Only one public content page: /. /studio is the CMS (admin). /api/* is the backend. Nothing else.",
+    "Resume-like, not marketing-page-like — header on top, two compact columns below, no sticky sidebars, no heavy card wrappers between sections.",
+    "Modals, not routes — every deep view (resume PDF, blog, project, role, contact, booking) opens in a modal.",
+    "Preserve SEO — /blog/:slug 301s to /?modal=blog-post&slug=:slug so old inbound links keep working.",
+    "Fix the build first — the Suspense boundary around ModalAutoOpen unblocks all three failing CI checks. The visual redesign can be reviewed independently once the build is green.",
+    "Each slice is a commit — Suspense fix, home page redesign, test updates, docs are all separate commits.",
+    "No regression — 269/269 tests stay green, react-doctor stays at 0 diagnostics."
   ],
   "personas": [
     {
-      "id": "P-OWNER",
-      "label": "PP Namias (owner)",
-      "goals": ["Single-page portfolio with all content accessible from /", "Resume-like simplicity for hiring managers", "Preserve SEO of existing /blog URLs"],
-      "painPointsToday": ["Two competing public surfaces (/ and /blog)", "Blog list and detail pages dilute the main portfolio focus", "Visitors may not scroll through all sections if they navigate away to /blog"]
+      "name": "Recruiter / Hiring Manager",
+      "needs": [
+        "See the full picture in 30 seconds",
+        "Quickly find contact info, current role, key skills",
+        "Open the resume PDF without leaving the page",
+        "Send a message or book a meeting from the same page"
+      ]
     },
     {
-      "id": "P-VISITOR",
-      "label": "Hiring manager / portfolio reviewer",
-      "goals": ["See all relevant info in one place", "Read blog posts without losing the portfolio context", "Quickly find the resume download"],
-      "painPointsToday": ["Has to navigate to /blog to read posts, loses the home page context", "Back-button churn between / and /blog", "Two-column layout already exists but is split across pages"]
+      "name": "Technical peer",
+      "needs": [
+        "Read detailed experience and project case studies",
+        "Skim the tech stack",
+        "Open a specific blog post to evaluate writing",
+        "See GitHub, LinkedIn, Cal.com links inline"
+      ]
     },
     {
-      "id": "P-AGENT",
-      "label": "OpenCode / future coding agent",
-      "goals": ["Single page route to test", "No surprising route handling in the public surface", "Clear modal trigger pattern (openModal('blog') etc.)"],
-      "painPointsToday": ["Multiple page routes to reason about", "Need to know which modals exist and how to open them"]
+      "name": "Friend / family",
+      "needs": [
+        "One page, no hunting — see what I'm up to and how to reach me",
+        "Read a recent blog post or look at photos",
+        "Mobile-friendly"
+      ]
     }
   ],
-  "successMetrics": {
-    "primary": [
-      "Only one public page route (/), plus /studio and /api/*",
-      "All 100% of internal /blog links open a modal, none navigate",
-      "All old /blog and /blog/[slug] URLs return HTTP 301 to /",
-      "Zero visible behaviour change for the home page"
+  "publicSurface": {
+    "current": [
+      { "path": "/", "type": "page", "purpose": "Home — the only public content page (resume-style)" },
+      { "path": "/studio", "type": "page", "purpose": "Sanity CMS (admin-only, no public consumption)" },
+      { "path": "/api/*", "type": "route", "purpose": "Backend API (chat, webhooks, media, security)" },
+      { "path": "/opengraph-image", "type": "asset", "purpose": "OG image generator" },
+      { "path": "/twitter-image", "type": "asset", "purpose": "Twitter card image generator" },
+      { "path": "/sitemap.xml", "type": "asset", "purpose": "SEO sitemap" },
+      { "path": "/robots.txt", "type": "asset", "purpose": "Robots policy" },
+      { "path": "/manifest.webmanifest", "type": "asset", "purpose": "PWA manifest" }
     ],
-    "secondary": [
-      "Lighthouse Performance score unchanged or improved",
-      "All existing 266 tests still pass",
-      "Sitemap contains only / and /studio",
-      "AGENTS.md updated with the new routing model"
+    "deletedInPrecursor": [
+      { "path": "/blog", "type": "page", "replacedBy": "/?modal=blog" },
+      { "path": "/blog/:slug", "type": "page", "replacedBy": "/?modal=blog-post&slug=:slug" }
+    ],
+    "modalCatalog": [
+      { "name": "resume", "component": "ResumeModal", "triggeredBy": "Header, NavBar, HubMenu", "payload": "none" },
+      { "name": "experience", "component": "ExperienceModal", "triggeredBy": "Experience timeline items", "payload": "Experience" },
+      { "name": "booking", "component": "BookingModal", "triggeredBy": "Header CTA, HubMenu", "payload": "none" },
+      { "name": "contact", "component": "ContactModal", "triggeredBy": "Header CTA, NavBar, HubMenu", "payload": "none" },
+      { "name": "project", "component": "ProjectDetailModal", "triggeredBy": "Project cards", "payload": "Project" },
+      { "name": "blog", "component": "BlogListModal", "triggeredBy": "Header, HubMenu, NavBar", "payload": "none" },
+      { "name": "blog-post", "component": "BlogPostModal", "triggeredBy": "Blog list cards, deep links", "payload": "string (slug)" }
     ]
   },
   "epics": [
     {
       "id": "EPIC-0",
-      "title": "Audit & plan",
-      "status": "planned",
-      "summary": "Inventory all routes, internal links, and external integrations that reference /blog or /contact. Document the route removal plan and the modal-trigger contract.",
-      "value": "high",
-      "complexity": "low",
+      "title": "PRD + audit",
+      "goal": "Document the scope and lock in the public surface contract.",
       "stories": [
-        { "id": "S-0.1", "title": "Inventory all references to /blog and /contact", "done": false, "details": "Grep the codebase for href='/blog, Link to /blog, /blog/[slug] in tests, sitemap entries, revalidatePath calls, and Sanity webhooks. Produce a one-page report at docs/refactor/one-page/route-inventory.md.", "files": ["docs/refactor/one-page/route-inventory.md"] },
-        { "id": "S-0.2", "title": "Define modal trigger contract", "done": false, "details": "Document the openModal(name) contract, the new modal names ('blog', 'blog-post'), and the URL ?modal=blog&slug=foo convention for auto-open. Save to docs/refactor/one-page/modal-contract.md.", "files": ["docs/refactor/one-page/modal-contract.md"] }
-      ]
+        "S-0.1 Write prd.json (this file) with the approved scope and resume-style intent",
+        "S-0.2 Audit: list all current routes (/) and confirm none are content routes besides / and /studio",
+        "S-0.3 Confirm all 7 modals exist (resume, experience, booking, contact, project, blog, blog-post)",
+        "S-0.4 Update docs/refactor/one-page/modal-contract.md with the resume-style intent"
+      ],
+      "exitCriteria": "PRD is committed, route audit doc updated, modal contract confirms 7 modals",
+      "dependsOn": []
     },
     {
       "id": "EPIC-1",
-      "title": "Build blog modals",
-      "status": "planned",
-      "summary": "Create BlogListModal and BlogPostModal that read from the existing CMS content provider. Mount both inside ModalProvider alongside the existing modals (resume, experience, booking, contact, project).",
-      "value": "high",
-      "complexity": "medium",
+      "title": "Fix build (Suspense boundary)",
+      "goal": "Wrap ModalAutoOpen in <Suspense> so the static prerender of /_not-found does not fail. This unblocks CodeQL, Vercel, and Workers Builds.",
       "stories": [
-        { "id": "S-1.1", "title": "Create BlogListModal component", "done": false, "details": "Create src/components/ui/BlogListModal.tsx. Use the existing Modal primitive. Read blogPosts from useCmsContent. Render a scrollable list of cards. Each card opens BlogPostModal with the post slug.", "files": ["src/components/ui/BlogListModal.tsx"] },
-        { "id": "S-1.2", "title": "Create BlogPostModal component", "done": false, "details": "Create src/components/ui/BlogPostModal.tsx. Use the existing Modal primitive. Take a slug prop. Find the post in useCmsContent.blogPosts. Render title, date, readTime, tags, coverImage, body (portableTextToMarkdown or similar). Back button returns to the list.", "files": ["src/components/ui/BlogPostModal.tsx"] },
-        { "id": "S-1.3", "title": "Mount the new modals in ModalProvider", "done": false, "details": "Update src/hooks/useModal.tsx to mount BlogListModal and BlogPostModal. Extend the ModalName union type to include 'blog' and 'blog-post'. Track activeBlogSlug in context state.", "files": ["src/hooks/useModal.tsx", "src/types/index.ts"] }
-      ]
+        "S-1.1 Import Suspense from React in providers.tsx",
+        "S-1.2 Wrap <ModalAutoOpen /> in <Suspense fallback={null}></Suspense>",
+        "S-1.3 Run npx tsc --noEmit (must pass)",
+        "S-1.4 Run npm run build locally to confirm the static prerender of /404 succeeds",
+        "S-1.5 Run npm run test (must remain 269/269)",
+        "S-1.6 Commit: 'fix(build): wrap ModalAutoOpen in Suspense to unblock static prerender'"
+      ],
+      "exitCriteria": "npm run build passes locally; the /_not-found static export no longer errors with 'useSearchParams() should be wrapped in a suspense boundary'",
+      "dependsOn": []
     },
     {
       "id": "EPIC-2",
-      "title": "Rewire internal links",
-      "status": "planned",
-      "summary": "Replace every href='/blog' and Link to /blog with a button or trigger that opens the blog modal. Remove the now-unused BlogListClient and BlogPostContent components (or keep them as modal internals).",
-      "value": "high",
-      "complexity": "medium",
+      "title": "Compact 2-column resume-style home page",
+      "goal": "Redesign / as a tight, scannable CV. Header on top with name/title/contact, then two compact columns: left ~38% for skills/education/certifications, right ~62% for summary/experience/projects. Remove the sticky sidebars, remove heavy Card wrappers between sections, use horizontal rules as section dividers.",
       "stories": [
-        { "id": "S-2.1", "title": "Rewire HubMenu blog link to open the modal", "done": false, "details": "Update src/components/ui/HubMenu.tsx: change the 'Read Blog' item to call openModal('blog') on click instead of navigating to /blog.", "files": ["src/components/ui/HubMenu.tsx"] },
-        { "id": "S-2.2", "title": "Rewire HeroSection blog CTA to open the modal", "done": false, "details": "Update src/components/sections/HeroSection.tsx: change the 'Read blog' link to call openModal('blog') on click.", "files": ["src/components/sections/HeroSection.tsx"] },
-        { "id": "S-2.3", "title": "Remove or repurpose BlogListClient and BlogPostContent", "done": false, "details": "Delete src/app/blog/BlogListClient.tsx, src/app/blog/[slug]/BlogPostContent.tsx, and the directory src/app/blog if no longer needed. Or reuse them as internal templates for the modals (prefer delete to keep the codebase small).", "files": ["src/app/blog/BlogListClient.tsx", "src/app/blog/[slug]/BlogPostContent.tsx", "src/app/blog/"] }
-      ]
+        "S-2.1 Rewrite src/app/page.tsx to a 2-column grid (38% / 62%) with no sticky logic, no resize observer",
+        "S-2.2 Refactor HeroSection to be a compact header (name + title + contact row + socials) - all on one card, no two-row layout",
+        "S-2.3 Refactor the home page to use <hr> dividers between sections instead of stacked Card wrappers",
+        "S-2.4 Pull the 'connect' CTAs (resume/contact/booking) into the header as a compact button row",
+        "S-2.5 Inline the summary (AboutSection) in the right column above Experience",
+        "S-2.6 Inline Skills (TechStackSection) in the left column above Education",
+        "S-2.7 Move Education & Certifications into the left column",
+        "S-2.8 Move Experience and Projects into the right column (in that order)",
+        "S-2.9 Hide the Gallery section on mobile (or remove from the new compact layout); keep it as a compact section on desktop only",
+        "S-2.10 Add a tiny 'Last updated' timestamp to the footer",
+        "S-2.11 Update Footer.tsx to be minimal: copyright, year, social icons, last-updated",
+        "S-2.12 Run npx tsc --noEmit, npm run lint, npm run test, npm run doctor:check",
+        "S-2.13 Commit: 'feat(home): redesign / as a compact 2-column resume-style page'"
+      ],
+      "exitCriteria": "Visual diff: / is now a single-card header + 2-column body + minimal footer. No sticky sidebars. All sections reachable in one scroll. All modals still trigger correctly. 269/269 tests pass.",
+      "dependsOn": ["EPIC-1"]
     },
     {
       "id": "EPIC-3",
-      "title": "Delete /blog routes and add 301 redirects",
-      "status": "planned",
-      "summary": "Delete src/app/blog/page.tsx and src/app/blog/[slug]/page.tsx. Add a 301 redirect from /blog and /blog/[slug] to /?modal=blog[&slug=...]. Use next.config.js redirects.",
-      "value": "high",
-      "complexity": "low",
+      "title": "Update tests for the new layout",
+      "goal": "Make sure tests still pass and add a snapshot/integration test for the new layout.",
       "stories": [
-        { "id": "S-3.1", "title": "Delete the /blog routes", "done": false, "details": "Remove src/app/blog/page.tsx and src/app/blog/[slug]/page.tsx (and the blog directory if empty).", "files": ["src/app/blog/"] },
-        { "id": "S-3.2", "title": "Add 301 redirects in next.config.js", "done": false, "details": "Add redirects: /blog -> /?modal=blog (permanent), /blog/:slug -> /?modal=blog&slug=:slug (permanent).", "files": ["next.config.js"] },
-        { "id": "S-3.3", "title": "Auto-open the blog modal on root when ?modal= is set", "done": false, "details": "In the root page or a small client wrapper, read the URL search params on mount. If modal=blog, call openModal('blog'). If modal=blog and slug is set, call openModal('blog-post', slug) and also open the list behind it (or just open the post directly).", "files": ["src/app/page.tsx", "src/app/ModalAutoOpen.tsx"] }
-      ]
+        "S-3.1 Update src/__tests__/app/app-layout-page.test.tsx — 'Home page renders all major section blocks' should still pass with the new layout (sections are present, just reorganized)",
+        "S-3.2 Add src/__tests__/app/resume-layout.test.tsx — asserts that the home page has: a header, a 2-column grid, no sticky sidebars, and inline sections",
+        "S-3.3 Update src/__tests__/app/app-metadata.test.tsx if footer copy changes",
+        "S-3.4 Run npm run test -- --run (must be all green)",
+        "S-3.5 Run npm run doctor:check (must be 0 diagnostics)",
+        "S-3.6 Commit: 'test(resume): update layout tests and add resume-layout snapshot'"
+      ],
+      "exitCriteria": "All tests pass; new resume-layout test asserts the new structure",
+      "dependsOn": ["EPIC-2"]
     },
     {
       "id": "EPIC-4",
-      "title": "Sitemap, webhooks, SEO cleanup",
-      "status": "planned",
-      "summary": "Remove /blog entries from the sitemap. Remove /blog revalidation paths from the Sanity webhook. Update the live endpoint paths constant. Update robots meta if needed.",
-      "value": "medium",
-      "complexity": "low",
+      "title": "Verify CI passes",
+      "goal": "Confirm the build is green on the actual CI pipeline.",
       "stories": [
-        { "id": "S-4.1", "title": "Trim sitemap to / and /studio", "done": false, "details": "Update src/app/sitemap.ts to remove the /blog entry and the blogEntries loop. Keep only the static / and /studio entries.", "files": ["src/app/sitemap.ts"] },
-        { "id": "S-4.2", "title": "Remove /blog revalidation from webhooks", "done": false, "details": "Update src/app/api/sanity/webhook/route.ts and src/app/api/sanity/live/route.ts to remove /blog and /blog/[slug] from REVALIDATE_PATHS. Keep the cms:blog cache tag invalidation so the in-memory CMS cache still updates when posts change.", "files": ["src/app/api/sanity/webhook/route.ts", "src/app/api/sanity/live/route.ts"] }
-      ]
+        "S-4.1 Push the branch to origin",
+        "S-4.2 Open a new PR",
+        "S-4.3 Confirm CodeQL Analysis passes (was failing)",
+        "S-4.4 Confirm Vercel deployment succeeds (was failing)",
+        "S-4.5 Confirm Workers Builds: namias passes (was failing)",
+        "S-4.6 Confirm Dependency Audit, Security Summary, PentestAgent checks still pass"
+      ],
+      "exitCriteria": "All 9 CI checks pass on the new PR",
+      "dependsOn": ["EPIC-1", "EPIC-2", "EPIC-3"]
     },
     {
       "id": "EPIC-5",
-      "title": "Tests & verification",
-      "status": "planned",
-      "summary": "Update the 4 test files that assert the old /blog link/URL behaviour. Add new tests for the blog modal and the 301 redirect. Verify typecheck, lint, build, and the 266 existing tests still pass.",
-      "value": "high",
-      "complexity": "medium",
+      "title": "Docs + skill update",
+      "goal": "Document the new architecture and add an agent skill for future work.",
       "stories": [
-        { "id": "S-5.1", "title": "Update tests that reference /blog links", "done": false, "details": "Update src/__tests__/components/ui-uncovered.test.tsx, src/__tests__/components/HubMenu.blogVisible.test.tsx, src/__tests__/app/app-layout-page.test.tsx, and any other test that asserts href='/blog' to instead assert that clicking opens the blog modal.", "files": ["src/__tests__/components/ui-uncovered.test.tsx", "src/__tests__/components/HubMenu.blogVisible.test.tsx", "src/__tests__/app/app-layout-page.test.tsx"] },
-        { "id": "S-5.2", "title": "Add tests for the blog modal and the 301 redirect", "done": false, "details": "Create src/__tests__/components/BlogListModal.test.tsx and BlogPostModal.test.tsx. Verify the modal renders the post list / detail. Verify the next.config.js redirects object contains the 301 mappings.", "files": ["src/__tests__/components/BlogListModal.test.tsx", "src/__tests__/components/BlogPostModal.test.tsx"] },
-        { "id": "S-5.3", "title": "Full verification", "done": false, "details": "Run npx tsc --noEmit, npm run lint, npm run test -- --run, npm run doctor:check. All must pass with zero errors.", "files": [] }
-      ]
+        "S-5.1 Update docs/refactor/one-page/architecture.md with the resume-style intent and the new layout",
+        "S-5.2 Add a new section: 'Resume-style home page' with the section order, column split, and visual hierarchy",
+        "S-5.3 Update .agents/skills/one-page-portfolio/SKILL.md to mention the resume-style redesign and the Suspense boundary requirement",
+        "S-5.4 Update AGENTS.md if needed (no new skill needed; one-page-portfolio skill already exists)",
+        "S-5.5 Commit: 'docs(resume): update architecture doc with resume-style layout'"
+      ],
+      "exitCriteria": "Docs reflect the new design; skill mentions the Suspense requirement",
+      "dependsOn": ["EPIC-2"]
     },
     {
       "id": "EPIC-6",
-      "title": "Documentation",
-      "status": "planned",
-      "summary": "Update AGENTS.md with the new routing model. Add docs/refactor/one-page/ summary. Mark the new 'one-page-portfolio' skill entry.",
-      "value": "low",
-      "complexity": "low",
+      "title": "Update PR #256 description or close in favor of new PR",
+      "goal": "Make it clear that the new PR supersedes PR #256.",
       "stories": [
-        { "id": "S-6.1", "title": "Update AGENTS.md with the one-page skill entry", "done": false, "details": "Add 'one-page-portfolio' to the skills list in AGENTS.md. Document the new modal trigger contract and the public route surface.", "files": ["AGENTS.md"] },
-        { "id": "S-6.2", "title": "Add one-page architecture summary", "done": false, "details": "Create docs/refactor/one-page/architecture.md with a one-page diagram and a table of modal triggers.", "files": ["docs/refactor/one-page/architecture.md"] }
-      ]
+        "S-6.1 Close PR #256 with a comment pointing to the new PR (folds the prior work into the new branch)",
+        "S-6.2 Add a 'supersedes #256' note to the new PR description",
+        "S-6.3 Add the same note to docs/refactor/one-page/architecture.md"
+      ],
+      "exitCriteria": "PR #256 is closed; new PR is the canonical one-page resume refactor",
+      "dependsOn": ["EPIC-4"]
     }
   ],
-  "phases": [
-    { "id": "PHASE-1", "label": "Audit & plan", "epics": ["EPIC-0"], "status": "planned" },
-    { "id": "PHASE-2", "label": "Build modals", "epics": ["EPIC-1"], "status": "planned" },
-    { "id": "PHASE-3", "label": "Rewire links", "epics": ["EPIC-2"], "status": "planned" },
-    { "id": "PHASE-4", "label": "Delete routes & redirect", "epics": ["EPIC-3"], "status": "planned" },
-    { "id": "PHASE-5", "label": "SEO cleanup", "epics": ["EPIC-4"], "status": "planned" },
-    { "id": "PHASE-6", "label": "Tests & verification", "epics": ["EPIC-5"], "status": "planned" },
-    { "id": "PHASE-7", "label": "Documentation", "epics": ["EPIC-6"], "status": "planned" }
+  "risks": [
+    {
+      "risk": "useSearchParams() bails out the static export for any page that contains the Providers tree. The /_not-found page is the one that breaks first because it's auto-generated.",
+      "mitigation": "Wrap ModalAutoOpen in <Suspense fallback={null}>. This is the standard Next.js fix and is documented in the official error message."
+    },
+    {
+      "risk": "The visual redesign could break the existing visual design language or the 62%/38% grid that the user liked.",
+      "mitigation": "Use a 38%/62% compact 2-column grid (similar to the existing 62%/38% but inverted roles for the new context). Keep Card wrapper on the hero; use <hr> between sections inside one big wrapper. Avoid changing the colour palette or typography."
+    },
+    {
+      "risk": "The 2-column layout may not fit well on mobile.",
+      "mitigation": "Stack to single column below 1024px. The 2-column split only applies at lg breakpoint. This is the same pattern as the current 62%/38% grid."
+    },
+    {
+      "risk": "The Suspense fix might unmount ModalAutoOpen between transitions and cause double-open on the same modal.",
+      "mitigation": "The lastHandled ref already guards against re-opening the same modal twice. Tested in PR #256 with 4 ModalAutoOpen tests."
+    },
+    {
+      "risk": "Closing PR #256 might be seen as wasted work.",
+      "mitigation": "PR #256's commits are folded into the new branch. The new branch's history will include all of PR #256's commits plus the new work. The PR body will reference PR #256 as a precursor."
+    }
+  ],
+  "verification": {
+    "local": [
+      "npx tsc --noEmit (0 errors)",
+      "npm run lint (0 errors, 3 pre-existing warnings)",
+      "npm run test -- --run (all pass, target 270+ with the new resume-layout test)",
+      "npm run doctor:check (0 diagnostics, exit 0)",
+      "npm run build (must succeed; /_not-found prerender must not error)"
+    ],
+    "ci": [
+      "CodeQL Analysis: pass (was failing on PR #256)",
+      "Vercel: pass (was failing on PR #256)",
+      "Workers Builds: namias: pass (was failing on PR #256)",
+      "Dependency Audit: pass",
+      "Security Summary: pass",
+      "PentestAgent setup: pass",
+      "PentestAgent security-pr-check: pass",
+      "Vercel Preview Comments: pass"
+    ]
+  },
+  "outOfScope": [
+    "Adding new routes",
+    "Adding new modals (the 7 existing modals are sufficient)",
+    "Rewriting the Sanity studio (kept as-is)",
+    "Rewriting any /api/* route",
+    "Internationalization (i18n) — not in scope",
+    "Theme customization beyond what is already in the codebase",
+    "Performance optimization beyond the existing smart-caching work (already merged to main)"
   ]
 }
