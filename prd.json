@@ -1,454 +1,594 @@
 {
-  "project": "Namias Portfolio - React Doctor Clinic",
-  "codeName": "clinic",
+  "project": "Namias Portfolio - PentestAgent Security Hardening",
+  "codeName": "pentestagent",
   "version": "1.0.0",
   "owner": "Jhon Keneth Ryan Namias (PP Namias)",
   "contact": "pp.namias@gmail.com",
-  "lastUpdated": "2026-06-03",
-  "branch": "feature/react-doctor-clinic",
+  "lastUpdated": "2026-06-04",
+  "branch": "security/pentestagent",
   "links": {
-    "reactDoctorRepo": "https://github.com/millionco/react-doctor",
-    "reactDoctorSite": "https://react.doctor",
+    "pentestagentRepo": "https://github.com/GH05TCREW/pentestagent",
+    "pentestagentDocs": "https://github.com/GH05TCREW/pentestagent#readme",
     "marketing": "https://namias.tech",
     "studio": "https://namias-cms.sanity.studio",
     "repo": "https://github.com/PP-Namias/Portfolio"
   },
-  "summary": "Integrate React Doctor (https://github.com/millionco/react-doctor) into the Namias portfolio marketing site and drive the codebase to a perfect 100/100 health score. The deliverable is a fully-wired integration: devDep install, baseline capture, per-category fixes, GitHub Action regression blocking, agent skill documentation, and a locked-in score threshold enforced on every PR.",
-  "narrative": "The portfolio today ships a lot of React across 50+ components: hero, projects, certifications, gallery, blog, floating hub, booking modal, resume modal, chat panel, command palette, motion wrappers, theme provider, lenis scroll root, and more. Without an enforced code-quality gate, the surface area has drifted into the anti-patterns React Doctor was built to catch: unmemoized callbacks, missing useMemo on derived values, exhaustive-deps violations, unkeyed list children, prop drilling, inline event handlers, forgotten effect cleanups, and stale closures. This slice installs the tool, captures the baseline, walks the codebase rule by rule, and ends with a CI check that blocks any PR that drops the score. The agent skill 'run-react-doctor' teaches future contributors (and agents) how to read the report, which rules are unavoidable, and how to fix each finding without breaking visual or functional parity.",
+  "summary": "Integrate PentestAgent (https://github.com/GH05TCREW/pentestagent) — an AI agent framework for black-box security testing — into the Namias portfolio to achieve top-tier security posture. Deliverables include automated reconnaissance playbooks, vulnerability scanning, API security testing, CI/CD security gates, remediation of all findings, and a comprehensive security dashboard showcasing the portfolio as a capstone security project.",
+  "narrative": "The Namias portfolio is a Next.js App Router marketing site with 50+ components, 6 API routes (chat, resume, media, sanity webhook, sanity live, draft-mode), Sanity CMS integration, Cal.com booking embeds, and Umami analytics. With this growing surface area, a proactive security posture is essential — not just defensive hardening (rate limiting, input sanitisation, env hygiene) but continuous automated black-box testing via PentestAgent. PentestAgent is a Python-based AI agent framework that orchestrates LLM-driven security agents for reconnaissance, vulnerability scanning, exploitation, and reporting. This slice installs PentestAgent, creates the configuration, writes custom playbooks for the portfolio's attack surface, runs the scans, remediates every finding, and integrates the results into CI/CD and a security dashboard. The deliverable is a reference-grade security programme that hiring managers can inspect as proof of the owner's security engineering skills.",
   "principles": [
-    "Score over opinion - the score is the contract; fixes must move it up, not be aesthetic.",
-    "One rule at a time, one commit at a time - the report is granular, the fixes should be too.",
-    "No behavior change without a screenshot - every fix keeps visual + functional parity; the playwright baseline must pass.",
-    "Ignore generated and test code, not hand-written code - .react-doctor.json scopes exclusions to the right paths.",
-    "CI is the source of truth - the local script is for iteration, the GitHub Action is the gate.",
-    "Document the why, not just the what - the agent skill explains each rule, the rationale, and the canonical fix pattern."
+    "Defence in depth — PentestAgent complements existing rate-limiting, input sanitisation, and env hygiene from the Security-Hardening branch.",
+    "Every finding is a commit — scan results, remediation commits, and re-verification each get their own commit for auditability.",
+    "Playbooks are reusable — each PentestAgent playbook targets a specific attack vector and can be re-run on demand.",
+    "CI is the enforcement point — automated scans run on every PR and on a schedule; failures block merges.",
+    "Document the journey — the security dashboard shows the full posture, not just the final score.",
+    "No behaviour change without verification — every remediation is verified by re-running the relevant scan."
   ],
   "personas": [
     {
-      "id": "P-MAINTAINER",
+      "id": "P-OWNER",
       "label": "PP Namias (owner)",
       "goals": [
-        "Keep the marketing site React-quality best-in-class without manual lint roulette.",
-        "Ship features without each new component regressing the score.",
-        "Trust the CI check to block regressions before they land."
+        "Demonstrate top-tier security engineering by making the portfolio itself the capstone project.",
+        "Have automated security scans that prove the site is hardened against OWASP Top 10 vectors.",
+        "Showcase a security dashboard that hiring managers can inspect."
       ],
       "painPointsToday": [
-        "No automated gate on React anti-patterns.",
-        "exhaustive-deps and react-hooks rules buried in eslint output, easy to skip.",
-        "No score history to compare against."
+        "No automated security scanning beyond npm audit.",
+        "No black-box testing against the live site.",
+        "No security dashboard or posture score to show."
       ]
     },
     {
       "id": "P-AGENT",
       "label": "OpenCode / future coding agent",
       "goals": [
-        "Read a single SKILL.md and know how to run, read, and fix React Doctor findings.",
-        "Be able to read the report and know which rules to silence (none, in our config) and which to fix (everything else).",
-        "Have a copy-pasteable fix template per rule category."
+        "Read a single SKILL.md and know how to run, read, and fix PentestAgent findings.",
+        "Be able to re-run any scan playbook and interpret the results.",
+        "Know which findings are fixable and which require architectural changes."
       ],
       "painPointsToday": [
-        "No runbook for react-doctor.",
-        "No baseline to compare against.",
-        "No list of allowed-vs-disallowed rule tweaks."
+        "No runbook for PentestAgent.",
+        "No baseline scan results to compare against.",
+        "No list of acceptable vs blocked playbook patterns."
       ]
     },
     {
       "id": "P-REVIEWER",
-      "label": "Hiring manager / reviewer",
+      "label": "Hiring manager / security reviewer",
       "goals": [
-        "See the React Doctor badge on the README + a green CI check on PRs.",
-        "Click into the per-PR comment and see the score delta and findings.",
-        "Trust that the score is real (not padded by exclusions of hand-written code)."
+        "See a comprehensive security dashboard with scan results, posture score, and fix commit history.",
+        "Click into any finding and see the remediation commit.",
+        "Trust that the security programme is real (not just documentation)."
       ],
       "painPointsToday": [
-        "No visible quality signal in the repo.",
-        "Hard to tell if the codebase is React-best-practice at a glance."
+        "No visible security posture signal in the repo.",
+        "Hard to distinguish between documented intentions and actual security controls.",
+        "No way to verify the site is tested regularly."
       ]
     }
   ],
   "successMetrics": {
     "primary": [
-      "React Doctor score is exactly 100/100 on src/** (excludes test files and generated code).",
-      "Every PR runs the react-doctor GitHub Action; the action blocks merges when the score drops.",
-      "react-doctor is installed as a devDep and runs in < 10 seconds on the current codebase."
+      "Every OWASP Top 10 category is covered by at least one PentestAgent playbook.",
+      "All API endpoints pass black-box testing with zero high-severity findings.",
+      "A scheduled CI workflow runs PentestAgent scans weekly and posts results as a CI artifact.",
+      "A security dashboard exists at docs/security/dashboard.md showing posture score and fix history."
     ],
     "secondary": [
-      "All 12 react-doctor rule categories report 0 findings on the marketing source tree.",
-      "An agent skill 'run-react-doctor' exists in .agents/skills/ with copy-pasteable fix recipes per rule.",
-      "A baseline report (FINDINGS.md) is committed at EPIC-1 close for historical comparison."
+      "Each playbook has a documented runbook in docs/security/playbooks/.",
+      "All findings are tracked in a findings ledger with status, severity, and fix commit.",
+      "The security.txt file is deployed at /.well-known/security.txt."
     ],
     "demo": [
-      "Local: `npm run doctor` prints the score, lists zero findings, exits 0.",
-      "CI: a draft PR with a deliberate exhaustive-deps violation is blocked with a clear comment.",
-      "Skill: an agent can read .agents/skills/run-react-doctor/SKILL.md and fix a finding without further help."
+      "Local: python pentestagent run -t https://namias.tech --playbook portfolio_recon yields structured findings.",
+      "CI: A PR with a deliberate security regression is blocked by the PentestAgent check.",
+      "Dashboard: docs/security/dashboard.md shows green/amber/red per category with history."
     ]
   },
   "antiPatterns": [
-    "Silencing rules wholesale via config to game the score - the score is the contract.",
-    "Bypassing the GitHub Action via admin merge - the action must stay green.",
-    "Refactoring for the score in a way that breaks the visual baseline - playwright must pass.",
-    "Touching test files for the score - test files are out of scope (.react-doctor.json excludes src/__tests__/**).",
-    "Touching generated code (next-env.d.ts, .next/**, studio/dist/**) - out of scope."
+    "Running PentestAgent against production without proper rate-limiting safeguards — scans must respect robots.txt and use reasonable delays.",
+    "Committing API keys or secrets in PentestAgent config files — all secrets go in .env.",
+    "Silencing findings without fixing them — every legitimate finding must have a corresponding remediation commit.",
+    "Touching production data during scans — scans run against the live site but only use GET/HEAD for recon and safe POST payloads for API testing.",
+    "PentestAgent findings becoming stale — scans must be re-runnable and results timestamped."
   ],
-  "ruleCatalog": [
-    { "id": "R-GIANT", "label": "Giant components", "fix": "Extract sub-components; aim for < 200 lines per component." },
-    { "id": "R-DEPS", "label": "Exhaustive dependencies", "fix": "Add the missing dep; if intentional, wrap the value in useMemo or move it inside the effect." },
-    { "id": "R-CALLBACK", "label": "Unmemoized callbacks", "fix": "Wrap with useCallback; pass stable deps." },
-    { "id": "R-KEY", "label": "Unkeyed list children", "fix": "Use a stable id (slug, _key, uuid) as the key; never the array index for re-orderable lists." },
-    { "id": "R-INLINE", "label": "Inline event handlers in hot paths", "fix": "Extract to a named handler, or accept the cost if the list is small and the prop is the children." },
-    { "id": "R-MUTATE", "label": "Direct state mutation", "fix": "Always return a new object/array from the setter; never push/splice on state." },
-    { "id": "R-EFFECT-CLEANUP", "label": "Missing effect cleanup", "fix": "Return a cleanup from useEffect that aborts, clears timers, removes listeners." },
-    { "id": "R-CONDITIONAL-HOOK", "label": "Conditional hooks", "fix": "Hooks must run in the same order every render; guard above the hook, not inside." },
-    { "id": "R-STALE-CLOSURE", "label": "Stale closure capture", "fix": "Use a ref for the latest value, or include the value in the deps array." },
-    { "id": "R-ASYNC-CLEANUP", "label": "Async without cleanup", "fix": "AbortController, cancelled flag, or a mounted ref." },
-    { "id": "R-PROP-DRILL", "label": "Prop drilling", "fix": "Context, composition, or a co-located state owner; never > 2 levels." },
-    { "id": "R-MEMO", "label": "Forgotten useMemo", "fix": "Memoize any derived value used in render or as a dep of a memoized child." }
+  "attackSurface": [
+    { "id": "AS-API", "label": "API Routes", "description": "/api/chat, /api/resume, /api/media, /api/sanity/webhook, /api/sanity/live, /api/draft-mode/enable", "risk": "high" },
+    { "id": "AS-FORM", "label": "User Forms", "description": "Chat input, contact form, booking modal", "risk": "high" },
+    { "id": "AS-AUTH", "label": "Authentication", "description": "Draft-mode auth, Sanity webhook secret, Cal.com OAuth", "risk": "high" },
+    { "id": "AS-THIRD", "label": "Third-Party Integrations", "description": "Cal.com iframe, Sanity CMS, Umami analytics, Google Fonts, Google Gemini for chat", "risk": "medium" },
+    { "id": "AS-CLIENT", "label": "Client-Side Storage", "description": "localStorage (accent-color, hub_interacted, booking_event_*), session storage", "risk": "low" },
+    { "id": "AS-INFRA", "label": "Infrastructure", "description": "Vercel hosting, Cloudflare Workers, DNS, SSL/TLS, HTTP security headers", "risk": "medium" },
+    { "id": "AS-DEP", "label": "Dependencies", "description": "npm packages, Python packages (PentestAgent), Docker images", "risk": "medium" }
   ],
   "epics": [
     {
       "id": "EPIC-0",
-      "title": "Bootstrap react-doctor",
-      "status": "in-progress",
-      "summary": "Install react-doctor, create the config, wire package.json scripts, capture the baseline, and document the toolchain. The deliverable is a runnable `npm run doctor` that produces a report.",
+      "title": "Bootstrap PentestAgent infrastructure",
+      "status": "pending",
+      "summary": "Clone PentestAgent repo, set up Python venv, create .env config, create directory structure for custom playbooks and findings, and document the setup. Since the local environment is Python 3.8 (PentestAgent requires 3.10+), the CI pipeline will be the primary execution environment, but all config and playbooks are authored and committed.",
       "value": "high",
       "complexity": "low",
       "stories": [
         {
           "id": "S-0.1",
-          "title": "Install react-doctor as a devDep",
+          "title": "Create directory structure for PentestAgent integration",
           "done": false,
-          "details": "Add `react-doctor` (latest) to package.json devDependencies. Pin to a specific version after first run.",
-          "files": ["package.json", "package-lock.json"]
+          "details": "Create docs/security/pentestagent/ (configs, playbooks, findings, reports), .agents/skills/run-pentestagent/, and a PentestAgent section in the PRD.",
+          "files": ["docs/security/pentestagent/config/", "docs/security/pentestagent/playbooks/", "docs/security/pentestagent/findings/", "docs/security/pentestagent/reports/"]
         },
         {
           "id": "S-0.2",
-          "title": "Create .react-doctor.json",
+          "title": "Create PentestAgent .env.example",
           "done": false,
-          "details": "Author the per-rule config: 12 rule categories enabled by default, severity defaults, ignore paths (src/__tests__/**, .next/**, .open-next/**, studio/dist/**, **/*.test.{ts,tsx}).",
-          "files": [".react-doctor.json"]
+          "details": "Create docs/security/pentestagent/.env.example with all required env vars: ANTHROPIC_API_KEY, OPENAI_API_KEY, PENTESTAGENT_MODEL, TAVILY_API_KEY, etc. Document which vars are required and which are optional.",
+          "files": ["docs/security/pentestagent/.env.example"]
         },
         {
           "id": "S-0.3",
-          "title": "Add package.json scripts",
+          "title": "Create PentestAgent configuration file",
           "done": false,
-          "details": "Add: `doctor` (full report), `doctor:baseline` (save to .react-doctor/baseline.json), `doctor:check` (CI mode, exits 1 on drop), `doctor:diff` (compare to baseline).",
-          "files": ["package.json"]
+          "details": "Create docs/security/pentestagent/config/pentestagent.json with target configuration: target URL (namias.tech), rate limiting delays, allowed tools (terminal, browser, web_search), max concurrent tasks, and output directory.",
+          "files": ["docs/security/pentestagent/config/pentestagent.json"]
         },
         {
           "id": "S-0.4",
-          "title": "Capture baseline",
+          "title": "Create PentestAgent MCP server config",
           "done": false,
-          "details": "Run `npm run doctor` and commit the raw output to docs/react-doctor/baseline.txt plus a structured .react-doctor/baseline.json.",
-          "files": ["docs/react-doctor/baseline.txt", ".react-doctor/baseline.json", ".gitignore"]
+          "details": "Create docs/security/pentestagent/config/mcp_servers.json defining any MCP servers to connect (e.g., nmap-mcp for network scanning, MetasploitMCP for exploitation testing). Document in the config.",
+          "files": ["docs/security/pentestagent/config/mcp_servers.json"]
         },
         {
           "id": "S-0.5",
-          "title": "Add .react-doctor/ to .gitignore (baseline.json is the exception)",
+          "title": "Create setup script for PentestAgent",
           "done": false,
-          "details": "Ignore .react-doctor/ except .react-doctor/baseline.json, which is the historical record.",
-          "files": [".gitignore"]
+          "details": "Create scripts/setup-pentestagent.ps1 (Windows) and scripts/setup-pentestagent.sh (Linux/macOS) that clone the repo, create venv, install deps, install Playwright, and copy config files.",
+          "files": ["scripts/setup-pentestagent.ps1", "scripts/setup-pentestagent.sh"]
         },
         {
           "id": "S-0.6",
-          "title": "Pin react-doctor version",
+          "title": "Document PentestAgent setup in AGENTS.md",
           "done": false,
-          "details": "After the first successful run, pin react-doctor to a specific version (no caret) to keep the report stable across CI runs.",
-          "files": ["package.json", "package-lock.json"]
+          "details": "Add a new skill entry for 'run-pentestagent' in AGENTS.md with a summary, prerequisites, and link to the skill file.",
+          "files": ["AGENTS.md"]
+        },
+        {
+          "id": "S-0.7",
+          "title": "Add PentestAgent to .gitignore",
+          "done": false,
+          "details": "Ensure pentestagent/ directory is in .gitignore (the cloned tool, not our config) and docs/security/pentestagent/findings/ is also ignored (artifacts).",
+          "files": [".gitignore"]
         }
       ]
     },
     {
       "id": "EPIC-1",
-      "title": "Triage baseline findings",
+      "title": "Reconnaissance playbooks & scanning",
       "status": "pending",
-      "summary": "Convert the raw baseline into a per-file, per-rule, per-line finding spreadsheet. Group findings into the 12 rule categories. Identify any false positives and document them in FINDINGS.md.",
+      "summary": "Create PentestAgent playbooks for reconnaissance: URL enumeration, technology fingerprinting, route discovery, JS endpoint extraction, subdomain discovery, and directory enumeration. Run scans against the live portfolio site and document findings.",
       "value": "high",
-      "complexity": "low",
+      "complexity": "medium",
       "stories": [
         {
           "id": "S-1.1",
-          "title": "Parse baseline into structured findings",
+          "title": "Create portfolio_recon playbook",
           "done": false,
-          "details": "Write a small parser (or use the report's JSON form if available) and produce docs/react-doctor/findings.json with the per-rule, per-file, per-line breakdown.",
-          "files": ["docs/react-doctor/findings.json"]
+          "details": "Write docs/security/pentestagent/playbooks/portfolio_recon.yaml — a PentestAgent playbook that: 1) Enumerates all public routes, 2) Extracts API endpoints from JS bundles, 3) Identifies technology stack (Next.js version, hosting provider, CDN), 4) Maps all third-party connections, 5) Discovers hidden endpoints via common paths. Document the playbook structure.",
+          "files": ["docs/security/pentestagent/playbooks/portfolio_recon.yaml"]
         },
         {
           "id": "S-1.2",
-          "title": "Group findings by rule",
+          "title": "Create technology_fingerprint playbook",
           "done": false,
-          "details": "Produce docs/react-doctor/findings-by-rule.md with one section per rule, listing the affected files and counts.",
-          "files": ["docs/react-doctor/findings-by-rule.md"]
+          "details": "Write docs/security/pentestagent/playbooks/technology_fingerprint.yaml — identifies: Next.js version, React version, Node version (from headers), hosting provider (Vercel), CDN, analytics tools, CMS (Sanity), font providers, embedded services (Cal.com).",
+          "files": ["docs/security/pentestagent/playbooks/technology_fingerprint.yaml"]
         },
         {
           "id": "S-1.3",
-          "title": "Group findings by file",
+          "title": "Create js_endpoint_extraction playbook",
           "done": false,
-          "details": "Produce docs/react-doctor/findings-by-file.md with one section per file, listing the rules that fired and the line numbers.",
-          "files": ["docs/react-doctor/findings-by-file.md"]
+          "details": "Write docs/security/pentestagent/playbooks/js_endpoint_extraction.yaml — downloads all JS chunks from _next/static/, extracts fetch/axios calls, route patterns, and API endpoint URLs. Outputs a structured endpoint map.",
+          "files": ["docs/security/pentestagent/playbooks/js_endpoint_extraction.yaml"]
         },
         {
           "id": "S-1.4",
-          "title": "Triage false positives",
+          "title": "Create directory_enumeration playbook",
           "done": false,
-          "details": "Walk every finding; for any false positive, document why and decide: ignore path vs inline disable. The goal is zero false positives in the final 100/100 run.",
-          "files": ["docs/react-doctor/triage.md", ".react-doctor.json"]
+          "details": "Write docs/security/pentestagent/playbooks/directory_enumeration.yaml — checks for common paths: /.env, /.git/config, /robots.txt, /sitemap.xml, /api/, /admin/, /_next/, /sw.js, /.well-known/, /security.txt, /health, /favicon.ico, /api/chat, /api/resume, etc.",
+          "files": ["docs/security/pentestagent/playbooks/directory_enumeration.yaml"]
         },
         {
           "id": "S-1.5",
-          "title": "Capture score baseline",
+          "title": "Create subdomain_discovery playbook",
           "done": false,
-          "details": "Record the score in docs/react-doctor/score.md as the starting line on the scoreboard.",
-          "files": ["docs/react-doctor/score.md"]
+          "details": "Write docs/security/pentestagent/playbooks/subdomain_discovery.yaml — discovers subdomains via: DNS enumeration, certificate transparency logs (crt.sh), search engine dorking. Checks for: namias.tech, *.namias.tech, pp-namias.vercel.app.",
+          "files": ["docs/security/pentestagent/playbooks/subdomain_discovery.yaml"]
+        },
+        {
+          "id": "S-1.6",
+          "title": "Run recon playbooks and document findings",
+          "done": false,
+          "details": "In CI or local environment run the recon playbooks. Document all findings in docs/security/pentestagent/findings/recon.md with screenshots or structured output.",
+          "files": ["docs/security/pentestagent/findings/recon.md"]
         }
       ]
     },
     {
       "id": "EPIC-2",
-      "title": "Fix giant components",
+      "title": "Vulnerability scanning playbooks",
       "status": "pending",
-      "summary": "Split the largest components into smaller, focused sub-components. Target: 0 giant-component findings after this epic.",
-      "value": "medium",
-      "complexity": "medium",
-      "files": ["src/components/**/*.tsx"],
+      "summary": "Create PentestAgent playbooks for OWASP Top 10 vulnerability scanning: XSS, CSRF, SSRF, injection attacks, security misconfiguration, and sensitive data exposure. Run scans, categorise findings, and document results.",
+      "value": "high",
+      "complexity": "high",
       "stories": [
-        { "id": "S-2.1", "title": "Identify the 5 largest components", "done": false, "details": "Sort by line count, list the top 5 in docs/react-doctor/giant-components.md.", "files": ["docs/react-doctor/giant-components.md"] },
-        { "id": "S-2.2", "title": "Split the largest component", "done": false, "details": "Extract sub-components; keep visual parity; re-run doctor to confirm the component no longer flags.", "files": ["src/components/**/*.tsx"] },
-        { "id": "S-2.3", "title": "Split the 2nd largest component", "done": false, "details": "Same as 2.2.", "files": ["src/components/**/*.tsx"] },
-        { "id": "S-2.4", "title": "Split the 3rd largest component", "done": false, "details": "Same as 2.2.", "files": ["src/components/**/*.tsx"] },
-        { "id": "S-2.5", "title": "Split the 4th largest component", "done": false, "details": "Same as 2.2.", "files": ["src/components/**/*.tsx"] },
-        { "id": "S-2.6", "title": "Split the 5th largest component", "done": false, "details": "Same as 2.2.", "files": ["src/components/**/*.tsx"] },
-        { "id": "S-2.7", "title": "Verify giant-components category is clean", "done": false, "details": "Run `npm run doctor`; expect 0 giant-component findings; commit a per-file note in the scoreboard.", "files": ["docs/react-doctor/score.md"] }
+        {
+          "id": "S-2.1",
+          "title": "Create xss_testing playbook",
+          "done": false,
+          "details": "Write docs/security/pentestagent/playbooks/xss_testing.yaml — tests for reflected, stored, and DOM-based XSS across all user input points: chat message input, URL query params, search params, form fields. Tests payloads: <script>alert(1)</script>, <img src=x onerror=alert(1)>, javascript:alert(1), etc.",
+          "files": ["docs/security/pentestagent/playbooks/xss_testing.yaml"]
+        },
+        {
+          "id": "S-2.2",
+          "title": "Create csrf_testing playbook",
+          "done": false,
+          "details": "Write docs/security/pentestagent/playbooks/csrf_testing.yaml — tests for CSRF protection on all state-changing endpoints: /api/chat, /api/sanity/webhook, /api/draft-mode/enable. Checks for: SameSite cookies, CSRF tokens, Origin/Referer validation.",
+          "files": ["docs/security/pentestagent/playbooks/csrf_testing.yaml"]
+        },
+        {
+          "id": "S-2.3",
+          "title": "Create ssrf_testing playbook",
+          "done": false,
+          "details": "Write docs/security/pentestagent/playbooks/ssrf_testing.yaml — tests for SSRF via: chat endpoint (does it fetch user-provided URLs?), image processing, any proxy-like functionality. Payloads: file:///etc/passwd, http://169.254.169.254/ (metadata), http://localhost:3000/.",
+          "files": ["docs/security/pentestagent/playbooks/ssrf_testing.yaml"]
+        },
+        {
+          "id": "S-2.4",
+          "title": "Create injection_testing playbook",
+          "done": false,
+          "details": "Write docs/security/pentestagent/playbooks/injection_testing.yaml — tests for: SQL injection (if any DB), NoSQL injection, Command injection (if any shell exec), Template injection, LDAP injection, Path traversal in /api/media/[...path].",
+          "files": ["docs/security/pentestagent/playbooks/injection_testing.yaml"]
+        },
+        {
+          "id": "S-2.5",
+          "title": "Create security_misconfig playbook",
+          "done": false,
+          "details": "Write docs/security/pentestagent/playbooks/security_misconfig.yaml — checks for: missing security headers, CORS misconfiguration, open ports, debug endpoints enabled, verbose error messages, stack traces exposed, directory listing enabled, default credentials.",
+          "files": ["docs/security/pentestagent/playbooks/security_misconfig.yaml"]
+        },
+        {
+          "id": "S-2.6",
+          "title": "Create sensitive_data_exposure playbook",
+          "done": false,
+          "details": "Write docs/security/pentestagent/playbooks/sensitive_data_exposure.yaml — checks for: API keys in client-side JS, source maps exposing source code, env vars in HTML responses, PII in responses, credit card or SSN patterns, internal IP addresses, cloud metadata endpoints.",
+          "files": ["docs/security/pentestagent/playbooks/sensitive_data_exposure.yaml"]
+        },
+        {
+          "id": "S-2.7",
+          "title": "Run vulnerability scan playbooks and document findings",
+          "done": false,
+          "details": "Run all vulnerability scan playbooks in CI. Document all findings in docs/security/pentestagent/findings/vulnerabilities.md with severity, category, affected endpoint, and evidence.",
+          "files": ["docs/security/pentestagent/findings/vulnerabilities.md"]
+        }
       ]
     },
     {
       "id": "EPIC-3",
-      "title": "Fix exhaustive-deps violations",
+      "title": "API security testing playbooks",
       "status": "pending",
-      "summary": "Walk every exhaustive-deps finding. Either add the missing dep, move the value inside the effect, or wrap it in useMemo. Target: 0 findings.",
+      "summary": "Create PentestAgent playbooks specifically for testing the 6 API endpoints: rate limiting, authentication bypass, input validation, payload limits, CORS configuration, and HTTP method testing. Run scans and document findings.",
       "value": "high",
-      "complexity": "low",
+      "complexity": "high",
       "stories": [
-        { "id": "S-3.1", "title": "List exhaustive-deps findings", "done": false, "details": "List each finding with file + line + missing dep in docs/react-doctor/exhaustive-deps.md.", "files": ["docs/react-doctor/exhaustive-deps.md"] },
-        { "id": "S-3.2", "title": "Fix exhaustive-deps in src/hooks", "done": false, "details": "One commit per hook if changes are independent, else group by file.", "files": ["src/hooks/**/*.ts"] },
-        { "id": "S-3.3", "title": "Fix exhaustive-deps in src/components", "done": false, "details": "One commit per affected component.", "files": ["src/components/**/*.tsx"] },
-        { "id": "S-3.4", "title": "Fix exhaustive-deps in src/app", "done": false, "details": "One commit per affected route.", "files": ["src/app/**/*.tsx"] },
-        { "id": "S-3.5", "title": "Verify exhaustive-deps is clean", "done": false, "details": "Run `npm run doctor`; expect 0 findings; commit the scoreboard update.", "files": ["docs/react-doctor/score.md"] }
+        {
+          "id": "S-3.1",
+          "title": "Create rate_limit_testing playbook",
+          "done": false,
+          "details": "Write docs/security/pentestagent/playbooks/rate_limit_testing.yaml — tests rate limiting on each endpoint: sends burst requests (50+ in 1s), checks for 429 responses, tests window reset behaviour, tests IP-based vs user-based limiting, tests if rate limiting can be bypassed via X-Forwarded-For spoofing.",
+          "files": ["docs/security/pentestagent/playbooks/rate_limit_testing.yaml"]
+        },
+        {
+          "id": "S-3.2",
+          "title": "Create auth_bypass_testing playbook",
+          "done": false,
+          "details": "Write docs/security/pentestagent/playbooks/auth_bypass_testing.yaml — tests for auth bypass on protected endpoints: /api/sanity/webhook, /api/sanity/live, /api/draft-mode/enable. Tests: missing secret, wrong secret, empty secret, secret in body vs header vs query, token manipulation, JWT attacks (if applicable).",
+          "files": ["docs/security/pentestagent/playbooks/auth_bypass_testing.yaml"]
+        },
+        {
+          "id": "S-3.3",
+          "title": "Create input_validation_testing playbook",
+          "done": false,
+          "details": "Write docs/security/pentestagent/playbooks/input_validation_testing.yaml — tests input validation across all endpoints: oversized payloads, malformed JSON, unexpected content types, null bytes, Unicode attacks, type confusion, prototype pollution, parameter pollution.",
+          "files": ["docs/security/pentestagent/playbooks/input_validation_testing.yaml"]
+        },
+        {
+          "id": "S-3.4",
+          "title": "Create cors_http_methods playbook",
+          "done": false,
+          "details": "Write docs/security/pentestagent/playbooks/cors_http_methods.yaml — tests CORS headers on each endpoint: reflects Origin?, allows null origin?, allows wildcard?, allows credentials from any origin?. Tests HTTP method override: PUT, DELETE, PATCH, OPTIONS, TRACE on GET-only and POST-only endpoints. Tests OPTIONS preflight behaviour.",
+          "files": ["docs/security/pentestagent/playbooks/cors_http_methods.yaml"]
+        },
+        {
+          "id": "S-3.5",
+          "title": "Create api_fuzz playbook",
+          "done": false,
+          "details": "Write docs/security/pentestagent/playbooks/api_fuzz.yaml — fuzzes API endpoints with: boundary values, negative numbers, special characters, format string attacks (%s, %n, %x), long strings (10000+ chars), empty strings, null values, array/object type confusion, duplicate keys.",
+          "files": ["docs/security/pentestagent/playbooks/api_fuzz.yaml"]
+        },
+        {
+          "id": "S-3.6",
+          "title": "Create dependency_check playbook",
+          "done": false,
+          "details": "Write docs/security/pentestagent/playbooks/dependency_check.yaml — runs npm audit, checks for known CVEs in key dependencies: next, react, next-sanity, swr, framer-motion, lucide-react. Compares against national vulnerability database.",
+          "files": ["docs/security/pentestagent/playbooks/dependency_check.yaml"]
+        },
+        {
+          "id": "S-3.7",
+          "title": "Run API security playbooks and document findings",
+          "done": false,
+          "details": "Run all API security playbooks. Document all findings in docs/security/pentestagent/findings/api-security.md with endpoint, test, result, and severity.",
+          "files": ["docs/security/pentestagent/findings/api-security.md"]
+        }
       ]
     },
     {
       "id": "EPIC-4",
-      "title": "Fix unmemoized callbacks",
+      "title": "Infrastructure & configuration security",
       "status": "pending",
-      "summary": "Wrap event handlers and other functions passed as props in useCallback. Target: 0 findings.",
+      "summary": "Verification of the security infrastructure: HTTP security headers, CSP analysis, cookie security, TLS/SSL configuration, Cloudflare Workers security, Vercel configuration, DNS security, and CDN configuration.",
       "value": "high",
-      "complexity": "low",
+      "complexity": "medium",
       "stories": [
-        { "id": "S-4.1", "title": "List unmemoized-callback findings", "done": false, "details": "Per-file list in docs/react-doctor/callbacks.md.", "files": ["docs/react-doctor/callbacks.md"] },
-        { "id": "S-4.2", "title": "Fix callbacks in src/components/sections", "done": false, "details": "Wrap in useCallback, one component per commit where independent.", "files": ["src/components/sections/**/*.tsx"] },
-        { "id": "S-4.3", "title": "Fix callbacks in src/components/ui", "done": false, "details": "Same as 4.2.", "files": ["src/components/ui/**/*.tsx"] },
-        { "id": "S-4.4", "title": "Fix callbacks in src/hooks", "done": false, "details": "Same as 4.2.", "files": ["src/hooks/**/*.ts"] },
-        { "id": "S-4.5", "title": "Verify unmemoized-callbacks is clean", "done": false, "details": "Run doctor, expect 0 findings, commit scoreboard.", "files": ["docs/react-doctor/score.md"] }
+        {
+          "id": "S-4.1",
+          "title": "Create header_security playbook",
+          "done": false,
+          "details": "Write docs/security/pentestagent/playbooks/header_security.yaml — checks every HTTP response header for: CSP, HSTS, X-Content-Type-Options, X-Frame-Options, Referrer-Policy, Permissions-Policy, COOP, CORP, X-DNS-Prefetch-Control, X-Powered-By, Server header. Verifies values match security best practices.",
+          "files": ["docs/security/pentestagent/playbooks/header_security.yaml"]
+        },
+        {
+          "id": "S-4.2",
+          "title": "Create csp_analysis playbook",
+          "done": false,
+          "details": "Write docs/security/pentestagent/playbooks/csp_analysis.yaml — deep analysis of Content-Security-Policy: checks for unsafe-inline, unsafe-eval, wildcard sources (https:, *.), missing directives, eval() usage, blob: usage, data: usage, frame-src for Cal.com, upgrade-insecure-requests effectiveness.",
+          "files": ["docs/security/pentestagent/playbooks/csp_analysis.yaml"]
+        },
+        {
+          "id": "S-4.3",
+          "title": "Create cookie_security playbook",
+          "done": false,
+          "details": "Write docs/security/pentestagent/playbooks/cookie_security.yaml — examines all cookies set by the site: Secure flag, HttpOnly flag, SameSite attribute, Domain/Path scope, Expires/Max-Age. Checks for session cookies, draft-mode cookies, analytics cookies. Verifies localStorage and sessionStorage usage.",
+          "files": ["docs/security/pentestagent/playbooks/cookie_security.yaml"]
+        },
+        {
+          "id": "S-4.4",
+          "title": "Create tls_security playbook",
+          "done": false,
+          "details": "Write docs/security/pentestagent/playbooks/tls_security.yaml — checks: TLS version (1.2+, 1.3), certificate validity, certificate issuer, HSTS preload status, cipher suites, OCSP stapling, certificate transparency, wildcard vs specific cert, redirect HTTP→HTTPS.",
+          "files": ["docs/security/pentestagent/playbooks/tls_security.yaml"]
+        },
+        {
+          "id": "S-4.5",
+          "title": "Create cloud_config playbook",
+          "done": false,
+          "details": "Write docs/security/pentestagent/playbooks/cloud_config.yaml — checks Vercel and Cloudflare Workers configuration: Vercel.json for exposed env vars, function timeout, memory allocation. Cloudflare Workers for TOKEN exposure, worker script leaks, route configuration.",
+          "files": ["docs/security/pentestagent/playbooks/cloud_config.yaml"]
+        },
+        {
+          "id": "S-4.6",
+          "title": "Run infrastructure playbooks and document findings",
+          "done": false,
+          "details": "Run all infrastructure security playbooks. Document findings in docs/security/pentestagent/findings/infrastructure.md.",
+          "files": ["docs/security/pentestagent/findings/infrastructure.md"]
+        }
       ]
     },
     {
       "id": "EPIC-5",
-      "title": "Fix unkeyed list children",
+      "title": "CI/CD security integration",
       "status": "pending",
-      "summary": "Add stable keys to every list. Use _key, slug, or uuid; never the index for re-orderable lists. Target: 0 findings.",
+      "summary": "Integrate PentestAgent scans into the CI/CD pipeline: PR checks, scheduled scans, artifact generation, and security dashboard updates. Every scan run produces a timestamped report stored as a CI artifact.",
       "value": "high",
-      "complexity": "low",
+      "complexity": "medium",
       "stories": [
-        { "id": "S-5.1", "title": "List unkeyed-list findings", "done": false, "details": "Per-file list in docs/react-doctor/unkeyed.md.", "files": ["docs/react-doctor/unkeyed.md"] },
-        { "id": "S-5.2", "title": "Fix key in projects list", "done": false, "details": "Use project.slug as the key.", "files": ["src/components/sections/ProjectsSection.tsx"] },
-        { "id": "S-5.3", "title": "Fix key in certifications list", "done": false, "details": "Use certification._key or slug.", "files": ["src/components/sections/CertificationsSection.tsx"] },
-        { "id": "S-5.4", "title": "Fix key in experience timeline", "done": false, "details": "Use experience._key.", "files": ["src/components/sections/ExperienceTimeline.tsx"] },
-        { "id": "S-5.5", "title": "Fix key in gallery grid", "done": false, "details": "Use galleryImage._key.", "files": ["src/components/sections/GallerySection.tsx"] },
-        { "id": "S-5.6", "title": "Fix key in floating hub menu", "done": false, "details": "Use action.id as the key.", "files": ["src/components/ui/FloatingHub.tsx"] },
-        { "id": "S-5.7", "title": "Fix key in blog post list", "done": false, "details": "Use post.slug.", "files": ["src/components/blog/**/*.tsx"] },
-        { "id": "S-5.8", "title": "Verify unkeyed-list is clean", "done": false, "details": "Run doctor, expect 0 findings, commit scoreboard.", "files": ["docs/react-doctor/score.md"] }
+        {
+          "id": "S-5.1",
+          "title": "Create pentestagent-ci.yml GitHub Action",
+          "done": false,
+          "details": "Write .github/workflows/pentestagent-ci.yml — runs on push/PR to security/ branches and main. Steps: checkout, setup Python 3.11, install PentestAgent, run recon playbook, run vulnerability scan playbook, upload findings as CI artifact. Uses secrets for API keys.",
+          "files": [".github/workflows/pentestagent-ci.yml"]
+        },
+        {
+          "id": "S-5.2",
+          "title": "Create scheduled security scan workflow",
+          "done": false,
+          "details": "Write .github/workflows/pentestagent-scheduled.yml — runs weekly (Sunday 02:00 UTC). Runs full playbook suite (recon + vulnerability + API + infrastructure). Compares with previous scan results. Generates diff report. Posts results as CI artifact and optionally creates a GitHub Issue for new findings.",
+          "files": [".github/workflows/pentestagent-scheduled.yml"]
+        },
+        {
+          "id": "S-5.3",
+          "title": "Create security-pr-check workflow",
+          "done": false,
+          "details": "Write .github/workflows/pentestagent-pr-check.yml — runs on every PR to main. Lightweight scan: checks security headers, checks for known vulnerability patterns in diff, runs dependency audit. Posts security check result as a PR comment. Fails if critical findings detected.",
+          "files": [".github/workflows/pentestagent-pr-check.yml"]
+        },
+        {
+          "id": "S-5.4",
+          "title": "Add security-scan to pr-validation.yml",
+          "done": false,
+          "details": "Extend .github/workflows/pr-validation.yml to include the new pentestagent-pr-check job in the dependency chain. Update the PR comment template to include security scan results.",
+          "files": [".github/workflows/pr-validation.yml"]
+        },
+        {
+          "id": "S-5.5",
+          "title": "Document CI/CD security integration",
+          "done": false,
+          "details": "Write docs/security/pentestagent/reports/ci-integration.md documenting: what each workflow does, how to read scan results, how to re-run scans, what secrets are needed, how to interpret the pass/fail criteria.",
+          "files": ["docs/security/pentestagent/reports/ci-integration.md"]
+        }
       ]
     },
     {
       "id": "EPIC-6",
-      "title": "Fix inline event handlers in hot paths",
+      "title": "Remediation of findings",
       "status": "pending",
-      "summary": "Extract inline event handlers that are recreated on every render of a large list. Target: 0 findings.",
-      "value": "medium",
-      "complexity": "low",
+      "summary": "Walk through every finding from EPIC-1 through EPIC-4, remediate each one, and re-verify. Each remediation gets its own commit. Track the status in a findings ledger.",
+      "value": "high",
+      "complexity": "high",
       "stories": [
-        { "id": "S-6.1", "title": "List inline-handler findings", "done": false, "details": "Per-file list in docs/react-doctor/inline.md.", "files": ["docs/react-doctor/inline.md"] },
-        { "id": "S-6.2", "title": "Extract inline handlers in sections", "done": false, "details": "One commit per file.", "files": ["src/components/sections/**/*.tsx"] },
-        { "id": "S-6.3", "title": "Extract inline handlers in ui", "done": false, "details": "One commit per file.", "files": ["src/components/ui/**/*.tsx"] },
-        { "id": "S-6.4", "title": "Verify inline-handler is clean", "done": false, "details": "Run doctor, expect 0 findings, commit scoreboard.", "files": ["docs/react-doctor/score.md"] }
+        {
+          "id": "S-6.1",
+          "title": "Create findings ledger",
+          "done": false,
+          "details": "Create docs/security/pentestagent/findings/ledger.md — a master table of all findings from all playbooks. Columns: ID, Category, Severity, Affected Endpoint/File, Description, Playbook, Status (open/fixed/wontfix), Fix Commit, Re-verified At.",
+          "files": ["docs/security/pentestagent/findings/ledger.md"]
+        },
+        {
+          "id": "S-6.2",
+          "title": "Fix high-severity findings",
+          "done": false,
+          "details": "For each high-severity finding: create a fix commit, update the ledger, re-run the relevant playbook, document re-verification. Possible high-severity areas: XSS in chat input, SSRF in chat endpoint, auth bypass in webhook, missing rate limiting, missing security headers.",
+          "files": ["src/**/*.ts", "src/**/*.tsx", "docs/security/pentestagent/findings/ledger.md"]
+        },
+        {
+          "id": "S-6.3",
+          "title": "Fix medium-severity findings",
+          "done": false,
+          "details": "For each medium-severity finding: create a fix commit, update the ledger, re-run the relevant playbook, document re-verification. Possible medium-severity areas: CSP improvements, CORS hardening, cookie flags, dependency vulnerabilities.",
+          "files": ["src/**/*.ts", "src/**/*.tsx", "docs/security/pentestagent/findings/ledger.md"]
+        },
+        {
+          "id": "S-6.4",
+          "title": "Fix low-severity and informational findings",
+          "done": false,
+          "details": "For each low-severity/informational finding: create a fix commit, update the ledger, re-run the relevant playbook, document re-verification. Possible low-severity areas: verbose error messages, missing security.txt, missing .well-known/ paths, documentation gaps.",
+          "files": ["docs/security/pentestagent/findings/ledger.md"]
+        },
+        {
+          "id": "S-6.5",
+          "title": "Wontfix and accepted-risk documentation",
+          "done": false,
+          "details": "For findings marked as wontfix or accepted risk: document the rationale, any compensating controls, and the acceptance authority. Examples: unsafe-inline CSP for dev mode, Cal.com iframe sandbox limitations.",
+          "files": ["docs/security/pentestagent/findings/ledger.md"]
+        },
+        {
+          "id": "S-6.6",
+          "title": "Full re-scan after all remediations",
+          "done": false,
+          "details": "Run the full PentestAgent playbook suite after all remediations. Capture the final scan results. Update the ledger with final status. Generate the remediation summary report.",
+          "files": ["docs/security/pentestagent/findings/ledger.md", "docs/security/pentestagent/reports/remediation-summary.md"]
+        }
       ]
     },
     {
       "id": "EPIC-7",
-      "title": "Fix direct state mutation",
+      "title": "Security documentation & dashboard",
       "status": "pending",
-      "summary": "Replace any push/splice/Object.assign on React state with immutable setters. Target: 0 findings.",
-      "value": "high",
+      "summary": "Create the comprehensive security documentation: security dashboard, posture score, security.txt, security policy, agent skill, and README badges. This is the showcase layer that demonstrates the security engineering work.",
+      "value": "medium",
       "complexity": "low",
       "stories": [
-        { "id": "S-7.1", "title": "List state-mutation findings", "done": false, "details": "Per-file list in docs/react-doctor/mutation.md.", "files": ["docs/react-doctor/mutation.md"] },
-        { "id": "S-7.2", "title": "Fix mutations in src/hooks", "done": false, "details": "One commit per hook.", "files": ["src/hooks/**/*.ts"] },
-        { "id": "S-7.3", "title": "Fix mutations in src/components", "done": false, "details": "One commit per component.", "files": ["src/components/**/*.tsx"] },
-        { "id": "S-7.4", "title": "Verify state-mutation is clean", "done": false, "details": "Run doctor, expect 0 findings, commit scoreboard.", "files": ["docs/react-doctor/score.md"] }
+        {
+          "id": "S-7.1",
+          "title": "Create security dashboard",
+          "done": false,
+          "details": "Write docs/security/dashboard.md — a visual dashboard showing: overall posture score, per-category scores (recon, vuln scan, API security, infrastructure), finding counts by severity, fix rate, last scan date, CI pipeline status. Use ASCII tables and status badges.",
+          "files": ["docs/security/dashboard.md"]
+        },
+        {
+          "id": "S-7.2",
+          "title": "Create security posture score model",
+          "done": false,
+          "details": "Write docs/security/posture-score.md — define the scoring model: 10 categories × 10 points each = 100 max. Categories: API security, headers, CSP, cookies/TLS, recon coverage, vuln coverage, input validation, auth, dependencies, CI integration. Each category has pass/fail criteria.",
+          "files": ["docs/security/posture-score.md"]
+        },
+        {
+          "id": "S-7.3",
+          "title": "Deploy security.txt and .well-known/",
+          "done": false,
+          "details": "Create public/.well-known/security.txt with the security policy, contact info, disclosure policy, and PGP key. Create public/.well-known/ directory placeholder. Wire into Next.js static serving if needed.",
+          "files": ["public/.well-known/security.txt"]
+        },
+        {
+          "id": "S-7.4",
+          "title": "Author .agents/skills/run-pentestagent/SKILL.md",
+          "done": false,
+          "details": "Write the agent skill for running PentestAgent: prerequisites, env setup, playbook execution, reading findings, remediation workflow, CI integration. Include copy-pasteable command templates for each playbook.",
+          "files": [".agents/skills/run-pentestagent/SKILL.md"]
+        },
+        {
+          "id": "S-7.5",
+          "title": "Update README with security badges",
+          "done": false,
+          "details": "Add security posture badge, PentestAgent badge, and last scan date to README.md. Add a Security section with links to dashboard and security.txt.",
+          "files": ["README.md"]
+        }
       ]
     },
     {
       "id": "EPIC-8",
-      "title": "Fix missing effect cleanup",
+      "title": "Final verification & showcase PR",
       "status": "pending",
-      "summary": "Add cleanup to every useEffect that creates a subscription, listener, timer, or async task. Target: 0 findings.",
-      "value": "high",
-      "complexity": "medium",
-      "stories": [
-        { "id": "S-8.1", "title": "List effect-cleanup findings", "done": false, "details": "Per-file list in docs/react-doctor/effect-cleanup.md.", "files": ["docs/react-doctor/effect-cleanup.md"] },
-        { "id": "S-8.2", "title": "Add cleanup to event listeners", "done": false, "details": "One commit per useEffect with a listener.", "files": ["src/**/*.tsx", "src/**/*.ts"] },
-        { "id": "S-8.3", "title": "Add cleanup to timers", "done": false, "details": "One commit per setTimeout / setInterval / requestAnimationFrame.", "files": ["src/**/*.tsx", "src/**/*.ts"] },
-        { "id": "S-8.4", "title": "Add cleanup to subscriptions", "done": false, "details": "One commit per useEffect that subscribes.", "files": ["src/**/*.tsx", "src/**/*.ts"] },
-        { "id": "S-8.5", "title": "Verify effect-cleanup is clean", "done": false, "details": "Run doctor, expect 0 findings, commit scoreboard.", "files": ["docs/react-doctor/score.md"] }
-      ]
-    },
-    {
-      "id": "EPIC-9",
-      "title": "Fix conditional hooks",
-      "status": "pending",
-      "summary": "Refactor any hook called after an early return. Hooks must run in the same order every render. Target: 0 findings.",
-      "value": "high",
-      "complexity": "medium",
-      "stories": [
-        { "id": "S-9.1", "title": "List conditional-hook findings", "done": false, "details": "Per-file list in docs/react-doctor/conditional-hooks.md.", "files": ["docs/react-doctor/conditional-hooks.md"] },
-        { "id": "S-9.2", "title": "Fix conditional hooks in components", "done": false, "details": "Move the hook above the early return; commit per component.", "files": ["src/components/**/*.tsx"] },
-        { "id": "S-9.3", "title": "Fix conditional hooks in hooks", "done": false, "details": "Same as 9.2 but in src/hooks.", "files": ["src/hooks/**/*.ts"] },
-        { "id": "S-9.4", "title": "Verify conditional-hooks is clean", "done": false, "details": "Run doctor, expect 0 findings, commit scoreboard.", "files": ["docs/react-doctor/score.md"] }
-      ]
-    },
-    {
-      "id": "EPIC-10",
-      "title": "Fix stale closure capture",
-      "status": "pending",
-      "summary": "Use refs or include the value in deps where a callback captures a stale value. Target: 0 findings.",
-      "value": "high",
-      "complexity": "medium",
-      "stories": [
-        { "id": "S-10.1", "title": "List stale-closure findings", "done": false, "details": "Per-file list in docs/react-doctor/stale-closure.md.", "files": ["docs/react-doctor/stale-closure.md"] },
-        { "id": "S-10.2", "title": "Refactor to refs", "done": false, "details": "Where the value is read inside an interval/listener, use a ref so the latest value is read.", "files": ["src/**/*.tsx", "src/**/*.ts"] },
-        { "id": "S-10.3", "title": "Add missing deps", "done": false, "details": "Where refactor to ref is not appropriate, add the missing dep.", "files": ["src/**/*.tsx", "src/**/*.ts"] },
-        { "id": "S-10.4", "title": "Verify stale-closure is clean", "done": false, "details": "Run doctor, expect 0 findings, commit scoreboard.", "files": ["docs/react-doctor/score.md"] }
-      ]
-    },
-    {
-      "id": "EPIC-11",
-      "title": "Fix async without cleanup",
-      "status": "pending",
-      "summary": "Wrap every async effect with AbortController or a cancelled flag. Target: 0 findings.",
-      "value": "high",
-      "complexity": "medium",
-      "stories": [
-        { "id": "S-11.1", "title": "List async-without-cleanup findings", "done": false, "details": "Per-file list in docs/react-doctor/async-cleanup.md.", "files": ["docs/react-doctor/async-cleanup.md"] },
-        { "id": "S-11.2", "title": "Introduce AbortController pattern", "done": false, "details": "Create a small useAbortable hook (or inline) and migrate one component per commit.", "files": ["src/hooks/useAbortable.ts", "src/**/*.tsx"] },
-        { "id": "S-11.3", "title": "Migrate all async effects", "done": false, "details": "Walk every file in the list, one commit per file.", "files": ["src/**/*.tsx", "src/**/*.ts"] },
-        { "id": "S-11.4", "title": "Verify async-cleanup is clean", "done": false, "details": "Run doctor, expect 0 findings, commit scoreboard.", "files": ["docs/react-doctor/score.md"] }
-      ]
-    },
-    {
-      "id": "EPIC-12",
-      "title": "Fix prop drilling",
-      "status": "pending",
-      "summary": "Reduce prop chains to <= 2 levels via Context, composition, or co-located state. Target: 0 findings.",
-      "value": "medium",
-      "complexity": "high",
-      "stories": [
-        { "id": "S-12.1", "title": "List prop-drilling findings", "done": false, "details": "Per-file list in docs/react-doctor/prop-drilling.md.", "files": ["docs/react-doctor/prop-drilling.md"] },
-        { "id": "S-12.2", "title": "Introduce a CMS Context for hero/about content", "done": false, "details": "A single SanityContext that reads from cms-content; components consume via useSanity().", "files": ["src/context/SanityContext.tsx", "src/components/sections/**/*.tsx"] },
-        { "id": "S-12.3", "title": "Introduce a Theme Context override", "done": false, "details": "Override next-themes where the prop drill shows up; commit per file.", "files": ["src/components/**/*.tsx"] },
-        { "id": "S-12.4", "title": "Co-locate state owners", "done": false, "details": "Where Context is overkill, lift state into the nearest common parent.", "files": ["src/components/**/*.tsx"] },
-        { "id": "S-12.5", "title": "Verify prop-drilling is clean", "done": false, "details": "Run doctor, expect 0 findings, commit scoreboard.", "files": ["docs/react-doctor/score.md"] }
-      ]
-    },
-    {
-      "id": "EPIC-13",
-      "title": "Fix forgotten useMemo",
-      "status": "pending",
-      "summary": "Memoize any derived value used in render or as a dep of a memoized child. Target: 0 findings.",
+      "summary": "Final verification run of all playbooks, generation of the final comprehensive security report, and creation of the showcase PR from security/pentestagent into main.",
       "value": "high",
       "complexity": "low",
       "stories": [
-        { "id": "S-13.1", "title": "List forgotten-useMemo findings", "done": false, "details": "Per-file list in docs/react-doctor/forgotten-memo.md.", "files": ["docs/react-doctor/forgotten-memo.md"] },
-        { "id": "S-13.2", "title": "Memoize derived values in sections", "done": false, "details": "One commit per file.", "files": ["src/components/sections/**/*.tsx"] },
-        { "id": "S-13.3", "title": "Memoize derived values in ui", "done": false, "details": "One commit per file.", "files": ["src/components/ui/**/*.tsx"] },
-        { "id": "S-13.4", "title": "Memoize derived values in hooks", "done": false, "details": "One commit per file.", "files": ["src/hooks/**/*.ts"] },
-        { "id": "S-13.5", "title": "Verify forgotten-useMemo is clean", "done": false, "details": "Run doctor, expect 0 findings, commit scoreboard.", "files": ["docs/react-doctor/score.md"] }
-      ]
-    },
-    {
-      "id": "EPIC-14",
-      "title": "CI integration",
-      "status": "pending",
-      "summary": "Add a react-doctor GitHub Action to every PR. The action posts the score, the per-rule deltas, and the per-line comments. The job fails when the score drops below the threshold.",
-      "value": "high",
-      "complexity": "medium",
-      "files": [".github/workflows/*.yml"],
-      "stories": [
-        { "id": "S-14.1", "title": "Add react-doctor-action.yml workflow", "done": false, "details": "Pin the action version, set the threshold to 100, and target src/**.", "files": [".github/workflows/react-doctor.yml"] },
-        { "id": "S-14.2", "title": "Add the action to required checks", "done": false, "details": "Document the required-check setup steps in the README so a future admin can wire it up.", "files": ["docs/react-doctor/ci-setup.md", "README.md"] },
-        { "id": "S-14.3", "title": "Add the action to PR validation", "done": false, "details": "Extend pr-validation.yml to call react-doctor after the existing Quality Check.", "files": [".github/workflows/pr-validation.yml"] },
-        { "id": "S-14.4", "title": "Add the score badge to README", "done": false, "details": "Embed a shields.io badge that points to the latest CI run.", "files": ["README.md"] },
-        { "id": "S-14.5", "title": "Verify CI blocks a deliberate regression", "done": false, "details": "Open a draft PR with a deliberate exhaustive-deps violation, confirm the action fails, then close it.", "files": ["docs/react-doctor/ci-verification.md"] }
-      ]
-    },
-    {
-      "id": "EPIC-15",
-      "title": "Agent skill + documentation",
-      "status": "pending",
-      "summary": "Teach agents and future contributors how to run, read, and fix react-doctor findings. Ship a SKILL.md with the runbook and a CHANGELOG entry.",
-      "value": "high",
-      "complexity": "low",
-      "stories": [
-        { "id": "S-15.1", "title": "Author .agents/skills/run-react-doctor/SKILL.md", "done": false, "details": "Front-matter + the 12-rule fix recipes + the triage + the ignore-pattern rules.", "files": [".agents/skills/run-react-doctor/SKILL.md"] },
-        { "id": "S-15.2", "title": "Author .agents/skills/fix-react-doctor-finding/SKILL.md", "done": false, "details": "Step-by-step: read the report, locate the file, apply the canonical fix, re-run doctor, commit.", "files": [".agents/skills/fix-react-doctor-finding/SKILL.md"] },
-        { "id": "S-15.3", "title": "Update AGENTS.md with react-doctor guidance", "done": false, "details": "One section per rule, one command per workflow.", "files": ["AGENTS.md"] },
-        { "id": "S-15.4", "title": "Update README with react-doctor badge + table", "done": false, "details": "Score badge, baseline, target, and a link to the runbook.", "files": ["README.md"] },
-        { "id": "S-15.5", "title": "Add CHANGELOG entry", "done": false, "details": "Changelog entry under the unreleased section.", "files": ["CHANGELOG.md"] }
-      ]
-    },
-    {
-      "id": "EPIC-16",
-      "title": "Score target + lock",
-      "status": "pending",
-      "summary": "Reach 100/100, lock the threshold, and document the scoreboard.",
-      "value": "high",
-      "complexity": "low",
-      "stories": [
-        { "id": "S-16.1", "title": "Reach 100/100 on the full src tree", "done": false, "details": "Final pass: re-run doctor, expect 0 findings on all 12 rules.", "files": ["docs/react-doctor/score.md"] },
-        { "id": "S-16.2", "title": "Lock the threshold at 100", "done": false, "details": "Set the GitHub Action threshold to 100; document the lock policy.", "files": [".github/workflows/react-doctor.yml", "docs/react-doctor/ci-setup.md"] },
-        { "id": "S-16.3", "title": "Write the final scoreboard", "done": false, "details": "docs/react-doctor/scoreboard.md - the journey from baseline to 100, with the commit hashes that closed each category.", "files": ["docs/react-doctor/scoreboard.md"] },
-        { "id": "S-16.4", "title": "Open the showcase PR", "done": false, "details": "PR from feature/react-doctor-clinic into main with the full story, scoreboard, and CI run.", "files": ["docs/react-doctor/PR_NOTES.md"] }
+        {
+          "id": "S-8.1",
+          "title": "Run full PentestAgent suite final pass",
+          "done": false,
+          "details": "Run every playbook in sequence: recon → fingerprint → endpoint extraction → dir enum → subdomain → XSS → CSRF → SSRF → injection → misconfig → data exposure → rate limit → auth bypass → input validation → CORS → fuzz → dependency → headers → CSP → cookies → TLS → cloud. Capture all results.",
+          "files": ["docs/security/pentestagent/reports/final-scan-results.md"]
+        },
+        {
+          "id": "S-8.2",
+          "title": "Generate comprehensive security report",
+          "done": false,
+          "details": "Write docs/security/pentestagent/reports/comprehensive-security-report.md — the final report covering: executive summary, methodology, scope, findings summary, detailed findings, remediation summary, residual risk, posture score, recommendations, appendices (playbook list, tool versions, timeline).",
+          "files": ["docs/security/pentestagent/reports/comprehensive-security-report.md"]
+        },
+        {
+          "id": "S-8.3",
+          "title": "Open showcase PR",
+          "done": false,
+          "details": "Create the PR from security/pentestagent into main with title 'sec(pentestagent): integrate PentestAgent AI security testing framework — top-tier security posture'. The PR body documents the full journey: 8 epics, 40+ stories, all playbooks, all findings, all remediations, CI integration, and the security dashboard.",
+          "files": []
+        },
+        {
+          "id": "S-8.4",
+          "title": "Create PR notes for security showcase",
+          "done": false,
+          "details": "Write docs/security/pentestagent/PR_NOTES.md — the full PR description with: narrative, score table, epic summaries, commit map, verification results, reviewer guide, and security engineer portfolio talking points.",
+          "files": ["docs/security/pentestagent/PR_NOTES.md"]
+        }
       ]
     }
   ],
   "phases": [
     {
       "id": "PHASE-1",
-      "label": "Bootstrap",
+      "label": "Bootstrap & recon",
       "epics": ["EPIC-0", "EPIC-1"]
     },
     {
       "id": "PHASE-2",
-      "label": "Fix by rule",
-      "epics": ["EPIC-2", "EPIC-3", "EPIC-4", "EPIC-5", "EPIC-6", "EPIC-7", "EPIC-8", "EPIC-9", "EPIC-10", "EPIC-11", "EPIC-12", "EPIC-13"]
+      "label": "Vulnerability scanning",
+      "epics": ["EPIC-2", "EPIC-3"]
     },
     {
       "id": "PHASE-3",
-      "label": "CI + docs",
-      "epics": ["EPIC-14", "EPIC-15"]
+      "label": "Infrastructure & CI/CD",
+      "epics": ["EPIC-4", "EPIC-5"]
     },
     {
       "id": "PHASE-4",
-      "label": "Score lock",
-      "epics": ["EPIC-16"]
+      "label": "Remediation",
+      "epics": ["EPIC-6"]
+    },
+    {
+      "id": "PHASE-5",
+      "label": "Documentation & showcase",
+      "epics": ["EPIC-7", "EPIC-8"]
     }
   ]
 }
