@@ -1,7 +1,7 @@
 import { cache } from 'react';
 import { draftMode } from 'next/headers';
 
-import { getOrFetch, keyFor, invalidateByTag } from './cache';
+import { getOrFetch } from './cache';
 
 import type {
   BlogPost,

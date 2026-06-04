@@ -107,7 +107,7 @@ export async function POST(request: NextRequest) {
   const tags = SANITY_TYPE_TO_TAGS[docType] ?? [];
   for (const tag of tags) {
     try {
-      invalidateByTag(tag);
+      await invalidateByTag(tag);
     } catch {
       // Non-fatal — proceed even if tag invalidation fails.
     }
