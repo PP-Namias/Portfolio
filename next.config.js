@@ -32,7 +32,10 @@ const contentSecurityPolicy = `
   manifest-src 'self';
   worker-src 'self' blob:;
   upgrade-insecure-requests;
+  report-uri /api/csp-violation;
 `;
+
+const reportUri = '/api/csp-violation';
 
 const securityHeaders = [
   {
@@ -73,6 +76,14 @@ const securityHeaders = [
   {
     key: 'X-DNS-Prefetch-Control',
     value: 'off',
+  },
+  {
+    key: 'Cross-Origin-Embedder-Policy',
+    value: 'credentialless',
+  },
+  {
+    key: 'NEL',
+    value: JSON.stringify({report_to: 'default', max_age: 2592000, include_subdomains: true}),
   },
 ];
 

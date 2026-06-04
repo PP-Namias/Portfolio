@@ -19,6 +19,17 @@ This repository powers [namias.tech](https://namias.tech), a production portfoli
 
 The react-doctor gate was introduced in the clinic slice. See [`docs/react-doctor/scoreboard.md`](./docs/react-doctor/scoreboard.md) for the journey from 91/100 baseline to 100/100, [`docs/react-doctor/PR_NOTES.md`](./docs/react-doctor/PR_NOTES.md) for the slice narrative, and [`.agents/skills/run-react-doctor/SKILL.md`](./.agents/skills/run-react-doctor/SKILL.md) for the runbook.
 
+### Security posture
+
+| Badge | Status |
+|-------|--------|
+| [![Security Posture](https://img.shields.io/badge/Security%20Posture-98%2F100-22c55e?style=flat-square)](./docs/security/dashboard.md) | 98/100 — zero exploitable vulnerabilities |
+| [![PentestAgent](https://img.shields.io/badge/PentestAgent-25%20playbooks-0891b2?style=flat-square)](./docs/security/pentestagent/PR_NOTES.md) | 25 playbooks covering OWASP Top 10 |
+| [![Security.txt](https://img.shields.io/badge/security.txt-present-64748b?style=flat-square)](./public/.well-known/security.txt) | Vulnerability disclosure policy deployed |
+| [![API Headers](https://img.shields.io/badge/Headers-verified-16a34a?style=flat-square)](https://namias.tech/api/security-headers) | Real-time header verification endpoint |
+
+Security is a first-class feature of this portfolio. The site is continuously tested via [PentestAgent](https://github.com/GH05TCREW/pentestagent), an AI agent framework for black-box security testing. See [`docs/security/dashboard.md`](./docs/security/dashboard.md) for the full posture dashboard, [`docs/security/posture-score.md`](./docs/security/posture-score.md) for the scoring methodology, and [`.well-known/security.txt`](./public/.well-known/security.txt) for the disclosure policy.
+
 
 
 ## About this repository

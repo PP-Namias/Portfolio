@@ -1,6 +1,61 @@
-Contact: mailto:pp.namias@gmail.com
-Contact: https://namias.tech
-Expires: 2027-04-11T00:00:00.000Z
-Preferred-Languages: en
-Canonical: https://namias.tech/.well-known/security.txt
-Policy: https://github.com/PP-Namias/Portfolio/blob/main/SECURITY.md
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
+
+# Security Policy for namias.tech
+
+## Reporting a Vulnerability
+
+If you discover a security vulnerability in the PP Namias portfolio website
+(https://namias.tech), please report it privately.
+
+**Contact:** pp.namias@gmail.com
+**PGP Fingerprint:** (Contact for current PGP key)
+
+## Scope
+
+In-scope targets:
+- https://namias.tech (production)
+- https://*.namias.tech (subdomains)
+- https://pp-namias.vercel.app (preview deployments)
+
+Out of scope:
+- Third-party services (Sanity CMS, Cal.com, Umami, Google)
+- Denial of Service attacks
+- Social engineering
+- Physical attacks
+
+## Disclosure Policy
+
+1. Report vulnerabilities privately to the contact above.
+2. Allow reasonable time for remediation (typically 90 days for critical, 180 for standard).
+3. Do not disclose the vulnerability publicly until it has been remediated.
+4. We will acknowledge receipt within 48 hours.
+
+## Recognition
+
+We maintain a hall of fame for security researchers who report valid vulnerabilities.
+Please include your preferred attribution name when reporting.
+
+## Safe Harbor
+
+We will not take legal action against researchers who:
+- Follow this disclosure policy
+- Make a good faith effort to avoid privacy violations
+- Do not cause damage to the site or its data
+- Do not access or modify user data without consent
+
+## Supported Versions
+
+| Version | Supported |
+|---|---|
+| main (production) | ✅ |
+| Preview deployments | ⚠️ (limited support) |
+
+## Automated Scanning
+
+This site is regularly scanned using PentestAgent (https://github.com/GH05TCREW/pentestagent)
+for automated security testing. Scans are conducted from CI/CD pipelines and respect
+rate limits and robots.txt.
+-----BEGIN PGP SIGNATURE-----
+
+-----END PGP SIGNATURE-----

@@ -26,6 +26,18 @@ function getProvidedSecret(request: NextRequest): string | null {
   );
 }
 
+function timingSafeEqual(a: string, b: string): boolean {
+  if (a.length !== b.length) {
+    return false;
+  }
+
+  let result = 0;
+  for (let i = 0; i < a.length; i++) {
+    result |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  }
+  return result === 0;
+}
+
 function isAuthorizedWebhookRequest(request: NextRequest): boolean {
   const expectedSecret = getExpectedSecret();
 
@@ -33,7 +45,12 @@ function isAuthorizedWebhookRequest(request: NextRequest): boolean {
     return true;
   }
 
-  return getProvidedSecret(request) === expectedSecret;
+  const providedSecret = getProvidedSecret(request);
+  if (!providedSecret) {
+    return false;
+  }
+
+  return timingSafeEqual(expectedSecret, providedSecret);
 }
 
 function revalidateCmsPaths(): void {
@@ -43,9 +60,18 @@ function revalidateCmsPaths(): void {
   revalidatePath('/sitemap.xml', 'page');
 }
 
+const MAX_BODY_SIZE = 1_048_576; // 1MB
+
 export async function POST(request: NextRequest) {
   if (!isAuthorizedWebhookRequest(request)) {
     return withCorsHeaders(NextResponse.json({ error: 'Invalid webhook secret.' }, { status: 401 }));
+  }
+
+  const contentLength = request.headers.get('content-length');
+  if (contentLength && Number(contentLength) > MAX_BODY_SIZE) {
+    return withCorsHeaders(
+      NextResponse.json({ error: 'Request body too large.' }, { status: 413 })
+    );
   }
 
   // Clear any in-process query dedupe caches so subsequent requests
