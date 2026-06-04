@@ -255,7 +255,7 @@
       "stories": [
         { "id": "S-8.1", "title": "Generate comprehensive security report", "done": true, "verified": true, "details": "Write comprehensive-security-report.md with full methodology.", "files": ["docs/security/pentestagent/reports/comprehensive-security-report.md"] },
         { "id": "S-8.2", "title": "Create PR notes for security showcase", "done": true, "verified": true, "details": "Write PR_NOTES.md with narrative, score, and commit map.", "files": ["docs/security/pentestagent/PR_NOTES.md"] },
-        { "id": "S-8.3", "title": "Open showcase PR", "done": false, "details": "Create the PR with full documentation of the security journey.", "files": [] }
+        { "id": "S-8.3", "title": "Open showcase PR", "done": true, "verified": true, "details": "Created the PR with full documentation of the security journey.", "files": [] }
       ]
     },
     {
@@ -314,7 +314,7 @@
     {
       "id": "EPIC-12",
       "title": "Security monitoring & alerting",
-      "status": "planned",
+      "status": "completed",
       "summary": "Set up continuous security monitoring: GitHub Issues for new findings, scheduled scan notifications, posture trend tracking, and incident response procedures.",
       "value": "medium",
       "complexity": "medium",
@@ -329,7 +329,7 @@
     {
       "id": "EPIC-13",
       "title": "OWASP coverage & compliance matrix",
-      "status": "planned",
+      "status": "completed",
       "summary": "Map all security work to OWASP Top 10 2021 categories, create compliance matrix, and identify gaps for future work.",
       "value": "medium",
       "complexity": "low",
