@@ -7,8 +7,7 @@ import { ModalProvider } from '@/hooks/useModal';
 import { CmsContentProvider } from '@/hooks/useCmsContent';
 import type { CmsContent } from '@/lib/cms-content.shared';
 import { SwrConfigProvider } from '@/lib/swr-config';
-import { ModalAutoOpen } from './ModalAutoOpen';
-import React, { Suspense, useEffect } from 'react';
+import React, { useEffect } from 'react';
 
 interface ProvidersProps {
   readonly children: React.ReactNode;
@@ -95,9 +94,6 @@ export function Providers({ children, cmsContent }: ProvidersProps) {
                 }}
               >
                 {children}
-                <Suspense fallback={null}>
-                  <ModalAutoOpen />
-                </Suspense>
               </ReactLenis>
             </SwrConfigProvider>
           </ModalProvider>

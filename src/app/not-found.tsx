@@ -7,7 +7,7 @@ import { useState, useEffect } from 'react';
 
 const suggestions = [
   { label: 'Home', href: '/', icon: Home, description: 'Back to portfolio' },
-  { label: 'Blog', href: '/?modal=blog', icon: BookOpen, description: 'Read my articles' },
+  { label: 'Blog', href: '/blog', icon: BookOpen, description: 'Read my articles' },
 ];
 
 function GlitchText({ text }: { text: string }) {

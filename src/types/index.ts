@@ -154,4 +154,4 @@ export interface ChatMessage {
 
 export type HubState = 'closed' | 'menu' | 'chat';
 
-export type ModalName = 'resume' | 'experience' | 'booking' | 'contact' | 'project' | 'blog' | 'blog-post' | null;
+export type ModalName = 'resume' | 'experience' | 'booking' | 'contact' | 'project' | null;

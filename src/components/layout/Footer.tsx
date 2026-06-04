@@ -16,7 +16,6 @@ const footerSocialIcons: Record<string, React.ComponentType<{ className?: string
 // would risk SSR vs client drift across the year boundary
 // (Dec 31 23:59 vs Jan 1 00:00).
 const CURRENT_YEAR = new Date().getFullYear();
-const LAST_UPDATED = new Date().toISOString().slice(0, 10);
 
 export function Footer() {
   const { profile, socialLinks, siteSettings } = useCmsContent();
@@ -40,8 +39,19 @@ export function Footer() {
   }, [year]);
 
   return (
-    <footer className="mt-8 pb-6 pt-5 border-t border-border-light dark:border-border-dark">
-      <div className="flex flex-col items-center gap-3">
+    <footer className="mt-8 pb-8 pt-6 border-t border-border-light dark:border-border-dark">
+      <div className="flex flex-col items-center gap-4">
+        {/* Final CTA */}
+        <p className="text-sm text-text-secondary-light dark:text-text-secondary-dark text-center">
+          {footerCopy.leadText || 'Interested in working together?'}{' '}
+          <button
+            type="button"
+            onClick={() => openModal('contact')}
+            className="text-accent-pink hover:text-accent-pink-hover dark:hover:text-accent-pink-hover-dark font-medium transition-colors"
+          >
+            {footerCopy.contactPrompt || 'Send a message'}
+          </button>
+        </p>
         <div className="flex items-center gap-3">
           {footerSocials.map((link) => {
             const Icon = footerSocialIcons[link.name];
@@ -60,10 +70,8 @@ export function Footer() {
             );
           })}
         </div>
-        <p className="text-xs text-text-muted-light dark:text-text-muted-dark text-center">
+        <p className="text-xs text-text-muted-light dark:text-text-muted-dark">
           &copy; {year} {footerCopy.copyright || profile.name}
-          <span className="mx-2 opacity-50">&middot;</span>
-          Last updated <time dateTime={LAST_UPDATED}>{LAST_UPDATED}</time>
         </p>
       </div>
     </footer>

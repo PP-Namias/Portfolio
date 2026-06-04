@@ -48,14 +48,24 @@ describe('app metadata routes', () => {
     expect(response.options).toMatchObject({ width: 1200, height: 630 });
   });
 
-  it('sitemap returns homepage and studio entries (no /blog, no /contact)', async () => {
+  it('sitemap returns only homepage when blog is hidden', async () => {
+    vi.doMock('@/lib/features', () => ({ IS_BLOG_VISIBLE: false }));
+
     const mod = await import('@/app/sitemap');
     const result = await mod.default();
 
-    expect(result).toHaveLength(2);
+    expect(result).toHaveLength(1);
     expect(result[0].url).toBe('https://namias.tech');
-    expect(result[1].url).toBe('https://namias.tech/studio');
-    expect(result.some((entry) => entry.url.endsWith('/blog'))).toBe(false);
+  });
+
+  it('sitemap includes blog and post entries when blog is visible', async () => {
+    vi.doMock('@/lib/features', () => ({ IS_BLOG_VISIBLE: true }));
+
+    const mod = await import('@/app/sitemap');
+    const result = await mod.default();
+
+    expect(result.length).toBeGreaterThanOrEqual(2);
     expect(result.some((entry) => entry.url.endsWith('/contact'))).toBe(false);
+    expect(result.some((entry) => entry.url.endsWith('/blog'))).toBe(true);
   });
 });

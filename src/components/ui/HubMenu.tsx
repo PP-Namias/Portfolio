@@ -260,7 +260,8 @@ export function HubMenu({ onClose, onOpenChat }: Readonly<HubMenuProps>) {
             label="Read Blog"
             subtitle="Latest articles & tutorials"
             index={5}
-            onClick={() => { openModal('blog'); onClose(); }}
+            href="/blog"
+            onClick={onClose}
             iconColorClass="text-indigo-500"
             iconBgClass="bg-indigo-500/10"
           />

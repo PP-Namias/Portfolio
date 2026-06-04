@@ -93,20 +93,6 @@ const nextConfig = {
   devIndicators: {
     buildActivity: false,
   },
-  async redirects() {
-    return [
-      {
-        source: '/blog',
-        destination: '/?modal=blog',
-        permanent: true,
-      },
-      {
-        source: '/blog/:slug',
-        destination: '/?modal=blog-post&slug=:slug',
-        permanent: true,
-      },
-    ];
-  },
   images: {
     remotePatterns: [
       { protocol: 'https', hostname: 'cdn.sanity.io' },
