@@ -102,7 +102,7 @@ const nextConfig = {
       },
       {
         source: '/blog/:slug',
-        destination: '/?modal=blog&slug=:slug',
+        destination: '/?modal=blog-post&slug=:slug',
         permanent: true,
       },
     ];

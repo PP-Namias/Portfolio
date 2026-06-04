@@ -44,8 +44,8 @@ The auto-open logic runs in a small client component (`src/app/ModalAutoOpen.tsx
 `next.config.js` `redirects()` maps:
 
 ```
-/blog              -> /?modal=blog                (permanent)
-/blog/:slug        -> /?modal=blog&slug=:slug     (permanent)
+/blog              -> /?modal=blog                    (permanent)
+/blog/:slug        -> /?modal=blog-post&slug=:slug    (permanent)
 ```
 
 These preserve any inbound links from search engines, social shares, or external blogs.
