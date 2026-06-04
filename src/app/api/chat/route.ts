@@ -112,6 +112,7 @@ function createRequestId(request: NextRequest): string {
 
 function withRequestId(response: NextResponse, requestId: string): NextResponse {
   response.headers.set('x-request-id', requestId);
+  response.headers.set('Cache-Control', 'no-cache, no-store, must-revalidate');
   return response;
 }
 
@@ -143,7 +144,9 @@ export async function GET() {
   const health = getProviderHealth();
   const statusCode = health.status === 'active' ? 200 : 503;
 
-  return NextResponse.json(health, { status: statusCode });
+  const response = NextResponse.json(health, { status: statusCode });
+  response.headers.set('Cache-Control', 'public, max-age=60, s-maxage=60, stale-while-revalidate=30');
+  return response;
 }
 
 export async function POST(request: NextRequest) {
