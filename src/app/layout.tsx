@@ -106,6 +106,12 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
     return (
       <html lang="en" suppressHydrationWarning className={inter.variable}>
         <head>
+          <link rel="dns-prefetch" href="https://cdn.sanity.io" />
+          <link rel="preconnect" href="https://cdn.sanity.io" />
+          <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+          <link rel="preconnect" href="https://fonts.googleapis.com" />
+          <link rel="dns-prefetch" href="https://cloud.umami.is" />
+          <link rel="preconnect" href="https://cloud.umami.is" />
           <JsonLd data={jsonLd} id="layout-jsonld-test" />
           <Analytics />
         </head>
@@ -134,6 +140,12 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
   return (
       <html lang="en" suppressHydrationWarning className={inter.variable}>
         <head>
+          <link rel="dns-prefetch" href="https://cdn.sanity.io" />
+          <link rel="preconnect" href="https://cdn.sanity.io" />
+          <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+          <link rel="preconnect" href="https://fonts.googleapis.com" />
+          <link rel="dns-prefetch" href="https://cloud.umami.is" />
+          <link rel="preconnect" href="https://cloud.umami.is" />
           <JsonLd data={jsonLd} id="layout-jsonld-runtime" />
           <Analytics />
         </head>
