@@ -238,8 +238,9 @@ export function HeroSection() {
               {IS_BLOG_VISIBLE && (
                 <>
                     <span className="mx-1 h-4 w-px bg-border-light dark:bg-border-dark" />
-                  <motion.a
-                    href="/blog"
+                  <motion.button
+                    type="button"
+                    onClick={() => openModal('blog')}
                     className="h-7 rounded-md px-2 flex items-center gap-1 text-[12px] font-medium text-text-muted-light dark:text-text-muted-dark hover:text-accent-pink hover:bg-accent-pink/5 transition-colors"
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1 }}
@@ -247,7 +248,7 @@ export function HeroSection() {
                     whileHover={{ y: -1 }}
                   >
                     Blog
-                  </motion.a>
+                  </motion.button>
                 </>
               )}
             </div>
