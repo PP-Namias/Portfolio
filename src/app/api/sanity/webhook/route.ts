@@ -1,8 +1,24 @@
 import { revalidatePath } from 'next/cache';
 import { NextRequest, NextResponse } from 'next/server';
 import { clearCmsQueryCache } from '@/lib/cms-content.server';
+import { invalidateByTag } from '@/lib/cache';
 
 const REVALIDATE_PATHS = ['/', '/blog', '/blog/[slug]', '/sitemap.xml'] as const;
+
+const SANITY_TYPE_TO_TAGS: Record<string, string[]> = {
+  profile: ['cms:profile'],
+  heroSection: ['cms:hero'],
+  aboutSection: ['cms:about'],
+  techStack: ['cms:technology'],
+  experience: ['cms:experience'],
+  project: ['cms:project', 'cms:project-list'],
+  certification: ['cms:certification'],
+  galleryImage: ['cms:gallery'],
+  post: ['cms:blog'],
+  membership: ['cms:membership'],
+  recommendation: ['cms:recommendation'],
+  siteSettings: ['cms:settings'],
+};
 
 function withCorsHeaders(response: NextResponse): NextResponse {
   response.headers.set('Access-Control-Allow-Origin', '*');
@@ -72,6 +88,29 @@ export async function POST(request: NextRequest) {
     return withCorsHeaders(
       NextResponse.json({ error: 'Request body too large.' }, { status: 413 })
     );
+  }
+
+  // Parse the webhook body to determine which content type changed.
+  let body: Record<string, unknown> | null = null;
+  try {
+    body = await request.clone().json();
+  } catch {
+    // Non-fatal — proceed without body parsing.
+  }
+
+  let docType = ''
+  if (body && typeof body._type === 'string') {
+    docType = body._type;
+  }
+
+  // Invalidate the in-memory cache by content type tags.
+  const tags = SANITY_TYPE_TO_TAGS[docType] ?? [];
+  for (const tag of tags) {
+    try {
+      invalidateByTag(tag);
+    } catch {
+      // Non-fatal — proceed even if tag invalidation fails.
+    }
   }
 
   // Clear any in-process query dedupe caches so subsequent requests
