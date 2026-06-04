@@ -6,7 +6,8 @@ import { AccentColorProvider } from '@/hooks/useAccentColor';
 import { ModalProvider } from '@/hooks/useModal';
 import { CmsContentProvider } from '@/hooks/useCmsContent';
 import type { CmsContent } from '@/lib/cms-content.shared';
-import React from 'react';
+import { SwrConfigProvider } from '@/lib/swr-config';
+import React, { useEffect } from 'react';
 
 interface ProvidersProps {
   readonly children: React.ReactNode;
@@ -14,7 +15,18 @@ interface ProvidersProps {
   readonly isDraftMode?: boolean;
 }
 
+function useServiceWorker() {
+  useEffect(() => {
+    if ('serviceWorker' in navigator && process.env.NODE_ENV === 'production') {
+      navigator.serviceWorker.register('/sw.js').catch(() => {
+        // Non-critical — proceed without service worker
+      });
+    }
+  }, []);
+}
+
 export function Providers({ children, cmsContent }: ProvidersProps) {
+  useServiceWorker();
   const resolvedCmsContent = cmsContent ?? {
     seoSettings: {
       siteTitle: '',
@@ -70,18 +82,20 @@ export function Providers({ children, cmsContent }: ProvidersProps) {
       <AccentColorProvider>
         <CmsContentProvider value={resolvedCmsContent}>
           <ModalProvider>
-            <ReactLenis
-              root
-              options={{
-                lerp: 0.12,
-                duration: 1.2,
-                smoothWheel: true,
-                touchMultiplier: 1.5,
-                wheelMultiplier: 1,
-              }}
-            >
-              {children}
-            </ReactLenis>
+            <SwrConfigProvider>
+              <ReactLenis
+                root
+                options={{
+                  lerp: 0.12,
+                  duration: 1.2,
+                  smoothWheel: true,
+                  touchMultiplier: 1.5,
+                  wheelMultiplier: 1,
+                }}
+              >
+                {children}
+              </ReactLenis>
+            </SwrConfigProvider>
           </ModalProvider>
         </CmsContentProvider>
       </AccentColorProvider>

@@ -12,7 +12,7 @@ function withCors(response: NextResponse): NextResponse {
   response.headers.set('Access-Control-Allow-Origin', '*')
   response.headers.set('Access-Control-Allow-Methods', 'GET, OPTIONS')
   response.headers.set('Access-Control-Allow-Headers', 'content-type, x-sanity-webhook-secret, x-sanity-revalidate-secret')
-  response.headers.set('Cache-Control', 'no-store, max-age=0')
+  response.headers.set('Cache-Control', 'no-cache, no-store, must-revalidate')
   response.headers.set('X-Robots-Tag', 'noindex, nofollow')
   return response
 }

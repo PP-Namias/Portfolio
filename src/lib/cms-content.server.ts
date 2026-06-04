@@ -1,7 +1,7 @@
-// path import removed — we avoid constructing local `/images/*` refs in this slice
-
 import { cache } from 'react';
 import { draftMode } from 'next/headers';
+
+import { getOrFetch } from './cache';
 
 import type {
   BlogPost,
@@ -78,16 +78,47 @@ async function pickClient() {
   });
 }
 
-async function querySanity<T>(query: string): Promise<T | null> {
+const CACHE_TTL_MS = Number(process.env.CACHE_TTL_DEFAULT) || 300_000;
+const CACHE_STALE_MS = Number(process.env.CACHE_TTL_STALE) || 60_000;
+
+const CONTENT_TAGS: Record<string, string[]> = {
+  profile: ['cms:profile'],
+  heroSection: ['cms:hero'],
+  aboutSection: ['cms:about'],
+  techStack: ['cms:technology'],
+  experience: ['cms:experience'],
+  project: ['cms:project', 'cms:project-list'],
+  certification: ['cms:certification'],
+  galleryImage: ['cms:gallery'],
+  post: ['cms:blog'],
+  membership: ['cms:membership'],
+  recommendation: ['cms:recommendation'],
+  siteSettings: ['cms:settings'],
+};
+
+async function querySanity<T>(query: string, options?: { tags?: string[] }): Promise<T | null> {
   const projectId = getProjectId();
   if (!projectId) return null;
 
-  // Build a per-request cache key that includes the current perspective
-  // so a draft-mode refetch doesn't reuse a published snapshot.
   const {isEnabled} = await draftMode();
   const perspective = isEnabled ? 'previewDrafts' : 'published';
-  const cacheKey = `${perspective}::${query}`;
 
+  if (perspective === 'previewDrafts') {
+    return querySanityFresh<T>(query, projectId, perspective);
+  }
+
+  const cacheKey = `sanity:${perspective}:${query}`;
+  const tags = options?.tags ?? [];
+  const result = await getOrFetch<T | null>(cacheKey, () => querySanityFresh<T>(query, projectId, perspective), {
+    ttlMs: CACHE_TTL_MS,
+    staleMs: CACHE_STALE_MS,
+    tags,
+  });
+  return result.data;
+}
+
+async function querySanityFresh<T>(query: string, projectId: string, perspective: string): Promise<T | null> {
+  const cacheKey = `${perspective}::${query}`;
   const cached = queryCache.get(cacheKey) as Promise<T | null> | undefined;
   if (cached) {
     queryCacheStats.hits += 1;
@@ -102,8 +133,6 @@ async function querySanity<T>(query: string): Promise<T | null> {
       const result = await client.fetch<T | null>(query);
       return (result as T | null) ?? null;
     } catch (err) {
-      // Fallback to legacy HTTP fetch if the client-based fetch fails
-      // (e.g. transient connection issue during server boot).
       try {
         const url = `https://${projectId}.api.sanity.io/v${sanityApiVersion}/data/query/${getDataset()}?query=${encodeURIComponent(query)}`;
         const response = await fetch(url, {
@@ -251,7 +280,8 @@ const getCmsContentImpl = async (): Promise<CmsContent> => {
       highlights?: Profile['highlights'];
       education?: Profile['education'];
     }>(
-      '*[_type == "profile"][0]{fullName,title,email,phone,location,github,linkedin,summary,"avatarUrl":avatar.asset->url,resumeUrl,availabilityLabel,highlights,education}'
+      '*[_type == "profile"][0]{fullName,title,email,phone,location,github,linkedin,summary,"avatarUrl":avatar.asset->url,resumeUrl,availabilityLabel,highlights,education}',
+      { tags: CONTENT_TAGS.profile }
     ),
     querySanity<{
       socialLinks?: Array<{ platform?: string; icon?: string; url?: string; placements?: string[] }>;
@@ -259,18 +289,21 @@ const getCmsContentImpl = async (): Promise<CmsContent> => {
       availabilityLabel?: string;
       profileImageUrl?: string;
     }>(
-      '*[_type == "heroSection"][0]{socialLinks[]{platform,icon,url,placements},heroRoles,availabilityLabel,"profileImageUrl":profileImage.asset->url}'
+      '*[_type == "heroSection"][0]{socialLinks[]{platform,icon,url,placements},heroRoles,availabilityLabel,"profileImageUrl":profileImage.asset->url}',
+      { tags: CONTENT_TAGS.heroSection }
     ),
     querySanity<{
       aboutContent?: unknown;
       aboutParagraphs?: string[];
     }>(
-      '*[_type == "aboutSection"][0]{aboutContent,aboutParagraphs}'
+      '*[_type == "aboutSection"][0]{aboutContent,aboutParagraphs}',
+      { tags: CONTENT_TAGS.aboutSection }
     ),
     querySanity<{
       technologies?: Technology[];
     }>(
-      '*[_type == "techStack"][0]{technologies[]{name,logo,category,proficiency}}'
+      '*[_type == "techStack"][0]{technologies[]{name,logo,category,proficiency}}',
+      { tags: CONTENT_TAGS.techStack }
     ),
     querySanity<Array<{
       role?: string;
@@ -287,7 +320,8 @@ const getCmsContentImpl = async (): Promise<CmsContent> => {
       achievements?: string[];
       images?: string[];
     }>>(
-      '*[_type == "experience"] | order(order asc, startDate desc){role,company,location,startDate,endDate,employmentType,workModel,summary,featuredStory,highlights,tags,achievements,images}'
+      '*[_type == "experience"] | order(order asc, startDate desc){role,company,location,startDate,endDate,employmentType,workModel,summary,featuredStory,highlights,tags,achievements,images}',
+      { tags: CONTENT_TAGS.experience }
     ),
     querySanity<Array<{
       title?: string;
@@ -326,7 +360,8 @@ const getCmsContentImpl = async (): Promise<CmsContent> => {
         license?: string;
       }>;
     }>>(
-      '*[_type == "project"] | order(order asc, featuredRank asc, title asc){title,"slug":slug.current,summary,challenge,solution,result,year,category,featured,role,technologies,achievements,featuredRank,status,liveUrl,repositoryUrl,detailUrl,processUrl,previewVideoUrl,"imageFile":image.asset->originalFilename,"imageUrl":image.asset->url,"imageAlt":image.alt,"imageCaption":image.caption,"imageCredit":image.credit,"imageSource":image.source,"imageLicense":image.license,"galleryItems":gallery[]{"file":asset->originalFilename,"url":asset->url,alt,caption,credit,source,license}}'
+      '*[_type == "project"] | order(order asc, featuredRank asc, title asc){title,"slug":slug.current,summary,challenge,solution,result,year,category,featured,role,technologies,achievements,featuredRank,status,liveUrl,repositoryUrl,detailUrl,processUrl,previewVideoUrl,"imageFile":image.asset->originalFilename,"imageUrl":image.asset->url,"imageAlt":image.alt,"imageCaption":image.caption,"imageCredit":image.credit,"imageSource":image.source,"imageLicense":image.license,"galleryItems":gallery[]{"file":asset->originalFilename,"url":asset->url,alt,caption,credit,source,license}}',
+      { tags: CONTENT_TAGS.project }
     ),
     querySanity<Array<{
       title?: string;
@@ -341,7 +376,8 @@ const getCmsContentImpl = async (): Promise<CmsContent> => {
       source?: string;
       license?: string;
     }>>(
-      '*[_type == "certification"] | order(order asc, issuedAt desc){title,issuedAt,tags,"issuer":issuer->title,"imageFile":image.asset->originalFilename,"imageUrl":image.asset->url,alt,caption,credit,source,license}'
+      '*[_type == "certification"] | order(order asc, issuedAt desc){title,issuedAt,tags,"issuer":issuer->title,"imageFile":image.asset->originalFilename,"imageUrl":image.asset->url,alt,caption,credit,source,license}',
+      { tags: CONTENT_TAGS.certification }
     ),
     querySanity<Array<{
       title?: string;
@@ -359,7 +395,8 @@ const getCmsContentImpl = async (): Promise<CmsContent> => {
       source?: string;
       license?: string;
     }>>(
-      '*[_type == "galleryImage"] | order(order asc, capturedAt desc){title,mediaType,tags,capturedAt,"category":category->title,"mediaFile":image.asset->originalFilename,"mediaUrl":image.asset->url,mediaPath,alt,caption,credit,source,license}'
+      '*[_type == "galleryImage"] | order(order asc, capturedAt desc){title,mediaType,tags,capturedAt,"category":category->title,"mediaFile":image.asset->originalFilename,"mediaUrl":image.asset->url,mediaPath,alt,caption,credit,source,license}',
+      { tags: CONTENT_TAGS.galleryImage }
     ),
     querySanity<Array<{
       title?: string;
@@ -381,14 +418,16 @@ const getCmsContentImpl = async (): Promise<CmsContent> => {
       mainImageFile?: string;
       mainImageUrl?: string;
     }>>(
-      '*[_type == "post" && published == true && defined(slug.current)] | order(publishedAt desc){title,"slug":slug.current,excerpt,readTime,body,tags,publishedAt,coverImagePath,featured,metaTitle,metaDescription,"mainImageFile":mainImage.asset->originalFilename,"mainImageUrl":mainImage.asset->url,"author":author->name,"categories":categories[]->title,sourceId,published}'
+      '*[_type == "post" && published == true && defined(slug.current)] | order(publishedAt desc){title,"slug":slug.current,excerpt,readTime,body,tags,publishedAt,coverImagePath,featured,metaTitle,metaDescription,"mainImageFile":mainImage.asset->originalFilename,"mainImageUrl":mainImage.asset->url,"author":author->name,"categories":categories[]->title,sourceId,published}',
+      { tags: CONTENT_TAGS.post }
     ),
     querySanity<Array<{
       name?: string;
       url?: string;
       joinedAt?: string;
     }>>(
-      '*[_type == "membership"] | order(joinedAt desc){name,url,joinedAt}'
+      '*[_type == "membership"] | order(joinedAt desc){name,url,joinedAt}',
+      { tags: CONTENT_TAGS.membership }
     ),
     querySanity<Array<{
       quote?: string;
@@ -400,7 +439,8 @@ const getCmsContentImpl = async (): Promise<CmsContent> => {
       companyUrl?: string;
       avatarUrl?: string;
     }>>(
-      '*[_type == "recommendation"] | order(_createdAt asc){quote,name,title,company,featured,relationship,companyUrl,"avatarUrl":avatar.asset->url}'
+      '*[_type == "recommendation"] | order(_createdAt asc){quote,name,title,company,featured,relationship,companyUrl,"avatarUrl":avatar.asset->url}',
+      { tags: CONTENT_TAGS.recommendation }
     ),
     querySanity<{
       footer?: {
@@ -434,7 +474,8 @@ const getCmsContentImpl = async (): Promise<CmsContent> => {
       robotsNoindex?: boolean;
       robotsNofollow?: boolean;
     }>(
-      '*[_type == "siteSettings"][0]{footer{leadText,linkLabel,copyright,backToPortfolioLabel,contactPrompt},blog{title,description,backLabel},siteName,siteTagline,ownerName,ownerShortName,contactEmail,themeColor,primaryAccent,secondaryAccent,defaultMetaTitle,defaultMetaDescription,canonicalUrl,ogTitle,ogDescription,"ogImageUrl":ogImage.asset->url,"ogImageSquareUrl":ogImageSquare.asset->url,"twitterImageUrl":twitterImage.asset->url,robotsNoindex,robotsNofollow}'
+      '*[_type == "siteSettings"][0]{footer{leadText,linkLabel,copyright,backToPortfolioLabel,contactPrompt},blog{title,description,backLabel},siteName,siteTagline,ownerName,ownerShortName,contactEmail,themeColor,primaryAccent,secondaryAccent,defaultMetaTitle,defaultMetaDescription,canonicalUrl,ogTitle,ogDescription,"ogImageUrl":ogImage.asset->url,"ogImageSquareUrl":ogImageSquare.asset->url,"twitterImageUrl":twitterImage.asset->url,robotsNoindex,robotsNofollow}',
+      { tags: CONTENT_TAGS.siteSettings }
     ),
   ]);
 
