@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { clearCmsQueryCache } from '@/lib/cms-content.server';
 import { invalidateByTag } from '@/lib/cache';
 
-const REVALIDATE_PATHS = ['/', '/blog', '/blog/[slug]', '/sitemap.xml'] as const;
+const REVALIDATE_PATHS = ['/', '/sitemap.xml'] as const;
 
 const SANITY_TYPE_TO_TAGS: Record<string, string[]> = {
   profile: ['cms:profile'],
@@ -71,8 +71,6 @@ function isAuthorizedWebhookRequest(request: NextRequest): boolean {
 
 function revalidateCmsPaths(): void {
   revalidatePath('/', 'page');
-  revalidatePath('/blog', 'page');
-  revalidatePath('/blog/[slug]', 'page');
   revalidatePath('/sitemap.xml', 'page');
 }
 

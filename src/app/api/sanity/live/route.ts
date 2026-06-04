@@ -3,7 +3,7 @@ import {NextResponse} from 'next/server'
 
 export const runtime = 'nodejs'
 
-const REVALIDATE_PATHS = ['/', '/blog', '/blog/[slug]', '/sitemap.xml'] as const
+const REVALIDATE_PATHS = ['/', '/sitemap.xml'] as const
 
 const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || 'nl0qw78w'
 const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET || 'production'
