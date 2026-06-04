@@ -12,6 +12,7 @@ This file is the entry point for any agent (opencode, future coding agents, or h
 - `update-the-hero` — hero block editing
 - `ui-ux-pro-max` — design system intelligence
 - `smart-caching` — multi-layer caching architecture, cache utility, Redis integration, ISR, SWR config, cache health endpoint
+- `one-page-portfolio` — the one-page refactor: blog/contact/booking as modals, 301 redirects, no `/blog` routes
 
 ## React quality gate
 
