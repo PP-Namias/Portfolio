@@ -11,6 +11,7 @@ This file is the entry point for any agent (opencode, future coding agents, or h
 - `add-an-experience`, `add-a-project`, `add-a-certification`, `add-a-blog-post` — content workflows
 - `update-the-hero` — hero block editing
 - `ui-ux-pro-max` — design system intelligence
+- `smart-caching` — multi-layer caching architecture, cache utility, Redis integration, ISR, SWR config, cache health endpoint
 
 ## React quality gate
 
