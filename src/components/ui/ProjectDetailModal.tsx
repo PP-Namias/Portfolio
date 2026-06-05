@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import Image from 'next/image';
+import Image from '@/components/ui/OptimizedImage';
 import { Calendar, Code2, ExternalLink, Layers, BriefcaseBusiness } from 'lucide-react';
 import { Modal } from './Modal';
 import { Project } from '@/types';
@@ -194,3 +194,4 @@ export function ProjectDetailModal({ open, onClose, project }: Readonly<ProjectD
     </Modal>
   );
 }
+

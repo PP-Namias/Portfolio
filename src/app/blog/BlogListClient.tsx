@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
+import Image from '@/components/ui/OptimizedImage';
 import { motion } from 'framer-motion';
 import { Clock, Calendar, ChevronRight } from 'lucide-react';
 import { Card } from '@/components/ui/Card';
@@ -88,3 +88,4 @@ export default function BlogListClient({ posts }: BlogListClientProps) {
     </div>
   );
 }
+

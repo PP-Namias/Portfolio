@@ -527,7 +527,7 @@ const getCmsContentImpl = async (): Promise<CmsContent> => {
     // request different sizes if needed once a shared canonical URL is
     // available in the content shape.
     profileImageUrl:
-      buildMediaGatewayUrl(heroDoc?.profileImageUrl || profileDoc.avatarUrl || '', { width: 320, quality: 75, sign: true }) || '',
+      buildMediaGatewayUrl(heroDoc?.profileImageUrl || profileDoc.avatarUrl || '', { width: 320, quality: 85, sign: true }) || '',
   };
 
   // Determine about paragraphs with a small server-side helper to avoid
@@ -569,7 +569,7 @@ const getCmsContentImpl = async (): Promise<CmsContent> => {
     // Use a medium-sized preview image for project cards to avoid
     // downloading full-resolution assets in the initial render.
     image:
-      buildMediaGatewayUrl(project.imageUrl || (project.galleryItems?.[0]?.url ?? ''), { width: 560, quality: 70, sign: true }) ||
+      buildMediaGatewayUrl(project.imageUrl || (project.galleryItems?.[0]?.url ?? ''), { width: 560, quality: 85, sign: true }) ||
       resolveMediaPath(project.imageFile, project.imageUrl) ||
       '',
     imageAlt: project.imageAlt || project.title,
@@ -610,7 +610,7 @@ const getCmsContentImpl = async (): Promise<CmsContent> => {
   const certifications: Certification[] = (certificationDocs ?? []).map((certification, index) => ({
     title: certification.title || '',
     // Prefer the Sanity asset URL for certification images
-    image: buildMediaGatewayUrl(certification.imageUrl || '', { width: 320, quality: 70, sign: true }) || '',
+    image: buildMediaGatewayUrl(certification.imageUrl || '', { width: 320, quality: 85, sign: true }) || '',
     imageUrl: certification.imageUrl || '',
     alt: certification.alt || certification.title || '',
     caption: certification.caption || '',
@@ -627,7 +627,7 @@ const getCmsContentImpl = async (): Promise<CmsContent> => {
     mediaType: image.mediaType || 'Image',
     // Use the Sanity-hosted media URL when available; otherwise empty.
     // Request a lightweight preview size for gallery thumbnails.
-    media: buildMediaGatewayUrl(image.mediaUrl || image.mediaPath || '', { width: 480, quality: 70, sign: true }) || '',
+    media: buildMediaGatewayUrl(image.mediaUrl || image.mediaPath || '', { width: 480, quality: 85, sign: true }) || '',
     alt: image.alt || image.title || '',
     caption: image.caption || '',
     credit: image.credit || '',
@@ -664,7 +664,7 @@ const getCmsContentImpl = async (): Promise<CmsContent> => {
     readTime: post.readTime || '5 min read',
     tags: post.tags || [],
     coverImage: (() => {
-      const resolved = buildMediaGatewayUrl(post.mainImageUrl || '', { width: 960, quality: 72, sign: true });
+      const resolved = buildMediaGatewayUrl(post.mainImageUrl || '', { width: 960, quality: 85, sign: true });
       return resolved || '';
     })(),
     featured: post.featured || false,

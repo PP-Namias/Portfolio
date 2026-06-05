@@ -2,7 +2,7 @@
 
 import React, { useMemo } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
+import Image from '@/components/ui/OptimizedImage';
 import { motion } from 'framer-motion';
 import { ArrowRight, Calendar, Clock } from 'lucide-react';
 import { useCmsContent } from '@/hooks/useCmsContent';
@@ -163,3 +163,4 @@ export function BlogSection() {
     </motion.section>
   );
 }
+

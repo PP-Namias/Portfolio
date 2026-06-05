@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useMemo } from 'react';
-import Image from 'next/image';
+import Image from '@/components/ui/OptimizedImage';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ChevronDown, ChevronUp } from 'lucide-react';
 import { useCmsContent } from '@/hooks/useCmsContent';
@@ -183,3 +183,4 @@ export function CertificationsSection() {
     </motion.section>
   );
 }
+

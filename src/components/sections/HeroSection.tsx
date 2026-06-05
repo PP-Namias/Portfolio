@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import Image from 'next/image';
+import Image from '@/components/ui/OptimizedImage';
 import { motion, AnimatePresence, useMotionValue, useSpring } from 'framer-motion';
 import {
   MapPin,
@@ -291,3 +291,4 @@ export function HeroSection() {
     </motion.section>
   );
 }
+

@@ -8,7 +8,7 @@ import { ChatMessage } from './ChatMessage';
 import { useModal } from '@/hooks/useModal';
 import { useCmsContent } from '@/hooks/useCmsContent';
 import type { ChatMessage as ChatMessageType } from '@/types';
-import Image from 'next/image';
+import Image from '@/components/ui/OptimizedImage';
 import { resolveContentImageSrc } from '@/lib/media';
 
 const ACTION_CARDS = [
@@ -532,3 +532,4 @@ export function ChatPanel({ onBack, onClose, messages, setMessages }: Readonly<C
     </>
   );
 }
+
