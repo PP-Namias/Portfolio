@@ -63,6 +63,7 @@ vi.mock('@/components/sections/AboutSection', () => ({ AboutSection: () => <div>
 vi.mock('@/components/sections/TechStackSection', () => ({ TechStackSection: () => <div>TechStackSection</div> }));
 vi.mock('@/components/sections/ProjectsSection', () => ({ ProjectsSection: () => <div>ProjectsSection</div> }));
 vi.mock('@/components/sections/CertificationsSection', () => ({ CertificationsSection: () => <div>CertificationsSection</div> }));
+vi.mock('@/components/sections/BlogSection', () => ({ BlogSection: () => <div>BlogSection</div> }));
 vi.mock('@/components/sections/ExperienceTimeline', () => ({ ExperienceTimeline: () => <div>ExperienceTimeline</div> }));
 vi.mock('@/components/sections/ConnectSection', () => ({ ConnectSection: () => <div>ConnectSection</div> }));
 vi.mock('@/components/sections/GallerySection', () => ({ GallerySection: () => <div>GallerySection</div> }));
@@ -122,6 +123,7 @@ describe('app layout and page coverage', () => {
     expect(screen.getByText('ExperienceTimeline')).toBeInTheDocument();
     expect(screen.getByText('ConnectSection')).toBeInTheDocument();
     expect(screen.getByText('CertificationsSection')).toBeInTheDocument();
+    expect(screen.getByText('BlogSection')).toBeInTheDocument();
     expect(screen.getByText('GallerySection')).toBeInTheDocument();
     expect(screen.getByText('FooterSection')).toBeInTheDocument();
   });
