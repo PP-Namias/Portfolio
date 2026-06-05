@@ -20,8 +20,10 @@ export function sanityField(
   const base: Pick<CreateDataAttributeProps, 'id' | 'type'> =
     typeof source === 'string' ? {id: source, type: source} : source
 
-  return createDataAttribute({
-    ...base,
-    path: index === undefined ? [path] : [path, {_key: `idx${index}`}, index.toString()],
-  })
+  return {
+    'data-sanity': createDataAttribute({
+      ...base,
+      path: index === undefined ? [path] : [path, {_key: `idx${index}`}, index.toString()],
+    }).toString(),
+  }
 }
