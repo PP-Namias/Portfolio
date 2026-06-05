@@ -13,7 +13,7 @@ import type { BlogPost } from '@/types';
 
 const LATEST_COUNT = 3;
 const VISIBLE_TAGS = 2;
-const COVER_SIZE = 72;
+const COVER_SIZE = 96;
 const EXCERPT_LINES = 2;
 
 function sortByDateDesc(posts: BlogPost[]): BlogPost[] {
@@ -40,20 +40,21 @@ function PostRow({ post, index }: PostRowProps) {
         className="flex items-start gap-3 -mx-2 px-2 py-2 rounded-lg hover:bg-surface-light/60 dark:hover:bg-surface-dark/60 transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-pink/50"
       >
         {coverSrc ? (
-          <span className="relative h-[72px] w-[72px] flex-shrink-0 overflow-hidden rounded-lg border border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark">
+          <span className="relative h-[96px] w-[96px] flex-shrink-0 overflow-hidden rounded-lg border border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark">
             <Image
               src={coverSrc}
               alt={post.title}
               width={COVER_SIZE}
               height={COVER_SIZE}
-              sizes="72px"
+              sizes="96px"
+              unoptimized
               className="object-cover transition-transform duration-300 group-hover:scale-105"
             />
           </span>
         ) : (
           <span
             aria-hidden="true"
-            className="h-[72px] w-[72px] flex-shrink-0 rounded-lg border border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark flex items-center justify-center text-[10px] text-text-muted-light dark:text-text-muted-dark"
+            className="h-[96px] w-[96px] flex-shrink-0 rounded-lg border border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark flex items-center justify-center text-[10px] text-text-muted-light dark:text-text-muted-dark"
           >
             No cover
           </span>
@@ -132,7 +133,7 @@ export function BlogSection() {
             href="/blog"
             className="inline-flex items-center gap-1 text-xs font-medium text-text-muted-light dark:text-text-muted-dark hover:text-accent-pink dark:hover:text-accent-pink transition-colors"
           >
-            View all
+            View all {blogPosts.length} posts
             <ArrowRight className="h-3.5 w-3.5" />
           </Link>
         )}

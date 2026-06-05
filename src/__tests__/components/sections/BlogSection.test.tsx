@@ -143,11 +143,11 @@ describe('BlogSection', () => {
     expect(slugs).toEqual(['/blog/delta', '/blog/bravo', '/blog/alpha']);
   });
 
-  it('exposes a "View all" link to /blog', () => {
+  it('exposes a "View all N posts" link to /blog with the total count', () => {
     useCmsContentMock.mockReturnValue({ blogPosts: samplePosts });
 
     render(<BlogSection />);
-    const viewAll = screen.getByRole('link', { name: /View all/ });
+    const viewAll = screen.getByRole('link', { name: `View all ${samplePosts.length} posts` });
     expect(viewAll).toHaveAttribute('href', '/blog');
   });
 
@@ -184,5 +184,7 @@ describe('BlogSection', () => {
     expect(img).toBeInTheDocument();
     const src = img.getAttribute('src') || '';
     expect(src.startsWith('/api/media/sanity/') || src.includes('alpha.jpg')).toBe(true);
+    expect(img.getAttribute('width')).toBe('96');
+    expect(img.getAttribute('height')).toBe('96');
   });
 });
