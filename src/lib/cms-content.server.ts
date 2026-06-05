@@ -2,6 +2,7 @@ import { cache } from 'react';
 import { draftMode } from 'next/headers';
 
 import { getOrFetch } from './cache';
+import { IS_BLOG_VISIBLE } from './features';
 
 import type {
   BlogPost,
@@ -728,3 +729,43 @@ const maybeCache = <T extends (...args: any[]) => Promise<any>>(fn: T) => {
 };
 
 export const getCmsContent = maybeCache(getCmsContentImpl);
+
+/**
+ * Build-time-safe enumeration of blog post slugs for `generateStaticParams`.
+ *
+ * `getCmsContent` calls `draftMode()` to pick a Sanity perspective, but
+ * `generateStaticParams` runs at build time without an HTTP request, so
+ * `draftMode()` throws. This function deliberately goes through the
+ * published-only public client and never touches `draftMode()`. Slugs
+ * returned here are the pre-rendered set; other slugs still resolve at
+ * request time via `dynamicParams = true`.
+ */
+export async function getBlogPostSlugsForStaticParams(): Promise<{ slug: string }[]> {
+  if (!IS_BLOG_VISIBLE) {
+    return [];
+  }
+
+  const projectId = getProjectId();
+  if (!projectId) {
+    return cmsShared.fallbackBlogPosts.map((post) => ({ slug: post.slug }));
+  }
+
+  try {
+    const client = getPublicClient();
+    const docs = await client.fetch<Array<{ slug?: { current?: string } }>>(
+      '*[_type == "post" && published == true && defined(slug.current)]{"slug":slug.current}'
+    );
+    const slugs = (docs ?? [])
+      .map((doc) => doc.slug?.current)
+      .filter((slug): slug is string => typeof slug === 'string' && slug.length > 0);
+    if (slugs.length === 0) {
+      return cmsShared.fallbackBlogPosts.map((post) => ({ slug: post.slug }));
+    }
+    return slugs.map((slug) => ({ slug }));
+  } catch (err) {
+    if (process.env.NODE_ENV !== 'test') {
+      console.warn('[cms] blog slug enumeration failed, falling back to local posts', err);
+    }
+    return cmsShared.fallbackBlogPosts.map((post) => ({ slug: post.slug }));
+  }
+}
