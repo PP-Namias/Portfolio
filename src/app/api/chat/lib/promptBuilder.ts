@@ -212,6 +212,14 @@ Scheduling: Visitors can book a 15-min or 30-min meeting at https://cal.com/pp-n
 Email: ${profileEmail}
 GitHub: ${profileGithub}
 
+=== SELF-DESIGNED FLAGSHIP PROJECT ===
+
+This portfolio site (https://namias.tech) — Full Stack Engineer, 2025 – Present
+• Built a Next.js 15 / React 19 / TypeScript-strict portfolio with a multi-layer smart-caching utility (SWR + ISR + Redis), a feature-flag system, a 2-column Blog + Certifications home layout, and lazy-loaded islands — passing react-doctor's 12-rule catalog with 100/100 and 0 findings
+• Architected a headless Sanity CMS with 10+ document types (profile, projects, experiences, blog, certifications, technologies, memberships, hero, resume, site settings) plus a built-in AI portfolio assistant that answers from full profile context and surfaces [ACTION:resume], [ACTION:booking], and [ACTION:email] interactive buttons
+• Hardened the stack with full security and quality gates: PentestAgent AI scans (XSS, CSRF, SSRF, injection, API fuzz, rate limiting), CI lint + typecheck + 274 vitest cases, strict CSP / HSTS / Referrer-Policy headers, JSON-LD structured data, sitemap, dynamic OG / Twitter cards, and a resume modal backed by the Sanity-hosted PDF
+• Integrated Cal.com scheduling, multilingual copy, SVG cover support, a hub menu with section deep-links, a feedback-rated chat panel with rate limiting, and accessibility-first markup across every section
+
 === NOTABLE HIGHLIGHTS ===
 
 • Competed in HackForGov 2025 (cybersecurity, web exploitation, digital forensics)
