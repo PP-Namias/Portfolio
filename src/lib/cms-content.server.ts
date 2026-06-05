@@ -401,7 +401,7 @@ const getCmsContentImpl = async (): Promise<CmsContent> => {
     ),
     querySanity<Array<{
       title?: string;
-      slug?: { current?: string };
+      slug?: string;
       excerpt?: string;
       readTime?: string;
       body?: unknown;
@@ -655,8 +655,8 @@ const getCmsContentImpl = async (): Promise<CmsContent> => {
   }));
 
   const blogPosts: BlogPost[] = (blogDocs ?? []).map((post, index) => ({
-    id: post.sourceId || post.slug?.current || `post-${index + 1}`,
-    slug: post.slug?.current || `post-${index + 1}`,
+    id: post.sourceId || post.slug || `post-${index + 1}`,
+    slug: post.slug || `post-${index + 1}`,
     title: post.title || '',
     excerpt: post.excerpt || '',
     content: portableTextToMarkdown(post.body) || post.excerpt || '',
@@ -752,11 +752,11 @@ export async function getBlogPostSlugsForStaticParams(): Promise<{ slug: string 
 
   try {
     const client = getPublicClient();
-    const docs = await client.fetch<Array<{ slug?: { current?: string } }>>(
+    const docs = await client.fetch<Array<{ slug?: string }>>(
       '*[_type == "post" && published == true && defined(slug.current)]{"slug":slug.current}'
     );
     const slugs = (docs ?? [])
-      .map((doc) => doc.slug?.current)
+      .map((doc) => doc.slug)
       .filter((slug): slug is string => typeof slug === 'string' && slug.length > 0);
     if (slugs.length === 0) {
       return cmsShared.fallbackBlogPosts.map((post) => ({ slug: post.slug }));
