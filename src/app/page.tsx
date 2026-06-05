@@ -5,6 +5,7 @@ import { HeroSection } from '@/components/sections/HeroSection';
 import { AboutSection } from '@/components/sections/AboutSection';
 import { TechStackSection } from '@/components/sections/TechStackSection';
 import { ProjectsSection } from '@/components/sections/ProjectsSection';
+import { BlogSection } from '@/components/sections/BlogSection';
 import { CertificationsSection } from '@/components/sections/CertificationsSection';
 import { ExperienceTimeline } from '@/components/sections/ExperienceTimeline';
 import { ConnectSection } from '@/components/sections/ConnectSection';
@@ -125,10 +126,15 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Certifications — full width */}
-      <Card className="mt-4">
-        <CertificationsSection />
-      </Card>
+      {/* Blog + Certifications — 2-column on lg, stacked on mobile */}
+      <div className="mt-4 grid grid-cols-1 lg:grid-cols-2 gap-4 items-stretch">
+        <Card>
+          <BlogSection />
+        </Card>
+        <Card>
+          <CertificationsSection />
+        </Card>
+      </div>
 
       {/* Full-width gallery */}
       <Card className="mt-4">
