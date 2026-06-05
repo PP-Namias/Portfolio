@@ -8,7 +8,7 @@ const SANITY_CDN_ALLOWED_PATH_PREFIXES = ['/images/', '/files/'];
 const MEDIA_ROUTE_PREFIX = '/api/media';
 const SANITY_NAMESPACE = 'sanity';
 const DEFAULT_WIDTH = 1200;
-const DEFAULT_QUALITY = 75;
+const DEFAULT_QUALITY = 85;
 
 function normalizeInteger(value: unknown, fallback: number, min: number, max: number): number {
   const parsed = typeof value === 'string' ? Number.parseInt(value, 10) : Number(value);

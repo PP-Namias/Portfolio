@@ -6,7 +6,7 @@ const MEDIA_ROUTE_PREFIX = '/api/media';
 const SANITY_NAMESPACE = 'sanity';
 const DEFAULT_GATEWAY_EXPIRY_SECONDS = 15 * 60;
 const DEFAULT_WIDTH = 1200;
-const DEFAULT_QUALITY = 75;
+const DEFAULT_QUALITY = 85;
 
 type MediaGatewaySignatureInput = {
   targetUrl: string;

@@ -34,6 +34,7 @@ export default function BlogListClient({ posts }: BlogListClientProps) {
                     width={400}
                     height={160}
                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    unoptimized
                     className="w-full h-40 object-cover transition-transform duration-300 group-hover:scale-105"
                   />
                 ) : (

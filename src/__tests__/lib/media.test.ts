@@ -9,7 +9,7 @@ describe('resolveContentImageSrc', () => {
 
     expect(src).toContain('/api/media/sanity/');
     expect(src).toContain('w=1200');
-    expect(src).toContain('q=75');
+    expect(src).toContain('q=85');
   });
 
   it('keeps local asset paths intact', () => {

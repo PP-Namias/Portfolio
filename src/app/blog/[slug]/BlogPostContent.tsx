@@ -152,6 +152,7 @@ export default function BlogPostContent({ post, allPosts, slug, backLabel }: Rea
                 width={800}
                 height={320}
                 sizes="(max-width: 768px) 100vw, 800px"
+                unoptimized
                 className="w-full h-48 sm:h-64 object-cover"
                 priority
               />
