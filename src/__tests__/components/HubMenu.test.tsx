@@ -146,7 +146,7 @@ describe('HubMenu', () => {
     expect(screen.getByText('Schedule a Meeting')).toBeInTheDocument();
     expect(screen.getByText('Send Email')).toBeInTheDocument();
     expect(screen.getByText('Connect')).toBeInTheDocument();
-    expect(screen.queryByText('Read Blog')).not.toBeInTheDocument();
+    expect(screen.getByText('Read Blog')).toBeInTheDocument();
   });
 
   it('calls onOpenChat when Ask AI is clicked', () => {
@@ -176,9 +176,10 @@ describe('HubMenu', () => {
     expect(mockOnClose).toHaveBeenCalledTimes(1);
   });
 
-  it('hides blog menu item when blog feature is disabled', () => {
+  it('shows the blog menu item when the blog feature is enabled', () => {
     render(<HubMenu onClose={mockOnClose} onOpenChat={mockOnOpenChat} />);
-    expect(screen.queryByText('Read Blog')).not.toBeInTheDocument();
+    expect(screen.getByText('Read Blog')).toBeInTheDocument();
+    expect(screen.getByText('Latest articles & tutorials')).toBeInTheDocument();
   });
 
   it('expands connect section on click', () => {
@@ -212,7 +213,7 @@ describe('HubMenu', () => {
   it('renders all items with role="menuitem"', () => {
     render(<HubMenu onClose={mockOnClose} onOpenChat={mockOnOpenChat} />);
     const items = screen.getAllByRole('menuitem');
-    expect(items.length).toBe(5);
+    expect(items.length).toBe(6);
   });
 
   it('collapses connect section on second click', () => {
@@ -267,7 +268,7 @@ describe('HubMenu', () => {
     expect(screen.getByText('Book on Cal.com')).toBeInTheDocument();
     expect(screen.getByText('pp.namias@gmail.com')).toBeInTheDocument();
     expect(screen.getByText('GitHub · LinkedIn · X')).toBeInTheDocument();
-    expect(screen.queryByText('Latest articles & tutorials')).not.toBeInTheDocument();
+    expect(screen.getByText('Latest articles & tutorials')).toBeInTheDocument();
   });
 
   it('navigates down with ArrowDown key', () => {
