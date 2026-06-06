@@ -28,7 +28,7 @@ jobs:
           persist-credentials: false
 
       - name: gitleaks
-        uses: gitleaks/gitleaks-action@9a8d4ec059a8e7d8cc6a468cbf43f3e0a8269eec
+        uses: gitleaks/gitleaks-action@e0c47f4f8be36e29cdc102c57e68cb5cbf0e8d1e # v3.0.0
         env:
           GITLEAKS_CONFIG: .gitleaks.toml
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

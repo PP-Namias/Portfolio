@@ -29,8 +29,6 @@ jobs:
 
       - name: setup-trivy
         uses: aquasecurity/trivy-action@bfa4b33a029b9aa80ddb784b45574c30e072c59e # v0.36.0
-        with:
-          version: "0.71.0"
 
       - name: trivy-fs-report
         uses: aquasecurity/trivy-action@bfa4b33a029b9aa80ddb784b45574c30e072c59e # v0.36.0

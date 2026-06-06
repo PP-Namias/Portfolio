@@ -21,7 +21,6 @@ skip-framework:
   - bicep
   - openapi
   - secrets
-  - git_configuration
 
 # Repo-wide soft-fail rules. Use these only when the rule is
 # genuinely inapplicable to this repo. Every entry must have
