@@ -33,6 +33,17 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Generate SBOM (CycloneDX)
+        run: npx @cyclonedx/cyclonedx-npm --output-format JSON --output-file sbom.cdx.json --spec-version 1.5
+
+      - name: Upload SBOM
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: deploy-sbom-${{ github.run_id }}
+          path: sbom.cdx.json
+          if-no-files-found: error
+          retention-days: 90
+
       - name: Build and deploy to Cloudflare
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
