@@ -25,32 +25,33 @@ function useServiceWorker() {
   }, []);
 }
 
-function useSuppressNextThemesScriptWarning() {
-  useEffect(() => {
-    if (process.env.NODE_ENV === 'production') return;
-    if (typeof console === 'undefined') return;
+let nextThemesScriptWarningFilterInstalled = false;
+let originalConsoleError: typeof console.error | null = null;
 
-    const originalError = console.error;
-    console.error = (...args: unknown[]) => {
-      const first = args[0];
-      if (
-        typeof first === 'string' &&
-        first.includes('Encountered a script tag while rendering React component')
-      ) {
-        return;
-      }
-      originalError.apply(console, args as Parameters<typeof originalError>);
-    };
+function installNextThemesScriptWarningFilter() {
+  if (nextThemesScriptWarningFilterInstalled) return;
+  if (typeof console === 'undefined') return;
+  if (process.env.NODE_ENV === 'production') return;
 
-    return () => {
-      console.error = originalError;
-    };
-  }, []);
+  nextThemesScriptWarningFilterInstalled = true;
+  originalConsoleError = console.error.bind(console);
+  console.error = (...args: unknown[]) => {
+    const first = args[0];
+    if (
+      typeof first === 'string' &&
+      first.includes('Encountered a script tag while rendering React component')
+    ) {
+      return;
+    }
+    if (originalConsoleError) {
+      originalConsoleError.apply(console, args as Parameters<typeof console.error>);
+    }
+  };
 }
 
 export function Providers({ children, cmsContent }: ProvidersProps) {
+  installNextThemesScriptWarningFilter();
   useServiceWorker();
-  useSuppressNextThemesScriptWarning();
   const resolvedCmsContent = cmsContent ?? {
     seoSettings: {
       siteTitle: '',
