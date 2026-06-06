@@ -150,7 +150,7 @@ export const EncryptedText: React.FC<EncryptedTextProps> = ({
           <span
             key={index}
             className={cn(
-              'inline-block min-w-[1ch] text-center',
+              'inline-block font-mono text-center tabular-nums',
               isRevealed ? revealedClassName : encryptedClassName
             )}
           >
