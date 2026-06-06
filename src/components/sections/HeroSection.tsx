@@ -14,7 +14,6 @@ import { Button } from '@/components/ui/Button';
 import { VerifiedBadge } from '@/components/ui/VerifiedBadge';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import { ColorSchemePicker } from '@/components/ui/ColorSchemePicker';
-import { DottedGlowBackground } from '@/components/ui/dotted-glow-background';
 import { useModal } from '@/hooks/useModal';
 import { useCmsContent } from '@/hooks/useCmsContent';
 import { IS_BLOG_VISIBLE } from '@/lib/features';
@@ -105,27 +104,11 @@ export function HeroSection() {
 
   return (
     <motion.section
-      className="relative overflow-hidden py-1 sm:py-2"
+      className="relative py-1 sm:py-2"
       variants={containerVariants}
       initial="hidden"
       animate="visible"
     >
-
-      {/* Ambient dotted-glow background — subtle ambient shimmer behind hero */}
-      <DottedGlowBackground
-        className="pointer-events-none -z-10 mask-radial-fade"
-        opacity={0.5}
-        gap={14}
-        radius={1.4}
-        colorLightVar="--color-neutral-500"
-        glowColorLightVar="--color-neutral-600"
-        colorDarkVar="--color-neutral-500"
-        glowColorDarkVar="--color-sky-800"
-        backgroundOpacity={0}
-        speedMin={0.3}
-        speedMax={1.4}
-        speedScale={0.8}
-      />
 
       {/* Controls — top-right corner */}
       <motion.div
