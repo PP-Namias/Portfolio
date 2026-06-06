@@ -149,10 +149,23 @@ Every allowlist entry has a one-line comment in the TOML explaining why it is al
 
 - **Stage**: PR (workflow files only)
 - **Purpose**: Audit the workflows themselves for the exact flaws behind `trivy-action` and `tj-actions`
-- **Catches**: `pull_request_target` misuse, `${{ github.event.* }}` in `run:` blocks, actions pinned to tags, implicit write-all permissions
-- **Cost**: Free, open source, runs in <10s on 12 workflows
-- **Action**: `woodruffw/zizmor-action`
+- **Catches**: `pull_request_target` misuse, `${{ github.event.* }}` in `run:` blocks, actions pinned to tags, implicit write-all permissions, missing concurrency groups, impostor commits, persisted credentials
+- **Cost**: Free, open source, runs in <10s on 19 workflows
+- **Action**: `zizmorcore/zizmor-action`
+- **Config**: none (zizmor has no config file; all rules are enabled by default with persona=auditor)
 - **Workflow**: `.github/workflows/zizmor.yml`
+
+**Trigger matrix**: `pull_request`, `push` to `main`, weekly Monday 10:00 UTC cron, and `workflow_dispatch`.
+
+**Audit catalog**: zizmor runs dozens of audits grouped by attack class. The full policy is in `docs/security/pipeline/zizmor-policy.md`. Key audits: `template-injection`, `unpinned-uses`, `excessive-permissions`, `pull_request_target-misconfiguration`, `concurrency-missing`, `impostor-commit`, `forbidden-uses`.
+
+**Failure handling**: Findings are uploaded to the Security > Code Scanning tab with `tool=zizmor`. The workflow fails the build on any finding at HIGH confidence. LOW and MEDIUM confidence findings are visible in the SARIF but do not gate the build (to reduce noise on stylistic issues).
+
+**Suppression policy**: zizmor has no built-in suppression mechanism. "Fix, don't suppress" is the only policy. If a finding is genuinely inapplicable, the workflow must be redesigned or removed. The full policy is in `docs/security/pipeline/zizmor-policy.md`.
+
+**Why zizmor over alternatives**: zizmor is the only static analyzer that covers the full attack surface of GitHub Actions workflows. Checkov's `github_actions` framework overlaps on `unpinned-uses` and a few `excessive-permissions` checks, but zizmor is more comprehensive on `template-injection` and `pull_request_target`. We run both.
+
+### 5. Checkov
 
 ### 5. Checkov
 
