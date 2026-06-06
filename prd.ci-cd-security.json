@@ -1,0 +1,311 @@
+{
+  "project": "Namias Portfolio - CI/CD Security Pipeline Hardening",
+  "codeName": "ci-cd-security",
+  "version": "1.0.0",
+  "owner": "Jhon Keneth Ryan Namias (PP Namias)",
+  "contact": "pp.namias@gmail.com",
+  "lastUpdated": "2026-06-07",
+  "branch": "prd/ci-cd-security-pipeline",
+  "links": {
+    "marketing": "https://namias.tech",
+    "studio": "https://namias-cms.sanity.studio",
+    "repo": "https://github.com/PP-Namias/Portfolio",
+    "lighthouse": "https://pagespeed.web.dev/analysis?url=https://namias.tech"
+  },
+  "summary": "Harden the portfolio's CI/CD pipeline against supply-chain attacks by layering seven open-source security tools (Gitleaks, OSV-Scanner, Trivy, Checkov, zizmor, Cosign, Scorecard) into the existing GitHub Actions workflows. This PRD also documents the complete current state of the portfolio (one-page resume refactor, blog section, image optimization, Aceternity visual integrations, interactive hero, caching strategy) as the baseline that the new pipeline must protect.",
+  "narrative": "The Namias portfolio is a Next.js 16 App Router site deployed to Cloudflare Workers and Vercel Preview. The repo already has a rich CI/CD surface: build, deploy, daily health checks, PentestAgent security scans, react-doctor quality gate, security-compliance, and PR validation. What it lacks is defense-in-depth against the specific class of attacks that hit trivy-action and tj-actions in 2025-2026: pull_request_target misuse, unpinned actions, hardcoded secrets, vulnerable dependencies, and unsigned build artifacts. This PRD adds seven battle-tested open-source tools, each mapped to a specific stage of the pipeline, and gates every merge on a green run from all of them.",
+  "principles": [
+    "Pipeline is an attack surface - treat every workflow, action, and artifact as untrusted until verified.",
+    "Fail closed - if a security check cannot run, the build does not pass.",
+    "Pin everything - every third-party action, container image, and tool version is pinned to an immutable SHA, not a floating tag.",
+    "Least privilege - workflows request the minimum permissions and tokens they need, never default to write-all.",
+    "Observable - every scan produces a machine-readable report (SARIF, JSON) that is uploaded as an artifact and surfaced in the Security tab.",
+    "Defense in depth - no single tool is the whole answer; the seven tools overlap intentionally so a bypass in one is caught by another.",
+    "No behaviour change for the site - security work must not change what users see or how the app behaves.",
+    "Each tool is a commit - infrastructure, implementation, and verification each get their own commit."
+  ],
+  "personas": [
+    {
+      "id": "P-OWNER",
+      "label": "PP Namias (owner)",
+      "goals": ["Ship a portfolio that is demonstrably secure enough to pass a hiring-manager code review", "Prevent the trivy-action / tj-actions class of attack on this repo", "Use the pipeline as a portfolio talking point"],
+      "painPointsToday": ["No secret scanning on commits or git history", "No container image scanning before deploy", "No workflow-file linting", "No dependency CVE tracking", "No artifact signing", "No repo security score baseline"]
+    },
+    {
+      "id": "P-VISITOR",
+      "label": "Portfolio visitor (hiring manager)",
+      "goals": ["Trust that the site does not leak their IP, fingerprint, or chat content", "Trust that dependencies are patched"],
+      "painPointsToday": ["No visible security posture - no badge, no policy, no disclosure channel"]
+    },
+    {
+      "id": "P-AGENT",
+      "label": "OpenCode / future coding agent",
+      "goals": ["Understand the full security toolchain from a single SKILL.md", "Know which workflow gate enforces which check", "Know how to re-run a failed check locally"],
+      "painPointsToday": ["No security tooling documentation", "No SKILL.md for the pipeline", "No ADR explaining why each tool was chosen"]
+    }
+  ],
+  "successMetrics": {
+    "primary": [
+      "Gitleaks: 0 hardcoded secrets in commits and full git history (build fails on any finding)",
+      "OSV-Scanner: 0 known CVEs in production dependencies (build fails on CRITICAL/HIGH)",
+      "Trivy: 0 CRITICAL CVEs in the production container image (build fails before push)",
+      "zizmor: 0 HIGH or CRITICAL findings in any workflow file (PR cannot merge)",
+      "Scorecard: repo score >= 7/10 within 90 days",
+      "Cosign: 100% of deploy artifacts are keyless-signed and verified before deploy"
+    ],
+    "secondary": [
+      "All seven tools run on every PR and on every push to main",
+      "All seven tools produce SARIF or JSON reports uploaded as build artifacts",
+      "All seven tools have entries in a new .agents/skills/ci-cd-security/SKILL.md",
+      "A docs/security/pipeline.md describes the seven-stage gate with one section per tool",
+      "All third-party GitHub Actions pinned to commit SHA, not tag",
+      "All workflows declare minimum permissions explicitly (no implicit write-all)"
+    ]
+  },
+  "completedWork": {
+    "description": "The current state of the portfolio as of the refactor/one-page-resume branch. This is the baseline the new pipeline protects.",
+    "homePage": {
+      "summary": "One-page resume-style site with Hero card, 2-column section grid, Footer, and modal system.",
+      "details": "Compact 2-column layout: Hero on top, Left (38%) Skills/Education/Certifications, Right (62%) About/Experience/Projects, Footer with socials and last-updated timestamp. 7 modals: resume, experience, booking, contact, project, blog, blog-post. Routing: only public content page is /, /studio and /api/* unchanged, /blog and /blog/[slug] deleted (301-redirect to /?modal=blog).",
+      "files": ["src/app/page.tsx", "src/app/providers.tsx", "src/components/sections/*", "src/components/ui/*"]
+    },
+    "blogSection": {
+      "summary": "BlogSection component on the home page, flag-gated, with seed and publish scripts.",
+      "details": "BlogSection shown side-by-side with CertificationsSection in a 2-col row. IS_BLOG_VISIBLE feature flag in src/lib/features.ts. Idempotent seed scripts for welcome intro, GitGoing webinar, and 2026 experience posts. generateStaticParams no longer calls draftMode(). Cover images render, post count shown in View all link.",
+      "files": ["src/components/sections/BlogSection.tsx", "src/lib/features.ts", "scripts/seed/*", "scripts/publish/*", "prd.blog.json"]
+    },
+    "imageOptimization": {
+      "summary": "Four commits of image and optimizer quality fixes.",
+      "details": "Blog covers served as unoptimized SVGs. imageSizes expanded so large fixed-width images stop upscaling. Optimizer quality aligned with media gateway (no double-encode). OptimizedImage forced to unoptimized to stop hydration mismatch. Media quality bumped to 85.",
+      "files": ["next.config.*", "src/lib/media-gateway.ts", "src/components/ui/OptimizedImage.tsx"]
+    },
+    "aceternityEffects": {
+      "summary": "3D card on Projects, dotted-glow background, hacked-text on hero name.",
+      "details": "Aceternity 3D card effect on the Projects showcase. Dotted-glow background moved from hero-only to full-page. HackedText component (Hyperplexed CodePen rNrJgrd) on the hero name - runs once on mount, replays on hover. The previous EncryptedText component was removed because it broke kerning and word spacing.",
+      "files": ["src/components/sections/ProjectsSection.tsx", "src/components/ui/BackgroundFx.tsx", "src/components/ui/hacked-text.tsx"]
+    },
+    "interactiveHero": {
+      "summary": "Hyperplexed HackedText name effect and MagicCursor trail.",
+      "details": "HackedText replaces EncryptedText on the hero name (scramble once on mount, replay on hover). MagicCursor adds the Hyperplexed Canva's Magic Mouse Effect (pink glow points follow the cursor, sparkle stars drop on travel/time intervals). MagicCursor is fully self-contained: inline styles + injected keyframes, no dependency on globals.css.",
+      "files": ["src/components/ui/hacked-text.tsx", "src/components/ui/MagicCursor.tsx"]
+    },
+    "caching": {
+      "summary": "Multi-layer caching strategy documented in prd.json (smart-caching).",
+      "details": "L1 in-memory TTL cache, L2 Upstash Redis, L3 Vercel CDN, L4 browser cache via service worker and SWR. Sanity CDN enabled, tag-based webhook invalidation, ISR for blog pages, cache health endpoint at /api/performance/cache. See prd.json for the full 8-phase plan.",
+      "files": ["prd.json", "src/lib/cache.ts", "src/lib/redis-cache.ts", "src/lib/swr-config.tsx", "public/sw.js"]
+    },
+    "ci": {
+      "summary": "12 existing GitHub Actions workflows covering build, deploy, security, and quality.",
+      "details": "build.yml, cloudflare-deploy.yml, daily-health-check.yml, monitoring-health.yml, pentestagent-ci.yml, pentestagent-pr-check.yml, pentestagent-scheduled.yml, pr-validation.yml, problem-detection-advisor.yml, react-doctor.yml, remediation-approval-gate.yml, security-compliance.yml. This PRD adds security tooling to the existing surface.",
+      "files": [".github/workflows/*"]
+    }
+  },
+  "epics": [
+    {
+      "id": "EPIC-0",
+      "title": "Pipeline foundation and dependency pinning",
+      "status": "planned",
+      "summary": "Audit every existing workflow, pin every third-party action to a commit SHA, declare minimum permissions explicitly, and document the seven-stage gate before any tool is added.",
+      "value": "high",
+      "complexity": "low",
+      "stories": [
+        { "id": "S-0.1", "title": "Audit existing workflows for unpinned actions and over-broad permissions", "done": false, "details": "Run a manual audit of .github/workflows/*.yml. Produce a matrix: workflow, action, current ref (tag vs SHA), current permissions. Document the baseline in docs/security/pipeline/audit.md.", "files": ["docs/security/pipeline/audit.md"] },
+        { "id": "S-0.2", "title": "Pin all third-party actions to commit SHAs", "done": false, "details": "For every uses: <action>@<tag> in any workflow, replace <tag> with the full commit SHA. Add a renovate.json or dependabot.yml rule to keep SHAs up to date. Verify each workflow still passes after pinning.", "files": [".github/workflows/*.yml", ".github/renovate.json"] },
+        { "id": "S-0.3", "title": "Declare minimum permissions on every workflow", "done": false, "details": "Add explicit permissions: block to every workflow. Default to permissions: read-all at the workflow level and grant write only where needed (e.g., contents: read, security-events: write for SARIF upload).", "files": [".github/workflows/*.yml"] },
+        { "id": "S-0.4", "title": "Document the seven-stage security gate", "done": false, "details": "Write docs/security/pipeline.md with one section per tool, a flow diagram, and a decision matrix (which tool catches which class of attack). Reference the trivy-action and tj-actions incidents as the motivating examples.", "files": ["docs/security/pipeline.md"] },
+        { "id": "S-0.5", "title": "Create .agents/skills/ci-cd-security/SKILL.md", "done": false, "details": "Mirror the documentation in agent-skill form: how to re-run each tool locally, how to interpret a failed check, how to add a new workflow without breaking the gate.", "files": [".agents/skills/ci-cd-security/SKILL.md"] }
+      ]
+    },
+    {
+      "id": "EPIC-1",
+      "title": "Gitleaks - hardcoded secrets in commits and history",
+      "status": "planned",
+      "summary": "Run Gitleaks on every PR and on every push to main. Block merge on any finding. Cover both the current tree and the full git history.",
+      "value": "high",
+      "complexity": "low",
+      "stories": [
+        { "id": "S-1.1", "title": "Add Gitleaks workflow for PR scans", "done": false, "details": "Create .github/workflows/gitleaks.yml that runs gitleaks/gitleaks-action@<sha> on every pull_request. Use the default ruleset (200+ patterns). Fail the build on exit code 1. Upload the report as a build artifact.", "files": [".github/workflows/gitleaks.yml"] },
+        { "id": "S-1.2", "title": "Add Gitleaks full-history scan on push to main", "done": false, "details": "Add a second job that runs gitleaks detect --no-banner --redact --report-path=gitleaks-history.json against the full git history. Upload the JSON as a build artifact. Block the deploy on any historical finding.", "files": [".github/workflows/gitleaks.yml"] },
+        { "id": "S-1.3", "title": "Add a custom Gitleaks config for project-specific false-positive suppression", "done": false, "details": "Create .gitleaks.toml with allowlists for known-false-positive patterns (e.g., example API keys in docs/, placeholder tokens in tests/). Keep the allowlist minimal and documented.", "files": [".gitleaks.toml"] },
+        { "id": "S-1.4", "title": "Verify Gitleaks locally with a planted secret test", "done": false, "details": "Add a one-off commit to a test branch with a known-pattern fake secret (e.g., AWS_ACCESS_KEY_ID=AKIA...). Confirm Gitleaks catches it. Revert the commit. This proves the gate works end-to-end.", "files": [] }
+      ]
+    },
+    {
+      "id": "EPIC-2",
+      "title": "OSV-Scanner - dependency CVE matching against OSV.dev",
+      "status": "planned",
+      "summary": "Run OSV-Scanner on every PR. Match package-lock.json against OSV.dev across 30+ ecosystems. Print the minimal fix version for every CVE. Block on CRITICAL/HIGH.",
+      "value": "high",
+      "complexity": "low",
+      "stories": [
+        { "id": "S-2.1", "title": "Add OSV-Scanner workflow", "done": false, "details": "Create .github/workflows/osv-scanner.yml that runs google/osv-scanner-action@<sha> on every pull_request. Configure to scan package-lock.json. Fail the build on any finding with severity >= HIGH.", "files": [".github/workflows/osv-scanner.yml"] },
+        { "id": "S-2.2", "title": "Configure SARIF upload to the Security tab", "done": false, "details": "Enable SARIF output in OSV-Scanner. Upload to the GitHub code-scanning API so findings appear in the Security tab. This gives the repo a native dependency-CVE dashboard.", "files": [".github/workflows/osv-scanner.yml"] },
+        { "id": "S-2.3", "title": "Triage current findings and document baseline", "done": false, "details": "Run OSV-Scanner against the current package-lock.json. Document the baseline in docs/security/pipeline/osv-baseline.md. Either fix the findings or add explicit allowlist comments with justification.", "files": ["docs/security/pipeline/osv-baseline.md"] }
+      ]
+    },
+    {
+      "id": "EPIC-3",
+      "title": "Trivy - container image scanning before push",
+      "status": "planned",
+      "summary": "Build the production container image, scan it with Trivy, and gate the deploy on zero CRITICAL findings.",
+      "value": "high",
+      "complexity": "medium",
+      "stories": [
+        { "id": "S-3.1", "title": "Add Trivy filesystem scan to PR validation", "done": false, "details": "Create .github/workflows/trivy-fs.yml that runs aquasecurity/trivy-action@<sha> with scan_type: fs and severity: CRITICAL. Fail on any CRITICAL finding. This catches vulnerable dependencies in the source tree independent of the container.", "files": [".github/workflows/trivy-fs.yml"] },
+        { "id": "S-3.2", "title": "Add Trivy container image scan before push", "done": false, "details": "In cloudflare-deploy.yml, add a job that builds the image, scans it with Trivy (scan_type: image, severity: CRITICAL,HIGH), and only pushes to the registry on a clean scan. The image is built but not pushed if the scan fails.", "files": [".github/workflows/cloudflare-deploy.yml"] },
+        { "id": "S-3.3", "title": "Generate SBOM and upload to build artifacts", "done": false, "details": "Use Trivy's --format spdx-json --output sbom.spdx.json flag to generate an SBOM. Upload as a build artifact. This gives every deploy a complete, auditable software bill of materials.", "files": [".github/workflows/cloudflare-deploy.yml"] }
+      ]
+    },
+    {
+      "id": "EPIC-4",
+      "title": "Checkov - Terraform and IaC misconfigurations",
+      "status": "planned",
+      "summary": "Run Checkov against all IaC in the repo. The portfolio does not have Terraform today, but Cloudflare Workers config, wrangler.toml, and the GitHub Actions IaC surface (workflow files) are in scope.",
+      "value": "medium",
+      "complexity": "low",
+      "stories": [
+        { "id": "S-4.1", "title": "Inventory all IaC surfaces in the repo", "done": false, "details": "List every config file that controls infrastructure: wrangler.toml, .github/workflows/*.yml, any Terraform/CloudFormation/Pulumi, any docker-compose, any Dockerfile. Document the inventory in docs/security/pipeline/iac-inventory.md.", "files": ["docs/security/pipeline/iac-inventory.md"] },
+        { "id": "S-4.2", "title": "Add Checkov workflow with GitHub Actions framework", "done": false, "details": "Create .github/workflows/checkov.yml that runs bridgecrewio/checkov-action@<sha> with --framework github_actions, --framework dockerfile, --framework kubernetes (if any), --framework terraform (if any). Fail on HIGH or CRITICAL findings.", "files": [".github/workflows/checkov.yml"] },
+        { "id": "S-4.3", "title": "Fix or suppress Checkov findings with documented justification", "done": false, "details": "For every Checkov finding, either fix the underlying issue or add a checkov:skip=CKV2ID:justification comment. Every skip must have a one-line reason. Document the policy in docs/security/pipeline/checkov-policy.md.", "files": ["docs/security/pipeline/checkov-policy.md"] }
+      ]
+    },
+    {
+      "id": "EPIC-5",
+      "title": "zizmor - workflow file auditing",
+      "status": "planned",
+      "summary": "Run zizmor against every workflow file on every PR. Block merge on HIGH or CRITICAL findings. zizmor is the only tool that catches the exact flaws behind the trivy-action and tj-actions incidents: template injection, dangerous triggers, unpinned actions.",
+      "value": "high",
+      "complexity": "low",
+      "stories": [
+        { "id": "S-5.1", "title": "Add zizmor workflow", "done": false, "details": "Create .github/workflows/zizmor.yml that runs woodruffw/zizmor-action@<sha> on every pull_request. Configure to fail on severity >= HIGH. Upload SARIF to the Security tab.", "files": [".github/workflows/zizmor.yml"] },
+        { "id": "S-5.2", "title": "Fix every existing zizmor finding", "done": false, "details": "Run zizmor locally against the current workflows. Triage every finding. Common fixes: replace pull_request_target with pull_request where possible, pin actions to SHAs (overlaps with S-0.2), avoid ${{ github.event.* }} in run: blocks, use environment variables for untrusted input.", "files": [".github/workflows/*.yml"] },
+        { "id": "S-5.3", "title": "Add zizmor to local pre-commit hook", "done": false, "details": "Add a .pre-commit-hooks.yaml entry for zizmor so contributors can run the same checks locally before pushing. Document in the new SKILL.md.", "files": [".pre-commit-hooks.yaml"] }
+      ]
+    },
+    {
+      "id": "EPIC-6",
+      "title": "Cosign - keyless signing and verification with Sigstore",
+      "status": "planned",
+      "summary": "Sign every production build artifact with Cosign keyless signing (Sigstore Fulcio). Verify the signature on every deploy. This proves what was built is what was deployed.",
+      "value": "high",
+      "complexity": "medium",
+      "stories": [
+        { "id": "S-6.1", "title": "Add Cosign sign step to the build workflow", "done": false, "details": "In cloudflare-deploy.yml, after the build succeeds and before the deploy, run sigstore/cosign-installer@<sha> to install cosign, then cosign sign --yes <image-ref> with keyless signing. This binds the build to the workflow's OIDC identity.", "files": [".github/workflows/cloudflare-deploy.yml"] },
+        { "id": "S-6.2", "title": "Add Cosign verify step to the deploy workflow", "done": false, "details": "In the Cloudflare deploy job, before pulling the image, run cosign verify --certificate-identity-regexp 'https://github.com/PP-Namias/Portfolio' --certificate-oidc-issuer 'https://token.actions.githubusercontent.com' <image-ref>. Fail the deploy if verification fails.", "files": [".github/workflows/cloudflare-deploy.yml"] },
+        { "id": "S-6.3", "title": "Document the signing policy and Fulcio identity", "done": false, "details": "Write docs/security/pipeline/signing.md explaining keyless signing, the Fulcio certificate, the OIDC issuer, and the threat model it defends against (compromised runner, supply-chain substitution).", "files": ["docs/security/pipeline/signing.md"] }
+      ]
+    },
+    {
+      "id": "EPIC-7",
+      "title": "Scorecard - repo security posture score",
+      "status": "planned",
+      "summary": "Run OSSF Scorecard against this repo on a weekly schedule. Track the score over time. Run it against every new dependency before adoption.",
+      "value": "medium",
+      "complexity": "low",
+      "stories": [
+        { "id": "S-7.1", "title": "Add Scorecard scheduled workflow", "done": false, "details": "Create .github/workflows/scorecard.yml that runs ossf/scorecard-action@<sha> on schedule: weekly and on workflow_dispatch. Upload SARIF to the Security tab. Post the score as a step summary.", "files": [".github/workflows/scorecard.yml"] },
+        { "id": "S-7.2", "title": "Document the baseline score and the path to 7/10", "done": false, "details": "Run Scorecard against the current repo. Document the baseline in docs/security/pipeline/scorecard-baseline.md. List every check that is currently failing and the work item (epic + story) that will fix it. Update the doc as each story lands.", "files": ["docs/security/pipeline/scorecard-baseline.md"] },
+        { "id": "S-7.3", "title": "Add a Scorecard badge to the README", "done": false, "details": "Once the score is consistently >= 7, add a Scorecard badge to README.md in the existing security section. The badge is generated from the latest workflow run.", "files": ["README.md"] }
+      ]
+    }
+  ],
+  "phases": [
+    { "id": "PHASE-1", "label": "Foundation: pin actions, audit permissions, document the gate", "epics": ["EPIC-0"], "status": "planned" },
+    { "id": "PHASE-2", "label": "Secrets and dependencies: Gitleaks + OSV-Scanner", "epics": ["EPIC-1", "EPIC-2"], "status": "planned" },
+    { "id": "PHASE-3", "label": "Build artifacts: Trivy + Cosign", "epics": ["EPIC-3", "EPIC-6"], "status": "planned" },
+    { "id": "PHASE-4", "label": "Workflow and IaC: zizmor + Checkov", "epics": ["EPIC-4", "EPIC-5"], "status": "planned" },
+    { "id": "PHASE-5", "label": "Posture and reporting: Scorecard", "epics": ["EPIC-7"], "status": "planned" }
+  ],
+  "tools": {
+    "gitleaks": {
+      "stage": "Pre-commit and PR",
+      "purpose": "Scan commits and full git history for hardcoded secrets (200+ rule types).",
+      "catches": "API keys, tokens, passwords, private keys in source or history.",
+      "cost": "Free, open source, runs in <30s on this repo size.",
+      "action": "gitleaks/gitleaks-action",
+      "config": ".gitleaks.toml"
+    },
+    "osvScanner": {
+      "stage": "PR and push to main",
+      "purpose": "Match package-lock.json against OSV.dev (30+ ecosystems) and print the minimal fix version for every CVE.",
+      "catches": "Known CVEs in npm dependencies (direct and transitive).",
+      "cost": "Free, open source, API-backed.",
+      "action": "google/osv-scanner-action",
+      "config": "osv-scanner.toml (if needed)"
+    },
+    "trivy": {
+      "stage": "Build (filesystem) and pre-push (image)",
+      "purpose": "Scan the source filesystem and the built container image for CRITICAL/HIGH CVEs.",
+      "catches": "Vulnerable OS packages, application dependencies with known CVEs, misconfigured image layers.",
+      "cost": "Free, open source, runs in <2min on a typical Next.js image.",
+      "action": "aquasecurity/trivy-action",
+      "config": "trivy.yaml (optional)"
+    },
+    "checkov": {
+      "stage": "PR and push to main",
+      "purpose": "Static analysis of IaC: Terraform, Dockerfiles, Kubernetes manifests, GitHub Actions workflows, and Cloudflare wrangler config.",
+      "catches": "Public S3 buckets, security groups open to 0.0.0.0/0, missing encryption, unencrypted secrets in workflows.",
+      "cost": "Free, open source, runs in <1min on this repo size.",
+      "action": "bridgecrewio/checkov-action",
+      "config": ".checkov.yaml"
+    },
+    "zizmor": {
+      "stage": "PR (workflow files only)",
+      "purpose": "Audit the workflows themselves for the exact flaws behind trivy-action and tj-actions: template injection, dangerous triggers, unpinned actions, excess permissions.",
+      "catches": "pull_request_target misuse, ${{ github.event.* }} in run: blocks, actions pinned to tags, implicit write-all permissions.",
+      "cost": "Free, open source, runs in <10s on 12 workflows.",
+      "action": "woodruffw/zizmor-action",
+      "config": "zizmor.yml (optional)"
+    },
+    "cosign": {
+      "stage": "Post-build, pre-deploy",
+      "purpose": "Keyless signing and verification of build artifacts, backed by Sigstore Fulcio. Binds the artifact to the OIDC identity of the GitHub Actions workflow that built it.",
+      "catches": "Substituted or tampered artifacts between build and deploy, compromised runners.",
+      "cost": "Free, open source, no key management overhead (keyless).",
+      "action": "sigstore/cosign-installer + cosign CLI",
+      "config": "cosign policy in workflow"
+    },
+    "scorecard": {
+      "stage": "Weekly schedule and on-demand",
+      "purpose": "Score the repo's security posture from 0 to 10 across 18 checks (dangerous workflow, token permissions, dependency update tool, branch protection, pinned dependencies, etc.).",
+      "catches": "Aggregate posture issues that no single check catches.",
+      "cost": "Free, open source, runs in <2min on this repo size.",
+      "action": "ossf/scorecard-action",
+      "config": "scorecard.yml"
+    }
+  },
+  "threatModel": {
+    "scenarios": [
+      {
+        "id": "TM-1",
+        "name": "trivy-action style attack on this repo",
+        "description": "A third-party action used in any workflow is compromised (malicious tag push, account takeover). The attacker gets access to GITHUB_TOKEN and any secrets in the workflow's environment.",
+        "defenses": ["zizmor (catches unpinned actions and dangerous triggers)", "cosign (binds the deploy to the OIDC identity of the expected workflow)", "Gitleaks (catches secret exfiltration in commit history if the attacker writes back)"]
+      },
+      {
+        "id": "TM-2",
+        "name": "tj-actions style crypto-mining supply chain attack",
+        "description": "A widely-used action is compromised and inserts a backdoor into the build output. The backdoored artifact is deployed to production.",
+        "defenses": ["cosign (artifact is signed by the expected workflow identity; a substituted artifact fails verification)", "Trivy (backdoored container image is scanned for CRITICAL findings before push)"]
+      },
+      {
+        "id": "TM-3",
+        "name": "Hardcoded secret pushed to a public branch",
+        "description": "A contributor accidentally commits an API key, then opens a PR. The key is in git history even if the commit is reverted.",
+        "defenses": ["Gitleaks PR scan (catches the secret before merge)", "Gitleaks full-history scan (catches the secret even if it was already merged and reverted)"]
+      },
+      {
+        "id": "TM-4",
+        "name": "Vulnerable dependency merged",
+        "description": "A PR adds or updates a dependency with a known CRITICAL CVE. The vulnerability ships to production.",
+        "defenses": ["OSV-Scanner (matches the lockfile against OSV.dev on every PR)", "Trivy filesystem scan (catches CVEs in the source tree independent of the lockfile)"]
+      },
+      {
+        "id": "TM-5",
+        "name": "Misconfigured Cloudflare Workers deploy",
+        "description": "A change to wrangler.toml or the deploy workflow opens a route, disables a security header, or grants a token excess scope.",
+        "defenses": ["Checkov (audits the wrangler config and the deploy workflow)", "zizmor (audits the deploy workflow itself)", "cosign (binds the deploy to the expected OIDC identity)"]
+      }
+    ]
+  }
+}
