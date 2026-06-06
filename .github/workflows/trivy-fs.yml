@@ -27,11 +27,6 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: setup-trivy
-        uses: aquasecurity/setup-trivy@81e514348e19b6112ce2a7e3ecbafe19c1e1f567 # v0.3.1
-        with:
-          version: v0.58.0
-
       - name: trivy-fs-report
         uses: aquasecurity/trivy-action@a9c7b0f06e461e9d4b4d1711f154ee024b8d7ab8 # v0.36.0
         with:
@@ -42,8 +37,6 @@ jobs:
           ignore-unfixed: true
           severity: CRITICAL,HIGH
           exit-code: "0"
-          skip-setup-trivy: true
-        continue-on-error: true
 
       - name: trivy-fs-table
         uses: aquasecurity/trivy-action@a9c7b0f06e461e9d4b4d1711f154ee024b8d7ab8 # v0.36.0
