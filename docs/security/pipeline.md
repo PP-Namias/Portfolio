@@ -133,7 +133,17 @@ Every allowlist entry has a one-line comment in the TOML explaining why it is al
 - **Catches**: Vulnerable OS packages, application dependencies with known CVEs, misconfigured image layers
 - **Cost**: Free, open source, runs in <2min on a typical Next.js image
 - **Action**: `aquasecurity/trivy-action`
-- **Workflow**: `.github/workflows/trivy-fs.yml` and embedded in `cloudflare-deploy.yml`
+- **Workflow**: `.github/workflows/trivy-fs.yml` and SBOM embedded in `cloudflare-deploy.yml`
+
+**Why filesystem scan, not image scan**: The portfolio deploys as a Cloudflare Worker (serverless). There is no container image to scan. The source-tree filesystem scan (`.github/workflows/trivy-fs.yml`) is the equivalent CVE gate; the SBOM step in `cloudflare-deploy.yml` is the artifact inventory used for incident response. If the deploy target changes to a container, a new `.github/workflows/trivy-image.yml` would be added; it would be a copy of the fs workflow with `scan-type: image` and a `image-ref` input.
+
+**Trigger matrix**: `pull_request`, `push` to `main`, weekly Monday 08:00 UTC cron, and `workflow_dispatch`.
+
+**Severity policy**: `CRITICAL,HIGH` only. `MEDIUM` and `LOW` are not gating. They are visible in the SARIF but do not block merges. The OSV-Scanner workflow is the authoritative source for npm CVEs; the Trivy fs scan adds the distro-CVE layer.
+
+**Failure handling**: The workflow runs the SARIF step with `exit-code: "0"` and `continue-on-error: true` so the SARIF is always uploaded even if the table step (which fails on findings) fails. The table step uses `exit-code: "1"` to gate the build.
+
+**Ignore policy**: `.trivyignore` at the repo root. Every ignore must have a written reason and an expiry date. After the expiry, the ignore is removed and the CVE will fail the build again. This is the "no forever-ignores" rule.
 
 ### 4. zizmor
 
