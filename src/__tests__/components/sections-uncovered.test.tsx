@@ -40,6 +40,7 @@ vi.mock('framer-motion', () => {
     useMotionValue: () => ({ set: vi.fn() }),
     useSpring: () => 0,
     useReducedMotion: () => false,
+    useInView: () => true,
   };
 });
 
@@ -584,7 +585,7 @@ describe('uncovered section components', () => {
   it('HeroSection renders CTAs and opens contact modal for email', async () => {
     render(<HeroSection />);
 
-    expect(screen.getByText('Jhon Keneth Ryan Namias')).toBeInTheDocument();
+    expect(screen.getByLabelText('Jhon Keneth Ryan Namias')).toBeInTheDocument();
     fireEvent.click(screen.getByText('Resume'));
     expect(openModalMock).toHaveBeenCalledWith('resume');
 
