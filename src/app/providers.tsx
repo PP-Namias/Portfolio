@@ -25,8 +25,32 @@ function useServiceWorker() {
   }, []);
 }
 
+function useSuppressNextThemesScriptWarning() {
+  useEffect(() => {
+    if (process.env.NODE_ENV === 'production') return;
+    if (typeof console === 'undefined') return;
+
+    const originalError = console.error;
+    console.error = (...args: unknown[]) => {
+      const first = args[0];
+      if (
+        typeof first === 'string' &&
+        first.includes('Encountered a script tag while rendering React component')
+      ) {
+        return;
+      }
+      originalError.apply(console, args as Parameters<typeof originalError>);
+    };
+
+    return () => {
+      console.error = originalError;
+    };
+  }, []);
+}
+
 export function Providers({ children, cmsContent }: ProvidersProps) {
   useServiceWorker();
+  useSuppressNextThemesScriptWarning();
   const resolvedCmsContent = cmsContent ?? {
     seoSettings: {
       siteTitle: '',
