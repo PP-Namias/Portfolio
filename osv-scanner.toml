@@ -1,0 +1,23 @@
+version = 1
+
+# OSV-Scanner configuration
+# Docs: https://google.github.io/osv-scanner/configuration/
+
+# We scan the npm lockfile only. Other ecosystems (Python, Go,
+# Rust) are not used in this repo. Adding a new ecosystem means
+# adding its lockfile path here.
+[[package_ecosystems]]
+  ecosystems = ["npm"]
+  lockfile_paths = ["package-lock.json"]
+
+# We do NOT enable recursive scanning (Recursive: true) because
+# the repo has no workspaces or vendored deps.
+
+# Ignored vulnerabilities. Keep this list short. Every entry
+# MUST have a written reason. The canonical review is in
+# docs/security/pipeline/osv-baseline.md.
+[IgnoredVulnerabilities]
+# Example format (no current entries; this is the schema):
+#   id = "GHSA-xxxx-xxxx-xxxx"
+#   reason = "Transitive dep we do not use; parent will be bumped in Q3 2026"
+#   expired_at = "2026-12-31"
