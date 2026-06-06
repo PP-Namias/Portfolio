@@ -58,20 +58,27 @@ export const EncryptedText: React.FC<EncryptedTextProps> = ({
   const isInView = useInView(ref, { once: true });
 
   const [revealCount, setRevealCount] = useState<number>(0);
+  const [isHydrated, setIsHydrated] = useState<boolean>(false);
+  const [scrambleChars, setScrambleChars] = useState<string[]>(
+    text ? text.split("").map((c) => (c === " " ? " " : "0")) : [],
+  );
   const animationFrameRef = useRef<number | null>(null);
   const startTimeRef = useRef<number>(0);
   const lastFlipTimeRef = useRef<number>(0);
-  const scrambleCharsRef = useRef<string[]>(
-    text ? generateGibberishPreservingSpaces(text, charset).split("") : [],
-  );
+  const scrambleBufferRef = useRef<string[]>([]);
 
   useEffect(() => {
-    if (!isInView) return;
+    setIsHydrated(true);
+  }, []);
+
+  useEffect(() => {
+    if (!isInView || !isHydrated) return;
 
     const initial = text
       ? generateGibberishPreservingSpaces(text, charset)
       : "";
-    scrambleCharsRef.current = initial.split("");
+    scrambleBufferRef.current = initial.split("");
+    setScrambleChars([...scrambleBufferRef.current]);
     startTimeRef.current = performance.now();
     lastFlipTimeRef.current = startTimeRef.current;
     setRevealCount(0);
@@ -98,14 +105,13 @@ export const EncryptedText: React.FC<EncryptedTextProps> = ({
       if (timeSinceLastFlip >= Math.max(0, flipDelayMs)) {
         for (let index = 0; index < totalLength; index += 1) {
           if (index >= currentRevealCount) {
-            if (text[index] !== " ") {
-              scrambleCharsRef.current[index] =
-                generateRandomCharacter(charset);
-            } else {
-              scrambleCharsRef.current[index] = " ";
-            }
+            scrambleBufferRef.current[index] =
+              text[index] === " "
+                ? " "
+                : generateRandomCharacter(charset);
           }
         }
+        setScrambleChars([...scrambleBufferRef.current]);
         lastFlipTimeRef.current = now;
       }
 
@@ -120,7 +126,7 @@ export const EncryptedText: React.FC<EncryptedTextProps> = ({
         cancelAnimationFrame(animationFrameRef.current);
       }
     };
-  }, [isInView, text, revealDelayMs, charset, flipDelayMs]);
+  }, [isInView, isHydrated, text, revealDelayMs, charset, flipDelayMs]);
 
   if (!text) return null;
 
@@ -130,15 +136,15 @@ export const EncryptedText: React.FC<EncryptedTextProps> = ({
       className={cn(className)}
       aria-label={text}
       role="text"
+      suppressHydrationWarning
     >
       {text.split("").map((char, index) => {
-        const isRevealed = index < revealCount;
+        const isRevealed = isHydrated && index < revealCount;
         const displayChar = isRevealed
           ? char
           : char === " "
             ? " "
-            : (scrambleCharsRef.current[index] ??
-              generateRandomCharacter(charset));
+            : (scrambleChars[index] ?? generateRandomCharacter(charset));
 
         return (
           <span
