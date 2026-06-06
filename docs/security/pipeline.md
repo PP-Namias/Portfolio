@@ -157,11 +157,24 @@ Every allowlist entry has a one-line comment in the TOML explaining why it is al
 ### 5. Checkov
 
 - **Stage**: PR and push to main
-- **Purpose**: Static analysis of IaC: Terraform, Dockerfiles, Kubernetes manifests, GitHub Actions workflows, and Cloudflare wrangler config
-- **Catches**: Public S3 buckets, security groups open to `0.0.0.0/0`, missing encryption, unencrypted secrets in workflows
+- **Purpose**: Static analysis of IaC: GitHub Actions workflows and Dockerfiles
+- **Catches**: Public buckets, security groups open to `0.0.0.0/0`, missing encryption, unencrypted secrets in workflows, unpinned actions in workflows, dangerous workflow patterns
 - **Cost**: Free, open source, runs in <1min on this repo size
 - **Action**: `bridgecrewio/checkov-action`
+- **Config**: `.checkov.yaml`
 - **Workflow**: `.github/workflows/checkov.yml`
+
+**Surface area**: 18 GitHub Actions workflows and any Dockerfile in the repo. See `docs/security/pipeline/iac-inventory.md` for the full enumeration. Frameworks not used by this repo (kubernetes, terraform, cloudformation, arm, bicep, openapi) are explicitly skipped to reduce noise.
+
+**Trigger matrix**: `pull_request`, `push` to `main`, weekly Monday 09:00 UTC cron, and `workflow_dispatch`.
+
+**Failure handling**: Output is CLI + SARIF. SARIF is uploaded to the Security > Code Scanning tab with `tool=checkov`. The CLI table is the run-log output.
+
+**Skip policy**: Two mechanisms (global `.checkov.yaml` and inline `# checkov:skip=...:reason`) - both require a written reason. The full policy is in `docs/security/pipeline/checkov-policy.md`. The one current global skip is `CKV2_GHA_1` ("minimal permissions" check), with a written reason: the check is too broad for workflows that legitimately need a specific write scope, and we enforce minimum permissions manually in every workflow file.
+
+**Complementarity with zizmor**: Checkov and zizmor overlap on workflow-file security (both flag unpinned actions, dangerous triggers, etc.). zizmor is more comprehensive on the workflow-file-specific attack patterns (template injection, pull_request_target misuse, etc.). Checkov is more comprehensive on the broader IaC surface (Dockerfile, Terraform, etc.). We run both.
+
+### 6. Cosign
 
 ### 6. Cosign
 
