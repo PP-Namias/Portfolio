@@ -91,6 +91,21 @@ PR opened / push to main
 - **Config**: `.gitleaks.toml`
 - **Workflow**: `.github/workflows/gitleaks.yml`
 
+**Trigger matrix**: `pull_request` (all branches), `push` to `main`, weekly Monday 06:00 UTC cron (full-history re-scan), and `workflow_dispatch` for manual runs.
+
+**Detection surface**: 200+ default rules from the Gitleaks ruleset covering AWS, GitHub, GitLab, Slack, Stripe, Google, OpenAI, generic private keys, generic API keys, and many more. The workflow uses `fetch-depth: 0` on checkout so the action sees the full git history, not just HEAD - this is critical for catching secrets that were removed from the working tree but still exist in older commits.
+
+**Failure handling**: On a finding, the job exits non-zero and the SARIF and JSON reports are uploaded as workflow artifacts with 14-day retention. The default branch protection rule on `main` is set to require this check.
+
+**False-positive policy**: The allowlist in `.gitleaks.toml` is intentionally minimal. It covers:
+- The `tests/fixtures/gitleaks/` path, which contains a planted-secret fixture used to verify the workflow
+- Doc-only placeholders (`EXAMPLE_API_KEY`, `<YOUR_*>`, etc.)
+- The Sanity studio's local-only `projectId="development"` literal
+
+Every allowlist entry has a one-line comment in the TOML explaining why it is allowlisted. Adding a new entry requires updating that comment.
+
+**Tested**: `src/__tests__/gitleaks-fixture.test.ts` asserts the config file exists, the allowlist has a description, the planted fixture contains the documented secret patterns, and the planted fixture path is correctly covered by the allowlist regex.
+
 ### 2. OSV-Scanner
 
 - **Stage**: PR and push to main
