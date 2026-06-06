@@ -14,7 +14,7 @@ import { Button } from '@/components/ui/Button';
 import { VerifiedBadge } from '@/components/ui/VerifiedBadge';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import { ColorSchemePicker } from '@/components/ui/ColorSchemePicker';
-import { EncryptedText } from '@/components/ui/encrypted-text';
+import { HackedText } from '@/components/ui/hacked-text';
 import { useModal } from '@/hooks/useModal';
 import { useCmsContent } from '@/hooks/useCmsContent';
 import { IS_BLOG_VISIBLE } from '@/lib/features';
@@ -171,12 +171,9 @@ export function HeroSection() {
               variants={itemVariants}
               {...sanityField({id: 'profile', type: 'profile'}, 'fullName')}
             >
-              <EncryptedText
+              <HackedText
                 text={profile.name}
-                encryptedClassName="text-text-muted-light dark:text-text-muted-dark"
-                revealedClassName="text-text-primary-light dark:text-text-primary-dark"
-                revealDelayMs={45}
-                flipDelayMs={40}
+                className="text-text-primary-light dark:text-text-primary-dark"
               />
               <VerifiedBadge />
             </motion.h1>
