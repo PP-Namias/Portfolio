@@ -119,7 +119,7 @@ describe('FloatingHub', () => {
     expect(screen.getByText('Schedule a Meeting')).toBeInTheDocument();
     expect(screen.getByText('Send Email')).toBeInTheDocument();
     expect(screen.getByText('Connect')).toBeInTheDocument();
-    expect(screen.queryByText('Read Blog')).not.toBeInTheDocument();
+    expect(screen.getByText('Read Blog')).toBeInTheDocument();
   });
 
   it('opens chat panel when "Ask AI Assistant" is clicked', () => {
@@ -155,10 +155,10 @@ describe('FloatingHub', () => {
     expect(mockOpenModal).toHaveBeenCalledWith('contact');
   });
 
-  it('does not show blog link when blog feature is disabled', () => {
+  it('shows the blog link when the blog feature is enabled', () => {
     render(<FloatingHub />);
     fireEvent.click(screen.getByLabelText('Open quick actions'));
-    expect(screen.queryByText('Read Blog')).not.toBeInTheDocument();
+    expect(screen.getByText('Read Blog')).toBeInTheDocument();
   });
 
   it('expands Connect section to show social icons', () => {
@@ -304,7 +304,7 @@ describe('FloatingHub', () => {
     render(<FloatingHub />);
     fireEvent.click(screen.getByLabelText('Open quick actions'));
     const items = screen.getAllByRole('menuitem');
-    expect(items.length).toBe(5);
+    expect(items.length).toBe(6);
   });
 
   it('shows Book a meeting footer action in menu', () => {

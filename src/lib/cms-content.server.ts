@@ -2,6 +2,7 @@ import { cache } from 'react';
 import { draftMode } from 'next/headers';
 
 import { getOrFetch } from './cache';
+import { IS_BLOG_VISIBLE } from './features';
 
 import type {
   BlogPost,
@@ -400,7 +401,7 @@ const getCmsContentImpl = async (): Promise<CmsContent> => {
     ),
     querySanity<Array<{
       title?: string;
-      slug?: { current?: string };
+      slug?: string;
       excerpt?: string;
       readTime?: string;
       body?: unknown;
@@ -526,7 +527,7 @@ const getCmsContentImpl = async (): Promise<CmsContent> => {
     // request different sizes if needed once a shared canonical URL is
     // available in the content shape.
     profileImageUrl:
-      buildMediaGatewayUrl(heroDoc?.profileImageUrl || profileDoc.avatarUrl || '', { width: 320, quality: 75, sign: true }) || '',
+      buildMediaGatewayUrl(heroDoc?.profileImageUrl || profileDoc.avatarUrl || '', { width: 320, quality: 85, sign: true }) || '',
   };
 
   // Determine about paragraphs with a small server-side helper to avoid
@@ -568,7 +569,7 @@ const getCmsContentImpl = async (): Promise<CmsContent> => {
     // Use a medium-sized preview image for project cards to avoid
     // downloading full-resolution assets in the initial render.
     image:
-      buildMediaGatewayUrl(project.imageUrl || (project.galleryItems?.[0]?.url ?? ''), { width: 560, quality: 70, sign: true }) ||
+      buildMediaGatewayUrl(project.imageUrl || (project.galleryItems?.[0]?.url ?? ''), { width: 560, quality: 85, sign: true }) ||
       resolveMediaPath(project.imageFile, project.imageUrl) ||
       '',
     imageAlt: project.imageAlt || project.title,
@@ -609,7 +610,7 @@ const getCmsContentImpl = async (): Promise<CmsContent> => {
   const certifications: Certification[] = (certificationDocs ?? []).map((certification, index) => ({
     title: certification.title || '',
     // Prefer the Sanity asset URL for certification images
-    image: buildMediaGatewayUrl(certification.imageUrl || '', { width: 320, quality: 70, sign: true }) || '',
+    image: buildMediaGatewayUrl(certification.imageUrl || '', { width: 320, quality: 85, sign: true }) || '',
     imageUrl: certification.imageUrl || '',
     alt: certification.alt || certification.title || '',
     caption: certification.caption || '',
@@ -626,7 +627,7 @@ const getCmsContentImpl = async (): Promise<CmsContent> => {
     mediaType: image.mediaType || 'Image',
     // Use the Sanity-hosted media URL when available; otherwise empty.
     // Request a lightweight preview size for gallery thumbnails.
-    media: buildMediaGatewayUrl(image.mediaUrl || image.mediaPath || '', { width: 480, quality: 70, sign: true }) || '',
+    media: buildMediaGatewayUrl(image.mediaUrl || image.mediaPath || '', { width: 480, quality: 85, sign: true }) || '',
     alt: image.alt || image.title || '',
     caption: image.caption || '',
     credit: image.credit || '',
@@ -654,8 +655,8 @@ const getCmsContentImpl = async (): Promise<CmsContent> => {
   }));
 
   const blogPosts: BlogPost[] = (blogDocs ?? []).map((post, index) => ({
-    id: post.sourceId || post.slug?.current || `post-${index + 1}`,
-    slug: post.slug?.current || `post-${index + 1}`,
+    id: post.sourceId || post.slug || `post-${index + 1}`,
+    slug: post.slug || `post-${index + 1}`,
     title: post.title || '',
     excerpt: post.excerpt || '',
     content: portableTextToMarkdown(post.body) || post.excerpt || '',
@@ -663,7 +664,7 @@ const getCmsContentImpl = async (): Promise<CmsContent> => {
     readTime: post.readTime || '5 min read',
     tags: post.tags || [],
     coverImage: (() => {
-      const resolved = buildMediaGatewayUrl(post.mainImageUrl || '', { width: 960, quality: 72, sign: true });
+      const resolved = buildMediaGatewayUrl(post.mainImageUrl || '', { width: 960, quality: 85, sign: true });
       return resolved || '';
     })(),
     featured: post.featured || false,
@@ -728,3 +729,43 @@ const maybeCache = <T extends (...args: any[]) => Promise<any>>(fn: T) => {
 };
 
 export const getCmsContent = maybeCache(getCmsContentImpl);
+
+/**
+ * Build-time-safe enumeration of blog post slugs for `generateStaticParams`.
+ *
+ * `getCmsContent` calls `draftMode()` to pick a Sanity perspective, but
+ * `generateStaticParams` runs at build time without an HTTP request, so
+ * `draftMode()` throws. This function deliberately goes through the
+ * published-only public client and never touches `draftMode()`. Slugs
+ * returned here are the pre-rendered set; other slugs still resolve at
+ * request time via `dynamicParams = true`.
+ */
+export async function getBlogPostSlugsForStaticParams(): Promise<{ slug: string }[]> {
+  if (!IS_BLOG_VISIBLE) {
+    return [];
+  }
+
+  const projectId = getProjectId();
+  if (!projectId) {
+    return cmsShared.fallbackBlogPosts.map((post) => ({ slug: post.slug }));
+  }
+
+  try {
+    const client = getPublicClient();
+    const docs = await client.fetch<Array<{ slug?: string }>>(
+      '*[_type == "post" && published == true && defined(slug.current)]{"slug":slug.current}'
+    );
+    const slugs = (docs ?? [])
+      .map((doc) => doc.slug)
+      .filter((slug): slug is string => typeof slug === 'string' && slug.length > 0);
+    if (slugs.length === 0) {
+      return cmsShared.fallbackBlogPosts.map((post) => ({ slug: post.slug }));
+    }
+    return slugs.map((slug) => ({ slug }));
+  } catch (err) {
+    if (process.env.NODE_ENV !== 'test') {
+      console.warn('[cms] blog slug enumeration failed, falling back to local posts', err);
+    }
+    return cmsShared.fallbackBlogPosts.map((post) => ({ slug: post.slug }));
+  }
+}

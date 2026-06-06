@@ -1,0 +1,199 @@
+{
+  "project": "Namias Portfolio - Blog Section on Home (2-column with Certifications)",
+  "codeName": "home-blog-section",
+  "version": "0.1.0",
+  "owner": "Jhon Keneth Ryan Namias (PP Namias)",
+  "contact": "pp.namias@gmail.com",
+  "lastUpdated": "2026-06-05",
+  "branch": "feat/home-blog-section",
+  "links": {
+    "marketing": "https://namias.tech",
+    "studio": "https://namias-cms.sanity.studio",
+    "repo": "https://github.com/PP-Namias/Portfolio",
+    "existingBlog": "https://namias.tech/blog"
+  },
+  "summary": "Surface the existing /blog content as a compact Blog section on the home page, rendered in a 2-column layout side-by-side with the Certifications section. Reuses the existing BlogPost data, the IS_BLOG_VISIBLE feature flag, and the established Card + framer-motion patterns. The /blog route and the Sanity-driven data pipeline are not modified.",
+  "narrative": "The portfolio already has a full /blog route, a BlogPost type, Sanity-backed blogPosts in the CMS payload, fallback content, an ISR-cached [slug] route, sitemap entries, and a feature flag (IS_BLOG_VISIBLE=false) that currently 404s the route. Despite that, the home page never surfaces any blog content. Hiring managers and visitors who land on / never see a signal that the owner writes. This PRD introduces a compact BlogSection card on the home page that shows the latest 3 posts (cover thumb, title, date · readTime, excerpt, tags) and a 'View all' link to /blog. The section is rendered in a new 2-column grid (Blog on the left, Certifications on the right) below the existing main two-column layout, with a single-column stack on mobile. The change is additive: no existing section is removed, /blog is unchanged, and the feature flag continues to gate the whole experience so the build remains safe in production until explicitly enabled.",
+  "principles": [
+    "Reuse what exists - no new data types, no new fetcher, no new route. Only a new consumer component and one layout change.",
+    "Feature-flagged - the entire feature is hidden when IS_BLOG_VISIBLE=false, matching the rest of the codebase.",
+    "Compact and quiet - the section complements, not competes with, Certifications. 3 posts maximum on the home card.",
+    "Type-safe and tested - tsc, eslint, vitest, and react-doctor must all stay green.",
+    "One story slice per commit - planning, flag flip, component, layout, tests, docs are separate commits.",
+    "No comments in code - the only documentation is the PRD, the section header text, and any JSDoc the type demands."
+  ],
+  "personas": [
+    {
+      "id": "P-OWNER",
+      "label": "PP Namias (owner)",
+      "goals": ["Show thought leadership on the home page without sending visitors to a separate route", "Reuse the existing blogPosts pipeline and the existing /blog route", "Keep the home page one card per concern, visually balanced"],
+      "painPointsToday": ["/blog exists but is undiscoverable from /", "IS_BLOG_VISIBLE=false hides the only entry point (the Hero Blog link) too", "Home page certifications block takes a full row and could share width with another section"]
+    },
+    {
+      "id": "P-VISITOR",
+      "label": "Portfolio visitor (hiring manager)",
+      "goals": ["See recent writing without leaving the home page", "Click through to read a full post if interested", "Understand the owner's voice and topics at a glance"],
+      "painPointsToday": ["No indication the owner writes", "Two clicks (Hero -> /blog -> post) to reach any writing", "Certifications block visually dominates the lower half of the home page"]
+    },
+    {
+      "id": "P-AGENT",
+      "label": "OpenCode / future coding agent",
+      "goals": ["Find the new section by file path and component name (BlogSection)", "Understand that the feature is gated by IS_BLOG_VISIBLE", "Know which tests cover the new component"],
+      "painPointsToday": ["No documentation of the new layout", "No tests for the home page blog rendering"]
+    }
+  ],
+  "successMetrics": {
+    "primary": [
+      "Latest 3 blog posts render on the home page when IS_BLOG_VISIBLE=true",
+      "Blog and Certifications are visually balanced at >= 1024px (side-by-side, equal grid columns)",
+      "Blog and Certifications stack vertically on < 1024px with no horizontal overflow",
+      "react-doctor score stays at 100/100 (zero findings)",
+      "vitest stays at 266/266 (or higher after new tests are added)"
+    ],
+    "secondary": [
+      "Clicking a post card on the home page navigates to /blog/<slug>",
+      "Clicking 'View all' navigates to /blog",
+      "The home page still respects IS_BLOG_VISIBLE=false (no blog card, no /blog link, no 404s)",
+      "All existing a11y guarantees hold: keyboard navigable cards, focus rings visible, prefers-reduced-motion respected",
+      "No new console errors or hydration warnings on the home page"
+    ]
+  },
+  "nonGoals": [
+    "Build a new /blog API endpoint or fetcher (re-use getCmsContent().blogPosts)",
+    "Add pagination, search, or a full CMS editor for blog cards on the home page",
+    "Replace or refactor the existing CertificationsSection",
+    "Change the sticky two-column logic above the Blog/Certifications row",
+    "Ship a new Sanity schema for 'featured posts' (use the existing featured flag, or sort by date as a fallback)",
+    "Move /blog under a different path or rename it"
+  ],
+  "designDecisions": [
+    {
+      "id": "DD-1",
+      "topic": "Layout",
+      "choice": "A new grid row below the existing 2-column main layout. On >= lg it is grid-cols-2; on < lg it stacks (Blog on top, Certifications below).",
+      "rationale": "Preserves the existing main 2-column structure (About/Tech/Projects vs Experience/Connect) and only changes the lower row. Keeps the sticky balance logic untouched."
+    },
+    {
+      "id": "DD-2",
+      "topic": "Card height",
+      "choice": "Both cards stretch to the height of the taller one (default grid items behavior, no manual height set).",
+      "rationale": "Certifications is the dense block (filter tabs + 2-col grid). Blog is a short list of 3. Letting grid stretch is enough; no JS needed."
+    },
+    {
+      "id": "DD-3",
+      "topic": "Post list",
+      "choice": "Show latest 3 posts by date desc, with cover thumb (Next/Image, 80x80 or 96x96), title, date + readTime, 2-line excerpt, and up to 2 tag chips.",
+      "rationale": "3 posts fits comfortably in a half-width card on desktop. Excerpt length matches the line-clamp pattern used by ProjectsSection and RecommendationsCarousel."
+    },
+    {
+      "id": "DD-4",
+      "topic": "Empty / loading state",
+      "choice": "If blogPosts is empty and IS_BLOG_VISIBLE=true, render a single friendly card with a 'No posts yet' message and a link to /blog. No skeleton loader.",
+      "rationale": "Empty state is the steady state for the demo. Skeletons are reserved for slow SWR fetches that this card does not do."
+    },
+    {
+      "id": "DD-5",
+      "topic": "Feature flag",
+      "choice": "Gate at three levels: (a) the route /blog still 404s when IS_BLOG_VISIBLE=false, (b) the Hero Blog link is hidden, (c) the new home BlogSection returns null when IS_BLOG_VISIBLE=false. The flag flips to true in its own commit at the end.",
+      "rationale": "Defence in depth. The owner can ship code with the flag off and flip it on after visual review, matching the existing pattern in src/lib/features.ts."
+    },
+    {
+      "id": "DD-6",
+      "topic": "Test surface",
+      "choice": "Cover the BlogSection in isolation (renders N posts, empty state, flag-off returns null) and add a smoke test in app-layout-page.test.tsx that the home page renders the section when the flag is on.",
+      "rationale": "Matches the pattern in src/__tests__/components/sections-uncovered.test.tsx for CertificationsSection."
+    }
+  ],
+  "epics": [
+    {
+      "id": "EPIC-0",
+      "title": "Plan & data audit",
+      "status": "planned",
+      "summary": "Write the PRD, audit the existing blog data shape and the home page layout, and confirm no schema changes are needed.",
+      "value": "high",
+      "complexity": "low",
+      "stories": [
+        { "id": "S-0.1", "title": "Write PRD for the home blog section", "done": false, "details": "Author prd.blog.json with epics, stories, success metrics, non-goals, and design decisions. Place at the repo root next to prd.json.", "files": ["prd.blog.json"] },
+        { "id": "S-0.2", "title": "Audit blogPost shape and CMS pipeline", "done": false, "details": "Read src/types/index.ts (BlogPost), src/lib/cms-content.shared.ts (fallbackBlogPosts), src/lib/cms-content.server.ts (server fetcher), and src/hooks/useCmsContent.ts (client hook). Confirm blogPosts is already in the payload and a consumer just needs useCmsContent().blogPosts.", "files": [] },
+        { "id": "S-0.3", "title": "Audit home page layout breakpoints", "done": false, "details": "Read src/app/page.tsx and confirm the existing grid is lg:grid-cols-[62%_1fr] with a 1-col mobile fallback. Plan a new full-width row below Certifications that becomes 2-col at lg.", "files": [] }
+      ]
+    },
+    {
+      "id": "EPIC-1",
+      "title": "BlogSection component",
+      "status": "planned",
+      "summary": "Create src/components/sections/BlogSection.tsx as a client component that reads useCmsContent().blogPosts, sorts by date desc, and renders the latest 3 posts as a vertical list with a header and a 'View all' link.",
+      "value": "high",
+      "complexity": "medium",
+      "stories": [
+        { "id": "S-1.1", "title": "Create BlogSection skeleton with feature flag gate", "done": false, "details": "Create src/components/sections/BlogSection.tsx. Import IS_BLOG_VISIBLE and useCmsContent. Return null when the flag is off. Render a <section> with a header (h2 'Blog', count badge) and a 'View all' link to /blog when the flag is on.", "files": ["src/components/sections/BlogSection.tsx"] },
+        { "id": "S-1.2", "title": "Render latest 3 posts as a vertical list", "done": false, "details": "Sort blogPosts by date desc, take 3, and map to a list item with: cover (next/image, 80x80, lazy), title (link to /blog/<slug>), meta (date + readTime, e.g. 'May 12, 2026 - 5 min read'), 2-line clamped excerpt, and up to 2 tag chips. Use the existing Card primitives and framer-motion entry animations like the rest of the sections.", "files": ["src/components/sections/BlogSection.tsx"] },
+        { "id": "S-1.3", "title": "Add empty state for when no posts exist", "done": false, "details": "When blogPosts.length === 0 (and flag is on), render a small empty-state card: 'No posts yet' with a 'Visit the blog' link. No skeleton.", "files": ["src/components/sections/BlogSection.tsx"] },
+        { "id": "S-1.4", "title": "Add resolveContentImageSrc + Image alt text", "done": false, "details": "Use resolveContentImageSrc (from src/lib/media) to resolve cover images consistently with CertificationsSection. Always set a non-empty alt from the post title.", "files": ["src/components/sections/BlogSection.tsx"] }
+      ]
+    },
+    {
+      "id": "EPIC-2",
+      "title": "Home page layout integration",
+      "status": "planned",
+      "summary": "Add a new full-width row below the existing 2-column main grid that becomes a 2-column grid (Blog | Certifications) at lg breakpoint and stacks on smaller screens.",
+      "value": "high",
+      "complexity": "low",
+      "stories": [
+        { "id": "S-2.1", "title": "Wrap Certifications + BlogSection in a 2-col grid", "done": false, "details": "In src/app/page.tsx, replace the single Certifications Card with a new <div className='mt-4 grid grid-cols-1 lg:grid-cols-2 gap-4'> containing <Card><BlogSection /></Card> and <Card><CertificationsSection /></Card>. Keep the Gallery Card and Footer below as-is.", "files": ["src/app/page.tsx"] },
+        { "id": "S-2.2", "title": "Preserve sticky balance for the main grid above", "done": false, "details": "The new Blog+Cert row sits below the existing 2-column grid. Do not touch leftColumnRef / rightColumnRef / stickySide logic.", "files": [] }
+      ]
+    },
+    {
+      "id": "EPIC-3",
+      "title": "Tests",
+      "status": "planned",
+      "summary": "Add component-level tests for BlogSection and a smoke test in the home page layout test confirming the section renders when the flag is on and is absent when the flag is off.",
+      "value": "medium",
+      "complexity": "low",
+      "stories": [
+        { "id": "S-3.1", "title": "Add BlogSection component tests", "done": false, "details": "Add src/__tests__/components/sections/BlogSection.test.tsx. Cover: (a) returns null when IS_BLOG_VISIBLE=false, (b) renders 3 latest posts when IS_BLOG_VISIBLE=true, (c) renders empty state when blogPosts is empty, (d) link to /blog and per-post links use the correct href. Mock useCmsContent and IS_BLOG_VISIBLE per test.", "files": ["src/__tests__/components/sections/BlogSection.test.tsx"] },
+        { "id": "S-3.2", "title": "Extend app-layout-page test for the new row", "done": false, "details": "Update src/__tests__/app/app-layout-page.test.tsx. Add a mock for @/components/sections/BlogSection. Assert the mock renders inside the new 2-col row when the flag is on, and does not render when the flag is off (use vi.mock of @/lib/features).", "files": ["src/__tests__/app/app-layout-page.test.tsx"] }
+      ]
+    },
+    {
+      "id": "EPIC-4",
+      "title": "Flag flip & docs",
+      "status": "planned",
+      "summary": "Flip IS_BLOG_VISIBLE to true once the component, layout, and tests are merged, and add a short note in AGENTS.md.",
+      "value": "medium",
+      "complexity": "low",
+      "stories": [
+        { "id": "S-4.1", "title": "Flip IS_BLOG_VISIBLE to true", "done": false, "details": "Set IS_BLOG_VISIBLE = true in src/lib/features.ts. Verify / no longer 404s on /blog link, and the home card renders.", "files": ["src/lib/features.ts"] },
+        { "id": "S-4.2", "title": "Document the section in AGENTS.md", "done": false, "details": "Add a one-line entry under 'Skills' or a new 'Sections' subsection noting the BlogSection component path and its feature flag.", "files": ["AGENTS.md"] }
+      ]
+    },
+    {
+      "id": "EPIC-5",
+      "title": "Verification",
+      "status": "planned",
+      "summary": "Run the full quality gate: typecheck, lint, vitest, react-doctor, dev server smoke test.",
+      "value": "high",
+      "complexity": "low",
+      "stories": [
+        { "id": "S-5.1", "title": "Run tsc, eslint, vitest", "done": false, "details": "Run: npx tsc --noEmit, npm run lint, npm run test -- --run. All must pass with the new tests included.", "files": [] },
+        { "id": "S-5.2", "title": "Run react-doctor", "done": false, "details": "Run npm run doctor. Score must stay at 100/100. If a finding lands, fix it in the same PR following the fix-react-doctor-finding skill.", "files": [] },
+        { "id": "S-5.3", "title": "Dev server smoke test", "done": false, "details": "Curl http://localhost:3000/ and confirm the SSR HTML contains the Blog section header and the 3 post titles. Curl http://localhost:3000/blog and confirm the route resolves. Take a screenshot if a browser tool is available.", "files": [] }
+      ]
+    }
+  ],
+  "phases": [
+    { "id": "PHASE-1", "label": "Plan", "epics": ["EPIC-0"], "status": "in-progress" },
+    { "id": "PHASE-2", "label": "Component", "epics": ["EPIC-1"], "status": "planned" },
+    { "id": "PHASE-3", "label": "Layout", "epics": ["EPIC-2"], "status": "planned" },
+    { "id": "PHASE-4", "label": "Tests", "epics": ["EPIC-3"], "status": "planned" },
+    { "id": "PHASE-5", "label": "Flag flip & docs", "epics": ["EPIC-4"], "status": "planned" },
+    { "id": "PHASE-6", "label": "Verification", "epics": ["EPIC-5"], "status": "planned" }
+  ],
+  "openQuestions": [
+    "Should the BlogSection show post cover images, or a text-only list? The PRD currently plans a small 80x80 cover, matching the visual weight of the certification cards.",
+    "Should the 'View all' link open in the same tab or a new tab? The PRD plans same-tab (Link component) to match the rest of the home page.",
+    "If blogPosts has more than 3 entries, should the section show a 'See all 12' count in the header, or just a 'View all ->' link? The PRD plans a count badge in the header and a 'View all' link below the list.",
+    "Should the section support a tag filter like Certifications supports an issuer filter? The PRD plans no filter (compact list of 3), but it can be added in a follow-up if needed."
+  ]
+}

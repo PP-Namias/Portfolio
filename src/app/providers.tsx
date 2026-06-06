@@ -25,7 +25,32 @@ function useServiceWorker() {
   }, []);
 }
 
+let nextThemesScriptWarningFilterInstalled = false;
+let originalConsoleError: typeof console.error | null = null;
+
+function installNextThemesScriptWarningFilter() {
+  if (nextThemesScriptWarningFilterInstalled) return;
+  if (typeof console === 'undefined') return;
+  if (process.env.NODE_ENV === 'production') return;
+
+  nextThemesScriptWarningFilterInstalled = true;
+  originalConsoleError = console.error.bind(console);
+  console.error = (...args: unknown[]) => {
+    const first = args[0];
+    if (
+      typeof first === 'string' &&
+      first.includes('Encountered a script tag while rendering React component')
+    ) {
+      return;
+    }
+    if (originalConsoleError) {
+      originalConsoleError.apply(console, args as Parameters<typeof console.error>);
+    }
+  };
+}
+
 export function Providers({ children, cmsContent }: ProvidersProps) {
+  installNextThemesScriptWarningFilter();
   useServiceWorker();
   const resolvedCmsContent = cmsContent ?? {
     seoSettings: {

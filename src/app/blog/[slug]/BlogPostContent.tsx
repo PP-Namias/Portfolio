@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
+import Image from '@/components/ui/OptimizedImage';
 import { motion } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -152,6 +152,7 @@ export default function BlogPostContent({ post, allPosts, slug, backLabel }: Rea
                 width={800}
                 height={320}
                 sizes="(max-width: 768px) 100vw, 800px"
+                unoptimized
                 className="w-full h-48 sm:h-64 object-cover"
                 priority
               />
@@ -240,3 +241,4 @@ export default function BlogPostContent({ post, allPosts, slug, backLabel }: Rea
     </main>
   );
 }
+

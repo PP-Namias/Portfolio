@@ -13,6 +13,9 @@
   --accent: 219 39 119;
   --accent-hover: 190 24 93;
   --accent-hover-dark: 244 114 182;
+  --color-neutral-500: #64748b;
+  --color-neutral-600: #475569;
+  --color-sky-800: #075985;
 }
 
 .dark {
@@ -211,4 +214,12 @@ a:focus-visible,
     --text-secondary: #4b5563;
     --text-muted: #6b7280;
   }
+}
+
+/* Dotted-glow background mask utilities (Tailwind v3 polyfill for v4 mask-radial-*) */
+.mask-radial-fade {
+  mask-image: radial-gradient(ellipse at center, black 0%, black 50%, transparent 90%);
+  -webkit-mask-image: radial-gradient(ellipse at center, black 0%, black 50%, transparent 90%);
+  mask-repeat: no-repeat;
+  -webkit-mask-repeat: no-repeat;
 }

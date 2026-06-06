@@ -26,7 +26,8 @@ function baseConfig(useCdn: boolean): ClientConfig {
 
 export function getPublicClient(): SanityClient {
   if (!cachedClient) {
-    cachedClient = createClient(baseConfig(true))
+    const useCdn = process.env.NODE_ENV === 'production'
+    cachedClient = createClient(baseConfig(useCdn))
   }
   return cachedClient
 }

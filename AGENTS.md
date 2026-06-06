@@ -13,6 +13,10 @@ This file is the entry point for any agent (opencode, future coding agents, or h
 - `ui-ux-pro-max` — design system intelligence
 - `smart-caching` — multi-layer caching architecture, cache utility, Redis integration, ISR, SWR config, cache health endpoint
 
+## Home page sections
+
+- `BlogSection` (`src/components/sections/BlogSection.tsx`) — compact list of the latest 3 blog posts shown side-by-side with `CertificationsSection` on the home page. Gated by `IS_BLOG_VISIBLE` in `src/lib/features.ts`. Plan: `prd.blog.json`.
+
 ## React quality gate
 
 - Tool: `react-doctor@0.2.16` (pinned to exact version in `package.json`)

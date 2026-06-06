@@ -1,3 +1,5 @@
+import Script from 'next/script';
+
 const DEFAULT_UMAMI_SCRIPT_URL = 'https://cloud.umami.is/script.js';
 const DEFAULT_UMAMI_HOST_URL = 'https://api-gateway.umami.dev';
 
@@ -25,9 +27,9 @@ export function Analytics() {
   }
 
   return (
-    <script
+    <Script
       src={scriptUrl}
-      defer
+      strategy="afterInteractive"
       data-website-id={websiteId}
       data-host-url={hostUrl}
       data-domains={domains}

@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
+import Image from '@/components/ui/OptimizedImage';
 import { motion } from 'framer-motion';
 import { Clock, Calendar, ChevronRight } from 'lucide-react';
 import { Card } from '@/components/ui/Card';
@@ -34,6 +34,7 @@ export default function BlogListClient({ posts }: BlogListClientProps) {
                     width={400}
                     height={160}
                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    unoptimized
                     className="w-full h-40 object-cover transition-transform duration-300 group-hover:scale-105"
                   />
                 ) : (
@@ -87,3 +88,4 @@ export default function BlogListClient({ posts }: BlogListClientProps) {
     </div>
   );
 }
+

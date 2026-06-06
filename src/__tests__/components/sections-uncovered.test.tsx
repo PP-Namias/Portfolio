@@ -40,6 +40,7 @@ vi.mock('framer-motion', () => {
     useMotionValue: () => ({ set: vi.fn() }),
     useSpring: () => 0,
     useReducedMotion: () => false,
+    useInView: () => true,
   };
 });
 
@@ -522,7 +523,7 @@ describe('uncovered section components', () => {
 
     expect(screen.queryByText(/Modal-style hover preview/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/Hover or focus smoothly enlarges the project image/i)).not.toBeInTheDocument();
-    expect(screen.getByText(/Minimalist showcase of selected projects/i)).toBeInTheDocument();
+    expect(screen.getByText(/3D tilt effect/i)).toBeInTheDocument();
   });
 
   it('CertificationsSection filters, expands and opens/closes lightbox', () => {
@@ -584,7 +585,7 @@ describe('uncovered section components', () => {
   it('HeroSection renders CTAs and opens contact modal for email', async () => {
     render(<HeroSection />);
 
-    expect(screen.getByText('Jhon Keneth Ryan Namias')).toBeInTheDocument();
+    expect(screen.getByLabelText('Jhon Keneth Ryan Namias')).toBeInTheDocument();
     fireEvent.click(screen.getByText('Resume'));
     expect(openModalMock).toHaveBeenCalledWith('resume');
 

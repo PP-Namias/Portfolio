@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { getCmsContent } from '@/lib/cms-content.server';
+import { getCmsContent, getBlogPostSlugsForStaticParams } from '@/lib/cms-content.server';
 import { IS_BLOG_VISIBLE } from '@/lib/features';
 import { fallbackBlogPosts } from '@/lib/cms-content.shared';
 import { JsonLd } from '@/components/seo/JsonLd';
@@ -11,14 +11,7 @@ export const revalidate = 3600;
 export const dynamicParams = true;
 
 export async function generateStaticParams(): Promise<{ slug: string }[]> {
-  if (!IS_BLOG_VISIBLE) {
-    return [];
-  }
-
-  const { blogPosts } = await getCmsContent();
-  const posts = blogPosts && blogPosts.length > 0 ? blogPosts : fallbackBlogPosts;
-
-  return posts.map((post) => ({ slug: post.slug }));
+  return getBlogPostSlugsForStaticParams();
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {

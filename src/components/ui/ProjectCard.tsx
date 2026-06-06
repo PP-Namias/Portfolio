@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import Image from 'next/image';
+import Image from '@/components/ui/OptimizedImage';
 import { motion, useReducedMotion } from 'framer-motion';
 import { ExternalLink, Github } from 'lucide-react';
 import { Project } from '@/types';
@@ -102,3 +102,4 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
     </motion.div>
   );
 }
+

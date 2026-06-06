@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import Image from 'next/image';
+import Image from '@/components/ui/OptimizedImage';
 import { motion, AnimatePresence, useMotionValue, useSpring } from 'framer-motion';
 import {
   MapPin,
@@ -14,6 +14,7 @@ import { Button } from '@/components/ui/Button';
 import { VerifiedBadge } from '@/components/ui/VerifiedBadge';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import { ColorSchemePicker } from '@/components/ui/ColorSchemePicker';
+import { HackedText } from '@/components/ui/hacked-text';
 import { useModal } from '@/hooks/useModal';
 import { useCmsContent } from '@/hooks/useCmsContent';
 import { IS_BLOG_VISIBLE } from '@/lib/features';
@@ -170,7 +171,10 @@ export function HeroSection() {
               variants={itemVariants}
               {...sanityField({id: 'profile', type: 'profile'}, 'fullName')}
             >
-              {profile.name}
+              <HackedText
+                text={profile.name}
+                className="text-text-primary-light dark:text-text-primary-dark"
+              />
               <VerifiedBadge />
             </motion.h1>
 
@@ -291,3 +295,4 @@ export function HeroSection() {
     </motion.section>
   );
 }
+
