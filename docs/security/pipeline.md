@@ -112,8 +112,19 @@ Every allowlist entry has a one-line comment in the TOML explaining why it is al
 - **Purpose**: Match `package-lock.json` against OSV.dev (30+ ecosystems) and print the minimal fix version for every CVE
 - **Catches**: Known CVEs in npm dependencies (direct and transitive)
 - **Cost**: Free, open source, API-backed
-- **Action**: `google/osv-scanner-action`
+- **Action**: `google/osv-scanner-action` (called as a reusable workflow)
+- **Config**: `osv-scanner.toml`
 - **Workflow**: `.github/workflows/osv-scanner.yml`
+
+**Why both OSV-Scanner and Trivy**: OSV.dev is fed by the projects' own security teams and is more current for first-party language advisories (npm, Go, Rust, PyPI). Trivy is more current for distro-level CVEs. We run both because they catch different things. See `docs/security/pipeline/osv-baseline.md` for the full rationale and triage workflow.
+
+**Trigger matrix**: `pull_request`, `push` to `main`, weekly Monday 07:00 UTC cron (full-history re-scan), and `workflow_dispatch`.
+
+**Failure handling**: Findings are uploaded to the Security > Code Scanning tab with `tool=osv-scanner`. SARIF output is preserved. The workflow fails the build on any finding; the `fail-on-vuln: true` input to the reusable workflow enforces this.
+
+**Triage policy**: Every finding is triaged in `docs/security/pipeline/osv-baseline.md`. Ignores require a written reason and an `expired_at` date in `osv-scanner.toml`; the expiry forces a re-review.
+
+**Configuration surface**: `osv-scanner.toml` defines the lockfile paths and the ignore list. The workflow passes `--config=osv-scanner.toml` and `-r ./` to the scanner.
 
 ### 3. Trivy
 
@@ -183,9 +194,9 @@ Before any of the seven tools were added, the existing pipeline was hardened:
 ## Related documents
 
 - `docs/security/pipeline/audit.md` - workflow audit baseline
+- `docs/security/pipeline/osv-baseline.md` - OSV-Scanner baseline and triage
 - `docs/security/pipeline/signing.md` - Cosign keyless signing policy
 - `docs/security/pipeline/scorecard-baseline.md` - Scorecard baseline and improvement plan
-- `docs/security/pipeline/osv-baseline.md` - OSV-Scanner baseline and triage
 - `docs/security/pipeline/checkov-policy.md` - Checkov skip/fix policy
 - `docs/security/pipeline/iac-inventory.md` - IaC surface inventory
 - `.agents/skills/ci-cd-security/SKILL.md` - agent skill for the pipeline
