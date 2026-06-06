@@ -198,6 +198,18 @@ Every allowlist entry has a one-line comment in the TOML explaining why it is al
 - **Action**: `sigstore/cosign-installer` + `cosign` CLI
 - **Config**: Embedded in `cloudflare-deploy.yml`
 
+**Trigger**: only `cloudflare-deploy.yml` (on push to main and on `workflow_dispatch`). Other workflows do not produce deployable artifacts.
+
+**What is signed**: the SBOM, not a container image. Cloudflare Workers is a serverless runtime with no container; the SBOM is the next-best audit trail. If a future deploy target is a container, the image would also be signed with `cosign sign --keyless` and a verify step would be added.
+
+**Identity model**: the signing certificate is bound to the OIDC identity of the GitHub Actions workflow. The expected identity is `https://github.com/PP-Namias/Portfolio/.github/workflows/cloudflare-deploy.yml@refs/heads/main`. Verification requires the SBOM, the signature, the certificate, and a knowledge of the expected identity. No key, no secret, no KMS.
+
+**Failure handling**: a Cosign verification failure is a security event, not a config issue. The full policy is in `docs/security/pipeline/signing.md`. There is no "ignore the failure" path.
+
+**Transparency log**: every signing event is recorded in Sigstore Rekor. The cert, when verified, includes a Rekor inclusion proof. This is the public audit trail.
+
+### 7. Scorecard
+
 ### 7. Scorecard
 
 - **Stage**: Weekly schedule and on-demand
