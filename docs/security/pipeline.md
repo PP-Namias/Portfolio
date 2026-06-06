@@ -219,6 +219,14 @@ Every allowlist entry has a one-line comment in the TOML explaining why it is al
 - **Action**: `ossf/scorecard-action`
 - **Workflow**: `.github/workflows/scorecard.yml`
 
+**Trigger matrix**: `branch_protection_rule` (re-evaluate when branch rules change), weekly Monday 04:00 UTC cron, and `workflow_dispatch`.
+
+**Failure handling**: SARIF uploaded to the Security > Code Scanning tab with `tool=scorecard`. The workflow does not gate PRs or pushes; it is informational. The score trend (over weeks) is the signal, not the absolute score on any single run.
+
+**Baseline and improvement plan**: `docs/security/pipeline/scorecard-baseline.md`. Reviewed quarterly. Drops in any check are treated as regressions and addressed in the same PR if possible.
+
+**Complementarity with the other tools**: Scorecard is the only tool in the seven-stage gate that gives an aggregate score. The other tools gate on specific findings; Scorecard gives a posture view. We rely on Scorecard to catch the patterns that the other tools miss (e.g. missing branch protection, missing SECURITY.md, missing dependency update tool).
+
 ## Threat model
 
 Five scenarios, each tied to a real incident:
@@ -247,5 +255,6 @@ Before any of the seven tools were added, the existing pipeline was hardened:
 - `docs/security/pipeline/scorecard-baseline.md` - Scorecard baseline and improvement plan
 - `docs/security/pipeline/checkov-policy.md` - Checkov skip/fix policy
 - `docs/security/pipeline/iac-inventory.md` - IaC surface inventory
+- `docs/security/pipeline/zizmor-policy.md` - zizmor findings policy
 - `.agents/skills/ci-cd-security/SKILL.md` - agent skill for the pipeline
 - `prd.ci-cd-security.json` - the PRD that plans this work
