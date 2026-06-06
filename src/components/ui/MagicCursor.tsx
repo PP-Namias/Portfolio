@@ -4,7 +4,6 @@ import { useEffect, useRef } from "react";
 
 type Position = { x: number; y: number };
 
-const GLOW_RGB = "239 42 201";
 const SPARKLE = "\u2726";
 const STAR_ANIMATION_DURATION = 1500;
 const MINIMUM_TIME_BETWEEN_STARS = 250;
@@ -15,14 +14,29 @@ const STAR_COLORS = ["249 146 253", "252 254 255"];
 const STAR_SIZES = ["1.4rem", "1rem", "0.6rem"];
 const STAR_ANIMATIONS = ["magic-fall-1", "magic-fall-2", "magic-fall-3"];
 
+const KEYFRAMES_CSS = `
+@keyframes magic-fall-1 {
+  0% { transform: translate(-50%, -50%) rotateX(45deg) rotateY(30deg) rotateZ(0deg) scale(0.25); opacity: 0; }
+  5% { transform: translate(calc(-50% + 10px), calc(-50% - 10px)) rotateX(45deg) rotateY(30deg) rotateZ(0deg) scale(1); opacity: 1; }
+  100% { transform: translate(calc(-50% + 25px), calc(-50% + 200px)) rotateX(180deg) rotateY(270deg) rotateZ(90deg) scale(1); opacity: 0; }
+}
+@keyframes magic-fall-2 {
+  0% { transform: translate(-50%, -50%) rotateX(-20deg) rotateY(10deg) scale(0.25); opacity: 0; }
+  10% { transform: translate(calc(-50% - 10px), calc(-50% - 5px)) rotateX(-20deg) rotateY(10deg) scale(1); opacity: 1; }
+  100% { transform: translate(calc(-50% - 10px), calc(-50% + 160px)) rotateX(-90deg) rotateY(45deg) scale(0.25); opacity: 0; }
+}
+@keyframes magic-fall-3 {
+  0% { transform: translate(-50%, -50%) rotateX(0deg) rotateY(45deg) scale(0.5); opacity: 0; }
+  15% { transform: translate(calc(-50% + 7px), calc(-50% + 5px)) rotateX(0deg) rotateY(45deg) scale(1); opacity: 1; }
+  100% { transform: translate(calc(-50% + 20px), calc(-50% + 120px)) rotateX(-180deg) rotateY(-90deg) scale(0.5); opacity: 0; }
+}
+`;
+
 const rand = (min: number, max: number) =>
   Math.floor(Math.random() * (max - min + 1)) + min;
 
 const selectRandom = <T,>(items: readonly T[]): T =>
   items[rand(0, items.length - 1)];
-
-const px = (value: number) => `${value}px`;
-const ms = (value: number) => `${value}ms`;
 
 const calcDistance = (a: Position, b: Position): number => {
   const diffX = b.x - a.x;
@@ -49,30 +63,56 @@ export function MagicCursor() {
 
     lastRef.current.starTimestamp = Date.now();
 
+    const styleEl = document.createElement("style");
+    styleEl.textContent = KEYFRAMES_CSS;
+    document.head.appendChild(styleEl);
+
     const createStar = (position: Position) => {
       const star = document.createElement("span");
       const color = selectRandom(STAR_COLORS);
-      star.className = "magic-star";
+      const animationIndex = countRef.current++ % STAR_ANIMATIONS.length;
+      star.style.cssText = [
+        "position: absolute",
+        "left: 0",
+        "top: 0",
+        "z-index: 2",
+        "pointer-events: none",
+        "color: white",
+        "line-height: 1",
+        "transform: translate(-50%, -50%)",
+        "animation-fill-mode: forwards",
+        "animation-timing-function: ease-out",
+        `left: ${position.x}px`,
+        `top: ${position.y}px`,
+        `font-size: ${selectRandom(STAR_SIZES)}`,
+        `color: rgb(${color})`,
+        `text-shadow: 0px 0px 1.5rem rgb(${color} / 0.5)`,
+        `animation-name: ${STAR_ANIMATIONS[animationIndex]}`,
+        `animation-duration: ${STAR_ANIMATION_DURATION}ms`,
+      ].join("; ");
       star.textContent = SPARKLE;
-      star.style.left = px(position.x);
-      star.style.top = px(position.y);
-      star.style.fontSize = selectRandom(STAR_SIZES);
-      star.style.color = `rgb(${color})`;
-      star.style.textShadow = `0px 0px 1.5rem rgb(${color} / 0.5)`;
-      star.style.animationName =
-        STAR_ANIMATIONS[countRef.current++ % STAR_ANIMATIONS.length];
-      star.style.animationDuration = ms(STAR_ANIMATION_DURATION);
       container.appendChild(star);
-      setTimeout(() => star.remove(), STAR_ANIMATION_DURATION);
+      window.setTimeout(() => star.remove(), STAR_ANIMATION_DURATION);
     };
 
     const createGlowPoint = (position: Position) => {
       const glow = document.createElement("div");
-      glow.className = "magic-glow-point";
-      glow.style.left = px(position.x);
-      glow.style.top = px(position.y);
+      glow.style.cssText = [
+        "position: absolute",
+        "left: 0",
+        "top: 0",
+        "width: 0.6rem",
+        "height: 0.6rem",
+        "border-radius: 9999px",
+        "background: rgb(239 42 201)",
+        "box-shadow: 0rem 0rem 1.2rem 0.6rem rgb(239 42 201)",
+        "pointer-events: none",
+        "transform: translate(-50%, -50%)",
+        `left: ${position.x}px`,
+        `top: ${position.y}px`,
+      ].join("; ");
       container.appendChild(glow);
-      setTimeout(() => glow.remove(), GLOW_DURATION);
+      window.setTimeout(() => glow.remove(), GLOW_DURATION);
     };
 
     const determinePointQuantity = (distance: number) =>
@@ -131,6 +171,7 @@ export function MagicCursor() {
       window.removeEventListener("mousemove", handleOnMove);
       window.removeEventListener("touchmove", handleOnMove);
       document.body.removeEventListener("mouseleave", handleMouseLeave);
+      styleEl.remove();
     };
   }, []);
 
@@ -138,7 +179,13 @@ export function MagicCursor() {
     <div
       ref={containerRef}
       aria-hidden="true"
-      className="pointer-events-none fixed inset-0 z-[9999] overflow-hidden"
+      style={{
+        position: "fixed",
+        inset: 0,
+        zIndex: 9999,
+        pointerEvents: "none",
+        overflow: "hidden",
+      }}
     />
   );
 }
