@@ -1,34 +1,36 @@
-<p align="center">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://cdn.sanity.io/images/nl0qw78w/production/bc6de55c01aa5a25389620f72ee4176a3ce33d9b-1024x1024.png">
-    <img src="https://cdn.sanity.io/images/nl0qw78w/production/bc6de55c01aa5a25389620f72ee4176a3ce33d9b-1024x1024.png" width="120" height="120" alt="Jhon Keneth Ryan Namias" style="border-radius:50%">
-  </picture>
-</p>
-
-<h1 align="center">Jhon Keneth Ryan Namias</h1>
-<p align="center">
-  <b>Project Manager @ MASH</b> ·
-  <b>Full Stack Engineer & AI Automation Specialist</b>
-  <br />
-  Manila, Philippines
-</p>
-
-<p align="center">
-  <a href="https://cal.com/pp-namias"><img src="https://img.shields.io/badge/Book%20a%20Call-Cal.com-111827?style=for-the-badge&logo=calendar&logoColor=white" alt="Book a Call"></a>
-  <a href="mailto:pp.namias@gmail.com"><img src="https://img.shields.io/badge/Email-pp.namias%40gmail.com-2563eb?style=for-the-badge&logo=gmail&logoColor=white" alt="Email"></a>
-  <a href="https://namias.tech"><img src="https://img.shields.io/badge/Live%20Portfolio-namias.tech-16a34a?style=for-the-badge&logo=vercel&logoColor=white" alt="Live Portfolio"></a>
-  <br />
-  <a href="https://github.com/PP-Namias"><img src="https://img.shields.io/badge/GitHub-PP--Namias-181717?style=flat-square&logo=github" alt="GitHub"></a>
-  <a href="https://www.linkedin.com/in/pp-namias/"><img src="https://img.shields.io/badge/LinkedIn-pp--namias-0A66C2?style=flat-square&logo=linkedin&logoColor=white" alt="LinkedIn"></a>
-  <img src="https://img.shields.io/badge/License-MIT-f59e0b?style=flat-square" alt="License">
-  <img src="https://img.shields.io/badge/react--doctor-100%2F100-22c55e?style=flat-square" alt="react-doctor">
-  <img src="https://img.shields.io/badge/Security%20Posture-98%2F100-22c55e?style=flat-square" alt="Security">
-</p>
+<table>
+  <tr>
+    <td width="160" align="center" valign="top">
+      <picture>
+        <source media="(prefers-color-scheme: dark)" srcset="https://cdn.sanity.io/images/nl0qw78w/production/bc6de55c01aa5a25389620f72ee4176a3ce33d9b-1024x1024.png">
+        <img src="https://cdn.sanity.io/images/nl0qw78w/production/bc6de55c01aa5a25389620f72ee4176a3ce33d9b-1024x1024.png" width="140" height="140" alt="Jhon Keneth Ryan Namias" style="border-radius:50%">
+      </picture>
+    </td>
+    <td valign="middle">
+      <h1>Jhon Keneth Ryan Namias</h1>
+      <p><b>Project Manager @ MASH</b> · <b>Full Stack Engineer & AI Automation Specialist</b><br/>Manila, Philippines</p>
+      <p>
+        <a href="https://cal.com/pp-namias"><img src="https://img.shields.io/badge/Book%20a%20Call-Cal.com-111827?style=for-the-badge&logo=calendar&logoColor=white" alt="Book a Call"></a>
+        <a href="mailto:pp.namias@gmail.com"><img src="https://img.shields.io/badge/Email-pp.namias%40gmail.com-2563eb?style=for-the-badge&logo=gmail&logoColor=white" alt="Email"></a>
+        <a href="https://namias.tech"><img src="https://img.shields.io/badge/Live%20Portfolio-namias.tech-16a34a?style=for-the-badge&logo=vercel&logoColor=white" alt="Live Portfolio"></a>
+        <br/>
+        <a href="https://github.com/PP-Namias"><img src="https://img.shields.io/badge/GitHub-PP--Namias-181717?style=flat-square&logo=github" alt="GitHub"></a>
+        <a href="https://www.linkedin.com/in/pp-namias/"><img src="https://img.shields.io/badge/LinkedIn-pp--namias-0A66C2?style=flat-square&logo=linkedin&logoColor=white" alt="LinkedIn"></a>
+        <img src="https://img.shields.io/badge/License-MIT-f59e0b?style=flat-square" alt="MIT License">
+        <img src="https://img.shields.io/badge/react--doctor-100%2F100-22c55e?style=flat-square" alt="react-doctor 100/100">
+        <img src="https://img.shields.io/badge/Security%20Posture-98%2F100-22c55e?style=flat-square" alt="Security Posture 98/100">
+      </p>
+    </td>
+  </tr>
+</table>
 
 ---
 
-<p align="center">
-  <a href="#about">About</a> ·
+## About
+
+Production portfolio for [namias.tech](https://namias.tech) — a modal-first, Sanity-driven Next.js application with a modern animation system, secure media gateway, AI-powered chat, and automated CI/CD quality gates.
+
+<p>
   <a href="#quality--security">Quality & Security</a> ·
   <a href="#core-stack">Stack</a> ·
   <a href="#getting-started">Getting Started</a> ·
@@ -37,12 +39,6 @@
   <a href="#environment">Environment</a> ·
   <a href="#license">License</a>
 </p>
-
----
-
-## About
-
-Production portfolio for [namias.tech](https://namias.tech) — a modal-first, Sanity-driven Next.js application built with a modern animation system, secure media gateway, AI-powered chat, and comprehensive CI/CD quality gates.
 
 ### Highlights
 
@@ -58,16 +54,12 @@ Production portfolio for [namias.tech](https://namias.tech) — a modal-first, S
 
 ## Quality & Security
 
-### Quality gates
-
 | Check | Tool | Threshold | CI Location |
 |---|---|---|---|
 | Lint | ESLint 9 (flat config) | 0 errors | `pr-validation.yml` |
 | Types | `tsc --noEmit` | 0 errors | `pr-validation.yml` |
 | Tests | Vitest + Testing Library | 278/278 passed | `pr-validation.yml` |
 | React quality | react-doctor 0.4.0 | 100/100 (0 findings) | `react-doctor.yml` |
-
-### Security posture
 
 | Badge | Status |
 |---|---|
@@ -78,9 +70,7 @@ Production portfolio for [namias.tech](https://namias.tech) — a modal-first, S
 | [![security.txt](https://img.shields.io/badge/security.txt-present-64748b?style=flat-square)](./public/.well-known/security.txt) | Vulnerability disclosure policy deployed |
 | [![API Headers](https://img.shields.io/badge/Headers-verified-16a34a?style=flat-square)](https://namias.tech/api/security-headers) | Real-time header verification endpoint |
 
-Security is a first-class feature. The site is continuously tested via [PentestAgent](https://github.com/GH05TCREW/pentestagent) with a seven-stage CI/CD pipeline on every PR and push to `main`. Full details in [`docs/security/dashboard.md`](./docs/security/dashboard.md).
-
-For the react-doctor journey from 91/100 to 100/100, see [`docs/react-doctor/scoreboard.md`](./docs/react-doctor/scoreboard.md) and [`.agents/skills/run-react-doctor/SKILL.md`](./.agents/skills/run-react-doctor/SKILL.md).
+Security is a first-class feature — continuously tested via [PentestAgent](https://github.com/GH05TCREW/pentestagent) with a seven-stage CI/CD pipeline on every PR and push to `main`. Full details in [`docs/security/dashboard.md`](./docs/security/dashboard.md). See [`docs/react-doctor/scoreboard.md`](./docs/react-doctor/scoreboard.md) for the react-doctor journey from 91/100 to 100/100.
 
 ---
 
@@ -94,12 +84,11 @@ For the react-doctor journey from 91/100 to 100/100, see [`docs/react-doctor/sco
 | **Theme** | `next-themes` with accent color picker |
 | **CMS** | Sanity v3 (Studio + Content Lake + CDN) |
 | **Content rendering** | `react-markdown` + `remark-gfm` + `rehype-highlight` |
-| **Data fetching** | SWR (client) + multi-layer cache (in-memory L1 → Upstash Redis L2 → CDN L3) |
+| **Data fetching** | SWR (client) + multi-layer cache (L1 in-memory → L2 Upstash Redis → L3 CDN) |
 | **Media delivery** | Secure gateway at `/api/media/[...path]` with HMAC verification |
 | **AI** | Gemini 2.0 Flash via `/api/chat` with multi-provider failover |
 | **Testing** | Vitest + Testing Library + jsdom (31 files, 278 tests) |
 | **Hosting** | Cloudflare Workers via OpenNext |
-| **Studio deployment** | Sanity Studio (`studio/`) on Sanity Hosting |
 
 ---
 
@@ -120,47 +109,6 @@ npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000).
-
-### Quick quality check
-
-```bash
-npm run lint      # ESLint — 0 errors expected
-npm run test      # Vitest — 278 tests, all green
-```
-
----
-
-## Project structure
-
-```
-Portfolio/
-├── .github/                  # 19 CI/CD workflows, templates, governance
-├── .agents/                  # OpenCode agent skills (11 skills)
-├── docs/                     # Documentation (performance, security, react-doctor, studio)
-├── studio/                   # Sanity Studio CMS (21 schema types, 42 skills)
-├── scripts/                  # Sanity import, migration, and seed scripts
-├── functions/                # Sanity Functions (scheduled-publish, broken-refs, auto-tag)
-├── public/                   # Static assets (favicon, OG image, robots.txt, service worker)
-├── src/
-│   ├── app/                  # App Router: pages, API routes (11), layout, providers
-│   │   ├── api/              # chat, media, resume, sanity webhook, cache health, etc.
-│   │   ├── blog/             # Blog list and [slug] detail pages
-│   │   └── studio/           # Sanity Studio landing page
-│   ├── components/           # UI components (27), sections (12), CMS, SEO
-│   │   ├── sections/         # Hero, About, TechStack, Projects, Blog, etc.
-│   │   ├── ui/               # Modal, Card, Button, Chat, Hub, Theme, etc.
-│   │   └── cms/              # Sanity field components for Visual Editing
-│   ├── hooks/                # useAccentColor, useCarousel, useCmsContent, etc.
-│   ├── lib/                  # Cache, media gateway, SWR config, feature flags, types
-│   ├── types/                # Shared TypeScript interfaces
-│   └── middleware.ts         # Rate limiting
-├── tests/                    # 31 test files (components, hooks, API, lib)
-├── prd.json                  # Active product requirement documents
-├── next.config.js
-├── tailwind.config.ts
-├── eslint.config.mjs
-└── package.json
-```
 
 ---
 
@@ -208,8 +156,6 @@ Portfolio/
 
 ## Environment
 
-### Required variables
-
 Create `.env.local` from the template in `.env.example`:
 
 ```bash
@@ -240,17 +186,65 @@ NEXT_PUBLIC_SITE_URL=https://namias.jkrbn99.workers.dev
 NEXT_PUBLIC_SANITY_STUDIO_URL=https://your-studio-url.sanity.studio
 ```
 
-Keep real values in `.env.local` only. Use `.env.example` as the template. Store deployment credentials in GitHub Actions secrets, not in the repository.
+Keep real values in `.env.local` only. Use `.env.example` as the template. Store deployment credentials in GitHub Actions secrets.
 
 ### Secure media gateway
 
-Sanity-hosted images and files are proxied through the app's server-side media gateway at `/api/media/[...path]` instead of being exposed as raw Sanity CDN URLs in the browser. An optional HMAC-SHA256 signing secret (`SANITY_MEDIA_GATEWAY_SECRET`) verifies every request.
+Sanity assets are proxied through the server-side gateway at `/api/media/[...path]` instead of exposing raw Sanity CDN URLs. An optional HMAC-SHA256 signing secret (`SANITY_MEDIA_GATEWAY_SECRET`) verifies every request.
 
 ### Cloudflare deployment
 
-- **Root app** deploys via `opennextjs-cloudflare` to Cloudflare Workers
-- **Studio** deploys from `studio/` as its own separate Sanity application
+- **Root app** — deploys via `opennextjs-cloudflare` to Cloudflare Workers
+- **Studio** — deploys from `studio/` as its own Sanity application
 - Set `NEXT_PUBLIC_SANITY_STUDIO_URL` to link the `/studio` landing page to the hosted editor
+
+---
+
+## Project structure
+
+```
+Portfolio/
+├── .github/                  # 19 CI/CD workflows, templates, governance
+├── .agents/                  # OpenCode agent skills (11 skills)
+├── docs/                     # Documentation (performance, security, react-doctor, studio)
+├── studio/                   # Sanity Studio CMS (21 schema types, 42 skills)
+├── scripts/                  # Sanity import, migration, and seed scripts
+├── functions/                # Sanity Functions (scheduled-publish, broken-refs, auto-tag)
+├── public/                   # Static assets (favicon, OG image, robots.txt, service worker)
+├── src/
+│   ├── app/                  # App Router: pages, API routes (11), layout, providers
+│   │   ├── api/              # chat, media, resume, sanity webhook, cache health, etc.
+│   │   ├── blog/             # Blog list and [slug] detail pages
+│   │   └── studio/           # Sanity Studio landing page
+│   ├── components/           # UI components (27), sections (12), CMS, SEO
+│   ├── hooks/                # useAccentColor, useCarousel, useCmsContent, etc.
+│   ├── lib/                  # Cache, media gateway, SWR config, feature flags
+│   ├── types/                # Shared TypeScript interfaces
+│   └── middleware.ts         # Rate limiting
+├── tests/                    # 31 test files (components, hooks, API, lib)
+├── prd.json                  # Active product requirement documents
+├── next.config.js
+├── tailwind.config.ts
+├── eslint.config.mjs
+└── package.json
+```
+
+---
+
+## Automated problem detection
+
+When monitored workflows fail, automation posts a problem report with suggested solutions on the related PR (or as a repository issue when no PR is linked).
+
+- Detection workflow: `problem-detection-advisor.yml`
+- Approval gate: `remediation-approval-gate.yml`
+
+To approve remediation reruns, comment on the PR:
+
+```text
+/approve-remediation
+```
+
+Only repository owners, members, or collaborators can approve remediation reruns.
 
 ---
 
