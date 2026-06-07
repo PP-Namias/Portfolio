@@ -1,7 +1,7 @@
 <table>
   <tr>
-    <td width="220" align="center" valign="middle">
-      <img src="https://cdn.sanity.io/images/nl0qw78w/production/bc6de55c01aa5a25389620f72ee4176a3ce33d9b-1024x1024.png" width="200" height="200" alt="Jhon Keneth Ryan Namias">
+    <td width="240" align="center" valign="middle">
+      <img src="https://cdn.sanity.io/images/nl0qw78w/production/981efc0a450ec1a72f3904d5800ac8ee08c5085f-1024x1536.png" width="200" height="300" alt="Jhon Keneth Ryan Namias">
     </td>
     <td valign="middle">
       <h1>Jhon Keneth Ryan Namias</h1>
