@@ -522,12 +522,8 @@ const getCmsContentImpl = async (): Promise<CmsContent> => {
   const hero = {
     roles: (heroDoc?.heroRoles ?? []).filter(Boolean),
     availabilityLabel: heroDoc?.availabilityLabel || '',
-    // Use a sized variant for the hero/profile image to reduce decode cost
-    // for the homepage where the image is small. Components can further
-    // request different sizes if needed once a shared canonical URL is
-    // available in the content shape.
     profileImageUrl:
-      buildMediaGatewayUrl(heroDoc?.profileImageUrl || profileDoc.avatarUrl || '', { width: 320, quality: 85, sign: true }) || '',
+      buildMediaGatewayUrl(heroDoc?.profileImageUrl || profileDoc.avatarUrl || '', { width: 640, quality: 85, sign: true }) || '',
   };
 
   // Determine about paragraphs with a small server-side helper to avoid
