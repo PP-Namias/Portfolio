@@ -1,0 +1,1432 @@
+﻿=== build.yml ===
+name: Build and Check
+
+on:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  NODE_VERSION: '22'
+
+jobs:
+  lint:
+    name: Lint and Type Check
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run ESLint
+        run: npm run lint
+
+      - name: TypeScript Check
+        run: npx tsc --noEmit
+
+  build:
+    name: Build Application
+    runs-on: ubuntu-latest
+    needs: lint
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build Application
+        run: npm run build
+
+      - name: Build Summary
+        run: |
+          echo "## Build Successful" >> $GITHUB_STEP_SUMMARY
+          echo "- **Node Version**: ${{ env.NODE_VERSION }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Status**: Success" >> $GITHUB_STEP_SUMMARY
+
+  test:
+    name: Run Tests
+    runs-on: ubuntu-latest
+    needs: lint
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run Tests
+        run: npm test
+=== cloudflare-deploy.yml ===
+name: Cloudflare and Sanity Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  NODE_VERSION: '22'
+
+jobs:
+  deploy-worker:
+    name: Deploy Portfolio Worker
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build and deploy to Cloudflare
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: npm run cloudflare:deploy
+
+  deploy-studio:
+    name: Deploy Sanity Studio
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install root dependencies
+        run: npm ci
+
+      - name: Install studio dependencies
+        run: npm ci --prefix studio
+
+      - name: Deploy studio
+        env:
+          SANITY_STUDIO_DEPLOY_TOKEN: ${{ secrets.SANITY_STUDIO_DEPLOY_TOKEN }}
+          NEXT_PUBLIC_SANITY_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_SANITY_PROJECT_ID }}
+          NEXT_PUBLIC_SANITY_DATASET: ${{ secrets.NEXT_PUBLIC_SANITY_DATASET }}
+          SANITY_REVALIDATE_SECRET: ${{ secrets.SANITY_REVALIDATE_SECRET }}
+          NEXT_PUBLIC_SITE_URL: ${{ secrets.NEXT_PUBLIC_SITE_URL }}
+        run: npm --prefix studio run deploy
+=== daily-health-check.yml ===
+name: Daily Health Check
+
+on:
+  schedule:
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+env:
+  NODE_VERSION: '22'
+
+jobs:
+  health-check:
+    name: Daily Health Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Run ESLint
+        run: npm run lint
+
+      - name: TypeScript Check
+        run: npx tsc --noEmit
+
+      - name: Security Audit
+        run: npm audit --audit-level moderate || echo "Security audit completed with warnings"
+
+      - name: Build Test
+        run: npm run build
+
+      - name: Run Tests
+        run: npm test
+
+      - name: Generate Health Report
+        if: always()
+        run: |
+          echo "## Daily Health Check Report" >> $GITHUB_STEP_SUMMARY
+          echo "- **Date**: $(date)" >> $GITHUB_STEP_SUMMARY
+          echo "- **Node Version**: ${{ env.NODE_VERSION }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Status**: Completed" >> $GITHUB_STEP_SUMMARY
+
+      - name: Create Issue on Failure
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const title = `Daily Health Check Failed - ${new Date().toDateString()}`;
+            const body = `## Daily Health Check Failure
+
+            The automated daily health check has detected issues.
+
+            **Date**: ${new Date().toISOString()}
+            **Run**: [#${{ github.run_id }}](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
+
+            Please review the workflow logs and fix any issues.
+
+            *Automatically created by the daily health check.*`;
+
+            github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: title,
+              body: body,
+              labels: ['health-check', 'automated']
+            });
+=== monitoring-health.yml ===
+name: Monitoring and Health Checks
+
+on:
+  schedule:
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+env:
+  PRODUCTION_URL: 'https://namias.tech'
+  BLOG_MONITOR_ENABLED: 'false'
+
+jobs:
+  uptime-check:
+    name: Uptime and Availability Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Website Availability
+        run: |
+          echo "## Uptime Check Results" >> $GITHUB_STEP_SUMMARY
+          echo "**Date**: $(date)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          FAILED=0
+
+          # Check main site
+          if curl -f -s --max-time 30 "${{ env.PRODUCTION_URL }}" > /dev/null; then
+            echo "**Main Site**: Available" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "**Main Site**: Unavailable" >> $GITHUB_STEP_SUMMARY
+            FAILED=1
+          fi
+
+          # Check chat service health endpoint
+          CHAT_HEALTH_STATUS=$(curl -sS --max-time 20 -o /tmp/chat-health.json -w "%{http_code}" "${{ env.PRODUCTION_URL }}/api/chat")
+          if [ "$CHAT_HEALTH_STATUS" -eq 200 ] && grep -q '"status":"active"' /tmp/chat-health.json; then
+            echo "**Chat Health**: Active" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "**Chat Health**: Inactive or unreachable" >> $GITHUB_STEP_SUMMARY
+            FAILED=1
+          fi
+
+          # Synthetic chatbot probe (ensures non-empty message contract)
+          CHAT_PROBE_RESPONSE=$(curl -sS --max-time 30 -X POST "${{ env.PRODUCTION_URL }}/api/chat" \
+            -H "Content-Type: application/json" \
+            -d '{"message":"Hello Keneth AI"}' \
+            -w "HTTPSTATUS:%{http_code}")
+
+          CHAT_PROBE_BODY=$(echo "$CHAT_PROBE_RESPONSE" | sed -e 's/HTTPSTATUS:.*//g')
+          CHAT_PROBE_STATUS=$(echo "$CHAT_PROBE_RESPONSE" | tr -d '\n' | sed -e 's/.*HTTPSTATUS://')
+
+          if [ "$CHAT_PROBE_STATUS" -eq 200 ] && echo "$CHAT_PROBE_BODY" | grep -q '"message"'; then
+            echo "**Chat Probe**: Passed" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "**Chat Probe**: Failed" >> $GITHUB_STEP_SUMMARY
+            FAILED=1
+          fi
+
+          # Check blog page only when blog route is publicly enabled
+          if [ "${{ env.BLOG_MONITOR_ENABLED }}" = "true" ]; then
+            if curl -f -s --max-time 15 "${{ env.PRODUCTION_URL }}/blog" > /dev/null; then
+              echo "**/blog**: Available" >> $GITHUB_STEP_SUMMARY
+            else
+              echo "**/blog**: Unavailable" >> $GITHUB_STEP_SUMMARY
+              FAILED=1
+            fi
+          else
+            echo "**/blog**: Skipped (feature currently disabled)" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          if [ "$FAILED" -eq 1 ]; then
+            exit 1
+          fi
+
+      - name: Create Alert on Downtime
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const title = `Website Downtime Alert - ${new Date().toDateString()}`;
+            const body = `## Website Downtime Detected
+
+            **Alert Time**: ${new Date().toISOString()}
+            **URL**: ${{ env.PRODUCTION_URL }}
+            **Blog Monitor Enabled**: ${{ env.BLOG_MONITOR_ENABLED }}
+            **Chat Endpoint**: ${{ env.PRODUCTION_URL }}/api/chat
+
+            Please check hosting provider status and server logs.
+
+            *Automatically generated by the monitoring system.*`;
+
+            github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: title,
+              body: body,
+              labels: ['alert', 'downtime', 'high-priority']
+            });
+
+  ssl-certificate-check:
+    name: SSL Certificate Check
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - name: Check SSL Certificate
+        run: |
+          DOMAIN=$(echo "${{ env.PRODUCTION_URL }}" | sed 's|https\?://||' | cut -d'/' -f1)
+
+          echo "## SSL Certificate Status" >> $GITHUB_STEP_SUMMARY
+          echo "**Domain**: $DOMAIN" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          if CERT_INFO=$(echo | openssl s_client -servername "$DOMAIN" -connect "$DOMAIN:443" 2>/dev/null | openssl x509 -noout -dates 2>/dev/null); then
+            EXPIRY=$(echo "$CERT_INFO" | grep notAfter | cut -d'=' -f2)
+            if [ -n "$EXPIRY" ]; then
+              EXPIRY_TS=$(date -d "$EXPIRY" +%s 2>/dev/null || echo "0")
+              NOW_TS=$(date +%s)
+              DAYS=$(( (EXPIRY_TS - NOW_TS) / 86400 ))
+              echo "**Expiry**: $EXPIRY" >> $GITHUB_STEP_SUMMARY
+              echo "**Days Until Expiry**: $DAYS" >> $GITHUB_STEP_SUMMARY
+              if [ "$DAYS" -lt 30 ]; then
+                echo "**Certificate expiring soon**" >> $GITHUB_STEP_SUMMARY
+              else
+                echo "**Certificate valid**" >> $GITHUB_STEP_SUMMARY
+              fi
+            fi
+          else
+            echo "Could not retrieve certificate info" >> $GITHUB_STEP_SUMMARY
+          fi
+
+  monitoring-summary:
+    name: Monitoring Summary
+    runs-on: ubuntu-latest
+    needs: [uptime-check, ssl-certificate-check]
+    if: always()
+    steps:
+      - name: Generate Summary
+        run: |
+          echo "## System Health Dashboard" >> $GITHUB_STEP_SUMMARY
+          echo "**Report**: $(date)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Service | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|---------|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Uptime | ${{ needs.uptime-check.result == 'success' && 'Online' || 'Issues' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| SSL | ${{ needs.ssl-certificate-check.result == 'success' && 'Valid' || 'Check' }} |" >> $GITHUB_STEP_SUMMARY
+=== pentestagent-ci.yml ===
+name: PentestAgent CI
+
+on:
+  push:
+    branches: [main, 'security/**']
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  PYTHON_VERSION: '3.11'
+  PENTESTAGENT_DIR: pentestagent
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python ${{ env.PYTHON_VERSION }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Clone PentestAgent
+        run: |
+          git clone https://github.com/GH05TCREW/pentestagent.git ${{ env.PENTESTAGENT_DIR }}
+          cd ${{ env.PENTESTAGENT_DIR }}
+          pip install -e ".[all]"
+          playwright install chromium --with-deps
+
+      - name: Copy config
+        run: |
+          cp docs/security/pentestagent/config/pentestagent.json ${{ env.PENTESTAGENT_DIR }}/config.json
+
+      - name: Run recon playbook
+        id: scan
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          if [ -z "$ANTHROPIC_API_KEY" ] && [ -z "$OPENAI_API_KEY" ]; then
+            echo "::notice::No ANTHROPIC_API_KEY or OPENAI_API_KEY secret set; skipping live PentestAgent scan (static checks only)."
+            mkdir -p docs/security/pentestagent/findings
+            cat > docs/security/pentestagent/findings/report-ci-skipped.txt <<EOF
+            PentestAgent CI scan skipped: no LLM API key configured.
+            Static security checks (CodeQL, npm audit) still apply via the
+            security-scanning and codeql workflows.
+            EOF
+            echo "report=docs/security/pentestagent/findings/report-ci-skipped.txt" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          TIMESTAMP=$(date +%Y%m%d-%H%M%S)
+          REPORT="docs/security/pentestagent/findings/report-ci-${TIMESTAMP}.json"
+          cd ${{ env.PENTESTAGENT_DIR }}
+          pentestagent run -t https://namias.tech \
+            --playbook ../docs/security/pentestagent/playbooks/portfolio_recon.yaml \
+            --output "../$REPORT" \
+            --json
+          echo "report=$REPORT" >> $GITHUB_OUTPUT
+        continue-on-error: true
+
+      - name: Upload findings artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pentestagent-findings-${{ github.sha }}
+          path: docs/security/pentestagent/findings/
+          retention-days: 30
+
+      - name: Scan summary
+        if: always()
+        run: |
+          echo "## PentestAgent CI Scan" >> $GITHUB_STEP_SUMMARY
+          echo "| | |" >> $GITHUB_STEP_SUMMARY
+          echo "|---|---|" >> $GITHUB_STEP_SUMMARY
+          echo "| **Commit** | ${{ github.sha }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Branch** | ${{ github.ref_name }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Playbook** | portfolio_recon |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Target** | https://namias.tech |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Report** | ${{ steps.scan.outputs.report }} |" >> $GITHUB_STEP_SUMMARY
+=== pentestagent-pr-check.yml ===
+name: PentestAgent PR Security Check
+
+on:
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  security-pr-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check for security-sensitive file changes
+        id: diff-check
+        run: |
+          CHANGED_FILES=$(git diff --name-only origin/main...HEAD)
+          echo "Changed files:"
+          echo "$CHANGED_FILES"
+
+          SECURITY_PATTERNS=("api/" ".env" "next.config" "middleware" "package.json" "eslint.config")
+          HAS_SECURITY_CHANGES=false
+
+          for pattern in "${SECURITY_PATTERNS[@]}"; do
+            if echo "$CHANGED_FILES" | grep -qi "$pattern"; then
+              HAS_SECURITY_CHANGES=true
+              echo "Security-relevant file changed: matches pattern '$pattern'"
+            fi
+          done
+
+          echo "has_security_changes=$HAS_SECURITY_CHANGES" >> $GITHUB_OUTPUT
+
+      - name: Setup Python 3.11
+        if: ${{ steps.diff-check.outputs.has_security_changes == 'true' }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Clone and install PentestAgent (lightweight)
+        if: ${{ steps.diff-check.outputs.has_security_changes == 'true' }}
+        run: |
+          git clone https://github.com/GH05TCREW/pentestagent.git pentestagent
+          cd pentestagent
+          pip install -e ".[all]"
+
+      - name: Run lightweight security scan
+        if: ${{ steps.diff-check.outputs.has_security_changes == 'true' }}
+        id: scan
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        continue-on-error: true
+        run: |
+          if [ -z "$ANTHROPIC_API_KEY" ] && [ -z "$OPENAI_API_KEY" ]; then
+            echo "::notice::No LLM API key configured; running static security header verification only."
+            mkdir -p docs/security/pentestagent/findings
+            OUT="docs/security/pentestagent/findings/pr-security-check-${{ github.event.number }}.json"
+            node scripts/static-security-check.mjs > "$OUT" 2>&1 || true
+            if [ ! -s "$OUT" ]; then
+              echo '{"summary":{"errorCount":0,"warningCount":0,"note":"static-check-produced-no-output"}}' > "$OUT"
+            fi
+            echo "report=$OUT" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          OUT="docs/security/pentestagent/findings/pr-security-check-${{ github.event.number }}.json"
+          cd pentestagent
+          pentestagent run -t https://namias.tech \
+            --playbook ../docs/security/pentestagent/playbooks/header_security.yaml \
+            --output "../$OUT" \
+            --json || true
+          echo "report=$OUT" >> $GITHUB_OUTPUT
+
+      - name: Upload PR scan results
+        if: ${{ steps.diff-check.outputs.has_security_changes == 'true' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: pentestagent-pr-check-${{ github.event.number }}
+          path: docs/security/pentestagent/findings/
+          retention-days: 30
+          if-no-files-found: ignore
+
+      - name: Comment security check result
+        if: ${{ steps.diff-check.outputs.has_security_changes == 'true' }}
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const path = '${{ steps.scan.outputs.report }}';
+            let findings = { summary: { errorCount: 0, warningCount: 0 } };
+            try {
+              if (path && fs.existsSync(path)) {
+                findings = JSON.parse(fs.readFileSync(path, 'utf8'));
+              }
+            } catch (e) {
+              console.log('Could not parse findings file, using defaults');
+            }
+            const hasIssues = findings && findings.summary && findings.summary.errorCount > 0;
+
+            let body = '## âœ… PentestAgent Security Check\n\n';
+            if (hasIssues) {
+              body = '## âš ï¸ PentestAgent Security Check\n\n';
+              body += '**Security issues were detected in this PR.**\n\n';
+              body += `- Errors: ${findings.summary.errorCount}\n`;
+              body += `- Warnings: ${findings.summary.warningCount}\n\n`;
+              body += 'Please review the findings and address any security concerns.\n';
+            } else {
+              body += 'No security issues detected. The security headers and configuration look good.\n';
+              if (findings && findings.summary && findings.summary.note) {
+                body += `\n_Note: ${findings.summary.note}_\n`;
+              }
+            }
+            body += '\n---\n';
+            body += '_This check runs when security-relevant files are changed._';
+
+            try {
+              await github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: body
+              });
+            } catch (e) {
+              console.log('Could not post comment:', e.message);
+            }
+=== pentestagent-scheduled.yml ===
+name: PentestAgent Scheduled Scan
+
+on:
+  schedule:
+    - cron: '0 2 * * 0'  # Weekly on Sunday 02:00 UTC
+  workflow_dispatch:
+
+env:
+  PYTHON_VERSION: '3.11'
+  PENTESTAGENT_DIR: pentestagent
+
+jobs:
+  security-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python ${{ env.PYTHON_VERSION }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Clone and install PentestAgent
+        run: |
+          git clone https://github.com/GH05TCREW/pentestagent.git ${{ env.PENTESTAGENT_DIR }}
+          cd ${{ env.PENTESTAGENT_DIR }}
+          pip install -e ".[all]"
+          playwright install chromium --with-deps
+
+      - name: Copy config
+        run: |
+          cp docs/security/pentestagent/config/pentestagent.json ${{ env.PENTESTAGENT_DIR }}/config.json
+
+      - name: Run full playbook suite
+        id: scan
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          TAVILY_API_KEY: ${{ secrets.TAVILY_API_KEY }}
+        run: |
+          TIMESTAMP=$(date +%Y%m%d-%H%M%S)
+          REPORT_DIR="docs/security/pentestagent/reports/scheduled-$TIMESTAMP"
+          mkdir -p "$REPORT_DIR"
+
+          if [ -z "$ANTHROPIC_API_KEY" ] && [ -z "$OPENAI_API_KEY" ]; then
+            echo "::notice::No LLM API key configured; skipping live PentestAgent scan. The static security checks (CodeQL, npm audit) still run on every PR."
+            cat > "$REPORT_DIR/SKIPPED.txt" <<EOF
+            PentestAgent Scheduled Scan Skipped
+            Reason: no ANTHROPIC_API_KEY or OPENAI_API_KEY configured in repo secrets.
+            Live black-box scans will resume once a key is added.
+            EOF
+            echo "Scan complete (skipped). See $REPORT_DIR/SKIPPED.txt"
+            exit 0
+          fi
+
+          PLAYBOOKS=(
+            "portfolio_recon"
+            "technology_fingerprint"
+            "directory_enumeration"
+            "header_security"
+            "dependency_check"
+          )
+
+          for playbook in "${PLAYBOOKS[@]}"; do
+            echo "Running $playbook..."
+            cd ${{ env.PENTESTAGENT_DIR }}
+            pentestagent run -t https://namias.tech \
+              --playbook "../docs/security/pentestagent/playbooks/${playbook}.yaml" \
+              --output "../$REPORT_DIR/${playbook}.json" \
+              --json
+            cd ..
+          done
+
+          echo "Scan complete. Reports in $REPORT_DIR"
+        continue-on-error: true
+
+      - name: Upload scheduled scan results
+        uses: actions/upload-artifact@v4
+        with:
+          name: pentestagent-scheduled-scan-${{ github.run_id }}
+          path: |
+            docs/security/pentestagent/reports/scheduled-*/
+            docs/security/pentestagent/findings/
+          retention-days: 90
+
+      - name: Scan summary
+        run: |
+          TIMESTAMP=$(date +%Y%m%d-%H%M%S)
+          echo "## PentestAgent Weekly Scan â€” $TIMESTAMP" >> $GITHUB_STEP_SUMMARY
+          echo "| | |" >> $GITHUB_STEP_SUMMARY
+          echo "|---|---|" >> $GITHUB_STEP_SUMMARY
+          echo "| **Workflow** | ${{ github.workflow }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Run ID** | ${{ github.run_id }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Playbooks** | portfolio_recon, technology_fingerprint, directory_enumeration, header_security, dependency_check |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Target** | https://namias.tech |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Artifacts** | ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Results are stored in CI artifacts with 90-day retention." >> $GITHUB_STEP_SUMMARY
+
+      - name: Create issue for new findings
+        if: ${{ failure() }}
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: 'PentestAgent Scheduled Scan â€” New Findings Detected',
+              body: 'The scheduled PentestAgent scan detected new security findings. See the workflow run artifacts for details.',
+              labels: ['security', 'automated-scan']
+            })
+=== pr-validation.yml ===
+name: Pull Request Validation
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+    branches: [main]
+
+concurrency:
+  group: pr-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  NODE_VERSION: '22'
+
+jobs:
+  quality-check:
+    name: Quality Check
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    if: github.event.pull_request.draft == false
+    steps:
+      - name: Checkout PR
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Lint Check
+        run: npm run lint
+
+      - name: Type Check
+        run: npx tsc --noEmit
+
+      - name: Build
+        run: npm run build
+
+      - name: Run Tests
+        run: npm test
+
+  security:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    if: github.event.pull_request.draft == false
+    steps:
+      - name: Checkout PR
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Security Audit
+        run: npm audit --audit-level moderate || echo "Audit completed with warnings"
+
+  comment:
+    name: PR Status
+    runs-on: ubuntu-latest
+    needs: [quality-check, security, react-doctor]
+    if: always() && github.event.pull_request.draft == false && github.event.pull_request.head.repo.fork == false
+    timeout-minutes: 5
+    permissions:
+      issues: write
+      pull-requests: write
+    steps:
+      - name: Post PR Comment
+        uses: actions/github-script@v8
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const results = {
+              qualityCheck: '${{ needs.quality-check.result }}',
+              security: '${{ needs.security.result }}',
+              reactDoctor: '${{ needs.react-doctor.result }}'
+            };
+
+            const label = (s) => s === 'success' ? 'Passed' : s === 'failure' ? 'Failed' : 'Skipped';
+
+            const body = `## Pull Request Validation Results
+
+            | Check | Status |
+            |-------|--------|
+            | Quality (Lint + Type + Build + Tests) | ${label(results.qualityCheck)} (${results.qualityCheck}) |
+            | Security Audit | ${label(results.security)} (${results.security}) |
+            | React Doctor (100/100) | ${label(results.reactDoctor)} (${results.reactDoctor}) |
+
+            **Overall**: ${results.qualityCheck === 'success' && results.reactDoctor === 'success' ? 'Ready to merge' : 'Issues found'}
+
+            ---
+            *Automated PR validation â€¢ [View Details](${context.payload.repository.html_url}/actions/runs/${context.runId})*`;
+
+            try {
+              const comments = await github.rest.issues.listComments({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.payload.pull_request.number
+              });
+
+              const botComment = comments.data.find(c =>
+                c.user?.type === 'Bot' && c.body?.includes('Pull Request Validation Results')
+              );
+
+              if (botComment) {
+                await github.rest.issues.updateComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  comment_id: botComment.id,
+                  body: body
+                });
+              } else {
+                await github.rest.issues.createComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: context.payload.pull_request.number,
+                  body: body
+                });
+              }
+            } catch (error) {
+              const message = error instanceof Error ? error.message : String(error);
+              core.warning(`Skipping PR status comment due to permissions/integration limits: ${message}`);
+            }
+=== problem-detection-advisor.yml ===
+name: Problem Detection and Solution Advisor
+
+on:
+  workflow_run:
+    workflows:
+      - Pull Request Validation
+      - Build and Check
+      - Security Scanning
+      - Monitoring and Health Checks
+      - Daily Health Check
+    types:
+      - completed
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: read
+  issues: write
+
+concurrency:
+  group: problem-advisor-${{ github.event.workflow_run.id || github.run_id }}
+  cancel-in-progress: false
+
+jobs:
+  publish-report:
+    name: Post Problem Report
+    if: >
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.workflow_run.conclusion != 'success' &&
+      github.event.workflow_run.conclusion != 'skipped' &&
+      github.event.workflow_run.conclusion != 'neutral')
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Publish report to PR or Issues
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const marker = '<!-- automated-problem-report -->';
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+
+            const run = context.payload.workflow_run ?? {
+              id: context.runId,
+              name: 'Manual Detection Run',
+              html_url: `${context.serverUrl}/${owner}/${repo}/actions/runs/${context.runId}`,
+              conclusion: 'action_required',
+              head_branch: context.ref.replace('refs/heads/', ''),
+              pull_requests: [],
+            };
+
+            const jobsResp = run.id
+              ? await github.rest.actions
+                  .listJobsForWorkflowRun({
+                    owner,
+                    repo,
+                    run_id: run.id,
+                    per_page: 100,
+                  })
+                  .catch(() => ({ data: { jobs: [] } }))
+              : { data: { jobs: [] } };
+
+            const failedJobs = (jobsResp.data.jobs || []).filter((job) =>
+              ['failure', 'cancelled', 'timed_out', 'action_required'].includes(job.conclusion || '')
+            );
+
+            const addUnique = (arr, value) => {
+              if (!arr.includes(value)) arr.push(value);
+            };
+
+            const solutionsForJob = (jobName = '') => {
+              const lower = jobName.toLowerCase();
+              const tips = [];
+
+              if (lower.includes('lint')) {
+                addUnique(tips, 'Run `npm run lint` locally and fix ESLint violations before pushing.');
+              }
+
+              if (lower.includes('type')) {
+                addUnique(tips, 'Run `npx tsc --noEmit` and resolve strict TypeScript errors.');
+              }
+
+              if (lower.includes('build')) {
+                addUnique(tips, 'Run `npm run build` locally and fix compile/runtime import issues.');
+              }
+
+              if (lower.includes('test')) {
+                addUnique(tips, 'Run `npm run test` and fix failing assertions or flaky tests.');
+              }
+
+              if (lower.includes('security') || lower.includes('audit') || lower.includes('codeql')) {
+                addUnique(tips, 'Run `npm audit` and apply safe fixes (`npm audit fix`) for non-breaking updates.');
+                addUnique(tips, 'Review advisories and patch vulnerable dependencies while keeping framework compatibility.');
+              }
+
+              if (lower.includes('uptime') || lower.includes('monitor') || lower.includes('health')) {
+                addUnique(tips, 'Verify deployment status and endpoint health, then re-run checks.');
+                addUnique(tips, 'If a route is intentionally hidden (e.g. `/blog`), gate or disable its uptime check.');
+              }
+
+              if (lower.includes('ssl')) {
+                addUnique(tips, 'Check certificate expiration and DNS/edge configuration for TLS issues.');
+              }
+
+              if (tips.length === 0) {
+                tips.push('Review workflow logs and reproduce locally with `npm ci`, `npm run lint`, `npm run build`, and `npm run test`.');
+              }
+
+              return tips;
+            };
+
+            const lines = [];
+            lines.push(`${marker}`);
+            lines.push('## ðŸš¨ Automated Problem Detection Report');
+            lines.push('');
+            lines.push(`- **Workflow**: ${run.name}`);
+            lines.push(`- **Conclusion**: ${run.conclusion || 'unknown'}`);
+            lines.push(`- **Branch**: ${run.head_branch || 'n/a'}`);
+            lines.push(`- **Run URL**: ${run.html_url}`);
+            lines.push('');
+
+            if (failedJobs.length === 0) {
+              lines.push('No individual failed jobs were returned by the API, but the workflow did not complete successfully.');
+              lines.push('');
+              lines.push('### Suggested Solutions');
+              lines.push('');
+              lines.push('- Re-run the workflow to confirm reproducibility.');
+              lines.push('- Review full run logs for the failing step and apply targeted fixes.');
+              lines.push('');
+            } else {
+              lines.push('### Failed Jobs');
+              lines.push('');
+              for (const job of failedJobs) {
+                lines.push(`- **${job.name}** (${job.conclusion})`);
+              }
+              lines.push('');
+              lines.push('### Suggested Solutions');
+              lines.push('');
+              for (const job of failedJobs) {
+                lines.push(`#### ${job.name}`);
+                for (const tip of solutionsForJob(job.name)) {
+                  lines.push(`- ${tip}`);
+                }
+                lines.push('');
+              }
+            }
+
+            lines.push('### Approval Gate');
+            lines.push('');
+            lines.push('To approve remediation reruns, comment this exact command:');
+            lines.push('');
+            lines.push('`/approve-remediation`');
+            lines.push('');
+            lines.push('Only repository owners, members, or collaborators can approve remediation reruns.');
+            lines.push('');
+            lines.push(`_Generated at ${new Date().toISOString()}_`);
+
+            const body = lines.join('\n');
+            const linkedPr = run.pull_requests && run.pull_requests.length > 0 ? run.pull_requests[0] : null;
+
+            if (linkedPr) {
+              const issueNumber = linkedPr.number;
+              const comments = await github.paginate(github.rest.issues.listComments, {
+                owner,
+                repo,
+                issue_number: issueNumber,
+                per_page: 100,
+              });
+
+              const existing = comments.find(
+                (comment) => comment.user?.type === 'Bot' && comment.body?.includes(marker)
+              );
+
+              if (existing) {
+                await github.rest.issues.updateComment({
+                  owner,
+                  repo,
+                  comment_id: existing.id,
+                  body,
+                });
+              } else {
+                await github.rest.issues.createComment({
+                  owner,
+                  repo,
+                  issue_number: issueNumber,
+                  body,
+                });
+              }
+
+              await github.rest.issues
+                .addLabels({
+                  owner,
+                  repo,
+                  issue_number: issueNumber,
+                  labels: ['needs-approval'],
+                })
+                .catch(() => null);
+
+              return;
+            }
+
+            const issueTitle = `Automated Problem Report: ${run.name}`;
+            const openIssues = await github.paginate(github.rest.issues.listForRepo, {
+              owner,
+              repo,
+              state: 'open',
+              per_page: 100,
+            });
+
+            const existingIssue = openIssues.find(
+              (issue) => !issue.pull_request && issue.title === issueTitle
+            );
+
+            if (existingIssue) {
+              await github.rest.issues.update({
+                owner,
+                repo,
+                issue_number: existingIssue.number,
+                title: issueTitle,
+                body,
+              });
+            } else {
+              try {
+                await github.rest.issues.create({
+                  owner,
+                  repo,
+                  title: issueTitle,
+                  body,
+                  labels: ['automated', 'needs-approval', 'ci-cd'],
+                });
+              } catch (_error) {
+                await github.rest.issues.create({
+                  owner,
+                  repo,
+                  title: issueTitle,
+                  body,
+                });
+              }
+            }
+=== react-doctor.yml ===
+name: React Doctor
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+    branches: [main]
+  push:
+    branches: [main]
+
+concurrency:
+  group: react-doctor-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: write
+  checks: write
+
+env:
+  NODE_VERSION: '22'
+  THRESHOLD: '100'
+
+jobs:
+  react-doctor:
+    name: React Doctor Score
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    if: github.event.pull_request.draft == false
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Run React Doctor
+        id: doctor
+        run: |
+          set -e
+          npm run doctor:json
+          node -e "
+            const r = require('./.react-doctor/report.json');
+            const errs = r.summary.errorCount || 0;
+            const warns = r.summary.warningCount || 0;
+            const total = errs + warns;
+            const threshold = parseInt(process.env.THRESHOLD, 10);
+            console.log('react-doctor: ' + errs + ' errors, ' + warns + ' warnings (' + total + ' total)');
+            if (total > 0) {
+              console.log('---');
+              r.diagnostics.slice(0, 20).forEach(d => {
+                console.log(d.filePath + ':' + d.line + ':' + d.column + ' [' + d.severity + '] ' + d.rule + ' â€” ' + d.title);
+              });
+              if (r.diagnostics.length > 20) console.log('...and ' + (r.diagnostics.length - 20) + ' more');
+            }
+            console.log('---');
+            if (total > threshold) {
+              console.error('FAILED: ' + total + ' findings exceeds threshold ' + threshold);
+              process.exit(1);
+            }
+            console.log('PASSED: ' + total + ' findings at or below threshold ' + threshold);
+          "
+
+      - name: Post PR comment
+        if: github.event_name == 'pull_request' && steps.doctor.outcome == 'failure' && github.event.pull_request.head.repo.fork == false
+        uses: actions/github-script@v8
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const body = [
+              '## React Doctor â€” regression detected',
+              '',
+              '```',
+              '${{ steps.doctor.outputs.summary || "see action log" }}',
+              '```',
+              '',
+              'Threshold: **' + process.env.THRESHOLD + '/100** (0 findings).',
+              'See `docs/react-doctor/scoreboard.md` and the `run-react-doctor` skill.'
+            ].join('\n');
+            try {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.payload.pull_request.number,
+                body
+              });
+            } catch (e) {
+              core.warning('comment skipped: ' + e.message);
+            }
+=== remediation-approval-gate.yml ===
+name: Remediation Approval Gate
+
+on:
+  issue_comment:
+    types:
+      - created
+  workflow_dispatch:
+
+permissions:
+  actions: write
+  contents: read
+  issues: write
+
+jobs:
+  approve-and-rerun:
+    name: Approve and Rerun Failed Checks
+    if: >
+      github.event_name == 'issue_comment' &&
+      github.event.issue.pull_request &&
+      contains(github.event.comment.body, '/approve-remediation')
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Verify approver and rerun failed checks
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const marker = '<!-- automated-problem-report -->';
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const issueNumber = context.payload.issue.number;
+            const actor = context.payload.comment.user.login;
+            const userType = context.payload.comment.user.type;
+            const association = context.payload.comment.author_association;
+            const allowed = ['OWNER', 'MEMBER', 'COLLABORATOR'].includes(association);
+            const commentBody = (context.payload.comment.body || '').trim();
+            const isExactApprovalCommand = /^\/approve-remediation\s*$/i.test(commentBody);
+
+            if (userType === 'Bot') {
+              return;
+            }
+
+            if (!isExactApprovalCommand) {
+              await github.rest.issues.createComment({
+                owner,
+                repo,
+                issue_number: issueNumber,
+                body: `â„¹ï¸ @${actor}, approval was ignored because the command must match exactly:\n\n\`/approve-remediation\``
+              });
+              return;
+            }
+
+            if (!allowed) {
+              await github.rest.issues.createComment({
+                owner,
+                repo,
+                issue_number: issueNumber,
+                body: `âš ï¸ @${actor}, you are not allowed to approve remediation reruns.\n\nOnly repository owners, members, or collaborators can run \`/approve-remediation\`.`
+              });
+              core.setFailed(`User @${actor} is not allowed to approve remediation reruns.`);
+              return;
+            }
+
+            const comments = await github.paginate(github.rest.issues.listComments, {
+              owner,
+              repo,
+              issue_number: issueNumber,
+              per_page: 100,
+            });
+
+            const hasAutomatedReport = comments.some(
+              (comment) => comment.user?.type === 'Bot' && comment.body?.includes(marker)
+            );
+
+            if (!hasAutomatedReport) {
+              await github.rest.issues.createComment({
+                owner,
+                repo,
+                issue_number: issueNumber,
+                body: `âš ï¸ @${actor}, no automated problem report was found for this PR yet.\n\nPlease wait for detection output before approving remediation reruns.`
+              });
+              return;
+            }
+
+            await github.rest.issues
+              .addLabels({
+                owner,
+                repo,
+                issue_number: issueNumber,
+                labels: ['remediation-approved'],
+              })
+              .catch(() => null);
+
+            const monitoredWorkflows = new Set([
+              'Pull Request Validation',
+              'Build and Check',
+              'Security Scanning',
+              'Monitoring and Health Checks',
+              'Daily Health Check',
+            ]);
+
+            const runsResp = await github.rest.actions.listWorkflowRunsForRepo({
+              owner,
+              repo,
+              event: 'pull_request',
+              status: 'completed',
+              per_page: 100,
+            });
+
+            const candidates = runsResp.data.workflow_runs
+              .filter((run) =>
+                monitoredWorkflows.has(run.name) &&
+                (run.pull_requests || []).some((pr) => pr.number === issueNumber) &&
+                run.conclusion !== 'success'
+              )
+              .sort(
+                (a, b) =>
+                  new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+              );
+
+            if (candidates.length === 0) {
+              await github.rest.issues.createComment({
+                owner,
+                repo,
+                issue_number: issueNumber,
+                body: `âœ… Remediation approval recorded from @${actor}, but no failed workflow runs were found for this PR.`
+              });
+              return;
+            }
+
+            const targetRun = candidates[0];
+
+            try {
+              await github.rest.actions.reRunWorkflowFailedJobs({
+                owner,
+                repo,
+                run_id: targetRun.id,
+              });
+            } catch (_error) {
+              await github.rest.actions.reRunWorkflow({
+                owner,
+                repo,
+                run_id: targetRun.id,
+              });
+            }
+
+            await github.rest.issues.createComment({
+              owner,
+              repo,
+              issue_number: issueNumber,
+              body: `âœ… Remediation approved by @${actor}.\n\nI reran checks for **${targetRun.name}**.\n- Run URL: ${targetRun.html_url}\n- Approval role: ${association}\n\nIf it still fails, updated problem reports with solution suggestions will be posted automatically.`
+            });
+=== security-compliance.yml ===
+name: Security Scanning
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    - cron: '0 2 * * 0'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  NODE_VERSION: '22'
+
+jobs:
+  dependency-audit:
+    name: Dependency Audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Security Audit
+        run: |
+          npm audit --audit-level moderate || echo "Audit completed with findings"
+          echo "## Dependency Audit" >> $GITHUB_STEP_SUMMARY
+          echo "Audit completed" >> $GITHUB_STEP_SUMMARY
+
+  codeql:
+    name: CodeQL Analysis
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.fork == false
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: javascript-typescript
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install and Build
+        run: |
+          npm ci
+          npm run build
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+
+  security-summary:
+    name: Security Summary
+    runs-on: ubuntu-latest
+    needs: [dependency-audit, codeql]
+    if: always()
+    timeout-minutes: 5
+    steps:
+      - name: Generate Summary
+        run: |
+          echo "## Security Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Check | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|-------|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Dependencies | ${{ needs.dependency-audit.result == 'success' && 'Passed' || 'Failed' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| CodeQL | ${{ needs.codeql.result == 'success' && 'Passed' || 'Failed' }} |" >> $GITHUB_STEP_SUMMARY

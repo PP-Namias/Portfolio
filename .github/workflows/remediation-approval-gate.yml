@@ -6,6 +6,10 @@ on:
       - created
   workflow_dispatch:
 
+concurrency:
+  group: remediation-approval-gate-${{ github.event.issue.number || github.ref }}
+  cancel-in-progress: true
+
 permissions:
   actions: write
   contents: read
@@ -22,7 +26,7 @@ jobs:
     timeout-minutes: 10
     steps:
       - name: Verify approver and rerun failed checks
-        uses: actions/github-script@v7
+        uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |

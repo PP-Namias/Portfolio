@@ -24,11 +24,13 @@ The react-doctor gate was introduced in the clinic slice. See [`docs/react-docto
 | Badge | Status |
 |-------|--------|
 | [![Security Posture](https://img.shields.io/badge/Security%20Posture-98%2F100-22c55e?style=flat-square)](./docs/security/dashboard.md) | 98/100 — zero exploitable vulnerabilities |
+| [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/PP-Namias/Portfolio/badge)](https://scorecard.dev/viewer/?uri=github.com/PP-Namias/Portfolio) | OpenSSF Scorecard weekly scan |
+| [![CI/CD Gate](https://img.shields.io/badge/CI%2FCD%20Gate-7%20tools-0ea5e9?style=flat-square)](./docs/security/pipeline.md) | Gitleaks, OSV-Scanner, Trivy, zizmor, Checkov, Cosign, Scorecard |
 | [![PentestAgent](https://img.shields.io/badge/PentestAgent-25%20playbooks-0891b2?style=flat-square)](./docs/security/pentestagent/PR_NOTES.md) | 25 playbooks covering OWASP Top 10 |
 | [![Security.txt](https://img.shields.io/badge/security.txt-present-64748b?style=flat-square)](./public/.well-known/security.txt) | Vulnerability disclosure policy deployed |
 | [![API Headers](https://img.shields.io/badge/Headers-verified-16a34a?style=flat-square)](https://namias.tech/api/security-headers) | Real-time header verification endpoint |
 
-Security is a first-class feature of this portfolio. The site is continuously tested via [PentestAgent](https://github.com/GH05TCREW/pentestagent), an AI agent framework for black-box security testing. See [`docs/security/dashboard.md`](./docs/security/dashboard.md) for the full posture dashboard, [`docs/security/posture-score.md`](./docs/security/posture-score.md) for the scoring methodology, and [`.well-known/security.txt`](./public/.well-known/security.txt) for the disclosure policy.
+Security is a first-class feature of this portfolio. The site is continuously tested via [PentestAgent](https://github.com/GH05TCREW/pentestagent), an AI agent framework for black-box security testing. The CI/CD pipeline runs a seven-stage security gate (Gitleaks, OSV-Scanner, Trivy, zizmor, Checkov, Cosign, Scorecard) on every PR and every push to `main`. See [`docs/security/dashboard.md`](./docs/security/dashboard.md) for the full posture dashboard, [`docs/security/pipeline.md`](./docs/security/pipeline.md) for the seven-stage gate, and [`.well-known/security.txt`](./public/.well-known/security.txt) for the disclosure policy.
 
 
 

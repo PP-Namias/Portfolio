@@ -1,0 +1,49 @@
+# Checkov configuration
+# Docs: https://www.checkov.io/2.Basics/CLI%20Command%20Reference.html
+
+# We scan the IaC surface area of this repo:
+#   - github_actions: every workflow file under .github/workflows/
+#   - dockerfile: every Dockerfile in the repo
+#   - kubernetes: not used (no K8s manifests)
+#   - terraform: not used (no Terraform files)
+#   - cloudformation: not used (no CFN)
+#   - arm: not used (no ARM)
+#   - secrets: not enabled by default; Gitleaks is the
+#     authoritative secret scanner
+#   - openapi: not used
+
+# Skip framework. We only run the frameworks we have.
+skip-framework:
+  - kubernetes
+  - terraform
+  - cloudformation
+  - arm
+  - bicep
+  - openapi
+  - secrets
+
+# Repo-wide soft-fail rules. Use these only when the rule is
+# genuinely inapplicable to this repo. Every entry must have
+# a written reason. See docs/security/pipeline/checkov-policy.md
+# for the policy.
+skip-check:
+  # CKV2_GHA_1: "GitHub Action workflows must use the minimal
+  # permissions block." We enforce this manually in every
+  # workflow, but the check is too broad for some of our
+  # workflows that legitimately need write on a specific
+  # scope (e.g. comment on PR).
+  - CKV2_GHA_1
+
+# Output: CLI table for the run log, plus SARIF for the
+# Security tab.
+output:
+  - cli
+  - sarif
+
+# Compact output for the run log. The full JSON is in the
+# SARIF artifact.
+compact: true
+
+# Download external Checkov frameworks on demand. The action
+# does this by default; the config here is a no-op.
+download-external-modules: false
