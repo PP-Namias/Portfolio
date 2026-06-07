@@ -167,8 +167,6 @@ Every allowlist entry has a one-line comment in the TOML explaining why it is al
 
 ### 5. Checkov
 
-### 5. Checkov
-
 - **Stage**: PR and push to main
 - **Purpose**: Static analysis of IaC: GitHub Actions workflows and Dockerfiles
 - **Catches**: Public buckets, security groups open to `0.0.0.0/0`, missing encryption, unencrypted secrets in workflows, unpinned actions in workflows, dangerous workflow patterns
@@ -189,8 +187,6 @@ Every allowlist entry has a one-line comment in the TOML explaining why it is al
 
 ### 6. Cosign
 
-### 6. Cosign
-
 - **Stage**: Post-build, pre-deploy
 - **Purpose**: Keyless signing and verification of build artifacts, backed by Sigstore Fulcio. Binds the artifact to the OIDC identity of the GitHub Actions workflow that built it
 - **Catches**: Substituted or tampered artifacts between build and deploy, compromised runners
@@ -207,8 +203,6 @@ Every allowlist entry has a one-line comment in the TOML explaining why it is al
 **Failure handling**: a Cosign verification failure is a security event, not a config issue. The full policy is in `docs/security/pipeline/signing.md`. There is no "ignore the failure" path.
 
 **Transparency log**: every signing event is recorded in Sigstore Rekor. The cert, when verified, includes a Rekor inclusion proof. This is the public audit trail.
-
-### 7. Scorecard
 
 ### 7. Scorecard
 

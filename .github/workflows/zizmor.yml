@@ -29,7 +29,7 @@ jobs:
           persist-credentials: false
 
       - name: zizmor
-        uses: zizmorcore/zizmor-action@a687b25bf3aa149153e80ed5f45292e47589888c # v0.5.6
+        uses: zizmorcore/zizmor-action@5f14fd08f7cf1cb1609c1e344975f152c7ee938d # v0.5.6
         with:
           advanced-security: true
 
