@@ -57,6 +57,26 @@ Production portfolio for [namias.tech](https://namias.tech) — a modal-first, S
 
 ---
 
+## Sanity CMS
+
+The portfolio is fully backed by [Sanity v3](https://www.sanity.io/) — the editorial surface lives at **[namias-cms.sanity.studio](https://namias-cms.sanity.studio)**.
+
+| Feature | Details |
+|---|---|
+| **Studio** | Sanity v3 with React 19, custom structure, presentation tool, vision tool |
+| **Schema types** | 21 document types (profile, hero, about, experience, project, certification, blog, gallery, site settings, etc.) |
+| **Plugins** | `structureTool`, `presentationTool`, `visionTool`, `assist`, custom skills tool, saved queries |
+| **Document actions** | Perspective switcher, publish-and-refresh (revalidation webhook), view-on-site, open-in-presentation |
+| **Document badges** | Draft/Live, Scheduled, Stale (30+ days), Expiring soon, Featured |
+| **Validations** | Centralized rules: SEO-friendly headline length, HTTPS-only URLs, cross-field date order, unique slugs, alt text requirement |
+| **Sanity Functions** | `scheduled-publish` (5-min cron), `broken-refs` (6-h cron), `auto-tag-images` (on asset create) |
+| **Visual Editing** | `next-sanity` Live Content API + `<SanityField>` component with `data-sanity` attributes for overlay targeting |
+| **Real-time preview** | Presentation tool with draft mode via `/api/draft-mode` |
+
+The studio package lives in [`studio/`](./studio/) with its own `package.json`, 21 schema files, 5 custom actions, 42 skill markdown files, and seed data scripts.
+
+---
+
 ## Getting started
 
 ```bash
