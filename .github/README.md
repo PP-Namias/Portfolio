@@ -1,38 +1,83 @@
-# PP Namias Portfolio
+<table>
+  <tr>
+    <td width="160" align="center" valign="top">
+      <img src="https://cdn.sanity.io/images/nl0qw78w/production/bc6de55c01aa5a25389620f72ee4176a3ce33d9b-1024x1024.png" width="140" height="140" alt="Jhon Keneth Ryan Namias">
+    </td>
+    <td valign="middle">
+      <h1>Jhon Keneth Ryan Namias</h1>
+      <p><b>Project Manager @ MASH</b> · <b>Full Stack Engineer & AI Automation Specialist</b><br/>Manila, Philippines</p>
+      <p>
+        <a href="https://cal.com/pp-namias"><img src="https://img.shields.io/badge/Book%20a%20Call-Cal.com-111827?style=for-the-badge&logo=calendar&logoColor=white" alt="Book a Call"></a>
+        <a href="mailto:pp.namias@gmail.com"><img src="https://img.shields.io/badge/Email-pp.namias%40gmail.com-2563eb?style=for-the-badge&logo=gmail&logoColor=white" alt="Email"></a>
+        <a href="https://namias.tech"><img src="https://img.shields.io/badge/Live%20Portfolio-namias.tech-16a34a?style=for-the-badge&logo=vercel&logoColor=white" alt="Live Portfolio"></a>
+        <br/>
+        <a href="https://github.com/PP-Namias"><img src="https://img.shields.io/badge/GitHub-PP--Namias-181717?style=flat-square&logo=github" alt="GitHub"></a>
+        <a href="https://www.linkedin.com/in/pp-namias/"><img src="https://img.shields.io/badge/LinkedIn-pp--namias-0A66C2?style=flat-square&logo=linkedin&logoColor=white" alt="LinkedIn"></a>
+        <img src="https://img.shields.io/badge/License-MIT-f59e0b?style=flat-square" alt="MIT License">
+        <img src="https://img.shields.io/badge/react--doctor-100%2F100-22c55e?style=flat-square" alt="react-doctor 100/100">
+        <img src="https://img.shields.io/badge/Security%20Posture-98%2F100-22c55e?style=flat-square" alt="Security Posture 98/100">
+      </p>
+    </td>
+  </tr>
+</table>
 
-| Profile | Details |
-| --- | --- |
-| ![Jhon Keneth Ryan Namias profile image](../public/images/profile/PP%20Namias.png) | **Jhon Keneth Ryan Namias (PP Namias)** <br /> Project Manager @ MASH · Full Stack Engineer & AI Automation Specialist · Manila, Philippines · Available for collaboration [![Resume](https://img.shields.io/badge/Resume-View%20PDF-db2777?style=for-the-badge)](../public/resume.pdf) [![Book a Call](https://img.shields.io/badge/Book%20a%20Call-Cal.com-111827?style=for-the-badge&logo=calendar&logoColor=white)](https://cal.com/pp-namias) [![Email](https://img.shields.io/badge/Email-pp.namias%40gmail.com-2563eb?style=for-the-badge&logo=gmail&logoColor=white)](mailto:pp.namias@gmail.com) [![Live Portfolio](https://img.shields.io/badge/Live%20Portfolio-namias.tech-16a34a?style=flat-square&logo=vercel&logoColor=white)](https://namias.tech) [![GitHub](https://img.shields.io/badge/GitHub-PP--Namias-181717?style=flat-square&logo=github)](https://github.com/PP-Namias) [![LinkedIn](https://img.shields.io/badge/LinkedIn-pp--namias-0A66C2?style=flat-square&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/pp-namias/) ![License](https://img.shields.io/badge/License-MIT-f59e0b?style=flat-square) |
+---
 
-## About this repository
+## About
 
-This repository powers [namias.tech](https://namias.tech), a production portfolio built with a modal-first UX, modern animation system, and automated quality checks.
+Production portfolio for [namias.tech](https://namias.tech) — a modal-first, Sanity-driven Next.js application with a modern animation system, secure media gateway, AI chat, and automated CI/CD quality gates.
 
 ### Highlights
 
-- Homepage-first architecture with modal flows for Resume, Experience, and Booking
-- AI chat endpoint at `/api/chat` using Gemini
-- Dark/light theme support with an accent color system
-- CI validation for lint, tests, and production build
+- **Modal-first UX** — Resume, Experience, Booking, and Project Detail modals with smooth transitions
+- **Sanity-powered content** — All runtime data served from Sanity CMS with GROQ queries and multi-layer caching
+- **Secure media gateway** — `/api/media/[...path]` proxies Sanity assets with optional HMAC signing
+- **AI chat** — Gemini-driven assistant at `/api/chat` with preset responses for common queries
+- **Performance** — Multi-tier caching (L1 in-memory, L2 Upstash Redis, L3 CDN), ISR, SWR, image optimization
+- **Dark/light theme** — `next-themes` with accent color system
+- **Automated CI/CD** — 19 GitHub workflows for validation, security scanning, and deployment
+
+---
 
 ## Core stack
 
-- **Framework:** Next.js 14 (App Router)
-- **Language:** TypeScript (strict)
-- **Styling:** Tailwind CSS + Framer Motion + Lucide React
-- **Theme:** `next-themes`
-- **Content:** `react-markdown`, `remark-gfm`, `rehype-highlight`
-- **Testing:** Vitest + Testing Library + jsdom
-- **Hosting target:** AWS Amplify (`output: 'standalone'`)
+| Layer | Technology |
+|---|---|
+| **Framework** | Next.js 16 (App Router) |
+| **Language** | TypeScript (strict mode) |
+| **Styling** | Tailwind CSS + Framer Motion + Lucide React |
+| **Theme** | `next-themes` with accent color picker |
+| **CMS** | Sanity v3 (Studio + Content Lake + CDN) |
+| **Content rendering** | `react-markdown` + `remark-gfm` + `rehype-highlight` |
+| **Data fetching** | SWR (client) + multi-layer cache (L1 in-memory → L2 Upstash Redis → L3 CDN) |
+| **Media delivery** | Secure gateway at `/api/media/[...path]` with HMAC verification |
+| **AI** | Gemini 2.0 Flash via `/api/chat` with multi-provider failover |
+| **Testing** | Vitest + Testing Library + jsdom (278 tests) |
+| **Hosting** | Cloudflare Workers via OpenNext |
 
-## Local development
+---
 
-### Prerequisites
+## Sanity CMS
 
-- Node.js 18+
-- npm
+The portfolio is fully backed by [Sanity v3](https://www.sanity.io/) — the editorial surface lives at **[namias-cms.sanity.studio](https://namias-cms.sanity.studio)**.
 
-### Setup
+| Feature | Details |
+|---|---|
+| **Studio** | Sanity v3 with React 19, custom structure, presentation tool, vision tool |
+| **Schema types** | 21 document types (profile, hero, about, experience, project, certification, blog, gallery, site settings, etc.) |
+| **Plugins** | `structureTool`, `presentationTool`, `visionTool`, `assist`, custom skills tool, saved queries |
+| **Document actions** | Perspective switcher, publish-and-refresh (revalidation webhook), view-on-site, open-in-presentation |
+| **Document badges** | Draft/Live, Scheduled, Stale (30+ days), Expiring soon, Featured |
+| **Validations** | Centralized rules: SEO-friendly headline length, HTTPS-only URLs, cross-field date order, unique slugs, alt text requirement |
+| **Sanity Functions** | `scheduled-publish` (5-min cron), `broken-refs` (6-h cron), `auto-tag-images` (on asset create) |
+| **Visual Editing** | `next-sanity` Live Content API + `<SanityField>` component with `data-sanity` attributes for overlay targeting |
+| **Real-time preview** | Presentation tool with draft mode via `/api/draft-mode` |
+
+The studio package lives in [`studio/`](./studio/) with its own `package.json`, 21 schema files, 5 custom actions, 42 skill markdown files, and seed data scripts.
+
+---
+
+## Getting started
 
 ```bash
 git clone https://github.com/PP-Namias/Portfolio.git
@@ -43,71 +88,63 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000).
 
-## Available scripts
+---
 
-- `npm run dev` — start development server
-- `npm run build` — create production build
-- `npm run start` — run production build locally
-- `npm run lint` — run ESLint
-- `npm run test` — run Vitest once
-- `npm run test:watch` — run Vitest in watch mode
+## Project structure
 
-## Environment variables
-
-Create a `.env` file in the project root based on `.env.example`:
-
-```bash
-GOOGLE_GEMINI_API_KEY=your_key_here
 ```
+Portfolio/
+├── .github/                  # 19 CI/CD workflows, templates, governance
+├── .agents/                  # OpenCode agent skills
+├── docs/                     # Documentation (performance, security, studio)
+├── studio/                   # Sanity Studio CMS (21 schema types)
+├── scripts/                  # Sanity import and migration scripts
+├── functions/                # Sanity Functions
+├── public/                   # Static assets (favicon, OG image, SW)
+├── src/
+│   ├── app/                  # App Router: pages, API routes, layout
+│   │   ├── api/              # chat, media, resume, webhook, cache
+│   │   ├── blog/             # Blog list and [slug] pages
+│   │   └── studio/           # Studio landing page
+│   ├── components/           # UI (27), sections (12), CMS, SEO
+│   ├── hooks/                # 6 custom React hooks
+│   ├── lib/                  # Cache, media gateway, SWR config
+│   ├── types/                # TypeScript interfaces
+│   └── middleware.ts         # Rate limiting
+├── tests/                    # 31 test files
+├── next.config.js
+├── tailwind.config.ts
+├── eslint.config.mjs
+└── package.json
+```
+
+---
 
 ## Quality checks
 
-Run before pushing or opening a PR:
-
 ```bash
-npm run lint
-npm run build
-npm run test
+npm run lint      # ESLint — 0 errors expected
+npm run test      # Vitest — 278 tests, all green
 ```
 
-CI workflows in `.github/workflows/` enforce equivalent checks.
+---
 
-## Automated problem detection and approval flow
+## Automated problem detection
 
-When monitored workflows fail, automation now posts a problem report with suggested solutions directly on the related PR (or as a repository issue when no PR is linked).
+When monitored workflows fail, automation posts a problem report with suggested solutions on the related PR (or as a repository issue when no PR is linked).
 
 - Detection workflow: `problem-detection-advisor.yml`
-- Approval gate workflow: `remediation-approval-gate.yml`
+- Approval gate: `remediation-approval-gate.yml`
 
-To approve remediation reruns, comment this command on the PR:
+To approve remediation reruns, comment on the PR:
 
 ```text
 /approve-remediation
 ```
 
-The command must match exactly (extra text is ignored for safety).
-
 Only repository owners, members, or collaborators can approve remediation reruns.
 
-## Project structure (high level)
-
-```text
-Portfolio/
-├── .github/                     # workflows, templates, governance docs
-├── docs/                        # publication and repository governance docs
-├── portfolio-resources/         # source content and media resources
-├── public/                      # static files served by Next.js
-├── src/
-│   ├── app/                     # routes, layout, providers, API routes
-│   ├── components/              # layout, sections, and reusable UI
-│   ├── data/                    # typed data modules
-│   ├── hooks/                   # custom hooks
-│   ├── lib/                     # utilities and feature flags
-│   └── types/                   # shared TypeScript types
-├── amplify.yml
-├── next.config.js
-└── package.json
-```
+---
 
 ## Design acknowledgment
 
@@ -115,4 +152,4 @@ This project draws design inspiration from [bryllim.com](https://bryllim.com/). 
 
 ## License
 
-Licensed under the MIT License. See [../LICENSE](LICENSE).
+Licensed under the MIT License. See [LICENSE](../LICENSE).
