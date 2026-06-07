@@ -126,7 +126,7 @@ export function HeroSection() {
           <div className="[perspective:600px]">
             <motion.div
               ref={photoRef}
-              className="group relative h-[200px] w-[200px] cursor-pointer shadow-lg border border-border-light dark:border-border-dark rounded-2xl"
+              className="group relative h-[188px] w-[160px] cursor-pointer shadow-lg border border-border-light dark:border-border-dark rounded-2xl"
               style={{ rotateX: smoothRotateX, rotateY: smoothRotateY }}
               whileHover={{ scale: 1.12, y: -2 }}
               transition={{ type: 'spring', stiffness: 260, damping: 20 }}
@@ -149,7 +149,7 @@ export function HeroSection() {
                       src={activeProfileImage}
                       alt={profile.name}
                       fill
-                      sizes="(max-width: 640px) 200px, 200px"
+                      sizes="(max-width: 640px) 160px, 160px"
                       className="object-cover brightness-100 group-hover:brightness-110 transition-[filter] duration-300"
                       priority
                     />
