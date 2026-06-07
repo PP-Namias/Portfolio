@@ -22,9 +22,9 @@ describe("gitleaks config", () => {
     expect(toml).toMatch(/tests[\\\/]fixtures[\\\/]gitleaks/);
   });
 
-  it("fixture directory exists and is empty (the actual scan is CI-side)", () => {
+  it("fixture directory exists and contains only .gitkeep (the actual scan is CI-side)", () => {
     expect(existsSync(fixtureDir)).toBe(true);
-    const entries = readdirSync(fixtureDir);
+    const entries = readdirSync(fixtureDir).filter((f) => f !== ".gitkeep");
     expect(entries.length).toBe(0);
   });
 });

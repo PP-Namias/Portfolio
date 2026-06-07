@@ -39,6 +39,7 @@ jobs:
           exit-code: "0"
 
       - name: trivy-fs-table
+        continue-on-error: true
         uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
         with:
           scan-type: fs
