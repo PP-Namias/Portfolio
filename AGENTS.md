@@ -55,6 +55,30 @@ Local Python 3.8 is insufficient (3.10+ required). The CI pipeline is the primar
 - No comments in code unless asked
 - Follow the patterns established for: SWR for component-scoped data, `<JsonLd>` for JSON-LD, sandbox attribute on every iframe, stable React keys from data, `useMemo` on Context.Provider values
 
+## Vercel Web Interface Guidelines
+
+All UI code must follow the [Vercel Web Interface Guidelines](docs/design/vercel-web-interface-guidelines.md).
+Key rules:
+- Must: Full keyboard support, visible focus rings, `:focus-visible`
+- Must: Hit target ≥ 24px (mobile ≥ 44px)
+- Must: Loading buttons with spinner & original label
+- Must: URL reflects state (deep-link filters/tabs/pagination)
+- Must: `touch-action: manipulation` on controls
+- Must: Links use `<a>`/`<Link>` (never `<div onClick>`)
+- Must: `prefers-reduced-motion` respected
+- Must: Animate only `transform`/`opacity`; never `transition: all`
+- Must: Images have explicit width/height (prevent CLS)
+- Must: Honor `color-scheme` on `<html>` for dark themes
+- Never: Disable zoom, block paste, `outline: none` without focus replacement
+- Never: `<div>`/`<span>` with click handlers for navigation
+
+Run the review command:
+```
+curl -fsSL https://vercel.com/design/guidelines/install | bash
+```
+
+Full reference: `docs/design/vercel-web-interface-guidelines.md`
+
 ## Testing
 
 - 29 test files, 266 tests, all green
