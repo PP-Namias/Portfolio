@@ -7,7 +7,7 @@ import { ModalProvider } from '@/hooks/useModal';
 import { CmsContentProvider } from '@/hooks/useCmsContent';
 import type { CmsContent } from '@/lib/cms-content.shared';
 import { SwrConfigProvider } from '@/lib/swr-config';
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 
 interface ProvidersProps {
   readonly children: React.ReactNode;

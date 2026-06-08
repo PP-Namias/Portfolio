@@ -20,6 +20,9 @@ MCP is the industry standard (USB-C for AI) for connecting AI agents to external
 | [Chrome DevTools MCP](chrome-devtools-mcp.md) | Browser debugging, performance, automation | `opencode.json` |
 | [21st.dev Magic MCP](magic-mcp.md) | Component generation from natural language | API key required |
 | [Magic UI MCP](magic-mcp.md) | Animated/animated UI components | No API key needed |
+| [GitHub MCP](https://github.com/modelcontextprotocol/servers) | Issues, PRs, repos, code search | `GITHUB_TOKEN` env var |
+| [Filesystem MCP](https://github.com/modelcontextprotocol/servers) | File read/write with path restrictions | Auto-configured |
+| [Sequential Thinking MCP](https://github.com/modelcontextprotocol/servers) | Structured reasoning step-by-step | Auto-configured |
 
 ## Recommended Additional MCP Servers
 
@@ -29,7 +32,7 @@ These are not pre-configured but are recommended for the tech stack:
 |---|---|---|
 | **GitHub MCP** | `npx -y @modelcontextprotocol/server-github` | PRs, issues, code search |
 | **Filesystem MCP** | `npx -y @modelcontextprotocol/server-filesystem` | File read/write access |
-| **Tailwind MCP** | `@tailwind/mcp-server` (community) | Tailwind class suggestions |
+| **Tailwind MCP** | `@tailwind/mcp-server` (community) | Tailwind class suggestions and config help |
 | **Sequential Thinking** | `npx -y @modelcontextprotocol/server-sequential-thinking` | Structured reasoning for complex problems |
 | **Vercel MCP** | Community templates at [vercel-labs/mcp-on-vercel](https://github.com/vercel-labs/mcp-on-vercel) | Deployments, env, domains |
 

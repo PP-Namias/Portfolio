@@ -21,11 +21,11 @@ This file is the entry point for any agent (opencode, future coding agents, or h
 
 ## Home page sections
 
-- `BlogSection` (`src/components/sections/BlogSection.tsx`) — compact list of the latest 3 blog posts shown side-by-side with `CertificationsSection` on the home page. Gated by `IS_BLOG_VISIBLE` in `src/lib/features.ts`. Plan: `prd.blog.json`.
+- `BlogSection` (`src/components/sections/BlogSection.tsx`) — compact list of the latest 3 blog posts shown side-by-side with `CertificationsSection` on the home page. Gated by `IS_BLOG_VISIBLE` in `src/lib/features.ts`. Plan: `docs/prd/prd.blog.json`.
 
 ## React quality gate
 
-- Tool: `react-doctor@0.2.16` (pinned to exact version in `package.json`)
+- Tool: `react-doctor@0.4.0` (pinned to exact version in `package.json`)
 - Config: `doctor.config.json` at the repo root
 - Scripts: `npm run doctor`, `npm run doctor:json`, `npm run doctor:check`, `npm run doctor:baseline`, `npm run doctor:diff`
 - CI gate: `.github/workflows/react-doctor.yml` (threshold = 0 findings = 100/100)
@@ -94,6 +94,9 @@ MCP servers give your AI agent access to browser DevTools, component libraries, 
 | **Chrome DevTools MCP** | `chrome-devtools` | Browser debugging, performance traces, screenshots, console inspection |
 | **21st.dev Magic MCP** | `@21st-dev/magic` | Generate UI components from natural language (API key required) |
 | **Magic UI MCP** | `@magicuidesign/mcp` | Animated components (marquee, bento, dock, globe, etc.) |
+| **GitHub MCP** | `github` | Issues, PRs, repos, code search, file management |
+| **Filesystem MCP** | `filesystem` | File read/write access with path restrictions |
+| **Sequential Thinking** | `sequential-thinking` | Structured reasoning for complex problems |
 
 Setup guides: `docs/mcp/overview.md` | `docs/mcp/chrome-devtools-mcp.md` | `docs/mcp/magic-mcp.md`
 

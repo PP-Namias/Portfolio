@@ -112,7 +112,7 @@ jobs:
 
             const lines = [];
             lines.push(`${marker}`);
-            lines.push('## 🚨 Automated Problem Detection Report');
+            lines.push('## Automated Problem Detection Report');
             lines.push('');
             lines.push(`- **Workflow**: ${run.name}`);
             lines.push(`- **Conclusion**: ${run.conclusion || 'unknown'}`);

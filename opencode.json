@@ -18,6 +18,24 @@
       "type": "local",
       "command": ["npx", "-y", "@magicuidesign/mcp@latest"],
       "description": "Magic UI animated components (marquee, bento, dock, globe, etc.)"
+    },
+    "github": {
+      "type": "local",
+      "command": ["npx", "-y", "@modelcontextprotocol/server-github"],
+      "env": {
+        "GITHUB_TOKEN": "${GITHUB_TOKEN}"
+      },
+      "description": "GitHub API — issues, PRs, repos, code search, file management"
+    },
+    "filesystem": {
+      "type": "local",
+      "command": ["npx", "-y", "@modelcontextprotocol/server-filesystem", "."],
+      "description": "File system read/write access with path restrictions"
+    },
+    "sequential-thinking": {
+      "type": "local",
+      "command": ["npx", "-y", "@modelcontextprotocol/server-sequential-thinking"],
+      "description": "Structured reasoning and step-by-step problem solving"
     }
   }
 }
