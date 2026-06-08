@@ -3,10 +3,11 @@
 import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import useSWR from 'swr';
-import { X, Send, RotateCcw, ArrowLeft, Trash2, Sparkles, UserCircle, Terminal, Briefcase, Layers, CalendarCheck, Medal } from 'lucide-react';
+import { X, Send, RotateCcw, ArrowLeft, Trash2, Sparkles, UserCircle, Terminal, Briefcase, Layers, CalendarCheck, Medal, MessageCircle } from 'lucide-react';
 import { ChatMessage } from './ChatMessage';
 import { useModal } from '@/hooks/useModal';
 import { useCmsContent } from '@/hooks/useCmsContent';
+import { MESSENGER_URL } from '@/lib/constants';
 import type { ChatMessage as ChatMessageType } from '@/types';
 import Image from '@/components/ui/OptimizedImage';
 import { resolveContentImageSrc } from '@/lib/media';
@@ -420,6 +421,42 @@ export function ChatPanel({ onBack, onClose, messages, setMessages }: Readonly<C
               <p className="text-xs text-text-muted-light dark:text-text-muted-dark mt-1 mb-4">
                 What would you like to know?
               </p>
+
+              <div className="w-full max-w-[300px] rounded-2xl border border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark p-3.5 text-left shadow-sm">
+                <div className="flex items-start gap-3">
+                  <div className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#0084FF]/10 text-[#0084FF]">
+                    <MessageCircle className="h-4.5 w-4.5" />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm font-semibold text-text-primary-light dark:text-text-primary-dark">
+                      Continue on Messenger
+                    </p>
+                    <p className="mt-1 text-xs leading-5 text-text-secondary-light dark:text-text-secondary-dark">
+                      This opens the Facebook account chat for faster human follow-up when you need it.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="mt-3 flex flex-wrap gap-2">
+                  <a
+                    href={MESSENGER_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 rounded-full border border-[#0084FF]/30 bg-[#0084FF]/5 px-3 py-2 text-[11px] font-medium text-[#0084FF] hover:bg-[#0084FF]/10 transition-colors"
+                  >
+                    <MessageCircle className="h-3.5 w-3.5" />
+                    Open Messenger
+                  </a>
+                  <button
+                    type="button"
+                    onClick={() => sendMessage('I want to start here on the website and then continue on Messenger.')}
+                    className="inline-flex items-center gap-1.5 rounded-full border border-border-light dark:border-border-dark px-3 py-2 text-[11px] font-medium text-text-secondary-light dark:text-text-secondary-dark hover:border-accent-pink hover:text-accent-pink transition-colors"
+                  >
+                    Ask the AI first
+                  </button>
+                </div>
+              </div>
+
               <div className="grid grid-cols-2 gap-2 w-full max-w-[300px]">
                 {ACTION_CARDS.map((card) => {
                   const Icon = card.icon;
