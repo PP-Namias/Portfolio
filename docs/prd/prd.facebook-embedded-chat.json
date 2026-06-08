@@ -1,0 +1,38 @@
+﻿{
+  "project": "Portfolio - Embedded Facebook Messenger Integration",
+  "codeName": "fb-embedded-integration",
+  "version": "2.0.0",
+  "owner": "Jhon Keneth Ryan Namias (PP Namias)",
+  "lastUpdated": "2026-06-09",
+  "branch": "feature/fb-embedded-integration",
+  "summary": "Integrate a true in-website embedded Facebook Messenger chat, giving visitors an experience similar to the AI chat but connected directly to Messenger.",
+  "narrative": "The user requested an embedded, in-website chat experience instead of just redirecting buttons. TECHNICAL LIMITATION: Facebook explicitly blocks embedding personal profiles (m.me/username) inside iframes/websites for security (Clickjacking protections) and graph API reasons. The official Facebook embedded chat (Meta Customer Chat Plugin) STRICTLY requires a Facebook Business/Creator Page. Our execution plan is to implement the official Meta Chat Plugin inside the Next.js layout, which provides a true in-website chatting experience. We will guide the owner on taking 2 minutes to convert/create a Page (linked to their personal account) to unlock this Developer feature.",
+  "principles": [
+    "Atomic Commits - High commit history volume by slicing the work.",
+    "Official Integration - Use the official Meta chat plugin for real-time syncing.",
+    "Non-blocking - Load the script asynchronously via next/script so it does not hurt Core Web Vitals.",
+    "Layout Harmony - Render the plugin on the bottom left to avoid overlapping the Floating Hub AI."
+  ],
+  "stories": [
+    {
+      "id": "FBE-001",
+      "title": "Define Embedded Facebook Script Component",
+      "status": "Not Started"
+    },
+    {
+      "id": "FBE-002",
+      "title": "Add Environment Variable Logic for Page ID",
+      "status": "Not Started"
+    },
+    {
+      "id": "FBE-003",
+      "title": "Inject the Facebook SDK into Root Layout",
+      "status": "Not Started"
+    },
+    {
+      "id": "FBE-004",
+      "title": "Add Global CSS Overrides for Positioning",
+      "status": "Not Started"
+    }
+  ]
+}
