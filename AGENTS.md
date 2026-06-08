@@ -12,6 +12,12 @@ This file is the entry point for any agent (opencode, future coding agents, or h
 - `update-the-hero` — hero block editing
 - `ui-ux-pro-max` — design system intelligence
 - `smart-caching` — multi-layer caching architecture, cache utility, Redis integration, ISR, SWR config, cache health endpoint
+- `frontend-design` — build beautiful, responsive, accessible UIs with React, Tailwind, and Framer Motion
+- `accessibility-audit` — audit and fix WCAG 2.1 AA accessibility issues
+- `performance-optimization` — improve Core Web Vitals, load times, and runtime performance
+- `code-review` — systematic review of TypeScript, React, accessibility, performance, and security
+- `seo-optimization` — meta tags, JSON-LD structured data, sitemaps, social previews
+- `testing-workflow` — write and maintain tests with Vitest and React Testing Library
 
 ## Home page sections
 
@@ -78,6 +84,18 @@ curl -fsSL https://vercel.com/design/guidelines/install | bash
 ```
 
 Full reference: `docs/design/vercel-web-interface-guidelines.md`
+
+## MCP (Model Context Protocol)
+
+MCP servers give your AI agent access to browser DevTools, component libraries, and more. Configuration is at `opencode.json` at the repo root.
+
+| Server | Config key | Purpose |
+|---|---|---|
+| **Chrome DevTools MCP** | `chrome-devtools` | Browser debugging, performance traces, screenshots, console inspection |
+| **21st.dev Magic MCP** | `@21st-dev/magic` | Generate UI components from natural language (API key required) |
+| **Magic UI MCP** | `@magicuidesign/mcp` | Animated components (marquee, bento, dock, globe, etc.) |
+
+Setup guides: `docs/mcp/overview.md` | `docs/mcp/chrome-devtools-mcp.md` | `docs/mcp/magic-mcp.md`
 
 ## Testing
 

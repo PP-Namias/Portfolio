@@ -1,0 +1,23 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "mcp": {
+    "chrome-devtools": {
+      "type": "local",
+      "command": ["npx", "-y", "chrome-devtools-mcp@latest"],
+      "description": "Browser debugging, performance analysis, screenshots, console inspection"
+    },
+    "@21st-dev/magic": {
+      "type": "local",
+      "command": ["npx", "-y", "@21st-dev/magic@latest"],
+      "env": {
+        "API_KEY": "${API_KEY_21ST_DEV}"
+      },
+      "description": "Generate UI components from natural language (requires API key)"
+    },
+    "@magicuidesign/mcp": {
+      "type": "local",
+      "command": ["npx", "-y", "@magicuidesign/mcp@latest"],
+      "description": "Magic UI animated components (marquee, bento, dock, globe, etc.)"
+    }
+  }
+}
