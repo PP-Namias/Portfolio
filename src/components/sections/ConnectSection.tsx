@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Calendar, ExternalLink } from 'lucide-react';
+import { Calendar, ExternalLink, MessageCircle } from 'lucide-react';
 import {
   FaDiscord,
   FaFacebookF,
@@ -13,6 +13,7 @@ import {
 } from 'react-icons/fa6';
 import { useModal } from '@/hooks/useModal';
 import { useCmsContent } from '@/hooks/useCmsContent';
+import { MESSENGER_URL } from '@/lib/constants';
 
 const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   calendar: Calendar,
@@ -60,6 +61,20 @@ export function ConnectSection() {
           <Calendar className="h-3.5 w-3.5" />
           <span>Schedule a Meeting</span>
         </motion.button>
+
+        <motion.a
+          href={MESSENGER_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          initial={{ opacity: 0, y: 10 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.1, duration: 0.3 }}
+          className="flex items-center gap-1.5 px-4 py-2.5 text-sm font-medium rounded-lg border border-[#0084FF]/30 bg-[#0084FF]/5 text-[#0084FF] hover:bg-[#0084FF]/10 transition-colors duration-200"
+        >
+          <MessageCircle className="h-3.5 w-3.5" />
+          <span>Chat on Messenger</span>
+        </motion.a>
       </div>
 
       {/* Secondary social links — lower visual weight */}
