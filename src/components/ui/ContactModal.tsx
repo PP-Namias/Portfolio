@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Calendar, Clipboard, Mail, Send, Sparkles, Trash2 } from 'lucide-react';
 import { useModal } from '@/hooks/useModal';
 import { useCmsContent } from '@/hooks/useCmsContent';
+import { MESSENGER_URL } from '@/lib/constants';
 import { Modal } from './Modal';
 
 interface ContactModalProps {
@@ -376,30 +377,46 @@ export function ContactModal({ open, onClose }: Readonly<ContactModalProps>) {
 
             <div className="space-y-2">
               <p className="text-sm font-medium text-text-primary-light dark:text-text-primary-dark">
-                Need a call instead?
+                Alternative contact methods
               </p>
-              <div className="flex flex-wrap gap-2">
-                {calendarShortcuts.fifteen ? (
-                  <button
-                    type="button"
-                    onClick={() => handleBookCall('15min')}
-                    className="inline-flex items-center gap-1.5 rounded-lg border border-border-light dark:border-border-dark px-3 py-2 text-xs sm:text-sm font-medium text-text-secondary-light dark:text-text-secondary-dark hover:text-accent-pink hover:border-accent-pink dark:hover:text-accent-pink dark:hover:border-accent-pink transition-colors"
-                  >
-                    <Calendar className="h-3.5 w-3.5" />
-                    15 min meeting
-                  </button>
-                ) : null}
+              <div className="flex flex-wrap flex-col sm:flex-row gap-2">
+                <div className="flex flex-wrap gap-2">
+                  {calendarShortcuts.fifteen ? (
+                    <button
+                      type="button"
+                      onClick={() => handleBookCall('15min')}
+                      className="inline-flex items-center gap-1.5 rounded-lg border border-border-light dark:border-border-dark px-3 py-2 text-xs sm:text-sm font-medium text-text-secondary-light dark:text-text-secondary-dark hover:text-accent-pink hover:border-accent-pink dark:hover:text-accent-pink dark:hover:border-accent-pink transition-colors"
+                    >
+                      <Calendar className="h-3.5 w-3.5" />
+                      15 min meeting
+                    </button>
+                  ) : null}
 
-                {calendarShortcuts.thirty ? (
-                  <button
-                    type="button"
-                    onClick={() => handleBookCall('30min')}
-                    className="inline-flex items-center gap-1.5 rounded-lg border border-border-light dark:border-border-dark px-3 py-2 text-xs sm:text-sm font-medium text-text-secondary-light dark:text-text-secondary-dark hover:text-accent-pink hover:border-accent-pink dark:hover:text-accent-pink dark:hover:border-accent-pink transition-colors"
+                  {calendarShortcuts.thirty ? (
+                    <button
+                      type="button"
+                      onClick={() => handleBookCall('30min')}
+                      className="inline-flex items-center gap-1.5 rounded-lg border border-border-light dark:border-border-dark px-3 py-2 text-xs sm:text-sm font-medium text-text-secondary-light dark:text-text-secondary-dark hover:text-accent-pink hover:border-accent-pink dark:hover:text-accent-pink dark:hover:border-accent-pink transition-colors"
+                    >
+                      <Calendar className="h-3.5 w-3.5" />
+                      30 min meeting
+                    </button>
+                  ) : null}
+                </div>
+
+                <div className="flex flex-wrap gap-2 sm:ml-auto">
+                  <a
+                    href={MESSENGER_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 rounded-lg border border-[#0084FF]/30 bg-[#0084FF]/5 px-3 py-2 text-xs sm:text-sm font-medium text-[#0084FF] hover:bg-[#0084FF]/10 transition-colors"
                   >
-                    <Calendar className="h-3.5 w-3.5" />
-                    30 min meeting
-                  </button>
-                ) : null}
+                    <svg viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4">
+                      <path d="M12 2C6.477 2 2 6.145 2 11.265c0 2.836 1.411 5.378 3.636 7.078v3.657l3.32-1.836c.961.272 1.977.417 3.044.417 5.523 0 10-4.145 10-9.265C22 6.145 17.523 2 12 2zm1.094 12.396-2.529-2.715-4.912 2.715 5.385-5.719 2.583 2.716 4.855-2.716-5.382 5.719z"/>
+                    </svg>
+                    Message on Messenger
+                  </a>
+                </div>
               </div>
             </div>
 
