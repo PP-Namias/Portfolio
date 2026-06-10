@@ -159,7 +159,7 @@ export function ContactModal({ open, onClose }: Readonly<ContactModalProps>) {
 
   return (
     <Modal open={open} onClose={onClose} fullScreen descriptionId="contact-modal-description">
-      <div className="flex flex-col h-full bg-surface-light dark:bg-surface-dark transition-colors duration-300">
+      <div className="flex flex-col bg-surface-light dark:bg-surface-dark transition-colors duration-300">
         {/* Top action bar */}
         <div className="flex items-center gap-2 px-4 py-2.5 border-b border-border-light dark:border-border-dark flex-shrink-0 overflow-x-auto">
           <span className="text-xs font-medium text-text-muted-light dark:text-text-muted-dark mr-1 hidden sm:inline">
@@ -214,7 +214,7 @@ export function ContactModal({ open, onClose }: Readonly<ContactModalProps>) {
         </div>
 
         {/* Form content */}
-        <div className="flex-1 overflow-y-auto" id="contact-modal-description">
+        <div id="contact-modal-description">
           <div className="px-5 py-6 sm:px-8 sm:py-8">
             <div className="max-w-lg mx-auto space-y-5">
 
