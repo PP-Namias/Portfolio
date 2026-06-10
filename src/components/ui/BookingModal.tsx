@@ -15,8 +15,7 @@ const CAL_BASE_URL = 'https://cal.com';
 const BOOKING_MODAL_EVENT_KEY = 'booking-modal-event';
 
 const EVENT_TYPES = [
-  { slug: '15min', label: '15 Minute Meeting', duration: '15 min' },
-  { slug: '30min', label: '30 Minute Meeting', duration: '30 min' },
+  { slug: 'introductory-call', label: 'Introductory Call', duration: '30 min' },
 ] as const;
 
 type BookingEventSlug = (typeof EVENT_TYPES)[number]['slug'];
