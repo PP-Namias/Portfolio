@@ -86,11 +86,6 @@ export function ContactModal({ open, onClose }: Readonly<ContactModalProps>) {
   const [form, setForm] = useState<ContactFormState>(INITIAL_FORM);
   const [errors, setErrors] = useState<ContactFormErrors>({});
 
-  const calcomUrl = useMemo(
-    () => socialLinks.find((link) => link.name === 'cal')?.link ?? 'https://cal.com/pp-namias/introductory-call',
-    [socialLinks]
-  );
-
   const emailLinks = useMemo(() => {
     const subject = form.subject.trim() || `Inquiry from ${form.name.trim()}`;
     const message = [`Hi ${profile.name},`, '', form.message.trim(), '', '--', `${form.name.trim()}`, `${form.email.trim()}`].join('\n');
@@ -107,8 +102,10 @@ export function ContactModal({ open, onClose }: Readonly<ContactModalProps>) {
 
   const messagePreview = useMemo(() => {
     const subject = form.subject.trim() || `Inquiry from ${form.name.trim()}`;
-    return [`To: ${profile.email}`, `Subject: subject`, '', `Hi ${profile.name},`, '', form.message.trim() || '(your message here)', '', '--', form.name.trim() || '(your name)', form.email.trim() || '(your email)'].join('\n');
+    return [`To: ${profile.email}`, `Subject: ${subject}`, '', `Hi ${profile.name},`, '', form.message.trim() || '(your message here)', '', '--', form.name.trim() || '(your name)', form.email.trim() || '(your email)'].join('\n');
   }, [form, profile.email, profile.name]);
+
+  const messageCharCount = form.message.trim().length;
 
   const [status, setStatus] = useState<'idle' | 'opening' | 'invalid' | 'copied' | 'copy-failed'>('idle');
 
@@ -493,8 +490,8 @@ export function ContactModal({ open, onClose }: Readonly<ContactModalProps>) {
                       />
                       <div className="flex items-center justify-between mt-1.5">
                         {errors.message ? <p id="contact-modal-message-error" className="text-xs text-red-500">{errors.message}</p> : <span />}
-                        <span className={`text-[11px] ${form.message.trim().length >= 15 ? 'text-emerald-500' : 'text-text-muted-light dark:text-text-muted-dark'}`}>
-                          {form.message.trim().length} / 15 min
+                        <span className={`text-[11px] ${messageCharCount >= 15 ? 'text-emerald-500' : 'text-text-muted-light dark:text-text-muted-dark'}`}>
+                          {messageCharCount} / 15 min
                         </span>
                       </div>
                     </div>
