@@ -36,10 +36,10 @@ const DRAFT_STORAGE_KEY = 'contact-modal-draft-v1';
 const BOOKING_MODAL_EVENT_KEY = 'booking-modal-event';
 
 const TOPIC_PRESETS = [
-  { label: 'Project Collaboration', icon: '💻', subject: 'Project collaboration inquiry', starter: 'I would like to discuss a potential project collaboration with you. Here are the details:' },
-  { label: 'Freelance Work', icon: '💼', subject: 'Freelance availability inquiry', starter: 'I have a freelance opportunity and would like to know your availability and rates.' },
-  { label: 'Consultation', icon: '🧠', subject: 'Consultation request', starter: 'I would like to book a technical consultation regarding this challenge:' },
-  { label: 'Speaking', icon: '🎤', subject: 'Speaking engagement inquiry', starter: 'I would like to invite you to speak at our event/workshop. Here are the details:' },
+  { label: 'Project Collaboration', subject: 'Project collaboration inquiry', starter: 'I would like to discuss a potential project collaboration with you. Here are the details:' },
+  { label: 'Freelance Work', subject: 'Freelance availability inquiry', starter: 'I have a freelance opportunity and would like to know your availability and rates.' },
+  { label: 'Consultation', subject: 'Consultation request', starter: 'I would like to book a technical consultation regarding this challenge:' },
+  { label: 'Speaking', subject: 'Speaking engagement inquiry', starter: 'I would like to invite you to speak at our event/workshop. Here are the details:' },
 ] as const;
 
 function validateForm(form: ContactFormState): ContactFormErrors {
@@ -235,7 +235,6 @@ export function ContactModal({ open, onClose }: Readonly<ContactModalProps>) {
                           : 'border-border-light dark:border-border-dark bg-white dark:bg-card-bg-dark hover:border-accent-pink/40 hover:shadow-sm'
                       }`}
                     >
-                      <span className="text-xl shrink-0" role="img" aria-hidden="true">{preset.icon}</span>
                       <span className={`text-sm font-medium leading-tight ${form.topic === preset.label ? 'text-accent-pink' : 'text-text-primary-light dark:text-text-primary-dark group-hover:text-accent-pink'}`}>
                         {preset.label}
                       </span>
