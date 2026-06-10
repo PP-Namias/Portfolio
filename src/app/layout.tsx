@@ -11,6 +11,7 @@ import { BackgroundFx } from '@/components/ui/BackgroundFx';
 import { MagicCursor } from '@/components/ui/MagicCursor';
 import { JsonLd } from '@/components/seo/JsonLd';
 import { getCmsContent } from '@/lib/cms-content.server';
+import { IS_MAGIC_CURSOR_VISIBLE } from '@/lib/features';
 import './globals.css';
 
 const inter = Inter({
@@ -161,6 +162,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
           Skip to main content
         </a>
         <Providers cmsContent={cmsContent} isDraftMode={isDraftMode}>
+          {IS_MAGIC_CURSOR_VISIBLE ? <MagicCursor /> : null}
           {children}
           <FloatingHub />
           <ScrollToTop />
