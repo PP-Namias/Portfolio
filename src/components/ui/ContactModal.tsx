@@ -1,7 +1,8 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
-import { Calendar, Clipboard, Mail, Send, Sparkles, Trash2 } from 'lucide-react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
+import { Calendar, Check, Clipboard, Mail, MessageSquare, Send, Sparkles, Trash2, User } from 'lucide-react';
 import { useModal } from '@/hooks/useModal';
 import { useCmsContent } from '@/hooks/useCmsContent';
 import { DISCORD_PROFILE_URL } from '@/lib/constants';
@@ -11,6 +12,8 @@ interface ContactModalProps {
   open: boolean;
   onClose: () => void;
 }
+
+type StepId = 1 | 2 | 3;
 
 type ContactFormState = {
   name: string;
@@ -35,100 +38,57 @@ const INITIAL_FORM: ContactFormState = {
 const DRAFT_STORAGE_KEY = 'contact-modal-draft-v1';
 const BOOKING_MODAL_EVENT_KEY = 'booking-modal-event';
 
-const TOPIC_PRESETS = [
-  {
-    label: 'Project Collaboration',
-    subject: 'Project collaboration inquiry',
-    starter:
-      'I would like to discuss a potential project collaboration with you. Here are the details:',
-  },
-  {
-    label: 'Freelance Work',
-    subject: 'Freelance availability inquiry',
-    starter:
-      'I have a freelance opportunity and would like to know your availability and rates.',
-  },
-  {
-    label: 'Consultation',
-    subject: 'Consultation request',
-    starter:
-      'I would like to book a technical consultation regarding this challenge:',
-  },
-  {
-    label: 'Speaking',
-    subject: 'Speaking engagement inquiry',
-    starter:
-      'I would like to invite you to speak at our event/workshop. Here are the details:',
-  },
-] as const;
+const STEP_LABELS: Record<StepId, string> = {
+  1: 'Who are you?',
+  2: "What's this about?",
+  3: 'Your message',
+};
 
-const TOPIC_OPTIONS = ['', ...TOPIC_PRESETS.map((preset) => preset.label)] as const;
+const STEP_FIELDS: Record<StepId, (keyof ContactFormState)[]> = {
+  1: ['name', 'email'],
+  2: ['subject'],
+  3: ['message'],
+};
 
-function buildEmailLinks(form: ContactFormState, recipient: string, recipientName: string) {
-  const subject = form.subject.trim() || `Inquiry from ${form.name.trim()}`;
-  const message = [
-    `Hi ${recipientName},`,
-    '',
-    form.message.trim(),
-    '',
-    '—',
-    `${form.name.trim()}`,
-    `${form.email.trim()}`,
-  ].join('\n');
-
-  const encodedRecipient = encodeURIComponent(recipient);
-  const encodedSubject = encodeURIComponent(subject);
-  const encodedMessage = encodeURIComponent(message);
-
-  return {
-    subject,
-    message,
-    mailto: `mailto:${recipient}?subject=${encodedSubject}&body=${encodedMessage}`,
-    gmail: `https://mail.google.com/mail/?view=cm&fs=1&to=${encodedRecipient}&su=${encodedSubject}&body=${encodedMessage}`,
-    outlook: `https://outlook.office.com/mail/deeplink/compose?to=${encodedRecipient}&subject=${encodedSubject}&body=${encodedMessage}`,
-  };
+function validateFields(form: ContactFormState, fields: (keyof ContactFormState)[]): ContactFormErrors {
+  const nextErrors: ContactFormErrors = {};
+  for (const field of fields) {
+    switch (field) {
+      case 'name':
+        if (form.name.trim().length < 2) nextErrors.name = 'Please enter your name.';
+        break;
+      case 'email':
+        if (!EMAIL_REGEX.test(form.email.trim())) nextErrors.email = 'Please enter a valid email address.';
+        break;
+      case 'subject':
+        if (form.subject.trim().length < 3) nextErrors.subject = 'Please enter a short subject.';
+        break;
+      case 'message':
+        if (form.message.trim().length < 15) nextErrors.message = 'Please add a bit more detail (at least 15 characters).';
+        break;
+    }
+  }
+  return nextErrors;
 }
 
 export function ContactModal({ open, onClose }: Readonly<ContactModalProps>) {
   const { openModal } = useModal();
   const { profile, socialLinks } = useCmsContent();
+  const [currentStep, setCurrentStep] = useState<StepId>(1);
+  const [direction, setDirection] = useState(1);
   const [form, setForm] = useState<ContactFormState>(INITIAL_FORM);
   const [errors, setErrors] = useState<ContactFormErrors>({});
-  const [status, setStatus] = useState<
-    'idle' | 'opening' | 'invalid' | 'copied' | 'copy-failed'
-  >('idle');
-  const [draftRestored, setDraftRestored] = useState(false);
-  const [lastSavedAt, setLastSavedAt] = useState<string | null>(null);
 
-  const validate = (currentForm: ContactFormState): ContactFormErrors => {
-    const nextErrors: ContactFormErrors = {};
-
-    if (currentForm.name.trim().length < 2) {
-      nextErrors.name = 'Please enter your name.';
-    }
-
-    if (!EMAIL_REGEX.test(currentForm.email.trim())) {
-      nextErrors.email = 'Please enter a valid email address.';
-    }
-
-    if (currentForm.subject.trim().length < 3) {
-      nextErrors.subject = 'Please enter a short subject.';
-    }
-
-    if (currentForm.message.trim().length < 15) {
-      nextErrors.message = 'Please add a bit more detail (at least 15 characters).';
-    }
-
-    return nextErrors;
-  };
+  const calcomUrl = useMemo(
+    () => socialLinks.find((link) => link.name === 'cal')?.link ?? 'https://cal.com/pp-namias/introductory-call',
+    [socialLinks]
+  );
 
   useEffect(() => {
     if (!open) return;
-
     try {
       const rawDraft = globalThis.localStorage.getItem(DRAFT_STORAGE_KEY);
       if (!rawDraft) return;
-
       const parsed = JSON.parse(rawDraft) as Partial<ContactFormState>;
       const nextDraft: ContactFormState = {
         name: typeof parsed.name === 'string' ? parsed.name : '',
@@ -137,504 +97,233 @@ export function ContactModal({ open, onClose }: Readonly<ContactModalProps>) {
         subject: typeof parsed.subject === 'string' ? parsed.subject : '',
         message: typeof parsed.message === 'string' ? parsed.message : '',
       };
-
-      if (
-        nextDraft.name ||
-        nextDraft.email ||
-        nextDraft.topic ||
-        nextDraft.subject ||
-        nextDraft.message
-      ) {
+      if (nextDraft.name || nextDraft.email || nextDraft.topic || nextDraft.subject || nextDraft.message) {
         setForm(nextDraft);
-        setDraftRestored(true);
+        if (nextDraft.message && nextDraft.subject) setCurrentStep(3);
+        else if (nextDraft.name && nextDraft.email) setCurrentStep(2);
       }
     } catch {
-      // Ignore malformed local draft and continue with clean form.
+      // Ignore malformed local draft.
     }
   }, [open]);
 
   useEffect(() => {
     if (!open) return;
-
-    const hasContent =
-      form.name.trim().length > 0 ||
-      form.email.trim().length > 0 ||
-      form.topic.trim().length > 0 ||
-      form.subject.trim().length > 0 ||
-      form.message.trim().length > 0;
-
+    const hasContent = form.name.trim() || form.email.trim() || form.topic.trim() || form.subject.trim() || form.message.trim();
     try {
-      if (!hasContent) {
-        globalThis.localStorage.removeItem(DRAFT_STORAGE_KEY);
-        return;
-      }
-
+      if (!hasContent) { globalThis.localStorage.removeItem(DRAFT_STORAGE_KEY); return; }
       globalThis.localStorage.setItem(DRAFT_STORAGE_KEY, JSON.stringify(form));
-      setLastSavedAt(new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
     } catch {
       // Ignore storage write errors.
     }
   }, [form, open]);
 
-  const bookingLink = useMemo(
-    () => socialLinks.find((link) => link.name === 'cal')?.link ?? null,
-    [socialLinks]
+  const goToStep = useCallback(
+    (target: StepId) => {
+      if (target === currentStep) return;
+      setDirection(target > currentStep ? 1 : -1);
+      setErrors({});
+      setCurrentStep(target);
+    },
+    [currentStep]
   );
 
-  const calendarShortcuts = useMemo(() => {
-    if (!bookingLink) {
-      return {
-        fifteen: null,
-        thirty: null,
-      };
+  const handleNext = useCallback(() => {
+    const fields = STEP_FIELDS[currentStep];
+    const validationErrors = validateFields(form, fields);
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
     }
+    if (currentStep < 3) goToStep((currentStep + 1) as StepId);
+  }, [currentStep, form, goToStep]);
 
-    const base = bookingLink.replace(/\/+$/, '');
-    return {
-      fifteen: `${base}/15min`,
-      thirty: `${base}/30min`,
-    };
-  }, [bookingLink]);
+  const handleBack = useCallback(() => {
+    if (currentStep > 1) goToStep((currentStep - 1) as StepId);
+  }, [currentStep, goToStep]);
 
-  const emailLinks = useMemo(
-    () => buildEmailLinks(form, profile.email, profile.name),
-    [form, profile.email, profile.name]
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (e.key === 'Enter' && !e.shiftKey && currentStep < 3) {
+        e.preventDefault();
+        handleNext();
+      }
+    },
+    [currentStep, handleNext]
   );
-
-  const statusMessage = useMemo(() => {
-    if (status === 'opening') {
-      return (
-        <span className="inline-flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400">
-          <Mail className="h-3.5 w-3.5" />
-          Open Gmail or Open Outlook.
-        </span>
-      );
-    }
-
-    if (status === 'copied') {
-      return (
-        <span className="text-emerald-600 dark:text-emerald-400">
-          Draft copied to clipboard.
-        </span>
-      );
-    }
-
-    if (status === 'copy-failed') {
-      return (
-        <span className="text-amber-600 dark:text-amber-400">
-          Couldn&apos;t copy automatically. Use the Gmail/Outlook buttons below.
-        </span>
-      );
-    }
-
-    if (status === 'invalid') {
-      return <span>Please fix the highlighted fields before continuing.</span>;
-    }
-
-    return (
-      <span>
-        Open Gmail or Open Outlook below. You can also send directly to{' '}
-        <a href={`mailto:${profile.email}`} className="text-accent-pink hover:underline">
-          {profile.email}
-        </a>.
-      </span>
-    );
-  }, [status, profile.email]);
-
-  const handleBookCall = (eventSlug: '15min' | '30min') => {
-    try {
-      globalThis.sessionStorage.setItem(BOOKING_MODAL_EVENT_KEY, eventSlug);
-    } catch {
-      // Ignore session storage errors and still open booking modal.
-    }
-
-    openModal('booking');
-  };
 
   const handleChange = (field: keyof ContactFormState, value: string) => {
     setForm((prev) => ({ ...prev, [field]: value }));
-
     if (errors[field]) {
-      setErrors((prev) => {
-        const next = { ...prev };
-        delete next[field];
-        return next;
-      });
-    }
-
-    if (status !== 'idle') {
-      setStatus('idle');
-    }
-  };
-
-  const handleTopicPreset = (preset: (typeof TOPIC_PRESETS)[number]) => {
-    setForm((prev) => ({
-      ...prev,
-      topic: preset.label,
-      subject: preset.subject,
-      message: prev.message.trim().length > 0 ? prev.message : `${preset.starter}\n\n`,
-    }));
-    setStatus('idle');
-  };
-
-  const handleTopicChange = (value: string) => {
-    const preset = TOPIC_PRESETS.find((item) => item.label === value);
-
-    setForm((prev) => ({
-      ...prev,
-      topic: value,
-      subject: preset?.subject ?? prev.subject,
-      message: preset && prev.message.trim().length === 0 ? `${preset.starter}\n\n` : prev.message,
-    }));
-    setStatus('idle');
-  };
-
-  const handleCopyDraft = async () => {
-    const validationErrors = validate(form);
-    if (Object.keys(validationErrors).length > 0) {
-      setErrors(validationErrors);
-      setStatus('invalid');
-      return;
-    }
-
-    try {
-      await globalThis.navigator.clipboard.writeText(
-        `To: ${profile.email}\nSubject: ${emailLinks.subject}\n\n${emailLinks.message}`
-      );
-      setStatus('copied');
-    } catch {
-      setStatus('copy-failed');
+      setErrors((prev) => { const next = { ...prev }; delete next[field]; return next; });
     }
   };
 
   const handleClearDraft = () => {
     setForm(INITIAL_FORM);
     setErrors({});
-    setStatus('idle');
-    setDraftRestored(false);
-    setLastSavedAt(null);
-
-    try {
-      globalThis.localStorage.removeItem(DRAFT_STORAGE_KEY);
-    } catch {
-      // Ignore storage cleanup errors.
-    }
+    setCurrentStep(1);
+    try { globalThis.localStorage.removeItem(DRAFT_STORAGE_KEY); } catch { /* Ignore. */ }
   };
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-
-    const nextErrors = validate(form);
-    setErrors(nextErrors);
-
-    if (Object.keys(nextErrors).length > 0) {
-      setStatus('invalid');
-      return;
-    }
-
-    setStatus('opening');
-
-    const popup = globalThis.open(emailLinks.mailto, '_blank', 'noopener,noreferrer');
-    if (!popup) {
-      globalThis.location.href = emailLinks.mailto;
-    }
+  const handleBookCall = () => {
+    try { globalThis.sessionStorage.setItem(BOOKING_MODAL_EVENT_KEY, 'introductory-call'); } catch { /* Ignore. */ }
+    openModal('booking');
   };
 
   return (
-    <Modal
-      open={open}
-      onClose={onClose}
-      title="Send me a message"
-      fullScreen
-      descriptionId="contact-modal-description"
-    >
-      <div className="min-h-full bg-surface-light dark:bg-surface-dark px-4 py-5 sm:px-6 sm:py-6">
-        <div className="mx-auto max-w-5xl grid gap-4 lg:grid-cols-[1fr_1.4fr]">
-          <section className="rounded-2xl border border-border-light dark:border-border-dark bg-white dark:bg-card-bg-dark p-5 sm:p-6 shadow-sm space-y-4">
-            <div className="space-y-2">
-              <h3 className="text-2xl sm:text-3xl font-semibold text-text-primary-light dark:text-text-primary-dark">
-                Let&apos;s connect
-              </h3>
-              <p
-                id="contact-modal-description"
-                className="text-sm sm:text-base text-text-secondary-light dark:text-text-secondary-dark"
-              >
-                Smoother contact flow in-modal: faster draft creation, topic presets, and Gmail in a new page.
-              </p>
+    <Modal open={open} onClose={onClose} fullScreen descriptionId="contact-modal-description">
+      <div className="flex flex-col h-full bg-surface-light dark:bg-surface-dark transition-colors duration-300">
+        {/* Top action bar */}
+        <div className="flex items-center gap-2 px-4 py-2.5 border-b border-border-light dark:border-border-dark flex-shrink-0 overflow-x-auto">
+          <span className="text-xs font-medium text-text-muted-light dark:text-text-muted-dark mr-1 hidden sm:inline">
+            Quick reach:
+          </span>
+          <a
+            href={DISCORD_PROFILE_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium bg-[#5865F2]/10 text-[#5865F2] hover:bg-[#5865F2]/20 transition-colors whitespace-nowrap"
+          >
+            <MessageSquare className="h-3.5 w-3.5" />
+            Discord
+          </a>
+          <button
+            type="button"
+            onClick={handleBookCall}
+            className="inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium bg-accent-pink/10 text-accent-pink hover:bg-accent-pink/20 transition-colors whitespace-nowrap"
+          >
+            <Calendar className="h-3.5 w-3.5" />
+            Book a Call
+          </button>
+          <a
+            href={`mailto:${profile.email}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium border border-border-light dark:border-border-dark text-text-secondary-light dark:text-text-secondary-dark hover:text-accent-pink hover:border-accent-pink transition-colors whitespace-nowrap"
+          >
+            <Mail className="h-3.5 w-3.5" />
+            Direct Email
+          </a>
+        </div>
+
+        {/* Step indicator */}
+        <div className="flex items-center justify-between px-5 py-3 border-b border-border-light dark:border-border-dark flex-shrink-0">
+          <div className="flex items-center gap-3">
+            <h2 className="text-sm font-semibold text-text-primary-light dark:text-text-primary-dark">
+              {STEP_LABELS[currentStep]}
+            </h2>
+            <span className="text-[11px] text-text-muted-light dark:text-text-muted-dark">
+              {currentStep} of 3
+            </span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1.5">
+              {([1, 2, 3] as const).map((step) => (
+                <button
+                  key={step}
+                  type="button"
+                  onClick={() => goToStep(step)}
+                  className={`h-2 rounded-full transition-all duration-300 ${
+                    step === currentStep ? 'w-6 bg-accent-pink'
+                      : step < currentStep ? 'w-2 bg-accent-pink/50'
+                        : 'w-2 bg-border-light dark:bg-border-dark'
+                  }`}
+                  aria-label={`Go to step ${step}: ${STEP_LABELS[step]}`}
+                />
+              ))}
             </div>
+            <button
+              type="button"
+              onClick={onClose}
+              className="ml-3 h-7 w-7 rounded-full flex items-center justify-center text-text-muted-light dark:text-text-muted-dark hover:bg-surface-light dark:hover:bg-surface-dark transition-colors text-lg"
+              aria-label="Close"
+            >
+              &times;
+            </button>
+          </div>
+        </div>
 
-            <div className="rounded-xl border border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark p-3.5 space-y-2">
-              <p className="text-sm font-medium text-text-primary-light dark:text-text-primary-dark inline-flex items-center gap-1.5">
-                <Sparkles className="h-4 w-4 text-accent-pink" />
-                Quick process
-              </p>
-              <ol className="text-xs sm:text-sm text-text-secondary-light dark:text-text-secondary-dark space-y-1 list-decimal pl-4">
-                <li>Pick a topic preset (optional).</li>
-                <li>Complete your details and message.</li>
-                <li>Open draft in mail app, Gmail, or Outlook.</li>
-              </ol>
-            </div>
+        {/* Step content */}
+        <div className="flex-1 overflow-y-auto" id="contact-modal-description">
+          <div className="relative min-h-full" onKeyDown={handleKeyDown}>
+            <AnimatePresence mode="wait" custom={direction}>
+              {currentStep === 1 && (
+                <motion.div
+                  key="step-1"
+                  custom={direction}
+                  initial={{ opacity: 0, x: direction > 0 ? 40 : -40 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: direction > 0 ? -40 : 40 }}
+                  transition={{ duration: 0.2, ease: [0.25, 0.1, 0.25, 1] }}
+                  className="px-5 py-6 sm:px-8 sm:py-8"
+                >
+                  <div className="max-w-lg mx-auto space-y-6">
+                    <div className="space-y-1">
+                      <div className="inline-flex items-center gap-2 rounded-full bg-accent-pink/10 px-3 py-1 mb-2">
+                        <User className="h-3.5 w-3.5 text-accent-pink" />
+                        <span className="text-xs font-medium text-accent-pink">Step 1</span>
+                      </div>
+                      <h3 className="text-xl sm:text-2xl font-bold text-text-primary-light dark:text-text-primary-dark">
+                        Who are you?
+                      </h3>
+                      <p className="text-sm text-text-secondary-light dark:text-text-secondary-dark">
+                        Let me know who I&apos;m speaking with.
+                      </p>
+                    </div>
 
-            <div className="space-y-2">
-              <p className="text-sm font-medium text-text-primary-light dark:text-text-primary-dark">
-                Alternative contact methods
-              </p>
-              <div className="flex flex-wrap flex-col sm:flex-row gap-2">
-                <div className="flex flex-wrap gap-2">
-                  {calendarShortcuts.fifteen ? (
-                    <button
-                      type="button"
-                      onClick={() => handleBookCall('15min')}
-                      className="inline-flex items-center gap-1.5 rounded-lg border border-border-light dark:border-border-dark px-3 py-2 text-xs sm:text-sm font-medium text-text-secondary-light dark:text-text-secondary-dark hover:text-accent-pink hover:border-accent-pink dark:hover:text-accent-pink dark:hover:border-accent-pink transition-colors"
-                    >
-                      <Calendar className="h-3.5 w-3.5" />
-                      15 min meeting
-                    </button>
-                  ) : null}
+                    <div className="space-y-4">
+                      <div>
+                        <label htmlFor="contact-modal-name" className="mb-1.5 block text-sm font-medium text-text-primary-light dark:text-text-primary-dark">
+                          Name
+                        </label>
+                        <input
+                          id="contact-modal-name"
+                          name="name"
+                          autoComplete="name"
+                          autoFocus
+                          value={form.name}
+                          onChange={(e) => handleChange('name', e.target.value)}
+                          className="w-full rounded-lg border border-border-light dark:border-border-dark bg-white dark:bg-card-bg-dark px-4 py-2.5 text-sm text-text-primary-light dark:text-text-primary-dark focus:outline-none focus:ring-2 focus:ring-accent-pink transition-colors"
+                          aria-invalid={errors.name ? 'true' : 'false'}
+                          aria-describedby={errors.name ? 'contact-modal-name-error' : undefined}
+                        />
+                        {errors.name ? <p id="contact-modal-name-error" className="mt-1.5 text-xs text-red-500">{errors.name}</p> : null}
+                      </div>
+                      <div>
+                        <label htmlFor="contact-modal-email" className="mb-1.5 block text-sm font-medium text-text-primary-light dark:text-text-primary-dark">
+                          Email
+                        </label>
+                        <input
+                          id="contact-modal-email"
+                          name="email"
+                          type="email"
+                          autoComplete="email"
+                          value={form.email}
+                          onChange={(e) => handleChange('email', e.target.value)}
+                          className="w-full rounded-lg border border-border-light dark:border-border-dark bg-white dark:bg-card-bg-dark px-4 py-2.5 text-sm text-text-primary-light dark:text-text-primary-dark focus:outline-none focus:ring-2 focus:ring-accent-pink transition-colors"
+                          aria-invalid={errors.email ? 'true' : 'false'}
+                          aria-describedby={errors.email ? 'contact-modal-email-error' : undefined}
+                        />
+                        {errors.email ? <p id="contact-modal-email-error" className="mt-1.5 text-xs text-red-500">{errors.email}</p> : null}
+                      </div>
+                    </div>
 
-                  {calendarShortcuts.thirty ? (
-                    <button
-                      type="button"
-                      onClick={() => handleBookCall('30min')}
-                      className="inline-flex items-center gap-1.5 rounded-lg border border-border-light dark:border-border-dark px-3 py-2 text-xs sm:text-sm font-medium text-text-secondary-light dark:text-text-secondary-dark hover:text-accent-pink hover:border-accent-pink dark:hover:text-accent-pink dark:hover:border-accent-pink transition-colors"
-                    >
-                      <Calendar className="h-3.5 w-3.5" />
-                      30 min meeting
-                    </button>
-                  ) : null}
-                </div>
-
-                <div className="flex flex-wrap gap-2 sm:ml-auto">
-                  <a
-                    href={DISCORD_PROFILE_URL}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 rounded-lg border border-[#5865F2]/30 bg-[#5865F2]/5 px-3 py-2 text-xs sm:text-sm font-medium text-[#5865F2] hover:bg-[#5865F2]/10 transition-colors"
-                  >
-                    <svg viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4">
-                      <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/>
-                    </svg>
-                    Message on Discord
-                  </a>
-                </div>
-              </div>
-            </div>
-
-            <div className="text-xs text-text-muted-light dark:text-text-muted-dark">
-              {draftRestored ? (
-                <span>Draft restored from your previous session.</span>
-              ) : (
-                <span>Draft is saved locally while you type.</span>
+                    <div className="flex items-center justify-between pt-2">
+                      <button type="button" onClick={handleClearDraft} className="inline-flex items-center gap-1.5 text-xs text-text-muted-light dark:text-text-muted-dark hover:text-red-500 dark:hover:text-red-400 transition-colors">
+                        <Trash2 className="h-3 w-3" />
+                        Start over
+                      </button>
+                      <button type="button" onClick={handleNext} className="inline-flex items-center gap-2 rounded-lg bg-accent-pink px-5 py-2.5 text-sm font-medium text-white hover:bg-accent-pink-hover dark:hover:bg-accent-pink-hover-dark transition-colors focus:outline-none focus:ring-2 focus:ring-accent-pink focus:ring-offset-2 dark:focus:ring-offset-background-dark">
+                        Next
+                        <span aria-hidden="true">&rarr;</span>
+                      </button>
+                    </div>
+                  </div>
+                </motion.div>
               )}
-              {lastSavedAt ? <span className="ml-1">Last saved at {lastSavedAt}.</span> : null}
-            </div>
-          </section>
-
-          <section className="rounded-2xl border border-border-light dark:border-border-dark bg-white dark:bg-card-bg-dark p-5 sm:p-7 shadow-sm">
-            <div className="space-y-2">
-              <h3 className="text-xl sm:text-2xl font-semibold text-text-primary-light dark:text-text-primary-dark">
-                Compose your message
-              </h3>
-              <p className="text-sm sm:text-base text-text-secondary-light dark:text-text-secondary-dark">
-                We&apos;ll prepare a ready-to-send message with less friction.
-              </p>
-            </div>
-
-            <form onSubmit={handleSubmit} className="mt-6 space-y-4" noValidate>
-              <div>
-                <p className="mb-2 text-sm font-medium text-text-primary-light dark:text-text-primary-dark">
-                  Quick topic presets
-                </p>
-                <div className="flex flex-wrap gap-2">
-                  {TOPIC_PRESETS.map((preset) => (
-                    <button
-                      key={preset.label}
-                      type="button"
-                      onClick={() => handleTopicPreset(preset)}
-                      className="rounded-full border border-border-light dark:border-border-dark px-3 py-1.5 text-xs sm:text-sm font-medium text-text-secondary-light dark:text-text-secondary-dark hover:border-accent-pink hover:text-accent-pink dark:hover:border-accent-pink dark:hover:text-accent-pink transition-colors"
-                    >
-                      {preset.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div>
-                  <label
-                    htmlFor="contact-modal-name"
-                    className="mb-1.5 block text-sm font-medium text-text-primary-light dark:text-text-primary-dark"
-                  >
-                    Name
-                  </label>
-                  <input
-                    id="contact-modal-name"
-                    name="name"
-                    autoComplete="name"
-                    value={form.name}
-                    onChange={(event) => handleChange('name', event.target.value)}
-                    className="w-full rounded-lg border border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark px-3 py-2 text-sm text-text-primary-light dark:text-text-primary-dark focus:outline-none focus:ring-2 focus:ring-accent-pink"
-                    aria-invalid={errors.name ? 'true' : 'false'}
-                    aria-describedby={errors.name ? 'contact-modal-name-error' : undefined}
-                  />
-                  {errors.name ? (
-                    <p id="contact-modal-name-error" className="mt-1 text-xs text-red-500">
-                      {errors.name}
-                    </p>
-                  ) : null}
-                </div>
-
-                <div>
-                  <label
-                    htmlFor="contact-modal-email"
-                    className="mb-1.5 block text-sm font-medium text-text-primary-light dark:text-text-primary-dark"
-                  >
-                    Your email
-                  </label>
-                  <input
-                    id="contact-modal-email"
-                    name="email"
-                    type="email"
-                    autoComplete="email"
-                    value={form.email}
-                    onChange={(event) => handleChange('email', event.target.value)}
-                    className="w-full rounded-lg border border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark px-3 py-2 text-sm text-text-primary-light dark:text-text-primary-dark focus:outline-none focus:ring-2 focus:ring-accent-pink"
-                    aria-invalid={errors.email ? 'true' : 'false'}
-                    aria-describedby={errors.email ? 'contact-modal-email-error' : undefined}
-                  />
-                  {errors.email ? (
-                    <p id="contact-modal-email-error" className="mt-1 text-xs text-red-500">
-                      {errors.email}
-                    </p>
-                  ) : null}
-                </div>
-              </div>
-
-              <div>
-                <label
-                  htmlFor="contact-modal-topic"
-                  className="mb-1.5 block text-sm font-medium text-text-primary-light dark:text-text-primary-dark"
-                >
-                  Topic
-                </label>
-                <select
-                  id="contact-modal-topic"
-                  name="topic"
-                  value={form.topic}
-                  onChange={(event) => handleTopicChange(event.target.value)}
-                  className="w-full rounded-lg border border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark px-3 py-2 text-sm text-text-primary-light dark:text-text-primary-dark focus:outline-none focus:ring-2 focus:ring-accent-pink"
-                >
-                  {TOPIC_OPTIONS.map((option) => (
-                    <option key={option || 'custom'} value={option}>
-                      {option || 'Choose a topic (optional)'}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div>
-                <label
-                  htmlFor="contact-modal-subject"
-                  className="mb-1.5 block text-sm font-medium text-text-primary-light dark:text-text-primary-dark"
-                >
-                  Subject
-                </label>
-                <input
-                  id="contact-modal-subject"
-                  name="subject"
-                  value={form.subject}
-                  onChange={(event) => handleChange('subject', event.target.value)}
-                  className="w-full rounded-lg border border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark px-3 py-2 text-sm text-text-primary-light dark:text-text-primary-dark focus:outline-none focus:ring-2 focus:ring-accent-pink"
-                  aria-invalid={errors.subject ? 'true' : 'false'}
-                  aria-describedby={errors.subject ? 'contact-modal-subject-error' : undefined}
-                />
-                {errors.subject ? (
-                  <p id="contact-modal-subject-error" className="mt-1 text-xs text-red-500">
-                    {errors.subject}
-                  </p>
-                ) : null}
-              </div>
-
-              <div>
-                <label
-                  htmlFor="contact-modal-message"
-                  className="mb-1.5 block text-sm font-medium text-text-primary-light dark:text-text-primary-dark"
-                >
-                  Message
-                </label>
-                <textarea
-                  id="contact-modal-message"
-                  name="message"
-                  rows={7}
-                  value={form.message}
-                  onChange={(event) => handleChange('message', event.target.value)}
-                  className="w-full rounded-lg border border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark px-3 py-2 text-sm text-text-primary-light dark:text-text-primary-dark focus:outline-none focus:ring-2 focus:ring-accent-pink"
-                  aria-invalid={errors.message ? 'true' : 'false'}
-                  aria-describedby={errors.message ? 'contact-modal-message-error' : undefined}
-                />
-                {errors.message ? (
-                  <p id="contact-modal-message-error" className="mt-1 text-xs text-red-500">
-                    {errors.message}
-                  </p>
-                ) : null}
-              </div>
-
-              <div className="flex flex-wrap items-center gap-3 pt-1">
-                <button
-                  type="submit"
-                  className="inline-flex items-center gap-2 rounded-lg bg-accent-pink px-4 py-2.5 text-sm font-medium text-white hover:bg-accent-pink-hover dark:hover:bg-accent-pink-hover-dark transition-colors focus:outline-none focus:ring-2 focus:ring-accent-pink focus:ring-offset-2 dark:focus:ring-offset-background-dark"
-                >
-                  <Send className="h-4 w-4" />
-                  Open email draft
-                </button>
-
-                <button
-                  type="button"
-                  onClick={handleCopyDraft}
-                  className="inline-flex items-center gap-2 rounded-lg border border-border-light dark:border-border-dark px-4 py-2.5 text-sm font-medium text-text-secondary-light dark:text-text-secondary-dark hover:text-accent-pink hover:border-accent-pink dark:hover:text-accent-pink dark:hover:border-accent-pink transition-colors"
-                >
-                  <Clipboard className="h-4 w-4" />
-                  Copy draft
-                </button>
-
-                <button
-                  type="button"
-                  onClick={handleClearDraft}
-                  className="inline-flex items-center gap-2 rounded-lg border border-border-light dark:border-border-dark px-4 py-2.5 text-sm font-medium text-text-secondary-light dark:text-text-secondary-dark hover:text-rose-500 hover:border-rose-400 dark:hover:text-rose-400 dark:hover:border-rose-400 transition-colors"
-                >
-                  <Trash2 className="h-4 w-4" />
-                  Clear
-                </button>
-              </div>
-
-              <div className="flex flex-wrap gap-2">
-                <a
-                  href={emailLinks.gmail}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 rounded-lg border border-border-light dark:border-border-dark px-3 py-2 text-xs sm:text-sm font-medium text-text-secondary-light dark:text-text-secondary-dark hover:text-accent-pink hover:border-accent-pink dark:hover:text-accent-pink dark:hover:border-accent-pink transition-colors"
-                >
-                  Open Gmail
-                </a>
-
-                <a
-                  href={emailLinks.outlook}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 rounded-lg border border-border-light dark:border-border-dark px-3 py-2 text-xs sm:text-sm font-medium text-text-secondary-light dark:text-text-secondary-dark hover:text-accent-pink hover:border-accent-pink dark:hover:text-accent-pink dark:hover:border-accent-pink transition-colors"
-                >
-                  Open Outlook
-                </a>
-              </div>
-
-              <div
-                aria-live="polite"
-                className="rounded-lg border border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark px-3 py-2.5 text-xs sm:text-sm text-text-muted-light dark:text-text-muted-dark"
-              >
-                {statusMessage}
-              </div>
-            </form>
-          </section>
+            </AnimatePresence>
+          </div>
         </div>
       </div>
     </Modal>
