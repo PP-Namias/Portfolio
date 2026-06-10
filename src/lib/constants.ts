@@ -1,3 +1,1 @@
-export const MESSENGER_URL = 'https://m.me/jhon.keneth.namias.2024';
-export const FACEBOOK_PROFILE_URL = 'https://www.facebook.com/jhon.keneth.namias.2024';
-export const FACEBOOK_PAGE_ID = process.env.NEXT_PUBLIC_FACEBOOK_PAGE_ID ?? '';
+export const DISCORD_PROFILE_URL = 'https://discord.com/users/683914336376455200';
