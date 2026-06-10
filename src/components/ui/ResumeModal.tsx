@@ -71,7 +71,7 @@ export function ResumeModal({ open, onClose }: Readonly<ResumeModalProps>) {
           // Empty sandbox (most restrictive). The browser's built-in
           // PDF viewer (pdfium) renders the PDF natively; no scripts
           // or same-origin access are needed for static PDF display.
-          sandbox=""
+          sandbox="allow-same-origin"
         >
           <div className="flex flex-col items-center justify-center py-20 px-4 text-center h-full">
             <p className="text-text-secondary-light dark:text-text-secondary-dark mb-4">
