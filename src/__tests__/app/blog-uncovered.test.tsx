@@ -95,6 +95,52 @@ vi.mock('@/lib/features', () => ({
   IS_BLOG_VISIBLE: true,
 }));
 
+vi.mock('@/lib/cms-content.server', () => ({
+  getCmsContent: vi.fn().mockResolvedValue({
+    blogPosts: [
+      {
+        id: '1',
+        slug: 'hello-world',
+        title: 'Hello World',
+        excerpt: 'Intro',
+        content: '# Hello World',
+        date: '2026-01-10',
+        readTime: '5 min',
+        tags: ['AI', 'Web'],
+        coverImage: '/images/blog/hello-world.jpg',
+        featured: true,
+        metaTitle: 'Hello World',
+        metaDescription: 'Intro post',
+      },
+      {
+        id: '2',
+        slug: 'deep-dive',
+        title: 'Deep Dive',
+        excerpt: 'Deep dive',
+        content: '## Deep Dive',
+        date: '2026-02-20',
+        readTime: '7 min',
+        tags: ['Cloud', 'Next.js'],
+        coverImage: '/images/blog/deep-dive.jpg',
+        featured: false,
+        metaTitle: 'Deep Dive',
+        metaDescription: 'A deeper look',
+      },
+    ],
+    siteSettings: {
+      blog: {
+        title: 'Blog',
+        description: 'Thoughts on AI, software engineering, cloud development, and more.',
+        backLabel: 'Back to Portfolio',
+      },
+    },
+  }),
+  getBlogPostSlugsForStaticParams: vi.fn().mockResolvedValue([
+    { slug: 'hello-world' },
+    { slug: 'deep-dive' },
+  ]),
+}));
+
 import BlogLayout from '@/app/blog/layout';
 import BlogPage from '@/app/blog/page';
 import BlogListClient from '@/app/blog/BlogListClient';

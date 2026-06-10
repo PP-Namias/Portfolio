@@ -12,6 +12,20 @@ vi.mock('next/og', () => ({
   },
 }));
 
+vi.mock('@/lib/cms-content.server', () => ({
+  getCmsContent: vi.fn().mockResolvedValue({
+    blogPosts: [
+      { slug: 'hello-world', title: 'Hello World', date: '2026-01-10' },
+      { slug: 'deep-dive', title: 'Deep Dive', date: '2026-02-20' },
+    ],
+    siteSettings: { blog: { title: 'Blog', description: 'Test', backLabel: 'Back' } },
+  }),
+  getBlogPostSlugsForStaticParams: vi.fn().mockResolvedValue([
+    { slug: 'hello-world' },
+    { slug: 'deep-dive' },
+  ]),
+}));
+
 import OpenGraphImage, {
   runtime as ogRuntime,
   size as ogSize,
