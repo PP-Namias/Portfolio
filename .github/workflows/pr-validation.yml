@@ -103,7 +103,7 @@ jobs:
             **Overall**: ${results.qualityCheck === 'success' ? 'Ready to merge' : 'Issues found'}
 
             ---
-            *Automated PR validation • [View Details](${context.payload.repository.html_url}/actions/runs/${context.runId})*`;
+            *Automated PR validation -- auto-approval is handled by a separate workflow that checks ALL required checks.*`;
 
             try {
               const comments = await github.rest.issues.listComments({
@@ -135,70 +135,3 @@ jobs:
               const message = error instanceof Error ? error.message : String(error);
               core.warning(`Skipping PR status comment due to permissions/integration limits: ${message}`);
             }
-
-  approve:
-    name: Auto Approve
-    runs-on: ubuntu-latest
-    needs: [quality-check, security]
-    if: success() && github.event.pull_request.draft == false && github.event.pull_request.head.repo.fork == false
-    timeout-minutes: 15
-    permissions:
-      pull-requests: write
-    steps:
-      - uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const owner = context.repo.owner;
-            const repo = context.repo.repo;
-            const prNumber = context.payload.pull_request.number;
-            const headSha = context.payload.pull_request.head.sha;
-
-            const sleep = (ms) => new Promise(r => setTimeout(r, ms));
-            const MAX_WAIT_SECONDS = 600;
-            const POLL_INTERVAL = 20;
-            let waited = 0;
-
-            while (waited < MAX_WAIT_SECONDS) {
-              const { data: combined } = await github.rest.repos.getCombinedStatusForRef({
-                owner,
-                repo,
-                ref: headSha
-              });
-
-              if (combined.state === 'success') {
-                const { data: reviews } = await github.rest.pulls.listReviews({
-                  owner,
-                  repo,
-                  pull_number: prNumber
-                });
-
-                const alreadyApproved = reviews.some(
-                  r => r.user?.type === 'Bot' && r.state === 'APPROVED'
-                );
-
-                if (!alreadyApproved) {
-                  await github.rest.pulls.createReview({
-                    owner,
-                    repo,
-                    pull_number: prNumber,
-                    event: 'APPROVE',
-                    body: 'All checks passed — auto-approved.'
-                  });
-                  core.notice(`PR #${prNumber} auto-approved`);
-                } else {
-                  core.notice(`PR #${prNumber} already has bot approval`);
-                }
-                return;
-              }
-
-              if (combined.state === 'failure') {
-                core.setFailed(`Some checks failed for ${headSha.slice(0,8)} — not approving`);
-                return;
-              }
-
-              await sleep(POLL_INTERVAL * 1000);
-              waited += POLL_INTERVAL;
-            }
-
-            core.setFailed(`Timeout after ${MAX_WAIT_SECONDS}s waiting for checks on ${headSha.slice(0,8)}`);

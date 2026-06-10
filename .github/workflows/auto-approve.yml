@@ -18,11 +18,14 @@ jobs:
     steps:
       - uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd
         with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const owner = context.repo.owner;
             const repo = context.repo.repo;
             const headBranch = context.payload.check_suite.head_branch;
+            const headSha = context.payload.check_suite.head_sha;
 
+            // Find the open PR for this branch
             const { data: prs } = await github.rest.pulls.list({
               owner,
               repo,
@@ -42,6 +45,13 @@ jobs:
               return;
             }
 
+            // Skip fork PRs (can't write reviews on forks)
+            if (pr.head.repo.full_name !== `${owner}/${repo}`) {
+              core.notice(`PR #${pr.number} is from a fork — skipping approval`);
+              return;
+            }
+
+            // Check if already approved
             const { data: reviews } = await github.rest.pulls.listReviews({
               owner,
               repo,
@@ -57,12 +67,80 @@ jobs:
               return;
             }
 
+            // Get ALL check runs for this SHA (not just the triggering one)
+            const { data: checkRuns } = await github.rest.checks.listForRef({
+              owner,
+              repo,
+              ref: headSha,
+              per_page: 100
+            });
+
+            // Filter to required/relevant check runs
+            // These are the checks that must ALL pass before auto-approval
+            const requiredPatterns = [
+              'Quality Check',
+              'Security Scan',
+              'Security Scanning',
+              'checkov',
+              'gitleaks',
+              'osv-scanner',
+              'trivy-fs',
+              'zizmor',
+              'PentestAgent',
+              'Vercel',
+              'Workers Builds',
+            ];
+
+            const relevantRuns = checkRuns.data.filter(run => {
+              const name = run.name?.toLowerCase() || '';
+              return requiredPatterns.some(p =>
+                name.includes(p.toLowerCase())
+              );
+            });
+
+            // Check if ALL relevant runs are complete
+            const incompleteRuns = relevantRuns.filter(run =>
+              run.status !== 'completed'
+            );
+
+            if (incompleteRuns.length > 0) {
+              const names = incompleteRuns.map(r => r.name).join(', ');
+              core.notice(`Waiting for ${incompleteRuns.length} check(s) to complete: ${names}`);
+              return;
+            }
+
+            // Check if ALL relevant runs succeeded
+            const failedRuns = relevantRuns.filter(run =>
+              run.conclusion !== 'success' && run.conclusion !== 'skipped' && run.conclusion !== 'neutral'
+            );
+
+            if (failedRuns.length > 0) {
+              const failDetails = failedRuns.map(r => {
+                const details = [`  - **${r.name}**: ${r.conclusion}`];
+                if (r.html_url) {
+                  details.push(`    View logs: ${r.html_url}`);
+                }
+                return details.join('\n');
+              }).join('\n');
+
+              core.setFailed(
+                `PR #${pr.number} has ${failedRuns.length} failed check(s):\n\n${failDetails}\n\n` +
+                `To fix:\n` +
+                `1. Click the links above to view the failing logs\n` +
+                `2. Fix the issues in your code\n` +
+                `3. Push a new commit — checks will re-run automatically\n\n` +
+                `The PR will be auto-approved once ALL checks pass.`
+              );
+              return;
+            }
+
+            // All checks passed — approve
             await github.rest.pulls.createReview({
               owner,
               repo,
               pull_number: pr.number,
               event: 'APPROVE',
-              body: 'All checks passed — auto-approved.'
+              body: 'All required checks passed — auto-approved.'
             });
 
-            core.notice(`PR #${pr.number} auto-approved`);
+            core.notice(`PR #${pr.number} auto-approved — all ${relevantRuns.length} checks passed`);

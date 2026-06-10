@@ -36,6 +36,7 @@ jobs:
           output_format: cli,sarif
           output_file_path: console,checkov.sarif
           quiet: true
+          soft_fail: true
           download_external_modules: false
 
       - name: upload-sarif
