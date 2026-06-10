@@ -2,10 +2,9 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Calendar, ExternalLink, MessageCircle } from 'lucide-react';
+import { Calendar, ExternalLink } from 'lucide-react';
 import {
   FaDiscord,
-  FaFacebookF,
   FaGithub,
   FaInstagram,
   FaLinkedinIn,
@@ -13,13 +12,12 @@ import {
 } from 'react-icons/fa6';
 import { useModal } from '@/hooks/useModal';
 import { useCmsContent } from '@/hooks/useCmsContent';
-import { MESSENGER_URL } from '@/lib/constants';
+import { DISCORD_PROFILE_URL } from '@/lib/constants';
 
 const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   calendar: Calendar,
   github: FaGithub,
   linkedin: FaLinkedinIn,
-  facebook: FaFacebookF,
   discord: FaDiscord,
   twitter: FaXTwitter,
   x: FaXTwitter,
@@ -63,17 +61,17 @@ export function ConnectSection() {
         </motion.button>
 
         <motion.a
-          href={MESSENGER_URL}
+          href={DISCORD_PROFILE_URL}
           target="_blank"
           rel="noopener noreferrer"
           initial={{ opacity: 0, y: 10 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ delay: 0.1, duration: 0.3 }}
-          className="flex items-center gap-1.5 px-4 py-2.5 text-sm font-medium rounded-lg border border-[#0084FF]/30 bg-[#0084FF]/5 text-[#0084FF] hover:bg-[#0084FF]/10 transition-colors duration-200"
+          className="flex items-center gap-1.5 px-4 py-2.5 text-sm font-medium rounded-lg border border-[#5865F2]/30 bg-[#5865F2]/5 text-[#5865F2] hover:bg-[#5865F2]/10 transition-colors duration-200"
         >
-          <MessageCircle className="h-3.5 w-3.5" />
-          <span>Chat on Messenger</span>
+          <FaDiscord className="h-3.5 w-3.5" />
+          <span>Chat on Discord</span>
         </motion.a>
       </div>
 
