@@ -1,6 +1,14 @@
 import '@testing-library/jest-dom/vitest';
 import { vi } from 'vitest';
 
+// Mock next/headers so that draftMode(), headers(), and cookies() don't
+// throw when server components or CMS helpers are imported in tests.
+vi.mock('next/headers', () => ({
+  draftMode: vi.fn().mockResolvedValue({ isEnabled: false }),
+  headers: vi.fn().mockReturnValue(new Map()),
+  cookies: vi.fn().mockReturnValue({ get: () => undefined, getAll: () => [] }),
+}));
+
 // jsdom doesn't implement scrollIntoView
 Element.prototype.scrollIntoView = vi.fn();
 
