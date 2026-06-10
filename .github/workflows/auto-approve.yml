@@ -1,12 +1,14 @@
 name: Auto Approve PR
 
 on:
-  check_suite:
-    types: [completed]
-  # Also trigger when check runs complete (covers cases where
-  # check_suite doesn't fire for individual check runs)
-  check_run:
-    types: [completed]
+  # Poll every 2 minutes after PR events to check if ALL checks passed
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+    branches: [main]
+  schedule:
+    # Run every 2 minutes to catch check completions
+    - cron: '*/2 * * * *'
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -14,13 +16,8 @@ permissions:
 
 jobs:
   auto-approve:
-    if: >
-      (github.event.check_suite?.conclusion == 'success' ||
-       github.event.check_run?.conclusion == 'success') &&
-      (github.event.check_suite?.head_branch || github.event.check_run?.check_suite?.head_branch) !=
-      github.event.repository.default_branch
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 3
     steps:
       - uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd
         with:
@@ -28,138 +25,110 @@ jobs:
           script: |
             const owner = context.repo.owner;
             const repo = context.repo.repo;
-            const headBranch = context.payload.check_suite?.head_branch ||
-                               context.payload.check_run?.check_suite?.head_branch;
-            const headSha = context.payload.check_suite?.head_sha ||
-                            context.payload.check_run?.head_sha;
 
-            if (!headBranch || !headSha) {
-              core.notice('Could not determine branch or SHA — skipping');
-              return;
-            }
+            // For scheduled runs, find all open PRs on non-default branches
+            // For PR events, only check the specific PR
+            let prsToCheck = [];
 
-            // Find the open PR for this branch
-            const { data: prs } = await github.rest.pulls.list({
-              owner,
-              repo,
-              head: `${owner}:${headBranch}`,
-              state: 'open'
-            });
-
-            if (prs.length === 0) {
-              core.notice(`No open PR found for branch ${headBranch}`);
-              return;
-            }
-
-            const pr = prs[0];
-
-            if (pr.draft) {
-              core.notice(`PR #${pr.number} is draft — skipping`);
-              return;
-            }
-
-            // Skip fork PRs
-            if (pr.head.repo.full_name !== `${owner}/${repo}`) {
-              core.notice(`PR #${pr.number} is from a fork — skipping approval`);
-              return;
-            }
-
-            // Check if already approved
-            const { data: reviews } = await github.rest.pulls.listReviews({
-              owner,
-              repo,
-              pull_number: pr.number
-            });
-
-            const alreadyApproved = reviews.some(
-              r => r.user?.type === 'Bot' && r.state === 'APPROVED'
-            );
-
-            if (alreadyApproved) {
-              core.notice(`PR #${pr.number} already has bot approval`);
-              return;
-            }
-
-            // Get ALL check runs for this SHA
-            const { data: checkRuns } = await github.rest.checks.listForRef({
-              owner,
-              repo,
-              ref: headSha,
-              per_page: 100
-            });
-
-            // Define required check patterns (must ALL pass)
-            const requiredPatterns = [
-              'Quality Check',
-              'Security Scan',
-              'Security Scanning',
-              'checkov',
-              'gitleaks',
-              'osv-scanner',
-              'trivy-fs',
-              'zizmor',
-              'PentestAgent',
-              'Vercel',
-              'Workers Builds',
-            ];
-
-            const relevantRuns = checkRuns.data.filter(run => {
-              const name = run.name?.toLowerCase() || '';
-              return requiredPatterns.some(p =>
-                name.includes(p.toLowerCase())
+            if (context.eventName === 'pull_request') {
+              const prNumber = context.payload.pull_request.number;
+              const { data: pr } = await github.rest.pulls.get({
+                owner, repo, pull_number: prNumber
+              });
+              if (pr.state === 'open' && !pr.draft) {
+                prsToCheck.push(pr);
+              }
+            } else {
+              // Scheduled or workflow_dispatch — check all open PRs
+              const { data: allPrs } = await github.rest.pulls.list({
+                owner, repo, state: 'open', per_page: 100
+              });
+              prsToCheck = allPrs.filter(pr =>
+                !pr.draft &&
+                pr.head.repo.full_name === `${owner}/${repo}` &&
+                pr.base.ref === 'main'
               );
-            });
+            }
 
-            // Check for INCOMPLETE checks (still running/pending)
-            const incompleteRuns = relevantRuns.filter(run =>
-              run.status !== 'completed'
-            );
-
-            if (incompleteRuns.length > 0) {
-              const names = incompleteRuns.map(r => r.name).join(', ');
-              core.notice(
-                `PR #${pr.number}: ${incompleteRuns.length} check(s) still running: ${names}. ` +
-                `Waiting for all checks to complete before evaluating.`
-              );
+            if (prsToCheck.length === 0) {
+              core.notice('No open non-draft PRs to check');
               return;
             }
 
-            // ALL checks are complete — now check for failures
-            const failedRuns = relevantRuns.filter(run =>
-              run.conclusion !== 'success' &&
-              run.conclusion !== 'skipped' &&
-              run.conclusion !== 'neutral'
-            );
+            for (const pr of prsToCheck) {
+              const headSha = pr.head.sha;
 
-            if (failedRuns.length > 0) {
-              const failDetails = failedRuns.map(r => {
-                const lines = [`  - **${r.name}**: ${r.conclusion}`];
-                if (r.html_url) {
-                  lines.push(`    View logs: ${r.html_url}`);
-                }
-                return lines.join('\n');
-              }).join('\n');
-
-              core.setFailed(
-                `PR #${pr.number} has ${failedRuns.length} failed check(s):\n\n${failDetails}\n\n` +
-                `To fix:\n` +
-                `1. Click the log URLs above to see the exact errors\n` +
-                `2. Fix the issues in your code\n` +
-                `3. Push a new commit — checks will re-run automatically\n\n` +
-                `The PR will be auto-approved once ALL checks pass.`
+              // Skip if already approved
+              const { data: reviews } = await github.rest.pulls.listReviews({
+                owner, repo, pull_number: pr.number
+              });
+              const alreadyApproved = reviews.some(
+                r => r.user?.type === 'Bot' && r.state === 'APPROVED'
               );
-              return;
+              if (alreadyApproved) continue;
+
+              // Get ALL check runs for this PR's head SHA
+              const { data: checkRuns } = await github.rest.checks.listForRef({
+                owner, repo, ref: headSha, per_page: 100
+              });
+
+              // Required check patterns
+              const requiredPatterns = [
+                'quality check',
+                'security scan',
+                'security scanning',
+                'checkov',
+                'gitleaks',
+                'osv-scanner',
+                'trivy-fs',
+                'zizmor',
+                'pentestagent',
+                'vercel',
+                'workers builds',
+              ];
+
+              const relevantRuns = checkRuns.data.filter(run => {
+                const name = (run.name || '').toLowerCase();
+                return requiredPatterns.some(p => name.includes(p));
+              });
+
+              if (relevantRuns.length === 0) {
+                core.notice(`PR #${pr.number}: No required checks found yet`);
+                continue;
+              }
+
+              // Check for INCOMPLETE checks
+              const incomplete = relevantRuns.filter(r => r.status !== 'completed');
+              if (incomplete.length > 0) {
+                core.notice(
+                  `PR #${pr.number}: ${incomplete.length}/${relevantRuns.length} checks still running. Waiting.`
+                );
+                continue;
+              }
+
+              // ALL checks complete — check for failures
+              const failed = relevantRuns.filter(r =>
+                r.conclusion !== 'success' &&
+                r.conclusion !== 'skipped' &&
+                r.conclusion !== 'neutral'
+              );
+
+              if (failed.length > 0) {
+                const details = failed.map(r =>
+                  `  - ${r.name}: ${r.conclusion} → ${r.html_url || 'no link'}`
+                ).join('\n');
+                core.warning(
+                  `PR #${pr.number}: ${failed.length} check(s) failed:\n${details}`
+                );
+                continue;
+              }
+
+              // ALL checks passed — approve
+              await github.rest.pulls.createReview({
+                owner, repo,
+                pull_number: pr.number,
+                event: 'APPROVE',
+                body: `All ${relevantRuns.length} required checks passed — auto-approved.`
+              });
+              core.notice(`PR #${pr.number} auto-approved`);
             }
-
-            // ALL checks passed — approve
-            await github.rest.pulls.createReview({
-              owner,
-              repo,
-              pull_number: pr.number,
-              event: 'APPROVE',
-              body: 'All required checks passed — auto-approved.'
-            });
-
-            core.notice(
-              `PR #${pr.number} auto-approved — all ${relevantRuns.length} checks passed`
-            );
