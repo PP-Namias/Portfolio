@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'v1';
+const CACHE_VERSION = 'v4';
 const STATIC_CACHE = `portfolio-static-${CACHE_VERSION}`;
 const API_CACHE = `portfolio-api-${CACHE_VERSION}`;
 const CMS_CACHE = `portfolio-cms-${CACHE_VERSION}`;
@@ -14,7 +14,7 @@ self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(STATIC_CACHE).then((cache) => {
       return cache.addAll(STATIC_ASSETS).catch(() => {
-        // Non-critical — proceed even if pre-cache fails
+        // Non-critical - proceed even if pre-cache fails
       });
     })
   );
@@ -38,13 +38,18 @@ self.addEventListener('fetch', (event) => {
   const { request } = event;
   const url = new URL(request.url);
 
-  if (url.pathname.startsWith('/_next/static/') || url.pathname.startsWith('/fonts/')) {
+  if (url.pathname.startsWith('/_next/static/')) {
+    event.respondWith(networkFirst(request, STATIC_CACHE));
+    return;
+  }
+
+  if (url.pathname.startsWith('/fonts/')) {
     event.respondWith(cacheFirst(request, STATIC_CACHE));
     return;
   }
 
   if (url.pathname.startsWith('/api/media/')) {
-    event.respondWith(cacheFirst(request, STATIC_CACHE));
+    event.respondWith(networkFirst(request, STATIC_CACHE));
     return;
   }
 
