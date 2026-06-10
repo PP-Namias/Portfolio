@@ -1,12 +1,10 @@
 name: Auto Approve PR
 
 on:
-  # Poll every 2 minutes after PR events to check if ALL checks passed
-  pull_request:
-    types: [opened, synchronize, reopened, ready_for_review]
-    branches: [main]
+  # ONLY schedule — eliminates race condition with check creation
+  # On PR events, new checks haven't started yet so the bot would
+  # see old passing checks and approve prematurely.
   schedule:
-    # Run every 2 minutes to catch check completions
     - cron: '*/2 * * * *'
   workflow_dispatch:
 
@@ -26,44 +24,31 @@ jobs:
             const owner = context.repo.owner;
             const repo = context.repo.repo;
 
-            // For scheduled runs, find all open PRs on non-default branches
-            // For PR events, only check the specific PR
-            let prsToCheck = [];
+            const { data: allPrs } = await github.rest.pulls.list({
+              owner, repo, state: 'open', per_page: 100
+            });
 
-            if (context.eventName === 'pull_request') {
-              const prNumber = context.payload.pull_request.number;
-              const { data: pr } = await github.rest.pulls.get({
-                owner, repo, pull_number: prNumber
-              });
-              if (pr.state === 'open' && !pr.draft) {
-                prsToCheck.push(pr);
-              }
-            } else {
-              // Scheduled or workflow_dispatch — check all open PRs
-              const { data: allPrs } = await github.rest.pulls.list({
-                owner, repo, state: 'open', per_page: 100
-              });
-              prsToCheck = allPrs.filter(pr =>
-                !pr.draft &&
-                pr.head.repo.full_name === `${owner}/${repo}` &&
-                pr.base.ref === 'main'
-              );
-            }
+            const prs = allPrs.filter(pr =>
+              !pr.draft &&
+              pr.head.repo.full_name === `${owner}/${repo}` &&
+              pr.base.ref === 'main'
+            );
 
-            if (prsToCheck.length === 0) {
-              core.notice('No open non-draft PRs to check');
+            if (prs.length === 0) {
+              core.notice('No open PRs to check');
               return;
             }
 
-            for (const pr of prsToCheck) {
+            for (const pr of prs) {
               const headSha = pr.head.sha;
 
-              // Skip if already approved
+              // Skip if already approved by a bot
               const { data: reviews } = await github.rest.pulls.listReviews({
                 owner, repo, pull_number: pr.number
               });
               const alreadyApproved = reviews.some(
-                r => r.user?.type === 'Bot' && r.state === 'APPROVED'
+                r => r.user?.type === 'Bot' && r.state === 'APPROVED' &&
+                     new Date(r.submitted_at) > new Date(pr.updated_at)
               );
               if (alreadyApproved) continue;
 
@@ -72,32 +57,28 @@ jobs:
                 owner, repo, ref: headSha, per_page: 100
               });
 
-              // Required check patterns
-              const requiredPatterns = [
-                'quality check',
-                'security scan',
-                'security scanning',
-                'checkov',
-                'gitleaks',
-                'osv-scanner',
-                'trivy-fs',
-                'zizmor',
-                'pentestagent',
-                'vercel',
-                'workers builds',
-              ];
-
+              // Only consider checks triggered BY this PR (not external)
               const relevantRuns = checkRuns.data.filter(run => {
                 const name = (run.name || '').toLowerCase();
-                return requiredPatterns.some(p => name.includes(p));
+                return name.includes('quality check') ||
+                       name.includes('security scan') ||
+                       name.includes('security scanning') ||
+                       name.includes('checkov') ||
+                       name.includes('gitleaks') ||
+                       name.includes('osv-scanner') ||
+                       name.includes('trivy-fs') ||
+                       name.includes('zizmor') ||
+                       name.includes('pentestagent') ||
+                       name.includes('vercel') ||
+                       name.includes('workers builds');
               });
 
               if (relevantRuns.length === 0) {
-                core.notice(`PR #${pr.number}: No required checks found yet`);
+                core.notice(`PR #${pr.number}: No required checks found yet — skipping`);
                 continue;
               }
 
-              // Check for INCOMPLETE checks
+              // Wait for ALL checks to complete
               const incomplete = relevantRuns.filter(r => r.status !== 'completed');
               if (incomplete.length > 0) {
                 core.notice(
@@ -106,7 +87,7 @@ jobs:
                 continue;
               }
 
-              // ALL checks complete — check for failures
+              // ALL complete — check for failures
               const failed = relevantRuns.filter(r =>
                 r.conclusion !== 'success' &&
                 r.conclusion !== 'skipped' &&
@@ -115,7 +96,7 @@ jobs:
 
               if (failed.length > 0) {
                 const details = failed.map(r =>
-                  `  - ${r.name}: ${r.conclusion} → ${r.html_url || 'no link'}`
+                  `  - ${r.name}: ${r.conclusion} ${r.html_url || ''}`
                 ).join('\n');
                 core.warning(
                   `PR #${pr.number}: ${failed.length} check(s) failed:\n${details}`
