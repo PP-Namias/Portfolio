@@ -3,6 +3,10 @@ name: Auto Approve PR
 on:
   check_suite:
     types: [completed]
+  # Also trigger when check runs complete (covers cases where
+  # check_suite doesn't fire for individual check runs)
+  check_run:
+    types: [completed]
 
 permissions:
   contents: read
@@ -11,8 +15,10 @@ permissions:
 jobs:
   auto-approve:
     if: >
-      github.event.check_suite.conclusion == 'success' &&
-      github.event.check_suite.head_branch != github.event.repository.default_branch
+      (github.event.check_suite?.conclusion == 'success' ||
+       github.event.check_run?.conclusion == 'success') &&
+      (github.event.check_suite?.head_branch || github.event.check_run?.check_suite?.head_branch) !=
+      github.event.repository.default_branch
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
@@ -22,8 +28,15 @@ jobs:
           script: |
             const owner = context.repo.owner;
             const repo = context.repo.repo;
-            const headBranch = context.payload.check_suite.head_branch;
-            const headSha = context.payload.check_suite.head_sha;
+            const headBranch = context.payload.check_suite?.head_branch ||
+                               context.payload.check_run?.check_suite?.head_branch;
+            const headSha = context.payload.check_suite?.head_sha ||
+                            context.payload.check_run?.head_sha;
+
+            if (!headBranch || !headSha) {
+              core.notice('Could not determine branch or SHA — skipping');
+              return;
+            }
 
             // Find the open PR for this branch
             const { data: prs } = await github.rest.pulls.list({
@@ -45,7 +58,7 @@ jobs:
               return;
             }
 
-            // Skip fork PRs (can't write reviews on forks)
+            // Skip fork PRs
             if (pr.head.repo.full_name !== `${owner}/${repo}`) {
               core.notice(`PR #${pr.number} is from a fork — skipping approval`);
               return;
@@ -67,7 +80,7 @@ jobs:
               return;
             }
 
-            // Get ALL check runs for this SHA (not just the triggering one)
+            // Get ALL check runs for this SHA
             const { data: checkRuns } = await github.rest.checks.listForRef({
               owner,
               repo,
@@ -75,8 +88,7 @@ jobs:
               per_page: 100
             });
 
-            // Filter to required/relevant check runs
-            // These are the checks that must ALL pass before auto-approval
+            // Define required check patterns (must ALL pass)
             const requiredPatterns = [
               'Quality Check',
               'Security Scan',
@@ -98,35 +110,40 @@ jobs:
               );
             });
 
-            // Check if ALL relevant runs are complete
+            // Check for INCOMPLETE checks (still running/pending)
             const incompleteRuns = relevantRuns.filter(run =>
               run.status !== 'completed'
             );
 
             if (incompleteRuns.length > 0) {
               const names = incompleteRuns.map(r => r.name).join(', ');
-              core.notice(`Waiting for ${incompleteRuns.length} check(s) to complete: ${names}`);
+              core.notice(
+                `PR #${pr.number}: ${incompleteRuns.length} check(s) still running: ${names}. ` +
+                `Waiting for all checks to complete before evaluating.`
+              );
               return;
             }
 
-            // Check if ALL relevant runs succeeded
+            // ALL checks are complete — now check for failures
             const failedRuns = relevantRuns.filter(run =>
-              run.conclusion !== 'success' && run.conclusion !== 'skipped' && run.conclusion !== 'neutral'
+              run.conclusion !== 'success' &&
+              run.conclusion !== 'skipped' &&
+              run.conclusion !== 'neutral'
             );
 
             if (failedRuns.length > 0) {
               const failDetails = failedRuns.map(r => {
-                const details = [`  - **${r.name}**: ${r.conclusion}`];
+                const lines = [`  - **${r.name}**: ${r.conclusion}`];
                 if (r.html_url) {
-                  details.push(`    View logs: ${r.html_url}`);
+                  lines.push(`    View logs: ${r.html_url}`);
                 }
-                return details.join('\n');
+                return lines.join('\n');
               }).join('\n');
 
               core.setFailed(
                 `PR #${pr.number} has ${failedRuns.length} failed check(s):\n\n${failDetails}\n\n` +
                 `To fix:\n` +
-                `1. Click the links above to view the failing logs\n` +
+                `1. Click the log URLs above to see the exact errors\n` +
                 `2. Fix the issues in your code\n` +
                 `3. Push a new commit — checks will re-run automatically\n\n` +
                 `The PR will be auto-approved once ALL checks pass.`
@@ -134,7 +151,7 @@ jobs:
               return;
             }
 
-            // All checks passed — approve
+            // ALL checks passed — approve
             await github.rest.pulls.createReview({
               owner,
               repo,
@@ -143,4 +160,6 @@ jobs:
               body: 'All required checks passed — auto-approved.'
             });
 
-            core.notice(`PR #${pr.number} auto-approved — all ${relevantRuns.length} checks passed`);
+            core.notice(
+              `PR #${pr.number} auto-approved — all ${relevantRuns.length} checks passed`
+            );
