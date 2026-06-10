@@ -18,6 +18,12 @@ This file is the entry point for any agent (opencode, future coding agents, or h
 - `code-review` — systematic review of TypeScript, React, accessibility, performance, and security
 - `seo-optimization` — meta tags, JSON-LD structured data, sitemaps, social previews
 - `testing-workflow` — write and maintain tests with Vitest and React Testing Library
+- `deployment-infrastructure` — deploy to Vercel/Cloudflare, manage env vars, troubleshoot builds, rollbacks
+- `sanity-data-operations` — Sanity schema changes, data migrations, debugging queries, revalidation
+- `debugging-error-tracking` — systematic debugging for console errors, hydration, network, performance
+- `performance-auditing` — Lighthouse audits, bundle analysis, image/font optimization, Core Web Vitals
+- `component-api-scaffolding` — create React components, API routes, SWR hooks, context providers
+- `pwa-service-worker` — service worker management, offline support, PWA manifest, cache strategies
 
 ## Home page sections
 
