@@ -91,6 +91,27 @@ export function ContactModal({ open, onClose }: Readonly<ContactModalProps>) {
     [socialLinks]
   );
 
+  const emailLinks = useMemo(() => {
+    const subject = form.subject.trim() || `Inquiry from ${form.name.trim()}`;
+    const message = [`Hi ${profile.name},`, '', form.message.trim(), '', '--', `${form.name.trim()}`, `${form.email.trim()}`].join('\n');
+    const encodedRecipient = encodeURIComponent(profile.email);
+    const encodedSubject = encodeURIComponent(subject);
+    const encodedMessage = encodeURIComponent(message);
+    return {
+      subject, message,
+      mailto: `mailto:${profile.email}?subject=${encodedSubject}&body=${encodedMessage}`,
+      gmail: `https://mail.google.com/mail/?view=cm&fs=1&to=${encodedRecipient}&su=${encodedSubject}&body=${encodedMessage}`,
+      outlook: `https://outlook.office.com/mail/deeplink/compose?to=${encodedRecipient}&subject=${encodedSubject}&body=${encodedMessage}`,
+    };
+  }, [form, profile.email, profile.name]);
+
+  const messagePreview = useMemo(() => {
+    const subject = form.subject.trim() || `Inquiry from ${form.name.trim()}`;
+    return [`To: ${profile.email}`, `Subject: subject`, '', `Hi ${profile.name},`, '', form.message.trim() || '(your message here)', '', '--', form.name.trim() || '(your name)', form.email.trim() || '(your email)'].join('\n');
+  }, [form, profile.email, profile.name]);
+
+  const [status, setStatus] = useState<'idle' | 'opening' | 'invalid' | 'copied' | 'copy-failed'>('idle');
+
   useEffect(() => {
     if (!open) return;
     try {
@@ -173,6 +194,24 @@ export function ContactModal({ open, onClose }: Readonly<ContactModalProps>) {
       subject: preset.subject,
       message: prev.message.trim().length > 0 ? prev.message : `${preset.starter}\n\n`,
     }));
+  };
+
+  const handleCopyDraft = async () => {
+    const validationErrors = validateFields(form, ['message']);
+    if (Object.keys(validationErrors).length > 0) { setErrors(validationErrors); setStatus('invalid'); return; }
+    try {
+      await globalThis.navigator.clipboard.writeText(`To: ${profile.email}\nSubject: ${emailLinks.subject}\n\n${emailLinks.message}`);
+      setStatus('copied');
+    } catch { setStatus('copy-failed'); }
+  };
+
+  const handleSubmit = () => {
+    const allFields: (keyof ContactFormState)[] = ['name', 'email', 'subject', 'message'];
+    const validationErrors = validateFields(form, allFields);
+    if (Object.keys(validationErrors).length > 0) { setErrors(validationErrors); setStatus('invalid'); return; }
+    setStatus('opening');
+    const popup = globalThis.open(emailLinks.mailto, '_blank', 'noopener,noreferrer');
+    if (!popup) globalThis.location.href = emailLinks.mailto;
   };
 
   const handleClearDraft = () => {
@@ -408,6 +447,106 @@ export function ContactModal({ open, onClose }: Readonly<ContactModalProps>) {
                       <button type="button" onClick={handleNext} className="inline-flex items-center gap-2 rounded-lg bg-accent-pink px-5 py-2.5 text-sm font-medium text-white hover:bg-accent-pink-hover dark:hover:bg-accent-pink-hover-dark transition-colors focus:outline-none focus:ring-2 focus:ring-accent-pink focus:ring-offset-2 dark:focus:ring-offset-background-dark">
                         Next
                         <span aria-hidden="true">&rarr;</span>
+                      </button>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+              {currentStep === 3 && (
+                <motion.div
+                  key="step-3"
+                  custom={direction}
+                  initial={{ opacity: 0, x: direction > 0 ? 40 : -40 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: direction > 0 ? -40 : 40 }}
+                  transition={{ duration: 0.2, ease: [0.25, 0.1, 0.25, 1] }}
+                  className="px-5 py-6 sm:px-8 sm:py-8"
+                >
+                  <div className="max-w-lg mx-auto space-y-6">
+                    <div className="space-y-1">
+                      <div className="inline-flex items-center gap-2 rounded-full bg-accent-pink/10 px-3 py-1 mb-2">
+                        <Send className="h-3.5 w-3.5 text-accent-pink" />
+                        <span className="text-xs font-medium text-accent-pink">Step 3</span>
+                      </div>
+                      <h3 className="text-xl sm:text-2xl font-bold text-text-primary-light dark:text-text-primary-dark">
+                        Your message
+                      </h3>
+                      <p className="text-sm text-text-secondary-light dark:text-text-secondary-dark">
+                        Write your message and I&apos;ll prepare a ready-to-send email.
+                      </p>
+                    </div>
+
+                    <div>
+                      <label htmlFor="contact-modal-message" className="mb-1.5 block text-sm font-medium text-text-primary-light dark:text-text-primary-dark">
+                        Message
+                      </label>
+                      <textarea
+                        id="contact-modal-message"
+                        name="message"
+                        rows={6}
+                        autoFocus
+                        value={form.message}
+                        onChange={(e) => handleChange('message', e.target.value)}
+                        className="w-full rounded-lg border border-border-light dark:border-border-dark bg-white dark:bg-card-bg-dark px-4 py-3 text-sm text-text-primary-light dark:text-text-primary-dark placeholder:text-text-muted-light dark:placeholder:text-text-muted-dark focus:outline-none focus:ring-2 focus:ring-accent-pink transition-colors resize-none"
+                        aria-invalid={errors.message ? 'true' : 'false'}
+                        aria-describedby={errors.message ? 'contact-modal-message-error' : undefined}
+                      />
+                      <div className="flex items-center justify-between mt-1.5">
+                        {errors.message ? <p id="contact-modal-message-error" className="text-xs text-red-500">{errors.message}</p> : <span />}
+                        <span className={`text-[11px] ${form.message.trim().length >= 15 ? 'text-emerald-500' : 'text-text-muted-light dark:text-text-muted-dark'}`}>
+                          {form.message.trim().length} / 15 min
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="rounded-xl border border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark overflow-hidden">
+                      <div className="px-4 py-2 border-b border-border-light dark:border-border-dark flex items-center gap-2">
+                        <Mail className="h-3.5 w-3.5 text-text-muted-light dark:text-text-muted-dark" />
+                        <span className="text-xs font-medium text-text-muted-light dark:text-text-muted-dark">Email preview</span>
+                      </div>
+                      <pre className="px-4 py-3 text-xs text-text-secondary-light dark:text-text-secondary-dark whitespace-pre-wrap font-sans leading-relaxed max-h-40 overflow-y-auto">
+                        {messagePreview}
+                      </pre>
+                    </div>
+
+                    <div className="space-y-3">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <button type="button" onClick={handleSubmit} className="inline-flex items-center gap-2 rounded-lg bg-accent-pink px-5 py-2.5 text-sm font-medium text-white hover:bg-accent-pink-hover dark:hover:bg-accent-pink-hover-dark transition-colors focus:outline-none focus:ring-2 focus:ring-accent-pink focus:ring-offset-2 dark:focus:ring-offset-background-dark">
+                          <Send className="h-4 w-4" />
+                          Open email draft
+                        </button>
+                        <button type="button" onClick={handleCopyDraft} className="inline-flex items-center gap-2 rounded-lg border border-border-light dark:border-border-dark px-4 py-2.5 text-sm font-medium text-text-secondary-light dark:text-text-secondary-dark hover:text-accent-pink hover:border-accent-pink dark:hover:text-accent-pink dark:hover:border-accent-pink transition-colors">
+                          <Clipboard className="h-4 w-4" />
+                          Copy draft
+                        </button>
+                      </div>
+                      <div className="flex flex-wrap gap-2">
+                        <a href={emailLinks.gmail} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 rounded-lg border border-border-light dark:border-border-dark px-3 py-1.5 text-xs font-medium text-text-secondary-light dark:text-text-secondary-dark hover:text-accent-pink hover:border-accent-pink transition-colors">
+                          Open Gmail
+                        </a>
+                        <a href={emailLinks.outlook} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 rounded-lg border border-border-light dark:border-border-dark px-3 py-1.5 text-xs font-medium text-text-secondary-light dark:text-text-secondary-dark hover:text-accent-pink hover:border-accent-pink transition-colors">
+                          Open Outlook
+                        </a>
+                      </div>
+                    </div>
+
+                    {status !== 'idle' ? (
+                      <div aria-live="polite" className="rounded-lg border border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark px-4 py-2.5 text-xs sm:text-sm">
+                        {status === 'opening' && <span className="inline-flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400"><Mail className="h-3.5 w-3.5" /> Email draft opened.</span>}
+                        {status === 'copied' && <span className="text-emerald-600 dark:text-emerald-400">Draft copied to clipboard.</span>}
+                        {status === 'copy-failed' && <span className="text-amber-600 dark:text-amber-400">Couldn&apos;t copy. Use the Gmail/Outlook buttons above.</span>}
+                        {status === 'invalid' && <span className="text-red-500">Please fix the highlighted fields before continuing.</span>}
+                      </div>
+                    ) : null}
+
+                    <div className="flex items-center justify-between pt-2">
+                      <button type="button" onClick={handleBack} className="inline-flex items-center gap-2 rounded-lg border border-border-light dark:border-border-dark px-4 py-2.5 text-sm font-medium text-text-secondary-light dark:text-text-secondary-dark hover:text-text-primary-light dark:hover:text-text-primary-dark transition-colors">
+                        <span aria-hidden="true">&larr;</span>
+                        Back
+                      </button>
+                      <button type="button" onClick={handleClearDraft} className="inline-flex items-center gap-1.5 text-xs text-text-muted-light dark:text-text-muted-dark hover:text-red-500 dark:hover:text-red-400 transition-colors">
+                        <Trash2 className="h-3 w-3" />
+                        Start over
                       </button>
                     </div>
                   </div>
