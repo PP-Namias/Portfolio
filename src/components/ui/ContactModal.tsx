@@ -38,6 +38,13 @@ const INITIAL_FORM: ContactFormState = {
 const DRAFT_STORAGE_KEY = 'contact-modal-draft-v1';
 const BOOKING_MODAL_EVENT_KEY = 'booking-modal-event';
 
+const TOPIC_PRESETS = [
+  { label: 'Project Collaboration', icon: '💻', subject: 'Project collaboration inquiry', starter: 'I would like to discuss a potential project collaboration with you. Here are the details:' },
+  { label: 'Freelance Work', icon: '💼', subject: 'Freelance availability inquiry', starter: 'I have a freelance opportunity and would like to know your availability and rates.' },
+  { label: 'Consultation', icon: '🧠', subject: 'Consultation request', starter: 'I would like to book a technical consultation regarding this challenge:' },
+  { label: 'Speaking', icon: '🎤', subject: 'Speaking engagement inquiry', starter: 'I would like to invite you to speak at our event/workshop. Here are the details:' },
+] as const;
+
 const STEP_LABELS: Record<StepId, string> = {
   1: 'Who are you?',
   2: "What's this about?",
@@ -157,6 +164,15 @@ export function ContactModal({ open, onClose }: Readonly<ContactModalProps>) {
     if (errors[field]) {
       setErrors((prev) => { const next = { ...prev }; delete next[field]; return next; });
     }
+  };
+
+  const handleTopicSelect = (preset: (typeof TOPIC_PRESETS)[number]) => {
+    setForm((prev) => ({
+      ...prev,
+      topic: preset.label,
+      subject: preset.subject,
+      message: prev.message.trim().length > 0 ? prev.message : `${preset.starter}\n\n`,
+    }));
   };
 
   const handleClearDraft = () => {
@@ -313,6 +329,81 @@ export function ContactModal({ open, onClose }: Readonly<ContactModalProps>) {
                       <button type="button" onClick={handleClearDraft} className="inline-flex items-center gap-1.5 text-xs text-text-muted-light dark:text-text-muted-dark hover:text-red-500 dark:hover:text-red-400 transition-colors">
                         <Trash2 className="h-3 w-3" />
                         Start over
+                      </button>
+                      <button type="button" onClick={handleNext} className="inline-flex items-center gap-2 rounded-lg bg-accent-pink px-5 py-2.5 text-sm font-medium text-white hover:bg-accent-pink-hover dark:hover:bg-accent-pink-hover-dark transition-colors focus:outline-none focus:ring-2 focus:ring-accent-pink focus:ring-offset-2 dark:focus:ring-offset-background-dark">
+                        Next
+                        <span aria-hidden="true">&rarr;</span>
+                      </button>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+              {currentStep === 2 && (
+                <motion.div
+                  key="step-2"
+                  custom={direction}
+                  initial={{ opacity: 0, x: direction > 0 ? 40 : -40 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: direction > 0 ? -40 : 40 }}
+                  transition={{ duration: 0.2, ease: [0.25, 0.1, 0.25, 1] }}
+                  className="px-5 py-6 sm:px-8 sm:py-8"
+                >
+                  <div className="max-w-lg mx-auto space-y-6">
+                    <div className="space-y-1">
+                      <div className="inline-flex items-center gap-2 rounded-full bg-accent-pink/10 px-3 py-1 mb-2">
+                        <Sparkles className="h-3.5 w-3.5 text-accent-pink" />
+                        <span className="text-xs font-medium text-accent-pink">Step 2</span>
+                      </div>
+                      <h3 className="text-xl sm:text-2xl font-bold text-text-primary-light dark:text-text-primary-dark">
+                        What&apos;s this about?
+                      </h3>
+                      <p className="text-sm text-text-secondary-light dark:text-text-secondary-dark">
+                        Pick a topic to get started faster.
+                      </p>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-3">
+                      {TOPIC_PRESETS.map((preset) => (
+                        <button
+                          key={preset.label}
+                          type="button"
+                          onClick={() => handleTopicSelect(preset)}
+                          className={`group flex flex-col items-center gap-2 rounded-xl border-2 p-4 sm:p-5 text-center transition-all duration-200 ${
+                            form.topic === preset.label
+                              ? 'border-accent-pink bg-accent-pink/5 shadow-sm'
+                              : 'border-border-light dark:border-border-dark bg-white dark:bg-card-bg-dark hover:border-accent-pink/40 hover:shadow-sm'
+                          }`}
+                        >
+                          <span className="text-2xl" role="img" aria-hidden="true">{preset.icon}</span>
+                          <span className={`text-sm font-medium ${form.topic === preset.label ? 'text-accent-pink' : 'text-text-primary-light dark:text-text-primary-dark group-hover:text-accent-pink'}`}>
+                            {preset.label}
+                          </span>
+                          {form.topic === preset.label ? <Check className="h-4 w-4 text-accent-pink" /> : null}
+                        </button>
+                      ))}
+                    </div>
+
+                    <div>
+                      <label htmlFor="contact-modal-subject" className="mb-1.5 block text-sm font-medium text-text-primary-light dark:text-text-primary-dark">
+                        Subject
+                      </label>
+                      <input
+                        id="contact-modal-subject"
+                        name="subject"
+                        value={form.subject}
+                        onChange={(e) => handleChange('subject', e.target.value)}
+                        placeholder="What's the topic?"
+                        className="w-full rounded-lg border border-border-light dark:border-border-dark bg-white dark:bg-card-bg-dark px-4 py-2.5 text-sm text-text-primary-light dark:text-text-primary-dark placeholder:text-text-muted-light dark:placeholder:text-text-muted-dark focus:outline-none focus:ring-2 focus:ring-accent-pink transition-colors"
+                        aria-invalid={errors.subject ? 'true' : 'false'}
+                        aria-describedby={errors.subject ? 'contact-modal-subject-error' : undefined}
+                      />
+                      {errors.subject ? <p id="contact-modal-subject-error" className="mt-1.5 text-xs text-red-500">{errors.subject}</p> : null}
+                    </div>
+
+                    <div className="flex items-center justify-between pt-2">
+                      <button type="button" onClick={handleBack} className="inline-flex items-center gap-2 rounded-lg border border-border-light dark:border-border-dark px-4 py-2.5 text-sm font-medium text-text-secondary-light dark:text-text-secondary-dark hover:text-text-primary-light dark:hover:text-text-primary-dark transition-colors">
+                        <span aria-hidden="true">&larr;</span>
+                        Back
                       </button>
                       <button type="button" onClick={handleNext} className="inline-flex items-center gap-2 rounded-lg bg-accent-pink px-5 py-2.5 text-sm font-medium text-white hover:bg-accent-pink-hover dark:hover:bg-accent-pink-hover-dark transition-colors focus:outline-none focus:ring-2 focus:ring-accent-pink focus:ring-offset-2 dark:focus:ring-offset-background-dark">
                         Next
