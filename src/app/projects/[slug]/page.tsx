@@ -1,0 +1,39 @@
+import { notFound } from 'next/navigation';
+import { getProjectBySlug, getProjectSlugsForStaticParams } from '@/lib/cms-content.server';
+import { ProjectDetailPage } from '@/components/sections/ProjectDetailPage';
+import { IS_PROJECTS_REVAMP_ENABLED } from '@/lib/features';
+
+export const revalidate = 3600;
+
+export async function generateStaticParams() {
+  if (!IS_PROJECTS_REVAMP_ENABLED) return [];
+  return getProjectSlugsForStaticParams();
+}
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const project = await getProjectBySlug(slug);
+  if (!project) return { title: 'Project Not Found' };
+
+  return {
+    title: `${project.title} | PP Namias Portfolio`,
+    description: project.description,
+    openGraph: {
+      title: project.title,
+      description: project.description,
+      type: 'website',
+      ...(project.image ? { images: [{ url: project.image, alt: project.imageAlt || project.title }] } : {}),
+    },
+  };
+}
+
+export default async function ProjectPage({ params }: { params: Promise<{ slug: string }> }) {
+  if (!IS_PROJECTS_REVAMP_ENABLED) notFound();
+
+  const { slug } = await params;
+  const project = await getProjectBySlug(slug);
+
+  if (!project || !project.showcaseDetail) notFound();
+
+  return <ProjectDetailPage project={project} />;
+}
