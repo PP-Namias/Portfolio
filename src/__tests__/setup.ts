@@ -39,3 +39,16 @@ Object.defineProperty(globalThis, 'ResizeObserver', {
 	configurable: true,
 	value: ResizeObserverMock,
 });
+
+class IntersectionObserverMock {
+	constructor(_callback: IntersectionObserverCallback) {}
+observe(_target: Element) {}
+unobserve(_target: Element) {}
+disconnect() {}
+}
+
+Object.defineProperty(globalThis, 'IntersectionObserver', {
+	writable: true,
+	configurable: true,
+	value: IntersectionObserverMock,
+});
