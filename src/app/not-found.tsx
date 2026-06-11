@@ -201,17 +201,18 @@ pre code {
 
 const CODE_HTML = `<span class="green">&lt;!</span><span>DOCTYPE html</span><span class="green">&gt;</span>
 <span class="orange">&lt;html&gt;</span>
-    <span class="orange">&lt;style&gt;</span>
-   * {
-		        <span class="green">everything</span>:<span class="blue">awesome</span>;
-}
-     <span class="orange">&lt;/style&gt;</span>
- <span class="orange">&lt;body&gt;</span>
-              ERROR 404!
-				FILE NOT FOUND!
-				<span class="comment">&lt;!--this is a one page website,
-					how the fuck you got here?--&gt;
-		</span>`;
+  <span class="orange">&lt;style&gt;</span>
+    * {
+      <span class="green">everything</span>:<span class="blue">awesome</span>;
+    }
+  <span class="orange">&lt;/style&gt;</span>
+  <span class="orange">&lt;body&gt;</span>
+    ERROR 404!
+    FILE NOT FOUND!
+    <span class="comment">&lt;!--this is a one page website,
+      how the fuck you got here?--&gt;</span>
+  <span class="orange">&lt;/body&gt;</span>
+<span class="orange">&lt;/html&gt;</span>`;
 
 export default function NotFound() {
   const [mounted, setMounted] = useState(false);
@@ -257,22 +258,6 @@ export default function NotFound() {
           <br />
           <span className="orange">&lt;/html&gt;</span>
         </span>
-      </div>
-
-      {/* Custom message */}
-      <div
-        className="absolute top-[60%] left-0 right-0 text-center z-10 px-4"
-        style={{ fontFamily: "'Gilda Display', serif" }}
-      >
-        <p className="text-lg sm:text-xl md:text-2xl text-gray-300">
-          there&apos;s only one page website
-        </p>
-        <p
-          className="text-xl sm:text-2xl md:text-3xl font-bold mt-2"
-          style={{ color: '#f39c12' }}
-        >
-          how the fuck you got here?
-        </p>
       </div>
 
       {/* Back button */}
