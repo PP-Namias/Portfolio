@@ -28,6 +28,8 @@ This file is the entry point for any agent (opencode, future coding agents, or h
 ## Home page sections
 
 - `BlogSection` (`src/components/sections/BlogSection.tsx`) — compact list of the latest 3 blog posts shown side-by-side with `CertificationsSection` on the home page. Gated by `IS_BLOG_VISIBLE` in `src/lib/features.ts`. Plan: `docs/prd/prd.blog.json`.
+- `ProjectsSectionRevamped` (`src/components/sections/ProjectsSectionRevamped.tsx`) — dual-tab project index (Live Projects / Showcase) with flat cards, sliding tab indicator, expand/collapse, and keyboard navigation. Gated by `IS_PROJECTS_REVAMP_ENABLED` in `src/lib/features.ts`. When disabled, the original `ProjectsSection` renders. Plan: `docs/prd/prd.projects-revamp.json`.
+- `ProjectDetailPage` (`src/components/sections/ProjectDetailPage.tsx`) — full detail page for showcase projects at `/projects/[slug]`. Includes hero image, challenge/solution/result, highlights, tech stack, gallery, and JSON-LD structured data. ISR-cached with 1-hour revalidation.
 
 ## React quality gate
 
