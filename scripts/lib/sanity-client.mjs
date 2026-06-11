@@ -5,7 +5,7 @@
  * against the Sanity Content Lake.
  */
 
-const SANITY_API_VERSION = '2024-01-01';
+const SANITY_API_VERSION = 'v2024-01-01';
 
 /**
  * Create or update a project document (idempotent upsert)
@@ -76,7 +76,7 @@ export async function batchUpsertProjects(docs, token, projectId, dataset) {
  * @returns {Promise<any>} Query results
  */
 export async function sanityQuery(query, token, projectId, dataset) {
-  const url = `https://${projectId}.api.sanity.io/${SANITY_API_VERSION}/data/query/${dataset}`;
+  const url = `https://${projectId}.api.sanity.io/${SANITY_API_VERSION}/data/query/${dataset}?query=${encodeURIComponent(query)}`;
   
   const response = await fetch(url, {
     method: 'GET',
@@ -115,9 +115,10 @@ export async function fetchExistingProjects(token, projectId, dataset) {
  */
 export async function validateConnection(token, projectId, dataset) {
   try {
-    await sanityQuery(`count(*[_type == "project"])`, token, projectId, dataset);
+    const result = await sanityQuery(`count(*[_type == "project"])`, token, projectId, dataset);
     return true;
-  } catch {
+  } catch (error) {
+    console.error('Sanity connection error:', error.message);
     return false;
   }
 }

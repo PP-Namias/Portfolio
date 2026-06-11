@@ -14,6 +14,8 @@
  */
 
 import { parseArgs } from 'node:util';
+import { readFileSync } from 'node:fs';
+import { config } from 'dotenv';
 import { fetchRepo, fetchRepoLanguages, getRateLimit } from './lib/github-api.mjs';
 import { upsertProject, fetchExistingProjects, validateConnection } from './lib/sanity-client.mjs';
 import { CURATED_PROJECTS, getProjectsByTier, getProjectByRepo, getTierCounts } from './lib/project-curator.mjs';
@@ -22,12 +24,42 @@ import { getEnrichment, generateFallbackEnrichment } from './lib/enrichment.mjs'
 import { validateDocument } from './lib/validation.mjs';
 import { createResults, logSuccess, logSkip, logError, printReport, generateJsonReport } from './lib/reporter.mjs';
 
+// Load .env file from project root
+import { resolve, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+const projectRoot = resolve(__dirname, '..');
+
+config({ path: resolve(projectRoot, '.env') });
+
+// Load cached GitHub data for offline mode
+let CACHED_REPOS = {};
+try {
+  const cacheData = JSON.parse(readFileSync(new URL('../docs/github-projects.json', import.meta.url), 'utf-8'));
+  if (cacheData.projects) {
+    // Projects are organized by tier: { featured: [...], standard: [...], archived: [...] }
+    const allProjects = [
+      ...(cacheData.projects.featured || []),
+      ...(cacheData.projects.standard || []),
+      ...(cacheData.projects.archived || []),
+    ];
+    for (const repo of allProjects) {
+      CACHED_REPOS[repo.name] = repo;
+    }
+  }
+} catch {
+  // Cache file not available
+}
+
 // CLI argument parsing
 const { values } = parseArgs({
   options: {
     token: { type: 'string' },
     'github-token': { type: 'string' },
     'dry-run': { type: 'boolean', default: false },
+    offline: { type: 'boolean', default: true },
     filter: { type: 'string' },
     repo: { type: 'string' },
     verbose: { type: 'boolean', default: false },
@@ -45,6 +77,7 @@ Options:
   --token=<sanity-token>     Sanity API write token (or SANITY_API_READ_TOKEN env)
   --github-token=<gh-token>  GitHub PAT for higher rate limits (or GITHUB_TOKEN env)
   --dry-run                  Preview changes without writing to Sanity
+  --offline                  Use cached data from docs/github-projects.json (no GitHub API calls)
   --filter=<tier>            Import only: featured | standard | archived
   --repo=<repo-name>         Import a single repository
   --verbose                  Show detailed output per project
@@ -67,9 +100,10 @@ Examples:
 }
 
 // Environment and config
-const SANITY_TOKEN = values.token || process.env.SANITY_API_READ_TOKEN;
+const SANITY_TOKEN = values.token || process.env.SANITY_API_WRITE_TOKEN || process.env.SANITY_API_READ_TOKEN;
 const GITHUB_TOKEN = values['github-token'] || process.env.GITHUB_TOKEN;
 const DRY_RUN = values['dry-run'];
+const OFFLINE = values.offline !== false; // Default to online (use cache) unless --offline=false
 const FILTER = values.filter;
 const REPO_FILTER = values.repo;
 const VERBOSE = values.verbose;
@@ -98,6 +132,9 @@ async function main() {
   console.log(`GitHub:    PP-Namias`);
   console.log(`Sanity:    ${SANITY_PROJECT_ID || '(dry-run mode)'}`);
   console.log(`Dataset:   ${SANITY_DATASET}`);
+  if (OFFLINE) {
+    console.log(`Cache:     ${Object.keys(CACHED_REPOS).length} repos loaded from docs/github-projects.json`);
+  }
 
   // Determine which projects to process
   let projectsToProcess = CURATED_PROJECTS;
@@ -124,16 +161,18 @@ async function main() {
   console.log(`Total:     ${tierCounts.total} curated (${tierCounts.featured} featured, ${tierCounts.standard} standard, ${tierCounts.archived} archived)`);
   console.log(`Processing: ${projectsToProcess.length} projects\n`);
 
-  // Check GitHub rate limit
-  if (GITHUB_TOKEN) {
+  // Check GitHub rate limit (skip in offline mode)
+  if (GITHUB_TOKEN && !OFFLINE) {
     try {
       const rateLimit = await getRateLimit(GITHUB_TOKEN);
       console.log(`GitHub API: ${rateLimit.resources.core.remaining}/${rateLimit.resources.core.limit} requests remaining`);
     } catch {
       console.log('GitHub API: Could not check rate limit');
     }
-  } else {
+  } else if (!OFFLINE) {
     console.log('GitHub API: No token provided (60 req/hr limit)');
+  } else {
+    console.log('GitHub API: Offline mode (using cached data)');
   }
 
   // Validate Sanity connection
@@ -141,6 +180,9 @@ async function main() {
     const connected = await validateConnection(SANITY_TOKEN, SANITY_PROJECT_ID, SANITY_DATASET);
     if (!connected) {
       console.error('Error: Could not connect to Sanity. Check your token and project ID.');
+      console.error(`  Project ID: ${SANITY_PROJECT_ID}`);
+      console.error(`  Dataset: ${SANITY_DATASET}`);
+      console.error(`  Token: ${SANITY_TOKEN ? SANITY_TOKEN.substring(0, 20) + '...' : 'NOT SET'}`);
       process.exit(1);
     }
     console.log('Sanity:    Connected ✓');
@@ -156,13 +198,36 @@ async function main() {
     process.stdout.write(`[${curated.githubRepo}] `);
 
     try {
-      // Fetch GitHub data
-      const repo = await fetchRepo(curated.githubRepo, GITHUB_TOKEN);
+      // Fetch GitHub data (or use cache in offline mode)
+      let repo;
       let languages = {};
-      try {
-        languages = await fetchRepoLanguages(curated.githubRepo, GITHUB_TOKEN);
-      } catch {
-        // Languages fetch is optional
+
+      if (OFFLINE) {
+        // Use cached data
+        repo = CACHED_REPOS[curated.githubRepo];
+        if (!repo) {
+          console.log(`SKIP: No cached data for ${curated.githubRepo}`);
+          logSkip(results, curated.githubRepo, 'No cached data');
+          continue;
+        }
+        // Construct minimal repo object for document building
+        repo = {
+          name: repo.name || curated.githubRepo,
+          description: repo.description || '',
+          html_url: repo.githubUrl || `https://github.com/PP-Namias/${curated.githubRepo}`,
+          homepage: repo.liveURL || null,
+          created_at: repo.createdAt || new Date().toISOString(),
+          language: repo.technologies?.[0] || null,
+          topics: [],
+        };
+      } else {
+        // Fetch from GitHub API
+        repo = await fetchRepo(curated.githubRepo, GITHUB_TOKEN);
+        try {
+          languages = await fetchRepoLanguages(curated.githubRepo, GITHUB_TOKEN);
+        } catch {
+          // Languages fetch is optional
+        }
       }
 
       // Build Sanity document
