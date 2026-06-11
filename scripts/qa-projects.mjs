@@ -12,7 +12,18 @@
  */
 
 import { parseArgs } from 'node:util';
+import { config } from 'dotenv';
 import { sanityQuery, validateConnection } from './lib/sanity-client.mjs';
+
+// Load .env file from project root
+import { resolve, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+const projectRoot = resolve(__dirname, '..');
+
+config({ path: resolve(projectRoot, '.env') });
 
 // CLI argument parsing
 const { values } = parseArgs({
@@ -133,15 +144,15 @@ async function main() {
   const showcaseQuery = `*[_type == "project" && showcaseDetail == true] {
     _id,
     title,
-    hasChallenge: defined(challenge),
-    hasSolution: defined(solution),
-    hasResult: defined(result),
-    hasImage: defined(image),
+    challenge,
+    solution,
+    result,
+    image,
     "highlightCount": count(highlights)
   }`;
   const showcaseProjects = await sanityQuery(showcaseQuery, SANITY_TOKEN, SANITY_PROJECT_ID, SANITY_DATASET);
 
-  const incompleteShowcase = showcaseProjects.filter(p => !p.hasChallenge || !p.hasSolution || !p.hasResult);
+  const incompleteShowcase = showcaseProjects.filter(p => !p.challenge || !p.solution || !p.result);
   const missingHighlights = showcaseProjects.filter(p => p.highlightCount < 4);
 
   if (incompleteShowcase.length > 0) {

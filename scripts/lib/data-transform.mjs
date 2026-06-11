@@ -53,7 +53,7 @@ export function buildSanityDocument(repo, curated, languages) {
 
     // Ordering
     order: curated.order || getOrderFromTier(curated.tier),
-    featuredRank: curated.featuredRank || getFeaturedRank(curated.tier),
+    featuredRank: curated.featuredRank || getFeaturedRank(curated.tier, curated.order),
 
     // Feature flags
     showcaseDetail: curated.showcaseDetail || false,
@@ -124,15 +124,16 @@ function getOrderFromTier(tier) {
 }
 
 /**
- * Get featured rank from tier
+ * Get featured rank from tier and order
  * @param {string} tier - Project tier
+ * @param {number} [order] - Project order within tier
  * @returns {number} Featured rank
  */
-function getFeaturedRank(tier) {
+function getFeaturedRank(tier, order) {
   switch (tier) {
-    case 'featured': return 1;
-    case 'standard': return 2;
-    case 'archived': return 3;
+    case 'featured': return order || 1;
+    case 'standard': return 14 + (order || 0);
+    case 'archived': return 28 + (order || 0);
     default: return 99;
   }
 }
