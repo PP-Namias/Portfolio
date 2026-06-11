@@ -63,7 +63,7 @@ describe('app metadata routes', () => {
   });
 
   it('sitemap returns only homepage when blog is hidden', async () => {
-    vi.doMock('@/lib/features', () => ({ IS_BLOG_VISIBLE: false }));
+    vi.doMock('@/lib/features', () => ({ IS_BLOG_VISIBLE: false, IS_PROJECTS_REVAMP_ENABLED: false }));
 
     const mod = await import('@/app/sitemap');
     const result = await mod.default();
@@ -73,7 +73,7 @@ describe('app metadata routes', () => {
   });
 
   it('sitemap includes blog and post entries when blog is visible', async () => {
-    vi.doMock('@/lib/features', () => ({ IS_BLOG_VISIBLE: true }));
+    vi.doMock('@/lib/features', () => ({ IS_BLOG_VISIBLE: true, IS_PROJECTS_REVAMP_ENABLED: false }));
 
     const mod = await import('@/app/sitemap');
     const result = await mod.default();

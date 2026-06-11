@@ -54,6 +54,10 @@ export interface ProjectImpactMetric {
 export interface ProjectGalleryItem {
   image: string;
   caption: string;
+  alt?: string;
+  credit?: string;
+  source?: string;
+  license?: string;
 }
 
 export type ProjectStatus = 'completed' | 'in-progress' | 'prototype';
@@ -63,6 +67,7 @@ export type ProjectTier = 'featured' | 'standard' | 'archived';
 export interface Project {
   title: string;
   image: string;
+  imageAlt?: string;
   description: string;
   challenge?: string;
   solution?: string;

@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Image from '@/components/ui/OptimizedImage';
+import Link from 'next/link';
 import { motion, useReducedMotion } from 'framer-motion';
 import { ArrowLeft, ExternalLink, Github, FileText } from 'lucide-react';
 import { Project } from '@/types';
@@ -39,13 +40,13 @@ export function ProjectDetailPage({ project }: Readonly<ProjectDetailPageProps>)
         className="mx-auto max-w-3xl px-4 sm:px-6 pt-8 pb-16"
       >
         {/* Back link */}
-        <a
+        <Link
           href="/#projects"
           className="mb-6 inline-flex items-center gap-1.5 text-xs font-medium text-text-muted-light transition-colors hover:text-accent-pink dark:text-text-muted-dark"
         >
           <ArrowLeft className="h-3.5 w-3.5" />
           Back to Portfolio
-        </a>
+        </Link>
 
         {/* Hero image */}
         {heroSrc && (

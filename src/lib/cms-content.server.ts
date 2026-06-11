@@ -822,7 +822,7 @@ export async function getProjectBySlug(slug: string): Promise<Project | null> {
   }
 
   try {
-    const docs = await querySanity<Array<{
+    const doc = await querySanity<{
       title?: string;
       slug?: string;
       summary?: string;
@@ -854,34 +854,34 @@ export async function getProjectBySlug(slug: string): Promise<Project | null> {
       shortDescription?: string;
       highlights?: string[];
       githubRepo?: string;
-    }>>(
+    }>(
       `*[_type == "project" && slug.current == "${slug}"][0]{title,"slug":slug.current,summary,challenge,solution,result,year,category,featured,role,technologies,achievements,featuredRank,status,liveUrl,repositoryUrl,"imageUrl":image.asset->url,"imageAlt":image.alt,"galleryItems":gallery[]{url:asset->url,alt,caption,credit,source,license},tier,showcaseDetail,shortDescription,highlights,githubRepo}`,
       { tags: CONTENT_TAGS.project }
     );
 
-    if (!docs) return null;
+    if (!doc) return null;
 
     return {
-      title: docs.title || '',
-      image: buildMediaGatewayUrl(docs.imageUrl || '', { width: 960, quality: 85, sign: true }) || '',
-      imageAlt: docs.imageAlt || docs.title || '',
-      description: docs.summary || '',
-      challenge: docs.challenge || undefined,
-      solution: docs.solution || undefined,
-      result: docs.result || undefined,
-      featured: docs.featured || false,
-      repositoryURL: docs.repositoryUrl || null,
-      liveURL: docs.liveUrl || null,
+      title: doc.title || '',
+      image: buildMediaGatewayUrl(doc.imageUrl || '', { width: 960, quality: 85, sign: true }) || '',
+      imageAlt: doc.imageAlt || doc.title || '',
+      description: doc.summary || '',
+      challenge: doc.challenge || undefined,
+      solution: doc.solution || undefined,
+      result: doc.result || undefined,
+      featured: doc.featured || false,
+      repositoryURL: doc.repositoryUrl || null,
+      liveURL: doc.liveUrl || null,
       processURL: null,
-      detailURL: docs.liveUrl || docs.repositoryUrl || null,
-      tags: docs.technologies || [],
-      year: docs.year || new Date().getFullYear(),
-      category: docs.category,
-      role: docs.role,
-      impactMetrics: (docs.achievements || []).map((a, i) => ({ label: `Highlight ${i + 1}`, value: a })),
-      featuredRank: docs.featuredRank || null,
-      status: (docs.status as Project['status']) || undefined,
-      gallery: (docs.galleryItems ?? []).map((g) => ({
+      detailURL: doc.liveUrl || doc.repositoryUrl || null,
+      tags: doc.technologies || [],
+      year: doc.year || new Date().getFullYear(),
+      category: doc.category,
+      role: doc.role,
+      impactMetrics: (doc.achievements || []).map((a: string, i: number) => ({ label: `Highlight ${i + 1}`, value: a })),
+      featuredRank: doc.featuredRank || null,
+      status: (doc.status as Project['status']) || undefined,
+      gallery: (doc.galleryItems ?? []).map((g: { url?: string; alt?: string; caption?: string; credit?: string; source?: string; license?: string }) => ({
         image: g.url || '',
         caption: g.caption || '',
         alt: g.alt || g.caption || '',
@@ -889,12 +889,12 @@ export async function getProjectBySlug(slug: string): Promise<Project | null> {
         source: g.source || '',
         license: g.license || '',
       })),
-      tier: (docs.tier as Project['tier']) || 'standard',
-      showcaseDetail: docs.showcaseDetail || false,
-      shortDescription: docs.shortDescription || '',
-      highlights: docs.highlights || [],
-      githubRepo: docs.githubRepo || '',
-      slug: docs.slug || slug,
+      tier: (doc.tier as Project['tier']) || 'standard',
+      showcaseDetail: doc.showcaseDetail || false,
+      shortDescription: doc.shortDescription || '',
+      highlights: doc.highlights || [],
+      githubRepo: doc.githubRepo || '',
+      slug: doc.slug || slug,
     };
   } catch (err) {
     if (process.env.NODE_ENV !== 'test') {
