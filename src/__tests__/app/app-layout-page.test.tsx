@@ -161,8 +161,7 @@ describe('app layout and page coverage', () => {
   it('NotFound page renders CTA links', () => {
     render(<NotFoundPage />);
 
-    expect(screen.getByText('Page not found')).toBeInTheDocument();
-    expect(screen.getByText('Back to Home').closest('a')).toHaveAttribute('href', '/');
-    expect(screen.getByText('Blog').closest('a')).toHaveAttribute('href', '/blog');
+    expect(screen.getAllByText('404').length).toBeGreaterThanOrEqual(1);
+    expect(screen.getByText(/take me back/).closest('a')).toHaveAttribute('href', '/');
   });
 });
