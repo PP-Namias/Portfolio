@@ -1,4 +1,4 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 
 vi.mock('framer-motion', async () => {
@@ -8,6 +8,14 @@ vi.mock('framer-motion', async () => {
     useReducedMotion: () => false,
   };
 });
+
+vi.mock('next/link', () => ({
+  default: ({ children, href, ...props }: React.PropsWithChildren<{ href: string }>) => (
+    <a href={href} {...props}>
+      {children}
+    </a>
+  ),
+}));
 
 const mockProjects = [
   {
@@ -55,6 +63,51 @@ const mockProjects = [
     shortDescription: 'Second live project',
     slug: 'live-app-2',
   },
+  {
+    title: 'Live App 3',
+    image: '',
+    description: 'Third live project',
+    tags: ['Vue'],
+    year: 2022,
+    liveURL: 'https://example3.com',
+    repositoryURL: null,
+    processURL: null,
+    status: 'completed' as const,
+    tier: 'standard' as const,
+    showcaseDetail: false,
+    shortDescription: 'Third live project',
+    slug: 'live-app-3',
+  },
+  {
+    title: 'Live App 4',
+    image: '',
+    description: 'Fourth live project',
+    tags: ['Svelte'],
+    year: 2021,
+    liveURL: 'https://example4.com',
+    repositoryURL: null,
+    processURL: null,
+    status: 'completed' as const,
+    tier: 'standard' as const,
+    showcaseDetail: false,
+    shortDescription: 'Fourth live project',
+    slug: 'live-app-4',
+  },
+  {
+    title: 'Live App 5',
+    image: '',
+    description: 'Fifth live project',
+    tags: ['Angular'],
+    year: 2020,
+    liveURL: 'https://example5.com',
+    repositoryURL: null,
+    processURL: null,
+    status: 'completed' as const,
+    tier: 'standard' as const,
+    showcaseDetail: false,
+    shortDescription: 'Fifth live project',
+    slug: 'live-app-5',
+  },
 ];
 
 vi.mock('@/hooks/useCmsContent', () => ({
@@ -65,47 +118,39 @@ describe('ProjectsSectionRevamped', () => {
   it('renders the section heading with project count', async () => {
     const { ProjectsSectionRevamped } = await import('@/components/sections/ProjectsSectionRevamped');
     render(<ProjectsSectionRevamped />);
-    expect(screen.getByText('Projects')).toBeDefined();
-    expect(screen.getByText('3')).toBeDefined();
+    expect(screen.getByText('Recent Projects')).toBeDefined();
+    expect(screen.getByText('6')).toBeDefined();
   });
 
-  it('renders both tabs with correct counts', async () => {
+  it('renders a View All link to /projects', async () => {
     const { ProjectsSectionRevamped } = await import('@/components/sections/ProjectsSectionRevamped');
     render(<ProjectsSectionRevamped />);
-    expect(screen.getByText(/Live Projects/)).toBeDefined();
-    expect(screen.getByText(/Showcase/)).toBeDefined();
+    const viewAllLink = screen.getByText('View All').closest('a');
+    expect(viewAllLink).toBeDefined();
+    expect(viewAllLink?.getAttribute('href')).toBe('/projects');
   });
 
-  it('defaults to Live Projects tab showing only live projects', async () => {
+  it('shows only 4 most recent projects', async () => {
     const { ProjectsSectionRevamped } = await import('@/components/sections/ProjectsSectionRevamped');
     render(<ProjectsSectionRevamped />);
     expect(screen.getByText('Live App 1')).toBeDefined();
-    expect(screen.getByText('Live App 2')).toBeDefined();
-    expect(screen.queryByText('Showcase Project 1')).toBeNull();
-  });
-
-  it('switches to Showcase tab when clicked', async () => {
-    const { ProjectsSectionRevamped } = await import('@/components/sections/ProjectsSectionRevamped');
-    render(<ProjectsSectionRevamped />);
-    const showcaseTab = screen.getByText(/Showcase/).closest('button')!;
-    fireEvent.click(showcaseTab);
     expect(screen.getByText('Showcase Project 1')).toBeDefined();
-    expect(screen.queryByText('Live App 1')).toBeNull();
+    expect(screen.getByText('Live App 2')).toBeDefined();
+    expect(screen.getByText('Live App 3')).toBeDefined();
+    expect(screen.queryByText('Live App 4')).toBeNull();
+    expect(screen.queryByText('Live App 5')).toBeNull();
   });
 
-  it('shows "View case study" for showcase projects', async () => {
+  it('does not render tabs', async () => {
     const { ProjectsSectionRevamped } = await import('@/components/sections/ProjectsSectionRevamped');
     render(<ProjectsSectionRevamped />);
-    const showcaseTab = screen.getByText(/Showcase/).closest('button')!;
-    fireEvent.click(showcaseTab);
-    await waitFor(() => {
-      expect(screen.getByText('View case study')).toBeDefined();
-    });
+    expect(screen.queryByRole('tablist')).toBeNull();
   });
 
-  it('does not show expand button when 8 or fewer projects', async () => {
+  it('does not render expand/collapse button', async () => {
     const { ProjectsSectionRevamped } = await import('@/components/sections/ProjectsSectionRevamped');
     render(<ProjectsSectionRevamped />);
     expect(screen.queryByText(/View all/)).toBeNull();
+    expect(screen.queryByText(/Show less/)).toBeNull();
   });
 });
