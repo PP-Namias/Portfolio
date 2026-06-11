@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 
 vi.mock('framer-motion', async () => {
@@ -11,9 +11,9 @@ vi.mock('framer-motion', async () => {
 
 const mockProjects = [
   {
-    title: 'Live App',
+    title: 'Live App 1',
     image: '',
-    description: 'A live project',
+    description: 'First live project',
     tags: ['React', 'TypeScript'],
     year: 2025,
     liveURL: 'https://example.com',
@@ -22,13 +22,13 @@ const mockProjects = [
     status: 'completed' as const,
     tier: 'featured' as const,
     showcaseDetail: false,
-    shortDescription: 'A live project',
-    slug: 'live-app',
+    shortDescription: 'First live project',
+    slug: 'live-app-1',
   },
   {
-    title: 'Showcase Project',
+    title: 'Showcase Project 1',
     image: '',
-    description: 'A showcase project without a live URL',
+    description: 'First showcase project',
     tags: ['Python', 'AI'],
     year: 2024,
     liveURL: null,
@@ -37,8 +37,23 @@ const mockProjects = [
     status: 'completed' as const,
     tier: 'standard' as const,
     showcaseDetail: true,
-    shortDescription: 'A showcase project',
-    slug: 'showcase-project',
+    shortDescription: 'First showcase project',
+    slug: 'showcase-1',
+  },
+  {
+    title: 'Live App 2',
+    image: '',
+    description: 'Second live project',
+    tags: ['Next.js'],
+    year: 2023,
+    liveURL: 'https://example2.com',
+    repositoryURL: null,
+    processURL: null,
+    status: 'completed' as const,
+    tier: 'standard' as const,
+    showcaseDetail: false,
+    shortDescription: 'Second live project',
+    slug: 'live-app-2',
   },
 ];
 
@@ -51,10 +66,10 @@ describe('ProjectsSectionRevamped', () => {
     const { ProjectsSectionRevamped } = await import('@/components/sections/ProjectsSectionRevamped');
     render(<ProjectsSectionRevamped />);
     expect(screen.getByText('Projects')).toBeDefined();
-    expect(screen.getByText('2')).toBeDefined();
+    expect(screen.getByText('3')).toBeDefined();
   });
 
-  it('renders both tabs', async () => {
+  it('renders both tabs with correct counts', async () => {
     const { ProjectsSectionRevamped } = await import('@/components/sections/ProjectsSectionRevamped');
     render(<ProjectsSectionRevamped />);
     expect(screen.getByText(/Live Projects/)).toBeDefined();
@@ -64,7 +79,33 @@ describe('ProjectsSectionRevamped', () => {
   it('defaults to Live Projects tab showing only live projects', async () => {
     const { ProjectsSectionRevamped } = await import('@/components/sections/ProjectsSectionRevamped');
     render(<ProjectsSectionRevamped />);
-    expect(screen.getByText('Live App')).toBeDefined();
-    expect(screen.queryByText('Showcase Project')).toBeNull();
+    expect(screen.getByText('Live App 1')).toBeDefined();
+    expect(screen.getByText('Live App 2')).toBeDefined();
+    expect(screen.queryByText('Showcase Project 1')).toBeNull();
+  });
+
+  it('switches to Showcase tab when clicked', async () => {
+    const { ProjectsSectionRevamped } = await import('@/components/sections/ProjectsSectionRevamped');
+    render(<ProjectsSectionRevamped />);
+    const showcaseTab = screen.getByText(/Showcase/).closest('button')!;
+    fireEvent.click(showcaseTab);
+    expect(screen.getByText('Showcase Project 1')).toBeDefined();
+    expect(screen.queryByText('Live App 1')).toBeNull();
+  });
+
+  it('shows "View case study" for showcase projects', async () => {
+    const { ProjectsSectionRevamped } = await import('@/components/sections/ProjectsSectionRevamped');
+    render(<ProjectsSectionRevamped />);
+    const showcaseTab = screen.getByText(/Showcase/).closest('button')!;
+    fireEvent.click(showcaseTab);
+    await waitFor(() => {
+      expect(screen.getByText('View case study')).toBeDefined();
+    });
+  });
+
+  it('does not show expand button when 8 or fewer projects', async () => {
+    const { ProjectsSectionRevamped } = await import('@/components/sections/ProjectsSectionRevamped');
+    render(<ProjectsSectionRevamped />);
+    expect(screen.queryByText(/View all/)).toBeNull();
   });
 });

@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useMemo, useState } from 'react';
-import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import { useCmsContent } from '@/hooks/useCmsContent';
 import { Project } from '@/types';
@@ -110,15 +110,10 @@ export function ProjectsSectionRevamped() {
 
       {/* Project grid with stagger animation */}
       <div id={`tabpanel-${activeTab}`} role="tabpanel" aria-labelledby={`tab-${activeTab}`}>
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={activeTab}
-            initial={reduceMotion ? undefined : { opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={reduceMotion ? undefined : { opacity: 0 }}
-            transition={reduceMotion ? { duration: 0 } : { duration: 0.15 }}
-            className="grid grid-cols-1 gap-3 md:grid-cols-2"
-          >
+        <div
+          key={activeTab}
+          className="grid grid-cols-1 gap-3 md:grid-cols-2"
+        >
             {visibleProjects.map((project, index) => (
               <ProjectIndexCard
                 key={project.title}
@@ -126,9 +121,8 @@ export function ProjectsSectionRevamped() {
                 index={index}
                 reduceMotion={Boolean(reduceMotion)}
               />
-            ))}
-          </motion.div>
-        </AnimatePresence>
+          ))}
+        </div>
 
         {activeProjects.length === 0 && (
           <p className="py-8 text-center text-xs text-text-muted-light dark:text-text-muted-dark">
