@@ -360,8 +360,13 @@ const getCmsContentImpl = async (): Promise<CmsContent> => {
         source?: string;
         license?: string;
       }>;
+      tier?: string;
+      showcaseDetail?: boolean;
+      shortDescription?: string;
+      highlights?: string[];
+      githubRepo?: string;
     }>>(
-      '*[_type == "project"] | order(order asc, featuredRank asc, title asc){title,"slug":slug.current,summary,challenge,solution,result,year,category,featured,role,technologies,achievements,featuredRank,status,liveUrl,repositoryUrl,detailUrl,processUrl,previewVideoUrl,"imageFile":image.asset->originalFilename,"imageUrl":image.asset->url,"imageAlt":image.alt,"imageCaption":image.caption,"imageCredit":image.credit,"imageSource":image.source,"imageLicense":image.license,"galleryItems":gallery[]{"file":asset->originalFilename,"url":asset->url,alt,caption,credit,source,license}}',
+      '*[_type == "project"] | order(order asc, featuredRank asc, title asc){title,"slug":slug.current,summary,challenge,solution,result,year,category,featured,role,technologies,achievements,featuredRank,status,liveUrl,repositoryUrl,detailUrl,processUrl,previewVideoUrl,"imageFile":image.asset->originalFilename,"imageUrl":image.asset->url,"imageAlt":image.alt,"imageCaption":image.caption,"imageCredit":image.credit,"imageSource":image.source,"imageLicense":image.license,"galleryItems":gallery[]{"file":asset->originalFilename,"url":asset->url,alt,caption,credit,source,license},tier,showcaseDetail,shortDescription,highlights,githubRepo}',
       { tags: CONTENT_TAGS.project }
     ),
     querySanity<Array<{
@@ -563,11 +568,6 @@ const getCmsContentImpl = async (): Promise<CmsContent> => {
 
   const projects: Project[] = (projectDocs ?? []).map((project) => ({
     title: project.title || '',
-    // Use the Sanity-provided image URL when present. Avoid creating
-    // local runtime `/images/*` references here — those will be
-    // removed as part of the media cutover.
-    // Use a medium-sized preview image for project cards to avoid
-    // downloading full-resolution assets in the initial render.
     image:
       buildMediaGatewayUrl(project.imageUrl || (project.galleryItems?.[0]?.url ?? ''), { width: 560, quality: 85, sign: true }) ||
       resolveMediaPath(project.imageFile, project.imageUrl) ||
@@ -605,6 +605,12 @@ const getCmsContentImpl = async (): Promise<CmsContent> => {
       source: galleryItem.source || '',
       license: galleryItem.license || '',
     })),
+    tier: (project.tier as Project['tier']) || 'standard',
+    showcaseDetail: project.showcaseDetail || false,
+    shortDescription: project.shortDescription || '',
+    highlights: project.highlights || [],
+    githubRepo: project.githubRepo || '',
+    slug: project.slug || '',
   }));
 
   const certifications: Certification[] = (certificationDocs ?? []).map((certification, index) => ({
