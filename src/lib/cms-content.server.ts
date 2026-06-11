@@ -775,3 +775,131 @@ export async function getBlogPostSlugsForStaticParams(): Promise<{ slug: string 
     return cmsShared.fallbackBlogPosts.map((post) => ({ slug: post.slug }));
   }
 }
+
+/**
+ * Build-time-safe enumeration of project slugs for `generateStaticParams`.
+ * Only returns slugs for projects with showcaseDetail enabled.
+ */
+export async function getProjectSlugsForStaticParams(): Promise<{ slug: string }[]> {
+  const projectId = getProjectId();
+  if (!projectId) {
+    return cmsShared.fallbackCmsContent.projects
+      .filter((p) => p.showcaseDetail && p.slug)
+      .map((p) => ({ slug: p.slug! }));
+  }
+
+  try {
+    const client = getPublicClient();
+    const docs = await client.fetch<Array<{ slug?: string }>>(
+      '*[_type == "project" && showcaseDetail == true && defined(slug.current)]{"slug":slug.current}'
+    );
+    const slugs = (docs ?? [])
+      .map((doc) => doc.slug)
+      .filter((slug): slug is string => typeof slug === 'string' && slug.length > 0);
+    if (slugs.length === 0) {
+      return cmsShared.fallbackCmsContent.projects
+        .filter((p) => p.showcaseDetail && p.slug)
+        .map((p) => ({ slug: p.slug! }));
+    }
+    return slugs.map((slug) => ({ slug }));
+  } catch (err) {
+    if (process.env.NODE_ENV !== 'test') {
+      console.warn('[cms] project slug enumeration failed', err);
+    }
+    return cmsShared.fallbackCmsContent.projects
+      .filter((p) => p.showcaseDetail && p.slug)
+      .map((p) => ({ slug: p.slug! }));
+  }
+}
+
+/**
+ * Fetch a single project by slug for the detail page.
+ */
+export async function getProjectBySlug(slug: string): Promise<Project | null> {
+  const projectId = getProjectId();
+  if (!projectId) {
+    return cmsShared.fallbackCmsContent.projects.find((p) => p.slug === slug) ?? null;
+  }
+
+  try {
+    const docs = await querySanity<Array<{
+      title?: string;
+      slug?: string;
+      summary?: string;
+      challenge?: string;
+      solution?: string;
+      result?: string;
+      year?: number;
+      category?: string;
+      featured?: boolean;
+      role?: string;
+      technologies?: string[];
+      achievements?: string[];
+      featuredRank?: number;
+      status?: string;
+      liveUrl?: string;
+      repositoryUrl?: string;
+      imageUrl?: string;
+      imageAlt?: string;
+      galleryItems?: Array<{
+        url?: string;
+        alt?: string;
+        caption?: string;
+        credit?: string;
+        source?: string;
+        license?: string;
+      }>;
+      tier?: string;
+      showcaseDetail?: boolean;
+      shortDescription?: string;
+      highlights?: string[];
+      githubRepo?: string;
+    }>>(
+      `*[_type == "project" && slug.current == "${slug}"][0]{title,"slug":slug.current,summary,challenge,solution,result,year,category,featured,role,technologies,achievements,featuredRank,status,liveUrl,repositoryUrl,"imageUrl":image.asset->url,"imageAlt":image.alt,"galleryItems":gallery[]{url:asset->url,alt,caption,credit,source,license},tier,showcaseDetail,shortDescription,highlights,githubRepo}`,
+      { tags: CONTENT_TAGS.project }
+    );
+
+    if (!docs) return null;
+
+    return {
+      title: docs.title || '',
+      image: buildMediaGatewayUrl(docs.imageUrl || '', { width: 960, quality: 85, sign: true }) || '',
+      imageAlt: docs.imageAlt || docs.title || '',
+      description: docs.summary || '',
+      challenge: docs.challenge || undefined,
+      solution: docs.solution || undefined,
+      result: docs.result || undefined,
+      featured: docs.featured || false,
+      repositoryURL: docs.repositoryUrl || null,
+      liveURL: docs.liveUrl || null,
+      processURL: null,
+      detailURL: docs.liveUrl || docs.repositoryUrl || null,
+      tags: docs.technologies || [],
+      year: docs.year || new Date().getFullYear(),
+      category: docs.category,
+      role: docs.role,
+      impactMetrics: (docs.achievements || []).map((a, i) => ({ label: `Highlight ${i + 1}`, value: a })),
+      featuredRank: docs.featuredRank || null,
+      status: (docs.status as Project['status']) || undefined,
+      gallery: (docs.galleryItems ?? []).map((g) => ({
+        image: g.url || '',
+        caption: g.caption || '',
+        alt: g.alt || g.caption || '',
+        credit: g.credit || '',
+        source: g.source || '',
+        license: g.license || '',
+      })),
+      tier: (docs.tier as Project['tier']) || 'standard',
+      showcaseDetail: docs.showcaseDetail || false,
+      shortDescription: docs.shortDescription || '',
+      highlights: docs.highlights || [],
+      githubRepo: docs.githubRepo || '',
+      slug: docs.slug || slug,
+    };
+  } catch (err) {
+    if (process.env.NODE_ENV !== 'test') {
+      console.warn('[cms] project fetch failed for slug', slug, err);
+    }
+    return cmsShared.fallbackCmsContent.projects.find((p) => p.slug === slug) ?? null;
+  }
+}
