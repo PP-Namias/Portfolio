@@ -2,9 +2,9 @@
 
 import React, { useMemo, useState } from 'react';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
+import { ChevronDown, ChevronUp } from 'lucide-react';
 import { useCmsContent } from '@/hooks/useCmsContent';
 import { Project } from '@/types';
-import { Card } from '@/components/ui/Card';
 
 type TabId = 'live' | 'showcase';
 
@@ -12,6 +12,8 @@ const TABS: { id: TabId; label: string }[] = [
   { id: 'live', label: 'Live Projects' },
   { id: 'showcase', label: 'Showcase' },
 ];
+
+const INITIAL_VISIBLE = 8;
 
 function sortProjectsByTier(entries: Project[]): Project[] {
   const tierOrder = { featured: 0, standard: 1, archived: 2 };
@@ -38,6 +40,7 @@ export function ProjectsSectionRevamped() {
   const { projects } = useCmsContent();
   const reduceMotion = useReducedMotion();
   const [activeTab, setActiveTab] = useState<TabId>('live');
+  const [showAll, setShowAll] = useState(false);
 
   const liveProjects = useMemo(
     () => sortProjectsByTier(projects.filter(isLiveProject)),
@@ -50,6 +53,13 @@ export function ProjectsSectionRevamped() {
   );
 
   const activeProjects = activeTab === 'live' ? liveProjects : showcaseProjects;
+  const visibleProjects = showAll ? activeProjects : activeProjects.slice(0, INITIAL_VISIBLE);
+  const hasMore = activeProjects.length > INITIAL_VISIBLE;
+
+  const handleTabChange = (tab: TabId) => {
+    setActiveTab(tab);
+    setShowAll(false);
+  };
 
   return (
     <motion.section
@@ -65,54 +75,87 @@ export function ProjectsSectionRevamped() {
         </span>
       </h2>
 
-      {/* Tab bar */}
+      {/* Tab bar with sliding indicator */}
       <div className="relative mb-4 flex gap-1 rounded-lg border border-border-light bg-surface-light p-1 dark:border-border-dark dark:bg-surface-dark">
         {TABS.map((tab) => (
           <button
             key={tab.id}
             type="button"
-            onClick={() => setActiveTab(tab.id)}
+            role="tab"
+            aria-selected={activeTab === tab.id}
+            aria-controls={`tabpanel-${tab.id}`}
+            onClick={() => handleTabChange(tab.id)}
             className={`relative z-10 flex-1 rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${
               activeTab === tab.id
                 ? 'text-text-primary-light dark:text-text-primary-dark'
                 : 'text-text-muted-light hover:text-text-secondary-light dark:text-text-muted-dark dark:hover:text-text-secondary-dark'
             }`}
           >
-            {tab.label}
-            <span className="ml-1.5 text-[11px] text-text-muted-light dark:text-text-muted-dark">
-              ({tab.id === 'live' ? liveProjects.length : showcaseProjects.length})
+            {activeTab === tab.id && (
+              <motion.div
+                layoutId="projects-tab-indicator"
+                className="absolute inset-0 rounded-md bg-white shadow-sm dark:bg-card-bg-dark"
+                transition={reduceMotion ? { duration: 0 } : { type: 'spring', stiffness: 500, damping: 35 }}
+              />
+            )}
+            <span className="relative z-10">
+              {tab.label}
+              <span className="ml-1.5 text-[11px] text-text-muted-light dark:text-text-muted-dark">
+                ({tab.id === 'live' ? liveProjects.length : showcaseProjects.length})
+              </span>
             </span>
           </button>
         ))}
       </div>
 
-      {/* Project grid */}
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={activeTab}
-          initial={reduceMotion ? undefined : { opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={reduceMotion ? undefined : { opacity: 0, y: -8 }}
-          transition={reduceMotion ? { duration: 0 } : { duration: 0.2 }}
-          className="grid grid-cols-1 gap-3 md:grid-cols-2"
-        >
-          {activeProjects.map((project, index) => (
-            <ProjectIndexCard
-              key={project.title}
-              project={project}
-              index={index}
-              reduceMotion={Boolean(reduceMotion)}
-            />
-          ))}
-        </motion.div>
-      </AnimatePresence>
+      {/* Project grid with stagger animation */}
+      <div id={`tabpanel-${activeTab}`} role="tabpanel" aria-labelledby={`tab-${activeTab}`}>
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={activeTab}
+            initial={reduceMotion ? undefined : { opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={reduceMotion ? undefined : { opacity: 0 }}
+            transition={reduceMotion ? { duration: 0 } : { duration: 0.15 }}
+            className="grid grid-cols-1 gap-3 md:grid-cols-2"
+          >
+            {visibleProjects.map((project, index) => (
+              <ProjectIndexCard
+                key={project.title}
+                project={project}
+                index={index}
+                reduceMotion={Boolean(reduceMotion)}
+              />
+            ))}
+          </motion.div>
+        </AnimatePresence>
 
-      {activeProjects.length === 0 && (
-        <p className="py-8 text-center text-xs text-text-muted-light dark:text-text-muted-dark">
-          {activeTab === 'live'
-            ? 'No live projects yet.'
-            : 'No showcase projects yet.'}
-        </p>
+        {activeProjects.length === 0 && (
+          <p className="py-8 text-center text-xs text-text-muted-light dark:text-text-muted-dark">
+            {activeTab === 'live'
+              ? 'No live projects yet.'
+              : 'No showcase projects yet.'}
+          </p>
+        )}
+      </div>
+
+      {/* Expand / collapse */}
+      {hasMore && (
+        <button
+          type="button"
+          onClick={() => setShowAll((prev) => !prev)}
+          className="mx-auto mt-4 flex items-center gap-1 rounded-sm text-xs font-medium text-text-muted-light transition-colors hover:text-accent-pink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-pink/50 dark:text-text-muted-dark"
+        >
+          {showAll ? (
+            <>
+              Show less <ChevronUp className="h-3.5 w-3.5" />
+            </>
+          ) : (
+            <>
+              View all {activeProjects.length} projects <ChevronDown className="h-3.5 w-3.5" />
+            </>
+          )}
+        </button>
       )}
     </motion.section>
   );
@@ -126,6 +169,7 @@ interface ProjectIndexCardProps {
 
 function ProjectIndexCard({ project, index, reduceMotion }: Readonly<ProjectIndexCardProps>) {
   const detailHref = project.liveURL || project.repositoryURL || null;
+  const hasLink = Boolean(detailHref);
 
   const cardTransition = reduceMotion
     ? { duration: 0 }
@@ -134,11 +178,22 @@ function ProjectIndexCard({ project, index, reduceMotion }: Readonly<ProjectInde
   return (
     <motion.article
       initial={reduceMotion ? undefined : { opacity: 0, y: 10 }}
-      whileInView={reduceMotion ? undefined : { opacity: 1, y: 0 }}
-      viewport={{ once: true }}
+      animate={{ opacity: 1, y: 0 }}
       transition={cardTransition}
       className="group/card relative rounded-xl border border-border-light bg-white p-4 transition-[border-color,box-shadow] duration-300 hover:border-accent-pink/50 hover:shadow-[0_18px_40px_-22px_rgba(236,72,153,0.55)] dark:border-border-dark dark:bg-card-bg-dark"
     >
+      {hasLink && (
+        <a
+          href={detailHref!}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="absolute inset-0 z-30 rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-pink/60"
+          aria-label={`Open ${project.title}`}
+        >
+          <span className="sr-only">Open {project.title}</span>
+        </a>
+      )}
+
       <h3 className="text-sm font-semibold text-text-primary-light dark:text-text-primary-dark">
         {project.title}
       </h3>
@@ -179,16 +234,11 @@ function ProjectIndexCard({ project, index, reduceMotion }: Readonly<ProjectInde
         )}
       </div>
 
-      {detailHref && (
-        <a
-          href={detailHref}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="absolute inset-0 z-30 rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-pink/60"
-          aria-label={`Open ${project.title}`}
-        >
-          <span className="sr-only">Open {project.title}</span>
-        </a>
+      {project.showcaseDetail && !project.liveURL && (
+        <div className="mt-3 flex items-center gap-1 text-[11px] font-medium text-accent-pink">
+          <span>View case study</span>
+          <span aria-hidden>→</span>
+        </div>
       )}
     </motion.article>
   );
