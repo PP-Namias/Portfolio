@@ -1,132 +1,151 @@
 'use client';
 
 import Link from 'next/link';
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState } from 'react';
 
 const GLITCH_CSS = `
-@import url('https://fonts.googleapis.com/css2?family=Gilda+Display&family=Oxanium:wght@700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Gilda+Display&family=Share+Tech+Mono&display=swap');
+
+.error {
+  text-align: center;
+  font-family: 'Gilda Display', serif;
+  text-align: center;
+  width: 100%;
+  height: 120px;
+  margin: auto;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -60px;
+  right: 0;
+  animation: noise-3 1s linear infinite;
+  overflow: default;
+}
+
+.glitch-404::after {
+  content: 'error 404';
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 100px;
+  text-align: center;
+  width: 550px;
+  margin: auto;
+  position: absolute;
+  top: 25%;
+  bottom: 0;
+  left: 0;
+  right: 35%;
+  opacity: 0;
+  color: white;
+  animation: noise-1 .2s linear infinite;
+}
+.glitch-404::before {
+  content: 'error 404';
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 100px;
+  text-align: center;
+  width: 550px;
+  margin: auto;
+  position: absolute;
+  top: 25%;
+  bottom: 0;
+  left: 0;
+  right: 35%;
+  opacity: 0;
+  color: white;
+  animation: noise-2 .2s linear infinite;
+}
+
+.info {
+  text-align: center;
+  width: 200px;
+  height: 60px;
+  margin: auto;
+  position: absolute;
+  top: 280px;
+  bottom: 0;
+  left: 20px;
+  right: 0;
+  animation: noise-3 1s linear infinite;
+}
+
+.info::before {
+  content: 'file not found';
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 100px;
+  text-align: center;
+  width: 800px;
+  margin: auto;
+  position: absolute;
+  top: 20px;
+  bottom: 0;
+  left: 40px;
+  right: 100px;
+  opacity: 0;
+  color: white;
+  animation: noise-2 .2s linear infinite;
+}
+
+.info::after {
+  content: 'file not found';
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 100px;
+  text-align: center;
+  width: 800px;
+  margin: auto;
+  position: absolute;
+  top: 20px;
+  bottom: 0;
+  left: 40px;
+  right: 0;
+  opacity: 0;
+  color: white;
+  animation: noise-1 .2s linear infinite;
+}
 
 @keyframes noise-1 {
-  0%, 100% { background-position: 0 0; }
-  10% { background-position: -5% -10%; }
-  20% { background-position: -15% 5%; }
-  30% { background-position: 7% -25%; }
-  40% { background-position: 20% 25%; }
-  50% { background-position: -25% 10%; }
-  60% { background-position: 15% 5%; }
-  70% { background-position: 0% 15%; }
-  80% { background-position: 25% 35%; }
-  90% { background-position: -10% 10%; }
+  0%, 20%, 40%, 60%, 70%, 90% {opacity: 0;}
+  10% {opacity: .1;}
+  50% {opacity: .5; left: -6px;}
+  80% {opacity: .3;}
+  100% {opacity: .6; left: 2px;}
 }
 
 @keyframes noise-2 {
-  0%, 100% { background-position: 0 0; }
-  10% { background-position: 5% 10%; }
-  20% { background-position: -10% -5%; }
-  30% { background-position: 15% -20%; }
-  40% { background-position: -20% -25%; }
-  50% { background-position: 25% -10%; }
-  60% { background-position: -15% 10%; }
-  70% { background-position: 10% -15%; }
-  80% { background-position: -25% 25%; }
-  90% { background-position: 5% -5%; }
+  0%, 20%, 40%, 60%, 70%, 90% {opacity: 0;}
+  10% {opacity: .1;}
+  50% {opacity: .5; left: 6px;}
+  80% {opacity: .3;}
+  100% {opacity: .6; left: -2px;}
 }
 
 @keyframes noise-3 {
-  0%, 100% { transform: translate(0, 0); }
-  10% { transform: translate(-5px, 5px); }
-  20% { transform: translate(-10px, 15px); }
-  30% { transform: translate(5px, -5px); }
-  40% { transform: translate(15px, -25px); }
-  50% { transform: translate(-25px, 10px); }
-  60% { transform: translate(15px, 15px); }
-  70% { transform: translate(0px, 15px); }
-  80% { transform: translate(-15px, -15px); }
-  90% { transform: translate(10px, 5px); }
+  0%,3%,5%,42%,44%,100% {opacity: 1; transform: scaleY(1);}
+  4.3% {opacity: 1; transform: scaleY(4);}
+  43% {opacity: 1; transform: scaleX(10) rotate(60deg);}
 }
 
-@keyframes glitch-skew {
-  0%, 100% { transform: skew(0deg); }
-  20% { transform: skew(-2deg); }
-  40% { transform: skew(3deg); }
-  60% { transform: skew(-1deg); }
-  80% { transform: skew(2deg); }
-}
-
-@keyframes glitch-blink {
-  0%, 100% { opacity: 1; }
-  33% { opacity: 0; }
-  66% { opacity: 1; }
-}
-
-.noise-1,
-.noise-2,
-.noise-3 {
-  content: "";
-  position: fixed;
-  top: -50%;
-  left: -50%;
-  right: -50%;
-  bottom: -50%;
-  width: 200%;
-  height: 200%;
-  background: transparent url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyBAMAAADsEZWCAAAAGFBMVEUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAANxM8MAAAACHRSTlMAIBAgECAQIFClbV0AAAAJcEhZcwAADsQAAA7EAZUrDhsAAAA2SURBVDjLY2AYBaNgFIyCUTAKRsEoGAWjYBTwHAA5DQALhMg0NTc3twAAAABJRU5ErkJggg==") repeat;
-  opacity: 0.15;
-  z-index: 100;
-  pointer-events: none;
-}
-
-.noise-1 { animation: noise-1 0.5s infinite linear; }
-.noise-2 { animation: noise-2 0.5s infinite linear reverse; }
-.noise-3 { animation: noise-3 0.5s infinite linear; }
-
-.glitch-wrapper {
-  position: relative;
-}
-
-.glitch-wrapper::before,
-.glitch-wrapper::after {
-  content: attr(data-text);
+.wrap {
+  top: 30%;
+  left: 25%;
+  height: 200px;
+  margin-top: -100px;
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
 }
-
-.glitch-wrapper::before {
-  color: #0ff;
-  z-index: -1;
-  animation: glitch-skew 3s infinite linear alternate-reverse;
+code {
+  color: white;
 }
-
-.glitch-wrapper::after {
-  color: #f0f;
-  z-index: -2;
-  animation: glitch-skew 3s infinite linear alternate-reverse;
-  animation-delay: 0.1s;
+span.blue {
+  color: #48beef;
 }
-
-.code-block {
-  font-family: 'Courier New', monospace;
-  font-size: 11px;
-  line-height: 1.6;
-  color: #555;
-  text-align: left;
-  user-select: none;
-  pointer-events: none;
-  white-space: pre;
+span.comment {
+  color: #7f8c8d;
 }
-
-.code-block .c-pink { color: #ff6188; }
-.code-block .c-blue { color: #a9b7c6; }
-.code-block .c-green { color: #6a8759; }
-.code-block .c-yellow { color: #bbb529; }
-.code-block .c-orange { color: #ff6188; }
-.code-block .c-cyan { color: #6897bb; }
-.code-block .c-red { color: #cc7832; }
-.code-block .c-white { color: #a9b7c6; }
+span.orange {
+  color: #f39c12;
+}
+span.green {
+  color: #33cc33;
+}
 `;
 
 export default function NotFound() {
@@ -142,87 +161,59 @@ export default function NotFound() {
     };
   }, []);
 
-  const codeLines = useMemo(() => [
-    { text: '  <', color: 'c-red' },
-    { text: 'div', color: 'c-white' },
-    { text: ' ', color: 'c-white' },
-    { text: 'class', color: 'c-yellow' },
-    { text: '=', color: 'c-white' },
-    { text: '"portfolio"', color: 'c-green' },
-    { text: '>', color: 'c-red' },
-    { text: '\n', color: 'c-white' },
-    { text: '    ', color: 'c-white' },
-    { text: '<', color: 'c-red' },
-    { text: 'h1', color: 'c-white' },
-    { text: '>', color: 'c-red' },
-    { text: '404', color: 'c-cyan' },
-    { text: '</', color: 'c-red' },
-    { text: 'h1', color: 'c-white' },
-    { text: '>', color: 'c-red' },
-    { text: '\n', color: 'c-white' },
-    { text: '    ', color: 'c-white' },
-    { text: '<', color: 'c-red' },
-    { text: 'p', color: 'c-white' },
-    { text: '>', color: 'c-red' },
-    { text: 'this page', color: 'c-green' },
-    { text: ' ', color: 'c-green' },
-    { text: 'doesnt', color: 'c-green' },
-    { text: ' ', color: 'c-green' },
-    { text: 'exist', color: 'c-green' },
-    { text: '</', color: 'c-red' },
-    { text: 'p', color: 'c-white' },
-    { text: '>', color: 'c-red' },
-    { text: '\n', color: 'c-white' },
-    { text: '  </', color: 'c-red' },
-    { text: 'div', color: 'c-white' },
-    { text: '>', color: 'c-red' },
-  ], []);
-
   if (!mounted) return null;
 
   return (
-    <div className="min-h-screen bg-black flex flex-col items-center justify-center relative overflow-hidden">
-      {/* Noise overlays */}
-      <div className="noise-1" aria-hidden="true" />
-      <div className="noise-2" aria-hidden="true" />
-      <div className="noise-3" aria-hidden="true" />
+    <div className="min-h-screen bg-black text-white overflow-hidden select-none">
+      {/* error 404 glitched text (via ::before and ::after) */}
+      <div className="glitch-404 error" />
 
-      {/* Code display */}
-      <div className="code-block mb-6 opacity-30 hidden md:block">
-        {codeLines.map((char, i) => (
-          <span key={i} className={char.color}>{char.text}</span>
-        ))}
+      {/* HTML code block */}
+      <div className="wrap">
+        <pre><code>
+<span className="green">&lt;!</span><span>DOCTYPE html</span><span className="green">&gt;</span>
+{'\n'}
+<span className="orange">&lt;html&gt;</span>
+{'\n'}
+{'  '}<span className="orange">&lt;style&gt;</span>
+{'\n'}
+{'    '}* {'{'}
+{'\n'}
+{'      '}<span className="green">everything</span>:<span className="blue">awesome</span>;
+{'\n'}
+{'    '}{'}'}
+{'\n'}
+{'  '}<span className="orange">&lt;/style&gt;</span>
+{'\n'}
+{'  '}<span className="orange">&lt;body&gt;</span>
+{'\n'}
+{'    '}ERROR 404!
+{'\n'}
+{'    '}FILE NOT FOUND!
+{'\n'}
+{'    '}<span className="comment">&lt;!--The file you are looking for,
+{'\n'}      is not where you think it is.--&gt;</span>
+{'\n'}
+{'  '}<span className="orange">&lt;/body&gt;</span>
+{'\n'}
+<span className="orange">&lt;/html&gt;</span>
+        </code></pre>
       </div>
 
-      {/* 404 - glitched */}
-      <div className="glitch-wrapper text-center" data-text="404">
-        <h1
-          className="text-[8rem] sm:text-[12rem] md:text-[16rem] font-bold leading-none tracking-tighter select-none"
-          style={{
-            fontFamily: "'Oxanium', sans-serif",
-            color: '#fff',
-            textShadow: '0 0 20px rgba(219, 39, 119, 0.5), 0 0 40px rgba(219, 39, 119, 0.3), 0 0 80px rgba(219, 39, 119, 0.15)',
-          }}
-        >
-          404
-        </h1>
-      </div>
+      {/* file not found glitched text (via ::before and ::after) */}
+      <div className="info" />
 
       {/* Message */}
-      <div className="mt-6 text-center max-w-lg px-4">
-        <p
-          className="text-lg sm:text-xl md:text-2xl text-gray-300"
-          style={{ fontFamily: "'Gilda Display', serif" }}
-        >
+      <div
+        className="absolute top-[60%] left-0 right-0 text-center z-10 px-4"
+        style={{ fontFamily: "'Gilda Display', serif" }}
+      >
+        <p className="text-lg sm:text-xl md:text-2xl text-gray-300">
           there&apos;s only one page website
         </p>
         <p
           className="text-xl sm:text-2xl md:text-3xl font-bold mt-2"
-          style={{
-            fontFamily: "'Gilda Display', serif",
-            color: '#db2777',
-            textShadow: '0 0 10px rgba(219, 39, 119, 0.4)',
-          }}
+          style={{ color: '#f39c12' }}
         >
           how the fuck you got here?
         </p>
@@ -231,21 +222,11 @@ export default function NotFound() {
       {/* Back button */}
       <Link
         href="/"
-        className="mt-10 inline-flex items-center gap-2 px-6 py-3 text-sm font-medium text-white border border-gray-700 rounded-lg hover:border-[#db2777] hover:text-[#db2777] transition-all duration-300 hover:shadow-[0_0_15px_rgba(219,39,119,0.3)]"
-        style={{ fontFamily: "'Oxanium', sans-serif" }}
+        className="absolute bottom-10 left-0 right-0 text-center z-10 inline-block px-6 py-3 text-sm font-medium text-white border border-gray-700 rounded-lg hover:border-orange-500 hover:text-orange-400 transition-all duration-300"
+        style={{ fontFamily: "'Share Tech Mono', monospace" }}
       >
         &larr; take me back
       </Link>
-
-      {/* Decorative glow */}
-      <div
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full opacity-10 pointer-events-none"
-        style={{
-          background: 'radial-gradient(circle, rgba(219, 39, 119, 0.4) 0%, transparent 70%)',
-          filter: 'blur(80px)',
-        }}
-        aria-hidden="true"
-      />
     </div>
   );
 }
