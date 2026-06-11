@@ -57,7 +57,7 @@ function ProjectShowcaseCard({
 
   return (
     <motion.article
-      key={project.title}
+      key={project.githubRepo || project.slug || project.title}
       initial={reduceMotion ? undefined : { opacity: 0, y: 10 }}
       whileInView={reduceMotion ? undefined : { opacity: 1, y: 0 }}
       viewport={{ once: true }}
@@ -197,7 +197,7 @@ export function ProjectsSection() {
       <div className="space-y-3">
         {visibleProjects.map((project, index) => (
           <ProjectShowcaseCard
-            key={project.title}
+            key={project.githubRepo || project.slug || project.title}
             project={project}
             index={index}
             reduceMotion={Boolean(reduceMotion)}

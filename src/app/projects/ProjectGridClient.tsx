@@ -146,7 +146,7 @@ export function ProjectGridClient({ projects }: Readonly<ProjectGridClientProps>
         >
           {activeProjects.map((project, index) => (
             <ListingCard
-              key={project.title}
+              key={project.githubRepo || project.slug || project.title}
               project={project}
               index={index}
               reduceMotion={Boolean(reduceMotion)}

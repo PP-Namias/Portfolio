@@ -58,7 +58,7 @@ export function ProjectsSectionRevamped() {
       <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
         {recentProjects.map((project, index) => (
           <RecentCard
-            key={project.title}
+            key={project.githubRepo || project.slug || project.title}
             project={project}
             index={index}
             reduceMotion={Boolean(reduceMotion)}
