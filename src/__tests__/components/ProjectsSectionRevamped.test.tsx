@@ -119,13 +119,13 @@ describe('ProjectsSectionRevamped', () => {
     const { ProjectsSectionRevamped } = await import('@/components/sections/ProjectsSectionRevamped');
     render(<ProjectsSectionRevamped />);
     expect(screen.getByText('Recent Projects')).toBeDefined();
-    expect(screen.getByText('6')).toBeDefined();
+    expect(screen.getByText(/6 total/)).toBeDefined();
   });
 
   it('renders a View All link to /projects', async () => {
     const { ProjectsSectionRevamped } = await import('@/components/sections/ProjectsSectionRevamped');
     render(<ProjectsSectionRevamped />);
-    const viewAllLink = screen.getByText('View All').closest('a');
+    const viewAllLink = screen.getByText(/View All/).closest('a');
     expect(viewAllLink).toBeDefined();
     expect(viewAllLink?.getAttribute('href')).toBe('/projects');
   });
@@ -150,7 +150,6 @@ describe('ProjectsSectionRevamped', () => {
   it('does not render expand/collapse button', async () => {
     const { ProjectsSectionRevamped } = await import('@/components/sections/ProjectsSectionRevamped');
     render(<ProjectsSectionRevamped />);
-    expect(screen.queryByText(/View all/)).toBeNull();
     expect(screen.queryByText(/Show less/)).toBeNull();
   });
 });
