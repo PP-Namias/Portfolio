@@ -188,20 +188,30 @@ code span.orange {
 code span.green {
   color: #33cc33;
 }
+
+pre {
+  margin: 0;
+  padding: 0;
+}
+
+pre code {
+  white-space: pre;
+}
 `;
 
 const CODE_HTML = `<span class="green">&lt;!</span><span>DOCTYPE html</span><span class="green">&gt;</span>
 <span class="orange">&lt;html&gt;</span>
-  <span class="orange">&lt;style&gt;</span>
-    * { <span class="green">everything</span>:<span class="blue">awesome</span>; }
-  <span class="orange">&lt;/style&gt;</span>
-  <span class="orange">&lt;body&gt;</span>
-    ERROR 404!
-    FILE NOT FOUND!
-    <span class="comment">&lt;!--The file you are looking for,
-      is not where you think it is.--&gt;</span>
-  <span class="orange">&lt;/body&gt;</span>
-<span class="orange">&lt;/html&gt;</span>`;
+    <span class="orange">&lt;style&gt;</span>
+   * {
+		        <span class="green">everything</span>:<span class="blue">awesome</span>;
+}
+     <span class="orange">&lt;/style&gt;</span>
+ <span class="orange">&lt;body&gt;</span>
+              ERROR 404!
+				FILE NOT FOUND!
+				<span class="comment">&lt;!--this is a one page website,
+					how the fuck you got here?--&gt;
+		</span>`;
 
 export default function NotFound() {
   const [mounted, setMounted] = useState(false);
@@ -221,8 +231,9 @@ export default function NotFound() {
   return (
     <div className="relative min-h-screen bg-black text-white overflow-hidden select-none">
       {/*
-        404 - Glitched out by ZonFire99
+        404 section here - Glitched out by ZonFire99
         https://codepen.io/ZonFire99/full/njdls/
+        this is a one page website, how the fuck you got here?
         Original uses body::before/::after which don't work in React,
         so we use real div elements with the same animation.
       */}
