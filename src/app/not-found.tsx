@@ -38,11 +38,10 @@ html {
   right: 0;
   -webkit-animation: noise-3 1s linear infinite;
   animation: noise-3 1s linear infinite;
-  overflow: default;
+  overflow: hidden;
 }
 
-body:after {
-  content: 'error 404';
+.error-404-layer {
   font-family: OCR-A;
   font-size: 100px;
   text-align: center;
@@ -55,24 +54,15 @@ body:after {
   right: 35%;
   opacity: 0;
   color: white;
+  pointer-events: none;
+}
+
+.error-404-layer.layer-1 {
   -webkit-animation: noise-1 .2s linear infinite;
   animation: noise-1 .2s linear infinite;
 }
 
-body:before {
-  content: 'error 404';
-  font-family: OCR-A;
-  font-size: 100px;
-  text-align: center;
-  width: 550px;
-  margin: auto;
-  position: absolute;
-  top: 25%;
-  bottom: 0;
-  left: 0;
-  right: 35%;
-  opacity: 0;
-  color: white;
+.error-404-layer.layer-2 {
   -webkit-animation: noise-2 .2s linear infinite;
   animation: noise-2 .2s linear infinite;
 }
@@ -91,26 +81,7 @@ body:before {
   animation: noise-3 1s linear infinite;
 }
 
-.info:before {
-  content: 'file not found';
-  font-family: OCR-A;
-  font-size: 100px;
-  text-align: center;
-  width: 800px;
-  margin: auto;
-  position: absolute;
-  top: 20px;
-  bottom: 0;
-  left: 40px;
-  right: 100px;
-  opacity: 0;
-  color: white;
-  -webkit-animation: noise-2 .2s linear infinite;
-  animation: noise-2 .2s linear infinite;
-}
-
-.info:after {
-  content: 'file not found';
+.info-layer {
   font-family: OCR-A;
   font-size: 100px;
   text-align: center;
@@ -123,6 +94,15 @@ body:before {
   right: 0;
   opacity: 0;
   color: white;
+  pointer-events: none;
+}
+
+.info-layer.layer-1 {
+  -webkit-animation: noise-2 .2s linear infinite;
+  animation: noise-2 .2s linear infinite;
+}
+
+.info-layer.layer-2 {
   -webkit-animation: noise-1 .2s linear infinite;
   animation: noise-1 .2s linear infinite;
 }
@@ -196,19 +176,19 @@ code {
 }
 
 span.blue {
-  color: #48beef;
+  color: #48beef !important;
 }
 
 span.comment {
-  color: #7f8c8d;
+  color: #7f8c8d !important;
 }
 
 span.orange {
-  color: #f39c12;
+  color: #f39c12 !important;
 }
 
 span.green {
-  color: #33cc33;
+  color: #33cc33 !important;
 }
 `;
 
@@ -228,9 +208,11 @@ export default function NotFound() {
   if (!mounted) return null;
 
   return (
-    <div className="min-h-screen bg-black text-white overflow-hidden select-none">
+    <div className="relative min-h-screen bg-black text-white overflow-hidden select-none">
       {/* 404 - Glitched out by ZonFire99 (https://codepen.io/ZonFire99/full/njdls/) */}
-      {/* error 404 glitched text (via body::before and body::after) */}
+      {/* error 404 glitched text layers (replaces body::before/::after for React compat) */}
+      <div className="error-404-layer layer-1">error 404</div>
+      <div className="error-404-layer layer-2">error 404</div>
       <div className="error" />
 
       {/* HTML code block */}
@@ -253,6 +235,8 @@ export default function NotFound() {
         </div>
         <br />
         <span className="info">
+          <div className="info-layer layer-1">file not found</div>
+          <div className="info-layer layer-2">file not found</div>
           <br />
           <span className="orange">&nbsp;&lt;/body&gt;</span>
           <br />
