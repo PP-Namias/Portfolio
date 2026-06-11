@@ -615,7 +615,8 @@ const getCmsContentImpl = async (): Promise<CmsContent> => {
 
   const seenProjectKeys = new Set<string>();
   const projects = rawProjects.filter((project) => {
-    const key = project.githubRepo || project.slug || project.title;
+    const key = (project.githubRepo || project.slug || project.title || '').trim().toLowerCase();
+    if (!key) return true;
     if (seenProjectKeys.has(key)) return false;
     seenProjectKeys.add(key);
     return true;
