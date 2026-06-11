@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import { useCmsContent } from '@/hooks/useCmsContent';
@@ -61,6 +61,32 @@ export function ProjectsSectionRevamped() {
     setShowAll(false);
   };
 
+  const handleTabKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      const currentIndex = TABS.findIndex((t) => t.id === activeTab);
+      let nextIndex = currentIndex;
+
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+        e.preventDefault();
+        nextIndex = (currentIndex + 1) % TABS.length;
+      } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+        e.preventDefault();
+        nextIndex = (currentIndex - 1 + TABS.length) % TABS.length;
+      } else if (e.key === 'Home') {
+        e.preventDefault();
+        nextIndex = 0;
+      } else if (e.key === 'End') {
+        e.preventDefault();
+        nextIndex = TABS.length - 1;
+      }
+
+      if (nextIndex !== currentIndex) {
+        handleTabChange(TABS[nextIndex].id);
+      }
+    },
+    [activeTab]
+  );
+
   return (
     <motion.section
       initial={reduceMotion ? undefined : { opacity: 0, y: 20 }}
@@ -76,7 +102,12 @@ export function ProjectsSectionRevamped() {
       </h2>
 
       {/* Tab bar with sliding indicator */}
-      <div className="relative mb-4 flex gap-1 rounded-lg border border-border-light bg-surface-light p-1 dark:border-border-dark dark:bg-surface-dark">
+      <div
+        role="tablist"
+        aria-label="Project categories"
+        className="relative mb-4 flex gap-1 rounded-lg border border-border-light bg-surface-light p-1 dark:border-border-dark dark:bg-surface-dark"
+        onKeyDown={handleTabKeyDown}
+      >
         {TABS.map((tab) => (
           <button
             key={tab.id}
