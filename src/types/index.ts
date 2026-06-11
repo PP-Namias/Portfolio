@@ -58,6 +58,8 @@ export interface ProjectGalleryItem {
 
 export type ProjectStatus = 'completed' | 'in-progress' | 'prototype';
 
+export type ProjectTier = 'featured' | 'standard' | 'archived';
+
 export interface Project {
   title: string;
   image: string;
@@ -79,6 +81,12 @@ export interface Project {
   featuredRank?: number | null;
   status?: ProjectStatus;
   gallery?: ProjectGalleryItem[];
+  tier?: ProjectTier;
+  showcaseDetail?: boolean;
+  shortDescription?: string;
+  highlights?: string[];
+  githubRepo?: string;
+  slug?: string;
 }
 
 export interface Certification {
