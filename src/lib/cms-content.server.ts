@@ -566,7 +566,7 @@ const getCmsContentImpl = async (): Promise<CmsContent> => {
     images: experience.images || [],
   }));
 
-  const projects: Project[] = (projectDocs ?? []).map((project) => ({
+  const rawProjects: Project[] = (projectDocs ?? []).map((project) => ({
     title: project.title || '',
     image:
       buildMediaGatewayUrl(project.imageUrl || (project.galleryItems?.[0]?.url ?? ''), { width: 560, quality: 85, sign: true }) ||
@@ -612,6 +612,14 @@ const getCmsContentImpl = async (): Promise<CmsContent> => {
     githubRepo: project.githubRepo || '',
     slug: project.slug || '',
   }));
+
+  const seenProjectKeys = new Set<string>();
+  const projects = rawProjects.filter((project) => {
+    const key = project.githubRepo || project.slug || project.title;
+    if (seenProjectKeys.has(key)) return false;
+    seenProjectKeys.add(key);
+    return true;
+  });
 
   const certifications: Certification[] = (certificationDocs ?? []).map((certification, index) => ({
     title: certification.title || '',
