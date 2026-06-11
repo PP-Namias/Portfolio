@@ -6,6 +6,13 @@ import { useEffect, useState } from 'react';
 const GLITCH_CSS = `
 @import url('https://fonts.googleapis.com/css2?family=Gilda+Display&family=Share+Tech+Mono&display=swap');
 
+html, body {
+  overflow: hidden;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
 .error {
   text-align: center;
   font-family: 'Gilda Display', serif;
@@ -19,7 +26,7 @@ const GLITCH_CSS = `
   left: -60px;
   right: 0;
   animation: noise-3 1s linear infinite;
-  overflow: default;
+  overflow: hidden;
 }
 
 .glitch-404::after {
@@ -66,6 +73,7 @@ const GLITCH_CSS = `
   left: 20px;
   right: 0;
   animation: noise-3 1s linear infinite;
+  overflow: hidden;
 }
 
 .info::before {
