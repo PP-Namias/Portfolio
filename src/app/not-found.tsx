@@ -37,7 +37,7 @@ html, body {
   overflow: hidden;
 }
 
-.glitch-404::after {
+body::after {
   content: 'error 404';
   font-family: OCR-A, 'Share Tech Mono', monospace;
   font-size: 100px;
@@ -53,7 +53,7 @@ html, body {
   color: white;
   animation: noise-1 .2s linear infinite;
 }
-.glitch-404::before {
+body::before {
   content: 'error 404';
   font-family: OCR-A, 'Share Tech Mono', monospace;
   font-size: 100px;
@@ -182,7 +182,7 @@ export default function NotFound() {
   return (
     <div className="min-h-screen bg-black text-white overflow-hidden select-none">
       {/* error 404 glitched text (via ::before and ::after) */}
-      <div className="glitch-404 error" />
+      <div className="error" />
 
       {/* HTML code block */}
       <div className="wrap">
