@@ -52,7 +52,6 @@ html {
   bottom: 0;
   left: 0;
   right: 35%;
-  opacity: 0;
   color: white;
   pointer-events: none;
 }
@@ -92,7 +91,6 @@ html {
   bottom: 0;
   left: 40px;
   right: 0;
-  opacity: 0;
   color: white;
   pointer-events: none;
 }
@@ -175,22 +173,35 @@ code {
   color: white;
 }
 
-span.blue {
-  color: #48beef !important;
+code span.blue {
+  color: #48beef;
 }
 
-span.comment {
-  color: #7f8c8d !important;
+code span.comment {
+  color: #7f8c8d;
 }
 
-span.orange {
-  color: #f39c12 !important;
+code span.orange {
+  color: #f39c12;
 }
 
-span.green {
-  color: #33cc33 !important;
+code span.green {
+  color: #33cc33;
 }
 `;
+
+const CODE_HTML = `<span class="green">&lt;!</span><span>DOCTYPE html</span><span class="green">&gt;</span>
+<span class="orange">&lt;html&gt;</span>
+  <span class="orange">&lt;style&gt;</span>
+    * { <span class="green">everything</span>:<span class="blue">awesome</span>; }
+  <span class="orange">&lt;/style&gt;</span>
+  <span class="orange">&lt;body&gt;</span>
+    ERROR 404!
+    FILE NOT FOUND!
+    <span class="comment">&lt;!--The file you are looking for,
+      is not where you think it is.--&gt;</span>
+  <span class="orange">&lt;/body&gt;</span>
+<span class="orange">&lt;/html&gt;</span>`;
 
 export default function NotFound() {
   const [mounted, setMounted] = useState(false);
@@ -209,29 +220,22 @@ export default function NotFound() {
 
   return (
     <div className="relative min-h-screen bg-black text-white overflow-hidden select-none">
-      {/* 404 - Glitched out by ZonFire99 (https://codepen.io/ZonFire99/full/njdls/) */}
-      {/* error 404 glitched text layers (replaces body::before/::after for React compat) */}
+      {/*
+        404 - Glitched out by ZonFire99
+        https://codepen.io/ZonFire99/full/njdls/
+        Original uses body::before/::after which don't work in React,
+        so we use real div elements with the same animation.
+      */}
+
+      {/* "error 404" glitched text layers */}
       <div className="error-404-layer layer-1">error 404</div>
       <div className="error-404-layer layer-2">error 404</div>
       <div className="error" />
 
-      {/* HTML code block */}
+      {/* HTML code block - uses dangerouslySetInnerHTML to preserve whitespace in <pre> */}
       <div className="wrap">
         <div className="404">
-          <pre><code>
-<span className="green">&lt;!</span><span>DOCTYPE html</span><span className="green">&gt;</span>
-<span className="orange">&lt;html&gt;</span>
-  <span className="orange">&lt;style&gt;</span>
-    * {'{'} <span className="green">everything</span>:<span className="blue">awesome</span>; {'}'}
-  <span className="orange">&lt;/style&gt;</span>
-  <span className="orange">&lt;body&gt;</span>
-    ERROR 404!
-    FILE NOT FOUND!
-    <span className="comment">&lt;!--The file you are looking for,
-      is not where you think it is.--&gt;</span>
-  <span className="orange">&lt;/body&gt;</span>
-<span className="orange">&lt;/html&gt;</span>
-          </code></pre>
+          <pre><code dangerouslySetInnerHTML={{ __html: CODE_HTML }} /></pre>
         </div>
         <br />
         <span className="info">
