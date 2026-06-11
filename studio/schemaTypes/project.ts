@@ -204,6 +204,47 @@ export default defineType({
       },
     }),
     defineField({
+      name: 'tier',
+      title: 'Tier',
+      type: 'string',
+      options: {
+        list: [
+          {title: 'Featured', value: 'featured'},
+          {title: 'Standard', value: 'standard'},
+          {title: 'Archived', value: 'archived'},
+        ],
+      },
+      initialValue: 'standard',
+      description: 'Controls display priority. Featured projects appear first.',
+    }),
+    defineField({
+      name: 'showcaseDetail',
+      title: 'Showcase detail page',
+      type: 'boolean',
+      initialValue: false,
+      description: 'Enable a dedicated /projects/[slug] detail page for this project.',
+    }),
+    defineField({
+      name: 'shortDescription',
+      title: 'Short description',
+      type: 'string',
+      description: 'One-liner for the home page index card (max 120 chars).',
+      validation: (Rule) => Rule.max(120),
+    }),
+    defineField({
+      name: 'highlights',
+      title: 'Highlights',
+      type: 'array',
+      of: [{type: 'string'}],
+      description: 'Key achievements or talking points for the detail page.',
+    }),
+    defineField({
+      name: 'githubRepo',
+      title: 'GitHub repo name',
+      type: 'string',
+      description: 'GitHub repository name (e.g. "Portfolio", "Klaro").',
+    }),
+    defineField({
       name: 'publishAt',
       title: 'Scheduled publish at',
       type: 'datetime',
