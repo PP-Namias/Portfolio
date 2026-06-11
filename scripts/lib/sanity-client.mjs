@@ -25,7 +25,7 @@ export async function upsertProject(doc, token, projectId, dataset) {
       Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify({
-      mutations: [{ createIfNotExists: doc }],
+      mutations: [{ createOrReplace: doc }],
     }),
   });
 
@@ -48,7 +48,7 @@ export async function upsertProject(doc, token, projectId, dataset) {
 export async function batchUpsertProjects(docs, token, projectId, dataset) {
   const url = `https://${projectId}.api.sanity.io/${SANITY_API_VERSION}/data/mutate/${dataset}`;
   
-  const mutations = docs.map(doc => ({ createIfNotExists: doc }));
+  const mutations = docs.map(doc => ({ createOrReplace: doc }));
 
   const response = await fetch(url, {
     method: 'POST',
