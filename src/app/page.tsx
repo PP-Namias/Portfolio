@@ -5,6 +5,7 @@ import { HeroSection } from '@/components/sections/HeroSection';
 import { AboutSection } from '@/components/sections/AboutSection';
 import { TechStackSection } from '@/components/sections/TechStackSection';
 import { ProjectsSection } from '@/components/sections/ProjectsSection';
+import { ProjectsSectionRevamped } from '@/components/sections/ProjectsSectionRevamped';
 import { BlogSection } from '@/components/sections/BlogSection';
 import { CertificationsSection } from '@/components/sections/CertificationsSection';
 import { ExperienceTimeline } from '@/components/sections/ExperienceTimeline';
@@ -12,6 +13,7 @@ import { ConnectSection } from '@/components/sections/ConnectSection';
 import { GallerySection } from '@/components/sections/GallerySection';
 import { Footer } from '@/components/layout/Footer';
 import { Card } from '@/components/ui/Card';
+import { IS_PROJECTS_REVAMP_ENABLED } from '@/lib/features';
 
 type StickySide = 'left' | 'right' | null;
 
@@ -109,7 +111,7 @@ export default function Home() {
             </Card>
 
             <Card>
-              <ProjectsSection />
+              {IS_PROJECTS_REVAMP_ENABLED ? <ProjectsSectionRevamped /> : <ProjectsSection />}
             </Card>
           </div>
         </div>
