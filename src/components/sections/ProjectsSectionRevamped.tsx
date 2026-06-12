@@ -48,6 +48,13 @@ export function ProjectsSectionRevamped() {
             {projects.length} total &middot; showing latest {recentProjects.length}
           </p>
         </div>
+        <Link
+          href="/projects"
+          className="inline-flex items-center gap-1.5 text-xs font-medium text-text-muted-light transition-colors hover:text-accent-pink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-pink/50 dark:text-text-muted-dark"
+        >
+          View All
+          <ArrowRight className="h-3.5 w-3.5" />
+        </Link>
       </div>
 
       {/* 2×2 grid */}
@@ -66,19 +73,6 @@ export function ProjectsSectionRevamped() {
         <p className="py-8 text-center text-xs text-text-muted-light dark:text-text-muted-dark">
           No projects yet.
         </p>
-      )}
-
-      {/* View All button */}
-      {projects.length > RECENT_LIMIT && (
-        <div className="mt-5 flex justify-center">
-          <Link
-            href="/projects"
-            className="inline-flex items-center gap-2 rounded-lg border border-border-light bg-white px-5 py-2.5 text-sm font-medium text-text-primary-light transition-all duration-200 hover:border-accent-pink/50 hover:shadow-[0_8px_24px_-8px_rgba(236,72,153,0.35)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-pink/50 dark:border-border-dark dark:bg-card-bg-dark dark:text-text-primary-dark dark:hover:border-accent-pink/50"
-          >
-            View All {projects.length} Projects
-            <ArrowRight className="h-4 w-4" />
-          </Link>
-        </div>
       )}
     </motion.section>
   );
