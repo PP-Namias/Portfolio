@@ -83,6 +83,8 @@ export const previewLocations = {
   profile: homeLocation('Hero & Profile'),
   aboutSection: homeLocation('About Section'),
   siteSettings: homeLocation('Site Settings'),
+  seoSettings: homeLocation('SEO Settings'),
+  mediaSettings: homeLocation('Media Settings'),
   techStack: homeLocation('Tech Stack'),
   experience: experienceLocation,
   project: projectLocation,
