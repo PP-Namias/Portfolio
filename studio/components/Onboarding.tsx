@@ -2,23 +2,30 @@ import React, {useEffect, useState} from 'react'
 
 const TASKS = [
   {
-    id: 'edit-hero',
-    title: 'Edit your hero',
-    body: 'Open Pages > Homepage > Hero Section. Change the headline or your name. Save. Your change is visible on the live site within a second.',
-    target: '/studio/structure/singleton%3AheroSection;heroSection',
-    cta: 'Open hero',
+    id: 'edit-profile',
+    title: 'Edit your profile',
+    body: 'Open Homepage > Hero & Profile. Change the headline, your name, or role rotator. Save. Your change is visible on the live site within a second.',
+    target: '/studio/structure/singleton%3Aprofile;profile',
+    cta: 'Open profile',
+  },
+  {
+    id: 'write-about',
+    title: 'Write about yourself',
+    body: 'Open Homepage > About Section. Write your bio in Portable Text. Add education details and honors. Your change appears on the homepage About section.',
+    target: '/studio/structure/singleton%3AaboutSection;aboutSectionSingleton',
+    cta: 'Open about',
   },
   {
     id: 'add-project',
     title: 'Add a project',
-    body: 'Open Pages > Homepage > Projects. Click + to create a new project. Use the "Featured" template and fill title + summary.',
+    body: 'Open Collections > Projects. Click + to create a new project. Use the "Featured" template and fill title + summary.',
     target: '/studio/structure/project',
     cta: 'Open projects',
   },
   {
     id: 'add-cert',
     title: 'Add a certification',
-    body: 'Open Pages > Homepage > Certifications. Click +. Fill title, issuer, and issue date. The expiry badge will track the renewal date automatically.',
+    body: 'Open Collections > Certifications. Click +. Fill title, issuer, and issue date. The expiry badge will track the renewal date automatically.',
     target: '/studio/structure/certification',
     cta: 'Open certifications',
   },
@@ -26,7 +33,7 @@ const TASKS = [
     id: 'publish-something',
     title: 'Publish something',
     body: 'Open a document. Edit a field. Click "Publish & revalidate". Confirm the modal. The marketing site revalidates the affected route within a second.',
-    target: '/studio/structure/singleton%3AheroSection;heroSection',
+    target: '/studio/structure/singleton%3Aprofile;profile',
     cta: 'Open editor',
   },
 ]
