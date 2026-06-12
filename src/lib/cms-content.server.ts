@@ -84,7 +84,6 @@ const CACHE_STALE_MS = Number(process.env.CACHE_TTL_STALE) || 60_000;
 
 const CONTENT_TAGS: Record<string, string[]> = {
   profile: ['cms:profile'],
-  heroSection: ['cms:hero'],
   aboutSection: ['cms:about'],
   techStack: ['cms:technology'],
   experience: ['cms:experience'],
@@ -265,7 +264,7 @@ function resolveMediaPath(fileName?: string | null, url?: string | null): string
 }
 
 const getCmsContentImpl = async (): Promise<CmsContent> => {
-  const [profileDoc, heroDoc, aboutDoc, techDoc, experienceDocs, projectDocs, certificationDocs, galleryDocs, blogDocs, membershipDocs, recommendationDocs, siteSettingsDoc] = await Promise.all([
+  const [profileDoc, aboutDoc, techDoc, experienceDocs, projectDocs, certificationDocs, galleryDocs, blogDocs, membershipDocs, recommendationDocs, siteSettingsDoc] = await Promise.all([
     querySanity<{
       fullName?: string;
       title?: string;
@@ -276,22 +275,16 @@ const getCmsContentImpl = async (): Promise<CmsContent> => {
       linkedin?: string;
       summary?: string;
       avatarUrl?: string;
+      profileImageUrl?: string;
       resumeUrl?: string;
       availabilityLabel?: string;
+      heroRoles?: string[];
+      socialLinks?: Array<{ platform?: string; icon?: string; url?: string; placements?: string[] }>;
       highlights?: Profile['highlights'];
       education?: Profile['education'];
     }>(
-      '*[_type == "profile"][0]{fullName,title,email,phone,location,github,linkedin,summary,"avatarUrl":avatar.asset->url,resumeUrl,availabilityLabel,highlights,education}',
+      '*[_type == "profile"][0]{fullName,title,email,phone,location,github,linkedin,summary,"avatarUrl":avatar.asset->url,"profileImageUrl":profileImage.asset->url,resumeUrl,availabilityLabel,heroRoles,socialLinks[]{platform,icon,url,placements},highlights,education}',
       { tags: CONTENT_TAGS.profile }
-    ),
-    querySanity<{
-      socialLinks?: Array<{ platform?: string; icon?: string; url?: string; placements?: string[] }>;
-      heroRoles?: string[];
-      availabilityLabel?: string;
-      profileImageUrl?: string;
-    }>(
-      '*[_type == "heroSection"][0]{socialLinks[]{platform,icon,url,placements},heroRoles,availabilityLabel,"profileImageUrl":profileImage.asset->url}',
-      { tags: CONTENT_TAGS.heroSection }
     ),
     querySanity<{
       aboutContent?: unknown;
@@ -504,7 +497,7 @@ const getCmsContentImpl = async (): Promise<CmsContent> => {
   }
 
   const technologies = techDoc.technologies ?? [];
-  const socialLinks = (heroDoc?.socialLinks ?? []).map(mapSocialLink).filter(Boolean) as SocialLink[];
+  const socialLinks = (profileDoc?.socialLinks ?? []).map(mapSocialLink).filter(Boolean) as SocialLink[];
   const aboutParagraphsFromPortable = portableTextToParagraphs(aboutDoc?.aboutContent);
   const aboutParagraphsFromLegacy = (aboutDoc?.aboutParagraphs ?? []).map((paragraph) => String(paragraph).trim()).filter(Boolean);
 
@@ -525,14 +518,14 @@ const getCmsContentImpl = async (): Promise<CmsContent> => {
   };
 
   const hero = {
-    roles: (heroDoc?.heroRoles ?? []).filter(Boolean),
-    availabilityLabel: heroDoc?.availabilityLabel || '',
+    roles: (profileDoc?.heroRoles ?? []).filter(Boolean),
+    availabilityLabel: profileDoc?.availabilityLabel || '',
     // Use a sized variant for the hero/profile image to reduce decode cost
     // for the homepage where the image is small. Components can further
     // request different sizes if needed once a shared canonical URL is
     // available in the content shape.
     profileImageUrl:
-      buildMediaGatewayUrl(heroDoc?.profileImageUrl || profileDoc.avatarUrl || '', { width: 320, quality: 85, sign: true }) || '',
+      buildMediaGatewayUrl(profileDoc?.profileImageUrl || profileDoc.avatarUrl || '', { width: 320, quality: 85, sign: true }) || '',
   };
 
   // Determine about paragraphs with a small server-side helper to avoid

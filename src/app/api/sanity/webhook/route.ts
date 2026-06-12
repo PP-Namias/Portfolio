@@ -7,7 +7,6 @@ const REVALIDATE_PATHS = ['/', '/blog', '/blog/[slug]', '/sitemap.xml'] as const
 
 const SANITY_TYPE_TO_TAGS: Record<string, string[]> = {
   profile: ['cms:profile'],
-  heroSection: ['cms:hero'],
   aboutSection: ['cms:about'],
   techStack: ['cms:technology'],
   experience: ['cms:experience'],

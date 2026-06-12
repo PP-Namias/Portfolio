@@ -187,7 +187,7 @@ export function HeroSection() {
                   animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
                   exit={{ opacity: 0, y: -12, filter: 'blur(4px)' }}
                   transition={{ duration: 0.35 }}
-                  {...sanityField({id: 'heroSection', type: 'heroSection'}, 'heroRoles', roleIndex)}
+                  {...sanityField({id: 'profile', type: 'profile'}, 'heroRoles', roleIndex)}
                 >
                   {roles[roleIndex]}
                 </motion.p>
