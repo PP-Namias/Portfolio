@@ -1,5 +1,6 @@
 import React from 'react'
 import {ContentHealthPanel} from './health/ContentHealthPanel'
+import {AutomationPanel} from './automation/AutomationPanel'
 
 interface QuickAction {
   title: string
@@ -150,6 +151,11 @@ export function Welcome() {
       {/* Content Health Section */}
       <div style={{marginTop: 40, width: '100%', maxWidth: 880}}>
         <ContentHealthPanel />
+      </div>
+
+      {/* Automation Section */}
+      <div style={{marginTop: 40, width: '100%', maxWidth: 880}}>
+        <AutomationPanel />
       </div>
 
       <div
