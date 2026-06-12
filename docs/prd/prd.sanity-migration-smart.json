@@ -1,0 +1,55 @@
+{
+  "epic": "Sanity Smart Studio & Migration Architecture",
+  "description": "A comprehensive refactor of the Sanity CMS to implement Smart Studio capabilities (Presentation Mode, Custom Desk Structure) while ensuring robust backup and automated migration to prevent data loss. Includes the deprecation of the 'skill' document type.",
+  "status": "Not Started",
+  "stories": [
+    {
+      "id": "SAN-01",
+      "title": "Phase 1: Data Backup and Download",
+      "description": "Backup current production data down to local `/studio/data_downloads/` preventing any data loss before schema mutation.",
+      "status": "Not Started",
+      "passes": {
+        "validation": false,
+        "lint": false,
+        "build": false
+      },
+      "completedAt": null
+    },
+    {
+      "id": "SAN-02",
+      "title": "Phase 2: Schema Refactoring",
+      "description": "Rebuild schema architectures removing deprecated types (e.g. `skill`) while preparing new fields for Presentation integration and improved UX.",
+      "status": "Not Started",
+      "passes": {
+        "validation": false,
+        "lint": false,
+        "build": false
+      },
+      "completedAt": null
+    },
+    {
+      "id": "SAN-03",
+      "title": "Phase 3: Automated Migrations",
+      "description": "Develop and run scripts to transform old local backed-up `.ndjson` data into the new robust schema format without manual data entry.",
+      "status": "Not Started",
+      "passes": {
+        "validation": false,
+        "lint": false,
+        "build": false
+      },
+      "completedAt": null
+    },
+    {
+      "id": "SAN-04",
+      "title": "Phase 4: Smart Studio Setup",
+      "description": "Implement Presentation plugin, visual editing mappings, and streamline the desk structure for an advanced editor experience.",
+      "status": "Not Started",
+      "passes": {
+        "validation": false,
+        "lint": false,
+        "build": false
+      },
+      "completedAt": null
+    }
+  ]
+}
