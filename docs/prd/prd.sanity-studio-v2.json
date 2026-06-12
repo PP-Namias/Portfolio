@@ -1,7 +1,7 @@
 {
   "id": "PRD-SANITY-STUDIO-V2",
   "title": "Smarter Sanity Studio v2",
-  "status": "planned",
+  "status": "completed",
   "priority": "high",
   "createdAt": "2026-06-12",
   "description": "Upgrade the Sanity Studio to a smarter, more automated CMS by consolidating duplicate schemas, removing the skills plugin, adding migration scripts, improving presentation tool integration, and deploying a cleaner studio.",
@@ -20,7 +20,7 @@
     {
       "id": "EPIC-0",
       "title": "Audit & Inventory",
-      "status": "planned",
+      "status": "completed",
       "description": "Document the current state of all schemas, plugins, components, and data. Identify duplicates, unused fields, and migration risks.",
       "plan": "docs/sanity_plans/00-audit.md",
       "deliverables": ["Schema inventory spreadsheet", "Duplicate field map", "Data volume report"],
@@ -29,7 +29,7 @@
     {
       "id": "EPIC-1",
       "title": "Schema Consolidation",
-      "status": "planned",
+      "status": "completed",
       "description": "Merge heroSection + profile into a single profile singleton. Consolidate overlapping fields. Keep all existing data via migration scripts.",
       "plan": "docs/sanity_plans/01-schema-consolidation.md",
       "dependencies": ["EPIC-0"],
@@ -39,7 +39,7 @@
     {
       "id": "EPIC-2",
       "title": "Remove Skills Plugin",
-      "status": "planned",
+      "status": "completed",
       "description": "Remove the skillsToolPlugin from the studio. Skills are already mirrored in .agents/skills/. The plugin adds build-time weight and is not used in production.",
       "plan": "docs/sanity_plans/02-remove-skills-plugin.md",
       "dependencies": [],
@@ -49,7 +49,7 @@
     {
       "id": "EPIC-3",
       "title": "Migration Scripts",
-      "status": "planned",
+      "status": "completed",
       "description": "Create a scripts/sanity-migrate/ directory with idempotent migration scripts for all schema changes. Each script logs what it does, is dry-runnable, and can be rolled back.",
       "plan": "docs/sanity_plans/03-migration-scripts.md",
       "dependencies": ["EPIC-1"],
@@ -59,7 +59,7 @@
     {
       "id": "EPIC-4",
       "title": "Presentation & UX Upgrade",
-      "status": "planned",
+      "status": "completed",
       "description": "Improve the Presentation tool integration, add better preview locations, improve the desk structure, and polish the onboarding flow.",
       "plan": "docs/sanity_plans/04-presentation-upgrade.md",
       "dependencies": ["EPIC-1"],
@@ -69,7 +69,7 @@
     {
       "id": "EPIC-5",
       "title": "Automation & Deploy",
-      "status": "planned",
+      "status": "completed",
       "description": "Add CI/CD checks for schema validation, automated data health reports, and a clean deploy pipeline. Remove unused scripts.",
       "plan": "docs/sanity_plans/05-automation-and-deploy.md",
       "dependencies": ["EPIC-1", "EPIC-2", "EPIC-3"],
