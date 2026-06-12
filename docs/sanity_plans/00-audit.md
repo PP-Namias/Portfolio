@@ -68,29 +68,38 @@ Document every schema, field, plugin, component, and script in the Sanity Studio
 ### Decision
 **Merge heroSection INTO profile.** The profile singleton already has all the fields heroSection has, plus more. After migration, heroSection schema is removed. The desk structure routes "Hero Section" to the profile singleton.
 
-## Data Volume Report
+## Data Volume Report (Actual — 2026-06-12)
 
-Based on Sanity API queries (to be run during execution):
+| Document Type | Count | Status |
+|---|---|---|
+| heroSection | 1 | ✅ All fields populated |
+| aboutSection | 1 | ✅ aboutContent + education populated |
+| profile | 1 | ⚠️ phone, avatar, availabilityLabel, resumeUrl empty |
+| siteSettings | 1 | ⚠️ logo, favicon empty |
+| seoSettings | 0 | ❌ MISSING |
+| mediaSettings | 0 | ❌ MISSING |
+| techStack | 1 | ✅ All populated |
+| resume | 2 | ⚠️ Should be 1 (singleton) |
+| project | 40 | ⚠️ image 8%, liveUrl 38% |
+| experience | 4 | ✅ All well populated |
+| certification | 12 | ⚠️ No expiresAt/credentialUrl |
+| galleryImage | 22 | ✅ All well populated |
+| recommendation | 0 | ⚠️ EMPTY |
+| membership | 2 | ✅ All populated |
+| post | 9 | ✅ All well populated |
+| author | 3 | ⚠️ image 33% |
+| category | 21 | ⚠️ description 10% |
+| certificationCategory | 10 | ✅ All populated |
+| certificationIssuer | 2 | ✅ All populated |
+| galleryCategory | 7 | ✅ All populated |
 
-| Document Type | Expected Count |
-|---|---|
-| heroSection | 1 (singleton) |
-| aboutSection | 1 (singleton) |
-| profile | 1 (singleton) |
-| siteSettings | 1 (singleton) |
-| seoSettings | 1 (singleton) |
-| mediaSettings | 1 (singleton) |
-| techStack | 1 (singleton) |
-| resume | 1 (singleton) |
-| project | ~15-20 |
-| experience | ~3-5 |
-| certification | ~5-10 |
-| galleryImage | ~5-15 |
-| recommendation | ~2-5 |
-| membership | ~1-3 |
-| post | ~5-10 |
-| author | ~1-2 |
-| category | ~3-5 |
+## Issues Found
+
+1. **Duplicate slug "klaro"** — `github-Klaro` and `project-1-klaro` both have slug "klaro"
+2. **resume has 2 docs** — should be 1 singleton, needs investigation
+3. **seoSettings MISSING** — no SEO settings singleton
+4. **mediaSettings MISSING** — no media settings singleton
+5. **heroSection + profile overlap** — fullName, title, location are identical; availabilityLabel, resumeUrl only in hero; heroRoles, socialLinks, profileImage only in hero
 
 ## Cleanup Candidates
 
