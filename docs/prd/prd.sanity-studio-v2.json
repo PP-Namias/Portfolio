@@ -1,0 +1,105 @@
+{
+  "id": "PRD-SANITY-STUDIO-V2",
+  "title": "Smarter Sanity Studio v2",
+  "status": "planned",
+  "priority": "high",
+  "createdAt": "2026-06-12",
+  "description": "Upgrade the Sanity Studio to a smarter, more automated CMS by consolidating duplicate schemas, removing the skills plugin, adding migration scripts, improving presentation tool integration, and deploying a cleaner studio.",
+
+  "background": "The current Sanity Studio has accumulated duplicate data models (heroSection vs profile both have fullName, title, email, location), a skills tool plugin that loads 42 markdown files at build time but is not used in production, and no automated migration scripts. The goal is to consolidate, simplify, and automate — making the studio easier to maintain and the content easier to manage.",
+
+  "constraints": [
+    "Existing published data in Sanity must NOT be lost — all migrations are additive or transform in-place",
+    "No breaking changes to the live site data flow until migration scripts are verified",
+    "Each epic is committed as a separate slice",
+    "All migrations must be idempotent (safe to run multiple times)",
+    "The studio must remain deployable to Sanity Hosting after each epic"
+  ],
+
+  "epics": [
+    {
+      "id": "EPIC-0",
+      "title": "Audit & Inventory",
+      "status": "planned",
+      "description": "Document the current state of all schemas, plugins, components, and data. Identify duplicates, unused fields, and migration risks.",
+      "plan": "docs/sanity_plans/00-audit.md",
+      "deliverables": ["Schema inventory spreadsheet", "Duplicate field map", "Data volume report"],
+      "estimatedSlices": 2
+    },
+    {
+      "id": "EPIC-1",
+      "title": "Schema Consolidation",
+      "status": "planned",
+      "description": "Merge heroSection + profile into a single profile singleton. Consolidate overlapping fields. Keep all existing data via migration scripts.",
+      "plan": "docs/sanity_plans/01-schema-consolidation.md",
+      "dependencies": ["EPIC-0"],
+      "deliverables": ["New consolidated profile schema", "Migration script", "Updated desk structure", "Updated preview locations"],
+      "estimatedSlices": 4
+    },
+    {
+      "id": "EPIC-2",
+      "title": "Remove Skills Plugin",
+      "status": "planned",
+      "description": "Remove the skillsToolPlugin from the studio. Skills are already mirrored in .agents/skills/. The plugin adds build-time weight and is not used in production.",
+      "plan": "docs/sanity_plans/02-remove-skills-plugin.md",
+      "dependencies": [],
+      "deliverables": ["Plugin removed from sanity.config.ts", "studio/plugins/skillsTool/ deleted", "Welcome component updated"],
+      "estimatedSlices": 2
+    },
+    {
+      "id": "EPIC-3",
+      "title": "Migration Scripts",
+      "status": "planned",
+      "description": "Create a scripts/sanity-migrate/ directory with idempotent migration scripts for all schema changes. Each script logs what it does, is dry-runnable, and can be rolled back.",
+      "plan": "docs/sanity_plans/03-migration-scripts.md",
+      "dependencies": ["EPIC-1"],
+      "deliverables": ["Migration runner framework", "merge-hero-profile.ts", "cleanup-duplicate-projects.ts", "enrich-about-section.ts", "dry-run support", "rollback support"],
+      "estimatedSlices": 3
+    },
+    {
+      "id": "EPIC-4",
+      "title": "Presentation & UX Upgrade",
+      "status": "planned",
+      "description": "Improve the Presentation tool integration, add better preview locations, improve the desk structure, and polish the onboarding flow.",
+      "plan": "docs/sanity_plans/04-presentation-upgrade.md",
+      "dependencies": ["EPIC-1"],
+      "deliverables": ["Updated preview locations", "Improved desk structure", "Better onboarding", "Content health dashboard"],
+      "estimatedSlices": 3
+    },
+    {
+      "id": "EPIC-5",
+      "title": "Automation & Deploy",
+      "status": "planned",
+      "description": "Add CI/CD checks for schema validation, automated data health reports, and a clean deploy pipeline. Remove unused scripts.",
+      "plan": "docs/sanity_plans/05-automation-and-deploy.md",
+      "dependencies": ["EPIC-1", "EPIC-2", "EPIC-3"],
+      "deliverables": ["Schema validation CI check", "Data health report script", "Clean studio deploy", "Removed unused scripts"],
+      "estimatedSlices": 3
+    }
+  ],
+
+  "dataPreservation": {
+    "strategy": "All migrations are additive or transform in-place. Original fields are kept as hidden/legacy until migration is verified. Rollback scripts restore original state.",
+    "riskFields": [
+      "heroSection.fullName -> profile.fullName (same type, safe merge)",
+      "heroSection.heroRoles -> profile.heroRoles (array of strings, safe merge)",
+      "aboutSection.aboutParagraphs -> aboutSection.aboutContent (Portable Text, transform needed)",
+      "profile.education[].gpa -> keep but hide (user wants GWA hidden but data preserved)"
+    ],
+    "safeFields": [
+      "All collection documents (project, experience, certification, post, etc.) - no schema changes",
+      "siteSettings, seoSettings, mediaSettings - no changes",
+      "All reference/taxonomy schemas - no changes"
+    ]
+  },
+
+  "successCriteria": [
+    "Studio deploys to Sanity Hosting without errors",
+    "All existing published data is accessible after migration",
+    "No duplicate schemas (heroSection + profile merged into one)",
+    "Skills plugin removed, .agents/skills/ remains the source of truth",
+    "Migration scripts are idempotent and dry-runnable",
+    "Live site data flow unchanged (same GROQ queries, same components)",
+    "Studio load time improved (fewer plugins)"
+  ]
+}
