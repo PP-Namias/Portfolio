@@ -123,3 +123,35 @@ export const maxArrayItems: ValidatorFactory = (options = {}) => {
   return (rule: Rule) =>
     rule.max(max).warning(`Recommended maximum of ${max} items for this field.`)
 }
+
+export const uniqueTitle: ValidatorFactory = (options = {}) => {
+  const schemaType = (options.schemaType as string) ?? ''
+  return (rule: Rule) =>
+    rule.custom(async (value: unknown, context: ValidationContext) => {
+      if (!value || typeof value !== 'string') return true
+
+      const document = context.document as {_id?: string} | undefined
+      const documentId = document?._id
+      if (!documentId) return true
+
+      const {getClient} = context
+      const client = getClient({apiVersion: '2024-01-01'})
+      const slug = value.trim().toLowerCase()
+
+      const query = `count(*[_type == $schemaType && lower(trim(title)) == $slug && !(_id in [$draftId, $publishedId])]) > 0`
+      const draftId = `drafts.${documentId}`
+      const publishedId = documentId.replace('drafts.', '')
+
+      const exists = await client.fetch(query, {
+        schemaType,
+        slug,
+        draftId,
+        publishedId,
+      })
+
+      if (exists) {
+        return `A ${schemaType} with this title already exists. Use a unique title.`
+      }
+      return true
+    })
+}

@@ -10,6 +10,7 @@ import {
   requiredForPublish,
   yearRange,
   maxArrayItems,
+  uniqueTitle,
 } from '../validation/rules'
 
 export default defineType({
@@ -26,7 +27,7 @@ export default defineType({
       name: 'title',
       title: 'Title',
       type: 'string',
-      validation: (Rule) => Rule.required(),
+      validation: (Rule) => [Rule.required(), uniqueTitle({schemaType: 'project'})],
     }),
     defineField({
       name: 'slug',
