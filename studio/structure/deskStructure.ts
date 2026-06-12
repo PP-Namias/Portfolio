@@ -5,11 +5,13 @@ import {
   DocumentsIcon,
   CogIcon,
   RocketIcon,
-  BriefcaseIcon,
-  AwardIcon,
+  CaseIcon,
+  StarFilledIcon,
   ImagesIcon,
   UsersIcon,
   BookIcon,
+  EyeOpenIcon,
+  FilterIcon,
 } from '@sanity/icons'
 
 /**
@@ -64,9 +66,81 @@ export function deskStructure(S: StructureBuilder) {
           S.list()
             .title('Collections')
             .items([
-              S.documentTypeListItem('project').title('Projects').icon(RocketIcon),
-              S.documentTypeListItem('experience').title('Experience').icon(BriefcaseIcon),
-              S.documentTypeListItem('certification').title('Certifications').icon(AwardIcon),
+              // Projects with filtered views
+              S.listItem()
+                .title('Projects')
+                .icon(RocketIcon)
+                .child(
+                  S.list()
+                    .title('Projects')
+                    .items([
+                      S.listItem()
+                        .title('All Projects')
+                        .icon(FilterIcon)
+                        .child(
+                          S.documentList()
+                            .title('All Projects')
+                            .filter('_type == "project"')
+                            .defaultOrdering([{field: 'title', direction: 'asc'}])
+                        ),
+                      S.listItem()
+                        .title('Featured')
+                        .icon(EyeOpenIcon)
+                        .child(
+                          S.documentList()
+                            .title('Featured Projects')
+                            .filter('_type == "project" && isFeatured == true')
+                            .defaultOrdering([{field: 'title', direction: 'asc'}])
+                        ),
+                      S.listItem()
+                        .title('Showcase')
+                        .icon(EyeOpenIcon)
+                        .child(
+                          S.documentList()
+                            .title('Showcase Projects')
+                            .filter('_type == "project" && isShowcase == true')
+                            .defaultOrdering([{field: 'title', direction: 'asc'}])
+                        ),
+                    ])
+                ),
+              // Experience with filtered views
+              S.listItem()
+                .title('Experience')
+                .icon(CaseIcon)
+                .child(
+                  S.list()
+                    .title('Experience')
+                    .items([
+                      S.listItem()
+                        .title('All Experience')
+                        .icon(FilterIcon)
+                        .child(
+                          S.documentList()
+                            .title('All Experience')
+                            .filter('_type == "experience"')
+                            .defaultOrdering([{field: 'startDate', direction: 'desc'}])
+                        ),
+                      S.listItem()
+                        .title('Current')
+                        .icon(EyeOpenIcon)
+                        .child(
+                          S.documentList()
+                            .title('Current Experience')
+                            .filter('_type == "experience" && endDate == null')
+                            .defaultOrdering([{field: 'startDate', direction: 'desc'}])
+                        ),
+                      S.listItem()
+                        .title('Past')
+                        .icon(DocumentsIcon)
+                        .child(
+                          S.documentList()
+                            .title('Past Experience')
+                            .filter('_type == "experience" && defined(endDate)')
+                            .defaultOrdering([{field: 'startDate', direction: 'desc'}])
+                        ),
+                    ])
+                ),
+              S.documentTypeListItem('certification').title('Certifications').icon(StarFilledIcon),
               S.documentTypeListItem('galleryImage').title('Gallery').icon(ImagesIcon),
               S.documentTypeListItem('resume').title('Resume').icon(DocumentsIcon),
             ]),
@@ -80,7 +154,43 @@ export function deskStructure(S: StructureBuilder) {
           S.list()
             .title('Blog')
             .items([
-              S.documentTypeListItem('post').title('Posts').icon(DocumentsIcon),
+              // Posts with filtered views
+              S.listItem()
+                .title('Posts')
+                .icon(DocumentsIcon)
+                .child(
+                  S.list()
+                    .title('Posts')
+                    .items([
+                      S.listItem()
+                        .title('All Posts')
+                        .icon(FilterIcon)
+                        .child(
+                          S.documentList()
+                            .title('All Posts')
+                            .filter('_type == "post"')
+                            .defaultOrdering([{field: 'publishedAt', direction: 'desc'}])
+                        ),
+                      S.listItem()
+                        .title('Published')
+                        .icon(EyeOpenIcon)
+                        .child(
+                          S.documentList()
+                            .title('Published Posts')
+                            .filter('_type == "post" && !(_id in path("drafts.**"))')
+                            .defaultOrdering([{field: 'publishedAt', direction: 'desc'}])
+                        ),
+                      S.listItem()
+                        .title('Drafts')
+                        .icon(DocumentsIcon)
+                        .child(
+                          S.documentList()
+                            .title('Draft Posts')
+                            .filter('_type == "post" && _id in path("drafts.**")')
+                            .defaultOrdering([{field: 'publishedAt', direction: 'desc'}])
+                        ),
+                    ])
+                ),
               S.documentTypeListItem('author').title('Authors').icon(UserIcon),
               S.documentTypeListItem('category').title('Categories').icon(DocumentsIcon),
             ]),
