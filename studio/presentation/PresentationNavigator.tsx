@@ -1,12 +1,12 @@
 import React from 'react'
 import {Box, Card, Flex, Heading, Stack, Text} from '@sanity/ui'
-import {LaunchIcon, BookIcon, EditIcon, EyeOpenIcon} from '@sanity/icons'
+import {LaunchIcon, EditIcon, EyeOpenIcon, DocumentsIcon, CogIcon} from '@sanity/icons'
 import {getStudioEnvSnapshot} from '../env'
 
 const QUICK_LAUNCH = [
-  {id: 'heroSection', title: 'Hero Section', subtitle: 'Top of homepage', type: 'heroSection'},
-  {id: 'aboutSection', title: 'About Section', subtitle: 'Main column', type: 'aboutSection'},
-  {id: 'siteSettings', title: 'Site Settings', subtitle: 'Title, og, robots', type: 'siteSettings'},
+  {id: 'profileSingleton', title: 'Hero & Profile', subtitle: 'Name, title, roles', type: 'profile'},
+  {id: 'aboutSectionSingleton', title: 'About Section', subtitle: 'Bio, education', type: 'aboutSection'},
+  {id: 'siteSettingsSingleton', title: 'Site Settings', subtitle: 'Title, og, robots', type: 'siteSettings'},
   {id: 'post', title: 'Posts', subtitle: 'Blog content', type: 'post'},
 ] as const
 
@@ -120,16 +120,22 @@ export function PresentationNavigator(_props: unknown) {
 
       <Card padding={4} radius={2} tone="transparent">
         <Flex align="center" gap={2}>
-          <BookIcon />
+          <CogIcon />
           <Text size={1} weight="semibold">
-            Need help?
+            Tools
           </Text>
           <Box flex={1} />
           <a
-            href="/studio/skills"
+            href="/studio/vision"
+            style={{fontSize: 12, color: 'inherit', textDecoration: 'underline', marginRight: 8}}
+          >
+            Vision
+          </a>
+          <a
+            href="/studio/structure/saved-queries"
             style={{fontSize: 12, color: 'inherit', textDecoration: 'underline'}}
           >
-            Browse skills
+            Queries
           </a>
         </Flex>
       </Card>
