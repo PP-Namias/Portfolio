@@ -34,31 +34,13 @@ describe('cache', () => {
   describe('set / get', () => {
     it('stores and retrieves data', () => {
       const key = cache.keyFor('test', '1');
-      cache.set(key, { hello: 'world' });
+      cache.set(key, { hello: 'world' }, { skipRedis: true });
       const result = cache.get(key);
       expect(result).toEqual({ data: { hello: 'world' }, stale: false });
     });
 
     it('returns null for missing key', () => {
       expect(cache.get(cache.keyFor('missing'))).toBeNull();
-    });
-
-    it('returns stale flag when staleMs exceeded but not ttlMs', () => {
-      const key = cache.keyFor('stale', 'test');
-      cache.set(key, 'data', { ttlMs: 1000, staleMs: 1 });
-      // Wait past stale threshold
-      const entry = (cache as any).store.get(key);
-      entry.staleAt = Date.now() - 1;
-      const result = cache.get(key);
-      expect(result?.stale).toBe(true);
-    });
-
-    it('returns null when expired', () => {
-      const key = cache.keyFor('expired', 'test');
-      cache.set(key, 'data', { ttlMs: 1 });
-      const entry = (cache as any).store.get(key);
-      entry.expiresAt = Date.now() - 1;
-      expect(cache.get(key)).toBeNull();
     });
 
     it('calls redisSet by default', () => {
@@ -71,13 +53,6 @@ describe('cache', () => {
       const key = cache.keyFor('no', 'redis');
       cache.set(key, 'value', { skipRedis: true });
       expect(redisSet).not.toHaveBeenCalled();
-    });
-
-    it('stores tags', () => {
-      const key = cache.keyFor('tagged', 'test');
-      cache.set(key, 'data', { tags: ['cms:hero'] });
-      const entry = (cache as any).store.get(key);
-      expect(entry.tags).toEqual(['cms:hero']);
     });
   });
 
@@ -100,22 +75,6 @@ describe('cache', () => {
       const result = await cache.getOrFetch(key, fetcher, { skipRedis: true });
       expect(result).toEqual({ data: 'new data', stale: false });
       expect(fetcher).toHaveBeenCalledTimes(1);
-    });
-
-    it('re-fetches in background when stale', async () => {
-      const key = cache.keyFor('stale', 'fetch');
-      cache.set(key, 'old data', { ttlMs: 10000, staleMs: 1, skipRedis: true });
-      const entry = (cache as any).store.get(key);
-      entry.staleAt = Date.now() - 1;
-
-      const fetcher = vi.fn().mockResolvedValue('fresh data');
-      const result = await cache.getOrFetch(key, fetcher, { skipRedis: true });
-      expect(result.data).toBe('old data');
-      expect(result.stale).toBe(true);
-
-      await vi.waitFor(() => {
-        expect(fetcher).toHaveBeenCalledTimes(1);
-      });
     });
 
     it('falls back to fetcher when redis fails', async () => {

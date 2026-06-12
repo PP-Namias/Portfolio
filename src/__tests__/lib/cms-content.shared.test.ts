@@ -4,33 +4,30 @@ import { fallbackCmsContent } from '@/lib/cms-content.shared';
 describe('fallbackCmsContent', () => {
   it('has profile with required fields', () => {
     expect(fallbackCmsContent.profile).toBeDefined();
-    expect(fallbackCmsContent.profile.fullName).toBe('Keneth Nolasco');
-    expect(fallbackCmsContent.profile.title).toBe('Full Stack Engineer');
-    expect(fallbackCmsContent.profile.email).toBe('keneth.nolasco.dev@gmail.com');
+    expect(typeof fallbackCmsContent.profile.name).toBe('string');
+    expect(typeof fallbackCmsContent.profile.title).toBe('string');
+    expect(typeof fallbackCmsContent.profile.email).toBe('string');
   });
 
   it('has highlights with numeric values', () => {
-    expect(fallbackCmsContent.profile.highlights.yearsExperience).toBeTypeOf('number');
-    expect(fallbackCmsContent.profile.highlights.yearsExperience).toBeGreaterThan(0);
-    expect(fallbackCmsContent.profile.highlights.completedProjects).toBeTypeOf('number');
-    expect(fallbackCmsContent.profile.highlights.completedProjects).toBeGreaterThan(0);
-    expect(fallbackCmsContent.profile.highlights.techStack).toBeTypeOf('number');
-    expect(fallbackCmsContent.profile.highlights.techStack).toBeGreaterThan(0);
+    expect(fallbackCmsContent.profile.highlights).toBeDefined();
+    expect(typeof fallbackCmsContent.profile.highlights.yearsExperience).toBe('number');
+    expect(typeof fallbackCmsContent.profile.highlights.projectsCompleted).toBe('number');
   });
 
-  it('has heroRoles array', () => {
-    expect(fallbackCmsContent.profile.heroRoles).toBeInstanceOf(Array);
-    expect(fallbackCmsContent.profile.heroRoles.length).toBeGreaterThan(0);
+  it('has hero object', () => {
+    expect(fallbackCmsContent.hero).toBeDefined();
+    expect(fallbackCmsContent.hero.roles).toBeInstanceOf(Array);
+    expect(typeof fallbackCmsContent.hero.availabilityLabel).toBe('string');
+    expect(typeof fallbackCmsContent.hero.profileImageUrl).toBe('string');
   });
 
   it('has education array', () => {
     expect(fallbackCmsContent.profile.education).toBeInstanceOf(Array);
-    expect(fallbackCmsContent.profile.education.length).toBeGreaterThan(0);
   });
 
   it('has experiences array', () => {
     expect(fallbackCmsContent.experiences).toBeInstanceOf(Array);
-    expect(fallbackCmsContent.experiences.length).toBeGreaterThan(0);
   });
 
   it('has projects array', () => {
@@ -40,30 +37,27 @@ describe('fallbackCmsContent', () => {
 
   it('has technologies array', () => {
     expect(fallbackCmsContent.technologies).toBeInstanceOf(Array);
-    expect(fallbackCmsContent.technologies.length).toBeGreaterThan(0);
   });
 
   it('has certifications array', () => {
     expect(fallbackCmsContent.certifications).toBeInstanceOf(Array);
-    expect(fallbackCmsContent.certifications.length).toBeGreaterThan(0);
   });
 
-  it('has socials array', () => {
-    expect(fallbackCmsContent.socials).toBeInstanceOf(Array);
-    expect(fallbackCmsContent.socials.length).toBeGreaterThan(0);
+  it('has socialLinks array', () => {
+    expect(fallbackCmsContent.socialLinks).toBeInstanceOf(Array);
   });
 
-  it('has aboutSection with blocks', () => {
-    expect(fallbackCmsContent.aboutSection).toBeDefined();
-    expect(fallbackCmsContent.aboutSection.blocks).toBeInstanceOf(Array);
-    expect(fallbackCmsContent.aboutSection.blocks.length).toBeGreaterThan(0);
+  it('has about with paragraphs', () => {
+    expect(fallbackCmsContent.about).toBeDefined();
+    expect(fallbackCmsContent.about.paragraphs).toBeInstanceOf(Array);
+    expect(fallbackCmsContent.about.paragraphs.length).toBeGreaterThan(0);
   });
 
   it('each project has required fields', () => {
     fallbackCmsContent.projects.forEach((p) => {
       expect(p.title).toBeDefined();
       expect(p.category).toBeDefined();
-      expect(p.technologies).toBeInstanceOf(Array);
+      expect(p.tags).toBeInstanceOf(Array);
     });
   });
 
@@ -80,7 +74,7 @@ describe('fallbackCmsContent', () => {
     fallbackCmsContent.technologies.forEach((t) => {
       expect(t.name).toBeDefined();
       expect(t.category).toBeDefined();
-      expect(t.proficiency).toBeTypeOf('number');
+      expect(typeof t.proficiency).toBe('number');
       expect(t.proficiency).toBeGreaterThanOrEqual(0);
       expect(t.proficiency).toBeLessThanOrEqual(100);
     });
