@@ -1,4 +1,5 @@
 import React from 'react'
+import {ContentHealthPanel} from './health/ContentHealthPanel'
 
 const QUICK_ACTIONS = [
   {title: 'New project', description: 'Start from a featured or draft template.', type: 'project', tone: '#ff63a5'},
@@ -88,6 +89,11 @@ export function Welcome() {
             </a>
           )
         })}
+      </div>
+
+      {/* Content Health Section */}
+      <div style={{marginTop: 40, width: '100%', maxWidth: 880}}>
+        <ContentHealthPanel />
       </div>
 
       <div
