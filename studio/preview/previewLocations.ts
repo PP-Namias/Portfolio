@@ -80,9 +80,8 @@ const resumeLocation = defineLocations({
 })
 
 export const previewLocations = {
-  heroSection: homeLocation('Hero Section'),
+  profile: homeLocation('Hero & Profile'),
   aboutSection: homeLocation('About Section'),
-  profile: homeLocation('About Section'),
   siteSettings: homeLocation('Site Settings'),
   techStack: homeLocation('Tech Stack'),
   experience: experienceLocation,
