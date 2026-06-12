@@ -13,6 +13,9 @@ import {templateRegistry} from './templates'
 import {studioBadges} from './components/badges/statusBadges'
 import {Welcome} from './components/Welcome'
 import {OnboardingTour} from './components/Onboarding'
+import {ContentHealth} from './components/inspector/ContentHealth'
+import {SeoPreview} from './components/inspector/SeoPreview'
+import {JsonInspector} from './components/inspector/JsonInspector'
 import {studioTheme} from './theme/studioTheme'
 import './theme/grid.css'
 import {savedQueriesToolPlugin} from './vision/SavedQueriesView'
@@ -80,6 +83,29 @@ export default defineConfig({
       if (!schemaType) return prev
       return [...prev, ...studioBadges]
     },
+    inspectionPanels: [
+      {
+        name: 'content-health',
+        component: ContentHealth,
+        options: {
+          layout: 'panel',
+        },
+      },
+      {
+        name: 'seo-preview',
+        component: SeoPreview,
+        options: {
+          layout: 'panel',
+        },
+      },
+      {
+        name: 'json-inspector',
+        component: JsonInspector,
+        options: {
+          layout: 'panel',
+        },
+      },
+    ],
     newDocumentOptions: (prev, {creationContext}) => {
       if (creationContext.type === 'global') {
         return prev
