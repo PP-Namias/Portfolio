@@ -7,13 +7,13 @@
       "id": "SAN-01",
       "title": "Phase 1: Data Backup and Download",
       "description": "Backup current production data down to local `/studio/data_downloads/` preventing any data loss before schema mutation.",
-      "status": "Not Started",
+      "status": "Completed",
       "passes": {
-        "validation": false,
-        "lint": false,
-        "build": false
+        "validation": true,
+        "lint": true,
+        "build": true
       },
-      "completedAt": null
+      "completedAt": "2026-06-13T02:30:00Z"
     },
     {
       "id": "SAN-02",
