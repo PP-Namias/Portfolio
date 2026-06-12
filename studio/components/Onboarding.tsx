@@ -40,6 +40,7 @@ const TASKS = [
 
 const STORAGE_KEY = 'namias-onboarding-tour-completed'
 const REQUEST_KEY = 'namias-onboarding-tour'
+const PROGRESS_KEY = 'namias-onboarding-progress'
 
 function getStep(): number {
   if (typeof window === 'undefined') return 0
@@ -54,9 +55,26 @@ function persistStep(n: number) {
   window.localStorage.setItem(REQUEST_KEY + '-step', String(n))
 }
 
+function getCompletedTasks(): Set<string> {
+  if (typeof window === 'undefined') return new Set()
+  const raw = window.localStorage.getItem(PROGRESS_KEY)
+  if (!raw) return new Set()
+  try {
+    return new Set(JSON.parse(raw))
+  } catch {
+    return new Set()
+  }
+}
+
+function persistCompletedTasks(tasks: Set<string>) {
+  if (typeof window === 'undefined') return
+  window.localStorage.setItem(PROGRESS_KEY, JSON.stringify([...tasks]))
+}
+
 export function OnboardingTour() {
   const [open, setOpen] = useState(false)
   const [step, setStep] = useState(0)
+  const [completedTasks, setCompletedTasks] = useState<Set<string>>(new Set())
 
   useEffect(() => {
     if (typeof window === 'undefined') return
@@ -65,14 +83,23 @@ export function OnboardingTour() {
     if (requested && !completed) {
       setOpen(true)
       setStep(getStep())
+      setCompletedTasks(getCompletedTasks())
       window.localStorage.removeItem(REQUEST_KEY)
     }
   }, [])
+
+  const markCompleted = (taskId: string) => {
+    const next = new Set(completedTasks)
+    next.add(taskId)
+    setCompletedTasks(next)
+    persistCompletedTasks(next)
+  }
 
   if (!open) return null
 
   const current = TASKS[step]!
   const isLast = step === TASKS.length - 1
+  const progress = (completedTasks.size / TASKS.length) * 100
 
   return (
     <div
@@ -133,6 +160,28 @@ export function OnboardingTour() {
             Skip tour
           </button>
         </div>
+
+        {/* Progress bar */}
+        <div
+          style={{
+            height: 4,
+            background: 'rgba(255,255,255,0.1)',
+            borderRadius: 2,
+            marginBottom: 20,
+            overflow: 'hidden',
+          }}
+        >
+          <div
+            style={{
+              height: '100%',
+              width: `${progress}%`,
+              background: 'linear-gradient(90deg, #ff63a5, #6366f1)',
+              borderRadius: 2,
+              transition: 'width 300ms ease',
+            }}
+          />
+        </div>
+
         <h2 style={{fontSize: 22, fontWeight: 700, margin: 0}}>{current.title}</h2>
         <p
           style={{
@@ -144,6 +193,41 @@ export function OnboardingTour() {
         >
           {current.body}
         </p>
+
+        {/* Task completion checkbox */}
+        <div
+          style={{
+            marginTop: 16,
+            display: 'flex',
+            alignItems: 'center',
+            gap: 8,
+          }}
+        >
+          <button
+            type="button"
+            onClick={() => markCompleted(current.id)}
+            style={{
+              width: 20,
+              height: 20,
+              borderRadius: 6,
+              border: `2px solid ${completedTasks.has(current.id) ? '#ff63a5' : 'rgba(255,255,255,0.3)'}`,
+              background: completedTasks.has(current.id) ? '#ff63a5' : 'transparent',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: 'pointer',
+              padding: 0,
+            }}
+          >
+            {completedTasks.has(current.id) && (
+              <span style={{color: '#fff', fontSize: 12, fontWeight: 700}}>✓</span>
+            )}
+          </button>
+          <span style={{fontSize: 12, color: 'rgba(255,255,255,0.6)'}}>
+            {completedTasks.has(current.id) ? 'Completed' : 'Mark as completed'}
+          </span>
+        </div>
+
         <div
           style={{
             display: 'flex',
@@ -153,14 +237,18 @@ export function OnboardingTour() {
           }}
         >
           <div style={{display: 'flex', gap: 6}}>
-            {TASKS.map((_, i) => (
+            {TASKS.map((task, i) => (
               <span
                 key={i}
                 style={{
                   width: 8,
                   height: 8,
                   borderRadius: 999,
-                  background: i === step ? '#ff63a5' : 'rgba(255,255,255,0.2)',
+                  background: i === step
+                    ? '#ff63a5'
+                    : completedTasks.has(task.id)
+                    ? '#30bf78'
+                    : 'rgba(255,255,255,0.2)',
                 }}
               />
             ))}
@@ -212,6 +300,18 @@ export function OnboardingTour() {
               {isLast ? 'Done' : current.cta + ' →'}
             </button>
           </div>
+        </div>
+
+        {/* Progress summary */}
+        <div
+          style={{
+            marginTop: 16,
+            textAlign: 'center',
+            fontSize: 12,
+            color: 'rgba(255,255,255,0.5)',
+          }}
+        >
+          {completedTasks.size} of {TASKS.length} tasks completed ({Math.round(progress)}%)
         </div>
       </div>
     </div>
