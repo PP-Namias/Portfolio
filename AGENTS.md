@@ -24,6 +24,11 @@ This file is the entry point for any agent (opencode, future coding agents, or h
 - `performance-auditing` — Lighthouse audits, bundle analysis, image/font optimization, Core Web Vitals
 - `component-api-scaffolding` — create React components, API routes, SWR hooks, context providers
 - `pwa-service-worker` — service worker management, offline support, PWA manifest, cache strategies
+- `sanity-schema-validator` — validates Sanity schemas against best practices, catches common issues
+- `sanity-content-audit` — audits Sanity content for completeness, consistency, and quality
+- `sanity-migration-helper` — helps write, validate, and run Sanity data migrations safely
+- `sanity-groq-optimizer` — analyzes and optimizes GROQ queries for better performance
+- `sanity-backup-restore` — backup and restore Sanity content and schemas
 
 ## Home page sections
 
