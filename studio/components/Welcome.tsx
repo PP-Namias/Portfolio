@@ -1,13 +1,69 @@
 import React from 'react'
 import {ContentHealthPanel} from './health/ContentHealthPanel'
 
-const QUICK_ACTIONS = [
-  {title: 'New project', description: 'Start from a featured or draft template.', type: 'project', tone: '#ff63a5'},
-  {title: 'New post', description: 'Spin up a draft post with smart defaults.', type: 'post', tone: '#6366f1'},
-  {title: 'New certification', description: 'Add a certification with a 90-day expiry nudge.', type: 'certification', tone: '#22c55e'},
-  {title: 'Open Presentation', description: 'Edit content on the live site with click-to-edit.', href: '/studio/presentation', tone: '#a855f7'},
-  {title: 'Saved Queries', description: '5 curated GROQ queries for audits + health checks.', href: '/studio/saved-queries', tone: '#f59e0b'},
+interface QuickAction {
+  title: string
+  description: string
+  type?: string
+  href?: string
+  tone: string
+  initialValues?: Record<string, unknown>
+}
+
+const QUICK_ACTIONS: QuickAction[] = [
+  {
+    title: 'New project',
+    description: 'Start from a featured or draft template.',
+    type: 'project',
+    tone: '#ff63a5',
+    initialValues: {
+      status: 'draft',
+      tier: 'standard',
+      featured: false,
+      showcaseDetail: false,
+    },
+  },
+  {
+    title: 'New post',
+    description: 'Spin up a draft post with smart defaults.',
+    type: 'post',
+    tone: '#6366f1',
+    initialValues: {
+      publishedAt: new Date().toISOString(),
+    },
+  },
+  {
+    title: 'New certification',
+    description: 'Add a certification with a 90-day expiry nudge.',
+    type: 'certification',
+    tone: '#22c55e',
+    initialValues: {
+      issueDate: new Date().toISOString(),
+    },
+  },
+  {
+    title: 'Open Presentation',
+    description: 'Edit content on the live site with click-to-edit.',
+    href: '/studio/presentation',
+    tone: '#a855f7',
+  },
+  {
+    title: 'Saved Queries',
+    description: '5 curated GROQ queries for audits + health checks.',
+    href: '/studio/saved-queries',
+    tone: '#f59e0b',
+  },
 ]
+
+function buildHref(action: QuickAction): string {
+  if (action.href) return action.href
+
+  const params = new URLSearchParams({type: action.type!})
+  if (action.initialValues) {
+    params.set('initialValues', JSON.stringify(action.initialValues))
+  }
+  return `/studio/intent/create?${params.toString()}`
+}
 
 export function Welcome() {
   return (
@@ -55,7 +111,7 @@ export function Welcome() {
         }}
       >
         {QUICK_ACTIONS.map((action) => {
-          const href = action.href ?? `/studio/intent/create?type=${action.type}`
+          const href = buildHref(action)
           const label = action.href ? 'tool' : action.type
           return (
             <a
