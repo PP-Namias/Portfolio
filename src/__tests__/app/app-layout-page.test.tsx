@@ -20,6 +20,7 @@ vi.mock('framer-motion', () => {
   return {
     motion,
     AnimatePresence: ({ children }: { children: React.ReactNode }) => children,
+    useReducedMotion: () => false,
   };
 });
 
@@ -62,6 +63,7 @@ vi.mock('@/components/sections/HeroSection', () => ({ HeroSection: () => <div>He
 vi.mock('@/components/sections/AboutSection', () => ({ AboutSection: () => <div>AboutSection</div> }));
 vi.mock('@/components/sections/TechStackSection', () => ({ TechStackSection: () => <div>TechStackSection</div> }));
 vi.mock('@/components/sections/ProjectsSection', () => ({ ProjectsSection: () => <div>ProjectsSection</div> }));
+vi.mock('@/components/sections/ProjectsSectionRevamped', () => ({ ProjectsSectionRevamped: () => <div>ProjectsSectionRevamped</div> }));
 vi.mock('@/components/sections/CertificationsSection', () => ({ CertificationsSection: () => <div>CertificationsSection</div> }));
 vi.mock('@/components/sections/BlogSection', () => ({ BlogSection: () => <div>BlogSection</div> }));
 vi.mock('@/components/sections/ExperienceTimeline', () => ({ ExperienceTimeline: () => <div>ExperienceTimeline</div> }));
@@ -119,7 +121,7 @@ describe('app layout and page coverage', () => {
     expect(screen.getByText('HeroSection')).toBeInTheDocument();
     expect(screen.getByText('AboutSection')).toBeInTheDocument();
     expect(screen.getByText('TechStackSection')).toBeInTheDocument();
-    expect(screen.getByText('ProjectsSection')).toBeInTheDocument();
+    expect(screen.getByText('ProjectsSectionRevamped')).toBeInTheDocument();
     expect(screen.getByText('ExperienceTimeline')).toBeInTheDocument();
     expect(screen.getByText('ConnectSection')).toBeInTheDocument();
     expect(screen.getByText('CertificationsSection')).toBeInTheDocument();

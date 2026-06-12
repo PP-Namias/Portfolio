@@ -146,7 +146,11 @@ export const fallbackCmsContent: CmsContent = {
     profileImageUrl: '',
   },
   about: {
-    paragraphs: [],
+    paragraphs: [
+      "I'm a full-stack software engineer specializing in React, TypeScript, Node.js, and Python. I build production systems across enterprise, AI automation, healthcare, and IoT \u2014 from designing backend architecture to shipping polished user interfaces.",
+      "I've delivered 5+ live applications serving over 1,000 concurrent users, including an enterprise HRIS for 500+ employees and 8 deployed AI chatbot systems. My work spans the full lifecycle \u2014 system design, database architecture, API development, and frontend engineering \u2014 always with a focus on reliability and measurable outcomes.",
+      "I graduated Cum Laude with a BS in Computer Science from the University of Caloocan City (Batch 2026), recognized as a Dean's Lister throughout my studies. I'm currently targeting fullstack, AI/automation, or backend engineering roles where technical ownership and cross-functional execution drive real product impact.",
+    ],
   },
   experiences: [],
   projects: [
