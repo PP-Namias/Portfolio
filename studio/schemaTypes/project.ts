@@ -1,6 +1,16 @@
 import {defineField, defineType} from 'sanity'
 
-import {httpsOnly, requireAltText, summaryLength, uniqueSlug} from '../validation/rules'
+import {
+  httpsOnly,
+  requireAltText,
+  summaryLength,
+  uniqueSlug,
+  seoTitleLength,
+  seoDescriptionLength,
+  requiredForPublish,
+  yearRange,
+  maxArrayItems,
+} from '../validation/rules'
 
 export default defineType({
   name: 'project',
@@ -57,6 +67,7 @@ export default defineType({
       name: 'year',
       title: 'Year',
       type: 'number',
+      validation: yearRange,
     }),
     defineField({
       name: 'category',
@@ -79,6 +90,7 @@ export default defineType({
       title: 'Technologies',
       type: 'array',
       of: [{type: 'string'}],
+      validation: maxArrayItems({max: 15}),
     }),
     defineField({
       name: 'achievements',
@@ -86,6 +98,7 @@ export default defineType({
       description: 'Optional short bullet points for standout outcomes, wins, or impact.',
       type: 'array',
       of: [{type: 'string'}],
+      validation: maxArrayItems({max: 8}),
     }),
     defineField({
       name: 'image',
@@ -237,6 +250,7 @@ export default defineType({
       type: 'array',
       of: [{type: 'string'}],
       description: 'Key achievements or talking points for the detail page.',
+      validation: maxArrayItems({max: 6}),
     }),
     defineField({
       name: 'githubRepo',
