@@ -177,8 +177,8 @@ async function main() {
   };
 
   const mutations = [
-    // Update profile
-    { patch: { id: profile._id, rev: profile._rev, set: profileUpdate } },
+    // Update profile (no rev needed for singleton patches)
+    { patch: { id: profile._id, set: profileUpdate } },
     // Save migration log
     { createOrReplace: migrationLog },
   ];
@@ -188,7 +188,7 @@ async function main() {
 
   // 5. Delete heroSection
   console.log('\nDeleting heroSection...');
-  const deleteResult = await sanityMutate([{ delete: hero._id }]);
+  const deleteResult = await sanityMutate([{ delete: { id: hero._id } }]);
   console.log('✅ heroSection deleted:', deleteResult.results?.[0]?.id);
 
   console.log('\n✅ Migration complete!');
