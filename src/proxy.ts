@@ -44,7 +44,7 @@ function isRateLimited(ip: string, routeKey: keyof typeof RATE_LIMITS): boolean 
   return entry.count > config.limit;
 }
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   const apiRouteKey = getRateLimitKey(pathname);
