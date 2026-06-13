@@ -9,7 +9,7 @@ import {
   Download,
   Calendar,
 } from 'lucide-react';
-import { FaGithub, FaInstagram, FaLinkedinIn, FaXTwitter } from 'react-icons/fa6';
+import { FaGithub, FaLinkedinIn, FaXTwitter } from 'react-icons/fa6';
 import { Button } from '@/components/ui/Button';
 import { VerifiedBadge } from '@/components/ui/VerifiedBadge';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
@@ -24,7 +24,7 @@ const socialIconMap: Record<string, React.ComponentType<{ className?: string }>>
   github: FaGithub,
   linkedin: FaLinkedinIn,
   x: FaXTwitter,
-  instagram: FaInstagram,
+  instagram: FaXTwitter,
 };
 
 /* Staggered entrance variants */
