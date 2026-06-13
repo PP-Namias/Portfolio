@@ -28,6 +28,15 @@ export function ProjectDetailPage({ project }: Readonly<ProjectDetailPageProps>)
           dateCreated: `${project.year}`,
           author: { '@type': 'Person', name: 'Jhon Keneth Ryan Namias' },
           keywords: project.tags.join(', '),
+          image: heroSrc
+            ? {
+                '@type': 'ImageObject',
+                url: heroSrc,
+                width: 1200,
+                height: 630,
+                alt: project.imageAlt || project.title,
+              }
+            : undefined,
           ...(project.repositoryURL ? { codeRepository: project.repositoryURL } : {}),
           ...(project.liveURL ? { url: project.liveURL } : {}),
         }}
