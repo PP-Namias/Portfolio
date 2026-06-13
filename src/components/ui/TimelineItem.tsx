@@ -36,7 +36,11 @@ export function TimelineItem({ item, index, isLast }: Readonly<TimelineItemProps
         <span className="text-xs text-text-muted-light dark:text-text-muted-dark">
           {dateLabel}
         </span>
-        <span className="text-xs px-1.5 py-0.5 rounded-full bg-accent-pink/10 text-accent-pink">
+        <span className={`text-xs px-1.5 py-0.5 rounded-full ${
+          item.type === 'Study'
+            ? 'bg-blue-500/10 text-blue-600 dark:text-blue-400'
+            : 'bg-accent-pink/10 text-accent-pink'
+        }`}>
           {item.type}
         </span>
         {item.modality && (

@@ -63,6 +63,7 @@ export default defineType({
           {title: 'Freelance', value: 'Freelance'},
           {title: 'Contractual', value: 'Contractual'},
           {title: 'Internship', value: 'Internship'},
+          {title: 'Study', value: 'Study'},
         ],
       },
     }),
