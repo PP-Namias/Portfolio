@@ -19,11 +19,36 @@ interface HealthSummary {
   healthy: number
   warnings: number
   errors: number
+  score: number
   lastChecked: string
 }
 
 const STALE_THRESHOLD_DAYS = 90
 const REQUIRED_SINGLETONS = ['profile', 'aboutSection', 'techStack', 'siteSettings', 'seoSettings']
+
+function calculateScore(issues: HealthIssue[]): number {
+  let score = 100
+  for (const issue of issues) {
+    if (issue.severity === 'error') score -= 10
+    else if (issue.severity === 'warning') score -= 5
+    else score -= 1
+  }
+  return Math.max(0, score)
+}
+
+function getScoreColor(score: number): string {
+  if (score >= 90) return '#30bf78'
+  if (score >= 70) return '#eab917'
+  if (score >= 50) return '#f59e0b'
+  return '#f03e2f'
+}
+
+function getScoreLabel(score: number): string {
+  if (score >= 90) return 'Excellent'
+  if (score >= 70) return 'Good'
+  if (score >= 50) return 'Fair'
+  return 'Needs Attention'
+}
 
 export function ContentHealthPanel() {
   const client = useClient()
@@ -33,6 +58,7 @@ export function ContentHealthPanel() {
     healthy: 0,
     warnings: 0,
     errors: 0,
+    score: 100,
     lastChecked: '',
   })
   const [loading, setLoading] = useState(true)
@@ -165,11 +191,13 @@ export function ContentHealthPanel() {
 
       const errors = fetchedIssues.filter((i) => i.severity === 'error').length
       const warnings = fetchedIssues.filter((i) => i.severity === 'warning').length
+      const score = calculateScore(fetchedIssues)
       setSummary({
         total: fetchedIssues.length,
         healthy: fetchedIssues.length === 0 ? 1 : 0,
         warnings,
         errors,
+        score,
         lastChecked: new Date().toLocaleTimeString(),
       })
     } catch (err) {
@@ -228,29 +256,51 @@ export function ContentHealthPanel() {
           </Text>
         ) : (
           <>
-            {/* Summary */}
-            <Card padding={3} radius={2} tone={summary.errors > 0 ? 'critical' : summary.warnings > 0 ? 'caution' : 'positive'}>
-              <Stack space={2}>
-                <Flex gap={2} align="center">
-                  {summary.errors > 0 ? (
-                    <WarningFilledIcon style={{color: '#f03e2f'}} />
-                  ) : (
-                    <CheckmarkCircleIcon style={{color: '#30bf78'}} />
-                  )}
-                  <Text weight="semibold" size={1}>
-                    {summary.errors > 0
-                      ? `${summary.errors} error(s) found`
-                      : summary.warnings > 0
-                      ? `${summary.warnings} warning(s) found`
-                      : 'All content healthy'}
+            {/* Score Card */}
+            <Card padding={4} radius={2} tone="default">
+              <Flex align="center" gap={3}>
+                <div
+                  style={{
+                    width: 64,
+                    height: 64,
+                    borderRadius: '50%',
+                    background: `conic-gradient(${getScoreColor(summary.score)} ${summary.score * 3.6}deg, rgba(127,127,127,0.1) 0deg)`,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <div
+                    style={{
+                      width: 52,
+                      height: 52,
+                      borderRadius: '50%',
+                      background: '#fff',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      flexDirection: 'column',
+                    }}
+                  >
+                    <span style={{fontSize: 18, fontWeight: 700, color: getScoreColor(summary.score)}}>
+                      {summary.score}
+                    </span>
+                  </div>
+                </div>
+                <Box flex={1}>
+                  <Text weight="semibold" size={2}>
+                    {getScoreLabel(summary.score)}
                   </Text>
-                </Flex>
-                {summary.lastChecked && (
                   <Text muted size={1}>
-                    Last checked: {summary.lastChecked}
+                    {summary.errors} error(s), {summary.warnings} warning(s)
                   </Text>
-                )}
-              </Stack>
+                  {summary.lastChecked && (
+                    <Text muted size={1}>
+                      Last checked: {summary.lastChecked}
+                    </Text>
+                  )}
+                </Box>
+              </Flex>
             </Card>
 
             {/* Issues List */}
