@@ -487,7 +487,7 @@ const getCmsContentImpl = async (): Promise<CmsContent> => {
     if (_fallback) return _fallback;
 
     const shared = await import('./cms-content.shared');
-    const candidate: CmsContent = shared.fallbackCmsContent ?? (await (shared as any).getFallbackCmsContent());
+    const candidate: CmsContent = shared.fallbackCmsContent;
     _fallback = candidate;
     return _fallback;
   };
@@ -732,7 +732,7 @@ const getCmsContentImpl = async (): Promise<CmsContent> => {
 // React's `cache` helper is available in production runtimes but may not be
 // present or callable in test environments. Use a safe wrapper so tests can
 // import `getCmsContent` without requiring a working React cache implementation.
-const maybeCache = <T extends (...args: any[]) => Promise<any>>(fn: T) => {
+const maybeCache = <T extends (...args: unknown[]) => Promise<CmsContent>>(fn: T) => {
   return typeof cache === 'function' ? cache(fn) : fn;
 };
 
