@@ -121,15 +121,15 @@ export function HeroSection() {
       </motion.div>
 
       <div className="flex flex-col items-center text-center sm:text-left sm:flex-row sm:items-center gap-6 sm:gap-7 lg:gap-8 md:pt-2 lg:pt-1">
-        {/* Profile Photo — taller 3D tilt card */}
+        {/* Profile Photo — 3D tilt card */}
         <motion.div className="flex-shrink-0" variants={photoVariants}>
           <div className="[perspective:600px]">
             <motion.div
               ref={photoRef}
-              className="group relative h-[188px] w-[160px] cursor-pointer shadow-lg border border-border-light dark:border-border-dark rounded-2xl"
+              className="group relative h-[188px] w-[160px] cursor-pointer rounded-2xl border border-border-light dark:border-border-dark shadow-md transition-[box-shadow,border-color] duration-300 ease-out hover:shadow-xl hover:shadow-black/10 dark:hover:shadow-black/30 hover:border-accent-pink/40"
               style={{ rotateX: smoothRotateX, rotateY: smoothRotateY }}
-              whileHover={{ scale: 1.12, y: -2 }}
-              transition={{ type: 'spring', stiffness: 260, damping: 20 }}
+              whileHover={{ scale: 1.06, y: -4 }}
+              transition={{ type: 'spring', stiffness: 300, damping: 22 }}
               onMouseEnter={handlePhotoMouseEnter}
               onMouseMove={handlePhotoMouseMove}
               onMouseLeave={handlePhotoMouseLeave}
@@ -139,24 +139,21 @@ export function HeroSection() {
                   <motion.div
                     key={activeProfileImage}
                     className="absolute inset-0"
-                    initial={{ opacity: 0, scale: 1.06, filter: 'blur(2px)' }}
-                    animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
-                    exit={{ opacity: 0, scale: 0.96, filter: 'blur(3px)' }}
-                    transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.25, ease: 'easeInOut' }}
                   >
-                    {/* Photo */}
                     <Image
                       src={activeProfileImage}
                       alt={profile.name}
                       fill
                       sizes="(max-width: 640px) 160px, 160px"
-                      className="object-cover brightness-100 group-hover:brightness-110 transition-[filter] duration-300"
+                      className="object-cover"
                       priority
                     />
                   </motion.div>
                 </AnimatePresence>
-
-                <div className="pointer-events-none absolute inset-0 bg-gradient-to-tr from-transparent via-transparent to-accent-pink/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               </div>
             </motion.div>
           </div>
