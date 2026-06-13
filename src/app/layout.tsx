@@ -12,6 +12,7 @@ import { MagicCursor } from '@/components/ui/MagicCursor';
 import { JsonLd } from '@/components/seo/JsonLd';
 import { getCmsContent } from '@/lib/cms-content.server';
 import { IS_MAGIC_CURSOR_VISIBLE } from '@/lib/features';
+import { SITE_URL, SITE_NAME, SITE_DESCRIPTION } from '@/lib/site-config';
 import './globals.css';
 
 const inter = Inter({
@@ -70,22 +71,21 @@ const jsonLd = {
   '@graph': [
     {
       '@type': 'WebSite',
-      '@id': 'https://namias.tech/#website',
-      url: 'https://namias.tech',
-      name: 'Jhon Keneth Ryan Namias — Portfolio',
-      description:
-        'Portfolio of Jhon Keneth Ryan Namias — Full Stack Engineer & AI Automation Specialist based in the Philippines.',
+      '@id': `${SITE_URL}/#website`,
+      url: SITE_URL,
+      name: SITE_NAME,
+      description: SITE_DESCRIPTION,
     },
     {
       '@type': 'Person',
-      '@id': 'https://namias.tech/#person',
+      '@id': `${SITE_URL}/#person`,
       name: 'Jhon Keneth Ryan Namias',
       jobTitle: 'Full Stack Engineer & AI Automation Specialist',
-      url: 'https://namias.tech',
+      url: SITE_URL,
       email: 'pp.namias@gmail.com',
       image: {
         '@type': 'ImageObject',
-        url: 'https://namias.tech/og-default.png',
+        url: `${SITE_URL}/og-default.png`,
         width: 1200,
         height: 630,
         alt: 'Jhon Keneth Ryan Namias - Full Stack Developer',
