@@ -1,4 +1,4 @@
-export const SANITY_PROJECT_ID = 'nl0qw78w'
+import {SANITY_PROJECT_ID} from '@/lib/site-config'
 
 export function buildStudioEditHref(
   documentId: string,

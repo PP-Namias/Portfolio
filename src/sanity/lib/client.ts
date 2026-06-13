@@ -1,4 +1,5 @@
 import {createClient, type ClientConfig, type SanityClient} from '@sanity/client'
+import {SANITY_PROJECT_ID, SANITY_DATASET} from '@/lib/site-config'
 
 export const API_VERSION = '2026-02-19'
 
@@ -15,8 +16,8 @@ let cachedReadClient: SanityClient | null = null
 
 function baseConfig(useCdn: boolean): ClientConfig {
   return {
-    projectId: readEnv('NEXT_PUBLIC_SANITY_PROJECT_ID', 'nl0qw78w'),
-    dataset: readEnv('NEXT_PUBLIC_SANITY_DATASET', 'production'),
+    projectId: readEnv('NEXT_PUBLIC_SANITY_PROJECT_ID', SANITY_PROJECT_ID),
+    dataset: readEnv('NEXT_PUBLIC_SANITY_DATASET', SANITY_DATASET),
     apiVersion: API_VERSION,
     useCdn,
     perspective: 'published',

@@ -1,4 +1,5 @@
 import {createClient, type ClientConfig, type SanityClient} from '@sanity/client'
+import {SANITY_PROJECT_ID, SANITY_DATASET} from '@/lib/site-config'
 
 export const API_VERSION = '2026-02-19'
 
@@ -14,8 +15,8 @@ export function defineLive(options: LiveOptions) {
   const {client, serverToken, browserToken} = options
   if (!cachedLive) {
     cachedLive = createClient({
-      projectId: client?.projectId || 'nl0qw78w',
-      dataset: client?.dataset || 'production',
+      projectId: client?.projectId || SANITY_PROJECT_ID,
+      dataset: client?.dataset || SANITY_DATASET,
       apiVersion: client?.apiVersion || API_VERSION,
       useCdn: client?.useCdn ?? true,
       perspective: client?.perspective || 'published',
