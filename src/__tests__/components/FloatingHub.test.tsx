@@ -221,7 +221,7 @@ describe('FloatingHub', () => {
     fireEvent.click(screen.getByText('Ask AI Assistant'));
 
     // Send a message
-    const input = screen.getByPlaceholderText('Ask about skills, projects, experience...');
+    const input = screen.getByPlaceholderText('Ask about skills, projects...');
     await userEvent.type(input, 'Hello');
     fireEvent.click(screen.getByLabelText('Send message'));
 

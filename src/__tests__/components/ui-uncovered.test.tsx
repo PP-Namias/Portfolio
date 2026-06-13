@@ -219,9 +219,8 @@ describe('uncovered UI components', () => {
     expect(screen.getByLabelText('Verified')).toBeInTheDocument();
   });
 
-  it('Footer renders CTA, social links and copyright', () => {
+  it('Footer renders social links and copyright', () => {
     render(<Footer />);
-    expect(screen.getByText("Let's connect")).toBeInTheDocument();
     expect(screen.getByText(new RegExp(String(new Date().getFullYear())))).toBeInTheDocument();
   });
 

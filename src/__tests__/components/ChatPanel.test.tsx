@@ -114,7 +114,7 @@ describe('ChatPanel', () => {
   it('sends a message and calls fetch', async () => {
     renderChatPanel();
 
-    const input = screen.getByPlaceholderText('Ask about skills, projects, experience...');
+    const input = screen.getByPlaceholderText('Ask about skills, projects...');
     await userEvent.type(input, 'Hello');
     fireEvent.click(screen.getByLabelText('Send message'));
 
@@ -142,7 +142,7 @@ describe('ChatPanel', () => {
     mockFetch.mockRejectedValueOnce(new Error('Network error'));
 
     renderChatPanel();
-    const input = screen.getByPlaceholderText('Ask about skills, projects, experience...');
+    const input = screen.getByPlaceholderText('Ask about skills, projects...');
     await userEvent.type(input, 'Hello');
     fireEvent.click(screen.getByLabelText('Send message'));
 
@@ -161,7 +161,7 @@ describe('ChatPanel', () => {
     });
 
     renderChatPanel();
-    const input = screen.getByPlaceholderText('Ask about skills, projects, experience...');
+    const input = screen.getByPlaceholderText('Ask about skills, projects...');
     await userEvent.type(input, 'Hello');
     fireEvent.click(screen.getByLabelText('Send message'));
 
@@ -178,7 +178,7 @@ describe('ChatPanel', () => {
     });
 
     renderChatPanel();
-    const input = screen.getByPlaceholderText('Ask about skills, projects, experience...');
+    const input = screen.getByPlaceholderText('Ask about skills, projects...');
     await userEvent.type(input, 'Hello');
     fireEvent.click(screen.getByLabelText('Send message'));
 
@@ -195,7 +195,7 @@ describe('ChatPanel', () => {
     });
 
     renderChatPanel();
-    const input = screen.getByPlaceholderText('Ask about skills, projects, experience...');
+    const input = screen.getByPlaceholderText('Ask about skills, projects...');
     await userEvent.type(input, 'Hello');
     fireEvent.click(screen.getByLabelText('Send message'));
 
@@ -213,7 +213,7 @@ describe('ChatPanel', () => {
   it('does not send when submitted with empty input', () => {
     renderChatPanel();
 
-    const form = screen.getByPlaceholderText('Ask about skills, projects, experience...').closest('form');
+    const form = screen.getByPlaceholderText('Ask about skills, projects...').closest('form');
     expect(form).toBeTruthy();
 
     fireEvent.submit(form as HTMLFormElement);
@@ -358,7 +358,7 @@ describe('ChatPanel', () => {
 
     renderChatPanel(messages);
 
-    const input = screen.getByPlaceholderText('Ask about skills, projects, experience...');
+    const input = screen.getByPlaceholderText('Ask about skills, projects...');
     await userEvent.type(input, 'New question');
     fireEvent.click(screen.getByLabelText('Send message'));
 
@@ -388,7 +388,7 @@ describe('ChatPanel', () => {
 
     renderChatPanel(messages);
 
-    const input = screen.getByPlaceholderText('Ask about skills, projects, experience...');
+    const input = screen.getByPlaceholderText('Ask about skills, projects...');
     await userEvent.type(input, 'New question');
     fireEvent.click(screen.getByLabelText('Send message'));
 
