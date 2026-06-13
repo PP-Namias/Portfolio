@@ -1,8 +1,9 @@
 import { MetadataRoute } from 'next';
 import { getCmsContent, getProjectSlugsForStaticParams } from '@/lib/cms-content.server';
 import { IS_BLOG_VISIBLE, IS_PROJECTS_REVAMP_ENABLED } from '@/lib/features';
+import { SITE_URL } from '@/lib/site-config';
 
-const BASE_URL = 'https://namias.tech';
+const BASE_URL = SITE_URL;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const entries: MetadataRoute.Sitemap = [

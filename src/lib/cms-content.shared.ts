@@ -10,6 +10,7 @@ import type {
   SocialLink,
   Technology,
 } from '@/types';
+import { SITE_URL } from '@/lib/site-config';
 
 export interface CmsContent {
   seoSettings: {
@@ -119,7 +120,7 @@ export const fallbackCmsContent: CmsContent = {
   seoSettings: {
     siteTitle: 'Jhon Keneth Namias | Portfolio king of stuff',
     siteDescription: 'Personal portfolio of Jhon Keneth Namias.',
-    canonicalUrl: 'https://namias.tech',
+    canonicalUrl: SITE_URL,
     ogImageUrl: '/og-image.svg',
     twitterImageUrl: '/og-image.svg',
     noindex: false,
