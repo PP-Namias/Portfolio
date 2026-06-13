@@ -22,7 +22,24 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       title: project.title,
       description: project.description,
       type: 'website',
-      ...(project.image ? { images: [{ url: project.image, alt: project.imageAlt || project.title }] } : {}),
+      ...(project.image
+        ? {
+            images: [
+              {
+                url: project.image,
+                width: 1200,
+                height: 630,
+                alt: project.imageAlt || project.title,
+              },
+            ],
+          }
+        : {}),
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: project.title,
+      description: project.description,
+      ...(project.image ? { images: [project.image] } : {}),
     },
   };
 }
