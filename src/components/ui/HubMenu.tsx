@@ -205,7 +205,7 @@ export function HubMenu({ onClose, onOpenChat }: Readonly<HubMenuProps>) {
           label="Send Email"
           subtitle={profile.email}
           index={3}
-          onClick={() => { openModal('contact'); onClose(); }}
+          onClick={() => { window.location.href = `mailto:${profile.email}`; onClose(); }}
           iconColorClass="text-amber-500"
           iconBgClass="bg-amber-500/10"
         />

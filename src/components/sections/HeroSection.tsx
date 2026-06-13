@@ -277,15 +277,13 @@ export function HeroSection() {
               <Calendar className="h-4 w-4" />
               Book a Call
             </Button>
-            <Button
-              variant="ghost"
-              size="md"
-              onClick={() => openModal('contact')}
-              className="h-10 sm:h-11"
+            <a
+              href="mailto:pp.namias@gmail.com"
+              className="h-10 sm:h-11 inline-flex items-center justify-center gap-2 rounded-xl px-5 sm:px-6 text-sm font-medium text-text-primary-light dark:text-text-primary-dark border border-border-light dark:border-border-dark hover:bg-surface-light dark:hover:bg-surface-dark transition-colors"
             >
               <Mail className="h-3.5 w-3.5" />
               Email
-            </Button>
+            </a>
           </motion.div>
         </div>
       </div>

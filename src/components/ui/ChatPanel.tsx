@@ -272,7 +272,7 @@ export function ChatPanel({ onBack, onClose, messages, setMessages }: Readonly<C
     }
 
     if (action === 'email') {
-      openModal('contact');
+      window.location.href = 'mailto:pp.namias@gmail.com';
       return;
     }
 

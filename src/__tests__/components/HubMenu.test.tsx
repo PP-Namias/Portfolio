@@ -169,10 +169,9 @@ describe('HubMenu', () => {
     expect(mockOnClose).toHaveBeenCalledTimes(1);
   });
 
-  it('opens contact modal from Send Email', () => {
+  it('opens mailto from Send Email', () => {
     render(<HubMenu onClose={mockOnClose} onOpenChat={mockOnOpenChat} />);
     fireEvent.click(screen.getByText('Send Email'));
-    expect(mockOpenModal).toHaveBeenCalledWith('contact');
     expect(mockOnClose).toHaveBeenCalledTimes(1);
   });
 

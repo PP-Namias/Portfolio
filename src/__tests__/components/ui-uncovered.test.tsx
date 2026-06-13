@@ -221,8 +221,7 @@ describe('uncovered UI components', () => {
 
   it('Footer renders CTA, social links and copyright', () => {
     render(<Footer />);
-    expect(screen.getByText(/Interested in working together/i)).toBeInTheDocument();
-    expect(screen.getByText(/Interested in working together/i)).toBeInTheDocument();
+    expect(screen.getByText("Let's connect")).toBeInTheDocument();
     expect(screen.getByText(new RegExp(String(new Date().getFullYear())))).toBeInTheDocument();
   });
 
