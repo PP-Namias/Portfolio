@@ -200,3 +200,18 @@ export const requiredForStatus: ValidatorFactory = (options = {}) => {
       return true
     })
 }
+
+// ─── SEO Image validation ─────────────────────────────────────
+
+export const seoImageDimensions: RuleFactory = (rule: Rule) =>
+  rule.custom((value: unknown) => {
+    if (!value) return true
+    const image = value as {asset?: {metadata?: {dimensions?: {width?: number; height?: number}}}}
+    const dimensions = image?.asset?.metadata?.dimensions
+    if (!dimensions) return true
+    const {width = 0, height = 0} = dimensions
+    if (width < 1200 || height < 630) {
+      return `Image should be at least 1200x630 pixels for Google search results (current: ${width}x${height}).`
+    }
+    return true
+  })
