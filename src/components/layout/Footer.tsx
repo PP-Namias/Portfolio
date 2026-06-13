@@ -1,7 +1,7 @@
 'use client';
 
 import React, {useEffect, useState} from 'react';
-import { FaGithub, FaInstagram, FaLinkedinIn, FaXTwitter } from 'react-icons/fa6';
+import { FaGithub, FaLinkedinIn, FaXTwitter } from 'react-icons/fa6';
 import { useModal } from '@/hooks/useModal';
 import { useCmsContent } from '@/hooks/useCmsContent';
 
@@ -9,7 +9,7 @@ const footerSocialIcons: Record<string, React.ComponentType<{ className?: string
   github: FaGithub,
   linkedin: FaLinkedinIn,
   x: FaXTwitter,
-  instagram: FaInstagram,
+  twitter: FaXTwitter,
 };
 
 // Computed once at module load. Re-computing on every render
@@ -22,7 +22,7 @@ export function Footer() {
   const { openModal } = useModal();
   const [year, setYear] = useState(CURRENT_YEAR);
   const footerSocials = socialLinks.filter((link) =>
-    ['github', 'linkedin', 'x', 'instagram'].includes(link.name)
+    ['github', 'linkedin', 'x', 'twitter'].includes(link.name)
   );
   const footerCopy = siteSettings?.footer ?? {
     leadText: '',

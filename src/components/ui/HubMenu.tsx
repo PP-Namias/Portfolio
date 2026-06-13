@@ -3,7 +3,7 @@
 import { useState, useRef, useCallback, useEffect, type ComponentType } from 'react';
 import Image from '@/components/ui/OptimizedImage';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FaGithub, FaInstagram, FaLinkedinIn, FaXTwitter } from 'react-icons/fa6';
+import { FaGithub, FaLinkedinIn, FaXTwitter } from 'react-icons/fa6';
 import {
   Bot,
   FileDown,
@@ -24,13 +24,13 @@ interface HubMenuProps {
   onOpenChat: () => void;
 }
 
-const CONNECT_SOCIALS = ['github', 'linkedin', 'x', 'instagram'] as const;
+const CONNECT_SOCIALS = ['github', 'linkedin', 'x', 'twitter'] as const;
 
 const socialIconMap: Record<string, ComponentType<{ className?: string }>> = {
   github: FaGithub,
   linkedin: FaLinkedinIn,
   x: FaXTwitter,
-  instagram: FaInstagram,
+  twitter: FaXTwitter,
 };
 
 export function HubMenu({ onClose, onOpenChat }: Readonly<HubMenuProps>) {

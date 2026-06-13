@@ -24,7 +24,7 @@ const socialIconMap: Record<string, React.ComponentType<{ className?: string }>>
   github: FaGithub,
   linkedin: FaLinkedinIn,
   x: FaXTwitter,
-  instagram: FaXTwitter,
+  twitter: FaXTwitter,
 };
 
 /* Staggered entrance variants */
@@ -77,7 +77,7 @@ export function HeroSection() {
   }, [roles.length]);
 
   const displayedSocials = socialLinks.filter((s) =>
-    ['github', 'linkedin', 'x', 'instagram'].includes(s.name)
+    ['github', 'linkedin', 'twitter', 'x'].includes(s.name)
   );
 
   const handlePhotoMouseMove = useCallback(
