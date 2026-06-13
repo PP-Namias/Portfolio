@@ -83,6 +83,13 @@ const jsonLd = {
       jobTitle: 'Full Stack Engineer & AI Automation Specialist',
       url: 'https://namias.tech',
       email: 'pp.namias@gmail.com',
+      image: {
+        '@type': 'ImageObject',
+        url: 'https://namias.tech/og-default.png',
+        width: 1200,
+        height: 630,
+        alt: 'Jhon Keneth Ryan Namias - Full Stack Developer',
+      },
       address: {
         '@type': 'PostalAddress',
         addressLocality: 'Caloocan City',
