@@ -11,7 +11,8 @@ import {
   UsersIcon,
   BookIcon,
   EyeOpenIcon,
-  FilterIcon,
+      FilterIcon,
+      EditIcon,
 } from '@sanity/icons'
 
 /**
@@ -22,6 +23,7 @@ import {
  *    Collections      - Projects, Experience, Certs, Gallery, Resume
  *    Blog             - Posts, Authors, Categories
  *    Community        - Memberships, Recommendations
+ *    Drafts           - All draft documents across types
  *  Settings
  *    Site Settings    - site name, canonical url, robots
  *    SEO Settings     - default SEO copy + og/twitter images
@@ -206,6 +208,27 @@ export function deskStructure(S: StructureBuilder) {
             .items([
               S.documentTypeListItem('membership').title('Memberships').icon(UsersIcon),
               S.documentTypeListItem('recommendation').title('Recommendations').icon(DocumentsIcon),
+            ]),
+        ),
+
+      // ─── Drafts (All drafts across types) ────────────────────
+      S.divider(),
+      S.listItem()
+        .title('Drafts')
+        .icon(EditIcon)
+        .child(
+          S.list()
+            .title('Drafts')
+            .items([
+              S.listItem()
+                .title('All Drafts')
+                .icon(EditIcon)
+                .child(
+                  S.documentList()
+                    .title('All Draft Documents')
+                    .filter('_id in path("drafts.**") && _type != "sanity.imageAsset" && _type != "sanity.fileAsset"')
+                    .defaultOrdering([{field: '_updatedAt', direction: 'desc'}])
+                ),
             ]),
         ),
 
