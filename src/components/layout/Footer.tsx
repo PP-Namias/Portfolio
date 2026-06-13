@@ -2,7 +2,6 @@
 
 import React, {useEffect, useState} from 'react';
 import { FaGithub, FaLinkedinIn, FaXTwitter } from 'react-icons/fa6';
-import { useModal } from '@/hooks/useModal';
 import { useCmsContent } from '@/hooks/useCmsContent';
 
 const footerSocialIcons: Record<string, React.ComponentType<{ className?: string }>> = {
@@ -19,7 +18,6 @@ const CURRENT_YEAR = new Date().getFullYear();
 
 export function Footer() {
   const { profile, socialLinks, siteSettings } = useCmsContent();
-  const { openModal } = useModal();
   const [year, setYear] = useState(CURRENT_YEAR);
   const footerSocials = socialLinks.filter((link) =>
     ['github', 'linkedin', 'x', 'twitter'].includes(link.name)
@@ -42,16 +40,14 @@ export function Footer() {
     <footer className="mt-8 pb-8 pt-6 border-t border-border-light dark:border-border-dark">
       <div className="flex flex-col items-center gap-4">
         {/* Final CTA */}
-        <p className="text-sm text-text-secondary-light dark:text-text-secondary-dark text-center">
-          {footerCopy.leadText || 'Interested in working together?'}{' '}
-          <button
-            type="button"
-            onClick={() => openModal('contact')}
-            className="text-accent-pink hover:text-accent-pink-hover dark:hover:text-accent-pink-hover-dark font-medium transition-colors"
-          >
-            {footerCopy.contactPrompt || 'Send a message'}
-          </button>
-        </p>
+        <a
+          href="https://www.linkedin.com/in/pp-namias/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-sm text-text-secondary-light dark:text-text-secondary-dark hover:text-accent-pink dark:hover:text-accent-pink-hover-dark transition-colors"
+        >
+          Let&apos;s connect
+        </a>
         <div className="flex items-center gap-3">
           {footerSocials.map((link) => {
             const Icon = footerSocialIcons[link.name];
@@ -72,6 +68,9 @@ export function Footer() {
         </div>
         <p className="text-xs text-text-muted-light dark:text-text-muted-dark">
           &copy; {year} {footerCopy.copyright || profile.name}
+        </p>
+        <p className="text-[11px] text-text-muted-light/60 dark:text-text-muted-dark/60">
+          Built with Next.js, Sanity, and Cloudflare Workers
         </p>
       </div>
     </footer>
