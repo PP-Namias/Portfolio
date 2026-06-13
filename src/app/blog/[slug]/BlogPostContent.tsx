@@ -5,7 +5,6 @@ import Link from 'next/link';
 import Image from '@/components/ui/OptimizedImage';
 import { motion } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
-import type { Components } from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeHighlight from 'rehype-highlight';
 import { ArrowLeft, Clock, Calendar, ChevronLeft, ChevronRight } from 'lucide-react';
@@ -15,7 +14,8 @@ import { ReadingProgress } from '@/components/ui/ReadingProgress';
 import { formatDateUtc } from '@/lib/date';
 import type { BlogPost } from '@/types';
 
-const markdownComponents: Components = {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- react-markdown Components type is overly strict for our custom components
+const markdownComponents: any = {
   h2: ({ children }: { children: React.ReactNode }) => (
     <h2 className="text-lg font-semibold text-text-primary-light dark:text-text-primary-dark mt-8 mb-3">
       {children}
