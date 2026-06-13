@@ -497,7 +497,15 @@ const getCmsContentImpl = async (): Promise<CmsContent> => {
   }
 
   const technologies = techDoc.technologies ?? [];
-  const socialLinks = (profileDoc?.socialLinks ?? []).map(mapSocialLink).filter(Boolean) as SocialLink[];
+  const socialLinks = (() => {
+    const mapped = (profileDoc?.socialLinks ?? []).map(mapSocialLink).filter(Boolean) as SocialLink[];
+    const seen = new Set<string>();
+    return mapped.filter((link) => {
+      if (seen.has(link.name)) return false;
+      seen.add(link.name);
+      return true;
+    });
+  })();
   const aboutParagraphsFromPortable = portableTextToParagraphs(aboutDoc?.aboutContent);
   const aboutParagraphsFromLegacy = (aboutDoc?.aboutParagraphs ?? []).map((paragraph) => String(paragraph).trim()).filter(Boolean);
 
