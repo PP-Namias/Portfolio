@@ -16,6 +16,7 @@ import {OnboardingTour} from './components/Onboarding'
 import {ContentHealth} from './components/inspector/ContentHealth'
 import {SeoPreview} from './components/inspector/SeoPreview'
 import {JsonInspector} from './components/inspector/JsonInspector'
+import {DataConsistency} from './components/inspector/DataConsistency'
 import {studioTheme} from './theme/studioTheme'
 import './theme/grid.css'
 import {savedQueriesToolPlugin} from './vision/SavedQueriesView'
@@ -101,6 +102,13 @@ export default defineConfig({
       {
         name: 'json-inspector',
         component: JsonInspector,
+        options: {
+          layout: 'panel',
+        },
+      },
+      {
+        name: 'data-consistency',
+        component: DataConsistency,
         options: {
           layout: 'panel',
         },
