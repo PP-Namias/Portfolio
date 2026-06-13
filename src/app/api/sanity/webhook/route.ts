@@ -2,6 +2,7 @@ import { revalidatePath } from 'next/cache';
 import { NextRequest, NextResponse } from 'next/server';
 import { clearCmsQueryCache } from '@/lib/cms-content.server';
 import { invalidateByTag } from '@/lib/cache';
+import { SITE_URL } from '@/lib/site-config';
 
 const REVALIDATE_PATHS = ['/', '/blog', '/blog/[slug]', '/sitemap.xml'] as const;
 
@@ -20,7 +21,7 @@ const SANITY_TYPE_TO_TAGS: Record<string, string[]> = {
 };
 
 function withCorsHeaders(response: NextResponse): NextResponse {
-  response.headers.set('Access-Control-Allow-Origin', '*');
+  response.headers.set('Access-Control-Allow-Origin', SITE_URL);
   response.headers.set('Access-Control-Allow-Methods', 'POST, OPTIONS');
   response.headers.set('Access-Control-Allow-Headers', 'content-type, x-sanity-webhook-secret, x-sanity-revalidate-secret');
   response.headers.set('Cache-Control', 'no-store, max-age=0');
