@@ -155,3 +155,48 @@ export const uniqueTitle: ValidatorFactory = (options = {}) => {
       return true
     })
 }
+
+// ─── Cross-field validation rules ─────────────────────────────
+
+export const endDateAfterStart: ValidatorFactory = (options = {}) => {
+  const startField = (options.startField as string) ?? 'startDate'
+  return (rule: Rule) =>
+    rule.custom((value: unknown, context: ValidationContext) => {
+      if (!value) return true
+      const document = context.document as Record<string, unknown> | undefined
+      const startDate = document?.[startField] as string | undefined
+      if (!startDate) return true
+      if (new Date(value as string) < new Date(startDate)) {
+        return `End date must be after start date (${startField})`
+      }
+      return true
+    })
+}
+
+export const expiryAfterIssue: RuleFactory = (rule: Rule) =>
+  rule.custom((value: unknown, context: ValidationContext) => {
+    if (!value) return true
+    const document = context.document as Record<string, unknown> | undefined
+    const issueDate = document?.issueDate as string | undefined
+    if (!issueDate) return true
+    if (new Date(value as string) < new Date(issueDate)) {
+      return 'Expiry date must be after issue date'
+    }
+    return true
+  })
+
+export const requiredForStatus: ValidatorFactory = (options = {}) => {
+  const status = (options.status as string) ?? 'completed'
+  const requiredFields = (options.fields as string[]) ?? []
+  return (rule: Rule) =>
+    rule.custom((_value: unknown, context: ValidationContext) => {
+      const document = context.document as Record<string, unknown> | undefined
+      if (!document) return true
+      if (document.status !== status) return true
+      const missing = requiredFields.filter((f) => !document[f])
+      if (missing.length > 0) {
+        return `Required when status is "${status}": ${missing.join(', ')}`
+      }
+      return true
+    })
+}
