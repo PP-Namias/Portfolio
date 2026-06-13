@@ -4,6 +4,7 @@ import { getCmsContent, getBlogPostSlugsForStaticParams } from '@/lib/cms-conten
 import { IS_BLOG_VISIBLE } from '@/lib/features';
 import { fallbackBlogPosts } from '@/lib/cms-content.shared';
 import { JsonLd } from '@/components/seo/JsonLd';
+import { SITE_URL } from '@/lib/site-config';
 import BlogPostContent from './BlogPostContent';
 
 export const revalidate = 3600;
@@ -62,12 +63,12 @@ export default async function BlogPostPage({ params }: Readonly<{ params: Promis
         author: {
           '@type': 'Person',
           name: 'Jhon Keneth Ryan Namias',
-          url: 'https://namias.tech',
+          url: SITE_URL,
         },
         image: post.coverImage
           ? {
               '@type': 'ImageObject',
-              url: `https://namias.tech${post.coverImage}`,
+              url: `${SITE_URL}${post.coverImage}`,
               width: 1200,
               height: 630,
               alt: post.metaTitle || post.title,
