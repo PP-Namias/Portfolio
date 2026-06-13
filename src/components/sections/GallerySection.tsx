@@ -24,19 +24,21 @@ export function GallerySection() {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
 
   const filterTags = useMemo(() => {
-    const tagSet = new Set<string>();
+    const tagCounts = new Map<string, number>();
 
     for (const image of galleryImages) {
       for (const tag of image.tags) {
-        if (/^\d{4}$/.test(tag)) {
-          continue;
-        }
-
-        tagSet.add(tag);
+        if (/^\d{4}$/.test(tag)) continue;
+        tagCounts.set(tag, (tagCounts.get(tag) ?? 0) + 1);
       }
     }
 
-    return ['All', ...Array.from(tagSet).sort((a, b) => a.localeCompare(b))];
+    const top = Array.from(tagCounts.entries())
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 6)
+      .map(([tag]) => tag);
+
+    return ['All', ...top];
   }, [galleryImages]);
 
   const filtered = useMemo(() => {
