@@ -141,6 +141,21 @@ export default defineType({
       ],
     }),
     defineField({
+      name: 'seoImage',
+      title: 'SEO & Social Preview Image',
+      type: 'image',
+      description: 'Image shown in Google search results. Falls back to cover image if not set. Recommended: 1200x630 pixels.',
+      options: {hotspot: true},
+      fields: [
+        defineField({
+          name: 'alt',
+          title: 'Alt text',
+          type: 'string',
+          validation: requireAltText,
+        }),
+      ],
+    }),
+    defineField({
       name: 'gallery',
       title: 'Gallery',
       type: 'array',
