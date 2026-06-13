@@ -64,7 +64,15 @@ export default async function BlogPostPage({ params }: Readonly<{ params: Promis
           name: 'Jhon Keneth Ryan Namias',
           url: 'https://namias.tech',
         },
-        image: post.coverImage ? `https://namias.tech${post.coverImage}` : undefined,
+        image: post.coverImage
+          ? {
+              '@type': 'ImageObject',
+              url: `https://namias.tech${post.coverImage}`,
+              width: 1200,
+              height: 630,
+              alt: post.metaTitle || post.title,
+            }
+          : undefined,
       }
     : null;
 
