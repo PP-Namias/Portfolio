@@ -4,7 +4,8 @@ import {useFormValue} from 'sanity'
 type Tab = 'raw' | 'fields' | 'meta'
 
 export function JsonInspector() {
-  const values = (useFormValue([]) || {}) as Record<string, unknown>
+  const rawValues = useFormValue([])
+  const values = useMemo(() => (rawValues || {}) as Record<string, unknown>, [rawValues])
   const [activeTab, setActiveTab] = useState<Tab>('raw')
   const [copied, setCopied] = useState(false)
 

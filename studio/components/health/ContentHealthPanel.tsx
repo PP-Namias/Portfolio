@@ -206,7 +206,7 @@ export function ContentHealthPanel() {
       setLoading(false)
       setChecking(false)
     }
-  }, [])
+  }, [client])
 
   useEffect(() => {
     runHealthCheck()

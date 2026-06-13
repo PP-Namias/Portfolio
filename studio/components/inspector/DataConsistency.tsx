@@ -28,7 +28,8 @@ function extractReferences(value: unknown): {_ref: string; _type?: string}[] {
 }
 
 export function DataConsistency() {
-  const values = (useFormValue([]) || {}) as Record<string, unknown>
+  const rawValues = useFormValue([])
+  const values = useMemo(() => (rawValues || {}) as Record<string, unknown>, [rawValues])
   const client = useClient()
   const [checks, setChecks] = useState<ConsistencyCheck[]>([])
   const [loading, setLoading] = useState(true)

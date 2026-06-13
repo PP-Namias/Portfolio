@@ -64,7 +64,8 @@ function getReferenceTypes(value: unknown): {broken: number; total: number} {
 }
 
 export function ContentHealth() {
-  const rawValues = useFormValue([]) || {}
+  const rawFormValues = useFormValue([])
+  const rawValues = useMemo(() => rawFormValues || {}, [rawFormValues])
   const values = useMemo(() => rawValues as Doc, [rawValues])
   const typeName = (values._type as string) || 'unknown'
 
