@@ -21,7 +21,7 @@ describe('/api/sanity/webhook route', () => {
     const response = await OPTIONS();
 
     expect(response.status).toBe(204);
-    expect(response.headers.get('access-control-allow-origin')).toBe('*');
+    expect(response.headers.get('access-control-allow-origin')).toBe('https://namias.tech');
     expect(response.headers.get('cache-control')).toBe('no-store, max-age=0');
   });
 
