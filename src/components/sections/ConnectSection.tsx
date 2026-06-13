@@ -5,8 +5,8 @@ import { motion } from 'framer-motion';
 import { Calendar, ExternalLink } from 'lucide-react';
 import {
   FaDiscord,
+  FaFacebook,
   FaGithub,
-  FaInstagram,
   FaLinkedinIn,
   FaXTwitter,
 } from 'react-icons/fa6';
@@ -21,7 +21,7 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   discord: FaDiscord,
   twitter: FaXTwitter,
   x: FaXTwitter,
-  instagram: FaInstagram,
+  facebook: FaFacebook,
 };
 
 export function ConnectSection() {
