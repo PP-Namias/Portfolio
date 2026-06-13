@@ -20,7 +20,7 @@ Write-Host "Output: $OUTPUT_DIR" -ForegroundColor Gray
 # Export documents
 Write-Host "`nExporting documents..." -ForegroundColor Yellow
 $docsFile = "$OUTPUT_DIR\documents.ndjson"
-sanity dataset export $DATASET $docsFile --project $PROJECT_ID 2>&1
+npx sanity dataset export $DATASET $docsFile --project $PROJECT_ID 2>&1
 if ($LASTEXITCODE -ne 0) {
     Write-Error "Failed to export documents"
     exit 1
@@ -31,7 +31,7 @@ Write-Host "Exported $docCount documents" -ForegroundColor Green
 # Export assets
 Write-Host "`nExporting assets..." -ForegroundColor Yellow
 $assetsFile = "$OUTPUT_DIR\assets.ndjson"
-sanity dataset export $DATASET $assetsFile --project $PROJECT_ID --type assets 2>&1
+npx sanity dataset export $DATASET $assetsFile --project $PROJECT_ID --type assets 2>&1
 if ($LASTEXITCODE -ne 0) {
     Write-Error "Failed to export assets"
     exit 1
@@ -42,7 +42,7 @@ Write-Host "Exported $assetCount assets" -ForegroundColor Green
 # Export schema
 Write-Host "`nExporting schema..." -ForegroundColor Yellow
 $schemaFile = "$OUTPUT_DIR\schema.json"
-sanity schema export --project $PROJECT_ID > $schemaFile 2>&1
+npx sanity schema export --project $PROJECT_ID > $schemaFile 2>&1
 if ($LASTEXITCODE -ne 0) {
     Write-Warning "Failed to export schema (non-critical)"
 }
