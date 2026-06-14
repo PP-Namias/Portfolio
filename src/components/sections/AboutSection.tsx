@@ -1,12 +1,13 @@
 'use client';
 
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 import { GraduationCap, ChevronDown, ChevronUp } from 'lucide-react';
 import { useCmsContent } from '@/hooks/useCmsContent';
 
 export function AboutSection() {
   const { profile, about } = useCmsContent();
+  const prefersReducedMotion = useReducedMotion();
   const [showMore, setShowMore] = useState(false);
   const fallbackParagraphs = profile.summary
     .split(/\n\n+/)
@@ -17,8 +18,8 @@ export function AboutSection() {
   return (
     <motion.section
       className=""
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
+      initial={prefersReducedMotion ? false : { opacity: 0, y: 20 }}
+      whileInView={prefersReducedMotion ? false : { opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-50px' }}
       transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
     >
