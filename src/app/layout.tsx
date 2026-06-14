@@ -98,6 +98,8 @@ const jsonLd = {
       sameAs: [
         'https://github.com/PP-Namias',
         'https://www.linkedin.com/in/pp-namias/',
+        'https://x.com/PP_Namias',
+        'https://www.facebook.com/profile.php?id=100093808752066',
       ],
       knowsAbout: ['React', 'TypeScript', 'Node.js', 'Next.js', 'Python', 'AI Automation', 'Prompt Engineering'],
     },
