@@ -77,9 +77,10 @@ export function CertificationsSection() {
 
       <div className="grid grid-cols-2 gap-2">
         {visibleCerts.map((cert, index) => (
-          <motion.div
+          <motion.button
+            type="button"
             key={`${cert.title}-${cert.issuer}`}
-            className="group relative cursor-pointer rounded-lg overflow-hidden border border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark"
+            className="group relative cursor-pointer rounded-lg overflow-hidden border border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark text-left"
             initial={{ opacity: 0, scale: 0.95 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
@@ -111,7 +112,7 @@ export function CertificationsSection() {
                 </p>
               </div>
             </div>
-          </motion.div>
+            </motion.button>
         ))}
       </div>
 
