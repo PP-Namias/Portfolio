@@ -28,7 +28,7 @@ export function Footer() {
                 href={link.link}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-text-muted-light dark:text-text-muted-dark hover:text-accent-pink transition-colors"
+                className="h-11 w-11 flex items-center justify-center text-text-muted-light dark:text-text-muted-dark hover:text-accent-pink transition-colors"
                 aria-label={link.label}
               >
                 <Icon className="h-4 w-4" />
@@ -36,7 +36,7 @@ export function Footer() {
             );
           })}
         </div>
-        <p className="text-[11px] text-text-muted-light/50 dark:text-text-muted-dark/50">
+        <p className="text-[11px] text-text-muted-light dark:text-text-muted-dark">
           &copy; {new Date().getFullYear()} {profile.name} &middot; Next.js &middot; Sanity
         </p>
       </div>
