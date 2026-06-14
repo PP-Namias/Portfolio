@@ -67,7 +67,7 @@ export function TimelineItem({ item, index, isLast }: Readonly<TimelineItemProps
     >
       {/* Timeline line + dot */}
       <div className="flex flex-col items-center">
-        <div className="h-2.5 w-2.5 rounded-full bg-accent-pink mt-1.5 flex-shrink-0" />
+        <div className="h-2.5 w-2.5 rounded-full bg-accent-pink mt-1.5 flex-shrink-0" aria-hidden="true" />
         {!isLast && (
           <div className="w-px flex-1 bg-border-light dark:bg-border-dark mt-1" />
         )}
