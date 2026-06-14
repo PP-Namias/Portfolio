@@ -220,7 +220,7 @@ export function HeroSection() {
                     href={link.link}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="h-7 w-7 rounded flex items-center justify-center text-text-muted-light dark:text-text-muted-dark hover:text-accent-pink transition-colors"
+                    className="h-11 w-11 rounded flex items-center justify-center text-text-muted-light dark:text-text-muted-dark hover:text-accent-pink transition-colors"
                     aria-label={link.label}
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1 }}
