@@ -108,7 +108,7 @@ export function verifyMediaGatewaySignature(input: MediaGatewaySignatureInput & 
   const secret = getGatewaySecret();
 
   if (!secret) {
-    return true;
+    return false;
   }
 
   if (!input.signature || typeof input.expiresAt !== 'number') {
