@@ -107,9 +107,9 @@ export function ProjectDetailPage({ project }: Readonly<ProjectDetailPageProps>)
           <div className="mt-8 space-y-6">
             {project.challenge && (
               <section>
-                <h2 className="mb-2 text-sm font-semibold text-text-primary-light dark:text-text-primary-dark">
+                <h3 className="mb-2 text-sm font-semibold text-text-primary-light dark:text-text-primary-dark">
                   Challenge
-                </h2>
+                </h3>
                 <p className="text-xs leading-relaxed text-text-secondary-light dark:text-text-secondary-dark">
                   {project.challenge}
                 </p>
@@ -117,9 +117,9 @@ export function ProjectDetailPage({ project }: Readonly<ProjectDetailPageProps>)
             )}
             {project.solution && (
               <section>
-                <h2 className="mb-2 text-sm font-semibold text-text-primary-light dark:text-text-primary-dark">
+                <h3 className="mb-2 text-sm font-semibold text-text-primary-light dark:text-text-primary-dark">
                   Solution
-                </h2>
+                </h3>
                 <p className="text-xs leading-relaxed text-text-secondary-light dark:text-text-secondary-dark">
                   {project.solution}
                 </p>
@@ -127,9 +127,9 @@ export function ProjectDetailPage({ project }: Readonly<ProjectDetailPageProps>)
             )}
             {project.result && (
               <section>
-                <h2 className="mb-2 text-sm font-semibold text-text-primary-light dark:text-text-primary-dark">
+                <h3 className="mb-2 text-sm font-semibold text-text-primary-light dark:text-text-primary-dark">
                   Result
-                </h2>
+                </h3>
                 <p className="text-xs leading-relaxed text-text-secondary-light dark:text-text-secondary-dark">
                   {project.result}
                 </p>
@@ -141,9 +141,9 @@ export function ProjectDetailPage({ project }: Readonly<ProjectDetailPageProps>)
         {/* Highlights */}
         {project.highlights && project.highlights.length > 0 && (
           <section className="mt-8">
-            <h2 className="mb-3 text-sm font-semibold text-text-primary-light dark:text-text-primary-dark">
+            <h3 className="mb-3 text-sm font-semibold text-text-primary-light dark:text-text-primary-dark">
               Highlights
-            </h2>
+            </h3>
             <ul className="space-y-2">
               {project.highlights.map((highlight) => (
                 <li
@@ -161,9 +161,9 @@ export function ProjectDetailPage({ project }: Readonly<ProjectDetailPageProps>)
         {/* Tech stack */}
         {project.tags.length > 0 && (
           <section className="mt-8">
-            <h2 className="mb-3 text-sm font-semibold text-text-primary-light dark:text-text-primary-dark">
+            <h3 className="mb-3 text-sm font-semibold text-text-primary-light dark:text-text-primary-dark">
               Tech Stack
-            </h2>
+            </h3>
             <div className="flex flex-wrap gap-2">
               {project.tags.map((tag) => (
                 <span
@@ -180,9 +180,9 @@ export function ProjectDetailPage({ project }: Readonly<ProjectDetailPageProps>)
         {/* Gallery */}
         {project.gallery && project.gallery.length > 0 && (
           <section className="mt-8">
-            <h2 className="mb-3 text-sm font-semibold text-text-primary-light dark:text-text-primary-dark">
+            <h3 className="mb-3 text-sm font-semibold text-text-primary-light dark:text-text-primary-dark">
               Gallery
-            </h2>
+            </h3>
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               {project.gallery.map((item, index) => (
                 <div
