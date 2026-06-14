@@ -1,3 +1,7 @@
 User-agent: *
 Allow: /
+Disallow: /studio
+Disallow: /api/
+Disallow: /_next/
+
 Sitemap: https://namias.tech/sitemap.xml
