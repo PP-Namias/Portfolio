@@ -18,8 +18,10 @@ vi.mock('@/lib/cms-content.server', () => ({
 
 import { flush } from '@/lib/cache';
 
-function makeRequest(url: string) {
-  return { nextUrl: new URL(url) } as any;
+function makeRequest(url: string, headers?: Record<string, string>) {
+  const req = { nextUrl: new URL(url), headers: new Map(Object.entries(headers || {})) } as any;
+  req.headers.get = (key: string) => (headers || {})[key] || null;
+  return req;
 }
 
 describe('/api/performance/cache', () => {
@@ -45,14 +47,16 @@ describe('/api/performance/cache', () => {
     expect(data.timestamp).toBeDefined();
   });
 
-  it('flushes cache when flush=true', async () => {
-    const request = makeRequest('http://localhost/api/performance/cache?flush=true');
+  it('flushes cache when flush=true with valid API key', async () => {
+    process.env.ADMIN_API_KEY = 'test-admin-key';
+    const request = makeRequest('http://localhost/api/performance/cache?flush=true', { 'x-api-key': 'test-admin-key' });
     const response = await GET(request);
     const data = await response.json();
 
     expect(data.flushed).toBe(5);
     expect(data.status).toBe('ok');
     expect(flush).toHaveBeenCalled();
+    delete process.env.ADMIN_API_KEY;
   });
 
   it('sets correct headers', async () => {

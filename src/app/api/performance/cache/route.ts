@@ -2,11 +2,10 @@ import { NextRequest, NextResponse } from 'next/server';
 import { stats, flush } from '@/lib/cache';
 import { getCmsQueryCacheStats } from '@/lib/cms-content.server';
 
-const ADMIN_API_KEY = process.env.ADMIN_API_KEY?.trim();
-
 function isAdminRequest(request: NextRequest): boolean {
-  if (!ADMIN_API_KEY) return false;
-  return request.headers.get('x-api-key') === ADMIN_API_KEY;
+  const apiKey = process.env.ADMIN_API_KEY?.trim();
+  if (!apiKey) return false;
+  return request.headers.get('x-api-key') === apiKey;
 }
 
 export async function GET(request: NextRequest) {

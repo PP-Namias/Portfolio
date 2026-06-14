@@ -163,8 +163,8 @@ describe('app layout and page coverage', () => {
   it('NotFound page renders CTA links', () => {
     render(<NotFoundPage />);
 
-    expect(screen.getByText(/ERROR 404/)).toBeTruthy();
-    expect(screen.getByText(/FILE NOT FOUND/)).toBeTruthy();
-    expect(screen.getByText(/take me back/).closest('a')).toHaveAttribute('href', '/');
+    expect(screen.getByText(/404/)).toBeTruthy();
+    expect(screen.getByText(/Page not found/)).toBeTruthy();
+    expect(screen.getByText(/Back to home/).closest('a')).toHaveAttribute('href', '/');
   });
 });
