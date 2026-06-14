@@ -103,6 +103,7 @@ export function MagicCursor() {
         `animation-duration: ${STAR_ANIMATION_DURATION}ms`,
       ].join("; ");
       star.textContent = SPARKLE;
+      star.setAttribute('aria-hidden', 'true');
       container.appendChild(star);
       window.setTimeout(() => star.remove(), STAR_ANIMATION_DURATION);
     };
@@ -124,6 +125,7 @@ export function MagicCursor() {
         `left: ${position.x}px`,
         `top: ${position.y}px`,
       ].join("; ");
+      glow.setAttribute('aria-hidden', 'true');
       container.appendChild(glow);
       window.setTimeout(() => glow.remove(), GLOW_DURATION);
     };
