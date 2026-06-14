@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 import { Calendar, ExternalLink } from 'lucide-react';
 import {
   FaDiscord,
@@ -27,11 +27,12 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
 export function ConnectSection() {
   const { socialLinks, experiences, certifications, technologies } = useCmsContent();
   const { openModal } = useModal();
+  const prefersReducedMotion = useReducedMotion();
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
+    <motion.section
+      initial={prefersReducedMotion ? false : { opacity: 0, y: 20 }}
+      whileInView={prefersReducedMotion ? false : { opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-50px' }}
       transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
     >
@@ -97,6 +98,6 @@ export function ConnectSection() {
           );
         })}
       </div>
-    </motion.div>
+    </motion.section>
   );
 }
