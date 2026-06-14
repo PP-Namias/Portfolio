@@ -356,8 +356,9 @@ export function ContactModal({ open, onClose }: Readonly<ContactModalProps>) {
                     type="button"
                     onClick={handleClearDraft}
                     className="inline-flex items-center gap-1.5 rounded-lg border border-border-light dark:border-border-dark px-3 py-2.5 text-sm font-medium text-text-secondary-light dark:text-text-secondary-dark hover:text-red-500 hover:border-red-400 dark:hover:text-red-400 dark:hover:border-red-400 transition-colors"
+                    aria-label="Clear draft"
                   >
-                    <Trash2 className="h-3.5 w-3.5" />
+                    <Trash2 className="h-3.5 w-3.5" aria-hidden="true" />
                   </button>
                 </div>
                 <div className="flex flex-wrap gap-2">
