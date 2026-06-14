@@ -58,7 +58,7 @@ function isAuthorizedWebhookRequest(request: NextRequest): boolean {
   const expectedSecret = getExpectedSecret();
 
   if (!expectedSecret) {
-    return true;
+    return false;
   }
 
   const providedSecret = getProvidedSecret(request);
