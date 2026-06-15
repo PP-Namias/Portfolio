@@ -1,0 +1,371 @@
+{
+  "title": "Thinkst Canary Token Integration",
+  "version": "1.0.0",
+  "status": "draft",
+  "author": "PP Namias",
+  "created": "2026-06-16",
+  "lastUpdated": "2026-06-16",
+  
+  "overview": {
+    "description": "Integrate Thinkst Canary tokens into the portfolio website to detect unauthorized access, security scanning, and potential attacks. Get real-time email notifications when canary tokens are triggered.",
+    "problem": "Portfolio websites are public targets for scanners, bots, and malicious actors. Without detection mechanisms, we have no visibility into who is probing our infrastructure.",
+    "solution": "Deploy canary tokens as tripwires throughout the site — decoy endpoints, fake files, and hidden triggers that alert us via email when accessed.",
+    "value": "Early detection of security threats, understanding of attack patterns, and a professional security posture that showcases enterprise-grade thinking."
+  },
+
+  "background": {
+    "whatAreCanaryTokens": {
+      "description": "Canary tokens are digital tripwires. When someone accesses a canary token (a URL, file, DNS entry, etc.), it sends you an alert. Think of them as alarm sensors for your digital infrastructure.",
+      "provider": "Thinkst (https://canarytokens.org)",
+      "cost": "Free tier available (up to 500 tokens)",
+      "howItWorks": [
+        "1. Create a canary token on canarytokens.org",
+        "2. Deploy it in your infrastructure (URL, file, DNS, etc.)",
+        "3. When someone accesses it, Thinkst sends you an email",
+        "4. You know someone is where they shouldn't be"
+      ]
+    },
+    "whyForPortfolio": {
+      "reasons": [
+        "Detect port scanners and vulnerability scanners hitting the site",
+        "Identify bots crawling for sensitive files (wp-admin, .env, etc.)",
+        "Monitor for unauthorized API access attempts",
+        "Create decoy admin panels that alert when accessed",
+        "Showcase security awareness to future employers"
+      ]
+    }
+  },
+
+  "tokenTypes": {
+    "web": {
+      "description": "URL-based tokens that alert when visited",
+      "useCase": "Decoy endpoints, fake admin panels, hidden links",
+      "example": "/api/canary/admin-login"
+    },
+    "dns": {
+      "description": "DNS records that alert when queried",
+      "useCase": "Detect DNS enumeration, subdomain scanning",
+      "example": "admin.canary.yourdomain.com"
+    },
+    "file": {
+      "description": "Files that alert when opened",
+      "useCase": "Fake .env files, config files, SSH keys",
+      "example": "/.env-canary"
+    },
+    "aws": {
+      "description": "AWS credentials that alert when used",
+      "useCase": "Detect AWS credential theft",
+      "example": "Fake AWS access keys"
+    },
+    "msword": {
+      "description": "Word documents that alert when opened",
+      "useCase": "Phishing detection, document tracking",
+      "example": "/documents/resume-canary.docx"
+    },
+    "pdf": {
+      "description": "PDF files that alert when opened",
+      "useCase": "Document tracking, phishing detection",
+      "example": "/documents/portfolio-canary.pdf"
+    },
+    "windows": {
+      "description": "Windows files that alert when executed",
+      "useCase": "Malware analysis, executable tracking",
+      "example": "Not applicable for web portfolio"
+    }
+  },
+
+  "architecture": {
+    "diagram": {
+      "description": "How canary tokens integrate with the portfolio",
+      "flow": [
+        "1. Attacker/Scanner → Hits canary endpoint",
+        "2. Next.js API route → Logs the trigger",
+        "3. Webhook → Sends to Thinkst OR custom notification",
+        "4. Email → You receive alert with details"
+      ]
+    },
+    "components": [
+      {
+        "name": "Canary Token Manager",
+        "purpose": "Create, store, and manage canary token configurations",
+        "file": "src/lib/canary/tokens.ts"
+      },
+      {
+        "name": "Canary API Routes",
+        "purpose": "Decoy endpoints that trigger alerts",
+        "file": "src/app/api/canary/"
+      },
+      {
+        "name": "Canary Middleware",
+        "purpose": "Intercept requests to canary paths",
+        "file": "src/middleware.ts"
+      },
+      {
+        "name": "Canary Notification Service",
+        "purpose": "Send email alerts when tokens are triggered",
+        "file": "src/lib/canary/notify.ts"
+      },
+      {
+        "name": "Canary Dashboard",
+        "purpose": "View triggered tokens and attack patterns",
+        "file": "src/app/admin/canary/page.tsx"
+      },
+      {
+        "name": "Canary Tests",
+        "purpose": "Ensure canary system works correctly",
+        "file": "src/__tests__/api/canary.test.ts"
+      }
+    ]
+  },
+
+  "implementation": {
+    "phases": [
+      {
+        "id": 1,
+        "name": "Foundation",
+        "description": "Set up canary token infrastructure",
+        "tasks": [
+          "Create canary token configuration schema",
+          "Set up canary token manager",
+          "Create API route for token triggers",
+          "Add email notification service",
+          "Write unit tests"
+        ],
+        "estimatedCommits": 5
+      },
+      {
+        "id": 2,
+        "name": "Decoy Endpoints",
+        "description": "Deploy canary endpoints that attract scanners",
+        "tasks": [
+          "Create /api/canary/admin (fake admin panel)",
+          "Create /api/canary/config (fake config endpoint)",
+          "Create /.env-canary (fake env file)",
+          "Create /wp-admin-canary (fake WordPress admin)",
+          "Create /phpmyadmin-canary (fake phpMyAdmin)"
+        ],
+        "estimatedCommits": 5
+      },
+      {
+        "id": 3,
+        "name": "Monitoring & Dashboard",
+        "description": "Track and visualize canary triggers",
+        "tasks": [
+          "Create trigger logging system",
+          "Build admin dashboard for viewing triggers",
+          "Add IP geolocation tracking",
+          "Add user-agent analysis",
+          "Create alert summary emails"
+        ],
+        "estimatedCommits": 5
+      },
+      {
+        "id": 4,
+        "name": "Advanced Features",
+        "description": "Enhanced canary capabilities",
+        "tasks": [
+          "Add rate limiting to canary endpoints",
+          "Create canary token rotation schedule",
+          "Add Slack/Discord webhook notifications",
+          "Create canary token health checks",
+          "Add canary token analytics"
+        ],
+        "estimatedCommits": 5
+      }
+    ],
+    "totalEstimatedCommits": 20
+  },
+
+  "canaryTokens": {
+    "recommended": [
+      {
+        "name": "Fake Admin Panel",
+        "type": "web",
+        "path": "/api/canary/admin",
+        "description": "Decoy admin endpoint that attracts scanners",
+        "priority": "high"
+      },
+      {
+        "name": "Fake Config Endpoint",
+        "type": "web",
+        "path": "/api/canary/config",
+        "description": "Decoy config endpoint probing for secrets",
+        "priority": "high"
+      },
+      {
+        "name": "Fake .env File",
+        "type": "web",
+        "path": "/.env-canary",
+        "description": "Decoy environment file with fake credentials",
+        "priority": "high"
+      },
+      {
+        "name": "Fake WordPress Admin",
+        "type": "web",
+        "path": "/wp-admin-canary",
+        "description": "Decoy WordPress admin panel",
+        "priority": "medium"
+      },
+      {
+        "name": "Fake phpMyAdmin",
+        "type": "web",
+        "path": "/phpmyadmin-canary",
+        "description": "Decoy database admin panel",
+        "priority": "medium"
+      },
+      {
+        "name": "Fake SSH Key",
+        "type": "file",
+        "path": "/.ssh-canary/id_rsa",
+        "description": "Decoy SSH private key",
+        "priority": "medium"
+      },
+      {
+        "name": "Fake AWS Credentials",
+        "type": "file",
+        "path": "/.aws-canary/credentials",
+        "description": "Decoy AWS access keys",
+        "priority": "low"
+      },
+      {
+        "name": "Fake Database Backup",
+        "type": "file",
+        "path": "/backups-canary/database.sql",
+        "description": "Decoy database backup file",
+        "priority": "low"
+      }
+    ]
+  },
+
+  "notification": {
+    "channels": [
+      {
+        "name": "Email",
+        "provider": "Thinkst (built-in)",
+        "email": "jkrbn99@gmail.com",
+        "enabled": true,
+        "priority": "primary"
+      },
+      {
+        "name": "Custom Webhook",
+        "provider": "Custom",
+        "url": "Configurable",
+        "enabled": false,
+        "priority": "secondary"
+      },
+      {
+        "name": "Slack",
+        "provider": "Slack Webhook",
+        "url": "Configurable",
+        "enabled": false,
+        "priority": "secondary"
+      }
+    ],
+    "emailTemplate": {
+      "subject": "🚨 Canary Token Triggered: {{tokenName}}",
+      "body": {
+        "sections": [
+          {
+            "title": "Token Details",
+            "fields": ["Token Name", "Token Type", "Triggered At"]
+          },
+          {
+            "title": "Request Details",
+            "fields": ["IP Address", "User Agent", "Referer", "Method"]
+          },
+          {
+            "title": "Geolocation",
+            "fields": ["Country", "City", "ISP"]
+          },
+          {
+            "title": "Action Required",
+            "fields": ["Review the trigger", "Check for patterns", "Block if suspicious"]
+          }
+        ]
+      }
+    }
+  },
+
+  "security": {
+    "considerations": [
+      "Canary tokens should never be linked to real sensitive data",
+      "Token triggers should be logged but not expose real secrets",
+      "Rate limit canary endpoints to prevent abuse",
+      "Rotate tokens periodically (monthly recommended)",
+      "Monitor for false positives (search engine crawlers, etc.)"
+    ],
+    "bestPractices": [
+      "Use realistic but fake data in canary files",
+      "Make canary endpoints look like real admin panels",
+      "Add canary tokens to robots.txt to prevent crawler access",
+      "Log all trigger attempts for security analysis",
+      "Set up alerts for multiple rapid triggers (attack detection)"
+    ]
+  },
+
+  "testing": {
+    "unitTests": [
+      "Token creation and management",
+      "Notification service",
+      "Trigger logging",
+      "IP geolocation"
+    ],
+    "integrationTests": [
+      "API route triggers correctly",
+      "Email notification sent",
+      "Dashboard displays triggers",
+      "Rate limiting works"
+    ],
+    "manualTests": [
+      "Access canary endpoint and verify email received",
+      "Check dashboard shows trigger",
+      "Verify geolocation accuracy",
+      "Test rate limiting"
+    ]
+  },
+
+  "successMetrics": {
+    "primary": [
+      "Canary tokens deployed and functional",
+      "Email notifications received within 60 seconds",
+      "All decoy endpoints responding correctly",
+      "Test coverage > 80%"
+    ],
+    "secondary": [
+      "Detection of scanner/bot activity",
+      "False positive rate < 5%",
+      "Dashboard usability score > 4/5"
+    ]
+  },
+
+  "timeline": {
+    "phase1": "1-2 hours (Foundation)",
+    "phase2": "1-2 hours (Decoy Endpoints)",
+    "phase3": "2-3 hours (Monitoring)",
+    "phase4": "1-2 hours (Advanced)",
+    "total": "5-9 hours"
+  },
+
+  "openQuestions": [
+    {
+      "question": "Do you have a Thinkst Canary account already?",
+      "options": ["Yes", "No, need to create one"],
+      "recommendation": "Create free account at canarytokens.org"
+    },
+    {
+      "question": "Which notification channels do you want?",
+      "options": ["Email only", "Email + Slack", "Email + Webhook", "All"],
+      "recommendation": "Start with email, add others later"
+    },
+    {
+      "question": "Should the admin dashboard require authentication?",
+      "options": ["Yes, require login", "No, public dashboard", "IP whitelist only"],
+      "recommendation": "Require authentication for security"
+    },
+    {
+      "question": "How often should tokens rotate?",
+      "options": ["Weekly", "Monthly", "Quarterly", "Never"],
+      "recommendation": "Monthly for balance of security and convenience"
+    }
+  ]
+}
