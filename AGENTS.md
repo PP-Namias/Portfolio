@@ -68,6 +68,30 @@ This file is the entry point for any agent (opencode, future coding agents, or h
 - `fullstack-workflow` — end-to-end full-stack development workflow for Next.js
 - `typescript-advanced` — advanced TypeScript patterns and type safety
 
+## Subagents
+
+Specialized agents for different domains. Use the right agent for the task.
+
+| Agent | File | Purpose |
+|-------|------|---------|
+| **Frontend** | `.agents/subagents/frontend.md` | React, Next.js, Tailwind, Framer Motion |
+| **Backend** | `.agents/subagents/backend.md` | API routes, server logic, data operations |
+| **Content** | `.agents/subagents/content.md` | Sanity CMS, schemas, GROQ queries |
+| **Security** | `.agents/subagents/security.md` | Security audits, vulnerability scanning |
+| **DevOps** | `.agents/subagents/devops.md` | Deployment, CI/CD, monitoring |
+
+## Workflows
+
+Standardized workflows for common tasks. Follow these for consistency.
+
+| Workflow | File | When to Use |
+|----------|------|-------------|
+| **Bug Fix** | `.agents/workflows/bug-fix.md` | Finding and fixing bugs |
+| **Feature Dev** | `.agents/workflows/feature-development.md` | Implementing new features |
+| **Code Review** | `.agents/workflows/code-review.md` | Reviewing code changes |
+| **Portfolio Dev** | `.agents/workflows/portfolio-development.md` | Portfolio-specific development |
+| **MiMo Prompts** | `.agents/workflows/mimo-prompt-guide.md` | Optimizing prompts for MiMo v2.5 |
+
 ## Home page sections
 
 - `BlogSection` (`src/components/sections/BlogSection.tsx`) — compact list of the latest 3 blog posts shown side-by-side with `CertificationsSection` on the home page. Gated by `IS_BLOG_VISIBLE` in `src/lib/features.ts`. Plan: `docs/prd/prd.blog.json`.
@@ -149,69 +173,31 @@ MCP servers give your AI agent access to browser DevTools, component libraries, 
 | **GitHub MCP** | `github` | Issues, PRs, repos, code search, file management |
 | **Filesystem MCP** | `filesystem` | File read/write access with path restrictions |
 | **Sequential Thinking** | `sequential-thinking` | Structured reasoning for complex problems |
-
-### Database & Storage MCPs
-| Server | Config key | Purpose |
-|---|---|---|
 | **Memory** | `memory` | Knowledge graph memory for persistent context |
-| **SQLite** | `sqlite` | Local SQLite database for caching and analytics |
-| **Redis** | `redis` | Redis cache management and session storage |
-| **PostgreSQL** | `postgres` | PostgreSQL database for production data |
-
-### Cloud & Infrastructure MCPs
-| Server | Config key | Purpose |
-|---|---|---|
-| **AWS** | `aws` | AWS services (S3, Lambda, CloudFront) |
-| **Cloudflare** | `cloudflare` | Cloudflare Workers, R2, KV, D1 |
-| **Vercel** | `vercel` | Vercel deployment and edge functions |
-| **Docker** | `docker` | Container management and optimization |
-| **Kubernetes** | `kubernetes` | Kubernetes cluster management |
-
-### Monitoring & Analytics MCPs
-| Server | Config key | Purpose |
-|---|---|---|
-| **Sentry** | `sentry` | Error tracking and performance monitoring |
-| **Performance** | `performance` | Core Web Vitals monitoring |
-| **Analytics** | `analytics` | User analytics and insights |
-| **Monitoring** | `application` | Application monitoring and alerting |
-
-### Integration MCPs
-| Server | Config key | Purpose |
-|---|---|---|
-| **Slack** | `slack` | Team notifications and collaboration |
-| **Notion** | `notion` | Documentation and project management |
-| **Linear** | `linear` | Issue tracking and sprints |
-| **Figma** | `figma` | Design-to-code workflows |
+| **Brave Search** | `brave-search` | Web search for documentation and API references |
+| **Fetch** | `fetch` | Fetch and analyze web content |
+| **Puppeteer** | `puppeteer` | Advanced browser automation and screenshots |
+| **SQLite** | `sqlite` | Local database for caching and analytics |
 | **Sanity CMS** | `sanity-cms` | Direct Sanity CMS operations |
+| **Sentry** | `sentry` | Error tracking and performance monitoring |
+| **Vercel** | `vercel` | Deployment, edge functions, and analytics |
+| **Docker** | `docker` | Container management |
 
-### Payment & Business MCPs
-| Server | Config key | Purpose |
+### LSP Servers
+| Server | Extensions | Purpose |
 |---|---|---|
-| **Stripe** | `stripe` | Payment processing and subscriptions |
-| **Email** | `email` | Email sending and templates |
-| **SMS** | `sms` | SMS notifications and 2FA |
-| **CRM** | `crm` | Customer relationship management |
-
-### Development Tools MCPs
-| Server | Config key | Purpose |
-|---|---|---|
-| **Code Generation** | `code-generation` | Auto-generate code from specs |
-| **Code Review** | `code-review` | Automated code review |
-| **Testing** | `testing` | Test generation and coverage |
-| **Documentation** | `documentation` | Auto-generate docs |
-| **Security Scan** | `security-scan` | Vulnerability scanning |
-| **Performance Scan** | `performance-scan` | Performance analysis |
-
-### Content & Media MCPs
-| Server | Config key | Purpose |
-|---|---|---|
-| **Image Processing** | `image-processing` | Image optimization and conversion |
-| **PDF** | `pdf` | PDF generation and manipulation |
-| **Video** | `video` | Video processing and streaming |
-| **Audio** | `audio` | Audio processing and voice |
-| **Translation** | `translation` | Multi-language translation |
-
-Setup guides: `docs/mcp/overview.md` | `docs/mcp/chrome-devtools-mcp.md` | `docs/mcp/magic-mcp.md`
+| **TypeScript** | `.ts, .tsx, .js, .jsx` | Intelligent code completion and error detection |
+| **ESLint** | `.ts, .tsx, .js, .jsx` | Real-time linting and code quality |
+| **Prettier** | `.ts, .tsx, .js, .jsx, .css, .json, .md` | Code formatting |
+| **Tailwind CSS** | `.ts, .tsx, .js, .jsx, .css` | Class completion and validation |
+| **HTML** | `.html, .htm` | Markup validation and completion |
+| **CSS** | `.css, .scss, .less` | Style validation and completion |
+| **JSON** | `.json, .jsonc` | Schema validation and completion |
+| **Markdown** | `.md, .mdx` | Documentation editing |
+| **GraphQL** | `.graphql, .gql` | Schema validation and completion |
+| **YAML** | `.yaml, .yml` | Configuration file validation |
+| **Dockerfile** | `Dockerfile` | Container configuration |
+| **Prisma** | `.prisma` | Schema validation |
 
 ## Agent Routing
 
