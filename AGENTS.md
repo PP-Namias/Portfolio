@@ -4,31 +4,61 @@ This file is the entry point for any agent (opencode, future coding agents, or h
 
 ## Skills
 
-- `run-react-doctor` — how to read the react-doctor report, the 12-rule catalog, the score model
-- `fix-react-doctor-finding` — step-by-step fix workflow for one finding
-- `run-pentestagent` — how to set up, configure, and run PentestAgent AI security scans against the portfolio
-- `add-a-new-skill` — how to add another agent skill
+### Content Management
 - `add-an-experience`, `add-a-project`, `add-a-certification`, `add-a-blog-post` — content workflows
 - `update-the-hero` — hero block editing
-- `ui-ux-pro-max` — design system intelligence
-- `smart-caching` — multi-layer caching architecture, cache utility, Redis integration, ISR, SWR config, cache health endpoint
-- `frontend-design` — build beautiful, responsive, accessible UIs with React, Tailwind, and Framer Motion
-- `accessibility-audit` — audit and fix WCAG 2.1 AA accessibility issues
-- `performance-optimization` — improve Core Web Vitals, load times, and runtime performance
-- `code-review` — systematic review of TypeScript, React, accessibility, performance, and security
-- `seo-optimization` — meta tags, JSON-LD structured data, sitemaps, social previews
-- `testing-workflow` — write and maintain tests with Vitest and React Testing Library
-- `deployment-infrastructure` — deploy to Vercel/Cloudflare, manage env vars, troubleshoot builds, rollbacks
 - `sanity-data-operations` — Sanity schema changes, data migrations, debugging queries, revalidation
-- `debugging-error-tracking` — systematic debugging for console errors, hydration, network, performance
-- `performance-auditing` — Lighthouse audits, bundle analysis, image/font optimization, Core Web Vitals
-- `component-api-scaffolding` — create React components, API routes, SWR hooks, context providers
-- `pwa-service-worker` — service worker management, offline support, PWA manifest, cache strategies
 - `sanity-schema-validator` — validates Sanity schemas against best practices, catches common issues
 - `sanity-content-audit` — audits Sanity content for completeness, consistency, and quality
 - `sanity-migration-helper` — helps write, validate, and run Sanity data migrations safely
 - `sanity-groq-optimizer` — analyzes and optimizes GROQ queries for better performance
 - `sanity-backup-restore` — backup and restore Sanity content and schemas
+
+### Frontend Development
+- `frontend-design` — build beautiful, responsive, accessible UIs with React, Tailwind, and Framer Motion
+- `ui-ux-pro-max` — design system intelligence
+- `component-api-scaffolding` — create React components, API routes, SWR hooks, context providers
+- `pwa-service-worker` — service worker management, offline support, PWA manifest, cache strategies
+
+### Quality & Testing
+- `run-react-doctor` — how to read the react-doctor report, the 12-rule catalog, the score model
+- `fix-react-doctor-finding` — step-by-step fix workflow for one finding
+- `code-review` — systematic review of TypeScript, React, accessibility, performance, and security
+- `testing-workflow` — write and maintain tests with Vitest and React Testing Library
+- `accessibility-audit` — audit and fix WCAG 2.1 AA accessibility issues
+- `performance-optimization` — improve Core Web Vitals, load times, and runtime performance
+- `performance-auditing` — Lighthouse audits, bundle analysis, image/font optimization, Core Web Vitals
+
+### Security & DevOps
+- `run-pentestagent` — how to set up, configure, and run PentestAgent AI security scans against the portfolio
+- `deployment-infrastructure` — deploy to Vercel/Cloudflare, manage env vars, troubleshoot builds, rollbacks
+- `debugging-error-tracking` — systematic debugging for console errors, hydration, network, performance
+- `seo-optimization` — meta tags, JSON-LD structured data, sitemaps, social previews
+
+### API & Backend
+- `api-design` — REST API patterns, validation, error handling, rate limiting
+- `database-operations` — database schemas, queries, migrations, data operations
+- `webhook-design` — webhook implementation, signature verification, event-driven architecture
+- `graphql-api` — GraphQL schema design, resolvers, client integration
+
+### Infrastructure & DevOps
+- `cloudflare-workers` — Cloudflare Workers, R2, KV, D1, edge computing
+- `performance-monitoring` — APM, error tracking, Core Web Vitals monitoring
+- `code-migration` — framework and library migration strategies
+- `dependency-audit` — security vulnerability scanning, licensing, maintenance
+
+### Analytics & Features
+- `analytics-integration` — user analytics, tracking, insights collection
+- `feature-flags` — feature flags for gradual rollouts and A/B testing
+
+### Documentation & Quality
+- `technical-writing` — documentation, READMEs, developer guides
+- `orchestrator` — coordinate multi-step tasks across multiple skills
+- `impeccable` — quick repo-hygiene and consistency checks
+- `git` — git workflow, branch strategy, commit hygiene
+- `content-review` — review copy and documentation for clarity
+- `design` — baseline UI implementation guidance
+- `ci-cd-security` — CI/CD pipeline security and automation
 
 ## Home page sections
 
@@ -102,6 +132,7 @@ Full reference: `docs/design/vercel-web-interface-guidelines.md`
 
 MCP servers give your AI agent access to browser DevTools, component libraries, and more. Configuration is at `opencode.json` at the repo root.
 
+### Core MCP Servers
 | Server | Config key | Purpose |
 |---|---|---|
 | **Chrome DevTools MCP** | `chrome-devtools` | Browser debugging, performance traces, screenshots, console inspection |
@@ -111,11 +142,103 @@ MCP servers give your AI agent access to browser DevTools, component libraries, 
 | **Filesystem MCP** | `filesystem` | File read/write access with path restrictions |
 | **Sequential Thinking** | `sequential-thinking` | Structured reasoning for complex problems |
 
+### Database & Storage MCPs
+| Server | Config key | Purpose |
+|---|---|---|
+| **Memory** | `memory` | Knowledge graph memory for persistent context |
+| **SQLite** | `sqlite` | Local SQLite database for caching and analytics |
+| **Redis** | `redis` | Redis cache management and session storage |
+| **PostgreSQL** | `postgres` | PostgreSQL database for production data |
+
+### Cloud & Infrastructure MCPs
+| Server | Config key | Purpose |
+|---|---|---|
+| **AWS** | `aws` | AWS services (S3, Lambda, CloudFront) |
+| **Cloudflare** | `cloudflare` | Cloudflare Workers, R2, KV, D1 |
+| **Vercel** | `vercel` | Vercel deployment and edge functions |
+| **Docker** | `docker` | Container management and optimization |
+| **Kubernetes** | `kubernetes` | Kubernetes cluster management |
+
+### Monitoring & Analytics MCPs
+| Server | Config key | Purpose |
+|---|---|---|
+| **Sentry** | `sentry` | Error tracking and performance monitoring |
+| **Performance** | `performance` | Core Web Vitals monitoring |
+| **Analytics** | `analytics` | User analytics and insights |
+| **Monitoring** | `application` | Application monitoring and alerting |
+
+### Integration MCPs
+| Server | Config key | Purpose |
+|---|---|---|
+| **Slack** | `slack` | Team notifications and collaboration |
+| **Notion** | `notion` | Documentation and project management |
+| **Linear** | `linear` | Issue tracking and sprints |
+| **Figma** | `figma` | Design-to-code workflows |
+| **Sanity CMS** | `sanity-cms` | Direct Sanity CMS operations |
+
+### Payment & Business MCPs
+| Server | Config key | Purpose |
+|---|---|---|
+| **Stripe** | `stripe` | Payment processing and subscriptions |
+| **Email** | `email` | Email sending and templates |
+| **SMS** | `sms` | SMS notifications and 2FA |
+| **CRM** | `crm` | Customer relationship management |
+
+### Development Tools MCPs
+| Server | Config key | Purpose |
+|---|---|---|
+| **Code Generation** | `code-generation` | Auto-generate code from specs |
+| **Code Review** | `code-review` | Automated code review |
+| **Testing** | `testing` | Test generation and coverage |
+| **Documentation** | `documentation` | Auto-generate docs |
+| **Security Scan** | `security-scan` | Vulnerability scanning |
+| **Performance Scan** | `performance-scan` | Performance analysis |
+
+### Content & Media MCPs
+| Server | Config key | Purpose |
+|---|---|---|
+| **Image Processing** | `image-processing` | Image optimization and conversion |
+| **PDF** | `pdf` | PDF generation and manipulation |
+| **Video** | `video` | Video processing and streaming |
+| **Audio** | `audio` | Audio processing and voice |
+| **Translation** | `translation` | Multi-language translation |
+
 Setup guides: `docs/mcp/overview.md` | `docs/mcp/chrome-devtools-mcp.md` | `docs/mcp/magic-mcp.md`
+
+## Agent Routing
+
+### By Task Type
+
+| Task | Primary Skill | Secondary Skills |
+|------|---------------|------------------|
+| **New Component** | `component-api-scaffolding` | `frontend-design`, `ui-ux-pro-max` |
+| **API Endpoint** | `api-design` | `database-operations`, `webhook-design` |
+| **Bug Fix** | `debugging-error-tracking` | `code-review`, `testing-workflow` |
+| **Performance** | `performance-optimization` | `performance-auditing`, `performance-monitoring` |
+| **Security** | `run-pentestagent` | `dependency-audit`, `ci-cd-security` |
+| **Deployment** | `deployment-infrastructure` | `cloudflare-workers`, `ci-cd-security` |
+| **Content** | `sanity-data-operations` | `add-a-project`, `add-a-blog-post` |
+| **Testing** | `testing-workflow` | `code-review`, `react-doctor` |
+| **Documentation** | `technical-writing` | `content-review` |
+| **Analytics** | `analytics-integration` | `feature-flags`, `performance-monitoring` |
+
+### By Component Area
+
+| Area | Skills |
+|------|--------|
+| **Hero Section** | `update-the-hero`, `frontend-design`, `ui-ux-pro-max` |
+| **Projects** | `add-a-project`, `component-api-scaffolding` |
+| **Blog** | `add-a-blog-post`, `seo-optimization` |
+| **Certifications** | `add-a-certification` |
+| **Experience** | `add-an-experience` |
+| **Gallery** | `frontend-design`, `component-api-scaffolding` |
+| **Contact** | `api-design`, `webhook-design` |
+| **API Routes** | `api-design`, `database-operations` |
+| **Sanity Studio** | `sanity-schema-validator`, `sanity-data-operations` |
 
 ## Testing
 
-- 29 test files, 266 tests, all green
+- 42 test files, 381 tests, all green
 - Run: `npm run test -- --run`
 - Test isolation: use `SWRConfig` with `provider: () => new Map()` for any test that exercises a SWR consumer
 - Studios, scripts, and generated code are excluded from both `tsc` and `eslint` config; they have their own lanes

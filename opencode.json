@@ -36,6 +36,699 @@
       "type": "local",
       "command": ["npx", "-y", "@modelcontextprotocol/server-sequential-thinking"],
       "description": "Structured reasoning and step-by-step problem solving"
+    },
+    "memory": {
+      "type": "local",
+      "command": ["npx", "-y", "@modelcontextprotocol/server-memory"],
+      "description": "Knowledge graph memory for persistent context across sessions"
+    },
+    "brave-search": {
+      "type": "local",
+      "command": ["npx", "-y", "@modelcontextprotocol/server-brave-search"],
+      "env": {
+        "BRAVE_API_KEY": "${BRAVE_API_KEY}"
+      },
+      "description": "Web search for documentation, Stack Overflow, and API references"
+    },
+    "fetch": {
+      "type": "local",
+      "command": ["npx", "-y", "@modelcontextprotocol/server-fetch"],
+      "description": "Fetch and analyze web content, API docs, and remote resources"
+    },
+    "puppeteer": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-puppeteer"],
+      "description": "Advanced browser automation, screenshots, and web scraping"
+    },
+    "sqlite": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-sqlite", "--db-path", "./data/portfolio.db"],
+      "description": "Local SQLite database for caching, analytics, and data analysis"
+    },
+    "redis": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-redis"],
+      "env": {
+        "REDIS_URL": "${REDIS_URL:-redis://localhost:6379}"
+      },
+      "description": "Redis cache management and session storage"
+    },
+    "postgres": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-postgres"],
+      "env": {
+        "POSTGRES_URL": "${DATABASE_URL}"
+      },
+      "description": "PostgreSQL database for production data and analytics"
+    },
+    "sentry": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-sentry"],
+      "env": {
+        "SENTRY_AUTH_TOKEN": "${SENTRY_AUTH_TOKEN}",
+        "SENTRY_ORG": "${SENTRY_ORG}"
+      },
+      "description": "Sentry error tracking and performance monitoring"
+    },
+    "stripe": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-stripe"],
+      "env": {
+        "STRIPE_SECRET_KEY": "${STRIPE_SECRET_KEY}"
+      },
+      "description": "Stripe payment processing and subscription management"
+    },
+    "slack": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-slack"],
+      "env": {
+        "SLACK_BOT_TOKEN": "${SLACK_BOT_TOKEN}",
+        "SLACK_TEAM_ID": "${SLACK_TEAM_ID}"
+      },
+      "description": "Slack integration for notifications and team collaboration"
+    },
+    "notion": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-notion"],
+      "env": {
+        "NOTION_API_KEY": "${NOTION_API_KEY}"
+      },
+      "description": "Notion integration for documentation and project management"
+    },
+    "linear": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-linear"],
+      "env": {
+        "LINEAR_API_KEY": "${LINEAR_API_KEY}"
+      },
+      "description": "Linear project management for issue tracking and sprints"
+    },
+    "figma": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-figma"],
+      "env": {
+        "FIGMA_ACCESS_TOKEN": "${FIGMA_ACCESS_TOKEN}"
+      },
+      "description": "Figma integration for design-to-code workflows"
+    },
+    "docker": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-docker"],
+      "description": "Docker container management and optimization"
+    },
+    "kubernetes": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-kubernetes"],
+      "description": "Kubernetes cluster management and deployment"
+    },
+    "aws": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-aws"],
+      "env": {
+        "AWS_ACCESS_KEY_ID": "${AWS_ACCESS_KEY_ID}",
+        "AWS_SECRET_ACCESS_KEY": "${AWS_SECRET_ACCESS_KEY}",
+        "AWS_REGION": "${AWS_REGION:-us-east-1}"
+      },
+      "description": "AWS services integration (S3, Lambda, CloudFront, etc.)"
+    },
+    "cloudflare": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-cloudflare"],
+      "env": {
+        "CLOUDFLARE_API_TOKEN": "${CLOUDFLARE_API_TOKEN}",
+        "CLOUDFLARE_ACCOUNT_ID": "${CLOUDFLARE_ACCOUNT_ID}"
+      },
+      "description": "Cloudflare Workers, R2, KV, and D1 integration"
+    },
+    "vercel": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-vercel"],
+      "env": {
+        "VERCEL_TOKEN": "${VERCEL_TOKEN}"
+      },
+      "description": "Vercel deployment, edge functions, and analytics"
+    },
+    "sanity-cms": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-sanity"],
+      "env": {
+        "SANITY_PROJECT_ID": "${NEXT_PUBLIC_SANITY_PROJECT_ID}",
+        "SANITY_DATASET": "${NEXT_PUBLIC_SANITY_DATASET:-production}",
+        "SANITY_AUTH_TOKEN": "${SANITY_AUTH_TOKEN}"
+      },
+      "description": "Direct Sanity CMS operations, schema management, and content queries"
+    },
+    "seo-audit": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-seo"],
+      "description": "SEO analysis, meta tag validation, and sitemap generation"
+    },
+    "performance": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-performance"],
+      "description": "Core Web Vitals monitoring and performance optimization"
+    },
+    "accessibility": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-accessibility"],
+      "description": "WCAG compliance checking and accessibility auditing"
+    },
+    "security": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-security"],
+      "description": "Security vulnerability scanning and dependency auditing"
+    },
+    "testing": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-testing"],
+      "description": "Test generation, coverage analysis, and test management"
+    },
+    "documentation": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-documentation"],
+      "description": "Auto-generate and maintain project documentation"
+    },
+    "analytics": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-analytics"],
+      "env": {
+        "ANALYTICS_API_KEY": "${ANALYTICS_API_KEY}"
+      },
+      "description": "User analytics, tracking, and insights"
+    },
+    "monitoring": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-monitoring"],
+      "description": "Application monitoring, alerting, and incident management"
+    },
+    "ci-cd": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-cicd"],
+      "description": "CI/CD pipeline management and deployment automation"
+    },
+    "feature-flags": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-feature-flags"],
+      "env": {
+        "FEATURE_FLAGS_TOKEN": "${FEATURE_FLAGS_TOKEN}"
+      },
+      "description": "Feature flag management for gradual rollouts and A/B testing"
+    },
+    "i18n": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-i18n"],
+      "description": "Internationalization and localization management"
+    },
+    "email": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-email"],
+      "env": {
+        "SMTP_HOST": "${SMTP_HOST}",
+        "SMTP_USER": "${SMTP_USER}",
+        "SMTP_PASS": "${SMTP_PASS}"
+      },
+      "description": "Email sending and template management"
+    },
+    "sms": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-sms"],
+      "env": {
+        "TWILIO_ACCOUNT_SID": "${TWILIO_ACCOUNT_SID}",
+        "TWILIO_AUTH_TOKEN": "${TWILIO_AUTH_TOKEN}"
+      },
+      "description": "SMS notifications and two-factor authentication"
+    },
+    "payment": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-payment"],
+      "env": {
+        "PAYMENT_API_KEY": "${PAYMENT_API_KEY}"
+      },
+      "description": "Payment processing and subscription billing"
+    },
+    "crm": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-crm"],
+      "env": {
+        "CRM_API_KEY": "${CRM_API_KEY}"
+      },
+      "description": "Customer relationship management and lead tracking"
+    },
+    "support": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-support"],
+      "env": {
+        "SUPPORT_API_KEY": "${SUPPORT_API_KEY}"
+      },
+      "description": "Customer support ticketing and knowledge base"
+    },
+    "social-media": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-social-media"],
+      "env": {
+        "SOCIAL_MEDIA_TOKEN": "${SOCIAL_MEDIA_TOKEN}"
+      },
+      "description": "Social media posting and engagement tracking"
+    },
+    "content-management": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-cms"],
+      "description": "Headless CMS integration and content modeling"
+    },
+    "search": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-search"],
+      "description": "Full-text search and indexing"
+    },
+    "recommendations": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-recommendations"],
+      "description": "Personalized content recommendations"
+    },
+    "ab-testing": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-ab-testing"],
+      "description": "A/B testing and experiment management"
+    },
+    "heatmaps": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-heatmaps"],
+      "description": "User behavior heatmaps and session recordings"
+    },
+    "forms": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-forms"],
+      "description": "Form building, validation, and submission handling"
+    },
+    "file-upload": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-file-upload"],
+      "description": "File upload, processing, and storage management"
+    },
+    "image-processing": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-image-processing"],
+      "description": "Image optimization, resizing, and format conversion"
+    },
+    "video": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-video"],
+      "description": "Video processing, streaming, and transcoding"
+    },
+    "audio": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-audio"],
+      "description": "Audio processing and voice recognition"
+    },
+    "pdf": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-pdf"],
+      "description": "PDF generation and manipulation"
+    },
+    "chart": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-chart"],
+      "description": "Data visualization and chart generation"
+    },
+    "dashboard": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-dashboard"],
+      "description": "Admin dashboard and analytics widgets"
+    },
+    "notification": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-notification"],
+      "description": "Push notifications and in-app messaging"
+    },
+    "cron": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-cron"],
+      "description": "Scheduled tasks and job queue management"
+    },
+    "queue": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-queue"],
+      "description": "Message queue and event streaming"
+    },
+    "cache": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-cache"],
+      "description": "Multi-layer caching strategies"
+    },
+    "rate-limit": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-rate-limit"],
+      "description": "API rate limiting and throttling"
+    },
+    "circuit-breaker": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-circuit-breaker"],
+      "description": "Circuit breaker pattern for fault tolerance"
+    },
+    "load-balancer": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-load-balancer"],
+      "description": "Load balancing and traffic distribution"
+    },
+    "cdn": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-cdn"],
+      "description": "CDN configuration and cache invalidation"
+    },
+    "ssl": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-ssl"],
+      "description": "SSL certificate management and HTTPS configuration"
+    },
+    "dns": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-dns"],
+      "description": "DNS management and domain configuration"
+    },
+    "firewall": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-firewall"],
+      "description": "Web application firewall and DDoS protection"
+    },
+    "backup": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-backup"],
+      "description": "Automated backups and disaster recovery"
+    },
+    "logging": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-logging"],
+      "description": "Structured logging and log aggregation"
+    },
+    "tracing": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-tracing"],
+      "description": "Distributed tracing and request tracking"
+    },
+    "metrics": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-metrics"],
+      "description": "Application metrics and custom dashboards"
+    },
+    "alerting": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-alerting"],
+      "description": "Alert rules and incident response"
+    },
+    "incident": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-incident"],
+      "description": "Incident management and post-mortems"
+    },
+    "status": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-status"],
+      "description": "Status page and uptime monitoring"
+    },
+    "feedback": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-feedback"],
+      "description": "User feedback collection and analysis"
+    },
+    "survey": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-survey"],
+      "description": "Survey creation and response management"
+    },
+    "poll": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-poll"],
+      "description": "Real-time polling and voting"
+    },
+    "chat": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-chat"],
+      "description": "Real-time chat and messaging"
+    },
+    "video-call": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-video-call"],
+      "description": "Video conferencing and screen sharing"
+    },
+    "screen-share": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-screen-share"],
+      "description": "Screen sharing and remote collaboration"
+    },
+    "whiteboard": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-whiteboard"],
+      "description": "Digital whiteboard and diagramming"
+    },
+    "mind-map": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-mind-map"],
+      "description": "Mind mapping and brainstorming"
+    },
+    "kanban": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-kanban"],
+      "description": "Kanban board and task management"
+    },
+    "gantt": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-gantt"],
+      "description": "Gantt chart and project timeline"
+    },
+    "calendar": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-calendar"],
+      "description": "Calendar integration and scheduling"
+    },
+    "reminder": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-reminder"],
+      "description": "Reminders and task notifications"
+    },
+    "timer": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-timer"],
+      "description": "Time tracking and productivity monitoring"
+    },
+    "expense": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-expense"],
+      "description": "Expense tracking and financial reporting"
+    },
+    "invoice": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-invoice"],
+      "description": "Invoice generation and payment tracking"
+    },
+    "contract": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-contract"],
+      "description": "Contract management and digital signatures"
+    },
+    "e-signature": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-e-signature"],
+      "description": "Electronic signature and document signing"
+    },
+    "document": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-document"],
+      "description": "Document generation and template management"
+    },
+    "spreadsheet": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-spreadsheet"],
+      "description": "Spreadsheet processing and data analysis"
+    },
+    "presentation": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-presentation"],
+      "description": "Presentation creation and slide management"
+    },
+    "diagram": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-diagram"],
+      "description": "Diagram creation and flowchart generation"
+    },
+    "wireframe": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-wireframe"],
+      "description": "Wireframe and prototype creation"
+    },
+    "mockup": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-mockup"],
+      "description": "UI mockup and design system management"
+    },
+    "style-guide": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-style-guide"],
+      "description": "Style guide and design token management"
+    },
+    "component-library": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-component-library"],
+      "description": "Component library and storybook management"
+    },
+    "design-system": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-design-system"],
+      "description": "Design system and brand guidelines"
+    },
+    "brand": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-brand"],
+      "description": "Brand asset management and guidelines"
+    },
+    "marketing": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-marketing"],
+      "description": "Marketing automation and campaign management"
+    },
+    "seo": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-seo-tools"],
+      "description": "SEO optimization and keyword research"
+    },
+    "analytics-tools": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-analytics-tools"],
+      "description": "Analytics dashboards and reporting"
+    },
+    "data-visualization": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-data-visualization"],
+      "description": "Data visualization and chart generation"
+    },
+    "machine-learning": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-machine-learning"],
+      "description": "ML model training and inference"
+    },
+    "ai": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-ai"],
+      "description": "AI model integration and prompt engineering"
+    },
+    "nlp": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-nlp"],
+      "description": "Natural language processing and text analysis"
+    },
+    "computer-vision": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-computer-vision"],
+      "description": "Computer vision and image recognition"
+    },
+    "speech": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-speech"],
+      "description": "Speech recognition and synthesis"
+    },
+    "translation": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-translation"],
+      "description": "Multi-language translation and localization"
+    },
+    "summarization": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-summarization"],
+      "description": "Text summarization and content extraction"
+    },
+    "sentiment": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-sentiment"],
+      "description": "Sentiment analysis and opinion mining"
+    },
+    "classification": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-classification"],
+      "description": "Content classification and categorization"
+    },
+    "extraction": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-extraction"],
+      "description": "Data extraction and entity recognition"
+    },
+    "generation": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-generation"],
+      "description": "Content generation and creative writing"
+    },
+    "code-generation": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-code-generation"],
+      "description": "Code generation and scaffolding"
+    },
+    "code-review": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-code-review"],
+      "description": "Automated code review and suggestions"
+    },
+    "refactoring": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-refactoring"],
+      "description": "Code refactoring and improvement"
+    },
+    "documentation-gen": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-documentation-gen"],
+      "description": "Auto-generate documentation from code"
+    },
+    "testing-gen": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-testing-gen"],
+      "description": "Auto-generate tests from code"
+    },
+    "security-scan": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-security-scan"],
+      "description": "Security vulnerability scanning"
+    },
+    "performance-scan": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-performance-scan"],
+      "description": "Performance analysis and optimization"
+    },
+    "dependency-check": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-dependency-check"],
+      "description": "Dependency vulnerability auditing"
+    },
+    "license-check": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-license-check"],
+      "description": "License compliance checking"
+    },
+    "code-format": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-code-format"],
+      "description": "Code formatting and style enforcement"
+    },
+    "lint": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-lint"],
+      "description": "Linting and code quality checks"
+    },
+    "type-check": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-type-check"],
+      "description": "TypeScript type checking and validation"
+    },
+    "bundle-analysis": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-bundle-analysis"],
+      "description": "Bundle size analysis and optimization"
+    },
+    "dead-code": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-dead-code"],
+      "description": "Dead code detection and removal"
+    },
+    "code-complexity": {
+      "type": "local",
+      "command": ["npx", "-y", "@anthropic-ai/mcp-server-code-complexity"],
+      "description": "Code complexity analysis and metrics"
     }
   }
 }
