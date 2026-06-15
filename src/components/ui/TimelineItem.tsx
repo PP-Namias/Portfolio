@@ -11,7 +11,7 @@ interface TimelineItemProps {
   isLast: boolean;
 }
 
-export function TimelineItem({ item, index, isLast }: Readonly<TimelineItemProps>) {
+export const TimelineItem = React.memo(function TimelineItem({ item, index, isLast }: Readonly<TimelineItemProps>) {
   const [expanded, setExpanded] = useState(false);
   const startYear = new Date(item.startedAt).getFullYear();
   const endLabel = item.endedAt ? new Date(item.endedAt).getFullYear().toString() : 'Present';
@@ -148,4 +148,4 @@ export function TimelineItem({ item, index, isLast }: Readonly<TimelineItemProps
       </div>
     </motion.div>
   );
-}
+});

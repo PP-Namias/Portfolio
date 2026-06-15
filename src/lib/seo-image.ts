@@ -1,4 +1,5 @@
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://namias.tech'
+import { SITE_URL } from '@/lib/site-config'
+
 const DEFAULT_SEO_IMAGE = `${SITE_URL}/og-default.png`
 
 type SanityImage = {

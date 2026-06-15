@@ -1,5 +1,6 @@
 'use client';
 
+import React from 'react';
 import { motion } from 'framer-motion';
 import {
   Briefcase,
@@ -55,7 +56,7 @@ interface ChatMessageProps {
   onAction?: (action: string) => void;
 }
 
-export function ChatMessage({ message, onAction }: ChatMessageProps) {
+export const ChatMessage = React.memo(function ChatMessage({ message, onAction }: ChatMessageProps) {
   const isUser = message.role === 'user';
   const { cleanContent, actions } = isUser
     ? { cleanContent: message.content, actions: [] }
@@ -99,4 +100,4 @@ export function ChatMessage({ message, onAction }: ChatMessageProps) {
       </div>
     </motion.div>
   );
-}
+});
