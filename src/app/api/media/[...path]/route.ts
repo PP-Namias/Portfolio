@@ -70,8 +70,11 @@ export async function GET(request: NextRequest, context: { params: Promise<{ pat
   const expiresAt = expiresAtParam ? Number.parseInt(expiresAtParam, 10) : undefined;
   const signature = requestUrl.searchParams.get('sig');
 
-  if (!verifyMediaGatewaySignature({ targetUrl, width, quality, expiresAt, signature })) {
-    return buildError(401, 'Invalid media signature');
+  const secret = process.env.SANITY_MEDIA_GATEWAY_SECRET?.trim();
+  if (secret && signature) {
+    if (!verifyMediaGatewaySignature({ targetUrl, width, quality, expiresAt, signature })) {
+      return buildError(401, 'Invalid media signature');
+    }
   }
 
     const upstreamUrl = buildUpstreamUrl(targetUrl, assetKind, width, quality);

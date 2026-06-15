@@ -334,9 +334,6 @@ const getCmsContentImpl = async (): Promise<CmsContent> => {
       status?: string;
       liveUrl?: string;
       repositoryUrl?: string;
-      detailUrl?: string;
-      processUrl?: string;
-      previewVideoUrl?: string;
       imageFile?: string;
       imageUrl?: string;
       imageAlt?: string;
@@ -359,7 +356,7 @@ const getCmsContentImpl = async (): Promise<CmsContent> => {
       highlights?: string[];
       githubRepo?: string;
     }>>(
-      '*[_type == "project"] | order(order asc, featuredRank asc, title asc){title,"slug":slug.current,summary,challenge,solution,result,year,category,featured,role,technologies,achievements,featuredRank,status,liveUrl,repositoryUrl,detailUrl,processUrl,previewVideoUrl,"imageFile":image.asset->originalFilename,"imageUrl":image.asset->url,"imageAlt":image.alt,"imageCaption":image.caption,"imageCredit":image.credit,"imageSource":image.source,"imageLicense":image.license,"galleryItems":gallery[]{"file":asset->originalFilename,"url":asset->url,alt,caption,credit,source,license},tier,showcaseDetail,shortDescription,highlights,githubRepo}',
+      '*[_type == "project"] | order(order asc, featuredRank asc, title asc){title,"slug":slug.current,summary,challenge,solution,result,year,category,featured,role,technologies,achievements,featuredRank,status,liveUrl,repositoryUrl,"imageFile":image.asset->originalFilename,"imageUrl":image.asset->url,"imageAlt":image.alt,"imageCaption":image.caption,"imageCredit":image.credit,"imageSource":image.source,"imageLicense":image.license,"galleryItems":gallery[]{"file":asset->originalFilename,"url":asset->url,alt,caption,credit,source,license},tier,showcaseDetail,shortDescription,highlights,githubRepo}',
       { tags: CONTENT_TAGS.project }
     ),
     querySanity<Array<{
@@ -585,9 +582,9 @@ const getCmsContentImpl = async (): Promise<CmsContent> => {
     featured: project.featured || false,
     repositoryURL: project.repositoryUrl || null,
     liveURL: project.liveUrl || null,
-    processURL: project.processUrl || null,
-    detailURL: project.detailUrl || project.liveUrl || project.repositoryUrl || null,
-    previewVideoURL: project.previewVideoUrl || null,
+    processURL: null,
+    detailURL: project.liveUrl || project.repositoryUrl || null,
+    previewVideoURL: null,
     tags: project.technologies || [],
     year: project.year || new Date().getFullYear(),
     category: project.category,
