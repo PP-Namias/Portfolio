@@ -197,6 +197,7 @@ export function GallerySection() {
           <button
             type="button"
             onClick={() => setExpanded((prev) => !prev)}
+            aria-expanded={expanded}
             className="flex items-center gap-1 text-xs font-medium text-text-muted-light dark:text-text-muted-dark hover:text-accent-pink dark:hover:text-accent-pink transition-colors"
           >
             {expanded ? (

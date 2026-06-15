@@ -57,7 +57,7 @@ export function ConnectSection() {
           transition={{ delay: 0.05, duration: 0.3 }}
           className="flex items-center gap-1.5 px-4 py-2.5 text-sm font-medium rounded-lg transition-colors duration-200 group border border-accent-pink/30 text-accent-pink hover:bg-accent-pink/10"
         >
-          <Calendar className="h-3.5 w-3.5" />
+          <Calendar className="h-3.5 w-3.5" aria-hidden="true" />
           <span>Schedule a Meeting</span>
         </motion.button>
 
@@ -71,7 +71,7 @@ export function ConnectSection() {
           transition={{ delay: 0.1, duration: 0.3 }}
           className="flex items-center gap-1.5 px-4 py-2.5 text-sm font-medium rounded-lg border border-[#5865F2]/30 bg-[#5865F2]/5 text-[#5865F2] hover:bg-[#5865F2]/10 transition-colors duration-200"
         >
-          <FaDiscord className="h-3.5 w-3.5" />
+          <FaDiscord className="h-3.5 w-3.5" aria-hidden="true" />
           <span>Chat on Discord</span>
         </motion.a>
       </div>

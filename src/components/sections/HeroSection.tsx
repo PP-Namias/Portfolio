@@ -198,7 +198,7 @@ export function HeroSection() {
             variants={itemVariants}
           >
             <div className="flex items-center gap-1.5 text-text-muted-light dark:text-text-muted-dark">
-              <MapPin className="h-3.5 w-3.5" />
+              <MapPin className="h-3.5 w-3.5" aria-hidden="true" />
               <span>{profile.location}</span>
             </div>
             <span className="text-border-light dark:text-border-dark">·</span>

@@ -49,6 +49,7 @@ export function AboutSection() {
           <button
             type="button"
             onClick={() => setShowMore(!showMore)}
+            aria-expanded={showMore}
             className="flex items-center gap-1 text-[13px] font-medium text-text-muted-light dark:text-text-muted-dark hover:text-accent-pink dark:hover:text-accent-pink transition-colors"
           >
             {showMore ? (

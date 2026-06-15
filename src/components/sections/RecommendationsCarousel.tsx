@@ -113,7 +113,7 @@ export function RecommendationsCarousel() {
               key={recommendation.name || `recommendation-${index}`}
               type="button"
               onClick={() => handleDotClick(index)}
-              className={`h-1.5 rounded-full transition-all duration-300 ${
+              className={`h-1.5 rounded-full transition-[width,background-color] duration-300 ${
                 index === currentIndex
                   ? 'w-6 bg-accent-pink'
                   : 'w-1.5 bg-border-light dark:bg-border-dark hover:bg-text-muted-light dark:hover:bg-text-muted-dark'

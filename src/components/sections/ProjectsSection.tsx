@@ -210,6 +210,7 @@ export function ProjectsSection() {
         <button
           type="button"
           onClick={() => setShowAll((current) => !current)}
+          aria-expanded={showAll}
           className="mx-auto mt-4 flex items-center gap-1 rounded-sm text-xs font-medium text-text-muted-light transition-colors hover:text-accent-pink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-pink/50 dark:text-text-muted-dark"
         >
           {showAll ? (

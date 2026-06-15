@@ -32,7 +32,7 @@ export function MembershipsSection() {
             viewport={{ once: true }}
             transition={{ delay: index * 0.1, duration: 0.3 }}
           >
-            <ExternalLink className="h-3.5 w-3.5 mt-0.5 flex-shrink-0 opacity-60 group-hover:opacity-100 transition-opacity" />
+            <ExternalLink className="h-3.5 w-3.5 mt-0.5 flex-shrink-0 opacity-60 group-hover:opacity-100 transition-opacity" aria-hidden="true" />
             <div>
               <span className="leading-snug">{membership.name}</span>
               <p className="text-xs text-text-muted-light dark:text-text-muted-dark mt-0.5">
