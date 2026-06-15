@@ -18,8 +18,8 @@ export function AboutSection() {
   return (
     <motion.section
       className=""
-      initial={prefersReducedMotion ? false : { opacity: 0, y: 20 }}
-      whileInView={prefersReducedMotion ? false : { opacity: 1, y: 0 }}
+      initial={prefersReducedMotion ? undefined : { opacity: 0, y: 20 }}
+      whileInView={prefersReducedMotion ? undefined : { opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-50px' }}
       transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
     >
