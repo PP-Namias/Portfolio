@@ -53,7 +53,7 @@ export function ResumeModal({ open, onClose }: Readonly<ResumeModalProps>) {
           <button
             type="button"
             onClick={onClose}
-            className="h-7 w-7 rounded-full flex items-center justify-center text-text-muted-light dark:text-text-muted-dark hover:bg-surface-light dark:hover:bg-surface-dark transition-colors text-lg"
+            className="h-11 w-11 rounded-full flex items-center justify-center text-text-muted-light dark:text-text-muted-dark hover:bg-surface-light dark:hover:bg-surface-dark transition-colors text-lg"
             aria-label="Close"
           >
             &times;
@@ -68,6 +68,7 @@ export function ResumeModal({ open, onClose }: Readonly<ResumeModalProps>) {
           className="w-full h-full border-0"
           title="Resume PDF Viewer"
           loading="lazy"
+          sandbox="allow-same-origin"
         >
           <div className="flex flex-col items-center justify-center py-20 px-4 text-center h-full">
             <p className="text-text-secondary-light dark:text-text-secondary-dark mb-4">

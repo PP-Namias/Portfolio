@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation';
 import { getProjectBySlug, getProjectSlugsForStaticParams } from '@/lib/cms-content.server';
 import { ProjectDetailPage } from '@/components/sections/ProjectDetailPage';
 import { IS_PROJECTS_REVAMP_ENABLED } from '@/lib/features';
+import { SITE_URL } from '@/lib/site-config';
 
 export const revalidate = 3600;
 
@@ -18,10 +19,13 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   return {
     title: `${project.title} | PP Namias Portfolio`,
     description: project.description,
+    alternates: {
+      canonical: `${SITE_URL}/projects/${slug}`,
+    },
     openGraph: {
       title: project.title,
       description: project.description,
-      type: 'website',
+      type: 'article',
       ...(project.image
         ? {
             images: [

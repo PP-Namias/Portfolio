@@ -92,7 +92,7 @@ export function BookingModal({ open, onClose }: Readonly<BookingModalProps>) {
           <button
             type="button"
             onClick={onClose}
-            className="h-7 w-7 rounded-full flex items-center justify-center text-text-muted-light dark:text-text-muted-dark hover:bg-surface-light dark:hover:bg-surface-dark transition-colors text-lg"
+            className="h-11 w-11 rounded-full flex items-center justify-center text-text-muted-light dark:text-text-muted-dark hover:bg-surface-light dark:hover:bg-surface-dark transition-colors text-lg"
             aria-label="Close"
           >
             &times;

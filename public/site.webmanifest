@@ -1,6 +1,8 @@
 {
   "name": "Jhon Keneth Ryan Namias — Portfolio",
   "short_name": "JN Portfolio",
+  "description": "Portfolio of Jhon Keneth Ryan Namias — Full Stack Engineer & AI Automation Specialist",
+  "start_url": "/",
   "icons": [
     {
       "src": "/favicon.svg",

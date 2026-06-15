@@ -31,11 +31,20 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   return {
     title: `${title} | Jhon Keneth Ryan Namias`,
     description,
+    alternates: {
+      canonical: `${SITE_URL}/blog/${slug}`,
+    },
     openGraph: {
       title,
       description,
       type: 'article',
       publishedTime: post.date,
+      images: post.coverImage ? [post.coverImage] : undefined,
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
       images: post.coverImage ? [post.coverImage] : undefined,
     },
   };

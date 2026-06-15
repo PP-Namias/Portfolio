@@ -122,6 +122,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
           <link rel="preconnect" href="https://cdn.sanity.io" />
           <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
           <link rel="preconnect" href="https://fonts.googleapis.com" />
+          <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
           <link rel="dns-prefetch" href="https://cloud.umami.is" />
           <link rel="preconnect" href="https://cloud.umami.is" />
           <JsonLd data={jsonLd} id="layout-jsonld-test" />
@@ -158,6 +159,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
           <link rel="preconnect" href="https://cdn.sanity.io" />
           <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
           <link rel="preconnect" href="https://fonts.googleapis.com" />
+          <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
           <link rel="dns-prefetch" href="https://cloud.umami.is" />
           <link rel="preconnect" href="https://cloud.umami.is" />
           <JsonLd data={jsonLd} id="layout-jsonld-runtime" />

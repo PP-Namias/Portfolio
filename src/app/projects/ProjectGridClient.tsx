@@ -95,9 +95,9 @@ export function ProjectGridClient({ projects }: Readonly<ProjectGridClientProps>
           <ArrowLeft className="h-3.5 w-3.5" />
           Back
         </Link>
-        <h1 className="text-lg font-semibold text-text-primary-light dark:text-text-primary-dark">
+        <p className="text-lg font-semibold text-text-primary-light dark:text-text-primary-dark" aria-label="All Projects">
           All Projects
-        </h1>
+        </p>
       </div>
 
       {/* Tab bar */}
