@@ -31,7 +31,7 @@
     "postinstall": "patch-package",
     "cloudflare:build": "opennextjs-cloudflare build --dangerouslyUseUnsupportedNextVersion",
     "cloudflare:dev": "wrangler dev",
-    "cloudflare:deploy": "opennextjs-cloudflare deploy",
+    "cloudflare:deploy": "opennextjs-cloudflare deploy --dangerouslyUseUnsupportedNextVersion",
     "sanity:seed": "node ./scripts/sanity/seed-demo.ts",
     "sanity:migrate": "node ./scripts/sanity-migrate/runner.mjs",
     "sanity:migrate:dry": "node ./scripts/sanity-migrate/runner.mjs --dry-run",

@@ -1,4 +1,4 @@
-export { CanaryToken, CanaryTokenType, CanaryTokenStatus, CanaryTrigger, CanaryConfig } from './types';
+export type { CanaryToken, CanaryTokenType, CanaryTokenStatus, CanaryTrigger, CanaryConfig } from './types';
 
 export { CANARY_CONFIG, CANARY_TOKENS, getCanaryTokenById, getCanaryTokenByPath, getActiveCanaryTokens, getCanaryTokensByType } from './config';
 
