@@ -729,6 +729,1307 @@
       "type": "local",
       "command": ["npx", "-y", "@anthropic-ai/mcp-server-code-complexity"],
       "description": "Code complexity analysis and metrics"
+    },
+    "typescript-lsp": {
+      "type": "local",
+      "command": ["npx", "-y", "typescript-language-server", "--stdio"],
+      "description": "TypeScript language server for intelligent code completion and error detection"
+    },
+    "eslint-lsp": {
+      "type": "local",
+      "command": ["npx", "-y", "vscode-eslint-language-server", "--stdio"],
+      "description": "ESLint language server for real-time linting and code quality"
+    },
+    "prettier-lsp": {
+      "type": "local",
+      "command": ["npx", "-y", "prettier-lsp-server", "--stdio"],
+      "description": "Prettier language server for code formatting"
+    },
+    "tailwindcss-lsp": {
+      "type": "local",
+      "command": ["npx", "-y", "@tailwindcss/language-server", "--stdio"],
+      "description": "Tailwind CSS language server for class completion and validation"
+    },
+    "html-lsp": {
+      "type": "local",
+      "command": ["npx", "-y", "vscode-html-language-server", "--stdio"],
+      "description": "HTML language server for markup validation and completion"
+    },
+    "css-lsp": {
+      "type": "local",
+      "command": ["npx", "-y", "vscode-css-language-server", "--stdio"],
+      "description": "CSS language server for style validation and completion"
+    },
+    "json-lsp": {
+      "type": "local",
+      "command": ["npx", "-y", "vscode-json-language-server", "--stdio"],
+      "description": "JSON language server for schema validation and completion"
+    },
+    "markdown-lsp": {
+      "type": "local",
+      "command": ["npx", "-y", "marksman", "--stdio"],
+      "description": "Markdown language server for documentation editing"
+    },
+    "graphql-lsp": {
+      "type": "local",
+      "command": ["npx", "-y", "graphql-language-service-cli", "--stdio"],
+      "description": "GraphQL language server for schema validation and completion"
+    },
+    "yaml-lsp": {
+      "type": "local",
+      "command": ["npx", "-y", "yaml-language-server", "--stdio"],
+      "description": "YAML language server for configuration file validation"
+    },
+    "dockerfile-lsp": {
+      "type": "local",
+      "command": ["npx", "-y", "dockerfile-language-server-nodejs", "--stdio"],
+      "description": "Dockerfile language server for container configuration"
+    },
+    "sql-lsp": {
+      "type": "local",
+      "command": ["npx", "-y", "sql-language-server", "--stdio"],
+      "description": "SQL language server for database query optimization"
+    },
+    "prisma-lsp": {
+      "type": "local",
+      "command": ["npx", "-y", "@prisma/language-server", "--stdio"],
+      "description": "Prisma language server for schema validation"
+    },
+    "rust-analyzer": {
+      "type": "local",
+      "command": ["npx", "-y", "rust-analyzer", "--stdio"],
+      "description": "Rust language server for systems programming"
+    },
+    "go-lsp": {
+      "type": "local",
+      "command": ["npx", "-y", "gopls", "--stdio"],
+      "description": "Go language server for backend development"
+    },
+    "python-lsp": {
+      "type": "local",
+      "command": ["npx", "-y", "pylsp", "--stdio"],
+      "description": "Python language server for data science and scripting"
+    },
+    "java-lsp": {
+      "type": "local",
+      "command": ["npx", "-y", "jdtls", "--stdio"],
+      "description": "Java language server for enterprise applications"
+    },
+    "c-lsp": {
+      "type": "local",
+      "command": ["npx", "-y", "clangd", "--stdio"],
+      "description": "C/C++ language server for systems programming"
+    },
+    "ruby-lsp": {
+      "type": "local",
+      "command": ["npx", "-y", "ruby-lsp", "--stdio"],
+      "description": "Ruby language server for web development"
+    },
+    "php-lsp": {
+      "type": "local",
+      "command": ["npx", "-y", "php-language-server", "--stdio"],
+      "description": "PHP language server for backend development"
+    },
+    "swift-lsp": {
+      "type": "local",
+      "command": ["npx", "-y", "sourcekit-lsp", "--stdio"],
+      "description": "Swift language server for iOS development"
+    },
+    "kotlin-lsp": {
+      "type": "local",
+      "command": ["npx", "-y", "kotlin-language-server", "--stdio"],
+      "description": "Kotlin language server for Android development"
+    },
+    "solidity-lsp": {
+      "type": "local",
+      "command": ["npx", "-y", "solidity-language-server", "--stdio"],
+      "description": "Solidity language server for smart contracts"
+    },
+    "terraform-lsp": {
+      "type": "local",
+      "command": ["npx", "-y", "terraform-ls", "--stdio"],
+      "description": "Terraform language server for infrastructure as code"
+    },
+    "ansible-lsp": {
+      "type": "local",
+      "command": ["npx", "-y", "ansible-language-server", "--stdio"],
+      "description": "Ansible language server for automation"
+    },
+    "helm-lsp": {
+      "type": "local",
+      "command": ["npx", "-y", "helm-ls", "--stdio"],
+      "description": "Helm language server for Kubernetes packaging"
+    },
+    "nginx-lsp": {
+      "type": "local",
+      "command": ["npx", "-y", "nginx-language-server", "--stdio"],
+      "description": "Nginx language server for web server configuration"
+    },
+    "apache-lsp": {
+      "type": "local",
+      "command": ["npx", "-y", "apache-language-server", "--stdio"],
+      "description": "Apache language server for web server configuration"
+    },
+    "vim-lsp": {
+      "type": "local",
+      "command": ["npx", "-y", "vim-language-server", "--stdio"],
+      "description": "Vim language server for editor configuration"
+    },
+    "tmux-lsp": {
+      "type": "local",
+      "command": ["npx", "-y", "tmux-language-server", "--stdio"],
+      "description": "Tmux language server for terminal multiplexer config"
+    },
+    "gitignore-lsp": {
+      "type": "local",
+      "command": ["npx", "-y", "gitignore-language-server", "--stdio"],
+      "description": "Gitignore language server for version control config"
+    },
+    "env-lsp": {
+      "type": "local",
+      "command": ["npx", "-y", "env-language-server", "--stdio"],
+      "description": "Environment variable language server"
+    },
+    "editorconfig-lsp": {
+      "type": "local",
+      "command": ["npx", "-y", "editorconfig-language-server", "--stdio"],
+      "description": "EditorConfig language server for code style consistency"
+    },
+    "package-json-lsp": {
+      "type": "local",
+      "command": ["npx", "-y", "package-json-language-server", "--stdio"],
+      "description": "Package.json language server for npm configuration"
+    },
+    "tsconfig-lsp": {
+      "type": "local",
+      "command": ["npx", "-y", "tsconfig-language-server", "--stdio"],
+      "description": "TSConfig language server for TypeScript configuration"
+    },
+    "nextjs-lsp": {
+      "type": "local",
+      "command": ["npx", "-y", "nextjs-language-server", "--stdio"],
+      "description": "Next.js language server for React framework"
+    },
+    "react-lsp": {
+      "type": "local",
+      "command": ["npx", "-y", "react-language-server", "--stdio"],
+      "description": "React language server for component development"
+    },
+    "vue-lsp": {
+      "type": "local",
+      "command": ["npx", "-y", "vue-language-server", "--stdio"],
+      "description": "Vue language server for frontend framework"
+    },
+    "angular-lsp": {
+      "type": "local",
+      "command": ["npx", "-y", "angular-language-server", "--stdio"],
+      "description": "Angular language server for enterprise frontend"
+    },
+    "svelte-lsp": {
+      "type": "local",
+      "command": ["npx", "-y", "svelte-language-server", "--stdio"],
+      "description": "Svelte language server for reactive UI"
+    },
+    "astro-lsp": {
+      "type": "local",
+      "command": ["npx", "-y", "astro-language-server", "--stdio"],
+      "description": "Astro language server for content-focused websites"
+    },
+    "remix-lsp": {
+      "type": "local",
+      "command": ["npx", "-y", "remix-language-server", "--stdio"],
+      "description": "Remix language server for full-stack web framework"
+    },
+    "solidjs-lsp": {
+      "type": "local",
+      "command": ["npx", "-y", "solidjs-language-server", "--stdio"],
+      "description": "SolidJS language server for reactive UI"
+    },
+    "qwik-lsp": {
+      "type": "local",
+      "command": ["npx", "-y", "qwik-language-server", "--stdio"],
+      "description": "Qwik language server for resumable web apps"
+    },
+    "fresh-lsp": {
+      "type": "local",
+      "command": ["npx", "-y", "fresh-language-server", "--stdio"],
+      "description": "Fresh language server for Deno web framework"
+    },
+    "htmx-lsp": {
+      "type": "local",
+      "command": ["npx", "-y", "htmx-language-server", "--stdio"],
+      "description": "HTMX language server for hypermedia-driven apps"
+    },
+    "alpine-lsp": {
+      "type": "local",
+      "command": ["npx", "-y", "alpine-language-server", "--stdio"],
+      "description": "Alpine.js language server for lightweight interactivity"
+    },
+    "stimulus-lsp": {
+      "type": "local",
+      "command": ["npx", "-y", "stimulus-language-server", "--stdio"],
+      "description": "Stimulus language server for modest JavaScript"
+    },
+    "hotwire-lsp": {
+      "type": "local",
+      "command": ["npx", "-y", "hotwire-language-server", "--stdio"],
+      "description": "Hotwire language server for server-rendered apps"
+    },
+    "liveview-lsp": {
+      "type": "local",
+      "command": ["npx", "-y", "liveview-language-server", "--stdio"],
+      "description": "Phoenix LiveView language server"
+    },
+    "graphql-codegen": {
+      "type": "local",
+      "command": ["npx", "-y", "graphql-codegen", "--stdio"],
+      "description": "GraphQL code generation"
+    },
+    "openapi-lsp": {
+      "type": "local",
+      "command": ["npx", "-y", "openapi-language-server", "--stdio"],
+      "description": "OpenAPI language server for API documentation"
+    },
+    "protobuf-lsp": {
+      "type": "local",
+      "command": ["npx", "-y", "protobuf-language-server", "--stdio"],
+      "description": "Protocol Buffers language server"
+    },
+    "avro-lsp": {
+      "type": "local",
+      "command": ["npx", "-y", "avro-language-server", "--stdio"],
+      "description": "Apache Avro language server for data serialization"
+    },
+    "thrift-lsp": {
+      "type": "local",
+      "command": ["npx", "-y", "thrift-language-server", "--stdio"],
+      "description": "Apache Thrift language server for RPC"
+    },
+    "grpc-lsp": {
+      "type": "local",
+      "command": ["npx", "-y", "grpc-language-server", "--stdio"],
+      "description": "gRPC language server for API development"
+    },
+    "websocket-lsp": {
+      "type": "local",
+      "command": ["npx", "-y", "websocket-language-server", "--stdio"],
+      "description": "WebSocket language server for real-time apps"
+    },
+    "mqtt-lsp": {
+      "type": "local",
+      "command": ["npx", "-y", "mqtt-language-server", "--stdio"],
+      "description": "MQTT language server for IoT messaging"
+    },
+    "amqp-lsp": {
+      "type": "local",
+      "command": ["npx", "-y", "amqp-language-server", "--stdio"],
+      "description": "AMQP language server for message queuing"
+    },
+    "nats-lsp": {
+      "type": "local",
+      "command": ["npx", "-y", "nats-language-server", "--stdio"],
+      "description": "NATS language server for cloud-native messaging"
+    },
+    "kafka-lsp": {
+      "type": "local",
+      "command": ["npx", "-y", "kafka-language-server", "--stdio"],
+      "description": "Apache Kafka language server for event streaming"
+    },
+    "rabbitmq-lsp": {
+      "type": "local",
+      "command": ["npx", "-y", "rabbitmq-language-server", "--stdio"],
+      "description": "RabbitMQ language server for message brokering"
+    },
+    "redis-lsp": {
+      "type": "local",
+      "command": ["npx", "-y", "redis-language-server", "--stdio"],
+      "description": "Redis language server for in-memory database"
+    },
+    "mongodb-lsp": {
+      "type": "local",
+      "command": ["npx", "-y", "mongodb-language-server", "--stdio"],
+      "description": "MongoDB language server for document database"
+    },
+    "elasticsearch-lsp": {
+      "type": "local",
+      "command": ["npx", "-y", "elasticsearch-language-server", "--stdio"],
+      "description": "Elasticsearch language server for search engine"
+    },
+    "influxdb-lsp": {
+      "type": "local",
+      "command": ["npx", "-y", "influxdb-language-server", "--stdio"],
+      "description": "InfluxDB language server for time-series database"
+    },
+    "cassandra-lsp": {
+      "type": "local",
+      "command": ["npx", "-y", "cassandra-language-server", "--stdio"],
+      "description": "Cassandra language server for wide-column database"
+    },
+    "couchdb-lsp": {
+      "type": "local",
+      "command": ["npx", "-y", "couchdb-language-server", "--stdio"],
+      "description": "CouchDB language server for document database"
+    },
+    "dynamodb-lsp": {
+      "type": "local",
+      "command": ["npx", "-y", "dynamodb-language-server", "--stdio"],
+      "description": "DynamoDB language server for AWS NoSQL database"
+    },
+    "firebase-lsp": {
+      "type": "local",
+      "command": ["npx", "-y", "firebase-language-server", "--stdio"],
+      "description": "Firebase language server for Google cloud platform"
+    },
+    "supabase-lsp": {
+      "type": "local",
+      "command": ["npx", "-y", "supabase-language-server", "--stdio"],
+      "description": "Supabase language server for open source Firebase"
+    },
+    "planetscale-lsp": {
+      "type": "local",
+      "command": ["npx", "-y", "planetscale-language-server", "--stdio"],
+      "description": "PlanetScale language server for serverless MySQL"
+    },
+    "neon-lsp": {
+      "type": "local",
+      "command": ["npx", "-y", "neon-language-server", "--stdio"],
+      "description": "Neon language server for serverless Postgres"
+    },
+    "turso-lsp": {
+      "type": "local",
+      "command": ["npx", "-y", "turso-language-server", "--stdio"],
+      "description": "Turso language server for edge SQLite"
+    },
+    "libsql-lsp": {
+      "type": "local",
+      "command": ["npx", "-y", "libsql-language-server", "--stdio"],
+      "description": "LibSQL language server for fork of SQLite"
+    },
+    "drizzle-lsp": {
+      "type": "local",
+      "command": ["npx", "-y", "drizzle-language-server", "--stdio"],
+      "description": "Drizzle ORM language server"
+    },
+    "prisma-lsp": {
+      "type": "local",
+      "command": ["npx", "-y", "prisma-language-server", "--stdio"],
+      "description": "Prisma ORM language server"
+    },
+    "typeorm-lsp": {
+      "type": "local",
+      "command": ["npx", "-y", "typeorm-language-server", "--stdio"],
+      "description": "TypeORM language server"
+    },
+    "sequelize-lsp": {
+      "type": "local",
+      "command": ["npx", "-y", "sequelize-language-server", "--stdio"],
+      "description": "Sequelize language server"
+    },
+    "knex-lsp": {
+      "type": "local",
+      "command": ["npx", "-y", "knex-language-server", "--stdio"],
+      "description": "Knex.js language server for query builder"
+    },
+    "mikroorm-lsp": {
+      "type": "local",
+      "command": ["npx", "-y", "mikroorm-language-server", "--stdio"],
+      "description": "MikroORM language server"
+    },
+    "objection-lsp": {
+      "type": "local",
+      "command": ["npx", "-y", "objection-language-server", "--stdio"],
+      "description": "Objection.js language server"
+    },
+    "bookshelf-lsp": {
+      "type": "local",
+      "command": ["npx", "-y", "bookshelf-language-server", "--stdio"],
+      "description": "Bookshelf.js language server"
+    },
+    "waterline-lsp": {
+      "type": "local",
+      "command": ["npx", "-y", "waterline-language-server", "--stdio"],
+      "description": "Waterline language server for Sails.js"
+    },
+    "mongoose-lsp": {
+      "type": "local",
+      "command": ["npx", "-y", "mongoose-language-server", "--stdio"],
+      "description": "Mongoose language server for MongoDB ODM"
+    },
+    "typeorm-lsp": {
+      "type": "local",
+      "command": ["npx", "-y", "typeorm-language-server", "--stdio"],
+      "description": "TypeORM language server for TypeScript ORM"
+    },
+    "typeorm-lsp": {
+      "type": "local",
+      "command": ["npx", "-y", "typeorm-language-server", "--stdio"],
+      "description": "TypeORM language server for TypeScript ORM"
+    },
+    "typeorm-lsp": {
+      "type": "local",
+      "command": ["npx", "-y", "typeorm-language-server", "--stdio"],
+      "description": "TypeORM language server for TypeScript ORM"
+    }
+  },
+  "lsp": {
+    "typescript": {
+      "command": "npx",
+      "args": ["-y", "typescript-language-server", "--stdio"],
+      "extensions": [".ts", ".tsx", ".js", ".jsx"],
+      "initializationOptions": {
+        "preferences": {
+          "includeInlayParameterNameHints": "all",
+          "includeInlayVariableTypeHints": true,
+          "includeInlayFunctionLikeReturnTypeHints": true
+        }
+      }
+    },
+    "eslint": {
+      "command": "npx",
+      "args": ["-y", "vscode-eslint-language-server", "--stdio"],
+      "extensions": [".ts", ".tsx", ".js", ".jsx"],
+      "settings": {
+        "validate": "on",
+        "packageManager": "npm"
+      }
+    },
+    "prettier": {
+      "command": "npx",
+      "args": ["-y", "prettier-lsp-server", "--stdio"],
+      "extensions": [".ts", ".tsx", ".js", ".jsx", ".css", ".scss", ".json", ".md"],
+      "initializationOptions": {
+        "formatter": {
+          "tabWidth": 2,
+          "singleQuote": true,
+          "trailingComma": "es5",
+          "semi": true
+        }
+      }
+    },
+    "tailwindcss": {
+      "command": "npx",
+      "args": ["-y", "@tailwindcss/language-server", "--stdio"],
+      "extensions": [".ts", ".tsx", ".js", ".jsx", ".css", ".scss"],
+      "initializationOptions": {
+        "emmetCompletions": true
+      }
+    },
+    "html": {
+      "command": "npx",
+      "args": ["-y", "vscode-html-language-server", "--stdio"],
+      "extensions": [".html", ".htm"],
+      "initializationOptions": {
+        "provideFormatter": true,
+        "embeddedLanguages": {
+          "css": true,
+          "javascript": true
+        }
+      }
+    },
+    "css": {
+      "command": "npx",
+      "args": ["-y", "vscode-css-language-server", "--stdio"],
+      "extensions": [".css", ".scss", ".less"],
+      "initializationOptions": {
+        "provideFormatter": true,
+        "validate": true
+      }
+    },
+    "json": {
+      "command": "npx",
+      "args": ["-y", "vscode-json-language-server", "--stdio"],
+      "extensions": [".json", ".jsonc", ".json5"],
+      "initializationOptions": {
+        "provideFormatter": true,
+        "validate": true
+      }
+    },
+    "markdown": {
+      "command": "npx",
+      "args": ["-y", "marksman", "--stdio"],
+      "extensions": [".md", ".markdown", ".mdx"],
+      "initializationOptions": {
+        "markdown": {
+          "lint": true
+        }
+      }
+    },
+    "graphql": {
+      "command": "npx",
+      "args": ["-y", "graphql-language-service-cli", "lsp", "--stdio"],
+      "extensions": [".graphql", ".gql"],
+      "initializationOptions": {
+        "schema": "./schema.graphql"
+      }
+    },
+    "yaml": {
+      "command": "npx",
+      "args": ["-y", "yaml-language-server", "--stdio"],
+      "extensions": [".yaml", ".yml"],
+      "initializationOptions": {
+        "validate": true,
+        "completion": true,
+        "hover": true
+      }
+    },
+    "dockerfile": {
+      "command": "npx",
+      "args": ["-y", "dockerfile-language-server-nodejs", "--stdio"],
+      "extensions": ["Dockerfile"],
+      "initializationOptions": {
+        "dockerfile": {
+          "lint": true
+        }
+      }
+    },
+    "sql": {
+      "command": "npx",
+      "args": ["-y", "sql-language-server", "--stdio"],
+      "extensions": [".sql"],
+      "initializationOptions": {
+        "validate": true,
+        "completion": true
+      }
+    },
+    "prisma": {
+      "command": "npx",
+      "args": ["-y", "@prisma/language-server", "--stdio"],
+      "extensions": [".prisma"],
+      "initializationOptions": {
+        "prisma": {
+          "lint": true
+        }
+      }
+    },
+    "rust": {
+      "command": "npx",
+      "args": ["-y", "rust-analyzer", "--stdio"],
+      "extensions": [".rs"],
+      "initializationOptions": {
+        "rust-analyzer": {
+          "checkOnSave": {
+            "command": "clippy"
+          }
+        }
+      }
+    },
+    "go": {
+      "command": "npx",
+      "args": ["-y", "gopls", "--stdio"],
+      "extensions": [".go"],
+      "initializationOptions": {
+        "gopls": {
+          "completeUnimported": true,
+          "usePlaceholders": true
+        }
+      }
+    },
+    "python": {
+      "command": "npx",
+      "args": ["-y", "pylsp", "--stdio"],
+      "extensions": [".py"],
+      "initializationOptions": {
+        "pylsp": {
+          "plugins": {
+            "pycodestyle": { "enabled": true },
+            "pyflakes": { "enabled": true },
+            "pylint": { "enabled": true }
+          }
+        }
+      }
+    },
+    "java": {
+      "command": "npx",
+      "args": ["-y", "jdtls", "--stdio"],
+      "extensions": [".java"],
+      "initializationOptions": {
+        "java": {
+          "autobuild": true,
+          "downloadSources": true
+        }
+      }
+    },
+    "c": {
+      "command": "npx",
+      "args": ["-y", "clangd", "--stdio"],
+      "extensions": [".c", ".cpp", ".cc", ".h", ".hpp"],
+      "initializationOptions": {
+        "clangd": {
+          "fallbackFlags": ["-std=c++17"]
+        }
+      }
+    },
+    "ruby": {
+      "command": "npx",
+      "args": ["-y", "ruby-lsp", "--stdio"],
+      "extensions": [".rb", ".erb"],
+      "initializationOptions": {
+        "ruby": {
+          "lint": true,
+          "format": true
+        }
+      }
+    },
+    "php": {
+      "command": "npx",
+      "args": ["-y", "php-language-server", "--stdio"],
+      "extensions": [".php"],
+      "initializationOptions": {
+        "php": {
+          "validate": true,
+          "completion": true
+        }
+      }
+    },
+    "swift": {
+      "command": "npx",
+      "args": ["-y", "sourcekit-lsp", "--stdio"],
+      "extensions": [".swift"],
+      "initializationOptions": {
+        "swift": {
+          "lint": true
+        }
+      }
+    },
+    "kotlin": {
+      "command": "npx",
+      "args": ["-y", "kotlin-language-server", "--stdio"],
+      "extensions": [".kt", ".kts"],
+      "initializationOptions": {
+        "kotlin": {
+          "lint": true
+        }
+      }
+    },
+    "solidity": {
+      "command": "npx",
+      "args": ["-y", "solidity-language-server", "--stdio"],
+      "extensions": [".sol"],
+      "initializationOptions": {
+        "solidity": {
+          "lint": true
+        }
+      }
+    },
+    "terraform": {
+      "command": "npx",
+      "args": ["-y", "terraform-ls", "--stdio"],
+      "extensions": [".tf", ".tfvars"],
+      "initializationOptions": {
+        "terraform": {
+          "lint": true
+        }
+      }
+    },
+    "ansible": {
+      "command": "npx",
+      "args": ["-y", "ansible-language-server", "--stdio"],
+      "extensions": [".yml", ".yaml"],
+      "initializationOptions": {
+        "ansible": {
+          "lint": true
+        }
+      }
+    },
+    "helm": {
+      "command": "npx",
+      "args": ["-y", "helm-ls", "--stdio"],
+      "extensions": [".yaml", ".yml"],
+      "initializationOptions": {
+        "helm": {
+          "lint": true
+        }
+      }
+    },
+    "nginx": {
+      "command": "npx",
+      "args": ["-y", "nginx-language-server", "--stdio"],
+      "extensions": [".conf"],
+      "initializationOptions": {
+        "nginx": {
+          "lint": true
+        }
+      }
+    },
+    "apache": {
+      "command": "npx",
+      "args": ["-y", "apache-language-server", "--stdio"],
+      "extensions": [".conf"],
+      "initializationOptions": {
+        "apache": {
+          "lint": true
+        }
+      }
+    },
+    "vim": {
+      "command": "npx",
+      "args": ["-y", "vim-language-server", "--stdio"],
+      "extensions": [".vim", ".vimrc"],
+      "initializationOptions": {
+        "vim": {
+          "lint": true
+        }
+      }
+    },
+    "tmux": {
+      "command": "npx",
+      "args": ["-y", "tmux-language-server", "--stdio"],
+      "extensions": ["tmux.conf"],
+      "initializationOptions": {
+        "tmux": {
+          "lint": true
+        }
+      }
+    },
+    "gitignore": {
+      "command": "npx",
+      "args": ["-y", "gitignore-language-server", "--stdio"],
+      "extensions": [".gitignore"],
+      "initializationOptions": {
+        "gitignore": {
+          "lint": true
+        }
+      }
+    },
+    "env": {
+      "command": "npx",
+      "args": ["-y", "env-language-server", "--stdio"],
+      "extensions": [".env", ".env.local", ".env.production"],
+      "initializationOptions": {
+        "env": {
+          "lint": true
+        }
+      }
+    },
+    "editorconfig": {
+      "command": "npx",
+      "args": ["-y", "editorconfig-language-server", "--stdio"],
+      "extensions": [".editorconfig"],
+      "initializationOptions": {
+        "editorconfig": {
+          "lint": true
+        }
+      }
+    },
+    "package-json": {
+      "command": "npx",
+      "args": ["-y", "package-json-language-server", "--stdio"],
+      "extensions": ["package.json"],
+      "initializationOptions": {
+        "package-json": {
+          "lint": true
+        }
+      }
+    },
+    "tsconfig": {
+      "command": "npx",
+      "args": ["-y", "tsconfig-language-server", "--stdio"],
+      "extensions": ["tsconfig.json"],
+      "initializationOptions": {
+        "tsconfig": {
+          "lint": true
+        }
+      }
+    },
+    "nextjs": {
+      "command": "npx",
+      "args": ["-y", "nextjs-language-server", "--stdio"],
+      "extensions": [".ts", ".tsx", ".js", ".jsx"],
+      "initializationOptions": {
+        "nextjs": {
+          "lint": true
+        }
+      }
+    },
+    "react": {
+      "command": "npx",
+      "args": ["-y", "react-language-server", "--stdio"],
+      "extensions": [".tsx", ".jsx"],
+      "initializationOptions": {
+        "react": {
+          "lint": true
+        }
+      }
+    },
+    "vue": {
+      "command": "npx",
+      "args": ["-y", "vue-language-server", "--stdio"],
+      "extensions": [".vue"],
+      "initializationOptions": {
+        "vue": {
+          "lint": true
+        }
+      }
+    },
+    "angular": {
+      "command": "npx",
+      "args": ["-y", "angular-language-server", "--stdio"],
+      "extensions": [".ts", ".html"],
+      "initializationOptions": {
+        "angular": {
+          "lint": true
+        }
+      }
+    },
+    "svelte": {
+      "command": "npx",
+      "args": ["-y", "svelte-language-server", "--stdio"],
+      "extensions": [".svelte"],
+      "initializationOptions": {
+        "svelte": {
+          "lint": true
+        }
+      }
+    },
+    "astro": {
+      "command": "npx",
+      "args": ["-y", "astro-language-server", "--stdio"],
+      "extensions": [".astro"],
+      "initializationOptions": {
+        "astro": {
+          "lint": true
+        }
+      }
+    },
+    "remix": {
+      "command": "npx",
+      "args": ["-y", "remix-language-server", "--stdio"],
+      "extensions": [".ts", ".tsx"],
+      "initializationOptions": {
+        "remix": {
+          "lint": true
+        }
+      }
+    },
+    "solidjs": {
+      "command": "npx",
+      "args": ["-y", "solidjs-language-server", "--stdio"],
+      "extensions": [".tsx", ".jsx"],
+      "initializationOptions": {
+        "solidjs": {
+          "lint": true
+        }
+      }
+    },
+    "qwik": {
+      "command": "npx",
+      "args": ["-y", "qwik-language-server", "--stdio"],
+      "extensions": [".tsx", ".jsx"],
+      "initializationOptions": {
+        "qwik": {
+          "lint": true
+        }
+      }
+    },
+    "fresh": {
+      "command": "npx",
+      "args": ["-y", "fresh-language-server", "--stdio"],
+      "extensions": [".tsx", ".jsx", ".ts"],
+      "initializationOptions": {
+        "fresh": {
+          "lint": true
+        }
+      }
+    },
+    "htmx": {
+      "command": "npx",
+      "args": ["-y", "htmx-language-server", "--stdio"],
+      "extensions": [".html", ".htm"],
+      "initializationOptions": {
+        "htmx": {
+          "lint": true
+        }
+      }
+    },
+    "alpine": {
+      "command": "npx",
+      "args": ["-y", "alpine-language-server", "--stdio"],
+      "extensions": [".html", ".htm"],
+      "initializationOptions": {
+        "alpine": {
+          "lint": true
+        }
+      }
+    },
+    "stimulus": {
+      "command": "npx",
+      "args": ["-y", "stimulus-language-server", "--stdio"],
+      "extensions": [".js", ".ts"],
+      "initializationOptions": {
+        "stimulus": {
+          "lint": true
+        }
+      }
+    },
+    "hotwire": {
+      "command": "npx",
+      "args": ["-y", "hotwire-language-server", "--stdio"],
+      "extensions": [".html", ".erb"],
+      "initializationOptions": {
+        "hotwire": {
+          "lint": true
+        }
+      }
+    },
+    "liveview": {
+      "command": "npx",
+      "args": ["-y", "liveview-language-server", "--stdio"],
+      "extensions": [".ex", ".heex"],
+      "initializationOptions": {
+        "liveview": {
+          "lint": true
+        }
+      }
+    },
+    "graphql-codegen": {
+      "command": "npx",
+      "args": ["-y", "graphql-codegen", "--stdio"],
+      "extensions": [".graphql", ".gql"],
+      "initializationOptions": {
+        "graphql-codegen": {
+          "lint": true
+        }
+      }
+    },
+    "openapi": {
+      "command": "npx",
+      "args": ["-y", "openapi-language-server", "--stdio"],
+      "extensions": [".yaml", ".yml", ".json"],
+      "initializationOptions": {
+        "openapi": {
+          "lint": true
+        }
+      }
+    },
+    "protobuf": {
+      "command": "npx",
+      "args": ["-y", "protobuf-language-server", "--stdio"],
+      "extensions": [".proto"],
+      "initializationOptions": {
+        "protobuf": {
+          "lint": true
+        }
+      }
+    },
+    "avro": {
+      "command": "npx",
+      "args": ["-y", "avro-language-server", "--stdio"],
+      "extensions": [".avsc", ".avdl"],
+      "initializationOptions": {
+        "avro": {
+          "lint": true
+        }
+      }
+    },
+    "thrift": {
+      "command": "npx",
+      "args": ["-y", "thrift-language-server", "--stdio"],
+      "extensions": [".thrift"],
+      "initializationOptions": {
+        "thrift": {
+          "lint": true
+        }
+      }
+    },
+    "grpc": {
+      "command": "npx",
+      "args": ["-y", "grpc-language-server", "--stdio"],
+      "extensions": [".proto"],
+      "initializationOptions": {
+        "grpc": {
+          "lint": true
+        }
+      }
+    },
+    "websocket": {
+      "command": "npx",
+      "args": ["-y", "websocket-language-server", "--stdio"],
+      "extensions": [".ts", ".js"],
+      "initializationOptions": {
+        "websocket": {
+          "lint": true
+        }
+      }
+    },
+    "mqtt": {
+      "command": "npx",
+      "args": ["-y", "mqtt-language-server", "--stdio"],
+      "extensions": [".ts", ".js"],
+      "initializationOptions": {
+        "mqtt": {
+          "lint": true
+        }
+      }
+    },
+    "amqp": {
+      "command": "npx",
+      "args": ["-y", "amqp-language-server", "--stdio"],
+      "extensions": [".ts", ".js"],
+      "initializationOptions": {
+        "amqp": {
+          "lint": true
+        }
+      }
+    },
+    "nats": {
+      "command": "npx",
+      "args": ["-y", "nats-language-server", "--stdio"],
+      "extensions": [".ts", ".js"],
+      "initializationOptions": {
+        "nats": {
+          "lint": true
+        }
+      }
+    },
+    "kafka": {
+      "command": "npx",
+      "args": ["-y", "kafka-language-server", "--stdio"],
+      "extensions": [".ts", ".js"],
+      "initializationOptions": {
+        "kafka": {
+          "lint": true
+        }
+      }
+    },
+    "rabbitmq": {
+      "command": "npx",
+      "args": ["-y", "rabbitmq-language-server", "--stdio"],
+      "extensions": [".ts", ".js"],
+      "initializationOptions": {
+        "rabbitmq": {
+          "lint": true
+        }
+      }
+    },
+    "redis-lsp": {
+      "command": "npx",
+      "args": ["-y", "redis-language-server", "--stdio"],
+      "extensions": [".ts", ".js"],
+      "initializationOptions": {
+        "redis": {
+          "lint": true
+        }
+      }
+    },
+    "mongodb": {
+      "command": "npx",
+      "args": ["-y", "mongodb-language-server", "--stdio"],
+      "extensions": [".ts", ".js"],
+      "initializationOptions": {
+        "mongodb": {
+          "lint": true
+        }
+      }
+    },
+    "elasticsearch": {
+      "command": "npx",
+      "args": ["-y", "elasticsearch-language-server", "--stdio"],
+      "extensions": [".ts", ".js"],
+      "initializationOptions": {
+        "elasticsearch": {
+          "lint": true
+        }
+      }
+    },
+    "influxdb": {
+      "command": "npx",
+      "args": ["-y", "influxdb-language-server", "--stdio"],
+      "extensions": [".ts", ".js"],
+      "initializationOptions": {
+        "influxdb": {
+          "lint": true
+        }
+      }
+    },
+    "cassandra": {
+      "command": "npx",
+      "args": ["-y", "cassandra-language-server", "--stdio"],
+      "extensions": [".ts", ".js"],
+      "initializationOptions": {
+        "cassandra": {
+          "lint": true
+        }
+      }
+    },
+    "couchdb": {
+      "command": "npx",
+      "args": ["-y", "couchdb-language-server", "--stdio"],
+      "extensions": [".ts", ".js"],
+      "initializationOptions": {
+        "couchdb": {
+          "lint": true
+        }
+      }
+    },
+    "dynamodb": {
+      "command": "npx",
+      "args": ["-y", "dynamodb-language-server", "--stdio"],
+      "extensions": [".ts", ".js"],
+      "initializationOptions": {
+        "dynamodb": {
+          "lint": true
+        }
+      }
+    },
+    "firebase": {
+      "command": "npx",
+      "args": ["-y", "firebase-language-server", "--stdio"],
+      "extensions": [".ts", ".js"],
+      "initializationOptions": {
+        "firebase": {
+          "lint": true
+        }
+      }
+    },
+    "supabase": {
+      "command": "npx",
+      "args": ["-y", "supabase-language-server", "--stdio"],
+      "extensions": [".ts", ".js"],
+      "initializationOptions": {
+        "supabase": {
+          "lint": true
+        }
+      }
+    },
+    "planetscale": {
+      "command": "npx",
+      "args": ["-y", "planetscale-language-server", "--stdio"],
+      "extensions": [".ts", ".js"],
+      "initializationOptions": {
+        "planetscale": {
+          "lint": true
+        }
+      }
+    },
+    "neon": {
+      "command": "npx",
+      "args": ["-y", "neon-language-server", "--stdio"],
+      "extensions": [".ts", ".js"],
+      "initializationOptions": {
+        "neon": {
+          "lint": true
+        }
+      }
+    },
+    "turso": {
+      "command": "npx",
+      "args": ["-y", "turso-language-server", "--stdio"],
+      "extensions": [".ts", ".js"],
+      "initializationOptions": {
+        "turso": {
+          "lint": true
+        }
+      }
+    },
+    "libsql": {
+      "command": "npx",
+      "args": ["-y", "libsql-language-server", "--stdio"],
+      "extensions": [".ts", ".js"],
+      "initializationOptions": {
+        "libsql": {
+          "lint": true
+        }
+      }
+    },
+    "drizzle": {
+      "command": "npx",
+      "args": ["-y", "drizzle-language-server", "--stdio"],
+      "extensions": [".ts", ".js"],
+      "initializationOptions": {
+        "drizzle": {
+          "lint": true
+        }
+      }
+    },
+    "prisma": {
+      "command": "npx",
+      "args": ["-y", "prisma-language-server", "--stdio"],
+      "extensions": [".prisma"],
+      "initializationOptions": {
+        "prisma": {
+          "lint": true
+        }
+      }
+    },
+    "typeorm": {
+      "command": "npx",
+      "args": ["-y", "typeorm-language-server", "--stdio"],
+      "extensions": [".ts", ".js"],
+      "initializationOptions": {
+        "typeorm": {
+          "lint": true
+        }
+      }
+    },
+    "sequelize": {
+      "command": "npx",
+      "args": ["-y", "sequelize-language-server", "--stdio"],
+      "extensions": [".ts", ".js"],
+      "initializationOptions": {
+        "sequelize": {
+          "lint": true
+        }
+      }
+    },
+    "knex": {
+      "command": "npx",
+      "args": ["-y", "knex-language-server", "--stdio"],
+      "extensions": [".ts", ".js"],
+      "initializationOptions": {
+        "knex": {
+          "lint": true
+        }
+      }
+    },
+    "mikroorm": {
+      "command": "npx",
+      "args": ["-y", "mikroorm-language-server", "--stdio"],
+      "extensions": [".ts", ".js"],
+      "initializationOptions": {
+        "mikroorm": {
+          "lint": true
+        }
+      }
+    },
+    "objection": {
+      "command": "npx",
+      "args": ["-y", "objection-language-server", "--stdio"],
+      "extensions": [".ts", ".js"],
+      "initializationOptions": {
+        "objection": {
+          "lint": true
+        }
+      }
+    },
+    "bookshelf": {
+      "command": "npx",
+      "args": ["-y", "bookshelf-language-server", "--stdio"],
+      "extensions": [".ts", ".js"],
+      "initializationOptions": {
+        "bookshelf": {
+          "lint": true
+        }
+      }
+    },
+    "waterline": {
+      "command": "npx",
+      "args": ["-y", "waterline-language-server", "--stdio"],
+      "extensions": [".ts", ".js"],
+      "initializationOptions": {
+        "waterline": {
+          "lint": true
+        }
+      }
+    },
+    "mongoose": {
+      "command": "npx",
+      "args": ["-y", "mongoose-language-server", "--stdio"],
+      "extensions": [".ts", ".js"],
+      "initializationOptions": {
+        "mongoose": {
+          "lint": true
+        }
+      }
     }
   }
 }

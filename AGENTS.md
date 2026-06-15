@@ -19,6 +19,8 @@ This file is the entry point for any agent (opencode, future coding agents, or h
 - `ui-ux-pro-max` — design system intelligence
 - `component-api-scaffolding` — create React components, API routes, SWR hooks, context providers
 - `pwa-service-worker` — service worker management, offline support, PWA manifest, cache strategies
+- `react-patterns` — advanced React patterns, hooks, and best practices
+- `nextjs-app-router` — Next.js App Router patterns, data fetching, and optimization
 
 ### Quality & Testing
 - `run-react-doctor` — how to read the react-doctor report, the 12-rule catalog, the score model
@@ -59,6 +61,12 @@ This file is the entry point for any agent (opencode, future coding agents, or h
 - `content-review` — review copy and documentation for clarity
 - `design` — baseline UI implementation guidance
 - `ci-cd-security` — CI/CD pipeline security and automation
+
+### OpenCode & MiMo v2.5 Optimization
+- `mimo-workflow` — optimized workflows for OpenCode IDE with MiMo v2.5 free model
+- `opencode-optimization` — optimize OpenCode IDE configuration and workflows
+- `fullstack-workflow` — end-to-end full-stack development workflow for Next.js
+- `typescript-advanced` — advanced TypeScript patterns and type safety
 
 ## Home page sections
 
