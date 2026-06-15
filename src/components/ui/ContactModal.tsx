@@ -229,7 +229,7 @@ export function ContactModal({ open, onClose }: Readonly<ContactModalProps>) {
                       key={preset.label}
                       type="button"
                       onClick={() => handleTopicSelect(preset)}
-                      className={`group flex items-center gap-3 rounded-xl border-2 px-3.5 py-3 text-left transition-all duration-200 ${
+                      className={`group flex items-center gap-3 rounded-xl border-2 px-3.5 py-3 text-left transition-[border-color,background-color,box-shadow] duration-200 ${
                         form.topic === preset.label
                           ? 'border-accent-pink bg-accent-pink/5 shadow-sm'
                           : 'border-border-light dark:border-border-dark bg-white dark:bg-card-bg-dark hover:border-accent-pink/40 hover:shadow-sm'

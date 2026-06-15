@@ -42,12 +42,12 @@ export function HubMenuItem({
           {subtitle}
         </p>
       </div>
-      <ChevronRight className="h-4 w-4 text-text-muted-light/0 dark:text-text-muted-dark/0 group-hover:text-text-muted-light dark:group-hover:text-text-muted-dark transition-all duration-200 -translate-x-1 group-hover:translate-x-0 flex-shrink-0" />
+      <ChevronRight className="h-4 w-4 text-text-muted-light/0 dark:text-text-muted-dark/0 group-hover:text-text-muted-light dark:group-hover:text-text-muted-dark transition-[opacity,transform,color] duration-200 -translate-x-1 group-hover:translate-x-0 flex-shrink-0" />
     </>
   );
 
   const className =
-    'flex items-center gap-3 w-full px-5 py-2.5 hover:bg-accent-pink/5 dark:hover:bg-accent-pink/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-accent-pink/50 focus-visible:bg-accent-pink/5 transition-all duration-200 text-left group';
+    'flex items-center gap-3 w-full px-5 py-2.5 hover:bg-accent-pink/5 dark:hover:bg-accent-pink/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-accent-pink/50 focus-visible:bg-accent-pink/5 transition-[background-color,color,box-shadow] duration-200 text-left group';
 
   if (href) {
     return (

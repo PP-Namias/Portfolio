@@ -128,7 +128,7 @@ export function HubMenu({ onClose, onOpenChat }: Readonly<HubMenuProps>) {
           </div>
           <motion.button
             onClick={onClose}
-            className="h-8 w-8 rounded-full flex items-center justify-center text-text-muted-light dark:text-text-muted-dark hover:bg-black/5 dark:hover:bg-white/5 hover:text-text-primary-light dark:hover:text-text-primary-dark transition-all flex-shrink-0"
+            className="h-8 w-8 rounded-full flex items-center justify-center text-text-muted-light dark:text-text-muted-dark hover:bg-black/5 dark:hover:bg-white/5 hover:text-text-primary-light dark:hover:text-text-primary-dark transition-colors flex-shrink-0"
             aria-label="Close menu"
             whileHover={{ rotate: 90 }}
             whileTap={{ scale: 0.85 }}
@@ -239,7 +239,7 @@ export function HubMenu({ onClose, onOpenChat }: Readonly<HubMenuProps>) {
                       href={link.link}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="h-9 w-9 rounded-xl bg-accent-pink/8 dark:bg-accent-pink/10 flex items-center justify-center text-accent-pink hover:bg-accent-pink hover:text-white transition-all duration-200 hover:shadow-md hover:shadow-accent-pink/20 hover:scale-110"
+                      className="h-9 w-9 rounded-xl bg-accent-pink/8 dark:bg-accent-pink/10 flex items-center justify-center text-accent-pink hover:bg-accent-pink hover:text-white transition-[background-color,color,transform,box-shadow] duration-200 hover:shadow-md hover:shadow-accent-pink/20 hover:scale-110"
                       aria-label={link.label}
                       initial={{ opacity: 0, scale: 0.5 }}
                       animate={{ opacity: 1, scale: 1 }}
@@ -285,7 +285,7 @@ export function HubMenu({ onClose, onOpenChat }: Readonly<HubMenuProps>) {
             {' '}
             Book a meeting
           </span>
-          <ArrowUpRight className="h-3 w-3 opacity-0 -translate-y-0.5 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-200" />
+          <ArrowUpRight className="h-3 w-3 opacity-0 -translate-y-0.5 group-hover:opacity-100 group-hover:translate-y-0 transition-[opacity,transform] duration-200" />
         </button>
       </motion.div>
     </>

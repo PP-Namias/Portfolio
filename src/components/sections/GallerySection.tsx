@@ -132,7 +132,7 @@ export function GallerySection() {
             type="button"
             key={tag}
             onClick={() => setActiveTag(tag)}
-            className={`text-xs font-medium px-2.5 py-1 rounded-full transition-all duration-200 ${
+            className={`text-xs font-medium px-2.5 py-1 rounded-full transition-colors duration-200 ${
               activeTag === tag
                 ? 'bg-accent-pink text-white shadow-sm shadow-accent-pink/25'
                 : 'bg-surface-light dark:bg-surface-dark text-text-secondary-light dark:text-text-secondary-dark hover:bg-accent-pink/10 hover:text-accent-pink border border-border-light dark:border-border-dark'

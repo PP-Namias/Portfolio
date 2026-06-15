@@ -429,7 +429,7 @@ export function ChatPanel({ onBack, onClose, messages, setMessages }: Readonly<C
                       initial={{ opacity: 0, y: 6 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.1 + i * 0.04 }}
-                      className="flex items-center gap-2 p-2 rounded-lg border border-border-light/60 dark:border-border-dark/60 hover:border-accent-pink/30 hover:bg-accent-pink/5 transition-all text-left group"
+                      className="flex items-center gap-2 p-2 rounded-lg border border-border-light/60 dark:border-border-dark/60 hover:border-accent-pink/30 hover:bg-accent-pink/5 transition-[border-color,background-color] text-left group"
                     >
                       <div className={`h-7 w-7 rounded-md ${card.bg} flex items-center justify-center flex-shrink-0`}>
                         <Icon className={`h-3.5 w-3.5 ${card.color}`} />
@@ -484,7 +484,7 @@ export function ChatPanel({ onBack, onClose, messages, setMessages }: Readonly<C
                 type="button"
                 key={q}
                 onClick={() => sendMessage(q)}
-                className="text-[10px] px-2 py-1 rounded-full border border-border-light/60 dark:border-border-dark/60 text-text-secondary-light dark:text-text-secondary-dark hover:border-accent-pink/40 hover:text-accent-pink transition-all"
+                className="text-[10px] px-2 py-1 rounded-full border border-border-light/60 dark:border-border-dark/60 text-text-secondary-light dark:text-text-secondary-dark hover:border-accent-pink/40 hover:text-accent-pink transition-[border-color,color]"
               >
                 {q}
               </button>
@@ -540,12 +540,12 @@ export function ChatPanel({ onBack, onClose, messages, setMessages }: Readonly<C
             maxLength={500}
             disabled={isLoading}
             aria-label="Chat message"
-            className="flex-1 bg-surface-light/80 dark:bg-surface-dark/80 border border-border-light/60 dark:border-border-dark/60 rounded-full px-3.5 py-2 text-[13px] text-text-primary-light dark:text-text-primary-dark placeholder:text-text-muted-light/60 dark:placeholder:text-text-muted-dark/60 focus:outline-none focus:border-accent-pink/40 focus:ring-1 focus:ring-accent-pink/20 disabled:opacity-50 transition-all"
+            className="flex-1 bg-surface-light/80 dark:bg-surface-dark/80 border border-border-light/60 dark:border-border-dark/60 rounded-full px-3.5 py-2 text-[13px] text-text-primary-light dark:text-text-primary-dark placeholder:text-text-muted-light/60 dark:placeholder:text-text-muted-dark/60 focus-visible:outline-none focus-visible:border-accent-pink/40 focus-visible:ring-1 focus-visible:ring-accent-pink/20 disabled:opacity-50 transition-[border-color,box-shadow]"
           />
           <button
             type="submit"
             disabled={isLoading || !input.trim()}
-            className="h-8 w-8 rounded-full bg-accent-pink text-white flex items-center justify-center hover:bg-accent-pink-hover transition-all disabled:opacity-20 disabled:cursor-not-allowed flex-shrink-0 shadow-sm shadow-accent-pink/20 disabled:shadow-none"
+            className="h-8 w-8 rounded-full bg-accent-pink text-white flex items-center justify-center hover:bg-accent-pink-hover transition-colors disabled:opacity-20 disabled:cursor-not-allowed flex-shrink-0 shadow-sm shadow-accent-pink/20 disabled:shadow-none"
             aria-label="Send message"
           >
             <Send className="h-3.5 w-3.5" />
