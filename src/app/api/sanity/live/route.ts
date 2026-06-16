@@ -1,6 +1,6 @@
 import type {NextRequest} from 'next/server'
 import {NextResponse} from 'next/server'
-import {SITE_URL, SANITY_PROJECT_ID, SANITY_DATASET} from '@/lib/site-config'
+import {SITE_URL} from '@/lib/site-config'
 
 export const runtime = 'nodejs'
 

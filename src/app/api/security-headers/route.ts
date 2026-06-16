@@ -17,9 +17,6 @@ const IDEAL_HEADERS: Array<{
       if (!value) return { status: 'missing', recommendation: 'Add Content-Security-Policy header' };
       const hasScriptSrc = value.includes('script-src');
       const hasUnsafeInline = value.includes("'unsafe-inline'");
-      const hasUpgrade = value.includes('upgrade-insecure-requests');
-      const issues: string[] = [];
-      if (!hasUpgrade) issues.push('Missing upgrade-insecure-requests');
       if (hasScriptSrc && hasUnsafeInline) {
         return { status: 'needs-improvement', recommendation: 'CSP allows unsafe-inline on script-src. Consider nonce-based approach for production.' };
       }
