@@ -15,7 +15,6 @@ on:
 permissions:
   actions: read
   contents: read
-  issues: write
 
 concurrency:
   group: problem-advisor-${{ github.event.workflow_run.id || github.run_id }}
@@ -31,6 +30,9 @@ jobs:
       github.event.workflow_run.conclusion != 'neutral')
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    permissions:
+      contents: read
+      issues: write
     steps:
       - name: Publish report to PR or Issues
         uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b

@@ -4,6 +4,7 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
+      cooldown: 5
     groups:
       patch-updates:
         patterns:
