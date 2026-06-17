@@ -1,129 +1,109 @@
 ---
 name: opencode-optimization
-description: Optimize OpenCode IDE configuration and workflows
+description: Optimize OpenCode IDE configuration and workflows for this portfolio
 ---
 
 # OpenCode Optimization Skill
 
-Optimize OpenCode IDE configuration for maximum productivity with MiMo v2.5.
+Optimize OpenCode IDE configuration for maximum productivity with MiMo v2.5 on this portfolio.
 
 ## When to use this skill
 
-- Setting up OpenCode IDE
-- Optimizing AI workflows
-- Configuring LSP servers
-- Managing MCP servers
+- Setting up OpenCode IDE for this portfolio
+- Adding or updating MCP servers in `opencode.json`
+- Configuring LSP servers for better code intelligence
+- Troubleshooting MCP/LSP server issues
 
-## OpenCode Configuration
+## Current MCP servers (opencode.json)
 
-### MCP Server Categories
+| Server | Purpose | Requires API key |
+|--------|---------|-----------------|
+| `chrome-devtools` | Browser debugging, performance traces, screenshots | No |
+| `@21st-dev/magic` | Generate UI components from natural language | Yes (`API_KEY_21ST_DEV`) |
+| `@magicuidesign/mcp` | Magic UI animated components (marquee, bento, dock) | No |
+| `github` | GitHub API — issues, PRs, repos, code search | Yes (`GITHUB_TOKEN`) |
+| `filesystem` | File system read/write with path restrictions | No |
+| `sequential-thinking` | Structured reasoning, step-by-step problem solving | No |
+| `memory` | Knowledge graph memory for persistent context | No |
+| `brave-search` | Web search for docs, Stack Overflow, API references | Yes (`BRAVE_API_KEY`) |
+| `fetch` | Fetch and analyze web content, API docs | No |
+| `puppeteer` | Advanced browser automation, screenshots, scraping | No |
+| `sqlite` | Local SQLite for caching, analytics, data analysis | No |
+| `sanity-cms` | Direct Sanity CMS operations, schema, content queries | Yes (`SANITY_AUTH_TOKEN`) |
+| `sentry` | Sentry error tracking and performance monitoring | Yes (`SENTRY_AUTH_TOKEN`) |
+| `vercel` | Vercel deployment, edge functions, analytics | Yes (`VERCEL_TOKEN`) |
+| `docker` | Docker container management | No |
 
-| Category | Servers | Purpose |
-|----------|---------|---------|
-| **Core** | chrome-devtools, github, filesystem | Essential development tools |
-| **UI/UX** | @21st-dev/magic, @magicuidesign/mcp | Component generation |
-| **Reasoning** | sequential-thinking, memory | Enhanced AI reasoning |
-| **Search** | brave-search, fetch | Web research capabilities |
-| **Database** | sqlite, redis, postgres | Data management |
-| **Cloud** | aws, cloudflare, vercel, docker | Deployment and infrastructure |
-| **Monitoring** | sentry, performance, analytics | Application monitoring |
-| **Integration** | slack, notion, linear, figma | Team collaboration |
-| **Security** | security, dependency-check | Vulnerability scanning |
+## Current LSP servers
 
-### LSP Server Configuration
+| Server | Extensions | Purpose |
+|--------|-----------|---------|
+| `typescript` | `.ts, .tsx, .js, .jsx` | Type checking, inlay hints, go-to-definition |
+| `eslint` | `.ts, .tsx, .js, .jsx` | Real-time linting, auto-fix |
+| `prettier` | `.ts, .tsx, .js, .jsx, .css, .json, .md` | Code formatting |
+| `tailwindcss` | `.ts, .tsx, .js, .jsx, .css` | Tailwind class completion, validation |
+| `html` | `.html, .htm` | HTML validation, formatting |
+| `css` | `.css, .scss, .less` | CSS validation, completion |
+| `json` | `.json, .jsonc` | JSON schema validation |
+| `markdown` | `.md, .mdx` | Markdown editing |
+| `graphql` | `.graphql, .gql` | GraphQL schema validation (not actively used) |
+| `yaml` | `.yaml, .yml` | YAML validation |
+| `dockerfile` | `Dockerfile` | Dockerfile linting |
 
+## Workflow
+
+### Adding a new MCP server
+
+1. Edit `opencode.json` at the repo root
+2. Add the server under `"mcp"`:
 ```json
 {
-  "lsp": {
-    "typescript": {
-      "command": "npx",
-      "args": ["-y", "typescript-language-server", "--stdio"],
-      "extensions": [".ts", ".tsx", ".js", ".jsx"]
-    },
-    "eslint": {
-      "command": "npx",
-      "args": ["-y", "vscode-eslint-language-server", "--stdio"],
-      "extensions": [".ts", ".tsx", ".js", ".jsx"]
-    },
-    "tailwindcss": {
-      "command": "npx",
-      "args": ["-y", "@tailwindcss/language-server", "--stdio"],
-      "extensions": [".ts", ".tsx", ".js", ".jsx", ".css"]
+  "mcp": {
+    "server-name": {
+      "type": "local",
+      "command": ["npx", "-y", "package-name@latest"],
+      "env": {
+        "API_KEY": "${ENVIRONMENT_VARIABLE}"
+      },
+      "description": "What this server does"
     }
   }
 }
 ```
+3. Restart OpenCode to pick up changes
 
-## Workflow Optimization
+### Adding a new LSP server
 
-### 1. Task Decomposition
-Break complex tasks into smaller, manageable pieces:
-- **Component**: Create individual components first
-- **Logic**: Implement business logic separately
-- **Tests**: Write tests for each piece
-- **Integration**: Combine and test together
-
-### 2. Incremental Development
-- Start with basic functionality
-- Add features incrementally
-- Test after each change
-- Commit frequently
-
-### 3. Code Quality Pipeline
-1. **Write**: Generate code with MiMo
-2. **Lint**: Run ESLint checks
-3. **Type Check**: Run TypeScript compiler
-4. **Test**: Run Vitest suite
-5. **Review**: Code review with MiMo
-6. **Commit**: Commit with good message
-
-### 4. Performance Monitoring
-- Use Lighthouse audits
-- Monitor Core Web Vitals
-- Track bundle size
-- Analyze runtime performance
-
-## MiMo v2.5 Prompt Engineering
-
-### Effective Prompts
-- **Be Specific**: "Create a React component for..."
-- **Provide Context**: "In the existing codebase, we have..."
-- **Show Examples**: "Like the existing [ComponentName]..."
-- **Specify Requirements**: "Must include accessibility..."
-
-### Prompt Templates
+1. Edit `opencode.json` at the repo root
+2. Add the server under `"lsp"`:
+```json
+{
+  "lsp": {
+    "language-name": {
+      "command": "npx",
+      "args": ["-y", "language-server-package", "--stdio"],
+      "extensions": [".ext"]
+    }
+  }
+}
 ```
-# Component Template
-Create [ComponentName] component with:
-- TypeScript interface for props
-- Tailwind CSS styling
-- Framer Motion animations
-- ARIA accessibility
-- Loading and error states
-- Unit tests
+3. Restart OpenCode
 
-# API Template
-Create Next.js API route at [path] with:
-- Zod request validation
-- Proper error responses
-- Rate limiting
-- CORS headers
-- TypeScript types
+### Troubleshooting MCP servers
 
-# Test Template
-Write tests for [ComponentName]:
-- Test all props and states
-- Test user interactions
-- Test accessibility
-- Test error scenarios
-- Mock external dependencies
-```
+**Server not starting:**
+1. Check the command in `opencode.json` is correct
+2. Verify required environment variables are set
+3. Check OpenCode logs for errors
+
+**Server crashes:**
+1. Try running the command manually in terminal
+2. Check for version conflicts
+3. Update to latest version
 
 ## Checklist
 
-- [ ] MCP servers configured
-- [ ] LSP servers enabled
-- [ ] Workflow templates created
-- [ ] Prompt patterns documented
-- [ ] Quality pipeline established
-- [ ] Performance monitoring set up
+- [ ] MCP servers configured in `opencode.json`
+- [ ] LSP servers enabled for all file types
+- [ ] Environment variables set for authenticated servers
+- [ ] Servers restart cleanly after config changes
