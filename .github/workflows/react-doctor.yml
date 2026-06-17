@@ -25,7 +25,7 @@ jobs:
     name: React Doctor Score
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    if: github.event.pull_request.draft == false
+    if: github.event_name == 'push' || !github.event.pull_request.draft
     steps:
       - name: Checkout
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
