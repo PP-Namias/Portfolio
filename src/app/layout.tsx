@@ -85,7 +85,7 @@ const jsonLd = {
       email: 'pp.namias@gmail.com',
       image: {
         '@type': 'ImageObject',
-        url: `${SITE_URL}/og-default.png`,
+        url: `${SITE_URL}/og-image.svg`,
         width: 1200,
         height: 630,
         alt: 'Jhon Keneth Ryan Namias - Full Stack Developer',

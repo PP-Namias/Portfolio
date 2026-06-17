@@ -1,6 +1,6 @@
 import { SITE_URL } from '@/lib/site-config'
 
-const DEFAULT_SEO_IMAGE = `${SITE_URL}/og-default.png`
+const DEFAULT_SEO_IMAGE = `${SITE_URL}/og-image.svg`
 
 type SanityImage = {
   asset?: {

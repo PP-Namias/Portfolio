@@ -15,6 +15,11 @@ export async function generateStaticParams(): Promise<{ slug: string }[]> {
   return getBlogPostSlugsForStaticParams();
 }
 
+function resolveCoverImageUrl(coverImage: string | undefined): string | undefined {
+  if (!coverImage) return undefined;
+  return coverImage.startsWith('http') ? coverImage : `${SITE_URL}${coverImage}`;
+}
+
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
   const { blogPosts } = await getCmsContent();
@@ -27,6 +32,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
   const title = post.metaTitle || post.title;
   const description = post.metaDescription || post.excerpt;
+  const coverUrl = resolveCoverImageUrl(post.coverImage);
 
   return {
     title: `${title} | Jhon Keneth Ryan Namias`,
@@ -39,13 +45,22 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       description,
       type: 'article',
       publishedTime: post.date,
-      images: post.coverImage ? [post.coverImage] : undefined,
+      images: coverUrl
+        ? [
+            {
+              url: coverUrl,
+              width: 1200,
+              height: 630,
+              alt: title,
+            },
+          ]
+        : undefined,
     },
     twitter: {
       card: 'summary_large_image',
       title,
       description,
-      images: post.coverImage ? [post.coverImage] : undefined,
+      images: coverUrl ? [coverUrl] : undefined,
     },
   };
 }
@@ -77,7 +92,7 @@ export default async function BlogPostPage({ params }: Readonly<{ params: Promis
         image: post.coverImage
           ? {
               '@type': 'ImageObject',
-              url: `${SITE_URL}${post.coverImage}`,
+              url: resolveCoverImageUrl(post.coverImage),
               width: 1200,
               height: 630,
               alt: post.metaTitle || post.title,
