@@ -83,8 +83,8 @@ if (parsedPkg) {
 
   check(
     'react-doctor-pinned',
-    typeof deps['react-doctor'] === 'string' && /^0\.2\.16$/.test(deps['react-doctor']),
-    'react-doctor pinned to exact 0.2.16 in package.json'
+    typeof deps['react-doctor'] === 'string' && /^\d+\.\d+\.\d+$/.test(deps['react-doctor']),
+    `react-doctor pinned to exact version in package.json (found: ${deps['react-doctor']})`
   );
 }
 

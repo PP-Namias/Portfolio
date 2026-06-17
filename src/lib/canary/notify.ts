@@ -7,6 +7,15 @@ interface EmailAlert {
   html: string;
 }
 
+function escapeHtml(str: string): string {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 function getTokenTypeEmoji(type: CanaryTokenType): string {
   const emojis: Record<CanaryTokenType, string> = {
     web: '🌐',
@@ -53,7 +62,7 @@ export function buildEmailAlert(trigger: CanaryTrigger): EmailAlert {
   const emoji = getTokenTypeEmoji(trigger.tokenType);
   const typeName = getTokenTypeName(trigger.tokenType);
 
-  const subject = `${emoji} Canary Token Triggered: ${trigger.tokenName}`;
+  const subject = `${emoji} Canary Token Triggered: ${escapeHtml(trigger.tokenName)}`;
 
   const html = `
 <!DOCTYPE html>
@@ -92,15 +101,15 @@ export function buildEmailAlert(trigger: CanaryTrigger): EmailAlert {
         <h2>Token Details</h2>
         <div class="field">
           <span class="field-label">Name:</span>
-          <span class="field-value">${trigger.tokenName}</span>
+          <span class="field-value">${escapeHtml(trigger.tokenName)}</span>
         </div>
         <div class="field">
           <span class="field-label">Type:</span>
-          <span class="field-value"><span class="badge">${typeName}</span></span>
+          <span class="field-value"><span class="badge">${escapeHtml(typeName)}</span></span>
         </div>
         <div class="field">
           <span class="field-label">Path:</span>
-          <span class="field-value">${trigger.tokenPath}</span>
+          <span class="field-value">${escapeHtml(trigger.tokenPath)}</span>
         </div>
         <div class="field">
           <span class="field-label">Triggered At:</span>
@@ -112,19 +121,19 @@ export function buildEmailAlert(trigger: CanaryTrigger): EmailAlert {
         <h2>Request Details</h2>
         <div class="field">
           <span class="field-label">IP Address:</span>
-          <span class="field-value">${trigger.ip}</span>
+          <span class="field-value">${escapeHtml(trigger.ip)}</span>
         </div>
         <div class="field">
           <span class="field-label">Method:</span>
-          <span class="field-value">${trigger.method}</span>
+          <span class="field-value">${escapeHtml(trigger.method)}</span>
         </div>
         <div class="field">
           <span class="field-label">User Agent:</span>
-          <span class="field-value">${trigger.userAgent || 'Not provided'}</span>
+          <span class="field-value">${escapeHtml(trigger.userAgent || 'Not provided')}</span>
         </div>
         <div class="field">
           <span class="field-label">Referer:</span>
-          <span class="field-value">${trigger.referer || 'Direct access'}</span>
+          <span class="field-value">${escapeHtml(trigger.referer || 'Direct access')}</span>
         </div>
       </div>
 
@@ -133,18 +142,18 @@ export function buildEmailAlert(trigger: CanaryTrigger): EmailAlert {
         <h2>Geolocation</h2>
         <div class="field">
           <span class="field-label">Country:</span>
-          <span class="field-value">${trigger.country}</span>
+          <span class="field-value">${escapeHtml(trigger.country)}</span>
         </div>
         ${trigger.city ? `
         <div class="field">
           <span class="field-label">City:</span>
-          <span class="field-value">${trigger.city}</span>
+          <span class="field-value">${escapeHtml(trigger.city)}</span>
         </div>
         ` : ''}
         ${trigger.isp ? `
         <div class="field">
           <span class="field-label">ISP:</span>
-          <span class="field-value">${trigger.isp}</span>
+          <span class="field-value">${escapeHtml(trigger.isp)}</span>
         </div>
         ` : ''}
       </div>
@@ -163,7 +172,7 @@ export function buildEmailAlert(trigger: CanaryTrigger): EmailAlert {
 
     <div class="footer">
       <p>This alert was sent by your Portfolio Canary System</p>
-      <p>Trigger ID: ${trigger.id} | Token ID: ${trigger.tokenId}</p>
+      <p>Trigger ID: ${escapeHtml(trigger.id)} | Token ID: ${escapeHtml(trigger.tokenId)}</p>
     </div>
   </div>
 </body>
