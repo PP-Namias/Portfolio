@@ -1,6 +1,6 @@
 ---
 name: performance-auditing
-description: Lighthouse audits, bundle analysis, image optimization, font loading, and Core Web Vitals tracking.
+description: Lighthouse audits, bundle analysis, image optimization, font loading, Core Web Vitals tracking, and performance monitoring setup.
 ---
 
 # Performance Auditing
@@ -13,6 +13,8 @@ description: Lighthouse audits, bundle analysis, image optimization, font loadin
 - Tracking Core Web Vitals (LCP, CLS, INP, FCP, TTFB)
 - Investigating slow page loads
 - Reducing Time to Interactive (TTI)
+- Setting up performance budgets and alerting
+- Reviewing Umami analytics for performance trends
 
 ## Performance targets
 
@@ -226,6 +228,35 @@ npx lighthouse http://localhost:3000 --output html --view
 - Loading heavy libraries eagerly instead of dynamically
 - Not cleaning up event listeners and subscriptions
 - Using `JSON.parse` without error handling (blocks main thread)
+
+## Performance budget
+
+| Metric | Target | Warning threshold |
+|--------|--------|-------------------|
+| LCP | < 2.5s | > 4.0s |
+| CLS | < 0.1 | > 0.25 |
+| INP | < 200ms | > 300ms |
+| FCP | < 1.8s | > 3.0s |
+| TTFB | < 800ms | > 1.5s |
+| Total bundle | < 250KB gzipped | > 350KB |
+| Lighthouse score | ≥ 95 | < 90 |
+
+## Performance monitoring
+
+The portfolio uses **Umami** (cloud.umami.is) for analytics. To review performance trends:
+
+1. Umami dashboard → Events → filter by performance-related custom events
+2. Chrome DevTools → Performance tab for runtime profiling
+3. Lighthouse CI for automated performance gates
+
+### Setting up alerts
+
+If implementing performance alerts (e.g., via Umami custom events or Vercel Analytics):
+
+1. Define thresholds from the budget table above
+2. Instrument key metrics (LCP, CLS, INP) via `web-vitals` library
+3. Send to Umami as custom events or to a logging endpoint
+4. Set up alerting rules in the monitoring dashboard
 
 ## Delivery checks
 
