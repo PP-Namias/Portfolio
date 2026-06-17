@@ -356,7 +356,7 @@ const getCmsContentImpl = async (): Promise<CmsContent> => {
       highlights?: string[];
       githubRepo?: string;
     }>>(
-      '*[_type == "project"] | order(order asc, featuredRank asc, title asc){title,"slug":slug.current,summary,challenge,solution,result,year,category,featured,role,technologies,achievements,featuredRank,status,liveUrl,repositoryUrl,"imageFile":image.asset->originalFilename,"imageUrl":image.asset->url,"imageAlt":image.alt,"imageCaption":image.caption,"imageCredit":image.credit,"imageSource":image.source,"imageLicense":image.license,"galleryItems":gallery[]{"file":asset->originalFilename,"url":asset->url,alt,caption,credit,source,license},"tier","showcaseDetail","shortDescription","highlights","githubRepo"}',
+      '*[_type == "project"] | order(order asc, featuredRank asc, title asc){title,"slug":slug.current,summary,challenge,solution,result,year,category,featured,role,technologies,achievements,featuredRank,status,liveUrl,repositoryUrl,"imageFile":image.asset->originalFilename,"imageUrl":image.asset->url,"imageAlt":image.alt,"imageCaption":image.caption,"imageCredit":image.credit,"imageSource":image.source,"imageLicense":image.license,tier,showcaseDetail,shortDescription,highlights,githubRepo,"galleryItems":gallery[]{"file":asset->originalFilename,"url":asset->url,alt,caption,credit,source,license}}',
       { tags: CONTENT_TAGS.project }
     ),
     querySanity<Array<{
@@ -862,7 +862,7 @@ export async function getProjectBySlug(slug: string): Promise<Project | null> {
       highlights?: string[];
       githubRepo?: string;
     }>(
-      `*[_type == "project" && slug.current == "${slug}"][0]{title,"slug":slug.current,summary,challenge,solution,result,year,category,featured,role,technologies,achievements,featuredRank,status,liveUrl,repositoryUrl,"imageUrl":image.asset->url,"imageAlt":image.alt,"galleryItems":gallery[]{url:asset->url,alt,caption,credit,source,license},"tier","showcaseDetail","shortDescription","highlights","githubRepo"}`,
+      `*[_type == "project" && slug.current == "${slug}"][0]{title,"slug":slug.current,summary,challenge,solution,result,year,category,featured,role,technologies,achievements,featuredRank,status,liveUrl,repositoryUrl,"imageUrl":image.asset->url,"imageAlt":image.alt,tier,showcaseDetail,shortDescription,highlights,githubRepo,"galleryItems":gallery[]{"url":asset->url,alt,caption,credit,source,license}}`,
       { tags: CONTENT_TAGS.project }
     );
 
