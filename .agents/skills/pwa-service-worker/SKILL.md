@@ -1,18 +1,19 @@
 ---
 name: pwa-service-worker
-description: Service worker management, offline support, PWA manifest, cache strategies, and SW debugging.
+description: Service worker management, offline support, cache strategies, and SW debugging.
 ---
 
-# PWA & Service Worker
+# Service Worker Skill
 
 ## When to use this skill
 
 - Debugging service worker issues (stale cache, offline behavior)
 - Updating cache strategies
-- Managing the PWA manifest
 - Adding offline support for specific routes
 - Clearing service worker cache during development
 - Understanding the caching layers
+
+**Note:** This portfolio has a hand-written service worker (`public/sw.js`) but is NOT a PWA. There is no `manifest.json`.
 
 ## Service worker reference
 
@@ -170,34 +171,7 @@ Best for: pages, HTML, semi-static content
 3. Verify no errors in the page console
 4. SW only works on HTTPS (or localhost)
 
-### 7. PWA manifest
-
-**File:** `public/manifest.json` (if configured)
-
-**Required fields:**
-
-```json
-{
-  "name": "PP Namias Portfolio",
-  "short_name": "PP Namias",
-  "start_url": "/",
-  "display": "standalone",
-  "background_color": "#000000",
-  "theme_color": "#DB2777",
-  "icons": [
-    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" },
-    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png" }
-  ]
-}
-```
-
-**Test PWA:**
-
-1. DevTools → Application → Manifest
-2. Check all fields are present
-3. DevTools → Lighthouse → PWA category
-
-### 8. Performance impact
+### 7. Performance impact
 
 Service workers add minimal overhead:
 
@@ -243,4 +217,3 @@ Service workers add minimal overhead:
 - [ ] Offline fallback works (disconnect network, navigate)
 - [ ] Cache version is incremented when SW changes
 - [ ] No API responses are cached
-- [ ] Lighthouse PWA audit passes
