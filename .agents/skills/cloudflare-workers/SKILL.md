@@ -1,97 +1,117 @@
 ---
 name: cloudflare-workers
-description: Deploy and manage Cloudflare Workers, R2, KV, D1, and edge computing.
+description: Deploy and manage the portfolio on Cloudflare Workers via OpenNext adapter.
 ---
 
 # Cloudflare Workers Skill
 
-Deploy and optimize Cloudflare Workers, edge functions, and serverless infrastructure for the portfolio.
+Deploy and manage the portfolio on Cloudflare Workers using the `@opennextjs/cloudflare` adapter. The portfolio is a Next.js 16 app compiled to Cloudflare Workers via OpenNext.
 
 ## When to use this skill
 
-- Deploying to Cloudflare Workers
-- Configuring edge functions
-- Managing R2 storage
-- Setting up KV namespaces
-- Configuring D1 databases
-- Optimizing edge performance
+- Deploying the portfolio to Cloudflare Workers
+- Troubleshooting Cloudflare build failures
+- Configuring `wrangler.jsonc` or `open-next.config.ts`
+- Debugging Worker-specific issues (middleware, edge runtime, assets)
+- Updating the `@opennextjs/cloudflare` or `wrangler` packages
+
+## Current setup
+
+| File | Purpose |
+|------|---------|
+| `wrangler.jsonc` | Worker config: name, compatibility_date, build command, assets |
+| `open-next.config.ts` | OpenNext Cloudflare config (minimal, uses `defineCloudflareConfig`) |
+| `package.json` | Scripts: `cloudflare:build`, `cloudflare:dev`, `cloudflare:deploy` |
+
+## Key configuration
+
+**wrangler.jsonc:**
+```jsonc
+{
+  "name": "namias",
+  "main": ".open-next/worker.js",
+  "compatibility_date": "2026-05-29",
+  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  "build": {
+    "command": "npx opennextjs-cloudflare build --dangerouslyUseUnsupportedNextVersion"
+  },
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  }
+}
+```
+
+**Note:** `--dangerouslyUseUnsupportedNextVersion` is required because `@opennextjs/cloudflare` v1.19.x does not officially support Next.js 16.
 
 ## Workflow
 
-1. **Configure wrangler.toml** — Set up project configuration
-2. **Implement workers** — Write edge-compatible code
-3. **Test locally** — Use `wrangler dev` for development
-4. **Deploy** — Push to production with `wrangler deploy`
-5. **Monitor** — Use Workers Analytics and Logs
+### 1. Local development
 
-## Wrangler Configuration
-
-```toml
-name = "portfolio"
-main = "src/worker.ts"
-compatibility_date = "2024-01-01"
-
-[env.production]
-name = "portfolio-production"
-routes = [
-  { pattern = "namias.tech/api/*", zone_name = "namias.tech" }
-]
-
-[[kv_namespaces]]
-binding = "CACHE"
-id = "your-kv-id"
-
-[[r2_buckets]]
-binding = "STORAGE"
-bucket_name = "portfolio-assets"
-
-[[d1_databases]]
-binding = "DB"
-database_name = "portfolio-db"
-database_id = "your-d1-id"
+```bash
+npm run cloudflare:dev
 ```
 
-## Edge-First Patterns
+This starts the Worker locally via `wrangler dev`. Note: may have issues on Windows — use WSL for best results.
 
-```typescript
-// src/worker.ts
-export default {
-  async fetch(request: Request, env: Env): Promise<Response> {
-    const url = new URL(request.url);
+### 2. Build for Cloudflare
 
-    // Route handling
-    if (url.pathname === '/api/health') {
-      return new Response(JSON.stringify({ status: 'ok' }), {
-        headers: { 'Content-Type': 'application/json' }
-      });
-    }
-
-    // KV read
-    const cached = await env.CACHE.get(url.pathname);
-    if (cached) {
-      return new Response(cached, { headers: { 'Content-Type': 'application/json' } });
-    }
-
-    // D1 query
-    const { results } = await env.DB.prepare(
-      'SELECT * FROM posts WHERE slug = ?'
-    ).bind(url.pathname.split('/').pop()).all();
-
-    // Cache result
-    await env.CACHE.put(url.pathname, JSON.stringify(results), { expirationTtl: 3600 });
-
-    return Response.json(results);
-  }
-};
+```bash
+npm run cloudflare:build
 ```
+
+This runs `opennextjs-cloudflare build` which:
+1. Runs `next build` (generates `.next/` output)
+2. Bundles the Worker (`.open-next/worker.js`)
+3. Bundles static assets (`.open-next/assets/`)
+4. Applies OpenNext code patches
+
+### 3. Deploy to Cloudflare
+
+```bash
+npm run cloudflare:deploy
+```
+
+Requires `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` environment variables.
+
+### 4. CI/CD deployment
+
+The `cloudflare-deploy.yml` workflow:
+1. Triggers on push to `main` or `workflow_dispatch`
+2. Runs `npm ci` → SBOM generation → Cosign signing → `npm run cloudflare:deploy`
+3. Also deploys Sanity Studio separately
+
+## Known limitations
+
+| Issue | Status |
+|-------|--------|
+| Next.js 16 `middleware.ts` convention | Deprecated; use `proxy.ts` instead. OpenNext detects `middleware.ts` as Node.js middleware. |
+| `output: 'standalone'` | Set conditionally (`isWindows ? undefined : 'standalone'`) — OpenNext handles its own output |
+| `next-sanity` peer dependency | Requires `next ^14.2 \|\| ^15.0.0` but works with 16.x via the danger flag |
+| Windows builds | OpenNext warns about Windows; use WSL for production builds |
+
+## Troubleshooting
+
+**Build fails with "Node.js middleware is not currently supported":**
+- Ensure `src/middleware.ts` is the file (not `src/proxy.ts`)
+- The OpenNext adapter detects proxy.ts as Node.js middleware
+- Rename to `middleware.ts` and export `middleware` function
+
+**Build fails with TypeScript errors:**
+- Clear `.next/` directory: `Remove-Item -Path .next -Recurse -Force`
+- Re-run build
+
+**Worker deployment fails:**
+- Check `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` are set
+- Verify the Worker name in `wrangler.jsonc` matches the Cloudflare dashboard
+- Check Cloudflare Workers dashboard for build logs
 
 ## Checklist
 
-- [ ] wrangler.toml configured
-- [ ] Environment variables set
-- [ ] KV namespaces created
-- [ ] R2 buckets configured
-- [ ] D1 databases initialized
-- [ ] Routes configured
-- [ ] Custom domain setup
-- [ ] Monitoring enabled
+- [ ] `wrangler.jsonc` configured correctly
+- [ ] `open-next.config.ts` uses `defineCloudflareConfig`
+- [ ] `--dangerouslyUseUnsupportedNextVersion` flag is present
+- [ ] `nodejs_compat` compatibility flag is set
+- [ ] Build passes locally (`npm run cloudflare:build`)
+- [ ] Deploy succeeds (`npm run cloudflare:deploy`)
+- [ ] Worker responds correctly in Cloudflare dashboard
