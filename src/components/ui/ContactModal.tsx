@@ -53,7 +53,7 @@ function validateForm(form: ContactFormState): ContactFormErrors {
 
 export function ContactModal({ open, onClose }: Readonly<ContactModalProps>) {
   const { openModal } = useModal();
-  const { profile, socialLinks } = useCmsContent();
+  const { profile } = useCmsContent();
   const [form, setForm] = useState<ContactFormState>(INITIAL_FORM);
   const [errors, setErrors] = useState<ContactFormErrors>({});
   const [status, setStatus] = useState<'idle' | 'opening' | 'invalid' | 'copied' | 'copy-failed'>('idle');

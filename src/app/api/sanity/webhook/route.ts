@@ -98,7 +98,7 @@ export async function POST(request: NextRequest) {
     // Non-fatal — proceed without body parsing.
   }
 
-  let docType = ''
+  let docType = '';
   if (body && typeof body._type === 'string') {
     docType = body._type;
   }

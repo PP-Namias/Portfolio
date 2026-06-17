@@ -71,10 +71,16 @@ export async function GET(request: NextRequest, context: { params: Promise<{ pat
   const signature = requestUrl.searchParams.get('sig');
 
   const secret = process.env.SANITY_MEDIA_GATEWAY_SECRET?.trim();
-  if (secret && signature) {
-    if (!verifyMediaGatewaySignature({ targetUrl, width, quality, expiresAt, signature })) {
-      return buildError(401, 'Invalid media signature');
-    }
+  if (!secret) {
+    return buildError(500, 'Media gateway not configured');
+  }
+
+  if (!signature) {
+    return buildError(401, 'Missing media signature');
+  }
+
+  if (!verifyMediaGatewaySignature({ targetUrl, width, quality, expiresAt, signature })) {
+    return buildError(401, 'Invalid media signature');
   }
 
     const upstreamUrl = buildUpstreamUrl(targetUrl, assetKind, width, quality);

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import useSWR from 'swr';
 import { Download } from 'lucide-react';
 import { Modal } from './Modal';
