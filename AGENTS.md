@@ -39,18 +39,21 @@ This file is the entry point for any agent (opencode, future coding agents, or h
 
 ### API & Backend
 - `api-design` — REST API patterns, validation, error handling, rate limiting
-- `database-operations` — database schemas, queries, migrations, data operations
 - `webhook-design` — webhook implementation, signature verification, event-driven architecture
-- `graphql-api` — GraphQL schema design, resolvers, client integration
 
 ### Infrastructure & DevOps
-- `cloudflare-workers` — Cloudflare Workers, R2, KV, D1, edge computing
-- `performance-monitoring` — APM, error tracking, Core Web Vitals monitoring
-- `code-migration` — framework and library migration strategies
+- `cloudflare-workers` — Cloudflare Workers with OpenNext adapter, R2, KV, D1, edge computing
+- `code-migration` — framework and library migration strategies (Next.js 16, Sanity, OpenNext)
 - `dependency-audit` — security vulnerability scanning, licensing, maintenance
+- `opennext-cloudflare` — deploy Next.js to Cloudflare Workers using OpenNext adapter
+- `nextjs-16-migration` — migrate from Next.js 15 to 16 and handle breaking changes
+
+### Security
+- `csp-security-headers` — configure Content Security Policy and security headers
+- `canary-token-system` — manage canary token honeypot system for detecting scanners
 
 ### Analytics & Features
-- `analytics-integration` — user analytics, tracking, insights collection
+- `analytics-integration` — Umami analytics setup, tracking, and insights
 - `feature-flags` — feature flags for gradual rollouts and A/B testing
 
 ### Documentation & Quality
@@ -59,7 +62,6 @@ This file is the entry point for any agent (opencode, future coding agents, or h
 - `impeccable` — quick repo-hygiene and consistency checks
 - `git` — git workflow, branch strategy, commit hygiene
 - `content-review` — review copy and documentation for clarity
-- `design` — baseline UI implementation guidance
 - `ci-cd-security` — CI/CD pipeline security and automation
 
 ### OpenCode & MiMo v2.5 Optimization
@@ -206,15 +208,15 @@ MCP servers give your AI agent access to browser DevTools, component libraries, 
 | Task | Primary Skill | Secondary Skills |
 |------|---------------|------------------|
 | **New Component** | `component-api-scaffolding` | `frontend-design`, `ui-ux-pro-max` |
-| **API Endpoint** | `api-design` | `database-operations`, `webhook-design` |
+| **API Endpoint** | `api-design` | `webhook-design` |
 | **Bug Fix** | `debugging-error-tracking` | `code-review`, `testing-workflow` |
-| **Performance** | `performance-optimization` | `performance-auditing`, `performance-monitoring` |
-| **Security** | `run-pentestagent` | `dependency-audit`, `ci-cd-security` |
-| **Deployment** | `deployment-infrastructure` | `cloudflare-workers`, `ci-cd-security` |
-| **Content** | `sanity-data-operations` | `add-a-project`, `add-a-blog-post` |
+| **Performance** | `performance-optimization` | `performance-auditing` |
+| **Security** | `run-pentestagent` | `dependency-audit`, `ci-cd-security`, `csp-security-headers` |
+| **Deployment** | `deployment-infrastructure` | `cloudflare-workers`, `opennext-cloudflare`, `ci-cd-security` |
+| **Content** | `sanity-data-operations` | `add-a-project`, `add-a-blog-post`, `sanity-groq-query` |
 | **Testing** | `testing-workflow` | `code-review`, `react-doctor` |
 | **Documentation** | `technical-writing` | `content-review` |
-| **Analytics** | `analytics-integration` | `feature-flags`, `performance-monitoring` |
+| **Analytics** | `analytics-integration` | `feature-flags` |
 
 ### By Component Area
 
@@ -227,8 +229,8 @@ MCP servers give your AI agent access to browser DevTools, component libraries, 
 | **Experience** | `add-an-experience` |
 | **Gallery** | `frontend-design`, `component-api-scaffolding` |
 | **Contact** | `api-design`, `webhook-design` |
-| **API Routes** | `api-design`, `database-operations` |
-| **Sanity Studio** | `sanity-schema-validator`, `sanity-data-operations` |
+| **API Routes** | `api-design` |
+| **Sanity Studio** | `sanity-schema-validator`, `sanity-data-operations`, `sanity-groq-query` |
 
 ## Testing
 
