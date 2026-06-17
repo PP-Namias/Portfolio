@@ -828,6 +828,8 @@ export async function getProjectBySlug(slug: string): Promise<Project | null> {
     return cmsShared.fallbackCmsContent.projects.find((p) => p.slug === slug) ?? null;
   }
 
+  const safeSlug = slug.replace(/[^a-zA-Z0-9\-_]/g, '');
+
   try {
     const doc = await querySanity<{
       title?: string;
@@ -862,7 +864,7 @@ export async function getProjectBySlug(slug: string): Promise<Project | null> {
       highlights?: string[];
       githubRepo?: string;
     }>(
-      `*[_type == "project" && slug.current == "${slug}"][0]{title,"slug":slug.current,summary,challenge,solution,result,year,category,featured,role,technologies,achievements,featuredRank,status,liveUrl,repositoryUrl,"imageUrl":image.asset->url,"imageAlt":image.alt,tier,showcaseDetail,shortDescription,highlights,githubRepo,"galleryItems":gallery[]{"url":asset->url,alt,caption,credit,source,license}}`,
+      `*[_type == "project" && slug.current == "${safeSlug}"][0]{title,"slug":slug.current,summary,challenge,solution,result,year,category,featured,role,technologies,achievements,featuredRank,status,liveUrl,repositoryUrl,"imageUrl":image.asset->url,"imageAlt":image.alt,tier,showcaseDetail,shortDescription,highlights,githubRepo,"galleryItems":gallery[]{"url":asset->url,alt,caption,credit,source,license}}`,
       { tags: CONTENT_TAGS.project }
     );
 
