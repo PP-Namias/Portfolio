@@ -9,11 +9,37 @@ Safely migrate codebases between frameworks, libraries, and architectural patter
 
 ## When to use this skill
 
-- Upgrading Next.js versions
-- Migrating from Pages Router to App Router
-- Upgrading React versions
-- Migrating state management solutions
-- Updating UI libraries
+- Upgrading Next.js versions (currently on 16.2.9 with `--dangerouslyUseUnsupportedNextVersion`)
+- Upgrading React versions (currently on 18.x with React 19 in Sanity studio)
+- Updating Sanity packages (`sanity`, `next-sanity`, `@sanity/client`)
+- Migrating between UI libraries or animation frameworks
+- Updating `@opennextjs/cloudflare` or `wrangler`
+
+## Portfolio-specific migration notes
+
+### Next.js 16 migration (done)
+
+The portfolio migrated from Next.js 15 to 16. Key changes:
+- `middleware.ts` → `proxy.ts` convention (but OpenNext requires `middleware.ts`, so we kept `middleware.ts`)
+- GROQ parser is stricter in Sanity API v2026-02-19 (field ordering matters)
+- `output: 'standalone'` set conditionally for Cloudflare builds
+- `--dangerouslyUseUnsupportedNextVersion` flag required for OpenNext
+
+### Sanity package updates
+
+When updating Sanity packages:
+1. Check `next-sanity` peer dependency (`^14.2 || ^15.0.0` — may not officially support Next.js 16)
+2. Run `npm run build` to verify GROQ queries still parse
+3. Check `studio/package.json` for Sanity studio compatibility
+4. Verify `studio/package-lock.json` doesn't introduce new vulnerabilities
+
+### OpenNext/Cloudflare updates
+
+When updating `@opennextjs/cloudflare`:
+1. Check release notes for Next.js 16 support status
+2. Test `npm run cloudflare:build` locally
+3. Verify `wrangler.jsonc` compatibility_date is current
+4. Check if `--dangerouslyUseUnsupportedNextVersion` is still needed
 
 ## Workflow
 
@@ -21,7 +47,7 @@ Safely migrate codebases between frameworks, libraries, and architectural patter
 2. **Plan migration** — Create step-by-step migration plan
 3. **Set up safety nets** — Tests, feature flags, rollback plan
 4. **Incremental migration** — Move in small, verifiable chunks
-5. **Validate** — Run tests and manual verification
+5. **Validate** — Run `npm run build`, `npm run test -- --run`, `npm run cloudflare:build`
 6. **Clean up** — Remove old code and dependencies
 
 ## Migration Checklist Template
