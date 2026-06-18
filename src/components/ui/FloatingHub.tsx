@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Sparkles } from 'lucide-react';
 import { HubMenu } from './HubMenu';
 import { ChatPanel } from './ChatPanel';
+import { SectionErrorBoundary } from './ErrorBoundary';
 import type { ChatMessage as ChatMessageType, HubState } from '@/types';
 
 export function FloatingHub() {
@@ -147,5 +148,13 @@ export function FloatingHub() {
         )}
       </AnimatePresence>
     </div>
+  );
+}
+
+export function FloatingHubWithBoundary() {
+  return (
+    <SectionErrorBoundary name="FloatingHub">
+      <FloatingHub />
+    </SectionErrorBoundary>
   );
 }

@@ -4,7 +4,7 @@ import { draftMode } from 'next/headers';
 import { VisualEditing } from 'next-sanity';
 import { Providers } from './providers';
 import { fallbackCmsContent } from '@/lib/cms-content.shared';
-import { FloatingHub } from '@/components/ui/FloatingHub';
+import { FloatingHubWithBoundary } from '@/components/ui/FloatingHub';
 import { ScrollToTop } from '@/components/ui/ScrollToTop';
 import { Analytics } from '@/components/ui/Analytics';
 import { BackgroundFx } from '@/components/ui/BackgroundFx';
@@ -139,7 +139,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
             <BackgroundFx />
             {children}
             <MagicCursor />
-            <FloatingHub />
+            <FloatingHubWithBoundary />
             <ScrollToTop />
           </Providers>
         </body>
@@ -175,7 +175,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
         <Providers cmsContent={cmsContent} isDraftMode={isDraftMode}>
           {IS_MAGIC_CURSOR_VISIBLE ? <MagicCursor /> : null}
           {children}
-          <FloatingHub />
+          <FloatingHubWithBoundary />
           <ScrollToTop />
           {isDraftMode ? <VisualEditing /> : null}
         </Providers>

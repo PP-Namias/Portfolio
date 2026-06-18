@@ -13,6 +13,7 @@ import { ConnectSection } from '@/components/sections/ConnectSection';
 import { GallerySection } from '@/components/sections/GallerySection';
 import { Footer } from '@/components/layout/Footer';
 import { Card } from '@/components/ui/Card';
+import { SectionErrorBoundary } from '@/components/ui/ErrorBoundary';
 import { IS_PROJECTS_REVAMP_ENABLED } from '@/lib/features';
 
 type StickySide = 'left' | 'right' | null;
@@ -131,16 +132,22 @@ export default function Home() {
       {/* Blog + Certifications — 2-column on lg, stacked on mobile */}
       <div className="mt-4 grid grid-cols-1 lg:grid-cols-2 gap-4 items-stretch">
         <Card>
-          <BlogSection />
+          <SectionErrorBoundary name="BlogSection">
+            <BlogSection />
+          </SectionErrorBoundary>
         </Card>
         <Card>
-          <CertificationsSection />
+          <SectionErrorBoundary name="CertificationsSection">
+            <CertificationsSection />
+          </SectionErrorBoundary>
         </Card>
       </div>
 
       {/* Full-width gallery */}
       <Card className="mt-4">
-        <GallerySection />
+        <SectionErrorBoundary name="GallerySection">
+          <GallerySection />
+        </SectionErrorBoundary>
       </Card>
 
       {/* Footer */}
