@@ -3,7 +3,17 @@ import { CANARY_TOKENS, CANARY_CONFIG } from '@/lib/canary/config';
 import { getTriggerStats } from '@/lib/canary/logger';
 import { sendTestAlert } from '@/lib/canary/notify';
 
+function isAdminRequest(request: NextRequest): boolean {
+  const apiKey = process.env.ADMIN_API_KEY?.trim();
+  if (!apiKey) return false;
+  return request.headers.get('x-api-key') === apiKey;
+}
+
 export async function GET(request: NextRequest) {
+  if (!isAdminRequest(request)) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
   const stats = getTriggerStats();
 
   return NextResponse.json({
@@ -29,6 +39,10 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
+  if (!isAdminRequest(request)) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
   try {
     const result = await sendTestAlert();
     return NextResponse.json({

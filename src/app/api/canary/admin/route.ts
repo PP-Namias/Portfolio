@@ -24,7 +24,11 @@ export async function GET(request: NextRequest) {
   });
 
   logTrigger(trigger);
-  await sendCanaryAlert(trigger);
+  try {
+    await sendCanaryAlert(trigger);
+  } catch {
+    // Alert failure should not crash the honeypot
+  }
 
   return NextResponse.json({
     message: 'Admin panel',
