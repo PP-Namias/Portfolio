@@ -89,6 +89,7 @@ export async function GET(request: NextRequest, context: { params: Promise<{ pat
     const upstreamResponse = await fetch(upstreamUrl, {
       cache: 'no-store',
       redirect: 'follow',
+      signal: AbortSignal.timeout(15_000),
     });
 
     if (!upstreamResponse.ok || !upstreamResponse.body) {

@@ -45,6 +45,7 @@ async function fetchResumeFromSanity(): Promise<{ resumeUrl: string; isActive: b
   const response = await fetch(queryUrl, {
     headers: getSanityAuthHeaders(),
     cache: 'no-store',
+    signal: AbortSignal.timeout(10_000),
   });
 
   if (!response.ok) {

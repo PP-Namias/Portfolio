@@ -81,7 +81,7 @@ export async function GET() {
   const url = process.env.NEXT_PUBLIC_SITE_URL || 'https://namias.tech';
 
   try {
-    const response = await fetch(url, { method: 'HEAD', cache: 'no-store' });
+    const response = await fetch(url, { method: 'HEAD', cache: 'no-store', signal: AbortSignal.timeout(10_000) });
     const headers: SecurityHeader[] = IDEAL_HEADERS.map(({ name, validator }) => {
       const value = response.headers.get(name);
       const result = value ? validator(value) : { status: 'missing' as const, recommendation: `Add ${name} header` };
