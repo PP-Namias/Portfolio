@@ -50,7 +50,7 @@ export function ExperienceTimeline() {
             aria-expanded={isExpanded}
           >
             {isExpanded ? 'Show Less' : 'View Full Experience'}
-            {isExpanded ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
+            {isExpanded ? <ChevronUp className="h-3.5 w-3.5" aria-hidden="true" /> : <ChevronDown className="h-3.5 w-3.5" aria-hidden="true" />}
           </motion.button>
         )}
       </motion.div>

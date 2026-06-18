@@ -46,16 +46,18 @@ const markdownComponents: any = {
       {children}
     </strong>
   ),
-  a: ({ href, children }: { href?: string; children: React.ReactNode }) => (
-    <a
-      href={href}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="text-accent-pink hover:underline"
-    >
-      {children}
-    </a>
-  ),
+  a: ({ href, children }: { href?: string; children: React.ReactNode }) => {
+    const isExternal = href?.startsWith('http');
+    return (
+      <a
+        href={href}
+        {...(isExternal ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+        className="text-accent-pink hover:underline"
+      >
+        {children}
+      </a>
+    );
+  },
   code: ({ className, children }: { className?: string; children: React.ReactNode }) => {
     const isBlock = className?.includes('language-');
     if (isBlock) {
@@ -100,7 +102,7 @@ export default function BlogPostContent({ post, allPosts, slug, backLabel }: Rea
             href="/blog"
             className="inline-flex items-center gap-2 text-sm text-text-muted-light dark:text-text-muted-dark hover:text-accent-pink dark:hover:text-accent-pink transition-colors duration-200"
           >
-            <ArrowLeft className="h-4 w-4" />
+            <ArrowLeft className="h-4 w-4" aria-hidden="true" />
             {backLabel || 'Back to Blog'}
           </Link>
           <ThemeToggle />
@@ -132,7 +134,7 @@ export default function BlogPostContent({ post, allPosts, slug, backLabel }: Rea
           href="/blog"
           className="inline-flex items-center gap-2 text-sm text-text-muted-light dark:text-text-muted-dark hover:text-accent-pink dark:hover:text-accent-pink transition-colors duration-200"
           >
-            <ArrowLeft className="h-4 w-4" />
+            <ArrowLeft className="h-4 w-4" aria-hidden="true" />
             {backLabel || 'Back to Blog'}
           </Link>
         <ThemeToggle />
@@ -184,11 +186,11 @@ export default function BlogPostContent({ post, allPosts, slug, backLabel }: Rea
           {/* Meta */}
           <div className="flex items-center gap-4 mt-3 mb-6 pb-6 border-b border-border-light dark:border-border-dark">
             <span className="flex items-center gap-1.5 text-xs text-text-muted-light dark:text-text-muted-dark">
-              <Calendar className="h-3.5 w-3.5" />
+              <Calendar className="h-3.5 w-3.5" aria-hidden="true" />
               {formatDateUtc(postObj.date, { month: 'long', day: 'numeric', year: 'numeric' })}
             </span>
             <span className="flex items-center gap-1.5 text-xs text-text-muted-light dark:text-text-muted-dark">
-              <Clock className="h-3.5 w-3.5" />
+              <Clock className="h-3.5 w-3.5" aria-hidden="true" />
               {postObj.readTime}
             </span>
           </div>
@@ -211,7 +213,7 @@ export default function BlogPostContent({ post, allPosts, slug, backLabel }: Rea
             <Link href={`/blog/${prevPost.slug}`}>
               <Card hover className="h-full group cursor-pointer">
                 <span className="flex items-center gap-1 text-[11px] text-text-muted-light dark:text-text-muted-dark mb-1">
-                  <ChevronLeft className="h-3 w-3" />
+                  <ChevronLeft className="h-3 w-3" aria-hidden="true" />
                   Previous
                 </span>
                 <p className="text-sm font-medium text-text-primary-light dark:text-text-primary-dark group-hover:text-accent-pink transition-colors duration-200 line-clamp-1">
@@ -227,7 +229,7 @@ export default function BlogPostContent({ post, allPosts, slug, backLabel }: Rea
               <Card hover className="h-full group cursor-pointer text-right">
                 <span className="flex items-center justify-end gap-1 text-[11px] text-text-muted-light dark:text-text-muted-dark mb-1">
                   Next
-                  <ChevronRight className="h-3 w-3" />
+                  <ChevronRight className="h-3 w-3" aria-hidden="true" />
                 </span>
                 <p className="text-sm font-medium text-text-primary-light dark:text-text-primary-dark group-hover:text-accent-pink transition-colors duration-200 line-clamp-1">
                   {nextPost.title}

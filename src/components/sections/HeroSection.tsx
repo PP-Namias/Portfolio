@@ -227,7 +227,7 @@ export function HeroSection() {
                     transition={{ delay: 0.5 + i * 0.04, type: 'spring', stiffness: 300, damping: 20 }}
                     whileHover={{ y: -1 }}
                   >
-                    <Icon className="h-3.5 w-3.5" />
+                    <Icon className="h-3.5 w-3.5" aria-hidden="true" />
                   </motion.a>
                 );
               })}
@@ -260,7 +260,7 @@ export function HeroSection() {
               onClick={() => openModal('resume')}
               className="h-9 px-4 shadow-lg shadow-accent-pink/25 hover:shadow-xl hover:shadow-accent-pink/30 transition-shadow"
             >
-              <Download className="h-3.5 w-3.5" />
+              <Download className="h-3.5 w-3.5" aria-hidden="true" />
               Resume
             </Button>
             <Button
@@ -269,14 +269,14 @@ export function HeroSection() {
               onClick={() => openModal('booking')}
               className="h-9 px-4"
             >
-              <Calendar className="h-3.5 w-3.5" />
+              <Calendar className="h-3.5 w-3.5" aria-hidden="true" />
               Book a Call
             </Button>
             <a
               href="mailto:pp.namias@gmail.com"
               className="h-9 inline-flex items-center justify-center gap-1.5 rounded-lg px-4 text-[13px] font-medium text-text-muted-light dark:text-text-muted-dark hover:text-accent-pink transition-colors"
             >
-              <Mail className="h-3.5 w-3.5" />
+              <Mail className="h-3.5 w-3.5" aria-hidden="true" />
               Email
             </a>
           </motion.div>

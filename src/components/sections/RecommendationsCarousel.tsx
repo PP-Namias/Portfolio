@@ -75,7 +75,7 @@ export function RecommendationsCarousel() {
         Recommendations
       </h2>
 
-      <div className="relative overflow-hidden min-h-[140px]">
+      <div className="relative overflow-hidden min-h-[140px]" aria-live="polite" aria-atomic="true">
         <AnimatePresence mode="wait" custom={direction}>
           <motion.div
             key={currentIndex}
@@ -119,6 +119,7 @@ export function RecommendationsCarousel() {
                   : 'w-1.5 bg-border-light dark:bg-border-dark hover:bg-text-muted-light dark:hover:bg-text-muted-dark'
               }`}
               aria-label={`Go to recommendation ${index + 1}`}
+              aria-pressed={index === currentIndex}
             />
           ))}
         </div>

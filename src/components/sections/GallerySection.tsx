@@ -132,6 +132,7 @@ export function GallerySection() {
             type="button"
             key={tag}
             onClick={() => setActiveTag(tag)}
+            aria-pressed={activeTag === tag}
             className={`text-xs font-medium px-2.5 py-1 rounded-full transition-colors duration-200 ${
               activeTag === tag
                 ? 'bg-accent-pink text-white shadow-sm shadow-accent-pink/25'
@@ -201,9 +202,9 @@ export function GallerySection() {
             className="flex items-center gap-1 text-xs font-medium text-text-muted-light dark:text-text-muted-dark hover:text-accent-pink dark:hover:text-accent-pink transition-colors"
           >
             {expanded ? (
-              <>Show Less <ChevronUp className="h-3.5 w-3.5" /></>
+              <>Show Less <ChevronUp className="h-3.5 w-3.5" aria-hidden="true" /></>
             ) : (
-              <>View all {filtered.length} photos <ChevronDown className="h-3.5 w-3.5" /></>
+              <>View all {filtered.length} photos <ChevronDown className="h-3.5 w-3.5" aria-hidden="true" /></>
             )}
           </button>
         </motion.div>
@@ -230,7 +231,7 @@ export function GallerySection() {
               className="absolute top-4 right-4 z-10 p-2 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors"
               aria-label="Close lightbox"
             >
-              <X className="h-5 w-5" />
+              <X className="h-5 w-5" aria-hidden="true" />
             </button>
 
             {/* Counter */}
@@ -245,7 +246,7 @@ export function GallerySection() {
               className="absolute left-2 sm:left-4 z-10 p-2 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors"
               aria-label="Previous image"
             >
-              <ChevronLeft className="h-5 w-5 sm:h-6 sm:w-6" />
+              <ChevronLeft className="h-5 w-5 sm:h-6 sm:w-6" aria-hidden="true" />
             </button>
 
             {/* Next button */}
@@ -255,7 +256,7 @@ export function GallerySection() {
               className="absolute right-2 sm:right-4 z-10 p-2 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors"
               aria-label="Next image"
             >
-              <ChevronRight className="h-5 w-5 sm:h-6 sm:w-6" />
+              <ChevronRight className="h-5 w-5 sm:h-6 sm:w-6" aria-hidden="true" />
             </button>
 
             {/* Image + caption */}
