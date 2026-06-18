@@ -9,12 +9,13 @@ function isAdminRequest(request: NextRequest): boolean {
 }
 
 export async function GET(request: NextRequest) {
+  if (!isAdminRequest(request)) {
+    return NextResponse.json({ error: 'Unauthorized. Provide x-api-key header.' }, { status: 401 });
+  }
+
   const shouldFlush = request.nextUrl.searchParams.get('flush') === 'true';
 
   if (shouldFlush) {
-    if (!isAdminRequest(request)) {
-      return NextResponse.json({ error: 'Unauthorized. Provide x-api-key header.' }, { status: 401 });
-    }
     const flushed = await flush();
     return NextResponse.json({ flushed, status: 'ok' });
   }
