@@ -372,7 +372,7 @@ const getCmsContentImpl = async (): Promise<CmsContent> => {
       source?: string;
       license?: string;
     }>>(
-      '*[_type == "certification"] | order(order asc, issuedAt desc){title,issuedAt,tags,"issuer":issuer->title,"imageFile":image.asset->originalFilename,"imageUrl":image.asset->url,alt,caption,credit,source,license}',
+      '*[_type == "certification"] | order(order asc, issuedAt desc){title,issuedAt,tags,"issuer":issuer->title,"imageFile":image.asset->originalFilename,"imageUrl":image.asset->url,"alt":image.alt,"caption":image.caption,"credit":image.credit,"source":image.source,"license":image.license}',
       { tags: CONTENT_TAGS.certification }
     ),
     querySanity<Array<{
