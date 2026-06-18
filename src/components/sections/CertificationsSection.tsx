@@ -10,9 +10,8 @@ import { resolveContentImageSrc } from '@/lib/media';
 const INITIAL_COUNT = 6;
 
 function getCertificationImageSrc(cert: { image: string; imageUrl?: string }): string {
-  return resolveContentImageSrc(cert.imageUrl || cert.image, {
-    folder: 'certifications',
-  });
+  if (cert.image) return cert.image;
+  return resolveContentImageSrc(cert.imageUrl, { folder: 'certifications' });
 }
 
 export function CertificationsSection() {
