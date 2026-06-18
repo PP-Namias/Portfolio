@@ -8,11 +8,13 @@ interface CardProps {
   children: React.ReactNode;
   className?: string;
   hover?: boolean;
+  id?: string;
 }
 
-export function Card({ children, className, hover = false }: CardProps) {
+export function Card({ children, className, hover = false, id }: CardProps) {
   return (
     <motion.div
+      id={id}
       className={cn(
         'rounded-xl border border-border-light dark:border-border-dark bg-white dark:bg-card-bg-dark p-5 shadow-sm shadow-slate-900/[0.04] dark:shadow-none transition-[background-color,border-color,box-shadow] duration-200',
         hover && 'hover:border-accent-pink/40 dark:hover:border-accent-pink/30 hover:shadow-md hover:shadow-slate-900/[0.08]',

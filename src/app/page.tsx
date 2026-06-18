@@ -111,7 +111,7 @@ export default function Home() {
               <TechStackSection />
             </Card>
 
-            <Card>
+            <Card id="projects">
               {IS_PROJECTS_REVAMP_ENABLED ? <ProjectsSectionRevamped /> : <ProjectsSection />}
             </Card>
           </div>
