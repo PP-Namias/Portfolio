@@ -43,6 +43,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     openGraph: {
       title,
       description,
+      url: `${SITE_URL}/blog/${slug}`,
       type: 'article',
       publishedTime: post.date,
       images: coverUrl
