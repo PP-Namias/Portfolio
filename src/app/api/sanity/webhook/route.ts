@@ -1,10 +1,11 @@
 import { revalidatePath } from 'next/cache';
 import { NextRequest, NextResponse } from 'next/server';
+import { timingSafeEqual } from 'node:crypto';
 import { clearCmsQueryCache } from '@/lib/cms-content.server';
 import { invalidateByTag } from '@/lib/cache';
 import { SITE_URL } from '@/lib/site-config';
 
-const REVALIDATE_PATHS = ['/', '/blog', '/blog/[slug]', '/sitemap.xml'] as const;
+const REVALIDATE_PATHS = ['/', '/blog', '/blog/[slug]', '/projects/[slug]', '/sitemap.xml'] as const;
 
 const SANITY_TYPE_TO_TAGS: Record<string, string[]> = {
   profile: ['cms:profile'],
@@ -37,21 +38,8 @@ function getProvidedSecret(request: NextRequest): string | null {
   return (
     request.headers.get('x-sanity-webhook-secret')?.trim() ||
     request.headers.get('x-sanity-revalidate-secret')?.trim() ||
-    new URL(request.url).searchParams.get('secret')?.trim() ||
     null
   );
-}
-
-function timingSafeEqual(a: string, b: string): boolean {
-  if (a.length !== b.length) {
-    return false;
-  }
-
-  let result = 0;
-  for (let i = 0; i < a.length; i++) {
-    result |= a.charCodeAt(i) ^ b.charCodeAt(i);
-  }
-  return result === 0;
 }
 
 function isAuthorizedWebhookRequest(request: NextRequest): boolean {
@@ -66,7 +54,7 @@ function isAuthorizedWebhookRequest(request: NextRequest): boolean {
     return false;
   }
 
-  return timingSafeEqual(expectedSecret, providedSecret);
+  return timingSafeEqual(Buffer.from(expectedSecret), Buffer.from(providedSecret));
 }
 
 function revalidateCmsPaths(): void {
