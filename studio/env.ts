@@ -13,11 +13,10 @@ const ENV_REGISTRY = {
   revalidateSecret: [
     'SANITY_STUDIO_REVALIDATE_SECRET',
     'SANITY_REVALIDATE_SECRET',
-    'NEXT_PUBLIC_SANITY_REVALIDATE_SECRET',
   ],
   siteUrl: ['NEXT_PUBLIC_SITE_URL'],
   studioUrl: ['SANITY_STUDIO_URL', 'NEXT_PUBLIC_SANITY_STUDIO_URL'],
-  readToken: ['SANITY_API_READ_TOKEN', 'NEXT_PUBLIC_SANITY_READ_TOKEN'],
+  readToken: ['SANITY_API_READ_TOKEN'],
 } as const
 
 export type EnvKey = keyof typeof ENV_REGISTRY
@@ -71,8 +70,7 @@ export function loadStudioEnvironment() {
   setProcessEnvValue(
     'SANITY_STUDIO_REVALIDATE_SECRET',
     getEnvValue('SANITY_STUDIO_REVALIDATE_SECRET') ??
-      getEnvValue('SANITY_REVALIDATE_SECRET') ??
-      getEnvValue('NEXT_PUBLIC_SANITY_REVALIDATE_SECRET'),
+      getEnvValue('SANITY_REVALIDATE_SECRET'),
   )
 
   environmentLoaded = true
@@ -151,11 +149,10 @@ export function getStudioEnvSnapshot(): StudioEnvSnapshot {
     revalidateSecret: firstDefined(
       getEnvValue('SANITY_STUDIO_REVALIDATE_SECRET'),
       getEnvValue('SANITY_REVALIDATE_SECRET'),
-      getEnvValue('NEXT_PUBLIC_SANITY_REVALIDATE_SECRET'),
     ),
     siteUrl: getEnvValue('NEXT_PUBLIC_SITE_URL') || 'http://localhost:3000',
     studioUrl: firstDefined(getEnvValue('SANITY_STUDIO_URL'), getEnvValue('NEXT_PUBLIC_SANITY_STUDIO_URL')),
-    readToken: firstDefined(getEnvValue('SANITY_API_READ_TOKEN'), getEnvValue('NEXT_PUBLIC_SANITY_READ_TOKEN')),
+    readToken: firstDefined(getEnvValue('SANITY_API_READ_TOKEN')),
     loaded: true,
   }
 
