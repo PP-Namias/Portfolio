@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Head from 'next/head';
 
 interface CanaryToken {
   id: string;
@@ -89,7 +90,11 @@ export default function CanaryDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white p-8">
+    <>
+      <Head>
+        <meta name="robots" content="noindex, nofollow" />
+      </Head>
+      <div className="min-h-screen bg-gray-900 text-white p-8">
       <div className="max-w-6xl mx-auto">
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold">Canary Token Dashboard</h1>
@@ -206,6 +211,7 @@ export default function CanaryDashboard() {
           </>
         )}
       </div>
-    </div>
+      </div>
+    </>
   );
 }
