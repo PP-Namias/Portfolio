@@ -188,22 +188,28 @@ export function buildEmailAlert(trigger: CanaryTrigger): EmailAlert {
 
 export async function sendCanaryAlert(trigger: CanaryTrigger): Promise<boolean> {
   if (!CANARY_CONFIG.sendEmailAlerts) {
-    console.log('[Canary] Email alerts disabled, skipping');
+    if (process.env.NODE_ENV !== 'production') {
+      console.log('[Canary] Email alerts disabled, skipping');
+    }
     return false;
   }
 
   const alert = buildEmailAlert(trigger);
 
   try {
-    console.log(`[Canary] Sending alert to ${alert.to}`);
-    console.log(`[Canary] Subject: ${alert.subject}`);
-    console.log(`[Canary] Token: ${trigger.tokenName} at ${trigger.tokenPath}`);
-    console.log(`[Canary] IP: ${trigger.ip}`);
-    console.log(`[Canary] User Agent: ${trigger.userAgent}`);
+    if (process.env.NODE_ENV !== 'production') {
+      console.log(`[Canary] Sending alert to ${alert.to}`);
+      console.log(`[Canary] Subject: ${alert.subject}`);
+      console.log(`[Canary] Token: ${trigger.tokenName} at ${trigger.tokenPath}`);
+      console.log(`[Canary] IP: ${trigger.ip}`);
+      console.log(`[Canary] User Agent: ${trigger.userAgent}`);
+    }
 
     return true;
   } catch (error) {
-    console.error('[Canary] Failed to send alert:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('[Canary] Failed to send alert:', error);
+    }
     return false;
   }
 }

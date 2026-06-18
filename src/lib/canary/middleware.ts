@@ -37,7 +37,9 @@ export function handleCanaryRequest(request: NextRequest): NextResponse | null {
     return null;
   }
 
-  console.log(`[Canary] Request to canary path: ${pathname}`);
+  if (process.env.NODE_ENV !== 'production') {
+    console.log(`[Canary] Request to canary path: ${pathname}`);
+  }
 
   const response = NextResponse.next();
 

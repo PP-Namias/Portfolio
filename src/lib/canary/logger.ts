@@ -6,10 +6,12 @@ const triggerLog: CanaryTrigger[] = [];
 export function logTrigger(trigger: CanaryTrigger): void {
   triggerLog.push(trigger);
 
-  console.log(`[Canary] Trigger logged: ${trigger.tokenName}`);
-  console.log(`[Canary] IP: ${trigger.ip}`);
-  console.log(`[Canary] Path: ${trigger.tokenPath}`);
-  console.log(`[Canary] Time: ${trigger.timestamp}`);
+  if (process.env.NODE_ENV !== 'production') {
+    console.log(`[Canary] Trigger logged: ${trigger.tokenName}`);
+    console.log(`[Canary] IP: ${trigger.ip}`);
+    console.log(`[Canary] Path: ${trigger.tokenPath}`);
+    console.log(`[Canary] Time: ${trigger.timestamp}`);
+  }
 
   const token = CANARY_TOKENS.find((t) => t.id === trigger.tokenId);
   if (token) {
