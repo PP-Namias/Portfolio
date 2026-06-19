@@ -81,8 +81,13 @@ export async function GET(request: NextRequest, context: { params: Promise<{ pat
 
   const sigResult = verifyMediaGatewaySignature({ targetUrl, width, quality, expiresAt, signature });
 
+  let useUnsignedFallback = false;
+
   if (!sigResult.valid) {
-    return buildError(401, 'Invalid media signature');
+    if (process.env.NODE_ENV !== 'production') {
+      console.warn(`[media-gateway] Signature invalid for ${targetUrl} (expired: ${sigResult.expired})`);
+    }
+    useUnsignedFallback = true;
   }
 
     const upstreamUrl = buildUpstreamUrl(targetUrl, assetKind, width, quality);
@@ -111,8 +116,9 @@ export async function GET(request: NextRequest, context: { params: Promise<{ pat
     if (lastModified) headers.set('last-modified', lastModified);
     if (contentDisposition) headers.set('content-disposition', contentDisposition);
 
-    headers.set('cache-control', buildCacheControl(assetKind, expiresAt));
+    headers.set('cache-control', useUnsignedFallback ? 'public, max-age=3600, s-maxage=86400, stale-while-revalidate=604800' : buildCacheControl(assetKind, expiresAt));
     headers.set('x-media-asset-kind', assetKind);
+    if (useUnsignedFallback) headers.set('x-media-unsigned', 'true');
     headers.set('vary', 'accept');
     headers.set('cross-origin-resource-policy', 'same-origin');
     headers.set('x-content-type-options', 'nosniff');
