@@ -1,4 +1,19 @@
+'use client';
+
+import { useCallback, useState } from 'react';
 import Image, { type ImageProps } from 'next/image';
+
+function extractRawSanityUrl(src: string): string | null {
+  try {
+    const url = new URL(src, window.location.origin);
+    const pathSegments = url.pathname.split('/');
+    const sanityIndex = pathSegments.indexOf('sanity');
+    if (sanityIndex === -1 || !pathSegments[sanityIndex + 1]) return null;
+    return Buffer.from(pathSegments[sanityIndex + 1], 'base64url').toString('utf8');
+  } catch {
+    return null;
+  }
+}
 
 /**
  * Portfolio-wide wrapper around `next/image`.
@@ -25,9 +40,21 @@ import Image, { type ImageProps } from 'next/image';
  * Components that explicitly need `next/image`'s optimizer (none
  * currently) can override by passing `unoptimized={false}`.
  */
-const OptimizedImage = (props: ImageProps) => (
+const OptimizedImage = (props: ImageProps) => {
+  const [imgSrc, setImgSrc] = useState<string | ImageProps['src']>(props.src);
+  const [hasFallback, setHasFallback] = useState(false);
+
+  const handleError = useCallback(() => {
+    if (hasFallback) return;
+    const raw = extractRawSanityUrl(String(imgSrc));
+    if (raw) {
+      setImgSrc(raw);
+      setHasFallback(true);
+    }
+  }, [imgSrc, hasFallback]);
+
   // eslint-disable-next-line jsx-a11y/alt-text -- alt is forwarded via props
-  <Image {...props} quality={props.quality ?? 85} unoptimized />
-);
+  return <Image {...props} src={imgSrc} quality={props.quality ?? 85} unoptimized onError={handleError} />;
+};
 
 export default OptimizedImage;
