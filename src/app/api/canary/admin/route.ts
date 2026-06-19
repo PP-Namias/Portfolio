@@ -55,7 +55,11 @@ export async function POST(request: NextRequest) {
     });
 
     logTrigger(trigger);
-    await sendCanaryAlert(trigger);
+    try {
+      await sendCanaryAlert(trigger);
+    } catch {
+      // Alert failure should not crash the honeypot
+    }
   }
 
   return NextResponse.json({
