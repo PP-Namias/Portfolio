@@ -44,12 +44,13 @@ export function CertificationsSection() {
 
   return (
     <motion.section
+      aria-labelledby="certifications-heading"
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-50px' }}
       transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
     >
-      <h2 className="text-lg font-semibold text-text-primary-light dark:text-text-primary-dark mb-4">
+      <h2 id="certifications-heading" className="text-lg font-semibold text-text-primary-light dark:text-text-primary-dark mb-4">
         Certifications{' '}
         <span className="text-xs font-medium px-1.5 py-0.5 rounded-md bg-accent-pink/10 text-accent-pink ml-2 align-middle">
           {certifications.length}

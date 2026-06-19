@@ -106,6 +106,7 @@ export function HeroSection() {
   return (
     <motion.section
       className="relative py-1 sm:py-2"
+      aria-labelledby="hero-heading"
       variants={containerVariants}
       initial="hidden"
       animate="visible"
@@ -164,6 +165,7 @@ export function HeroSection() {
           {/* Name + Role block */}
           <div>
             <motion.h1
+              id="hero-heading"
               className="text-[1.7rem] sm:text-[2.05rem] font-bold text-text-primary-light dark:text-text-primary-dark inline-flex items-center flex-wrap justify-center sm:justify-start leading-[1.15] tracking-tight"
               variants={itemVariants}
               {...sanityField({id: 'profile', type: 'profile'}, 'fullName')}
