@@ -44,6 +44,15 @@ const calcDistance = (a: Position, b: Position): number => {
   return Math.sqrt(diffX * diffX + diffY * diffY);
 };
 
+const getAccentRgb = (): string => {
+  if (typeof window === "undefined") return "239 42 201";
+  const raw = getComputedStyle(document.documentElement)
+    .getPropertyValue("--accent")
+    .trim();
+  if (!raw) return "239 42 201";
+  return raw.replace(/\s+/g, " ");
+};
+
 export function MagicCursor() {
   const containerRef = useRef<HTMLDivElement>(null);
   const countRef = useRef(0);
@@ -58,6 +67,9 @@ export function MagicCursor() {
   });
 
   useEffect(() => {
+    const mql = window.matchMedia("(prefers-reduced-motion: reduce)");
+    if (mql.matches) return;
+
     const container = containerRef.current;
     if (!container) return;
 
@@ -91,12 +103,14 @@ export function MagicCursor() {
         `animation-duration: ${STAR_ANIMATION_DURATION}ms`,
       ].join("; ");
       star.textContent = SPARKLE;
+      star.setAttribute('aria-hidden', 'true');
       container.appendChild(star);
       window.setTimeout(() => star.remove(), STAR_ANIMATION_DURATION);
     };
 
     const createGlowPoint = (position: Position) => {
       const glow = document.createElement("div");
+      const accentRgb = getAccentRgb();
       glow.style.cssText = [
         "position: absolute",
         "left: 0",
@@ -104,13 +118,14 @@ export function MagicCursor() {
         "width: 0.6rem",
         "height: 0.6rem",
         "border-radius: 9999px",
-        "background: rgb(239 42 201)",
-        "box-shadow: 0rem 0rem 1.2rem 0.6rem rgb(239 42 201)",
+        `background: rgb(${accentRgb})`,
+        `box-shadow: 0rem 0rem 1.2rem 0.6rem rgb(${accentRgb})`,
         "pointer-events: none",
         "transform: translate(-50%, -50%)",
         `left: ${position.x}px`,
         `top: ${position.y}px`,
       ].join("; ");
+      glow.setAttribute('aria-hidden', 'true');
       container.appendChild(glow);
       window.setTimeout(() => glow.remove(), GLOW_DURATION);
     };
@@ -182,7 +197,7 @@ export function MagicCursor() {
       style={{
         position: "fixed",
         inset: 0,
-        zIndex: 9999,
+        zIndex: 50,
         pointerEvents: "none",
         overflow: "hidden",
       }}

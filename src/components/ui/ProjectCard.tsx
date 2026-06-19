@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+
 import Image from '@/components/ui/OptimizedImage';
 import { motion, useReducedMotion } from 'framer-motion';
 import { ExternalLink, Github } from 'lucide-react';

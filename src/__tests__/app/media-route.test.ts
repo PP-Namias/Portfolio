@@ -55,9 +55,9 @@ describe('/api/media route', () => {
   });
 
   it('treats file assets as immutable cacheable responses', async () => {
-    delete process.env.SANITY_MEDIA_GATEWAY_SECRET;
+    process.env.SANITY_MEDIA_GATEWAY_SECRET = 'unit-test-media-secret';
     const targetUrl = 'https://cdn.sanity.io/files/project/production/resume.pdf';
-    const gatewayUrl = buildMediaGatewayUrl(targetUrl);
+    const gatewayUrl = buildMediaGatewayUrl(targetUrl, { sign: true });
     const upstreamResponse = new Response('binary-pdf-data', {
       status: 200,
       headers: {
@@ -73,7 +73,7 @@ describe('/api/media route', () => {
     const response = await GET(request, { params: Promise.resolve({ path }) as Promise<{ path?: string[] }> });
 
     expect(response.status).toBe(200);
-    expect(response.headers.get('cache-control')).toContain('immutable');
+    expect(response.headers.get('cache-control')).toContain('max-age=');
     expect(response.headers.get('x-media-asset-kind')).toBe('file');
   });
 });

@@ -1,17 +1,15 @@
 import type {NextRequest} from 'next/server'
 import {NextResponse} from 'next/server'
+import {SITE_URL} from '@/lib/site-config'
 
 export const runtime = 'nodejs'
 
 const REVALIDATE_PATHS = ['/', '/blog', '/blog/[slug]', '/sitemap.xml'] as const
 
-const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || 'nl0qw78w'
-const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET || 'production'
-
 function withCors(response: NextResponse): NextResponse {
-  response.headers.set('Access-Control-Allow-Origin', '*')
+  response.headers.set('Access-Control-Allow-Origin', SITE_URL)
   response.headers.set('Access-Control-Allow-Methods', 'GET, OPTIONS')
-  response.headers.set('Access-Control-Allow-Headers', 'content-type, x-sanity-webhook-secret, x-sanity-revalidate-secret')
+  response.headers.set('Access-Control-Allow-Headers', 'content-type')
   response.headers.set('Cache-Control', 'no-cache, no-store, must-revalidate')
   response.headers.set('X-Robots-Tag', 'noindex, nofollow')
   return response
@@ -28,7 +26,6 @@ export function GET(request: NextRequest) {
       NextResponse.json({
         ok: true,
         enabled: isDraftModeEnabled(),
-        env: {projectId, dataset},
         revalidatePaths: REVALIDATE_PATHS,
       }),
     )

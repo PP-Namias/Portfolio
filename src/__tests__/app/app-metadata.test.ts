@@ -12,6 +12,20 @@ vi.mock('next/og', () => ({
   },
 }));
 
+vi.mock('@/lib/cms-content.server', () => ({
+  getCmsContent: vi.fn().mockResolvedValue({
+    blogPosts: [
+      { slug: 'hello-world', title: 'Hello World', date: '2026-01-10' },
+      { slug: 'deep-dive', title: 'Deep Dive', date: '2026-02-20' },
+    ],
+    siteSettings: { blog: { title: 'Blog', description: 'Test', backLabel: 'Back' } },
+  }),
+  getBlogPostSlugsForStaticParams: vi.fn().mockResolvedValue([
+    { slug: 'hello-world' },
+    { slug: 'deep-dive' },
+  ]),
+}));
+
 import OpenGraphImage, {
   runtime as ogRuntime,
   size as ogSize,
@@ -48,18 +62,19 @@ describe('app metadata routes', () => {
     expect(response.options).toMatchObject({ width: 1200, height: 630 });
   });
 
-  it('sitemap returns only homepage when blog is hidden', async () => {
-    vi.doMock('@/lib/features', () => ({ IS_BLOG_VISIBLE: false }));
+  it('sitemap returns homepage and projects listing when blog is hidden', async () => {
+    vi.doMock('@/lib/features', () => ({ IS_BLOG_VISIBLE: false, IS_PROJECTS_REVAMP_ENABLED: false }));
 
     const mod = await import('@/app/sitemap');
     const result = await mod.default();
 
-    expect(result).toHaveLength(1);
+    expect(result).toHaveLength(2);
     expect(result[0].url).toBe('https://namias.tech');
+    expect(result[1].url).toBe('https://namias.tech/projects');
   });
 
   it('sitemap includes blog and post entries when blog is visible', async () => {
-    vi.doMock('@/lib/features', () => ({ IS_BLOG_VISIBLE: true }));
+    vi.doMock('@/lib/features', () => ({ IS_BLOG_VISIBLE: true, IS_PROJECTS_REVAMP_ENABLED: false }));
 
     const mod = await import('@/app/sitemap');
     const result = await mod.default();

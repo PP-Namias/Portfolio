@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Sparkles } from 'lucide-react';
 import { HubMenu } from './HubMenu';
 import { ChatPanel } from './ChatPanel';
+import { SectionErrorBoundary } from './ErrorBoundary';
 import type { ChatMessage as ChatMessageType, HubState } from '@/types';
 
 export function FloatingHub() {
@@ -92,20 +93,25 @@ export function FloatingHub() {
             initial={{ scale: 0, rotate: -180 }}
             animate={{ scale: 1, rotate: 0 }}
             exit={{ scale: 0, rotate: 180 }}
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
+            whileHover={{ scale: 1.08 }}
+            whileTap={{ scale: 0.92 }}
             transition={{ type: 'spring', stiffness: 200, damping: 15 }}
             onClick={openMenu}
-            className="fixed bottom-6 right-6 z-50 h-13 w-13 rounded-full bg-gradient-to-br from-accent-pink to-accent-pink-hover text-white shadow-lg shadow-accent-pink/25 flex items-center justify-center hover:shadow-xl hover:shadow-accent-pink/30 transition-shadow"
+            className="group fixed bottom-5 right-5 z-50 flex items-center gap-2.5"
             aria-label="Open quick actions"
           >
-            {!hasInteracted && (
-              <span
-                className="absolute inset-0 rounded-full bg-accent-pink animate-[pulse-ring_2s_ease-out_infinite]"
-                data-testid="pulse-ring"
-              />
-            )}
-            <Sparkles className="h-5 w-5 relative z-10" />
+            <span className="hidden sm:inline text-[11px] font-medium text-text-muted-light dark:text-text-muted-dark opacity-0 group-hover:opacity-100 transition-opacity duration-200 select-none">
+              Ask me
+            </span>
+            <span className="relative h-12 w-12 rounded-full bg-gradient-to-br from-accent-pink via-accent-pink to-accent-pink-hover shadow-lg shadow-accent-pink/30 flex items-center justify-center hover:shadow-xl hover:shadow-accent-pink/40 transition-shadow">
+              {!hasInteracted && (
+                <span
+                  className="absolute inset-0 rounded-full bg-accent-pink animate-[pulse-ring_2s_ease-out_infinite]"
+                  data-testid="pulse-ring"
+                />
+              )}
+              <Sparkles className="h-5 w-5 text-white relative z-10" />
+            </span>
           </motion.button>
         )}
       </AnimatePresence>
@@ -125,7 +131,7 @@ export function FloatingHub() {
             aria-label={hubState === 'menu' ? 'Quick Actions' : "Chat with Keneth's AI"}
             tabIndex={-1}
             data-lenis-prevent
-            className="fixed z-50 bottom-0 right-0 sm:bottom-6 sm:right-6 w-full h-full sm:w-96 sm:h-[560px] sm:rounded-2xl flex flex-col overflow-hidden border border-border-light dark:border-border-dark bg-white dark:bg-card-bg-dark shadow-2xl"
+            className="fixed z-50 bottom-0 right-0 sm:bottom-5 sm:right-5 w-full h-full sm:w-96 sm:h-[540px] sm:rounded-2xl flex flex-col overflow-hidden border border-border-light dark:border-border-dark bg-white dark:bg-card-bg-dark shadow-2xl"
           >
             {hubState === 'menu' && (
               <HubMenu onClose={close} onOpenChat={openChat} />
@@ -142,5 +148,13 @@ export function FloatingHub() {
         )}
       </AnimatePresence>
     </div>
+  );
+}
+
+export function FloatingHubWithBoundary() {
+  return (
+    <SectionErrorBoundary name="FloatingHub">
+      <FloatingHub />
+    </SectionErrorBoundary>
   );
 }

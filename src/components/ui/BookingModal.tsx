@@ -15,8 +15,7 @@ const CAL_BASE_URL = 'https://cal.com';
 const BOOKING_MODAL_EVENT_KEY = 'booking-modal-event';
 
 const EVENT_TYPES = [
-  { slug: '15min', label: '15 Minute Meeting', duration: '15 min' },
-  { slug: '30min', label: '30 Minute Meeting', duration: '30 min' },
+  { slug: 'introductory-call', label: 'Introductory Call', duration: '30 min' },
 ] as const;
 
 type BookingEventSlug = (typeof EVENT_TYPES)[number]['slug'];
@@ -93,7 +92,7 @@ export function BookingModal({ open, onClose }: Readonly<BookingModalProps>) {
           <button
             type="button"
             onClick={onClose}
-            className="h-7 w-7 rounded-full flex items-center justify-center text-text-muted-light dark:text-text-muted-dark hover:bg-surface-light dark:hover:bg-surface-dark transition-colors text-lg"
+            className="h-11 w-11 rounded-full flex items-center justify-center text-text-muted-light dark:text-text-muted-dark hover:bg-surface-light dark:hover:bg-surface-dark transition-colors text-lg"
             aria-label="Close"
           >
             &times;

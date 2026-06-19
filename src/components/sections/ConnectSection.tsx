@@ -1,38 +1,38 @@
 'use client';
 
 import React from 'react';
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 import { Calendar, ExternalLink } from 'lucide-react';
 import {
   FaDiscord,
-  FaFacebookF,
+  FaFacebook,
   FaGithub,
-  FaInstagram,
   FaLinkedinIn,
   FaXTwitter,
 } from 'react-icons/fa6';
 import { useModal } from '@/hooks/useModal';
 import { useCmsContent } from '@/hooks/useCmsContent';
+import { DISCORD_PROFILE_URL } from '@/lib/constants';
 
 const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   calendar: Calendar,
   github: FaGithub,
   linkedin: FaLinkedinIn,
-  facebook: FaFacebookF,
   discord: FaDiscord,
   twitter: FaXTwitter,
   x: FaXTwitter,
-  instagram: FaInstagram,
+  facebook: FaFacebook,
 };
 
 export function ConnectSection() {
   const { socialLinks, experiences, certifications, technologies } = useCmsContent();
   const { openModal } = useModal();
+  const prefersReducedMotion = useReducedMotion();
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
+    <motion.section
+      initial={prefersReducedMotion ? undefined : { opacity: 0, y: 20 }}
+      whileInView={prefersReducedMotion ? undefined : { opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-50px' }}
       transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
     >
@@ -57,9 +57,23 @@ export function ConnectSection() {
           transition={{ delay: 0.05, duration: 0.3 }}
           className="flex items-center gap-1.5 px-4 py-2.5 text-sm font-medium rounded-lg transition-colors duration-200 group border border-accent-pink/30 text-accent-pink hover:bg-accent-pink/10"
         >
-          <Calendar className="h-3.5 w-3.5" />
+          <Calendar className="h-3.5 w-3.5" aria-hidden="true" />
           <span>Schedule a Meeting</span>
         </motion.button>
+
+        <motion.a
+          href={DISCORD_PROFILE_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          initial={{ opacity: 0, y: 10 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.1, duration: 0.3 }}
+          className="flex items-center gap-1.5 px-4 py-2.5 text-sm font-medium rounded-lg border border-[#5865F2]/30 bg-[#5865F2]/5 text-[#5865F2] hover:bg-[#5865F2]/10 transition-colors duration-200"
+        >
+          <FaDiscord className="h-3.5 w-3.5" aria-hidden="true" />
+          <span>Chat on Discord</span>
+        </motion.a>
       </div>
 
       {/* Secondary social links — lower visual weight */}
@@ -78,12 +92,12 @@ export function ConnectSection() {
               transition={{ delay: index * 0.05, duration: 0.3 }}
               className="flex items-center gap-1.5 px-3 py-2 text-xs font-medium rounded-lg transition-colors duration-200 group border border-border-light dark:border-border-dark text-text-secondary-light dark:text-text-secondary-dark hover:text-accent-pink hover:border-accent-pink dark:hover:text-accent-pink dark:hover:border-accent-pink"
             >
-              <Icon className="h-3.5 w-3.5" />
+              <Icon className="h-3.5 w-3.5" aria-hidden="true" />
               <span>{link.label}</span>
             </motion.a>
           );
         })}
       </div>
-    </motion.div>
+    </motion.section>
   );
 }

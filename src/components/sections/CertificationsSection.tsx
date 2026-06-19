@@ -10,9 +10,8 @@ import { resolveContentImageSrc } from '@/lib/media';
 const INITIAL_COUNT = 6;
 
 function getCertificationImageSrc(cert: { image: string; imageUrl?: string }): string {
-  return resolveContentImageSrc(cert.imageUrl || cert.image, {
-    folder: 'certifications',
-  });
+  if (cert.image) return cert.image;
+  return resolveContentImageSrc(cert.imageUrl, { folder: 'certifications' });
 }
 
 export function CertificationsSection() {
@@ -64,7 +63,7 @@ export function CertificationsSection() {
             type="button"
             key={issuer}
             onClick={() => setActiveIssuer(issuer)}
-            className={`text-xs font-medium px-2.5 py-1 rounded-full transition-all duration-200 ${
+            className={`text-xs font-medium px-2.5 py-1 rounded-full transition-colors duration-200 ${
               activeIssuer === issuer
                 ? 'bg-accent-pink text-white shadow-sm shadow-accent-pink/25'
                 : 'bg-surface-light dark:bg-surface-dark text-text-secondary-light dark:text-text-secondary-dark hover:bg-accent-pink/10 hover:text-accent-pink border border-border-light dark:border-border-dark'
@@ -77,9 +76,10 @@ export function CertificationsSection() {
 
       <div className="grid grid-cols-2 gap-2">
         {visibleCerts.map((cert, index) => (
-          <motion.div
+          <motion.button
+            type="button"
             key={`${cert.title}-${cert.issuer}`}
-            className="group relative cursor-pointer rounded-lg overflow-hidden border border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark"
+            className="group relative cursor-pointer rounded-lg overflow-hidden border border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark text-left"
             initial={{ opacity: 0, scale: 0.95 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
@@ -111,7 +111,7 @@ export function CertificationsSection() {
                 </p>
               </div>
             </div>
-          </motion.div>
+            </motion.button>
         ))}
       </div>
 
@@ -120,6 +120,7 @@ export function CertificationsSection() {
         <button
           type="button"
           onClick={() => setExpanded((prev) => !prev)}
+          aria-expanded={expanded}
           className="flex items-center gap-1 mx-auto mt-3 text-xs font-medium text-text-muted-light dark:text-text-muted-dark hover:text-accent-pink dark:hover:text-accent-pink transition-colors"
         >
           {expanded ? (

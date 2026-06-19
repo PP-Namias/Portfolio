@@ -39,7 +39,8 @@ function getSiteUrl(): string {
 }
 
 export function SeoPreview() {
-  const values = (useFormValue([]) || {}) as Record<string, unknown>
+  const rawValues = useFormValue([])
+  const values = useMemo(() => (rawValues || {}) as Record<string, unknown>, [rawValues])
 
   const seo: SeoFields = useMemo(() => {
     const v = values
@@ -99,6 +100,7 @@ export function SeoPreview() {
         </div>
         <div style={{aspectRatio: '1200/630', background: '#0d0d0f', borderRadius: 10, overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', textAlign: 'center', padding: 24}}>
           {imageUrl ? (
+            // eslint-disable-next-line @next/next/no-img-element -- Studio preview only, not a production page
             <img src={imageUrl} alt="" style={{width: '100%', height: '100%', objectFit: 'cover'}} />
           ) : (
             <div>

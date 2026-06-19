@@ -54,13 +54,20 @@ export interface ProjectImpactMetric {
 export interface ProjectGalleryItem {
   image: string;
   caption: string;
+  alt?: string;
+  credit?: string;
+  source?: string;
+  license?: string;
 }
 
-export type ProjectStatus = 'completed' | 'in-progress' | 'prototype';
+export type ProjectStatus = 'completed' | 'in-progress' | 'prototype' | 'draft' | 'archived';
+
+export type ProjectTier = 'featured' | 'standard' | 'archived';
 
 export interface Project {
   title: string;
   image: string;
+  imageAlt?: string;
   description: string;
   challenge?: string;
   solution?: string;
@@ -79,6 +86,12 @@ export interface Project {
   featuredRank?: number | null;
   status?: ProjectStatus;
   gallery?: ProjectGalleryItem[];
+  tier?: ProjectTier;
+  showcaseDetail?: boolean;
+  shortDescription?: string;
+  highlights?: string[];
+  githubRepo?: string;
+  slug?: string;
 }
 
 export interface Certification {
@@ -88,6 +101,11 @@ export interface Certification {
   issuer: string;
   issuedAt: string;
   tags: string[];
+  alt?: string;
+  caption?: string;
+  credit?: string;
+  source?: string;
+  license?: string;
 }
 
 export interface Technology {

@@ -1,7 +1,7 @@
 import {defineField, defineType} from 'sanity'
 
 import {ExperienceDurationField} from '../components/inputs/ExperienceDurationField'
-import {httpsOnly, requireAltText, summaryLength} from '../validation/rules'
+import {httpsOnly, requireAltText, summaryLength, endDateAfterStart} from '../validation/rules'
 
 export default defineType({
   name: 'experience',
@@ -41,6 +41,7 @@ export default defineType({
       title: 'End date',
       type: 'string',
       description: 'Use a date string or Present.',
+      validation: endDateAfterStart({startField: 'startDate'}),
     }),
     defineField({
       name: 'computedDuration',
@@ -62,6 +63,7 @@ export default defineType({
           {title: 'Freelance', value: 'Freelance'},
           {title: 'Contractual', value: 'Contractual'},
           {title: 'Internship', value: 'Internship'},
+          {title: 'Study', value: 'Study'},
         ],
       },
     }),

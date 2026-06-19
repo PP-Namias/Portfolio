@@ -1,9 +1,5 @@
 let environmentLoaded = false
 const processEnv = typeof process !== 'undefined' ? process.env : undefined
-const metaEnv =
-  typeof import.meta !== 'undefined' && typeof (import.meta as {env?: Record<string, string>}).env === 'object'
-    ? (import.meta as {env: Record<string, string>}).env
-    : undefined
 const defaultEnvValues: Record<string, string> = {
   SANITY_STUDIO_PROJECT_ID: 'nl0qw78w',
   NEXT_PUBLIC_SANITY_PROJECT_ID: 'nl0qw78w',
@@ -17,11 +13,10 @@ const ENV_REGISTRY = {
   revalidateSecret: [
     'SANITY_STUDIO_REVALIDATE_SECRET',
     'SANITY_REVALIDATE_SECRET',
-    'NEXT_PUBLIC_SANITY_REVALIDATE_SECRET',
   ],
   siteUrl: ['NEXT_PUBLIC_SITE_URL'],
   studioUrl: ['SANITY_STUDIO_URL', 'NEXT_PUBLIC_SANITY_STUDIO_URL'],
-  readToken: ['SANITY_API_READ_TOKEN', 'NEXT_PUBLIC_SANITY_READ_TOKEN'],
+  readToken: ['SANITY_API_READ_TOKEN'],
 } as const
 
 export type EnvKey = keyof typeof ENV_REGISTRY
@@ -39,10 +34,6 @@ export type StudioEnvSnapshot = {
 let cachedSnapshot: StudioEnvSnapshot | null = null
 
 function getEnvValue(name: string): string | undefined {
-  const fromMeta = metaEnv?.[name]
-  if (typeof fromMeta === 'string' && fromMeta.trim().length > 0) {
-    return fromMeta.trim()
-  }
   const value = processEnv?.[name]
 
   if (typeof value !== 'string') {
@@ -79,8 +70,7 @@ export function loadStudioEnvironment() {
   setProcessEnvValue(
     'SANITY_STUDIO_REVALIDATE_SECRET',
     getEnvValue('SANITY_STUDIO_REVALIDATE_SECRET') ??
-      getEnvValue('SANITY_REVALIDATE_SECRET') ??
-      getEnvValue('NEXT_PUBLIC_SANITY_REVALIDATE_SECRET'),
+      getEnvValue('SANITY_REVALIDATE_SECRET'),
   )
 
   environmentLoaded = true
@@ -159,11 +149,10 @@ export function getStudioEnvSnapshot(): StudioEnvSnapshot {
     revalidateSecret: firstDefined(
       getEnvValue('SANITY_STUDIO_REVALIDATE_SECRET'),
       getEnvValue('SANITY_REVALIDATE_SECRET'),
-      getEnvValue('NEXT_PUBLIC_SANITY_REVALIDATE_SECRET'),
     ),
     siteUrl: getEnvValue('NEXT_PUBLIC_SITE_URL') || 'http://localhost:3000',
     studioUrl: firstDefined(getEnvValue('SANITY_STUDIO_URL'), getEnvValue('NEXT_PUBLIC_SANITY_STUDIO_URL')),
-    readToken: firstDefined(getEnvValue('SANITY_API_READ_TOKEN'), getEnvValue('NEXT_PUBLIC_SANITY_READ_TOKEN')),
+    readToken: firstDefined(getEnvValue('SANITY_API_READ_TOKEN')),
     loaded: true,
   }
 

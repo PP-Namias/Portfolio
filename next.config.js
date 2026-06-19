@@ -19,15 +19,15 @@ const isWindows = process.platform === 'win32';
 
 const contentSecurityPolicy = `
   default-src 'self';
-  script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ''}${umamiScriptOrigin ? ` ${umamiScriptOrigin}` : ''};
+  script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ''}${umamiScriptOrigin ? ` ${umamiScriptOrigin}` : ''} https://cal.com https://*.cal.com;
   style-src 'self' 'unsafe-inline';
   img-src 'self' data: blob: https:;
   font-src 'self' data: https:;
-  connect-src ${connectSrc} https://namias-cms.sanity.studio https://*.sanity.studio https://*.api.sanity.io;
+  connect-src ${connectSrc} https://namias-cms.sanity.studio https://*.sanity.studio https://*.api.sanity.io https://cal.com https://*.cal.com;
   frame-src 'self' https://cal.com https://*.cal.com https://cdn.sanity.io https://namias-cms.sanity.studio https://*.sanity.studio;
   object-src 'none';
   base-uri 'self';
-  form-action 'self';
+  form-action 'self' https://cal.com https://*.cal.com;
   frame-ancestors 'self' https://namias-cms.sanity.studio https://*.sanity.studio;
   manifest-src 'self';
   worker-src 'self' blob:;
@@ -51,6 +51,10 @@ const securityHeaders = [
     value: 'nosniff',
   },
 
+  {
+    key: 'X-Frame-Options',
+    value: 'DENY',
+  },
   {
     key: 'X-XSS-Protection',
     value: '1; mode=block',
@@ -79,7 +83,7 @@ const securityHeaders = [
   },
   {
     key: 'Cross-Origin-Embedder-Policy',
-    value: 'credentialless',
+    value: 'unsafe-none',
   },
   {
     key: 'NEL',
@@ -113,12 +117,16 @@ const nextConfig = {
         source: '/:path*',
         headers: securityHeaders,
       },
-      {
-        source: '/_next/static/:path*',
-        headers: [
-          { key: 'Cache-Control', value: 'public, max-age=31536000, immutable' },
-        ],
-      },
+      ...(!isDev
+        ? [
+            {
+              source: '/_next/static/:path*',
+              headers: [
+                { key: 'Cache-Control', value: 'public, max-age=31536000, immutable' },
+              ],
+            },
+          ]
+        : []),
       {
         source: '/fonts/:path*',
         headers: [

@@ -8,6 +8,7 @@ export function ReadingProgress() {
 
   return (
     <motion.div
+      aria-hidden="true"
       className="fixed top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-accent-pink via-accent-pink-hover-dark to-accent-pink origin-left z-50"
       style={{ scaleX }}
     />

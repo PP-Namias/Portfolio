@@ -5,6 +5,7 @@ import { HeroSection } from '@/components/sections/HeroSection';
 import { AboutSection } from '@/components/sections/AboutSection';
 import { TechStackSection } from '@/components/sections/TechStackSection';
 import { ProjectsSection } from '@/components/sections/ProjectsSection';
+import { ProjectsSectionRevamped } from '@/components/sections/ProjectsSectionRevamped';
 import { BlogSection } from '@/components/sections/BlogSection';
 import { CertificationsSection } from '@/components/sections/CertificationsSection';
 import { ExperienceTimeline } from '@/components/sections/ExperienceTimeline';
@@ -12,6 +13,8 @@ import { ConnectSection } from '@/components/sections/ConnectSection';
 import { GallerySection } from '@/components/sections/GallerySection';
 import { Footer } from '@/components/layout/Footer';
 import { Card } from '@/components/ui/Card';
+import { SectionErrorBoundary } from '@/components/ui/ErrorBoundary';
+import { IS_PROJECTS_REVAMP_ENABLED } from '@/lib/features';
 
 type StickySide = 'left' | 'right' | null;
 
@@ -108,8 +111,8 @@ export default function Home() {
               <TechStackSection />
             </Card>
 
-            <Card>
-              <ProjectsSection />
+            <Card id="projects">
+              {IS_PROJECTS_REVAMP_ENABLED ? <ProjectsSectionRevamped /> : <ProjectsSection />}
             </Card>
           </div>
         </div>
@@ -129,16 +132,22 @@ export default function Home() {
       {/* Blog + Certifications — 2-column on lg, stacked on mobile */}
       <div className="mt-4 grid grid-cols-1 lg:grid-cols-2 gap-4 items-stretch">
         <Card>
-          <BlogSection />
+          <SectionErrorBoundary name="BlogSection">
+            <BlogSection />
+          </SectionErrorBoundary>
         </Card>
         <Card>
-          <CertificationsSection />
+          <SectionErrorBoundary name="CertificationsSection">
+            <CertificationsSection />
+          </SectionErrorBoundary>
         </Card>
       </div>
 
       {/* Full-width gallery */}
       <Card className="mt-4">
-        <GallerySection />
+        <SectionErrorBoundary name="GallerySection">
+          <GallerySection />
+        </SectionErrorBoundary>
       </Card>
 
       {/* Footer */}

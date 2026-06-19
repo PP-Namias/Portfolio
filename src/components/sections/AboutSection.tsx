@@ -1,12 +1,13 @@
 'use client';
 
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import { useState } from 'react';
+import { motion, useReducedMotion } from 'framer-motion';
 import { GraduationCap, ChevronDown, ChevronUp } from 'lucide-react';
 import { useCmsContent } from '@/hooks/useCmsContent';
 
 export function AboutSection() {
   const { profile, about } = useCmsContent();
+  const prefersReducedMotion = useReducedMotion();
   const [showMore, setShowMore] = useState(false);
   const fallbackParagraphs = profile.summary
     .split(/\n\n+/)
@@ -17,8 +18,8 @@ export function AboutSection() {
   return (
     <motion.section
       className=""
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
+      initial={prefersReducedMotion ? undefined : { opacity: 0, y: 20 }}
+      whileInView={prefersReducedMotion ? undefined : { opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-50px' }}
       transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
     >
@@ -36,15 +37,6 @@ export function AboutSection() {
         >
           {(showMore ? paragraphs : paragraphs.slice(0, 2)).map((paragraph) => (
             <p
-              // Paragraphs come from a stable CMS source (profile.summary
-              // split on blank lines, or about.paragraphs). The full
-              // text is a stable identity for React's reconciler; using
-              // a slice of the first 16 chars + index broke when the
-              // visible list was reduced from "all paragraphs" to
-              // "first 2" via .slice(0, 2), because the same paragraph
-              // at index 0 and at index 2 shared the same slice key.
-              // The full string is short (<= ~200 chars in practice)
-              // and is itself a stable identifier.
               key={paragraph}
               className="text-[14px] sm:text-[15px] text-text-secondary-light dark:text-text-secondary-dark leading-[1.75]"
             >
@@ -57,6 +49,7 @@ export function AboutSection() {
           <button
             type="button"
             onClick={() => setShowMore(!showMore)}
+            aria-expanded={showMore}
             className="flex items-center gap-1 text-[13px] font-medium text-text-muted-light dark:text-text-muted-dark hover:text-accent-pink dark:hover:text-accent-pink transition-colors"
           >
             {showMore ? (
@@ -73,10 +66,6 @@ export function AboutSection() {
           const endLabel = edu.endedAt ? new Date(edu.endedAt).getFullYear() : 'Present';
           return (
             <motion.div
-              // institution + degree + startedAt is unique per education
-              // entry in practice (you cannot have two simultaneous
-              // degrees at the same institution); no index tie-breaker
-              // needed.
               key={`${edu.institution}-${edu.degree}-${edu.startedAt}`}
               className="mt-3"
               initial={{ opacity: 0, y: 10 }}
@@ -94,7 +83,7 @@ export function AboutSection() {
                     {edu.institution} — {edu.location}
                   </p>
                   <p className="text-[12px] sm:text-xs text-text-muted-light dark:text-text-muted-dark mt-0.5">
-                    {startYear} – {endLabel} · GWA: {edu.gpa}
+                    {startYear} – {endLabel}
                   </p>
                 </div>
               </div>
@@ -110,7 +99,6 @@ export function AboutSection() {
                   ))}
                 </div>
               )}
-
             </motion.div>
           );
         })}

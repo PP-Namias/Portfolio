@@ -21,13 +21,14 @@ describe('/api/sanity/webhook route', () => {
     const response = await OPTIONS();
 
     expect(response.status).toBe(204);
-    expect(response.headers.get('access-control-allow-origin')).toBe('*');
+    expect(response.headers.get('access-control-allow-origin')).toBe('https://namias.tech');
     expect(response.headers.get('cache-control')).toBe('no-store, max-age=0');
   });
 
   it('rejects requests with an invalid secret', async () => {
-    const request = new NextRequest('http://localhost:3000/api/sanity/webhook?secret=wrong', {
+    const request = new NextRequest('http://localhost:3000/api/sanity/webhook', {
       method: 'POST',
+      headers: { 'x-sanity-webhook-secret': 'wrong' },
     });
 
     const response = await POST(request);
@@ -38,8 +39,9 @@ describe('/api/sanity/webhook route', () => {
   });
 
   it('revalidates CMS routes when the secret is valid', async () => {
-    const request = new NextRequest('http://localhost:3000/api/sanity/webhook?secret=unit-test-secret', {
+    const request = new NextRequest('http://localhost:3000/api/sanity/webhook', {
       method: 'POST',
+      headers: { 'x-sanity-webhook-secret': 'unit-test-secret' },
     });
 
     const response = await POST(request);
@@ -49,6 +51,7 @@ describe('/api/sanity/webhook route', () => {
     expect(revalidatePathMock).toHaveBeenCalledWith('/', 'page');
     expect(revalidatePathMock).toHaveBeenCalledWith('/blog', 'page');
     expect(revalidatePathMock).toHaveBeenCalledWith('/blog/[slug]', 'page');
+    expect(revalidatePathMock).toHaveBeenCalledWith('/projects/[slug]', 'page');
     expect(revalidatePathMock).toHaveBeenCalledWith('/sitemap.xml', 'page');
   });
 });

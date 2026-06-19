@@ -6,7 +6,6 @@ import certificationIssuer from './certificationIssuer'
 import galleryCategory from './galleryCategory'
 import post from './post'
 import author from './author'
-import heroSection from './heroSection'
 import aboutSection from './aboutSection'
 import profile from './profile'
 import seoSettings from './seoSettings'
@@ -34,7 +33,6 @@ export {
 export type {DocumentKind, DocumentMeta} from './_registry'
 
 export const schemaTypes = [
-  heroSection,
   aboutSection,
   profile,
   seoSettings,

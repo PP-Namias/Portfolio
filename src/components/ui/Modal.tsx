@@ -119,7 +119,7 @@ export function Modal({ open, onClose, title, children, fullScreen = false, desc
                 <button
                   type="button"
                   onClick={onClose}
-                  className="h-8 w-8 rounded-full flex items-center justify-center text-text-muted-light dark:text-text-muted-dark hover:bg-surface-light dark:hover:bg-surface-dark transition-colors"
+                  className="h-11 w-11 rounded-full flex items-center justify-center text-text-muted-light dark:text-text-muted-dark hover:bg-surface-light dark:hover:bg-surface-dark transition-colors"
                   aria-label="Close modal"
                 >
                   <X className="h-4 w-4" />
@@ -132,7 +132,7 @@ export function Modal({ open, onClose, title, children, fullScreen = false, desc
               <button
                 type="button"
                 onClick={onClose}
-                className="absolute top-3 right-3 z-10 h-8 w-8 rounded-full flex items-center justify-center text-text-muted-light dark:text-text-muted-dark hover:bg-surface-light dark:hover:bg-surface-dark transition-colors bg-white/80 dark:bg-card-bg-dark/80 backdrop-blur-sm"
+                className="absolute top-3 right-3 z-10 h-11 w-11 rounded-full flex items-center justify-center text-text-muted-light dark:text-text-muted-dark hover:bg-surface-light dark:hover:bg-surface-dark transition-colors bg-white/80 dark:bg-card-bg-dark/80 backdrop-blur-sm"
                 aria-label="Close modal"
               >
                 <X className="h-4 w-4" />

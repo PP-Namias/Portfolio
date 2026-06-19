@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+
 import Image from '@/components/ui/OptimizedImage';
 import { Calendar, Code2, ExternalLink, Layers, BriefcaseBusiness } from 'lucide-react';
 import { Modal } from './Modal';

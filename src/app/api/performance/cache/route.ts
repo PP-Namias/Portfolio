@@ -2,7 +2,17 @@ import { NextRequest, NextResponse } from 'next/server';
 import { stats, flush } from '@/lib/cache';
 import { getCmsQueryCacheStats } from '@/lib/cms-content.server';
 
+function isAdminRequest(request: NextRequest): boolean {
+  const apiKey = process.env.ADMIN_API_KEY?.trim();
+  if (!apiKey) return false;
+  return request.headers.get('x-api-key') === apiKey;
+}
+
 export async function GET(request: NextRequest) {
+  if (!isAdminRequest(request)) {
+    return NextResponse.json({ error: 'Unauthorized. Provide x-api-key header.' }, { status: 401 });
+  }
+
   const shouldFlush = request.nextUrl.searchParams.get('flush') === 'true';
 
   if (shouldFlush) {

@@ -38,32 +38,15 @@ describe('BookingModal', () => {
 
   it('renders Cal.com iframe with correct embed URL', () => {
     render(<BookingModal open={true} onClose={mockOnClose} />);
-    const iframe = screen.getByTitle(/Book a 15min meeting/i);
+    const iframe = screen.getByTitle(/Book a introductory-call meeting/i);
     expect(iframe).toBeInTheDocument();
-    expect(iframe).toHaveAttribute('src', expect.stringContaining('cal.com/pp-namias/15min'));
+    expect(iframe).toHaveAttribute('src', expect.stringContaining('cal.com/pp-namias/introductory-call'));
     expect(iframe).toHaveAttribute('src', expect.stringContaining('embed=true'));
   });
 
-  it('renders event type selector buttons', () => {
+  it('renders event type selector button', () => {
     render(<BookingModal open={true} onClose={mockOnClose} />);
-    expect(screen.getByText('15 min')).toBeInTheDocument();
     expect(screen.getByText('30 min')).toBeInTheDocument();
-  });
-
-  it('switches event type when 30 min button is clicked', () => {
-    render(<BookingModal open={true} onClose={mockOnClose} />);
-    
-    // Click 30 min button
-    fireEvent.click(screen.getByText('30 min'));
-    
-    const iframe = screen.getByTitle(/Book a 30min meeting/i);
-    expect(iframe).toHaveAttribute('src', expect.stringContaining('cal.com/pp-namias/30min'));
-  });
-
-  it('defaults to 15 min event type', () => {
-    render(<BookingModal open={true} onClose={mockOnClose} />);
-    const iframe = screen.getByTitle(/Book a 15min meeting/i);
-    expect(iframe).toHaveAttribute('src', expect.stringContaining('/15min'));
   });
 
   it('has a link to open Cal.com externally', () => {
@@ -84,13 +67,13 @@ describe('BookingModal', () => {
 
   it('iframe has lazy loading attribute for performance', () => {
     render(<BookingModal open={true} onClose={mockOnClose} />);
-    const iframe = screen.getByTitle(/Book a 15min meeting/i);
+    const iframe = screen.getByTitle(/Book a introductory-call meeting/i);
     expect(iframe).toHaveAttribute('loading', 'lazy');
   });
 
   it('iframe allows payment attribute for Cal.com checkout', () => {
     render(<BookingModal open={true} onClose={mockOnClose} />);
-    const iframe = screen.getByTitle(/Book a 15min meeting/i);
+    const iframe = screen.getByTitle(/Book a introductory-call meeting/i);
     expect(iframe).toHaveAttribute('allow', 'payment');
   });
 });

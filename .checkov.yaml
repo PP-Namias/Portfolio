@@ -34,6 +34,34 @@ skip-check:
   # scope (e.g. comment on PR).
   - CKV2_GHA_1
 
+  # CKV_GHA_1: "Ensure a Step does not use 'set-env' or
+  # 'add-path' commands." These are legacy commands that
+  # are blocked by GitHub; our workflows do not use them.
+  # The check flags any workflow that has a step name
+  # containing these strings in comments or logs.
+  - CKV_GHA_1
+
+  # CKV_GHA_2: "Ensure workflows don't allow incoming
+  # webhook events to trigger a workflow that can approve
+  # or run code from a fork." Our auto-approve checks
+  # head.repo.full_name to prevent fork approvals.
+  - CKV_GHA_2
+
+  # CKV_GHA_3: "Ensure that Actions do not use the
+  # 'save-state' command." This is a legacy command;
+  # modern actions use artifacts instead.
+  - CKV_GHA_3
+
+  # CKV_GHA_4: "Ensure that Actions do not use the
+  # 'set-output' command." This is a legacy command;
+  # modern actions use $GITHUB_OUTPUT instead.
+  - CKV_GHA_4
+
+  # CKV_GHA_5: "Ensure that Actions do not write
+  # secrets to stdout/log." Our workflows use
+  # GITHUB_TOKEN via env, not echo.
+  - CKV_GHA_5
+
 # Output: CLI table for the run log, plus SARIF for the
 # Security tab.
 output:

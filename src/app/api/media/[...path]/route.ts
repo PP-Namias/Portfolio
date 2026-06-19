@@ -26,11 +26,15 @@ function buildCacheControl(assetKind: 'image' | 'file' | 'unknown', expiresAt?: 
   return 'public, max-age=86400, s-maxage=86400, stale-while-revalidate=604800';
 }
 
-function buildUpstreamUrl(targetUrl: string, width: number, quality: number): URL {
+function buildUpstreamUrl(targetUrl: string, assetKind: 'image' | 'file' | 'unknown', width: number, quality: number): URL {
   const upstreamUrl = new URL(targetUrl);
-  upstreamUrl.searchParams.set('auto', 'format');
-  upstreamUrl.searchParams.set('w', String(width));
-  upstreamUrl.searchParams.set('q', String(quality));
+
+  if (assetKind === 'image') {
+    upstreamUrl.searchParams.set('auto', 'format');
+    upstreamUrl.searchParams.set('w', String(width));
+    upstreamUrl.searchParams.set('q', String(quality));
+  }
+
   return upstreamUrl;
 }
 
@@ -66,16 +70,26 @@ export async function GET(request: NextRequest, context: { params: Promise<{ pat
   const expiresAt = expiresAtParam ? Number.parseInt(expiresAtParam, 10) : undefined;
   const signature = requestUrl.searchParams.get('sig');
 
+  const secret = process.env.SANITY_MEDIA_GATEWAY_SECRET?.trim();
+  if (!secret) {
+    return buildError(500, 'Media gateway not configured');
+  }
+
+  if (!signature) {
+    return buildError(401, 'Missing media signature');
+  }
+
   if (!verifyMediaGatewaySignature({ targetUrl, width, quality, expiresAt, signature })) {
     return buildError(401, 'Invalid media signature');
   }
 
-  const upstreamUrl = buildUpstreamUrl(targetUrl, width, quality);
+    const upstreamUrl = buildUpstreamUrl(targetUrl, assetKind, width, quality);
 
   try {
     const upstreamResponse = await fetch(upstreamUrl, {
       cache: 'no-store',
       redirect: 'follow',
+      signal: AbortSignal.timeout(15_000),
     });
 
     if (!upstreamResponse.ok || !upstreamResponse.body) {

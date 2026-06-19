@@ -40,7 +40,16 @@ function getOpenAiModel(): string {
 }
 
 function getOpenAiBaseUrl(): string {
-  return (process.env.OPENAI_BASE_URL || 'https://api.openai.com/v1').replace(/\/$/, '');
+  const raw = (process.env.OPENAI_BASE_URL || 'https://api.openai.com/v1').replace(/\/$/, '');
+  try {
+    const parsed = new URL(raw);
+    if (parsed.protocol !== 'https:' && parsed.protocol !== 'http:') {
+      throw new Error(`Invalid protocol: ${parsed.protocol}`);
+    }
+    return raw;
+  } catch {
+    return 'https://api.openai.com/v1';
+  }
 }
 
 type ProviderName = 'gemini' | 'openai';

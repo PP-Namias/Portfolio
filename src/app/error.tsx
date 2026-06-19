@@ -13,11 +13,11 @@ export default function Error({
   reset: () => void;
 }) {
   useEffect(() => {
-    console.error(error);
+    if (process.env.NODE_ENV !== 'test') console.error(error);
   }, [error]);
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen text-center px-4 py-16">
+    <main className="flex flex-col items-center justify-center min-h-screen text-center px-4 py-16">
       {/* Icon */}
       <motion.div
         initial={{ opacity: 0, scale: 0.5, rotate: -10 }}
@@ -28,7 +28,7 @@ export default function Error({
         <div className="relative">
           <div className="absolute inset-0 rounded-full bg-accent-pink/20 blur-2xl scale-150" />
           <div className="relative rounded-full bg-accent-pink/10 p-6">
-            <AlertTriangle className="h-12 w-12 text-accent-pink" />
+            <AlertTriangle className="h-12 w-12 text-accent-pink" aria-hidden="true" />
           </div>
         </div>
       </motion.div>
@@ -60,17 +60,17 @@ export default function Error({
           onClick={reset}
           className="inline-flex items-center gap-2 rounded-lg px-6 py-2.5 text-sm font-medium bg-accent-pink text-white hover:bg-accent-pink-hover transition-colors shadow-sm"
         >
-          <RefreshCw className="h-4 w-4" />
+          <RefreshCw className="h-4 w-4" aria-hidden="true" />
           Try Again
         </button>
         <Link
           href="/"
           className="inline-flex items-center gap-2 rounded-lg px-6 py-2.5 text-sm font-medium border border-border-light dark:border-border-dark text-text-primary-light dark:text-text-primary-dark hover:border-accent-pink/50 transition-colors"
         >
-          <Home className="h-4 w-4" />
+          <Home className="h-4 w-4" aria-hidden="true" />
           Go Home
         </Link>
       </motion.div>
-    </div>
+    </main>
   );
 }

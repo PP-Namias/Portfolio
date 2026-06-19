@@ -5,8 +5,8 @@ import {createDataAttribute, type CreateDataAttributeProps} from 'next-sanity'
  * Sanity Presentation tool can offer click-to-edit on the live marketing
  * site. Usage:
  *
- *   <h1 {...sanityField('heroSection', 'roles', 0)}>{role}</h1>
- *   <h1 {...sanityField({id, type: 'heroSection'}, 'roles', 0)}>{role}</h1>
+ *   <h1 {...sanityField('profile', 'heroRoles', 0)}>{role}</h1>
+ *   <h1 {...sanityField({id, type: 'profile'}, 'heroRoles', 0)}>{role}</h1>
  *
  * The attribute is always a non-breaking no-op in production: VisualEditing
  * only attaches behavior when the page is in draft mode (i.e. when the
