@@ -28,6 +28,8 @@
 Production portfolio for [namias.tech](https://namias.tech) — a modal-first, Sanity-driven Next.js application with a modern animation system, secure media gateway, AI-powered chat, and automated CI/CD quality gates.
 
 <p>
+  <a href="#screenshots">Screenshots</a> ·
+  <a href="#highlights">Highlights</a> ·
   <a href="#quality--security">Quality & Security</a> ·
   <a href="#core-stack">Stack</a> ·
   <a href="#getting-started">Getting Started</a> ·
@@ -37,25 +39,57 @@ Production portfolio for [namias.tech](https://namias.tech) — a modal-first, S
   <a href="#license">License</a>
 </p>
 
-### Highlights
+---
 
-- **Modal-first UX** — Resume, Experience, Booking, and Project Detail modals with smooth transitions
-- **Sanity-powered content** — All runtime data served from Sanity CMS with GROQ queries and multi-layer caching
-- **Secure media gateway** — `/api/media/[...path]` proxies Sanity assets with optional HMAC signing
-- **AI chat** — Gemini-driven assistant at `/api/chat` with preset responses for common queries
-- **Performance** — Multi-tier caching (L1 in-memory, L2 Upstash Redis, L3 CDN), ISR, SWR, image optimization
-- **Dark/light theme** — `next-themes` with accent color system
-- **Automated CI/CD** — 19 GitHub workflows for validation, security scanning, and deployment
+## Screenshots
+
+<!-- Drop your screenshots into assets/screenshots/ and update the filenames below -->
+
+<p align="center">
+  <img src="assets/screenshots/home.png" alt="Portfolio Home" width="800" />
+  <br/>
+  <em>Home — Hero with animated role rotator, profile photo, and floating hub menu</em>
+</p>
+
+<table>
+  <tr>
+    <td align="center">
+      <img src="assets/screenshots/projects.png" alt="Projects Section" width="400" />
+      <br/>
+      <em>Projects — 3D card grid with hover transforms and category filters</em>
+    </td>
+    <td align="center">
+      <img src="assets/screenshots/blog.png" alt="Blog Section" width="400" />
+      <br/>
+      <em>Blog — Cover images, reading time, and MDX-rendered content</em>
+    </td>
+  </tr>
+</table>
+
+---
+
+## Highlights
+
+- **Modal-first UX** — Resume, Experience, Booking, and Project Detail modals with smooth Framer Motion transitions
+- **Sanity-powered content** — All runtime data served from Sanity CMS with GROQ queries and multi-layer caching (in-memory, Upstash Redis, CDN)
+- **Secure media gateway** — `/api/media/[...path]` proxies Sanity assets with HMAC-SHA256 signing, 7-day TTL, unsigned fallback
+- **AI chat** — Gemini-powered assistant at `/api/chat` with multi-provider failover (Gemini → OpenAI) and preset responses
+- **Dark/light theme** — `next-themes` with 8 accent color options
+- **Gallery** — Masonry grid with lightbox navigation and keyboard support
+- **Certifications** — Filterable grid with lightbox detail view and issuer badges
+- **Blog** — MDX content with code highlighting, reading time, and SEO-optimized meta
+- **Performance** — ISR on all content pages, SWR for client data, image optimization via Sanity CDN
+- **Automated CI/CD** — 19+ GitHub workflows: lint, typecheck, tests, react-doctor, PentestAgent, Trivy, CodeQL, deployment
 
 ---
 
 ## Quality & Security
 
-| Check | Tool | Threshold | CI Location |
+| Check | Tool | Threshold | Status |
 |---|---|---|---|
 | Lint | ESLint 9 (flat config) | 0 errors | `pr-validation.yml` |
 | Types | `tsc --noEmit` | 0 errors | `pr-validation.yml` |
-| Tests | Vitest + Testing Library | 278/278 passed | `pr-validation.yml` |
+| Tests | Vitest + Testing Library | 410/410 passed | `pr-validation.yml` |
 | React quality | react-doctor 0.4.0 | 100/100 (0 findings) | `react-doctor.yml` |
 
 | Badge | Status |
@@ -75,7 +109,7 @@ Security is a first-class feature — continuously tested via [PentestAgent](htt
 
 | Layer | Technology |
 |---|---|
-| **Framework** | Next.js 16 (App Router) |
+| **Framework** | Next.js 16 (App Router, Turbopack) |
 | **Language** | TypeScript (strict mode) |
 | **Styling** | Tailwind CSS + Framer Motion + Lucide React |
 | **Theme** | `next-themes` with accent color picker |
@@ -84,8 +118,9 @@ Security is a first-class feature — continuously tested via [PentestAgent](htt
 | **Data fetching** | SWR (client) + multi-layer cache (L1 in-memory → L2 Upstash Redis → L3 CDN) |
 | **Media delivery** | Secure gateway at `/api/media/[...path]` with HMAC verification |
 | **AI** | Gemini 2.0 Flash via `/api/chat` with multi-provider failover |
-| **Testing** | Vitest + Testing Library + jsdom (31 files, 278 tests) |
+| **Testing** | Vitest + Testing Library + jsdom (43 files, 410 tests) |
 | **Hosting** | Cloudflare Workers via OpenNext |
+| **CI/CD** | GitHub Actions (19 workflows) |
 
 ---
 
@@ -95,6 +130,7 @@ Security is a first-class feature — continuously tested via [PentestAgent](htt
 
 - Node.js 18+
 - npm
+- Sanity project (for CMS data)
 
 ### Setup
 
@@ -102,10 +138,55 @@ Security is a first-class feature — continuously tested via [PentestAgent](htt
 git clone https://github.com/PP-Namias/Portfolio.git
 cd Portfolio
 npm install
+cp .env.example .env.local   # fill in real values
 npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000).
+
+To start Sanity Studio separately:
+
+```bash
+cd studio
+pnpm install
+pnpm run dev
+```
+
+Open [http://localhost:3333](http://localhost:3333).
+
+---
+
+## Project structure
+
+```
+Portfolio/
+├── .github/                  # 19 CI/CD workflows, templates, governance
+├── .agents/                  # OpenCode agent skills & subagents
+├── assets/screenshots/       # README screenshots
+├── docs/                     # PRDs, performance, security, react-doctor
+├── studio/                   # Sanity Studio (21 schema types, 42 skills)
+├── scripts/                  # Sanity import, migration, and seed scripts
+├── functions/                # Sanity Functions (scheduled-publish, broken-refs, auto-tag)
+├── public/                   # Static assets (favicon, OG, robots.txt, service worker)
+├── src/
+│   ├── app/                  # App Router: pages, API routes (11), layout, providers
+│   │   ├── api/              # chat, media, resume, sanity webhook, cache, canary
+│   │   ├── blog/             # Blog list and [slug] detail pages
+│   │   ├── projects/         # Project detail pages ([slug])
+│   │   └── studio/           # Sanity Studio landing page
+│   ├── components/
+│   │   ├── sections/         # 12 section components (Hero, Projects, Blog, Gallery, etc.)
+│   │   └── ui/               # 27 reusable UI components (Modal, Card, OptimizedImage, etc.)
+│   ├── hooks/                # useAccentColor, useCarousel, useCmsContent, etc.
+│   ├── lib/                  # Cache, media gateway, feature flags, CMS helpers
+│   ├── types/                # Shared TypeScript interfaces
+│   └── middleware.ts         # Rate limiting, security headers
+├── prd.json                  # Active product requirement documents
+├── next.config.js
+├── tailwind.config.ts
+├── eslint.config.mjs
+└── package.json
+```
 
 ---
 
@@ -115,7 +196,7 @@ Open [http://localhost:3000](http://localhost:3000).
 
 | Script | Description |
 |---|---|
-| `npm run dev` | Start development server |
+| `npm run dev` | Start development server (Turbopack) |
 | `npm run build` | Create production build |
 | `npm run start` | Run production build locally |
 
@@ -124,10 +205,9 @@ Open [http://localhost:3000](http://localhost:3000).
 | Script | Description |
 |---|---|
 | `npm run lint` | Run ESLint across `src` and `studio` |
-| `npm run test` | Run Vitest once |
-| `npm run test:watch` | Run Vitest in watch mode |
+| `npm run test` | Run all 410 tests once |
+| `npm run test:watch` | Run tests in watch mode |
 | `npm run doctor` | Run react-doctor quality analysis |
-| `npm run doctor:json` | Export report as JSON |
 | `npm run doctor:check` | Fail CI on any finding |
 
 ### Sanity CMS
@@ -137,8 +217,6 @@ Open [http://localhost:3000](http://localhost:3000).
 | `npm run sanity:dry-run` | Preview import plan without writing |
 | `npm run sanity:import` | Run import with idempotent upserts |
 | `npm run sanity:parity` | Compare source counts vs dataset |
-| `npm run sanity:parity:strict` | Parity check (non-zero on mismatch) |
-| `npm run sanity:readiness` | Readiness-only check |
 | `npm --prefix studio run dev` | Start Sanity Studio locally |
 
 ### Cloudflare deployment
@@ -156,44 +234,38 @@ Open [http://localhost:3000](http://localhost:3000).
 Create `.env.local` from the template in `.env.example`:
 
 ```bash
-# Core
-NEXT_PUBLIC_SANITY_PROJECT_ID=nl0qw78w
-NEXT_PUBLIC_SANITY_DATASET=production
-
-# Sanity tokens
-SANITY_API_READ_TOKEN=your_sanity_read_token
-SANITY_API_WRITE_TOKEN=your_sanity_write_token
-SANITY_STUDIO_DEPLOY_TOKEN=your_studio_deploy_token
-SANITY_REVALIDATE_SECRET=your_revalidate_secret
-SANITY_MEDIA_GATEWAY_SECRET=your_media_gateway_secret
-
-# AI Chat
-GOOGLE_GEMINI_API_KEY=your_key_here
-
-# Caching (optional)
-UPSTASH_REDIS_REST_URL=your_upstash_rest_url
-UPSTASH_REDIS_REST_TOKEN=your_upstash_rest_token
-
-# Cloudflare
-CLOUDFLARE_API_TOKEN=your_cloudflare_api_token
-CLOUDFLARE_ACCOUNT_ID=4bd772a73fb69e405e81422ee07a34a6
-
-# Site
-NEXT_PUBLIC_SITE_URL=https://namias.jkrbn99.workers.dev
-NEXT_PUBLIC_SANITY_STUDIO_URL=https://your-studio-url.sanity.studio
+cp .env.example .env.local
 ```
 
-Keep real values in `.env.local` only. Use `.env.example` as the template. Store deployment credentials in GitHub Actions secrets.
+### Required variables
 
-### Secure media gateway
+| Variable | Description |
+|---|---|
+| `NEXT_PUBLIC_SANITY_PROJECT_ID` | Sanity project ID |
+| `NEXT_PUBLIC_SANITY_DATASET` | Sanity dataset name |
+| `SANITY_API_READ_TOKEN` | Sanity API read token |
+| `SANITY_API_WRITE_TOKEN` | Sanity API write token |
+| `SANITY_MEDIA_GATEWAY_SECRET` | HMAC secret for signing media URLs |
+| `GOOGLE_GEMINI_API_KEY` | Gemini API key for chat |
+| `CLOUDFLARE_API_TOKEN` | Cloudflare API token for deployment |
 
-Sanity assets are proxied through the server-side gateway at `/api/media/[...path]` instead of exposing raw Sanity CDN URLs. An optional HMAC-SHA256 signing secret (`SANITY_MEDIA_GATEWAY_SECRET`) verifies every request.
+### Optional variables
 
-### Cloudflare deployment
+| Variable | Description |
+|---|---|
+| `UPSTASH_REDIS_REST_URL` | Upstash Redis URL (L2 cache) |
+| `UPSTASH_REDIS_REST_TOKEN` | Upstash Redis token |
+| `NEXT_PUBLIC_UMAMI_WEBSITE_ID` | Umami analytics website ID |
+| `OPENAI_API_KEY` | OpenAI key (secondary chat provider) |
 
-- **Root app** — deploys via `opennextjs-cloudflare` to Cloudflare Workers
-- **Studio** — deploys from `studio/` as its own Sanity application
-- Set `NEXT_PUBLIC_SANITY_STUDIO_URL` to link the `/studio` landing page to the hosted editor
+Keep real values in `.env.local` only. Store deployment credentials in GitHub Actions secrets.
+
+### Cloudflare Worker secrets
+
+Set these via `wrangler secret put <NAME>` (not in `.env`):
+
+- `SANITY_MEDIA_GATEWAY_SECRET` — must match local value
+- `SANITY_REVALIDATE_SECRET` — for on-demand ISR
 
 ---
 
@@ -212,39 +284,6 @@ The portfolio is fully backed by [Sanity v3](https://www.sanity.io/) — the edi
 | **Sanity Functions** | `scheduled-publish` (5-min cron), `broken-refs` (6-h cron), `auto-tag-images` (on asset create) |
 | **Visual Editing** | `next-sanity` Live Content API + `<SanityField>` component with `data-sanity` attributes for overlay targeting |
 | **Real-time preview** | Presentation tool with draft mode via `/api/draft-mode` |
-
-The studio package lives in [`studio/`](./studio/) with its own `package.json`, 21 schema files, 5 custom actions, 42 skill markdown files, and seed data scripts.
-
----
-
-## Project structure
-
-```
-Portfolio/
-├── .github/                  # 19 CI/CD workflows, templates, governance
-├── .agents/                  # OpenCode agent skills (11 skills)
-├── docs/                     # Documentation (performance, security, react-doctor, studio)
-├── studio/                   # Sanity Studio CMS (21 schema types, 42 skills)
-├── scripts/                  # Sanity import, migration, and seed scripts
-├── functions/                # Sanity Functions (scheduled-publish, broken-refs, auto-tag)
-├── public/                   # Static assets (favicon, OG image, robots.txt, service worker)
-├── src/
-│   ├── app/                  # App Router: pages, API routes (11), layout, providers
-│   │   ├── api/              # chat, media, resume, sanity webhook, cache health, etc.
-│   │   ├── blog/             # Blog list and [slug] detail pages
-│   │   └── studio/           # Sanity Studio landing page
-│   ├── components/           # UI components (27), sections (12), CMS, SEO
-│   ├── hooks/                # useAccentColor, useCarousel, useCmsContent, etc.
-│   ├── lib/                  # Cache, media gateway, SWR config, feature flags
-│   ├── types/                # Shared TypeScript interfaces
-│   └── middleware.ts         # Rate limiting
-├── tests/                    # 31 test files (components, hooks, API, lib)
-├── prd.json                  # Active product requirement documents
-├── next.config.js
-├── tailwind.config.ts
-├── eslint.config.mjs
-└── package.json
-```
 
 ---
 
