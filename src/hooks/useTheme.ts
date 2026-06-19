@@ -1,7 +1,7 @@
 'use client';
 
 import { useTheme as useNextTheme } from 'next-themes';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 export function useTheme() {
   const { theme, setTheme, resolvedTheme } = useNextTheme();
@@ -11,9 +11,9 @@ export function useTheme() {
     setMounted(true);
   }, []);
 
-  const toggleTheme = () => {
+  const toggleTheme = useCallback(() => {
     setTheme(resolvedTheme === 'dark' ? 'light' : 'dark');
-  };
+  }, [setTheme, resolvedTheme]);
 
   const isDark = resolvedTheme === 'dark';
 

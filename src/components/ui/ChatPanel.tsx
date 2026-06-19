@@ -198,10 +198,16 @@ export function ChatPanel({ onBack, onClose, messages, setMessages }: Readonly<C
     };
   }, [revalidateAvailability]);
 
+  const messagesRef = useRef(messages);
+  messagesRef.current = messages;
+
+  const isLoadingRef = useRef(isLoading);
+  isLoadingRef.current = isLoading;
+
   const sendMessage = useCallback(
     async (text: string) => {
       const trimmed = text.trim();
-      if (!trimmed || isLoading) return;
+      if (!trimmed || isLoadingRef.current) return;
 
       if (typeof navigator !== 'undefined' && !navigator.onLine) {
         setChatAvailability('inactive');
@@ -222,7 +228,7 @@ export function ChatPanel({ onBack, onClose, messages, setMessages }: Readonly<C
       setIsLoading(true);
 
       try {
-        const history = messages.map((m) => ({
+        const history = messagesRef.current.map((m) => ({
           role: m.role,
           content: m.content,
         }));
@@ -257,7 +263,7 @@ export function ChatPanel({ onBack, onClose, messages, setMessages }: Readonly<C
         setIsLoading(false);
       }
     },
-    [isLoading, messages, setMessages]
+    [setMessages]
   );
 
   const handleAction = useCallback((action: string) => {
