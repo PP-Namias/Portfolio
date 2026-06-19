@@ -79,7 +79,9 @@ export async function GET(request: NextRequest, context: { params: Promise<{ pat
     return buildError(401, 'Missing media signature');
   }
 
-  if (!verifyMediaGatewaySignature({ targetUrl, width, quality, expiresAt, signature })) {
+  const sigResult = verifyMediaGatewaySignature({ targetUrl, width, quality, expiresAt, signature });
+
+  if (!sigResult.valid) {
     return buildError(401, 'Invalid media signature');
   }
 

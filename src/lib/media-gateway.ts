@@ -2,6 +2,7 @@ import { createHmac, timingSafeEqual } from 'node:crypto';
 import {
   SANITY_CDN_HOST,
   DEFAULT_GATEWAY_EXPIRY_SECONDS,
+  SIGNATURE_GRACE_PERIOD_SECONDS,
   DEFAULT_WIDTH,
   DEFAULT_QUALITY,
   MEDIA_ROUTE_PREFIX,
@@ -73,19 +74,26 @@ export function createMediaGatewaySignature(input: MediaGatewaySignatureInput): 
   return { exp, sig };
 }
 
-export function verifyMediaGatewaySignature(input: MediaGatewaySignatureInput & { signature?: string | null }): boolean {
+export function verifyMediaGatewaySignature(input: MediaGatewaySignatureInput & { signature?: string | null }): {
+  valid: boolean;
+  expired: boolean;
+} {
   const secret = getGatewaySecret();
 
   if (!secret) {
-    return false;
+    return { valid: false, expired: false };
   }
 
   if (!input.signature || typeof input.expiresAt !== 'number') {
-    return false;
+    return { valid: false, expired: false };
   }
 
-  if (input.expiresAt < Math.floor(Date.now() / 1000)) {
-    return false;
+  const now = Math.floor(Date.now() / 1000);
+  const isExpired = input.expiresAt < now;
+  const withinGracePeriod = isExpired && input.expiresAt >= now - SIGNATURE_GRACE_PERIOD_SECONDS;
+
+  if (isExpired && !withinGracePeriod) {
+    return { valid: false, expired: true };
   }
 
   const expected = createHmac('sha256', secret)
@@ -94,10 +102,11 @@ export function verifyMediaGatewaySignature(input: MediaGatewaySignatureInput & 
   const provided = Buffer.from(input.signature, 'base64url');
 
   if (provided.length !== expected.length) {
-    return false;
+    return { valid: false, expired: isExpired };
   }
 
-  return timingSafeEqual(provided, expected);
+  const hmacValid = timingSafeEqual(provided, expected);
+  return { valid: hmacValid, expired: isExpired && hmacValid };
 }
 
 export function buildMediaGatewayUrl(

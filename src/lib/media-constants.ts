@@ -5,6 +5,7 @@ export const SANITY_NAMESPACE = 'sanity';
 export const DEFAULT_WIDTH = 1200;
 export const DEFAULT_QUALITY = 85;
 export const DEFAULT_GATEWAY_EXPIRY_SECONDS = 7 * 24 * 60 * 60;
+export const SIGNATURE_GRACE_PERIOD_SECONDS = 60 * 60;
 
 export function normalizeInteger(value: unknown, fallback: number, min: number, max: number): number {
   const parsed = typeof value === 'string' ? Number.parseInt(value, 10) : Number(value);
