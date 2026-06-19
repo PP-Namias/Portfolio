@@ -14,9 +14,9 @@ export const dynamic = 'force-dynamic';
 function buildCacheControl(assetKind: 'image' | 'file' | 'unknown', expiresAt?: number): string {
   if (typeof expiresAt === 'number' && Number.isFinite(expiresAt)) {
     const remainingSeconds = Math.max(60, expiresAt - Math.floor(Date.now() / 1000));
-    const maxAge = Math.min(3600, remainingSeconds);
+    const maxAge = Math.min(604800, remainingSeconds);
 
-    return `public, max-age=${maxAge}, s-maxage=${Math.max(maxAge, 3600)}, stale-while-revalidate=604800`;
+    return `public, max-age=${maxAge}, s-maxage=${Math.max(maxAge, 86400)}, stale-while-revalidate=604800`;
   }
 
   if (assetKind === 'file') {
