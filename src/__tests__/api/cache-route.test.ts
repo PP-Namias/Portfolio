@@ -29,12 +29,19 @@ describe('/api/performance/cache', () => {
 
   beforeEach(async () => {
     vi.clearAllMocks();
+    process.env.ADMIN_API_KEY = 'test-admin-key';
     const mod = await import('@/app/api/performance/cache/route');
     GET = mod.GET;
   });
 
-  it('returns cache stats on GET', async () => {
+  it('returns 401 without API key', async () => {
     const request = makeRequest('http://localhost/api/performance/cache');
+    const response = await GET(request);
+    expect(response.status).toBe(401);
+  });
+
+  it('returns cache stats on GET with valid API key', async () => {
+    const request = makeRequest('http://localhost/api/performance/cache', { 'x-api-key': 'test-admin-key' });
     const response = await GET(request);
     const data = await response.json();
 
@@ -48,7 +55,6 @@ describe('/api/performance/cache', () => {
   });
 
   it('flushes cache when flush=true with valid API key', async () => {
-    process.env.ADMIN_API_KEY = 'test-admin-key';
     const request = makeRequest('http://localhost/api/performance/cache?flush=true', { 'x-api-key': 'test-admin-key' });
     const response = await GET(request);
     const data = await response.json();
@@ -56,11 +62,10 @@ describe('/api/performance/cache', () => {
     expect(data.flushed).toBe(5);
     expect(data.status).toBe('ok');
     expect(flush).toHaveBeenCalled();
-    delete process.env.ADMIN_API_KEY;
   });
 
   it('sets correct headers', async () => {
-    const request = makeRequest('http://localhost/api/performance/cache');
+    const request = makeRequest('http://localhost/api/performance/cache', { 'x-api-key': 'test-admin-key' });
     const response = await GET(request);
 
     expect(response.headers.get('Cache-Control')).toBe('no-cache, private');

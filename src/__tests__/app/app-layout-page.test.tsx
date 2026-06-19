@@ -49,6 +49,7 @@ vi.mock('lenis/react', () => ({
 
 vi.mock('@/components/ui/FloatingHub', () => ({
   FloatingHub: () => <div data-testid="floating-hub">FloatingHub</div>,
+  FloatingHubWithBoundary: () => <div data-testid="floating-hub">FloatingHub</div>,
 }));
 
 vi.mock('@/components/ui/ScrollToTop', () => ({

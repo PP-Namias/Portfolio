@@ -54,13 +54,21 @@ function isAuthorizedWebhookRequest(request: NextRequest): boolean {
     return false;
   }
 
-  return timingSafeEqual(Buffer.from(expectedSecret), Buffer.from(providedSecret));
+  const expectedBuf = Buffer.from(expectedSecret);
+  const providedBuf = Buffer.from(providedSecret);
+
+  if (expectedBuf.length !== providedBuf.length) {
+    return false;
+  }
+
+  return timingSafeEqual(expectedBuf, providedBuf);
 }
 
 function revalidateCmsPaths(): void {
   revalidatePath('/', 'page');
   revalidatePath('/blog', 'page');
   revalidatePath('/blog/[slug]', 'page');
+  revalidatePath('/projects/[slug]', 'page');
   revalidatePath('/sitemap.xml', 'page');
 }
 
