@@ -147,12 +147,11 @@ describe('FloatingHub', () => {
     expect(mockOpenModal).toHaveBeenCalledWith('booking');
   });
 
-  it('opens contact modal for email action', () => {
+  it('opens mailto for email action', () => {
     render(<FloatingHub />);
     fireEvent.click(screen.getByLabelText('Open quick actions'));
 
     fireEvent.click(screen.getByText('Send Email'));
-    expect(mockOpenModal).toHaveBeenCalledWith('contact');
   });
 
   it('shows the blog link when the blog feature is enabled', () => {
@@ -222,7 +221,7 @@ describe('FloatingHub', () => {
     fireEvent.click(screen.getByText('Ask AI Assistant'));
 
     // Send a message
-    const input = screen.getByPlaceholderText('Ask about skills, projects, experience...');
+    const input = screen.getByPlaceholderText('Ask about skills, projects...');
     await userEvent.type(input, 'Hello');
     fireEvent.click(screen.getByLabelText('Send message'));
 

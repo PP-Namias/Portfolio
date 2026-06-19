@@ -1,154 +1,272 @@
 import type {StructureBuilder} from 'sanity/structure'
+import {
+  HomeIcon,
+  UserIcon,
+  DocumentsIcon,
+  CogIcon,
+  RocketIcon,
+  CaseIcon,
+  StarFilledIcon,
+  ImagesIcon,
+  UsersIcon,
+  BookIcon,
+  EyeOpenIcon,
+      FilterIcon,
+      EditIcon,
+} from '@sanity/icons'
 
 /**
  * Page-first IA, 2 levels max under any group.
  *
- *  Pages
- *    Homepage         - Hero, About, Tech Stack, Projects, Experience, Certs, Gallery, Resume, Site Settings
+ *  Content
+ *    Homepage         - Hero & Profile, About, Tech Stack
+ *    Collections      - Projects, Experience, Certs, Gallery, Resume
  *    Blog             - Posts, Authors, Categories
- *    Profile          - Profile, Memberships, Recommendations
+ *    Community        - Memberships, Recommendations
+ *    Drafts           - All draft documents across types
  *  Settings
- *    SEO              - site settings (default SEO copy + og/twitter images)
- *    Media            - global image policy / asset library (future)
- *    Site             - site name, canonical url, robots
+ *    Site Settings    - site name, canonical url, robots
+ *    SEO Settings     - default SEO copy + og/twitter images
+ *    Media Settings   - global image policy / asset library
  *  Reference Data
  *    Certification Categories
  *    Certification Issuers
  *    Gallery Categories
- *  Quick Start
- *    New project (featured)
- *    New post (draft)
- *    New certification
- *    Open Presentation
- *    Browse skills
  */
 export function deskStructure(S: StructureBuilder) {
   return S.list()
     .title('Content')
     .items([
+      // ─── Homepage ────────────────────────────────────────────
       S.listItem()
-        .title('Pages')
+        .title('Homepage')
+        .icon(HomeIcon)
         .child(
           S.list()
-            .title('Pages')
+            .title('Homepage')
             .items([
               S.listItem()
-                .title('Homepage')
-                .child(
-                  S.list()
-                    .title('Homepage')
-                    .items([
-                      S.listItem()
-                        .title('Hero Section')
-                        .child(S.document().schemaType('heroSection').documentId('heroSection')),
-                      S.listItem()
-                        .title('About Section')
-                        .child(S.document().schemaType('aboutSection').documentId('aboutSection')),
-                      S.listItem()
-                        .title('Tech Stack')
-                        .child(S.document().schemaType('techStack').documentId('techStack')),
-                      S.listItem()
-                        .title('Projects')
-                        .child(S.documentTypeList('project').title('Projects')),
-                      S.listItem()
-                        .title('Experience')
-                        .child(S.documentTypeList('experience').title('Experience')),
-                      S.listItem()
-                        .title('Certifications')
-                        .child(S.documentTypeList('certification').title('Certifications')),
-                      S.listItem()
-                        .title('Gallery')
-                        .child(S.documentTypeList('galleryImage').title('Gallery')),
-                      S.listItem()
-                        .title('Resume')
-                        .child(S.documentTypeList('resume').title('Resume')),
-                    ]),
-                ),
+                .title('Hero & Profile')
+                .icon(UserIcon)
+                .child(S.document().schemaType('profile').documentId('profile')),
               S.listItem()
-                .title('Blog')
-                .child(
-                  S.list()
-                    .title('Blog')
-                    .items([
-                      S.listItem()
-                        .title('Posts')
-                        .child(S.documentTypeList('post').title('Posts')),
-                      S.listItem()
-                        .title('Authors')
-                        .child(S.documentTypeList('author').title('Authors')),
-                      S.listItem()
-                        .title('Categories')
-                        .child(S.documentTypeList('category').title('Categories')),
-                    ]),
-                ),
+                .title('About Section')
+                .icon(DocumentsIcon)
+                .child(S.document().schemaType('aboutSection').documentId('aboutSection')),
               S.listItem()
-                .title('Profile')
+                .title('Tech Stack')
+                .icon(CogIcon)
+                .child(S.document().schemaType('techStack').documentId('techStack')),
+            ]),
+        ),
+
+      // ─── Collections ─────────────────────────────────────────
+      S.listItem()
+        .title('Collections')
+        .icon(DocumentsIcon)
+        .child(
+          S.list()
+            .title('Collections')
+            .items([
+              // Projects with filtered views
+              S.listItem()
+                .title('Projects')
+                .icon(RocketIcon)
                 .child(
                   S.list()
-                    .title('Profile')
+                    .title('Projects')
                     .items([
                       S.listItem()
-                        .title('Profile')
-                        .child(S.document().schemaType('profile').documentId('profile')),
+                        .title('All Projects')
+                        .icon(FilterIcon)
+                        .child(
+                          S.documentList()
+                            .title('All Projects')
+                            .filter('_type == "project"')
+                            .defaultOrdering([{field: 'title', direction: 'asc'}])
+                        ),
                       S.listItem()
-                        .title('Memberships')
-                        .child(S.documentTypeList('membership').title('Memberships')),
+                        .title('Featured')
+                        .icon(EyeOpenIcon)
+                        .child(
+                          S.documentList()
+                            .title('Featured Projects')
+                            .filter('_type == "project" && isFeatured == true')
+                            .defaultOrdering([{field: 'title', direction: 'asc'}])
+                        ),
                       S.listItem()
-                        .title('Recommendations')
-                        .child(S.documentTypeList('recommendation').title('Recommendations')),
-                    ]),
+                        .title('Showcase')
+                        .icon(EyeOpenIcon)
+                        .child(
+                          S.documentList()
+                            .title('Showcase Projects')
+                            .filter('_type == "project" && isShowcase == true')
+                            .defaultOrdering([{field: 'title', direction: 'asc'}])
+                        ),
+                    ])
+                ),
+              // Experience with filtered views
+              S.listItem()
+                .title('Experience')
+                .icon(CaseIcon)
+                .child(
+                  S.list()
+                    .title('Experience')
+                    .items([
+                      S.listItem()
+                        .title('All Experience')
+                        .icon(FilterIcon)
+                        .child(
+                          S.documentList()
+                            .title('All Experience')
+                            .filter('_type == "experience"')
+                            .defaultOrdering([{field: 'startDate', direction: 'desc'}])
+                        ),
+                      S.listItem()
+                        .title('Current')
+                        .icon(EyeOpenIcon)
+                        .child(
+                          S.documentList()
+                            .title('Current Experience')
+                            .filter('_type == "experience" && endDate == null')
+                            .defaultOrdering([{field: 'startDate', direction: 'desc'}])
+                        ),
+                      S.listItem()
+                        .title('Past')
+                        .icon(DocumentsIcon)
+                        .child(
+                          S.documentList()
+                            .title('Past Experience')
+                            .filter('_type == "experience" && defined(endDate)')
+                            .defaultOrdering([{field: 'startDate', direction: 'desc'}])
+                        ),
+                    ])
+                ),
+              S.documentTypeListItem('certification').title('Certifications').icon(StarFilledIcon),
+              S.documentTypeListItem('galleryImage').title('Gallery').icon(ImagesIcon),
+              S.documentTypeListItem('resume').title('Resume').icon(DocumentsIcon),
+            ]),
+        ),
+
+      // ─── Blog ────────────────────────────────────────────────
+      S.listItem()
+        .title('Blog')
+        .icon(BookIcon)
+        .child(
+          S.list()
+            .title('Blog')
+            .items([
+              // Posts with filtered views
+              S.listItem()
+                .title('Posts')
+                .icon(DocumentsIcon)
+                .child(
+                  S.list()
+                    .title('Posts')
+                    .items([
+                      S.listItem()
+                        .title('All Posts')
+                        .icon(FilterIcon)
+                        .child(
+                          S.documentList()
+                            .title('All Posts')
+                            .filter('_type == "post"')
+                            .defaultOrdering([{field: 'publishedAt', direction: 'desc'}])
+                        ),
+                      S.listItem()
+                        .title('Published')
+                        .icon(EyeOpenIcon)
+                        .child(
+                          S.documentList()
+                            .title('Published Posts')
+                            .filter('_type == "post" && !(_id in path("drafts.**"))')
+                            .defaultOrdering([{field: 'publishedAt', direction: 'desc'}])
+                        ),
+                      S.listItem()
+                        .title('Drafts')
+                        .icon(DocumentsIcon)
+                        .child(
+                          S.documentList()
+                            .title('Draft Posts')
+                            .filter('_type == "post" && _id in path("drafts.**")')
+                            .defaultOrdering([{field: 'publishedAt', direction: 'desc'}])
+                        ),
+                    ])
+                ),
+              S.documentTypeListItem('author').title('Authors').icon(UserIcon),
+              S.documentTypeListItem('category').title('Categories').icon(DocumentsIcon),
+            ]),
+        ),
+
+      // ─── Community ───────────────────────────────────────────
+      S.listItem()
+        .title('Community')
+        .icon(UsersIcon)
+        .child(
+          S.list()
+            .title('Community')
+            .items([
+              S.documentTypeListItem('membership').title('Memberships').icon(UsersIcon),
+              S.documentTypeListItem('recommendation').title('Recommendations').icon(DocumentsIcon),
+            ]),
+        ),
+
+      // ─── Drafts (All drafts across types) ────────────────────
+      S.divider(),
+      S.listItem()
+        .title('Drafts')
+        .icon(EditIcon)
+        .child(
+          S.list()
+            .title('Drafts')
+            .items([
+              S.listItem()
+                .title('All Drafts')
+                .icon(EditIcon)
+                .child(
+                  S.documentList()
+                    .title('All Draft Documents')
+                    .filter('_id in path("drafts.**") && _type != "sanity.imageAsset" && _type != "sanity.fileAsset"')
+                    .defaultOrdering([{field: '_updatedAt', direction: 'desc'}])
                 ),
             ]),
         ),
+
+      // ─── Settings ────────────────────────────────────────────
+      S.divider(),
       S.listItem()
         .title('Settings')
+        .icon(CogIcon)
         .child(
           S.list()
             .title('Settings')
             .items([
               S.listItem()
                 .title('Site Settings')
+                .icon(CogIcon)
                 .child(S.document().schemaType('siteSettings').documentId('siteSettings')),
               S.listItem()
                 .title('SEO Settings')
+                .icon(CogIcon)
                 .child(S.document().schemaType('seoSettings').documentId('seoSettings')),
               S.listItem()
                 .title('Media Settings')
+                .icon(ImagesIcon)
                 .child(S.document().schemaType('mediaSettings').documentId('mediaSettings')),
             ]),
         ),
+
+      // ─── Reference Data ──────────────────────────────────────
       S.listItem()
         .title('Reference Data')
+        .icon(DocumentsIcon)
         .child(
           S.list()
             .title('Reference Data')
             .items([
-              S.listItem()
-                .title('Certification Categories')
-                .child(S.documentTypeList('certificationCategory').title('Certification Categories')),
-              S.listItem()
-                .title('Certification Issuers')
-                .child(S.documentTypeList('certificationIssuer').title('Certification Issuers')),
-              S.listItem()
-                .title('Gallery Categories')
-                .child(S.documentTypeList('galleryCategory').title('Gallery Categories')),
-            ]),
-        ),
-      S.listItem()
-        .title('Quick Start')
-        .child(
-          S.list()
-            .title('Quick Start')
-            .items([
-              S.listItem()
-                .title('New project (click + to create)')
-                .child(S.documentTypeList('project').title('Projects')),
-              S.listItem()
-                .title('New post (click + to create)')
-                .child(S.documentTypeList('post').title('Posts')),
-              S.listItem()
-                .title('New certification (click + to create)')
-                .child(S.documentTypeList('certification').title('Certifications')),
+              S.documentTypeListItem('certificationCategory').title('Certification Categories'),
+              S.documentTypeListItem('certificationIssuer').title('Certification Issuers'),
+              S.documentTypeListItem('galleryCategory').title('Gallery Categories'),
             ]),
         ),
     ])

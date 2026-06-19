@@ -24,19 +24,21 @@ export function GallerySection() {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
 
   const filterTags = useMemo(() => {
-    const tagSet = new Set<string>();
+    const tagCounts = new Map<string, number>();
 
     for (const image of galleryImages) {
       for (const tag of image.tags) {
-        if (/^\d{4}$/.test(tag)) {
-          continue;
-        }
-
-        tagSet.add(tag);
+        if (/^\d{4}$/.test(tag)) continue;
+        tagCounts.set(tag, (tagCounts.get(tag) ?? 0) + 1);
       }
     }
 
-    return ['All', ...Array.from(tagSet).sort((a, b) => a.localeCompare(b))];
+    const top = Array.from(tagCounts.entries())
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 6)
+      .map(([tag]) => tag);
+
+    return ['All', ...top];
   }, [galleryImages]);
 
   const filtered = useMemo(() => {
@@ -130,7 +132,8 @@ export function GallerySection() {
             type="button"
             key={tag}
             onClick={() => setActiveTag(tag)}
-            className={`text-xs font-medium px-2.5 py-1 rounded-full transition-all duration-200 ${
+            aria-pressed={activeTag === tag}
+            className={`text-xs font-medium px-2.5 py-1 rounded-full transition-colors duration-200 ${
               activeTag === tag
                 ? 'bg-accent-pink text-white shadow-sm shadow-accent-pink/25'
                 : 'bg-surface-light dark:bg-surface-dark text-text-secondary-light dark:text-text-secondary-dark hover:bg-accent-pink/10 hover:text-accent-pink border border-border-light dark:border-border-dark'
@@ -195,12 +198,13 @@ export function GallerySection() {
           <button
             type="button"
             onClick={() => setExpanded((prev) => !prev)}
+            aria-expanded={expanded}
             className="flex items-center gap-1 text-xs font-medium text-text-muted-light dark:text-text-muted-dark hover:text-accent-pink dark:hover:text-accent-pink transition-colors"
           >
             {expanded ? (
-              <>Show Less <ChevronUp className="h-3.5 w-3.5" /></>
+              <>Show Less <ChevronUp className="h-3.5 w-3.5" aria-hidden="true" /></>
             ) : (
-              <>View all {filtered.length} photos <ChevronDown className="h-3.5 w-3.5" /></>
+              <>View all {filtered.length} photos <ChevronDown className="h-3.5 w-3.5" aria-hidden="true" /></>
             )}
           </button>
         </motion.div>
@@ -227,7 +231,7 @@ export function GallerySection() {
               className="absolute top-4 right-4 z-10 p-2 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors"
               aria-label="Close lightbox"
             >
-              <X className="h-5 w-5" />
+              <X className="h-5 w-5" aria-hidden="true" />
             </button>
 
             {/* Counter */}
@@ -242,7 +246,7 @@ export function GallerySection() {
               className="absolute left-2 sm:left-4 z-10 p-2 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors"
               aria-label="Previous image"
             >
-              <ChevronLeft className="h-5 w-5 sm:h-6 sm:w-6" />
+              <ChevronLeft className="h-5 w-5 sm:h-6 sm:w-6" aria-hidden="true" />
             </button>
 
             {/* Next button */}
@@ -252,7 +256,7 @@ export function GallerySection() {
               className="absolute right-2 sm:right-4 z-10 p-2 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors"
               aria-label="Next image"
             >
-              <ChevronRight className="h-5 w-5 sm:h-6 sm:w-6" />
+              <ChevronRight className="h-5 w-5 sm:h-6 sm:w-6" aria-hidden="true" />
             </button>
 
             {/* Image + caption */}

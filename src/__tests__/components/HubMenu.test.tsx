@@ -86,7 +86,7 @@ vi.mock('@/data/socials', () => ({
     { name: 'email', icon: 'mail', label: 'Gmail', link: 'mailto:pp.namias@gmail.com' },
     { name: 'linkedin', icon: 'linkedin', label: 'LinkedIn', link: 'https://www.linkedin.com/in/pp-namias/' },
     { name: 'x', icon: 'twitter', label: '@PP_Namias', link: 'https://x.com/PP_Namias' },
-    { name: 'instagram', icon: 'instagram', label: '@pp_namias', link: 'https://www.instagram.com/pp_namias/' },
+    { name: 'twitter', icon: 'twitter', label: '@pp_namias', link: 'https://x.com/PP_Namias' },
   ],
 }));
 
@@ -121,7 +121,7 @@ vi.mock('@/hooks/useCmsContent', () => ({
       { name: 'email', icon: 'mail', label: 'Gmail', link: 'mailto:pp.namias@gmail.com' },
       { name: 'linkedin', icon: 'linkedin', label: 'LinkedIn', link: 'https://www.linkedin.com/in/pp-namias/' },
       { name: 'x', icon: 'twitter', label: '@PP_Namias', link: 'https://x.com/PP_Namias' },
-      { name: 'instagram', icon: 'instagram', label: '@pp_namias', link: 'https://www.instagram.com/pp_namias/' },
+      { name: 'twitter', icon: 'twitter', label: '@pp_namias', link: 'https://x.com/PP_Namias' },
     ],
   }),
 }));
@@ -169,10 +169,9 @@ describe('HubMenu', () => {
     expect(mockOnClose).toHaveBeenCalledTimes(1);
   });
 
-  it('opens contact modal from Send Email', () => {
+  it('opens mailto from Send Email', () => {
     render(<HubMenu onClose={mockOnClose} onOpenChat={mockOnOpenChat} />);
     fireEvent.click(screen.getByText('Send Email'));
-    expect(mockOpenModal).toHaveBeenCalledWith('contact');
     expect(mockOnClose).toHaveBeenCalledTimes(1);
   });
 
@@ -244,8 +243,8 @@ describe('HubMenu', () => {
     const x = screen.getByLabelText('@PP_Namias');
     expect(x).toHaveAttribute('href', 'https://x.com/PP_Namias');
 
-    const instagram = screen.getByLabelText('@pp_namias');
-    expect(instagram).toHaveAttribute('href', 'https://www.instagram.com/pp_namias/');
+    const twitter = screen.getByLabelText('@pp_namias');
+    expect(twitter).toHaveAttribute('href', 'https://x.com/PP_Namias');
   });
 
   it('shows "Book a meeting" footer action', () => {

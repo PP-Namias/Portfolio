@@ -1,0 +1,222 @@
+{
+  "id": "PRD-SANITY-STUDIO-SMART",
+  "title": "Smarter Sanity Studio — Full Capability Upgrade",
+  "status": "planning",
+  "priority": "high",
+  "createdAt": "2026-06-12",
+  "description": "Transform the Sanity Studio into a fully-featured, intelligent CMS with working Presentation tool, automated content management, smart desk structure, and comprehensive content health monitoring. All existing data is preserved — no re-migration needed.",
+
+  "background": "The Sanity Studio already has Presentation tool configured (@sanity/presentation via sanity/presentation), custom document actions, preview locations, and a custom navigator. However, the Presentation tool requires login to function, the desk structure has room for improvement, content health monitoring is basic, and there are opportunities to make the studio smarter with automated content validation, better onboarding, and richer inspector panels. The goal is to make the studio a joy to use — not just a data entry form.",
+
+  "currentCapabilities": {
+    "presentation": {
+      "status": "configured",
+      "notes": "presentationTool from sanity/presentation is configured with previewUrl, draftMode, resolve.locations, and custom navigator. Requires login at localhost:3333/presentation. Works with /api/draft-mode/enable endpoint."
+    },
+    "deskStructure": {
+      "status": "configured",
+      "notes": "Page-first IA with Homepage/Collections/Blog/Community/Settings. heroSection removed, profile is the main singleton."
+    },
+    "documentActions": {
+      "status": "configured",
+      "notes": "6 custom actions: perspectiveSwitcher, viewOnSite, openInPresentation, publishAndRefresh, publishAndRevalidateModal, publishAndRevalidate."
+    },
+    "inspectors": {
+      "status": "basic",
+      "notes": "SeoPreview and ContentHealth inspectors exist but are basic."
+    },
+    "onboarding": {
+      "status": "configured",
+      "notes": "5-step onboarding: Profile → About → Projects → Certs → Publish."
+    },
+    "welcome": {
+      "status": "configured",
+      "notes": "Custom Welcome component with quick actions."
+    },
+    "skills": {
+      "status": "removed",
+      "notes": "skillsToolPlugin removed in EPIC-2. .agents/skills/ is source of truth."
+    }
+  },
+
+  "constraints": [
+    "All existing published data in Sanity must NOT be lost",
+    "No re-migration of content — enhance around existing data",
+    "Each epic is committed as a separate slice",
+    "Studio must remain deployable to Sanity Hosting after each epic",
+    "Presentation tool must work with existing /api/draft-mode/enable endpoint",
+    "Preview locations must map to actual frontend routes",
+    "Custom actions must not break existing publish flow"
+  ],
+
+  "epics": [
+    {
+      "id": "EPIC-A",
+      "title": "Presentation Tool Hardening",
+      "status": "planning",
+      "description": "Ensure the Presentation tool works flawlessly: fix login flow, test draft mode, verify preview locations, improve the custom navigator, and add missing preview locations.",
+      "plan": "docs/sanity_plans/10-presentation-hardening.md",
+      "dependencies": [],
+      "deliverables": [
+        "Presentation tool tested and verified working",
+        "Custom navigator updated (remove heroSection, add profile)",
+        "Missing preview locations added (seoSettings, mediaSettings)",
+        "Draft mode enable endpoint verified",
+        "Presentation sidebar shows correct quick-launch items"
+      ],
+      "estimatedSlices": 3
+    },
+    {
+      "id": "EPIC-B",
+      "title": "Desk Structure Intelligence",
+      "status": "planning",
+      "description": "Make the desk structure smarter: add document counters, visual indicators, keyboard shortcuts, search improvements, and better grouping.",
+      "plan": "docs/sanity_plans/11-desk-intelligence.md",
+      "dependencies": ["EPIC-A"],
+      "deliverables": [
+        "Document counters in desk items (e.g., 'Projects (12)')",
+        "Visual indicators for singletons vs collections",
+        "Improved search with recent documents",
+        "Keyboard shortcut hints",
+        "Better section grouping with icons"
+      ],
+      "estimatedSlices": 3
+    },
+    {
+      "id": "EPIC-C",
+      "title": "Content Health Dashboard",
+      "status": "planning",
+      "description": "Build a comprehensive content health dashboard: field completeness, cross-document health, freshness tracking, and actionable recommendations.",
+      "plan": "docs/sanity_plans/12-content-health.md",
+      "dependencies": [],
+      "deliverables": [
+        "Enhanced ContentHealth inspector with field completeness",
+        "Cross-document health checker (orphaned refs, missing data)",
+        "Freshness timeline visualization",
+        "Quick-fix actions for common issues",
+        "Content score per document type"
+      ],
+      "estimatedSlices": 4
+    },
+    {
+      "id": "EPIC-D",
+      "title": "Automated Content Validation",
+      "status": "planning",
+      "description": "Add real-time content validation: required fields, data consistency, duplicate detection, and SEO checks.",
+      "plan": "docs/sanity_plans/13-content-validation.md",
+      "dependencies": ["EPIC-C"],
+      "deliverables": [
+        "Real-time field validation with visual feedback",
+        "Duplicate detection (project titles, certification names)",
+        "SEO validation (meta titles, descriptions, image alt text)",
+        "URL validation (live URLs, repository URLs)",
+        "Content length validation (too short, too long)"
+      ],
+      "estimatedSlices": 3
+    },
+    {
+      "id": "EPIC-E",
+      "title": "Smart Document Templates",
+      "status": "planning",
+      "description": "Improve document templates with smart defaults, auto-fill, and contextual suggestions.",
+      "plan": "docs/sanity_plans/14-smart-templates.md",
+      "dependencies": [],
+      "deliverables": [
+        "Smart template defaults based on existing content",
+        "Auto-fill from previous documents",
+        "Contextual template suggestions",
+        "Template preview before creation",
+        "Bulk creation from templates"
+      ],
+      "estimatedSlices": 2
+    },
+    {
+      "id": "EPIC-F",
+      "title": "Inspector Panels Upgrade",
+      "status": "planning",
+      "description": "Upgrade all inspector panels: SEO preview, content health, data consistency, and JSON inspector.",
+      "plan": "docs/sanity_plans/15-inspector-upgrade.md",
+      "dependencies": ["EPIC-C", "EPIC-D"],
+      "deliverables": [
+        "Enhanced SEO preview with social card mockup",
+        "Content health inspector with scoring",
+        "Data consistency inspector",
+        "JSON inspector with syntax highlighting",
+        "Inspector tabs for switching between views"
+      ],
+      "estimatedSlices": 3
+    },
+    {
+      "id": "EPIC-G",
+      "title": "Onboarding & Welcome Polish",
+      "status": "planning",
+      "description": "Polish the onboarding flow and welcome page: better guidance, progress tracking, and contextual help.",
+      "plan": "docs/sanity_plans/16-onboarding-polish.md",
+      "dependencies": [],
+      "deliverables": [
+        "Updated onboarding steps with progress tracking",
+        "Contextual help tooltips",
+        "Welcome page with content completion status",
+        "Quick-start templates from welcome page",
+        "Help documentation links"
+      ],
+      "estimatedSlices": 2
+    },
+    {
+      "id": "EPIC-H",
+      "title": "Automation & Smart Workflows",
+      "status": "planning",
+      "description": "Add automated workflows: content scheduling, publish reminders, and smart notifications.",
+      "plan": "docs/sanity_plans/17-automation-workflows.md",
+      "dependencies": ["EPIC-D"],
+      "deliverables": [
+        "Content scheduling with date pickers",
+        "Publish reminders for stale content",
+        "Smart notifications for content issues",
+        "Bulk publish/unpublish actions",
+        "Content archiving workflow"
+      ],
+      "estimatedSlices": 3
+    }
+  ],
+
+  "dataPreservation": {
+    "strategy": "All enhancements are additive — new features are built around existing data. No schema changes required for existing documents. New fields are optional with sensible defaults.",
+    "safeApproaches": [
+      "Add new inspector panels without modifying existing ones",
+      "Enhance desk structure without changing document schemas",
+      "Improve templates without altering existing documents",
+      "Add validation rules as warnings, not blockers",
+      "Keep all existing document actions working"
+    ],
+    "noMigrationNeeded": [
+      "All 20 schema types remain unchanged",
+      "All existing documents remain as-is",
+      "All GROQ queries continue to work",
+      "All preview locations remain valid",
+      "All document actions remain functional"
+    ]
+  },
+
+  "successCriteria": [
+    "Presentation tool works at localhost:3333/presentation after login",
+    "Draft mode enables via /api/draft-mode/enable",
+    "All preview locations map to correct frontend routes",
+    "Document counters show in desk sidebar",
+    "Content health inspector shows field completeness",
+    "Duplicate detection catches common issues",
+    "SEO validation provides actionable feedback",
+    "Onboarding guides new users through content creation",
+    "Welcome page shows content completion status",
+    "All existing data remains intact and accessible",
+    "Studio deploys to Sanity Hosting without errors"
+  ],
+
+  "technicalNotes": {
+    "presentation": "Uses sanity/presentation (built-in to sanity v4). Preview URL from NEXT_PUBLIC_SITE_URL env var. Draft mode via /api/draft-mode/enable with secret.",
+    "deskStructure": "Uses StructureBuilder from sanity/structure. Document counters via S.listItem().serialize().count.",
+    "inspectors": "Use InspectorPlugin from sanity. Custom inspectors via documentInspectors.",
+    "validation": "Use validation rules in schema definitions. Custom validators via defineRule.",
+    "templates": "Use defineTemplate from sanity. Templates registered in sanity.config.ts schema.templates."
+  }
+}

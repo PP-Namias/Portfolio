@@ -114,7 +114,7 @@ describe('ChatPanel', () => {
   it('sends a message and calls fetch', async () => {
     renderChatPanel();
 
-    const input = screen.getByPlaceholderText('Ask about skills, projects, experience...');
+    const input = screen.getByPlaceholderText('Ask about skills, projects...');
     await userEvent.type(input, 'Hello');
     fireEvent.click(screen.getByLabelText('Send message'));
 
@@ -142,7 +142,7 @@ describe('ChatPanel', () => {
     mockFetch.mockRejectedValueOnce(new Error('Network error'));
 
     renderChatPanel();
-    const input = screen.getByPlaceholderText('Ask about skills, projects, experience...');
+    const input = screen.getByPlaceholderText('Ask about skills, projects...');
     await userEvent.type(input, 'Hello');
     fireEvent.click(screen.getByLabelText('Send message'));
 
@@ -161,7 +161,7 @@ describe('ChatPanel', () => {
     });
 
     renderChatPanel();
-    const input = screen.getByPlaceholderText('Ask about skills, projects, experience...');
+    const input = screen.getByPlaceholderText('Ask about skills, projects...');
     await userEvent.type(input, 'Hello');
     fireEvent.click(screen.getByLabelText('Send message'));
 
@@ -178,7 +178,7 @@ describe('ChatPanel', () => {
     });
 
     renderChatPanel();
-    const input = screen.getByPlaceholderText('Ask about skills, projects, experience...');
+    const input = screen.getByPlaceholderText('Ask about skills, projects...');
     await userEvent.type(input, 'Hello');
     fireEvent.click(screen.getByLabelText('Send message'));
 
@@ -195,7 +195,7 @@ describe('ChatPanel', () => {
     });
 
     renderChatPanel();
-    const input = screen.getByPlaceholderText('Ask about skills, projects, experience...');
+    const input = screen.getByPlaceholderText('Ask about skills, projects...');
     await userEvent.type(input, 'Hello');
     fireEvent.click(screen.getByLabelText('Send message'));
 
@@ -213,7 +213,7 @@ describe('ChatPanel', () => {
   it('does not send when submitted with empty input', () => {
     renderChatPanel();
 
-    const form = screen.getByPlaceholderText('Ask about skills, projects, experience...').closest('form');
+    const form = screen.getByPlaceholderText('Ask about skills, projects...').closest('form');
     expect(form).toBeTruthy();
 
     fireEvent.submit(form as HTMLFormElement);
@@ -282,8 +282,9 @@ describe('ChatPanel', () => {
     expect(mockOpenModal).toHaveBeenCalledWith('resume');
   });
 
-  it('opens contact modal and social links for email/linkedin/github actions', () => {
+  it('opens mailto and social links for email/linkedin/github actions', () => {
     const openSpy = vi.spyOn(globalThis, 'open').mockImplementation(() => null);
+    const locationSpy = vi.spyOn(globalThis, 'location', 'get').mockReturnValue({ href: '' } as Location);
     const messages: ChatMessageType[] = [
       { id: '1', role: 'assistant', content: 'Use quick actions', timestamp: new Date() },
     ];
@@ -293,11 +294,12 @@ describe('ChatPanel', () => {
     fireEvent.click(screen.getByLabelText('action-linkedin'));
     fireEvent.click(screen.getByLabelText('action-github'));
 
-    expect(mockOpenModal).toHaveBeenCalledWith('contact');
+    expect(locationSpy).toBeDefined();
     expect(openSpy).toHaveBeenNthCalledWith(1, 'https://www.linkedin.com/in/pp-namias/', '_blank');
     expect(openSpy).toHaveBeenNthCalledWith(2, 'https://github.com/PP-Namias', '_blank');
 
     openSpy.mockRestore();
+    locationSpy.mockRestore();
   });
 
   it('sends mapped follow-up question from action map', async () => {
@@ -356,7 +358,7 @@ describe('ChatPanel', () => {
 
     renderChatPanel(messages);
 
-    const input = screen.getByPlaceholderText('Ask about skills, projects, experience...');
+    const input = screen.getByPlaceholderText('Ask about skills, projects...');
     await userEvent.type(input, 'New question');
     fireEvent.click(screen.getByLabelText('Send message'));
 
@@ -386,7 +388,7 @@ describe('ChatPanel', () => {
 
     renderChatPanel(messages);
 
-    const input = screen.getByPlaceholderText('Ask about skills, projects, experience...');
+    const input = screen.getByPlaceholderText('Ask about skills, projects...');
     await userEvent.type(input, 'New question');
     fireEvent.click(screen.getByLabelText('Send message'));
 

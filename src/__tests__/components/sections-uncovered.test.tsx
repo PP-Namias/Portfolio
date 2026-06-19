@@ -582,7 +582,7 @@ describe('uncovered section components', () => {
     fireEvent.click(screen.getByLabelText('Close lightbox'));
   });
 
-  it('HeroSection renders CTAs and opens contact modal for email', async () => {
+  it('HeroSection renders CTAs with mailto for email', async () => {
     render(<HeroSection />);
 
     expect(screen.getByLabelText('Jhon Keneth Ryan Namias')).toBeInTheDocument();
@@ -592,8 +592,8 @@ describe('uncovered section components', () => {
     fireEvent.click(screen.getByText('Book a Call'));
     expect(openModalMock).toHaveBeenCalledWith('booking');
 
-    fireEvent.click(screen.getByText('Email'));
-    expect(openModalMock).toHaveBeenCalledWith('contact');
+    const emailLink = screen.getByText('Email').closest('a');
+    expect(emailLink).toHaveAttribute('href', 'mailto:pp.namias@gmail.com');
 
     await act(async () => {
       await Promise.resolve();
@@ -612,8 +612,8 @@ describe('uncovered section components', () => {
     expect(screen.getByText('Org Membership')).toBeInTheDocument();
 
     expect(screen.getByText('Speaking')).toBeInTheDocument();
-    fireEvent.click(screen.getByText('Get in touch'));
-    expect(openModalMock).toHaveBeenCalledWith('contact');
+    const contactLink = screen.getByText('Get in touch').closest('a');
+    expect(contactLink).toHaveAttribute('href', 'mailto:pp.namias@gmail.com');
   });
 
   it('RecommendationsCarousel renders card and allows dot navigation', () => {

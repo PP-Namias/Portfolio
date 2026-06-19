@@ -12,7 +12,7 @@ export const contentSourceCatalog = [
   { sourceFile: 'gallery (archived migration fixture)', targetModel: 'galleryImage documents' },
   { sourceFile: 'technologies (archived migration fixture)', targetModel: 'techStack singleton document' },
   { sourceFile: 'blog (archived migration fixture)', targetModel: 'post documents' },
-  { sourceFile: 'socials (archived migration fixture)', targetModel: 'heroSection.socialLinks nested array' },
+  { sourceFile: 'socials (archived migration fixture)', targetModel: 'profile.socialLinks nested array' },
   { sourceFile: 'memberships (archived migration fixture)', targetModel: 'membership documents' },
   { sourceFile: 'recommendations (archived migration fixture)', targetModel: 'recommendation documents' },
 ] as const;

@@ -1,13 +1,14 @@
 import { revalidatePath } from 'next/cache';
 import { NextRequest, NextResponse } from 'next/server';
+import { timingSafeEqual } from 'node:crypto';
 import { clearCmsQueryCache } from '@/lib/cms-content.server';
 import { invalidateByTag } from '@/lib/cache';
+import { SITE_URL } from '@/lib/site-config';
 
-const REVALIDATE_PATHS = ['/', '/blog', '/blog/[slug]', '/sitemap.xml'] as const;
+const REVALIDATE_PATHS = ['/', '/blog', '/blog/[slug]', '/projects/[slug]', '/sitemap.xml'] as const;
 
 const SANITY_TYPE_TO_TAGS: Record<string, string[]> = {
   profile: ['cms:profile'],
-  heroSection: ['cms:hero'],
   aboutSection: ['cms:about'],
   techStack: ['cms:technology'],
   experience: ['cms:experience'],
@@ -21,7 +22,7 @@ const SANITY_TYPE_TO_TAGS: Record<string, string[]> = {
 };
 
 function withCorsHeaders(response: NextResponse): NextResponse {
-  response.headers.set('Access-Control-Allow-Origin', '*');
+  response.headers.set('Access-Control-Allow-Origin', SITE_URL);
   response.headers.set('Access-Control-Allow-Methods', 'POST, OPTIONS');
   response.headers.set('Access-Control-Allow-Headers', 'content-type, x-sanity-webhook-secret, x-sanity-revalidate-secret');
   response.headers.set('Cache-Control', 'no-store, max-age=0');
@@ -37,28 +38,15 @@ function getProvidedSecret(request: NextRequest): string | null {
   return (
     request.headers.get('x-sanity-webhook-secret')?.trim() ||
     request.headers.get('x-sanity-revalidate-secret')?.trim() ||
-    new URL(request.url).searchParams.get('secret')?.trim() ||
     null
   );
-}
-
-function timingSafeEqual(a: string, b: string): boolean {
-  if (a.length !== b.length) {
-    return false;
-  }
-
-  let result = 0;
-  for (let i = 0; i < a.length; i++) {
-    result |= a.charCodeAt(i) ^ b.charCodeAt(i);
-  }
-  return result === 0;
 }
 
 function isAuthorizedWebhookRequest(request: NextRequest): boolean {
   const expectedSecret = getExpectedSecret();
 
   if (!expectedSecret) {
-    return true;
+    return false;
   }
 
   const providedSecret = getProvidedSecret(request);
@@ -66,13 +54,21 @@ function isAuthorizedWebhookRequest(request: NextRequest): boolean {
     return false;
   }
 
-  return timingSafeEqual(expectedSecret, providedSecret);
+  const expectedBuf = Buffer.from(expectedSecret);
+  const providedBuf = Buffer.from(providedSecret);
+
+  if (expectedBuf.length !== providedBuf.length) {
+    return false;
+  }
+
+  return timingSafeEqual(expectedBuf, providedBuf);
 }
 
 function revalidateCmsPaths(): void {
   revalidatePath('/', 'page');
   revalidatePath('/blog', 'page');
   revalidatePath('/blog/[slug]', 'page');
+  revalidatePath('/projects/[slug]', 'page');
   revalidatePath('/sitemap.xml', 'page');
 }
 
@@ -98,7 +94,7 @@ export async function POST(request: NextRequest) {
     // Non-fatal — proceed without body parsing.
   }
 
-  let docType = ''
+  let docType = '';
   if (body && typeof body._type === 'string') {
     docType = body._type;
   }

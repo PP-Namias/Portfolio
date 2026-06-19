@@ -1,0 +1,161 @@
+{
+  "project": "Namias Portfolio - Facebook Messenger Chat Integration",
+  "codeName": "messenger-chat-revamp",
+  "version": "1.0.0",
+  "owner": "Jhon Keneth Ryan Namias (PP Namias)",
+  "contact": "pp.namias@gmail.com",
+  "lastUpdated": "2026-06-09",
+  "branch": "feature/messenger-chat-revamp",
+  "links": {
+    "marketing": "https://namias.tech",
+    "studio": "https://namias-cms.sanity.studio",
+    "repo": "https://github.com/PP-Namias/Portfolio",
+    "facebookAccount": "https://www.facebook.com/jhon.keneth.namias.2024",
+    "messenger": "https://m.me/jhon.keneth.namias.2024"
+  },
+  "summary": "Build a first-class in-site conversation surface that blends the existing AI chat with a Facebook Messenger handoff, so visitors can start on the portfolio and continue the conversation in Messenger without leaving the experience prematurely.",
+  "narrative": "The portfolio already has a helpful AI chat widget and Messenger deep links, but the current experience is still split across buttons and contact cards. This PRD turns that into a coherent chat entry point inside the website itself: the AI panel becomes the primary conversation surface, Messenger becomes the real human handoff path, and the contact flow explains the difference between a Facebook account/profile link and the embedded Messenger product. One important constraint shapes the plan: Meta's customer chat plugin is designed for Facebook Pages, so a personal Facebook account can be surfaced through Messenger deep links and open-in-app handoff, but a full embedded Page plugin is only possible if the owner later creates or attaches a Page. The implementation therefore delivers the best possible in-site experience now, while keeping a future Page-based upgrade path explicit.",
+  "principles": [
+    "Chat first, button second — visitors should see a conversation surface inside the website, not a scattered set of outbound links.",
+    "Respect platform constraints — personal Facebook accounts can be linked through Messenger, but the embedded customer chat plugin requires a Facebook Page.",
+    "Keep the AI assistant — Messenger handoff should extend the existing AI chat, not replace it.",
+    "Stay in the same shell — the chat experience should feel integrated with the current hub and contact UI.",
+    "Explain the path clearly — visitors should know when they are chatting with the site assistant and when they are handing off to Messenger.",
+    "Validate every slice — each implementation step must pass lint and build before it is committed."
+  ],
+  "personas": [
+    {
+      "id": "P-OWNER",
+      "label": "PP Namias (owner)",
+      "goals": ["Visitors can start a conversation directly on the site", "Messenger handoff uses the correct Facebook account/profile", "The website feels like one integrated chat experience"],
+      "painPointsToday": ["The Messenger option is only presented as a link in contact areas", "There is no dedicated Messenger section inside the AI chat panel", "Visitors may not understand whether they should use the AI or Messenger path"]
+    },
+    {
+      "id": "P-VISITOR",
+      "label": "Site visitor",
+      "goals": ["Ask quick questions without leaving the page", "Escalate to a real message when needed", "Understand the fastest way to reach PP Namias"],
+      "painPointsToday": ["Chat and contact options feel separate", "Messenger is hidden among other contact actions", "There is no clear guidance about what happens after clicking Messenger"]
+    },
+    {
+      "id": "P-CONTRIBUTOR",
+      "label": "OpenCode / future coding agent",
+      "goals": ["Know the intended chat architecture", "Understand when the Messenger plugin is possible", "Implement small, reversible slices with predictable commits"],
+      "painPointsToday": ["Feature goals are spread across chat, contact, and social link surfaces", "Facebook account versus Page requirements are easy to misstate", "Without a PRD, it is unclear which slice to implement first"]
+    }
+  ],
+  "successMetrics": {
+    "primary": [
+      "The website has a dedicated in-panel chat section that introduces Messenger as a handoff path",
+      "Visitors can open Messenger for the Facebook account/profile at facebook.com/jhon.keneth.namias.2024 from inside the site shell",
+      "The AI chat and Messenger handoff share one coherent conversation experience",
+      "The UI explains the account/profile constraint clearly and does not mislabel the link as a Facebook Page",
+      "npm run lint passes with 0 errors",
+      "npm run build passes with 0 errors"
+    ],
+    "secondary": [
+      "A future Facebook Page upgrade path is documented without blocking the current release",
+      "The contact modal, connect section, and chat panel use consistent Facebook wording",
+      "Each atomic slice is committed separately so the history is easy to audit"
+    ]
+  },
+  "epics": [
+    {
+      "id": "EPIC-1",
+      "title": "Messenger capability audit",
+      "status": "planned",
+      "summary": "Confirm how the existing Facebook account/profile can be surfaced through the website, document the Page-only limitation for Meta's embedded chat plugin, and define the exact in-site fallback that ships first.",
+      "value": "high",
+      "complexity": "low",
+      "stories": [
+        {
+          "id": "S-1.1",
+          "title": "Normalize Messenger URLs and naming",
+          "done": false,
+          "details": "Use the Facebook account/profile URL https://www.facebook.com/jhon.keneth.namias.2024 and the Messenger deep link https://m.me/jhon.keneth.namias.2024 consistently across the project.",
+          "files": ["src/lib/constants.ts", "src/components/sections/ConnectSection.tsx", "src/components/ui/ContactModal.tsx", "src/components/ui/ChatPanel.tsx"]
+        },
+        {
+          "id": "S-1.2",
+          "title": "Document the Page-only embedded chat constraint",
+          "done": false,
+          "details": "Add owner-facing guidance that explains the Meta customer chat plugin requirement so the code does not promise a feature that needs a Facebook Page.",
+          "files": ["docs/prd/prd.json"]
+        }
+      ]
+    },
+    {
+      "id": "EPIC-2",
+      "title": "In-site chat surface",
+      "status": "planned",
+      "summary": "Turn the existing AI chat panel into a richer conversation hub by adding a dedicated Messenger handoff section, better labels, and a clear distinction between AI help and direct human messaging.",
+      "value": "high",
+      "complexity": "medium",
+      "stories": [
+        {
+          "id": "S-2.1",
+          "title": "Add a Messenger section to the chat panel",
+          "done": false,
+          "details": "Add a visible Messenger block inside the existing AI chat panel with a short explanation, the Facebook account link, and a direct message CTA.",
+          "files": ["src/components/ui/ChatPanel.tsx"]
+        },
+        {
+          "id": "S-2.2",
+          "title": "Keep AI and Messenger actions together",
+          "done": false,
+          "details": "Make the chat panel feel like one integrated flow so visitors can ask the AI first and escalate to Messenger without hunting through the rest of the site.",
+          "files": ["src/components/ui/ChatPanel.tsx"]
+        },
+        {
+          "id": "S-2.3",
+          "title": "Maintain accessible fallback links",
+          "done": false,
+          "details": "Keep the Messenger CTA keyboard-friendly, explicit, and safe for opening in a new tab or app.",
+          "files": ["src/components/ui/ChatPanel.tsx"]
+        }
+      ]
+    },
+    {
+      "id": "EPIC-3",
+      "title": "Copy, setup guide, and verification",
+      "status": "planned",
+      "summary": "Update the surrounding copy to say 'account' rather than 'page', add a concise owner setup guide, and verify the final implementation with lint and build checks.",
+      "value": "medium",
+      "complexity": "low",
+      "stories": [
+        {
+          "id": "S-3.1",
+          "title": "Update surrounding Facebook wording",
+          "done": false,
+          "details": "Change the connect and contact copy so it clearly says Facebook account/profile where appropriate and does not imply a Page unless one exists.",
+          "files": ["src/components/sections/ConnectSection.tsx", "src/components/ui/ContactModal.tsx"]
+        },
+        {
+          "id": "S-3.2",
+          "title": "Write the owner setup guide",
+          "done": false,
+          "details": "Provide a practical guide for enabling Messenger handoff, checking the Facebook account link, and later upgrading to a Page-based embedded chat if desired.",
+          "files": ["docs/prd/prd.json"]
+        },
+        {
+          "id": "S-3.3",
+          "title": "Run lint and build",
+          "done": false,
+          "details": "Verify the messenger chat slice with npm run lint and npm run build before each commit.",
+          "files": ["src/**"]
+        }
+      ]
+    }
+  ],
+  "phases": [
+    { "id": "PHASE-1", "label": "Messenger audit", "epics": ["EPIC-1"], "status": "planned" },
+    { "id": "PHASE-2", "label": "In-site chat surface", "epics": ["EPIC-2"], "status": "planned" },
+    { "id": "PHASE-3", "label": "Copy and guide", "epics": ["EPIC-3"], "status": "planned" }
+  ],
+  "ownerSetupGuide": [
+    "Use the existing Facebook account/profile URL https://www.facebook.com/jhon.keneth.namias.2024 as the human-contact identity for the website.",
+    "Keep the Messenger deep link https://m.me/jhon.keneth.namias.2024 enabled so visitors can jump into a Messenger thread from the portfolio.",
+    "If you want a true embedded customer chat widget inside the site, create or attach a Facebook Page later because Meta's customer chat plugin is Page-based.",
+    "For the current release, prefer the in-site chat panel plus Messenger handoff over a standalone outbound button.",
+    "After each slice, validate with lint and build, then commit the slice by itself so the history stays easy to review."
+  ]
+}

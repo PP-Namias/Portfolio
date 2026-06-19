@@ -19,6 +19,7 @@
 }
 
 .dark {
+  color-scheme: dark;
   --background: #000000;
   --surface: #0a0a0a;
   --card-bg: #111111;
@@ -111,6 +112,11 @@ html:not(.dark) body {
 .chat-scrollbar {
   scrollbar-width: thin;
   scrollbar-color: rgb(var(--accent) / 0.2) transparent;
+}
+
+/* Prevent double-tap zoom on interactive elements */
+button, a, [role="button"] {
+  touch-action: manipulation;
 }
 
 /* Custom selection color */

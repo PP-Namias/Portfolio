@@ -82,3 +82,136 @@ export const summaryLength: ValidatorFactory = (options = {}) => {
         `Summaries between ${min} and ${max} characters perform best in social cards and meta tags.`,
       )
 }
+
+// ─── New validation rules for EPIC-D ─────────────────────────
+
+export const seoTitleLength: RuleFactory = (rule: Rule) =>
+  rule
+    .min(30)
+    .max(60)
+    .warning('SEO title should be 30-60 characters for optimal search display.')
+
+export const seoDescriptionLength: RuleFactory = (rule: Rule) =>
+  rule
+    .min(120)
+    .max(160)
+    .warning('Meta description should be 120-160 characters for optimal search display.')
+
+export const requiredForPublish: ValidatorFactory = (options = {}) => {
+  const requiredFields = (options.fields as string[]) ?? []
+  return (rule: any) =>
+    rule.custom((value: unknown, context: ValidationContext) => {
+      const document = context.document as Record<string, unknown> | undefined
+      if (!document) return true
+
+      const status = document.status as string | undefined
+      if (status === 'completed' || status === 'in-progress') {
+        const missing = requiredFields.filter((f) => !document[f])
+        if (missing.length > 0) {
+          return `Required for published projects: ${missing.join(', ')}`
+        }
+      }
+      return true
+    })
+}
+
+export const yearRange: RuleFactory = (rule: Rule) =>
+  rule.min(2000).max(2100).integer().warning('Year should be between 2000 and 2100.')
+
+export const maxArrayItems: ValidatorFactory = (options = {}) => {
+  const max = (options.max as number) ?? 10
+  return (rule: Rule) =>
+    rule.max(max).warning(`Recommended maximum of ${max} items for this field.`)
+}
+
+export const uniqueTitle: ValidatorFactory = (options = {}) => {
+  const schemaType = (options.schemaType as string) ?? ''
+  return (rule: Rule) =>
+    rule.custom(async (value: unknown, context: ValidationContext) => {
+      if (!value || typeof value !== 'string') return true
+
+      const document = context.document as {_id?: string} | undefined
+      const documentId = document?._id
+      if (!documentId) return true
+
+      const {getClient} = context
+      const client = getClient({apiVersion: '2024-01-01'})
+      const slug = value.trim().toLowerCase()
+
+      const query = `count(*[_type == $schemaType && lower(trim(title)) == $slug && !(_id in [$draftId, $publishedId])]) > 0`
+      const draftId = `drafts.${documentId}`
+      const publishedId = documentId.replace('drafts.', '')
+
+      const exists = await client.fetch(query, {
+        schemaType,
+        slug,
+        draftId,
+        publishedId,
+      })
+
+      if (exists) {
+        return `A ${schemaType} with this title already exists. Use a unique title.`
+      }
+      return true
+    })
+}
+
+// ─── Cross-field validation rules ─────────────────────────────
+
+export const endDateAfterStart: ValidatorFactory = (options = {}) => {
+  const startField = (options.startField as string) ?? 'startDate'
+  return (rule: Rule) =>
+    rule.custom((value: unknown, context: ValidationContext) => {
+      if (!value) return true
+      const document = context.document as Record<string, unknown> | undefined
+      const startDate = document?.[startField] as string | undefined
+      if (!startDate) return true
+      if (new Date(value as string) < new Date(startDate)) {
+        return `End date must be after start date (${startField})`
+      }
+      return true
+    })
+}
+
+export const expiryAfterIssue: RuleFactory = (rule: Rule) =>
+  rule.custom((value: unknown, context: ValidationContext) => {
+    if (!value) return true
+    const document = context.document as Record<string, unknown> | undefined
+    const issueDate = document?.issueDate as string | undefined
+    if (!issueDate) return true
+    if (new Date(value as string) < new Date(issueDate)) {
+      return 'Expiry date must be after issue date'
+    }
+    return true
+  })
+
+export const requiredForStatus: ValidatorFactory = (options = {}) => {
+  const status = (options.status as string) ?? 'completed'
+  const requiredFields = (options.fields as string[]) ?? []
+  return (rule: Rule) =>
+    rule.custom((_value: unknown, context: ValidationContext) => {
+      const document = context.document as Record<string, unknown> | undefined
+      if (!document) return true
+      if (document.status !== status) return true
+      const missing = requiredFields.filter((f) => !document[f])
+      if (missing.length > 0) {
+        return `Required when status is "${status}": ${missing.join(', ')}`
+      }
+      return true
+    })
+}
+
+// ─── SEO Image validation ─────────────────────────────────────
+
+export const seoImageDimensions: RuleFactory = (rule: Rule) =>
+  rule.custom((value: unknown) => {
+    if (!value) return true
+    const image = value as {asset?: {metadata?: {dimensions?: {width?: number; height?: number}}}}
+    const dimensions = image?.asset?.metadata?.dimensions
+    if (!dimensions) return true
+    const {width = 0, height = 0} = dimensions
+    if (width < 1200 || height < 630) {
+      return `Image should be at least 1200x630 pixels for Google search results (current: ${width}x${height}).`
+    }
+    return true
+  })

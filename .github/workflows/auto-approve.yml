@@ -1,8 +1,9 @@
 name: Auto Approve PR
 
 on:
-  check_suite:
-    types: [completed]
+  schedule:
+    - cron: '*/2 * * * *'
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -10,59 +11,109 @@ permissions:
 
 jobs:
   auto-approve:
-    if: >
-      github.event.check_suite.conclusion == 'success' &&
-      github.event.check_suite.head_branch != github.event.repository.default_branch
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 3
     steps:
       - uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd
         with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const owner = context.repo.owner;
             const repo = context.repo.repo;
-            const headBranch = context.payload.check_suite.head_branch;
 
-            const { data: prs } = await github.rest.pulls.list({
-              owner,
-              repo,
-              head: `${owner}:${headBranch}`,
-              state: 'open'
+            const { data: allPrs } = await github.rest.pulls.list({
+              owner, repo, state: 'open', per_page: 100
             });
 
-            if (prs.length === 0) {
-              core.notice(`No open PR found for branch ${headBranch}`);
-              return;
-            }
-
-            const pr = prs[0];
-
-            if (pr.draft) {
-              core.notice(`PR #${pr.number} is draft — skipping`);
-              return;
-            }
-
-            const { data: reviews } = await github.rest.pulls.listReviews({
-              owner,
-              repo,
-              pull_number: pr.number
-            });
-
-            const alreadyApproved = reviews.some(
-              r => r.user?.type === 'Bot' && r.state === 'APPROVED'
+            const prs = allPrs.filter(pr =>
+              !pr.draft &&
+              pr.head.repo.full_name === `${owner}/${repo}` &&
+              pr.base.ref === 'main'
             );
 
-            if (alreadyApproved) {
-              core.notice(`PR #${pr.number} already has bot approval`);
+            if (prs.length === 0) {
+              core.notice('No open PRs to check');
               return;
             }
 
-            await github.rest.pulls.createReview({
-              owner,
-              repo,
-              pull_number: pr.number,
-              event: 'APPROVE',
-              body: 'All checks passed — auto-approved.'
-            });
+            for (const pr of prs) {
+              const headSha = pr.head.sha;
+              const prUpdatedAt = new Date(pr.updated_at);
 
-            core.notice(`PR #${pr.number} auto-approved`);
+              // Skip if already approved AFTER the last push
+              const { data: reviews } = await github.rest.pulls.listReviews({
+                owner, repo, pull_number: pr.number
+              });
+              const currentApproval = reviews.find(
+                r => r.user?.type === 'Bot' && r.state === 'APPROVED' &&
+                     new Date(r.submitted_at) > prUpdatedAt
+              );
+              if (currentApproval) {
+                core.notice(`PR #${pr.number}: Already approved — skipping`);
+                continue;
+              }
+
+              // Get ALL check runs for this PR's head SHA
+              const { data: checkRuns } = await github.rest.checks.listForRef({
+                owner, repo, ref: headSha, per_page: 100
+              });
+
+              // Only consider NEW checks (started after last push)
+              const requiredNames = [
+                'quality check', 'security scan', 'security scanning',
+                'checkov', 'gitleaks', 'osv-scanner', 'trivy-fs',
+                'zizmor', 'pentestagent', 'vercel', 'workers builds'
+              ];
+
+              const relevantRuns = checkRuns.data.filter(run => {
+                const name = (run.name || '').toLowerCase();
+                const matchesName = requiredNames.some(p => name.includes(p));
+                if (!matchesName) return false;
+
+                // Only count checks that started AFTER the last push
+                if (run.started_at) {
+                  return new Date(run.started_at) > prUpdatedAt;
+                }
+                return true;
+              });
+
+              if (relevantRuns.length === 0) {
+                core.notice(`PR #${pr.number}: No new required checks found yet — skipping`);
+                continue;
+              }
+
+              // Wait for ALL new checks to complete
+              const incomplete = relevantRuns.filter(r => r.status !== 'completed');
+              if (incomplete.length > 0) {
+                core.notice(
+                  `PR #${pr.number}: ${incomplete.length}/${relevantRuns.length} new checks still running. Waiting.`
+                );
+                continue;
+              }
+
+              // ALL new checks complete — check for failures
+              const failed = relevantRuns.filter(r =>
+                r.conclusion !== 'success' &&
+                r.conclusion !== 'skipped' &&
+                r.conclusion !== 'neutral'
+              );
+
+              if (failed.length > 0) {
+                const details = failed.map(r =>
+                  `  - ${r.name}: ${r.conclusion} ${r.html_url || ''}`
+                ).join('\n');
+                core.warning(
+                  `PR #${pr.number}: ${failed.length} check(s) failed:\n${details}`
+                );
+                continue;
+              }
+
+              // ALL new checks passed — approve
+              await github.rest.pulls.createReview({
+                owner, repo,
+                pull_number: pr.number,
+                event: 'APPROVE',
+                body: `All ${relevantRuns.length} required checks passed — auto-approved.`
+              });
+              core.notice(`PR #${pr.number} auto-approved`);
+            }

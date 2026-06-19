@@ -46,6 +46,17 @@ This folder is the control center for the portfolio repo's AI-agent workflow.
 - For multi-step coordination, use `skills/orchestrator/SKILL.md`.
 - For quick repo-hygiene and consistency checks, use `skills/impeccable/SKILL.md`.
 - For prompt cleanup and reuse, update or add the relevant rule or workflow before editing multiple guides.
+- For API design, use `skills/api-design/SKILL.md`.
+- For database operations, use `skills/database-operations/SKILL.md`.
+- For webhooks, use `skills/webhook-design/SKILL.md`.
+- For GraphQL, use `skills/graphql-api/SKILL.md`.
+- For Cloudflare Workers, use `skills/cloudflare-workers/SKILL.md`.
+- For performance monitoring, use `skills/performance-monitoring/SKILL.md`.
+- For code migration, use `skills/code-migration/SKILL.md`.
+- For technical writing, use `skills/technical-writing/SKILL.md`.
+- For dependency auditing, use `skills/dependency-audit/SKILL.md`.
+- For feature flags, use `skills/feature-flags/SKILL.md`.
+- For analytics, use `skills/analytics-integration/SKILL.md`.
 
 ## Active improvement target
 

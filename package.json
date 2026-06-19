@@ -22,7 +22,7 @@
     "ai-chatbot"
   ],
   "scripts": {
-    "dev": "next dev",
+    "dev": "concurrently --names next,sanity --prefix-colors cyan,magenta \"next dev\" \"cd studio && npm run dev\"",
     "build": "next build",
     "start": "next start",
     "lint": "eslint src studio --ext .ts,.tsx,.js,.jsx",
@@ -31,12 +31,12 @@
     "postinstall": "patch-package",
     "cloudflare:build": "opennextjs-cloudflare build --dangerouslyUseUnsupportedNextVersion",
     "cloudflare:dev": "wrangler dev",
-    "cloudflare:deploy": "opennextjs-cloudflare deploy",
-    "sanity:dry-run": "node ./scripts/sanity/import.mjs --dry-run",
-    "sanity:import": "node ./scripts/sanity/import.mjs",
-    "sanity:parity": "node ./scripts/sanity/parity-report.mjs",
-    "sanity:parity:strict": "node ./scripts/sanity/parity-report.mjs --strict",
-    "sanity:readiness": "node ./scripts/sanity/parity-report.mjs --readiness",
+    "cloudflare:deploy": "opennextjs-cloudflare deploy --dangerouslyUseUnsupportedNextVersion",
+    "sanity:seed": "node ./scripts/sanity/seed-demo.ts",
+    "sanity:migrate": "node ./scripts/sanity-migrate/runner.mjs",
+    "sanity:migrate:dry": "node ./scripts/sanity-migrate/runner.mjs --dry-run",
+    "sanity:migrate:validate": "node ./scripts/sanity-migrate/runner.mjs --validate-only",
+    "sanity:health": "node ./scripts/sanity-migrate/health-report.mjs",
     "doctor": "react-doctor",
     "doctor:verbose": "react-doctor --verbose",
     "doctor:json": "react-doctor --json > .react-doctor/report.json",
@@ -60,7 +60,7 @@
     "react-markdown": "^10.1.0",
     "rehype-highlight": "^7.0.2",
     "remark-gfm": "^4.0.1",
-    "styled-components": "^6.4.2",
+    "styled-components": "^6.1.19",
     "swr": "^2.4.1"
   },
   "devDependencies": {
@@ -76,6 +76,7 @@
     "@vitejs/plugin-react": "^5.2.0",
     "@vitest/coverage-v8": "^4.1.9",
     "autoprefixer": "^10.5.0",
+    "concurrently": "^10.0.3",
     "eslint": "^9.0.0",
     "eslint-config-next": "16.2.9",
     "jsdom": "^28.1.0",
@@ -87,6 +88,8 @@
     "wrangler": "^4.101.0"
   },
   "overrides": {
-    "postcss": "8.5.10"
+    "postcss": "8.5.10",
+    "uuid": "11.1.1",
+    "prismjs": "1.30.0"
   }
 }

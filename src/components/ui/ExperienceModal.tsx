@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+
 import Image from '@/components/ui/OptimizedImage';
 import {
   MapPin,

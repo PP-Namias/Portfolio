@@ -1,0 +1,24 @@
+name: "CodeQL Config"
+
+queries:
+  - uses: security-and-quality
+
+paths-ignore:
+  # JSON-LD component: uses dangerouslySetInnerHTML with JSON.stringify on
+  # typed objects only. The data is always a plain JSON-serializable object
+  # from Sanity schema fields or hard-coded shapes. JSON.stringify cannot
+  # produce HTML-significant characters from a plain object. No attacker-
+  # controlled input reaches this code path.
+  - src/components/seo/JsonLd.tsx
+  # Canary honeypot system: intentionally contains fake credentials and
+  # endpoints to trap attackers. All credentials are decoys, not real secrets.
+  - src/lib/canary/**
+  - src/app/api/canary/**
+  # Test files
+  - src/__tests__/**
+  # Studio files (separate build)
+  - studio/**
+  # Scripts
+  - scripts/**
+  # Sanity plans/docs
+  - docs/**

@@ -84,7 +84,6 @@ const CACHE_STALE_MS = Number(process.env.CACHE_TTL_STALE) || 60_000;
 
 const CONTENT_TAGS: Record<string, string[]> = {
   profile: ['cms:profile'],
-  heroSection: ['cms:hero'],
   aboutSection: ['cms:about'],
   techStack: ['cms:technology'],
   experience: ['cms:experience'],
@@ -265,7 +264,7 @@ function resolveMediaPath(fileName?: string | null, url?: string | null): string
 }
 
 const getCmsContentImpl = async (): Promise<CmsContent> => {
-  const [profileDoc, heroDoc, aboutDoc, techDoc, experienceDocs, projectDocs, certificationDocs, galleryDocs, blogDocs, membershipDocs, recommendationDocs, siteSettingsDoc] = await Promise.all([
+  const [profileDoc, aboutDoc, techDoc, experienceDocs, projectDocs, certificationDocs, galleryDocs, blogDocs, membershipDocs, recommendationDocs, siteSettingsDoc] = await Promise.all([
     querySanity<{
       fullName?: string;
       title?: string;
@@ -276,22 +275,16 @@ const getCmsContentImpl = async (): Promise<CmsContent> => {
       linkedin?: string;
       summary?: string;
       avatarUrl?: string;
+      profileImageUrl?: string;
       resumeUrl?: string;
       availabilityLabel?: string;
+      heroRoles?: string[];
+      socialLinks?: Array<{ platform?: string; icon?: string; url?: string; placements?: string[] }>;
       highlights?: Profile['highlights'];
       education?: Profile['education'];
     }>(
-      '*[_type == "profile"][0]{fullName,title,email,phone,location,github,linkedin,summary,"avatarUrl":avatar.asset->url,resumeUrl,availabilityLabel,highlights,education}',
+      '*[_type == "profile"][0]{fullName,title,email,phone,location,github,linkedin,summary,"avatarUrl":avatar.asset->url,"profileImageUrl":profileImage.asset->url,resumeUrl,availabilityLabel,heroRoles,socialLinks[]{platform,icon,url,placements},highlights,education}',
       { tags: CONTENT_TAGS.profile }
-    ),
-    querySanity<{
-      socialLinks?: Array<{ platform?: string; icon?: string; url?: string; placements?: string[] }>;
-      heroRoles?: string[];
-      availabilityLabel?: string;
-      profileImageUrl?: string;
-    }>(
-      '*[_type == "heroSection"][0]{socialLinks[]{platform,icon,url,placements},heroRoles,availabilityLabel,"profileImageUrl":profileImage.asset->url}',
-      { tags: CONTENT_TAGS.heroSection }
     ),
     querySanity<{
       aboutContent?: unknown;
@@ -341,9 +334,6 @@ const getCmsContentImpl = async (): Promise<CmsContent> => {
       status?: string;
       liveUrl?: string;
       repositoryUrl?: string;
-      detailUrl?: string;
-      processUrl?: string;
-      previewVideoUrl?: string;
       imageFile?: string;
       imageUrl?: string;
       imageAlt?: string;
@@ -360,8 +350,13 @@ const getCmsContentImpl = async (): Promise<CmsContent> => {
         source?: string;
         license?: string;
       }>;
+      tier?: string;
+      showcaseDetail?: boolean;
+      shortDescription?: string;
+      highlights?: string[];
+      githubRepo?: string;
     }>>(
-      '*[_type == "project"] | order(order asc, featuredRank asc, title asc){title,"slug":slug.current,summary,challenge,solution,result,year,category,featured,role,technologies,achievements,featuredRank,status,liveUrl,repositoryUrl,detailUrl,processUrl,previewVideoUrl,"imageFile":image.asset->originalFilename,"imageUrl":image.asset->url,"imageAlt":image.alt,"imageCaption":image.caption,"imageCredit":image.credit,"imageSource":image.source,"imageLicense":image.license,"galleryItems":gallery[]{"file":asset->originalFilename,"url":asset->url,alt,caption,credit,source,license}}',
+      '*[_type == "project"] | order(order asc, featuredRank asc, title asc){title,"slug":slug.current,summary,challenge,solution,result,year,category,featured,role,technologies,achievements,featuredRank,status,liveUrl,repositoryUrl,"imageFile":image.asset->originalFilename,"imageUrl":image.asset->url,"imageAlt":image.alt,"imageCaption":image.caption,"imageCredit":image.credit,"imageSource":image.source,"imageLicense":image.license,tier,showcaseDetail,shortDescription,highlights,githubRepo,"galleryItems":gallery[]{"file":asset->originalFilename,"url":asset->url,alt,caption,credit,source,license}}',
       { tags: CONTENT_TAGS.project }
     ),
     querySanity<Array<{
@@ -377,7 +372,7 @@ const getCmsContentImpl = async (): Promise<CmsContent> => {
       source?: string;
       license?: string;
     }>>(
-      '*[_type == "certification"] | order(order asc, issuedAt desc){title,issuedAt,tags,"issuer":issuer->title,"imageFile":image.asset->originalFilename,"imageUrl":image.asset->url,alt,caption,credit,source,license}',
+      '*[_type == "certification"] | order(order asc, issuedAt desc){title,issuedAt,tags,"issuer":issuer->title,"imageFile":image.asset->originalFilename,"imageUrl":image.asset->url,"alt":image.alt,"caption":image.caption,"credit":image.credit,"source":image.source,"license":image.license}',
       { tags: CONTENT_TAGS.certification }
     ),
     querySanity<Array<{
@@ -489,7 +484,7 @@ const getCmsContentImpl = async (): Promise<CmsContent> => {
     if (_fallback) return _fallback;
 
     const shared = await import('./cms-content.shared');
-    const candidate: CmsContent = shared.fallbackCmsContent ?? (await (shared as any).getFallbackCmsContent());
+    const candidate: CmsContent = shared.fallbackCmsContent;
     _fallback = candidate;
     return _fallback;
   };
@@ -499,7 +494,15 @@ const getCmsContentImpl = async (): Promise<CmsContent> => {
   }
 
   const technologies = techDoc.technologies ?? [];
-  const socialLinks = (heroDoc?.socialLinks ?? []).map(mapSocialLink).filter(Boolean) as SocialLink[];
+  const socialLinks = (() => {
+    const mapped = (profileDoc?.socialLinks ?? []).map(mapSocialLink).filter(Boolean) as SocialLink[];
+    const seen = new Set<string>();
+    return mapped.filter((link) => {
+      if (seen.has(link.name)) return false;
+      seen.add(link.name);
+      return true;
+    });
+  })();
   const aboutParagraphsFromPortable = portableTextToParagraphs(aboutDoc?.aboutContent);
   const aboutParagraphsFromLegacy = (aboutDoc?.aboutParagraphs ?? []).map((paragraph) => String(paragraph).trim()).filter(Boolean);
 
@@ -520,14 +523,14 @@ const getCmsContentImpl = async (): Promise<CmsContent> => {
   };
 
   const hero = {
-    roles: (heroDoc?.heroRoles ?? []).filter(Boolean),
-    availabilityLabel: heroDoc?.availabilityLabel || '',
+    roles: (profileDoc?.heroRoles ?? []).filter(Boolean),
+    availabilityLabel: profileDoc?.availabilityLabel || '',
     // Use a sized variant for the hero/profile image to reduce decode cost
     // for the homepage where the image is small. Components can further
     // request different sizes if needed once a shared canonical URL is
     // available in the content shape.
     profileImageUrl:
-      buildMediaGatewayUrl(heroDoc?.profileImageUrl || profileDoc.avatarUrl || '', { width: 320, quality: 85, sign: true }) || '',
+      buildMediaGatewayUrl(profileDoc?.profileImageUrl || profileDoc.avatarUrl || '', { width: 320, quality: 85, sign: true }) || '',
   };
 
   // Determine about paragraphs with a small server-side helper to avoid
@@ -561,13 +564,8 @@ const getCmsContentImpl = async (): Promise<CmsContent> => {
     images: experience.images || [],
   }));
 
-  const projects: Project[] = (projectDocs ?? []).map((project) => ({
+  const rawProjects: Project[] = (projectDocs ?? []).map((project) => ({
     title: project.title || '',
-    // Use the Sanity-provided image URL when present. Avoid creating
-    // local runtime `/images/*` references here — those will be
-    // removed as part of the media cutover.
-    // Use a medium-sized preview image for project cards to avoid
-    // downloading full-resolution assets in the initial render.
     image:
       buildMediaGatewayUrl(project.imageUrl || (project.galleryItems?.[0]?.url ?? ''), { width: 560, quality: 85, sign: true }) ||
       resolveMediaPath(project.imageFile, project.imageUrl) ||
@@ -584,9 +582,9 @@ const getCmsContentImpl = async (): Promise<CmsContent> => {
     featured: project.featured || false,
     repositoryURL: project.repositoryUrl || null,
     liveURL: project.liveUrl || null,
-    processURL: project.processUrl || null,
-    detailURL: project.detailUrl || project.liveUrl || project.repositoryUrl || null,
-    previewVideoURL: project.previewVideoUrl || null,
+    processURL: null,
+    detailURL: project.liveUrl || project.repositoryUrl || null,
+    previewVideoURL: null,
     tags: project.technologies || [],
     year: project.year || new Date().getFullYear(),
     category: project.category,
@@ -605,7 +603,22 @@ const getCmsContentImpl = async (): Promise<CmsContent> => {
       source: galleryItem.source || '',
       license: galleryItem.license || '',
     })),
+    tier: (project.tier as Project['tier']) || 'standard',
+    showcaseDetail: project.showcaseDetail || false,
+    shortDescription: project.shortDescription || '',
+    highlights: project.highlights || [],
+    githubRepo: project.githubRepo || '',
+    slug: project.slug || '',
   }));
+
+  const seenProjectKeys = new Set<string>();
+  const projects = rawProjects.filter((project) => {
+    const key = (project.githubRepo || project.slug || project.title || '').trim().toLowerCase();
+    if (!key) return true;
+    if (seenProjectKeys.has(key)) return false;
+    seenProjectKeys.add(key);
+    return true;
+  });
 
   const certifications: Certification[] = (certificationDocs ?? []).map((certification, index) => ({
     title: certification.title || '',
@@ -724,7 +737,7 @@ const getCmsContentImpl = async (): Promise<CmsContent> => {
 // React's `cache` helper is available in production runtimes but may not be
 // present or callable in test environments. Use a safe wrapper so tests can
 // import `getCmsContent` without requiring a working React cache implementation.
-const maybeCache = <T extends (...args: any[]) => Promise<any>>(fn: T) => {
+const maybeCache = <T extends (...args: unknown[]) => Promise<CmsContent>>(fn: T) => {
   return typeof cache === 'function' ? cache(fn) : fn;
 };
 
@@ -767,5 +780,135 @@ export async function getBlogPostSlugsForStaticParams(): Promise<{ slug: string 
       console.warn('[cms] blog slug enumeration failed, falling back to local posts', err);
     }
     return cmsShared.fallbackBlogPosts.map((post) => ({ slug: post.slug }));
+  }
+}
+
+/**
+ * Build-time-safe enumeration of project slugs for `generateStaticParams`.
+ * Only returns slugs for projects with showcaseDetail enabled.
+ */
+export async function getProjectSlugsForStaticParams(): Promise<{ slug: string }[]> {
+  const projectId = getProjectId();
+  if (!projectId) {
+    return cmsShared.fallbackCmsContent.projects
+      .filter((p) => p.showcaseDetail && p.slug)
+      .map((p) => ({ slug: p.slug! }));
+  }
+
+  try {
+    const client = getPublicClient();
+    const docs = await client.fetch<Array<{ slug?: string }>>(
+      '*[_type == "project" && showcaseDetail == true && defined(slug.current)]{"slug":slug.current}'
+    );
+    const slugs = (docs ?? [])
+      .map((doc) => doc.slug)
+      .filter((slug): slug is string => typeof slug === 'string' && slug.length > 0);
+    if (slugs.length === 0) {
+      return cmsShared.fallbackCmsContent.projects
+        .filter((p) => p.showcaseDetail && p.slug)
+        .map((p) => ({ slug: p.slug! }));
+    }
+    return slugs.map((slug) => ({ slug }));
+  } catch (err) {
+    if (process.env.NODE_ENV !== 'test') {
+      console.warn('[cms] project slug enumeration failed', err);
+    }
+    return cmsShared.fallbackCmsContent.projects
+      .filter((p) => p.showcaseDetail && p.slug)
+      .map((p) => ({ slug: p.slug! }));
+  }
+}
+
+/**
+ * Fetch a single project by slug for the detail page.
+ */
+export async function getProjectBySlug(slug: string): Promise<Project | null> {
+  const projectId = getProjectId();
+  if (!projectId) {
+    return cmsShared.fallbackCmsContent.projects.find((p) => p.slug === slug) ?? null;
+  }
+
+  const safeSlug = slug.replace(/[^a-zA-Z0-9\-_]/g, '');
+
+  try {
+    const doc = await querySanity<{
+      title?: string;
+      slug?: string;
+      summary?: string;
+      challenge?: string;
+      solution?: string;
+      result?: string;
+      year?: number;
+      category?: string;
+      featured?: boolean;
+      role?: string;
+      technologies?: string[];
+      achievements?: string[];
+      featuredRank?: number;
+      status?: string;
+      liveUrl?: string;
+      repositoryUrl?: string;
+      imageUrl?: string;
+      imageAlt?: string;
+      galleryItems?: Array<{
+        url?: string;
+        alt?: string;
+        caption?: string;
+        credit?: string;
+        source?: string;
+        license?: string;
+      }>;
+      tier?: string;
+      showcaseDetail?: boolean;
+      shortDescription?: string;
+      highlights?: string[];
+      githubRepo?: string;
+    }>(
+      `*[_type == "project" && slug.current == "${safeSlug}"][0]{title,"slug":slug.current,summary,challenge,solution,result,year,category,featured,role,technologies,achievements,featuredRank,status,liveUrl,repositoryUrl,"imageUrl":image.asset->url,"imageAlt":image.alt,tier,showcaseDetail,shortDescription,highlights,githubRepo,"galleryItems":gallery[]{"url":asset->url,alt,caption,credit,source,license}}`,
+      { tags: CONTENT_TAGS.project }
+    );
+
+    if (!doc) return null;
+
+    return {
+      title: doc.title || '',
+      image: buildMediaGatewayUrl(doc.imageUrl || '', { width: 960, quality: 85, sign: true }) || '',
+      imageAlt: doc.imageAlt || doc.title || '',
+      description: doc.summary || '',
+      challenge: doc.challenge || undefined,
+      solution: doc.solution || undefined,
+      result: doc.result || undefined,
+      featured: doc.featured || false,
+      repositoryURL: doc.repositoryUrl || null,
+      liveURL: doc.liveUrl || null,
+      processURL: null,
+      detailURL: doc.liveUrl || doc.repositoryUrl || null,
+      tags: doc.technologies || [],
+      year: doc.year || new Date().getFullYear(),
+      category: doc.category,
+      role: doc.role,
+      impactMetrics: (doc.achievements || []).map((a: string, i: number) => ({ label: `Highlight ${i + 1}`, value: a })),
+      featuredRank: doc.featuredRank || null,
+      status: (doc.status as Project['status']) || undefined,
+      gallery: (doc.galleryItems ?? []).map((g: { url?: string; alt?: string; caption?: string; credit?: string; source?: string; license?: string }) => ({
+        image: g.url || '',
+        caption: g.caption || '',
+        alt: g.alt || g.caption || '',
+        credit: g.credit || '',
+        source: g.source || '',
+        license: g.license || '',
+      })),
+      tier: (doc.tier as Project['tier']) || 'standard',
+      showcaseDetail: doc.showcaseDetail || false,
+      shortDescription: doc.shortDescription || '',
+      highlights: doc.highlights || [],
+      githubRepo: doc.githubRepo || '',
+      slug: doc.slug || slug,
+    };
+  } catch (err) {
+    if (process.env.NODE_ENV !== 'test') {
+      console.warn('[cms] project fetch failed for slug', slug, err);
+    }
+    return cmsShared.fallbackCmsContent.projects.find((p) => p.slug === slug) ?? null;
   }
 }

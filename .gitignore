@@ -153,3 +153,7 @@ vite.config.ts.timestamp-*
 # The canonical findings live in docs/security/pentestagent/findings/
 docs/security/pentestagent/loot/
 docs/security/pentestagent/knowledge/
+
+# Sanity backups
+/studio/data_downloads/*
+!/studio/data_downloads/README.md

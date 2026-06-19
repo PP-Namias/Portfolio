@@ -1,6 +1,17 @@
 import {defineField, defineType} from 'sanity'
 
-import {httpsOnly, requireAltText, summaryLength, uniqueSlug} from '../validation/rules'
+import {
+  httpsOnly,
+  requireAltText,
+  summaryLength,
+  uniqueSlug,
+  seoTitleLength,
+  seoDescriptionLength,
+  requiredForPublish,
+  yearRange,
+  maxArrayItems,
+  uniqueTitle,
+} from '../validation/rules'
 
 export default defineType({
   name: 'project',
@@ -16,7 +27,7 @@ export default defineType({
       name: 'title',
       title: 'Title',
       type: 'string',
-      validation: (Rule) => Rule.required(),
+      validation: (Rule) => [Rule.required(), uniqueTitle({schemaType: 'project'})],
     }),
     defineField({
       name: 'slug',
@@ -57,6 +68,7 @@ export default defineType({
       name: 'year',
       title: 'Year',
       type: 'number',
+      validation: yearRange,
     }),
     defineField({
       name: 'category',
@@ -79,6 +91,7 @@ export default defineType({
       title: 'Technologies',
       type: 'array',
       of: [{type: 'string'}],
+      validation: maxArrayItems({max: 15}),
     }),
     defineField({
       name: 'achievements',
@@ -86,6 +99,7 @@ export default defineType({
       description: 'Optional short bullet points for standout outcomes, wins, or impact.',
       type: 'array',
       of: [{type: 'string'}],
+      validation: maxArrayItems({max: 8}),
     }),
     defineField({
       name: 'image',
@@ -123,6 +137,21 @@ export default defineType({
           name: 'dominantColor',
           title: 'Dominant color',
           type: 'string',
+        }),
+      ],
+    }),
+    defineField({
+      name: 'seoImage',
+      title: 'SEO & Social Preview Image',
+      type: 'image',
+      description: 'Image shown in Google search results. Falls back to cover image if not set. Recommended: 1200x630 pixels.',
+      options: {hotspot: true},
+      fields: [
+        defineField({
+          name: 'alt',
+          title: 'Alt text',
+          type: 'string',
+          validation: requireAltText,
         }),
       ],
     }),
@@ -202,6 +231,48 @@ export default defineType({
           {title: 'Archived', value: 'archived'},
         ],
       },
+    }),
+    defineField({
+      name: 'tier',
+      title: 'Tier',
+      type: 'string',
+      options: {
+        list: [
+          {title: 'Featured', value: 'featured'},
+          {title: 'Standard', value: 'standard'},
+          {title: 'Archived', value: 'archived'},
+        ],
+      },
+      initialValue: 'standard',
+      description: 'Controls display priority. Featured projects appear first.',
+    }),
+    defineField({
+      name: 'showcaseDetail',
+      title: 'Showcase detail page',
+      type: 'boolean',
+      initialValue: false,
+      description: 'Enable a dedicated /projects/[slug] detail page for this project.',
+    }),
+    defineField({
+      name: 'shortDescription',
+      title: 'Short description',
+      type: 'string',
+      description: 'One-liner for the home page index card (max 120 chars).',
+      validation: (Rule) => Rule.max(120),
+    }),
+    defineField({
+      name: 'highlights',
+      title: 'Highlights',
+      type: 'array',
+      of: [{type: 'string'}],
+      description: 'Key achievements or talking points for the detail page.',
+      validation: maxArrayItems({max: 6}),
+    }),
+    defineField({
+      name: 'githubRepo',
+      title: 'GitHub repo name',
+      type: 'string',
+      description: 'GitHub repository name (e.g. "Portfolio", "Klaro").',
     }),
     defineField({
       name: 'publishAt',

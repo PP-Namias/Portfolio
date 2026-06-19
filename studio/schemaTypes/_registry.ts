@@ -32,9 +32,8 @@ export type DocumentMeta = {
 }
 
 export const DOCUMENT_META: readonly DocumentMeta[] = [
-  {name: 'heroSection', title: 'Hero Section', kind: 'singleton', previewable: true, description: 'Top-of-page hero content.'},
   {name: 'aboutSection', title: 'About Section', kind: 'singleton', previewable: true, description: 'About copy + education.'},
-  {name: 'profile', title: 'Profile', kind: 'singleton', previewable: true, description: 'Long-form profile details.'},
+  {name: 'profile', title: 'Profile', kind: 'singleton', previewable: true, description: 'Hero, profile, and social links.'},
   {name: 'siteSettings', title: 'Site Settings', kind: 'singleton', previewable: true, description: 'Global site settings.'},
   {name: 'seoSettings', title: 'SEO Settings', kind: 'singleton', previewable: true, description: 'Default SEO copy and assets.'},
   {name: 'mediaSettings', title: 'Media Settings', kind: 'singleton', previewable: true, description: 'Media asset defaults.'},

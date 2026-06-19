@@ -1,0 +1,148 @@
+{
+  "project": "Namias Portfolio - Projects Section Revamp v4",
+  "codeName": "projects-revamp-v4",
+  "version": "4.0.0",
+  "owner": "Jhon Keneth Ryan Namias (PP Namias)",
+  "contact": "pp.namias@gmail.com",
+  "lastUpdated": "2026-06-12",
+  "branch": "feat/projects-revamp",
+  "links": {
+    "marketing": "https://namias.tech",
+    "studio": "https://namias-cms.sanity.studio",
+    "repo": "https://github.com/PP-Namias/Portfolio",
+    "githubProfile": "https://github.com/PP-Namias"
+  },
+  "summary": "Complete overhaul of the Projects section. Home page shows 4 recent projects with 'View All' link. /projects page shows all projects in 2x2 grid with All/Live/Showcase tabs. Showcase projects get /projects/[slug] detail pages. Feature-flagged with IS_PROJECTS_REVAMP_ENABLED.",
+  "designReference": {
+    "description": "Dark cards with bold project name, one-line description, and URL code box. No images on cards. Clean, minimal, scannable.",
+    "homePage": {
+      "heading": "Recent Projects",
+      "viewAllLink": "View All >",
+      "gridLayout": "2x2 responsive grid",
+      "projectCount": 4,
+      "cardElements": ["Project Name (bold)", "Short Description (1-2 lines)", "URL Code Box (hostname)"]
+    },
+    "listingPage": {
+      "heading": "All Projects",
+      "tabs": ["All", "Live Projects", "Showcase"],
+      "gridLayout": "2x2 responsive grid",
+      "cardElements": ["Project Name (bold)", "Short Description (1-2 lines)", "URL Code Box (hostname)", "View Case Study link (for showcase)"]
+    }
+  },
+  "principles": [
+    "Commit-per-slice: every change gets its own commit",
+    "Home page is a teaser: 4 recent projects + View All link",
+    "No images on cards: project name, description, URL only",
+    "Three tabs on /projects: All / Live / Showcase",
+    "Showcase projects get /projects/[slug] detail pages",
+    "Feature-flagged: IS_PROJECTS_REVAMP_ENABLED gates everything",
+    "Accessible: keyboard nav, focus rings, reduced-motion",
+    "Testable: every component has tests"
+  ],
+  "commitPlan": {
+    "strategy": "One commit per logical slice. Each commit is self-contained and passes all checks.",
+    "checksPerCommit": [
+      "npx tsc --noEmit",
+      "npm run lint",
+      "npx vitest run"
+    ],
+    "slices": [
+      {
+        "id": "SLICE-01",
+        "title": "Update PRD v4.0.0",
+        "files": ["docs/prd/prd.projects-revamp.json"],
+        "commitMessage": "docs(prd): update projects-revamp PRD to v4.0.0 with detailed commit plan"
+      },
+      {
+        "id": "SLICE-02",
+        "title": "Update import script with all 48 projects",
+        "files": ["scripts/import-github-projects.mjs"],
+        "commitMessage": "chore(data): update import script with all 48 curated GitHub projects"
+      },
+      {
+        "id": "SLICE-03",
+        "title": "Update fallback data with all 48 projects",
+        "files": ["src/lib/cms-content.shared.ts"],
+        "commitMessage": "chore(data): update fallback data with all 48 curated projects"
+      },
+      {
+        "id": "SLICE-04",
+        "title": "Fix dangerouslySetInnerHTML in not-found.tsx",
+        "files": ["src/app/not-found.tsx"],
+        "commitMessage": "fix(security): remove dangerouslySetInnerHTML from not-found.tsx"
+      },
+      {
+        "id": "SLICE-05",
+        "title": "Polish home page RecentCard design",
+        "files": ["src/components/sections/ProjectsSectionRevamped.tsx"],
+        "commitMessage": "feat(ui): polish home page RecentCard design to match reference"
+      },
+      {
+        "id": "SLICE-06",
+        "title": "Polish /projects ListingCard design",
+        "files": ["src/app/projects/ProjectGridClient.tsx"],
+        "commitMessage": "feat(ui): polish /projects ListingCard design to match home page"
+      },
+      {
+        "id": "SLICE-07",
+        "title": "Update home page tests",
+        "files": ["src/__tests__/components/ProjectsSectionRevamped.test.tsx"],
+        "commitMessage": "test: update ProjectsSectionRevamped tests for new design"
+      },
+      {
+        "id": "SLICE-08",
+        "title": "Update /projects listing tests",
+        "files": ["src/__tests__/components/ProjectGridClient.test.tsx"],
+        "commitMessage": "test: update ProjectGridClient tests for new design"
+      },
+      {
+        "id": "SLICE-09",
+        "title": "Final verification and cleanup",
+        "files": [],
+        "commitMessage": "chore: final verification - all checks passing"
+      }
+    ]
+  },
+  "implementationSteps": [
+    {
+      "step": 1,
+      "action": "Update PRD with comprehensive plan",
+      "status": "in_progress"
+    },
+    {
+      "step": 2,
+      "action": "Update import script with all 48 projects",
+      "status": "pending"
+    },
+    {
+      "step": 3,
+      "action": "Update fallback data with all 48 projects",
+      "status": "pending"
+    },
+    {
+      "step": 4,
+      "action": "Fix security issue in not-found.tsx",
+      "status": "pending"
+    },
+    {
+      "step": 5,
+      "action": "Polish home page card design",
+      "status": "pending"
+    },
+    {
+      "step": 6,
+      "action": "Polish /projects listing card design",
+      "status": "pending"
+    },
+    {
+      "step": 7,
+      "action": "Update all tests",
+      "status": "pending"
+    },
+    {
+      "step": 8,
+      "action": "Run final verification",
+      "status": "pending"
+    }
+  ]
+}

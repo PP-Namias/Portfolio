@@ -85,6 +85,21 @@ export default defineType({
       ],
     }),
     defineField({
+      name: 'seoImage',
+      title: 'SEO & Social Preview Image',
+      type: 'image',
+      description: 'Image shown in Google search results and social media previews. Falls back to main image if not set. Recommended: 1200x630 pixels.',
+      options: {hotspot: true},
+      fields: [
+        defineField({
+          name: 'alt',
+          title: 'Alt text',
+          type: 'string',
+          validation: requireAltText,
+        }),
+      ],
+    }),
+    defineField({
       name: 'coverImagePath',
       title: 'Cover image path',
       type: 'string',

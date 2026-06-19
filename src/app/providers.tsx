@@ -7,7 +7,8 @@ import { ModalProvider } from '@/hooks/useModal';
 import { CmsContentProvider } from '@/hooks/useCmsContent';
 import type { CmsContent } from '@/lib/cms-content.shared';
 import { SwrConfigProvider } from '@/lib/swr-config';
-import React, { useEffect } from 'react';
+import { SITE_URL } from '@/lib/site-config';
+import { useEffect } from 'react';
 
 interface ProvidersProps {
   readonly children: React.ReactNode;
@@ -56,7 +57,7 @@ export function Providers({ children, cmsContent }: ProvidersProps) {
     seoSettings: {
       siteTitle: '',
       siteDescription: '',
-      canonicalUrl: 'https://namias.tech',
+      canonicalUrl: SITE_URL,
       ogImageUrl: '/og-image.svg',
       twitterImageUrl: '/og-image.svg',
       noindex: false,

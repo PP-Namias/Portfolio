@@ -11,7 +11,7 @@ interface TimelineItemProps {
   isLast: boolean;
 }
 
-export function TimelineItem({ item, index, isLast }: Readonly<TimelineItemProps>) {
+export const TimelineItem = React.memo(function TimelineItem({ item, index, isLast }: Readonly<TimelineItemProps>) {
   const [expanded, setExpanded] = useState(false);
   const startYear = new Date(item.startedAt).getFullYear();
   const endLabel = item.endedAt ? new Date(item.endedAt).getFullYear().toString() : 'Present';
@@ -36,7 +36,11 @@ export function TimelineItem({ item, index, isLast }: Readonly<TimelineItemProps
         <span className="text-xs text-text-muted-light dark:text-text-muted-dark">
           {dateLabel}
         </span>
-        <span className="text-xs px-1.5 py-0.5 rounded-full bg-accent-pink/10 text-accent-pink">
+        <span className={`text-xs px-1.5 py-0.5 rounded-full ${
+          item.type === 'Study'
+            ? 'bg-blue-500/10 text-blue-600 dark:text-blue-400'
+            : 'bg-accent-pink/10 text-accent-pink'
+        }`}>
           {item.type}
         </span>
         {item.modality && (
@@ -63,7 +67,7 @@ export function TimelineItem({ item, index, isLast }: Readonly<TimelineItemProps
     >
       {/* Timeline line + dot */}
       <div className="flex flex-col items-center">
-        <div className="h-2.5 w-2.5 rounded-full bg-accent-pink mt-1.5 flex-shrink-0" />
+        <div className="h-2.5 w-2.5 rounded-full bg-accent-pink mt-1.5 flex-shrink-0" aria-hidden="true" />
         {!isLast && (
           <div className="w-px flex-1 bg-border-light dark:bg-border-dark mt-1" />
         )}
@@ -144,4 +148,4 @@ export function TimelineItem({ item, index, isLast }: Readonly<TimelineItemProps
       </div>
     </motion.div>
   );
-}
+});
