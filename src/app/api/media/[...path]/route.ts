@@ -84,10 +84,13 @@ export async function GET(request: NextRequest, context: { params: Promise<{ pat
   let useUnsignedFallback = false;
 
   if (!sigResult.valid) {
-    if (process.env.NODE_ENV !== 'production') {
-      console.warn(`[media-gateway] Signature invalid for ${targetUrl} (expired: ${sigResult.expired})`);
-    }
+    console.warn(`[media-gateway] Signature ${sigResult.expired ? 'expired' : 'invalid'} for ${targetUrl}`);
     useUnsignedFallback = true;
+  } else if (sigResult.expired && expiresAt) {
+    const remainingMs = (expiresAt - Math.floor(Date.now() / 1000)) * 1000;
+    if (remainingMs < 3600_000) {
+      console.warn(`[media-gateway] Signature expiring soon for ${targetUrl} (${Math.round(remainingMs / 60_000)}m remaining)`);
+    }
   }
 
     const upstreamUrl = buildUpstreamUrl(targetUrl, assetKind, width, quality);
