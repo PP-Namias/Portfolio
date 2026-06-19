@@ -60,7 +60,7 @@ export interface ProjectGalleryItem {
   license?: string;
 }
 
-export type ProjectStatus = 'completed' | 'in-progress' | 'prototype';
+export type ProjectStatus = 'completed' | 'in-progress' | 'prototype' | 'draft' | 'archived';
 
 export type ProjectTier = 'featured' | 'standard' | 'archived';
 
@@ -101,6 +101,11 @@ export interface Certification {
   issuer: string;
   issuedAt: string;
   tags: string[];
+  alt?: string;
+  caption?: string;
+  credit?: string;
+  source?: string;
+  license?: string;
 }
 
 export interface Technology {
