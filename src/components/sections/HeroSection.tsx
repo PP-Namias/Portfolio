@@ -103,6 +103,13 @@ export function HeroSection() {
     setActiveProfileImage(mainProfileImage);
   }, [mainProfileImage, rotateX, rotateY]);
 
+  const initials = profile.name
+    .split(' ')
+    .map((n) => n[0])
+    .join('')
+    .slice(0, 2)
+    .toUpperCase();
+
   return (
     <motion.section
       className="relative py-1 sm:py-2"
@@ -145,14 +152,20 @@ export function HeroSection() {
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.25, ease: 'easeInOut' }}
                   >
-                    <Image
-                      src={activeProfileImage}
-                      alt={profile.name}
-                      fill
-                      sizes="(max-width: 640px) 160px, 160px"
-                      className="object-cover"
-                      priority
-                    />
+                    {activeProfileImage ? (
+                      <Image
+                        src={activeProfileImage}
+                        alt={profile.name}
+                        fill
+                        sizes="(max-width: 640px) 160px, 160px"
+                        className="object-cover"
+                        priority
+                      />
+                    ) : (
+                      <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-accent-pink/20 to-accent-pink/40 text-2xl font-bold text-accent-pink">
+                        {initials}
+                      </div>
+                    )}
                   </motion.div>
                 </AnimatePresence>
               </div>

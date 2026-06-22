@@ -71,25 +71,24 @@ export async function GET(request: NextRequest, context: { params: Promise<{ pat
   const signature = requestUrl.searchParams.get('sig');
 
   const secret = process.env.SANITY_MEDIA_GATEWAY_SECRET?.trim();
-  if (!secret) {
-    return buildError(500, 'Media gateway not configured');
-  }
-
-  if (!signature) {
-    return buildError(401, 'Missing media signature');
-  }
-
-  const sigResult = verifyMediaGatewaySignature({ targetUrl, width, quality, expiresAt, signature });
 
   let useUnsignedFallback = false;
 
-  if (!sigResult.valid) {
-    console.warn(`[media-gateway] Signature ${sigResult.expired ? 'expired' : 'invalid'} for ${targetUrl}`);
+  if (!secret) {
     useUnsignedFallback = true;
-  } else if (sigResult.expired && expiresAt) {
-    const remainingMs = (expiresAt - Math.floor(Date.now() / 1000)) * 1000;
-    if (remainingMs < 3600_000) {
-      console.warn(`[media-gateway] Signature expiring soon for ${targetUrl} (${Math.round(remainingMs / 60_000)}m remaining)`);
+  } else if (!signature) {
+    return buildError(401, 'Missing media signature');
+  } else {
+    const sigResult = verifyMediaGatewaySignature({ targetUrl, width, quality, expiresAt, signature });
+
+    if (!sigResult.valid) {
+      console.warn(`[media-gateway] Signature ${sigResult.expired ? 'expired' : 'invalid'} for ${targetUrl}`);
+      useUnsignedFallback = true;
+    } else if (sigResult.expired && expiresAt) {
+      const remainingMs = (expiresAt - Math.floor(Date.now() / 1000)) * 1000;
+      if (remainingMs < 3600_000) {
+        console.warn(`[media-gateway] Signature expiring soon for ${targetUrl} (${Math.round(remainingMs / 60_000)}m remaining)`);
+      }
     }
   }
 
