@@ -230,7 +230,8 @@ describe('FloatingHub', () => {
     });
 
     await waitFor(() => {
-      expect(screen.getByTestId('message-assistant')).toHaveTextContent('AI response here');
+      const assistantMsgs = screen.getAllByTestId('message-assistant');
+      expect(assistantMsgs.some((el) => el.textContent?.includes('AI response here'))).toBe(true);
     });
 
     // Go back to menu
@@ -240,7 +241,8 @@ describe('FloatingHub', () => {
     // Go back to chat — messages should still be there
     fireEvent.click(screen.getByText('Ask AI Assistant'));
     expect(screen.getByTestId('message-user')).toHaveTextContent('Hello');
-    expect(screen.getByTestId('message-assistant')).toHaveTextContent('AI response here');
+    const assistantMsgs = screen.getAllByTestId('message-assistant');
+    expect(assistantMsgs.some((el) => el.textContent?.includes('AI response here'))).toBe(true);
   });
 
   it('has accessible dialog attributes', () => {

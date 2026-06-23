@@ -118,7 +118,7 @@ const emptyProfile: Profile = {
 
 export const fallbackCmsContent: CmsContent = {
   seoSettings: {
-    siteTitle: 'Jhon Keneth Namias | Portfolio king of stuff',
+    siteTitle: 'Jhon Keneth Namias | Portfolio',
     siteDescription: 'Personal portfolio of Jhon Keneth Namias.',
     canonicalUrl: SITE_URL,
     ogImageUrl: '/og-image.svg',

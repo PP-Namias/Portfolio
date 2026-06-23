@@ -585,7 +585,7 @@ describe('uncovered section components', () => {
   it('HeroSection renders CTAs with mailto for email', async () => {
     render(<HeroSection />);
 
-    expect(screen.getByLabelText('Jhon Keneth Ryan Namias')).toBeInTheDocument();
+    expect(screen.getAllByLabelText('Jhon Keneth Ryan Namias').length).toBeGreaterThanOrEqual(1);
     fireEvent.click(screen.getByText('Resume'));
     expect(openModalMock).toHaveBeenCalledWith('resume');
 

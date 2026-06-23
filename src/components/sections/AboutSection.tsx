@@ -18,17 +18,19 @@ export function AboutSection() {
   return (
     <motion.section
       className=""
+      aria-labelledby="about-heading"
       initial={prefersReducedMotion ? undefined : { opacity: 0, y: 20 }}
       whileInView={prefersReducedMotion ? undefined : { opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-50px' }}
       transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
     >
-      <h2 className="text-lg font-semibold text-text-primary-light dark:text-text-primary-dark mb-3.5">
+      <h2 id="about-heading" className="text-lg font-semibold text-text-primary-light dark:text-text-primary-dark mb-3.5">
         About
       </h2>
       <div className="space-y-4">
         {/* Summary text — capped at 2 paragraphs with Read more */}
         <motion.div
+          id="about-content"
           className="space-y-3"
           initial={{ opacity: 0, y: 10 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -50,6 +52,7 @@ export function AboutSection() {
             type="button"
             onClick={() => setShowMore(!showMore)}
             aria-expanded={showMore}
+            aria-controls="about-content"
             className="flex items-center gap-1 text-[13px] font-medium text-text-muted-light dark:text-text-muted-dark hover:text-accent-pink dark:hover:text-accent-pink transition-colors"
           >
             {showMore ? (

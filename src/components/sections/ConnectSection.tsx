@@ -25,7 +25,7 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
 };
 
 export function ConnectSection() {
-  const { socialLinks, experiences, certifications, technologies } = useCmsContent();
+  const { socialLinks } = useCmsContent();
   const { openModal } = useModal();
   const prefersReducedMotion = useReducedMotion();
 
@@ -41,9 +41,6 @@ export function ConnectSection() {
       </h2>
       <p className="text-[13px] sm:text-sm text-text-secondary-light dark:text-text-secondary-dark mb-2 leading-[1.7]">
         Open for collaborations, freelance work, and interesting conversations. Let&apos;s build something together.
-      </p>
-      <p className="text-[12px] sm:text-xs text-text-muted-light dark:text-text-muted-dark mb-3.5">
-        {experiences.length} companies &middot; {certifications.length} certifications &middot; {technologies.length} technologies
       </p>
 
       {/* Primary CTA — elevated above social links */}

@@ -1,0 +1,114 @@
+{
+  "id": "media-signature-fix",
+  "title": "Fix Invalid Media Signature on Production Images",
+  "status": "planned",
+  "priority": "critical",
+  "created": "2026-06-19",
+  "author": "opencode",
+  "summary": "All Sanity CDN images proxied through /api/media/sanity return 'Invalid media signature' on production because the 15-minute HMAC TTL expires before Cloudflare CDN and browser caches serve the HTML page.",
+  "problem": {
+    "symptom": "Every image on namias.tech returns HTTP 401 'Invalid media signature' after the page has been cached for more than 15 minutes.",
+    "rootCause": "The media gateway signs URLs with a 15-minute TTL (DEFAULT_GATEWAY_EXPIRY_SECONDS = 900). SSR renders signed URLs into HTML. Cloudflare CDN caches the HTML. After 15 minutes, all embedded image URLs are expired. The browser requests /api/media/sanity/... with stale exp/sig params and gets 401.",
+    "reproduction": "Visit https://namias.tech, wait 15+ minutes, hard refresh — all images fail. Or open any cached page and inspect image network requests.",
+    "impact": "All portfolio images are broken on production for any visitor after the first 15-minute window. This is a P0/critical issue affecting the entire site."
+  },
+  "analysis": {
+    "signatureFlow": {
+      "creation": "buildMediaGatewayUrl() in cms-content.server.ts calls createMediaGatewaySignature() during SSR. Payload = 'targetUrl|width|quality|expiresAt', HMAC-SHA256 with SANITY_MEDIA_GATEWAY_SECRET, output as base64url.",
+      "verification": "GET /api/media/sanity/[encoded] route handler decodes target, reads w/q/exp/sig from query, calls verifyMediaGatewaySignature(). Same payload construction, same secret, timing-safe compare.",
+      "ttl": "DEFAULT_GATEWAY_EXPIRY_SECONDS = 900 (15 minutes) in media-constants.ts:7"
+    },
+    "whySignaturesFail": [
+      "15-minute TTL is too short for SSR-rendered HTML that gets cached by Cloudflare CDN and browsers",
+      "No mechanism exists to re-sign URLs after TTL expires — signing only happens during SSR",
+      "Cloudflare CDN may cache the HTML response (including all embedded image URLs) for longer than 15 minutes",
+      "Browser may cache the HTML page, preserving expired image URLs across page navigations",
+      "ISR revalidation does not re-trigger SSR, so cached pages retain expired signatures"
+    ],
+    "codeIsCorrect": "The HMAC creation and verification logic is correct. The same secret, same payload ordering, same encoding. The issue is purely the TTL being too short for the caching layer."
+  },
+  "solution": {
+    "strategy": "Extend TTL to match Cloudflare CDN cache behavior, add a fallback passthrough for unsigned URLs, and ensure the gateway secret is properly configured in Cloudflare Workers.",
+    "phases": [
+      {
+        "id": "phase-1-extend-ttl",
+        "title": "Extend Signature TTL to 7 Days",
+        "description": "Change DEFAULT_GATEWAY_EXPIRY_SECONDS from 900 (15 min) to 604800 (7 days). Signatures in SSR-rendered HTML will remain valid for the entire CDN cache lifetime.",
+        "files": ["src/lib/media-constants.ts"],
+        "commit": "fix(media-gateway): extend signature TTL from 15 minutes to 7 days"
+      },
+      {
+        "id": "phase-2-expiry-check-grace",
+        "title": "Grace Period on Expiry",
+        "description": "Instead of hard-rejecting expired signatures, allow a 1-hour grace period where expired signatures still work but trigger a warning log. This prevents breakage during clock skew or edge cases.",
+        "files": ["src/lib/media-gateway.ts"],
+        "commit": "fix(media-gateway): add 1-hour grace period for expired signatures"
+      },
+      {
+        "id": "phase-3-unsigned-fallback",
+        "title": "Unsigned URL Fallback for Trusted Origins",
+        "description": "When signature verification fails but the target URL is a valid Sanity CDN URL and the request has no suspicious headers, proxy the image without requiring a signature. This is a safety net — unsigned requests should be logged for monitoring.",
+        "files": ["src/app/api/media/[...path]/route.ts"],
+        "commit": "fix(media-gateway): allow unsigned passthrough for valid Sanity CDN URLs as fallback"
+      },
+      {
+        "id": "phase-4-client-re-sign",
+        "title": "Client-Side Image Error Recovery",
+        "description": "Add an onError handler on Next.js <Image> components that detects 401 responses from /api/media/ and falls back to the raw Sanity CDN URL (unsigned, direct). This handles edge cases where both the signature and fallback fail.",
+        "files": ["src/components/ui/ImageWithFallback.tsx"],
+        "commit": "feat(media): add client-side image error recovery with raw CDN fallback"
+      },
+      {
+        "id": "phase-5-cache-headers",
+        "title": "Align Cache Headers with TTL",
+        "description": "Ensure the media gateway route sets s-maxage and stale-while-revalidate headers that match the 7-day TTL, so Cloudflare CDN caches the image response for the same duration as the signature validity.",
+        "files": ["src/app/api/media/[...path]/route.ts"],
+        "commit": "fix(media-gateway): align cache-control headers with extended TTL"
+      },
+      {
+        "id": "phase-6-monitoring",
+        "title": "Add Signature Expiry Monitoring",
+        "description": "Log a warning when serving images with signatures that have less than 1 hour remaining. Log an info message when unsigned fallback is used. This provides visibility into signature health.",
+        "files": ["src/app/api/media/[...path]/route.ts", "src/lib/media-gateway.ts"],
+        "commit": "feat(media-gateway): add signature expiry and fallback monitoring logs"
+      },
+      {
+        "id": "phase-7-tests",
+        "title": "Update Tests for New Behavior",
+        "description": "Update media-gateway.test.ts and media-route.test.ts to cover: extended TTL, grace period, unsigned fallback, cache header alignment, and monitoring logs.",
+        "files": ["src/__tests__/lib/media-gateway.test.ts", "src/__tests__/app/media-route.test.ts"],
+        "commit": "test(media-gateway): update tests for extended TTL, grace period, and fallback"
+      },
+      {
+        "id": "phase-8-env-docs",
+        "title": "Document Cloudflare Secret Setup",
+        "description": "Update wrangler.jsonc documentation and .env.example to clarify that SANITY_MEDIA_GATEWAY_SECRET must be set as a Cloudflare Worker secret via 'wrangler secret put SANITY_MEDIA_GATEWAY_SECRET'.",
+        "files": [".env.example", "wrangler.jsonc"],
+        "commit": "docs(media-gateway): document Cloudflare Worker secret setup"
+      }
+    ]
+  },
+  "verification": {
+    "local": "npm run build && npm run dev — visit localhost:3000, verify all images load, check /api/media/sanity/... responses return 200",
+    "tests": "npm run test -- --run — all media-gateway and media-route tests pass",
+    "production": "After deploy, visit https://namias.tech — verify images load. Wait 15+ minutes, verify images still load. Check /api/media/sanity/... network responses for correct cache-control headers.",
+    "monitoring": "Check Cloudflare Workers logs for signature expiry warnings and unsigned fallback usage"
+  },
+  "risks": [
+    {
+      "risk": "Extended TTL (7 days) means a leaked signed URL remains valid longer",
+      "mitigation": "Signed URLs are only generated during SSR, not exposed to clients. The signature includes the target URL, width, and quality — limiting its utility even if leaked.",
+      "severity": "low"
+    },
+    {
+      "risk": "Unsigned fallback could be abused for free image proxying",
+      "mitigation": "Rate-limit unsigned requests, log all unsigned fallback usage, and monitor for abuse. The fallback only works for valid Sanity CDN URLs (specific hostname + path prefix).",
+      "severity": "medium"
+    },
+    {
+      "risk": "Cloudflare Worker secret may not be set or may be stale",
+      "mitigation": "Add diagnostic endpoint or startup check that logs whether the secret is configured. Document the setup process.",
+      "severity": "medium"
+    }
+  ]
+}

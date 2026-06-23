@@ -103,12 +103,17 @@ describe('ChatPanel', () => {
     expect(mockOnClose).toHaveBeenCalledTimes(1);
   });
 
-  it('renders suggested questions when chat is empty', () => {
-    renderChatPanel();
-    expect(screen.getByText('About Keneth')).toBeInTheDocument();
-    expect(screen.getByText('Skills & Tech')).toBeInTheDocument();
-    expect(screen.getByText('Experience')).toBeInTheDocument();
-    expect(screen.getByText('Schedule Call')).toBeInTheDocument();
+  it('renders welcome message with quick-action buttons', () => {
+    const welcomeMessages: ChatMessageType[] = [
+      {
+        id: 'welcome-message',
+        role: 'assistant',
+        content: "Hi there! I'm Keneth's AI assistant. I can help you learn about Keneth's skills, experience, projects, and more. What would you like to know?\n\n[WELCOME_TOPICS]",
+        timestamp: new Date(),
+      },
+    ];
+    renderChatPanel(welcomeMessages);
+    expect(screen.getByText(/I can help you learn about Keneth/)).toBeInTheDocument();
   });
 
   it('sends a message and calls fetch', async () => {
@@ -127,14 +132,17 @@ describe('ChatPanel', () => {
     });
   });
 
-  it('sends suggested question on chip click', async () => {
-    renderChatPanel();
-    fireEvent.click(screen.getByText('About Keneth'));
-
+  it('sends welcome message automatically when chat is empty', async () => {
+    const { setMessages } = renderChatPanel();
     await waitFor(() => {
-      expect(mockFetch).toHaveBeenCalledWith('/api/chat', expect.objectContaining({
-        method: 'POST',
-      }));
+      expect(setMessages).toHaveBeenCalledWith(
+        expect.arrayContaining([
+          expect.objectContaining({
+            role: 'assistant',
+            content: expect.stringContaining('[WELCOME_TOPICS]'),
+          }),
+        ])
+      );
     });
   });
 
