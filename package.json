@@ -63,7 +63,7 @@
     "rehype-highlight": "^7.0.2",
     "remark-gfm": "^4.0.1",
     "styled-components": "^6.1.19",
-    "swr": "^2.4.1"
+    "swr": "^2.4.2"
   },
   "devDependencies": {
     "@opennextjs/cloudflare": "^1.19.11",
@@ -83,7 +83,7 @@
     "eslint-config-next": "16.2.9",
     "jsdom": "^28.1.0",
     "patch-package": "^8.0.1",
-    "react-doctor": "0.5.6",
+    "react-doctor": "0.5.8",
     "tailwindcss": "^3.4.17",
     "typescript": "^5.7.3",
     "vitest": "^4.1.9",
