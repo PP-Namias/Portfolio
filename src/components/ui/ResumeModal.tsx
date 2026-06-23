@@ -35,7 +35,7 @@ export function ResumeModal({ open, onClose }: Readonly<ResumeModalProps>) {
       : null) ?? fallbackResumeUrl;
 
   return (
-    <Modal open={open} onClose={onClose} fullScreen>
+    <Modal open={open} onClose={onClose} fullScreen showCloseButton={false}>
       {/* Toolbar */}
       <div className="flex items-center justify-between px-5 py-3 border-b border-border-light dark:border-border-dark flex-shrink-0">
         <h2 className="text-sm font-semibold text-text-primary-light dark:text-text-primary-dark">
