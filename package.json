@@ -22,13 +22,15 @@
     "ai-chatbot"
   ],
   "scripts": {
-    "dev": "concurrently --names next,sanity --prefix-colors cyan,magenta \"next dev\" \"cd studio && npm run dev\"",
-    "build": "next build",
+    "postinstall": "patch-package && npm install --prefix studio",
+    "dev": "concurrently --names next,sanity --prefix-colors cyan,magenta \"next dev\" \"npm run dev:studio\"",
+    "dev:studio": "cd studio && npm run dev",
+    "build": "concurrently --names next,sanity --prefix-colors cyan,magenta --kill-others-on-fail \"next build\" \"npm run build:studio\"",
+    "build:studio": "cd studio && npm run build",
     "start": "next start",
     "lint": "eslint src studio --ext .ts,.tsx,.js,.jsx",
     "test": "vitest run",
     "test:watch": "vitest",
-    "postinstall": "patch-package",
     "cloudflare:build": "opennextjs-cloudflare build --dangerouslyUseUnsupportedNextVersion",
     "cloudflare:dev": "wrangler dev",
     "cloudflare:deploy": "opennextjs-cloudflare deploy --dangerouslyUseUnsupportedNextVersion",

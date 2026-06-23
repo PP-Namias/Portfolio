@@ -20,9 +20,11 @@ interface ModalProps {
   fullScreen?: boolean;
   /** Optional id that points to the dialog's primary descriptive text */
   descriptionId?: string;
+  /** When false, suppresses the built-in close button (for modals with their own toolbar close). Defaults to true. */
+  showCloseButton?: boolean;
 }
 
-export function Modal({ open, onClose, title, children, fullScreen = false, descriptionId }: Readonly<ModalProps>) {
+export function Modal({ open, onClose, title, children, fullScreen = false, descriptionId, showCloseButton = true }: Readonly<ModalProps>) {
   const panelRef = useRef<HTMLDivElement>(null);
 
   // Lock body scroll when open
@@ -111,7 +113,7 @@ export function Modal({ open, onClose, title, children, fullScreen = false, desc
             aria-describedby={descriptionId}
           >
             {/* Header */}
-            {title && (
+            {title && showCloseButton && (
               <div className="flex items-center justify-between px-5 py-3.5 border-b border-border-light dark:border-border-dark flex-shrink-0">
                 <h2 className="text-sm font-semibold text-text-primary-light dark:text-text-primary-dark">
                   {title}
@@ -128,7 +130,7 @@ export function Modal({ open, onClose, title, children, fullScreen = false, desc
             )}
 
             {/* No title — just show close button */}
-            {!title && (
+            {!title && showCloseButton && (
               <button
                 type="button"
                 onClick={onClose}

@@ -31,7 +31,7 @@ export function Footer() {
                 className="h-11 w-11 flex items-center justify-center text-text-muted-light dark:text-text-muted-dark hover:text-accent-pink transition-colors"
                 aria-label={link.label}
               >
-                <Icon className="h-4 w-4" />
+                <Icon className="h-4 w-4" aria-hidden="true" />
               </a>
             );
           })}

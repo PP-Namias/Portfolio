@@ -1,302 +1,153 @@
-# Pull Request: `dev` branch
+# PR: Dev → Main — Chatbot, Image Fixes, Modal Fix, A11y, Performance & Security
 
-**Title:** Portfolio overhaul — accessibility, performance, SEO, security, Sanity CMS, AI agents, canary tokens
+## Summary
 
-**Branch:** `dev` → `main`
-
----
-
-## What This PR Does
-
-This is a comprehensive overhaul of the portfolio across 12 domains. Every change is production-ready, tested, and committed individually for clean history.
+This PR brings **28 commits** from `dev` into `main`, covering chatbot personality & UX, production image loading fixes, duplicate modal close button fix, accessibility improvements, performance optimizations, security hardening, and documentation.
 
 ---
 
-## Quick Stats
+## Highlights
 
-| Metric | Value |
-|--------|-------|
-| Commits | 196 |
-| Files changed | 369 |
-| Lines added | ~46,000 |
-| Lines removed | ~8,000 |
-| Tests | 404 passing (43 files) |
-| Build | ✅ Clean |
+### 1. AI Chatbot — Tsundere Personality + Welcome Message (#271)
 
----
+**Files:** `promptBuilder.ts`, `ChatPanel.tsx`, `ChatMessage.tsx`
 
-## Changes by Domain
+- Updated system prompt with a tsundere personality (informative + playful, ~20-30% personality ratio)
+- AI auto-sends a welcome message when chat opens with 6 clickable topic buttons:
+  - About Keneth, Skills & Tech, Experience, Projects, Schedule Call, Certifications
+- Added `[WELCOME_TOPICS]` tag parsing in `ChatMessage` for the topic card grid
+- Added `profile` and `contact` actions to the action question map
+- Removed the old static empty-state action cards (replaced by AI message)
 
-### 1. Accessibility (WCAG 2.1 AA)
+### 2. Chatbot Unit Tests (82 new tests)
 
-**What:** ARIA attributes, keyboard navigation, touch targets, reduced motion support.
+**Files:** `promptBuilder.test.ts` (44), `providers.test.ts` (28), `rateLimiter.test.ts` (10)
 
-**Why:** Screen readers, keyboard-only users, and mobile devices need proper semantics.
+- Comprehensive coverage for system prompt generation, intent handling, provider config, circuit breaker, and rate limiting
+- All 105 API tests passing
 
-**How:**
-- `aria-expanded` on 5 toggle buttons
-- `role="img"` on `VerifiedBadge`
-- `aria-hidden` on 6+ decorative icons
-- Touch targets increased to 44px (from 28-32px)
-- `focus-visible:` replaces `focus:` for keyboard-only focus rings
-- `prefers-reduced-motion` respected in `AboutSection`, `ConnectSection`, `ExperienceTimeline`
-- Certification cards use `<button>` instead of `<div onClick>`
-- Fixed heading hierarchy (`h2` → `h3` on project detail)
+### 3. Duplicate Modal Close Button Fix (#271)
 
-**Files:** `src/components/ui/Modal.tsx`, `src/components/ui/ScrollToTop.tsx`, `src/components/ui/VerifiedBadge.tsx`, `src/components/sections/AboutSection.tsx`, `src/components/sections/ConnectSection.tsx`, `src/components/sections/ExperienceTimeline.tsx`, `src/components/ui/ContactModal.tsx`, `src/components/sections/HeroSection.tsx`
+**Files:** `Modal.tsx`, `BookingModal.tsx`, `ResumeModal.tsx`, `ContactModal.tsx`
 
----
+- **Bug:** Schedule Meeting, Resume, and Contact modals each had TWO close buttons — one in their toolbar and one floating from the base `Modal` component
+- **Fix:** Added `showCloseButton` prop to `Modal` (defaults to `true`). BookingModal, ResumeModal, and ContactModal now pass `showCloseButton={false}` to suppress the base Modal's close button
+- Each modal now has exactly one close button in its own toolbar
 
-### 2. Performance
+### 4. Production Image Loading Fix
 
-**What:** CSS transitions, React.memo, color-scheme, touch-action.
+**Files:** `route.ts`, `OptimizedImage.tsx`, `HeroSection.tsx`
 
-**Why:** Faster paint, fewer reflows, smoother animations.
+- Media gateway falls back to unsigned mode when `SANITY_MEDIA_GATEWAY_SECRET` is missing (instead of 500 error)
+- `OptimizedImage` uses browser-native `atob()` + `TextDecoder` instead of Node.js `Buffer`
+- Added `ImagePlaceholder` component for graceful degradation
+- Hero section shows initials fallback when profile image is empty
 
-**How:**
-- Replaced `transition-all` with specific properties (`transform`, `opacity`, `box-shadow`, etc.) in 8 files
-- `React.memo` on `ChatMessage` and `TimelineItem`
-- `color-scheme: dark` eliminates FOUC
-- `touch-action: manipulation` disables 300ms tap delay
+### 5. Media Gateway Improvements
 
-**Files:** `src/components/ui/ChatMessage.tsx`, `src/components/ui/TimelineItem.tsx`, `src/components/ui/ChatPanel.tsx`, `src/components/ui/ContactModal.tsx`, `src/components/sections/ExperienceTimeline.tsx`, `src/components/ui/FloatingHub.tsx`, `src/components/ui/ResumeModal.tsx`, `src/app/globals.css`
+**Files:** `media-gateway.ts`, `media-constants.ts`
 
----
+- Extended signature TTL from 15 minutes to 7 days
+- Added 1-hour grace period for expired signatures
+- Added unsigned passthrough for valid Sanity CDN URLs as fallback
+- Aligned cache-control headers with extended TTL
+- Added signature expiry and fallback monitoring logs
 
-### 3. SEO
+### 6. Accessibility Improvements
 
-**What:** Canonical URLs, Twitter Cards, JSON-LD enhancements, centralized config.
+**Files:** Multiple section components, `Footer.tsx`
 
-**Why:** Search engines need clean signals. Social platforms need rich previews.
+- Added `aria-labelledby` to all section elements
+- Fixed footer icon links
+- Added not-found pages for blog and projects routes
+- Added loading and error boundaries for blog and projects routes
 
-**How:**
-- Canonical URLs on blog and project layouts
-- Twitter Card meta tags (`twitter:card`, `twitter:image`)
-- `Person` JSON-LD enhanced with `ImageObject`
-- `Article` JSON-LD enhanced with `ImageObject`
-- Created `seo-image.ts` utility for Sanity image URLs
-- Created `site-config.ts` with `SITE_URL` and `SANITY_PROJECT_ID`
-- Replaced all hardcoded Sanity project IDs
-- Added `seoImage` field to Sanity schemas (Profile, Post, Project)
-- Added `Disallow` rules for `/studio`, `/api/`, `/_next/`
+### 7. Performance Optimizations
 
-**Files:** `src/app/blog/layout.tsx`, `src/app/projects/layout.tsx`, `src/lib/seo-image.ts`, `src/lib/site-config.ts`, `src/lib/cms-content.server.ts`, `src/lib/cms-content.shared.ts`, `studio/schemaTypes/profile.ts`, `studio/schemaTypes/post.ts`, `studio/schemaTypes/project.ts`
+**Files:** `useTheme.ts`, `ChatPanel.tsx`, `page.tsx`
 
----
+- Memoized unstable callback references in `useTheme` and `ChatPanel`
+- Extracted homepage into server + client components (`HomeContent.tsx`)
 
-### 4. Security
+### 8. Security Hardening
 
-**What:** Clickjacking prevention, SSRF validation, fail-closed auth, rate limiting.
+**Files:** `middleware.ts`, `getProjectBySlug`
 
-**Why:** Common attack vectors need defense in depth.
+- Removed broken in-memory rate limiter from middleware
+- Sanitized GROQ query in `getProjectBySlug`
+- Documented CSP unsafe-inline requirement for Next.js
 
-**How:**
-- `X-Frame-Options: DENY` header
-- `sandbox` attribute on iframe (`ResumeModal`)
-- `OPENAI_BASE_URL` protocol validation
-- Admin API key required for cache flush
-- Media gateway fails closed when secret missing
-- Webhook auth fails closed when secret missing
-- Rate limiter middleware activated
-- CORS headers restricted
+### 9. Documentation
 
-**Files:** `src/proxy.ts`, `src/app/api/chat/lib/providers.ts`, `src/lib/media-gateway.ts`, `src/app/api/sanity/webhook/route.ts`, `src/app/api/performance/cache/route.ts`, `src/components/ui/ResumeModal.tsx`
+**Files:** `README.md`, 8 language translations, PRD docs
+
+- Rewrote README with screenshots, updated stats, and badge links
+- Added 8 language translations (DE, ES, FR, JA, KO, PT, RU, ZH)
+- Added media signature fix PRD and resolution docs
 
 ---
 
-### 5. UI/UX
+## Commits (28)
 
-**What:** 404 page redesign, hero simplification, contact form flatten, projects revamp, Discord integration.
-
-**Why:** Modern aesthetic, better mobile UX, gradual feature rollout.
-
-**How:**
-- 404 page matches ZonFire99 CodePen (glitch effect, OCR-A font)
-- Hero section: single-line info row, compact CTAs
-- Footer: single tight block
-- Contact: direct `mailto:` links (removed modal)
-- Instagram → Twitter/X across all components
-- Added Facebook icon to Connect
-- Discord replaced Messenger in chat hub
-- `MagicCursor` with `prefers-reduced-motion` support
-- `ProjectsSectionRevamped` with dual tabs (Live Projects / Showcase)
-- `/projects/[slug]` detail page with ISR
-- `/projects` listing page
-- Feature flags: `IS_MAGIC_CURSOR_VISIBLE`, `IS_PROJECTS_REVAMP_ENABLED`
-
-**Files:** `src/app/not-found.tsx`, `src/components/sections/HeroSection.tsx`, `src/components/layout/Footer.tsx`, `src/components/ui/ContactModal.tsx`, `src/components/ui/ChatPanel.tsx`, `src/components/ui/MagicCursor.tsx`, `src/components/sections/ProjectsSectionRevamped.tsx`, `src/components/sections/ProjectDetailPage.tsx`, `src/app/projects/page.tsx`, `src/lib/features.ts`
-
----
-
-### 6. Sanity CMS
-
-**What:** Schema consolidation, smart studio features, backup/restore, migration scripts.
-
-**Why:** `heroSection` was redundant — consolidated into `profile`. Smart features reduce manual work.
-
-**How:**
-- Removed `heroSection` schema (merged into `profile`)
-- Added `heroRoles`, `socialLinks`, `profileImage`, `availabilityLabel` to profile
-- Created `ContentHealthPanel`, `DataConsistency`, `JsonInspector`
-- Added field-level validation rules
-- Added filtered views and icons to desk structure
-- Created migration runner framework with 3 migrations
-- Added backup/restore/verify scripts
-- Added health report script and CI workflow
-- Removed `skillsToolPlugin`
-
-**Files:** `studio/schemaTypes/heroSection.ts` (deleted), `studio/schemaTypes/profile.ts`, `studio/components/health/ContentHealthPanel.tsx`, `studio/components/inspector/DataConsistency.tsx`, `studio/components/inspector/JsonInspector.tsx`, `studio/validation/rules.ts`, `studio/structure/deskStructure.ts`, `scripts/sanity-migrate/runner.mjs`
-
----
-
-### 7. AI Agents & MCP
-
-**What:** 15 MCP servers, 12 LSP servers, 5 subagents, 50+ skills, 5 workflow templates.
-
-**Why:** Domain-specific agents reduce context switching. MCP/LSP provide IDE intelligence.
-
-**How:**
-- Cleaned `opencode.json` from 1000+ lines to working config
-- Created subagents: frontend, backend, content, security, devops
-- Created workflows: bug-fix, feature-development, code-review, portfolio-development, mimo-prompt-guide
-- Added MCPs: Chrome DevTools, Magic UI, GitHub, Filesystem, Sequential Thinking, Memory, Brave Search, Fetch, Puppeteer, SQLite, Sanity CMS, Sentry, Vercel, Docker
-- Added LSPs: TypeScript, ESLint, Prettier, Tailwind CSS, HTML, CSS, JSON, Markdown, GraphQL, YAML, Dockerfile, Prisma
-- Created MiMo v2.5 optimized workflows
-
-**Files:** `opencode.json`, `AGENTS.md`, `.agents/README.md`, `.agents/subagents/*.md`, `.agents/workflows/*.md`, `.agents/skills/*.md`
-
----
-
-### 8. Testing
-
-**What:** 404 tests across 43 files — all passing.
-
-**Why:** Comprehensive coverage prevents regressions.
-
-**How:**
-- Added tests for: canary system, cache routes, CSP violation, fallback responder, intent classifier, security headers, CMS content, redis cache, project detail page, project grid, projects section revamped
-- Fixed test isolation with `SWRConfig` provider
-- Increased test timeout to prevent flaky failures
-
-**Files:** `src/__tests__/lib/canary.test.ts`, `src/__tests__/api/cache-route.test.ts`, `src/__tests__/api/csp-violation.test.ts`, `src/__tests__/components/ProjectDetailPage.test.tsx`, `src/__tests__/components/ProjectsSectionRevamped.test.tsx`
-
----
-
-### 9. Canary Token Security
-
-**What:** 10 decoy tokens, email alerts, admin dashboard, trigger logging.
-
-**Why:** Early detection of automated scanners and human reconnaissance.
-
-**How:**
-- 10 decoy tokens: `.env-canary`, `.ssh-canary/id_rsa`, `.aws-canary/credentials`, `backups-canary/database.sql`, `api/canary/admin`, `api/canary/config`, `wp-admin-canary`, `phpmyadmin-canary`, `robots-canary.txt`, `sitemap-canary.xml`
-- Email notifications to `jkrbn99@gmail.com` with HTML templates
-- Admin dashboard at `/admin/canary` (dark theme, refresh, test alert)
-- API endpoints: `/api/canary/test`, `/api/canary/stats`
-- Canary middleware for request interception
-- 23 unit tests
-
-**Files:** `src/lib/canary/*.ts`, `src/app/api/canary/**/*.ts`, `src/app/admin/canary/page.tsx`, `public/.env-canary`, `public/.ssh-canary/id_rsa`, `public/.aws-canary/credentials`, `public/backups-canary/database.sql`, `src/__tests__/lib/canary.test.ts`
-
----
-
-### 10. CI/CD & DevOps
-
-**What:** Sanity schema check, Checkov scanning, auto-approve rewrite.
-
-**Why:** Automated security scanning catches vulnerabilities before deployment.
-
-**How:**
-- Added Sanity schema check workflow
-- Added Checkov security scanning
-- Rewrote auto-approve to poll all checks
-- Added env vars for build
-
-**Files:** `.github/workflows/sanity-schema-check.yml`, `.github/workflows/checkov.yml`, `.github/workflows/auto-approve.yml`
-
----
-
-### 11. Data Migration
-
-**What:** GitHub import script for 57 projects, QA validation, deduplication.
-
-**Why:** Automated import ensures consistency. Deduplication prevents React key collisions.
-
-**How:**
-- Created GitHub import script with modular architecture
-- Added data transform, enrichment, curator, reporter, validation modules
-- Deduplicated projects by `githubRepo`/`slug`/`title`
-- Case-insensitive dedup
-- Added QA script for post-import validation
-
-**Files:** `scripts/import-github-projects.mjs`, `scripts/lib/*.mjs`, `scripts/qa-projects.mjs`
-
----
-
-### 12. Documentation
-
-**What:** PRDs, workflow guides, agent docs, Sanity plans.
-
-**Why:** Clear requirements and consistent processes.
-
-**How:**
-- Created PRDs for: Sanity Studio v2, Search Result Thumbnail, Projects Revamp, Sanity Migration Smart, Canary Tokens, Facebook Embedded Chat
-- Created enterprise workflow guide
-- Updated AGENTS.md with 50+ skills and subagent routing
-- Created 18+ Sanity plan documents
-
-**Files:** `docs/prd/*.md`, `docs/workflows/enterprise-workflow-guide.md`, `AGENTS.md`, `docs/sanity_plans/*.md`
-
----
-
-## How to Test
-
-```bash
-# Install dependencies
-npm install
-
-# Run tests
-npm run test -- --run
-
-# Build
-npm run build
-
-# Dev server
-npm run dev
-
-# Canary system test
-curl http://localhost:3000/api/canary/test
-
-# Canary dashboard
-open http://localhost:3000/admin/canary
+```
+1f4026c fix(modal): remove duplicate close button in Booking, Resume, and Contact modals
+19c943c feat(chat): add AI welcome message with quick-action topic buttons
+c2656b4 feat(chat): add tsundere personality to chatbot and comprehensive unit tests
+eb1e258 fix(media): fix production image loading with unsigned fallback and browser-native decoding
+091f7e8 fix(test): update HeroSection label test for aria-labelledby
+222a417 fix(ux,a11y): add not-found pages, fix footer icons, aria-controls
+7742aaf fix(a11y): add aria-labelledby to section elements
+276063a fix(typo): correct ErrorBoundary message text
+957a8fb fix(perf): memoize unstable callback references in useTheme and ChatPanel
+9ccf917 fix(ux): add loading and error boundaries to blog and projects routes
+94e919f fix(code quality): remove console.error monkey-patch from providers
+1660805 fix(perf): extract homepage into server + client components
+acce3f9 fix(security): document CSP unsafe-inline requirement for Next.js
+041b427 fix(security): remove broken in-memory rate limiter from middleware
+e65f86a fix(security): sanitize GROQ query in getProjectBySlug
+d819d48 feat(scripts): unified install, build, and dev for root + studio
+2f5ff1a docs(readme): add 8 language translations with hero screenshot
+adba00f docs(readme): clean minimal style with badge links
+bbdd4a5 docs(readme): rewrite to clean minimal style with screenshots
+acc788a docs(readme): rewrite with screenshots, updated stats, and better structure
+d192a47 docs(prd): add media signature fix plan and resolution
+44181fd docs(media-gateway): document Cloudflare Worker secret setup
+af20fda test(media-gateway): update tests for extended TTL, grace period, and fallback
+f2f219e feat(media-gateway): add signature expiry and fallback monitoring logs
+d427e83 fix(media-gateway): align cache-control headers with extended TTL
+eacc3ee feat(media): add client-side image error recovery with raw CDN fallback
+6f2a639 fix(media-gateway): allow unsigned passthrough for valid Sanity CDN URLs as fallback
+616b6af fix(media-gateway): add 1-hour grace period for expired signatures
+8575931 fix(media-gateway): extend signature TTL from 15 minutes to 7 days
 ```
 
 ---
 
-## Checklist
+## Testing
 
-- [x] All 404 tests pass
-- [x] Build succeeds
-- [x] Dev server runs with zero console errors
-- [x] Each fix batch committed separately
-- [x] No secrets or keys in code
-- [x] Accessibility: WCAG 2.1 AA compliant
-- [x] SEO: canonical URLs, Twitter Cards, JSON-LD
-- [x] Security: X-Frame-Options, sandbox, SSRF validation
-- [x] Canary tokens: 10 decoys deployed, email alerts active
-- [x] Documentation: PRDs, workflow guides, agent docs
+- [x] `npx tsc --noEmit` — 0 errors
+- [x] `npm run test -- --run` — all tests passing
+- [x] `npm run lint` — only pre-existing warnings (unrelated)
 
----
+## Deployment Notes
 
-## Breaking Changes
+### Cloudflare Workers
 
-None. All changes are backward-compatible.
+Set the media gateway secret:
 
----
+```bash
+npx wrangler secret put SANITY_MEDIA_GATEWAY_SECRET
+```
 
-## Notes
+### Environment Variables
 
-- The GROQ query `queryParseError` for `whisper-ai-subtitles` during build is non-blocking
-- `src/middleware.ts` was deleted — `src/proxy.ts` contains the actual middleware logic
-- Canary tokens never rotate (per preference)
-- Email notifications go to `jkrbn99@gmail.com`
+`.env.example` updated with `SANITY_MEDIA_GATEWAY_SECRET` documentation.
+
+## Impact
+
+- **Chatbot** — more engaging with personality and guided welcome flow
+- **Images** — all production images load with graceful fallbacks
+- **Modals** — no more duplicate close buttons
+- **Accessibility** — WCAG compliance improvements across all sections
+- **Performance** — reduced unnecessary re-renders and server/client boundary optimization
+- **Security** — removed broken rate limiter, sanitized queries

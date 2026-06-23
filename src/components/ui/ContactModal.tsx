@@ -158,7 +158,7 @@ export function ContactModal({ open, onClose }: Readonly<ContactModalProps>) {
   };
 
   return (
-    <Modal open={open} onClose={onClose} fullScreen descriptionId="contact-modal-description">
+    <Modal open={open} onClose={onClose} fullScreen showCloseButton={false} descriptionId="contact-modal-description">
       <div className="flex flex-col bg-surface-light dark:bg-surface-dark transition-colors duration-300">
         {/* Top action bar */}
         <div className="flex items-center gap-2 px-4 py-2.5 border-b border-border-light dark:border-border-dark flex-shrink-0 overflow-x-auto">

@@ -3,23 +3,13 @@
 import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import useSWR from 'swr';
-import { X, Send, RotateCcw, ArrowLeft, Trash2, Sparkles, UserCircle, Terminal, Briefcase, Layers, CalendarCheck, Medal } from 'lucide-react';
+import { X, Send, RotateCcw, ArrowLeft, Trash2, Sparkles } from 'lucide-react';
 import { ChatMessage } from './ChatMessage';
 import { useModal } from '@/hooks/useModal';
 import { useCmsContent } from '@/hooks/useCmsContent';
-import { DISCORD_PROFILE_URL } from '@/lib/constants';
 import type { ChatMessage as ChatMessageType } from '@/types';
 import Image from '@/components/ui/OptimizedImage';
 import { resolveContentImageSrc } from '@/lib/media';
-
-const ACTION_CARDS = [
-  { icon: UserCircle, label: 'About Keneth', question: 'Who is Keneth? Tell me about him.', color: 'text-blue-500', bg: 'bg-blue-500/10' },
-  { icon: Terminal, label: 'Skills & Tech', question: 'What are Keneth\'s top skills and technologies?', color: 'text-emerald-500', bg: 'bg-emerald-500/10' },
-  { icon: Briefcase, label: 'Experience', question: 'Tell me about Keneth\'s work experience and roles', color: 'text-amber-500', bg: 'bg-amber-500/10' },
-  { icon: Layers, label: 'Projects', question: 'What projects has Keneth built?', color: 'text-violet-500', bg: 'bg-violet-500/10' },
-  { icon: CalendarCheck, label: 'Schedule Call', question: 'How can I schedule a meeting with Keneth?', color: 'text-teal-500', bg: 'bg-teal-500/10' },
-  { icon: Medal, label: 'Certifications', question: 'What certifications does Keneth have?', color: 'text-rose-500', bg: 'bg-rose-500/10' },
-];
 
 const FOLLOW_UP_POOL = [
   'What certifications do you have?',
@@ -42,6 +32,15 @@ const ACTION_QUESTION_MAP: Record<string, string> = {
   contact: 'How can I contact Keneth?',
   achievements: 'What are your key achievements?',
   education: 'Tell me about your education',
+  profile: 'Who is Keneth? Tell me about him.',
+  booking: 'How can I schedule a meeting with Keneth?',
+};
+
+const WELCOME_MESSAGE: ChatMessageType = {
+  id: 'welcome-message',
+  role: 'assistant',
+  content: 'Hi there! I\'m Keneth\'s AI assistant. I can help you learn about Keneth\'s skills, experience, projects, and more. What would you like to know?\n\n[WELCOME_TOPICS]',
+  timestamp: new Date(),
 };
 
 type ChatAvailabilityStatus = 'checking' | 'active' | 'inactive';
@@ -143,6 +142,13 @@ export function ChatPanel({ onBack, onClose, messages, setMessages }: Readonly<C
     setTimeout(() => inputRef.current?.focus(), 100);
   }, []);
 
+  // Auto-send welcome message when chat opens with no messages
+  useEffect(() => {
+    if (messages.length === 0) {
+      setMessages([WELCOME_MESSAGE]);
+    }
+  }, [messages.length, setMessages]);
+
   // SWR-based availability probe. The key is null in tests so SWR
   // skips the fetch entirely (the test branch in the effect below
   // forces chatAvailability='active'). In production:
@@ -198,10 +204,21 @@ export function ChatPanel({ onBack, onClose, messages, setMessages }: Readonly<C
     };
   }, [revalidateAvailability]);
 
+  const messagesRef = useRef(messages);
+  const isLoadingRef = useRef(isLoading);
+
+  useEffect(() => {
+    messagesRef.current = messages;
+  }, [messages]);
+
+  useEffect(() => {
+    isLoadingRef.current = isLoading;
+  }, [isLoading]);
+
   const sendMessage = useCallback(
     async (text: string) => {
       const trimmed = text.trim();
-      if (!trimmed || isLoading) return;
+      if (!trimmed || isLoadingRef.current) return;
 
       if (typeof navigator !== 'undefined' && !navigator.onLine) {
         setChatAvailability('inactive');
@@ -222,7 +239,7 @@ export function ChatPanel({ onBack, onClose, messages, setMessages }: Readonly<C
       setIsLoading(true);
 
       try {
-        const history = messages.map((m) => ({
+        const history = messagesRef.current.map((m) => ({
           role: m.role,
           content: m.content,
         }));
@@ -257,7 +274,7 @@ export function ChatPanel({ onBack, onClose, messages, setMessages }: Readonly<C
         setIsLoading(false);
       }
     },
-    [isLoading, messages, setMessages]
+    [setMessages]
   );
 
   const handleAction = useCallback((action: string) => {
@@ -417,52 +434,6 @@ export function ChatPanel({ onBack, onClose, messages, setMessages }: Readonly<C
               <p className="text-[11px] text-text-muted-light dark:text-text-muted-dark mt-0.5 mb-4">
                 Ask me anything about Keneth
               </p>
-
-              <div className="grid grid-cols-2 gap-1.5 w-full max-w-[280px]">
-                {ACTION_CARDS.map((card, i) => {
-                  const Icon = card.icon;
-                  return (
-                    <motion.button
-                      type="button"
-                      key={card.label}
-                      onClick={() => sendMessage(card.question)}
-                      initial={{ opacity: 0, y: 6 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.1 + i * 0.04 }}
-                      className="flex items-center gap-2 p-2 rounded-lg border border-border-light/60 dark:border-border-dark/60 hover:border-accent-pink/30 hover:bg-accent-pink/5 transition-[border-color,background-color] text-left group"
-                    >
-                      <div className={`h-7 w-7 rounded-md ${card.bg} flex items-center justify-center flex-shrink-0`}>
-                        <Icon className={`h-3.5 w-3.5 ${card.color}`} />
-                      </div>
-                      <span className="text-[11px] font-medium text-text-secondary-light dark:text-text-secondary-dark group-hover:text-text-primary-light dark:group-hover:text-text-primary-dark transition-colors leading-tight">
-                        {card.label}
-                      </span>
-                    </motion.button>
-                  );
-                })}
-              </div>
-
-              <div className="mt-4 flex items-center gap-2">
-                <a
-                  href={DISCORD_PROFILE_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 rounded-full border border-[#5865F2]/20 px-3 py-1.5 text-[10px] font-medium text-[#5865F2] hover:bg-[#5865F2]/5 transition-colors"
-                >
-                  <svg viewBox="0 0 24 24" fill="currentColor" className="h-3 w-3">
-                    <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/>
-                  </svg>
-                  Discord
-                </a>
-                <span className="text-[10px] text-text-muted-light/40 dark:text-text-muted-dark/40">or</span>
-                <button
-                  type="button"
-                  onClick={() => sendMessage('Hi Keneth!')}
-                  className="inline-flex items-center gap-1.5 rounded-full border border-border-light/60 dark:border-border-dark/60 px-3 py-1.5 text-[10px] font-medium text-text-secondary-light dark:text-text-secondary-dark hover:border-accent-pink/30 hover:text-accent-pink transition-colors"
-                >
-                  Say hello
-                </button>
-              </div>
             </motion.div>
           )}
         </AnimatePresence>

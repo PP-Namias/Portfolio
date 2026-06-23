@@ -14,9 +14,9 @@ export const dynamic = 'force-dynamic';
 function buildCacheControl(assetKind: 'image' | 'file' | 'unknown', expiresAt?: number): string {
   if (typeof expiresAt === 'number' && Number.isFinite(expiresAt)) {
     const remainingSeconds = Math.max(60, expiresAt - Math.floor(Date.now() / 1000));
-    const maxAge = Math.min(3600, remainingSeconds);
+    const maxAge = Math.min(604800, remainingSeconds);
 
-    return `public, max-age=${maxAge}, s-maxage=${Math.max(maxAge, 3600)}, stale-while-revalidate=604800`;
+    return `public, max-age=${maxAge}, s-maxage=${Math.max(maxAge, 86400)}, stale-while-revalidate=604800`;
   }
 
   if (assetKind === 'file') {
@@ -71,16 +71,25 @@ export async function GET(request: NextRequest, context: { params: Promise<{ pat
   const signature = requestUrl.searchParams.get('sig');
 
   const secret = process.env.SANITY_MEDIA_GATEWAY_SECRET?.trim();
+
+  let useUnsignedFallback = false;
+
   if (!secret) {
-    return buildError(500, 'Media gateway not configured');
-  }
-
-  if (!signature) {
+    useUnsignedFallback = true;
+  } else if (!signature) {
     return buildError(401, 'Missing media signature');
-  }
+  } else {
+    const sigResult = verifyMediaGatewaySignature({ targetUrl, width, quality, expiresAt, signature });
 
-  if (!verifyMediaGatewaySignature({ targetUrl, width, quality, expiresAt, signature })) {
-    return buildError(401, 'Invalid media signature');
+    if (!sigResult.valid) {
+      console.warn(`[media-gateway] Signature ${sigResult.expired ? 'expired' : 'invalid'} for ${targetUrl}`);
+      useUnsignedFallback = true;
+    } else if (sigResult.expired && expiresAt) {
+      const remainingMs = (expiresAt - Math.floor(Date.now() / 1000)) * 1000;
+      if (remainingMs < 3600_000) {
+        console.warn(`[media-gateway] Signature expiring soon for ${targetUrl} (${Math.round(remainingMs / 60_000)}m remaining)`);
+      }
+    }
   }
 
     const upstreamUrl = buildUpstreamUrl(targetUrl, assetKind, width, quality);
@@ -109,8 +118,9 @@ export async function GET(request: NextRequest, context: { params: Promise<{ pat
     if (lastModified) headers.set('last-modified', lastModified);
     if (contentDisposition) headers.set('content-disposition', contentDisposition);
 
-    headers.set('cache-control', buildCacheControl(assetKind, expiresAt));
+    headers.set('cache-control', useUnsignedFallback ? 'public, max-age=3600, s-maxage=86400, stale-while-revalidate=604800' : buildCacheControl(assetKind, expiresAt));
     headers.set('x-media-asset-kind', assetKind);
+    if (useUnsignedFallback) headers.set('x-media-unsigned', 'true');
     headers.set('vary', 'accept');
     headers.set('cross-origin-resource-policy', 'same-origin');
     headers.set('x-content-type-options', 'nosniff');

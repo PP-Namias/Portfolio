@@ -54,7 +54,7 @@ export function BookingModal({ open, onClose }: Readonly<BookingModalProps>) {
   }, [open, selectedEvent, calTheme]);
 
   return (
-    <Modal open={open} onClose={onClose} fullScreen>
+    <Modal open={open} onClose={onClose} fullScreen showCloseButton={false}>
       {/* Toolbar */}
       <div className="flex items-center justify-between px-5 py-3 border-b border-border-light dark:border-border-dark flex-shrink-0 transition-colors duration-300">
         <div className="flex items-center gap-4">

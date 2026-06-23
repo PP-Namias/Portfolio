@@ -34,7 +34,7 @@ export class SectionErrorBoundary extends React.Component<ErrorBoundaryProps, Er
       return (
         <div className="rounded-lg border border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark p-4 text-center">
           <p className="text-sm text-text-muted-light dark:text-text-muted-dark">
-            Something went loading this section.
+            Something went wrong loading this section.
           </p>
         </div>
       );
