@@ -205,10 +205,15 @@ export function ChatPanel({ onBack, onClose, messages, setMessages }: Readonly<C
   }, [revalidateAvailability]);
 
   const messagesRef = useRef(messages);
-  messagesRef.current = messages;
-
   const isLoadingRef = useRef(isLoading);
-  isLoadingRef.current = isLoading;
+
+  useEffect(() => {
+    messagesRef.current = messages;
+  }, [messages]);
+
+  useEffect(() => {
+    isLoadingRef.current = isLoading;
+  }, [isLoading]);
 
   const sendMessage = useCallback(
     async (text: string) => {

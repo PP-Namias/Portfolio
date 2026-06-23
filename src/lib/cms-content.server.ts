@@ -828,7 +828,7 @@ export async function getProjectBySlug(slug: string): Promise<Project | null> {
     return cmsShared.fallbackCmsContent.projects.find((p) => p.slug === slug) ?? null;
   }
 
-  const safeSlug = slug.replace(/[^a-zA-Z0-9\-_]/g, '').replace(/"/g, '\\"');
+  const safeSlug = slug.replace(/[^a-zA-Z0-9\-_]/g, '');
 
   try {
     const doc = await querySanity<{
