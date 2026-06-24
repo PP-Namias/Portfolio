@@ -19,7 +19,7 @@ export async function POST(request: NextRequest) {
       }));
     }
 
-    return NextResponse.json({ received: true }, { status: 204 });
+    return NextResponse.json({ received: true }, { status: 200 });
   } catch {
     return NextResponse.json({ error: 'Invalid CSP report' }, { status: 400 });
   }
