@@ -20,8 +20,9 @@ export function TechStackSection() {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-50px' }}
       transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
+      aria-labelledby="tech-stack-heading"
     >
-      <h2 className="text-lg font-semibold text-text-primary-light dark:text-text-primary-dark mb-4">
+      <h2 id="tech-stack-heading" className="text-lg font-semibold text-text-primary-light dark:text-text-primary-dark mb-4">
         Tech Stack{' '}
         <span className="text-xs font-medium px-1.5 py-0.5 rounded-md bg-accent-pink/10 text-accent-pink ml-2 align-middle">
           {technologies.length}

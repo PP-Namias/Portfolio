@@ -35,8 +35,9 @@ export function ConnectSection() {
       whileInView={prefersReducedMotion ? undefined : { opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-50px' }}
       transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
+      aria-labelledby="connect-heading"
     >
-      <h2 className="text-lg font-semibold text-text-primary-light dark:text-text-primary-dark mb-2">
+      <h2 id="connect-heading" className="text-lg font-semibold text-text-primary-light dark:text-text-primary-dark mb-2">
         Connect
       </h2>
       <p className="text-[13px] sm:text-sm text-text-secondary-light dark:text-text-secondary-dark mb-2 leading-[1.7]">
