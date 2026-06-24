@@ -85,6 +85,7 @@ export default async function BlogPostPage({ params }: Readonly<{ params: Promis
         headline: post.metaTitle || post.title,
         description: post.metaDescription || post.excerpt,
         datePublished: post.date,
+        dateModified: post.date,
         author: {
           '@type': 'Person',
           name: 'Jhon Keneth Ryan Namias',
