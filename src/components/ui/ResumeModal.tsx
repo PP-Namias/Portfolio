@@ -1,8 +1,8 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useCallback } from 'react';
 import useSWR from 'swr';
-import { Download } from 'lucide-react';
+import { Download, Loader2 } from 'lucide-react';
 import { Modal } from './Modal';
 
 const fallbackResumeUrl = '/resume.pdf';
@@ -13,13 +13,10 @@ interface ResumeModalProps {
 }
 
 export function ResumeModal({ open, onClose }: Readonly<ResumeModalProps>) {
-  // SWR-based lazy resume URL lookup. The key is null when the
-  // modal is closed (SWR skips the fetch entirely), and is
-  // '/api/resume' once it opens. SWR owns the abort/retry
-  // lifecycle internally (it cancels in-flight requests when
-  // the key changes or the component unmounts), so we never
-  // write a useEffect for data fetching.
-  const { data } = useSWR<{ resumeUrl?: string }>(
+  const [pdfLoading, setPdfLoading] = useState(true);
+  const [pdfError, setPdfError] = useState(false);
+
+  const { data, isLoading } = useSWR<{ resumeUrl?: string }>(
     open ? '/api/resume' : null,
     async (url: string) => {
       const res = await fetch(url);
@@ -34,6 +31,14 @@ export function ResumeModal({ open, onClose }: Readonly<ResumeModalProps>) {
       ? data.resumeUrl.trim()
       : null) ?? fallbackResumeUrl;
 
+  const handleLoad = useCallback(() => setPdfLoading(false), []);
+  const handleError = useCallback(() => {
+    setPdfLoading(false);
+    setPdfError(true);
+  }, []);
+
+  const showFetching = isLoading && !data;
+
   return (
     <Modal open={open} onClose={onClose} fullScreen showCloseButton={false}>
       {/* Toolbar */}
@@ -44,11 +49,12 @@ export function ResumeModal({ open, onClose }: Readonly<ResumeModalProps>) {
         <div className="flex items-center gap-3">
           <a
             href={resumeUrl}
-            download
+            target="_blank"
+            rel="noopener noreferrer"
             className="inline-flex items-center gap-2 rounded-lg px-3.5 py-1.5 text-xs font-medium bg-accent-pink text-white hover:bg-accent-pink-hover transition-colors"
           >
             <Download className="h-3.5 w-3.5" />
-            Download PDF
+            Open PDF
           </a>
           <button
             type="button"
@@ -62,28 +68,41 @@ export function ResumeModal({ open, onClose }: Readonly<ResumeModalProps>) {
       </div>
 
       {/* PDF Viewer */}
-      <div className="flex-1 h-[calc(92vh-60px)] min-h-[500px]">
-        <iframe
-          src={`${resumeUrl}#view=FitH`}
-          className="w-full h-full border-0"
-          title="Resume PDF Viewer"
-          loading="lazy"
-          sandbox="allow-same-origin"
-        >
-          <div className="flex flex-col items-center justify-center py-20 px-4 text-center h-full">
-            <p className="text-text-secondary-light dark:text-text-secondary-dark mb-4">
-              Your browser doesn&apos;t support embedded PDF viewing.
+      <div className="flex-1 h-[calc(92vh-60px)] min-h-[500px] relative">
+        {showFetching && (
+          <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-white dark:bg-card-bg-dark z-10">
+            <Loader2 className="h-8 w-8 animate-spin text-accent-pink" />
+            <p className="text-sm text-text-muted-light dark:text-text-muted-dark">Loading resume...</p>
+          </div>
+        )}
+
+        {pdfError && (
+          <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 bg-white dark:bg-card-bg-dark z-10 px-6 text-center">
+            <p className="text-sm text-text-secondary-light dark:text-text-secondary-dark">
+              Unable to display the resume inline.
             </p>
             <a
               href={resumeUrl}
-              download
+              target="_blank"
+              rel="noopener noreferrer"
               className="inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium bg-accent-pink text-white hover:bg-accent-pink-hover transition-colors"
             >
               <Download className="h-4 w-4" />
-              Download Resume
+              Open Resume in New Tab
             </a>
           </div>
-        </iframe>
+        )}
+
+        {!showFetching && (
+          <iframe
+            src={resumeUrl}
+            className="w-full h-full border-0"
+            title="Resume PDF Viewer"
+            loading="lazy"
+            onLoad={handleLoad}
+            onError={handleError}
+          />
+        )}
       </div>
     </Modal>
   );
