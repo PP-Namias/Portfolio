@@ -9,7 +9,7 @@ interface SecurityHeader {
 
 const IDEAL_HEADERS: Array<{
   name: string;
-  validator: (value: string) => { status: SecurityHeader['status']; recommendation?: string };
+  validator: (value: string, allHeaders: Headers) => { status: SecurityHeader['status']; recommendation?: string };
 }> = [
   {
     name: 'Content-Security-Policy',
@@ -47,10 +47,11 @@ const IDEAL_HEADERS: Array<{
   },
   {
     name: 'X-Frame-Options',
-    validator: (value) => {
-      if (!value) return { status: 'missing', recommendation: 'Add X-Frame-Options: DENY (or use CSP frame-ancestors)' };
-      if (value === 'DENY' || value === 'SAMEORIGIN') return { status: 'present' };
-      return { status: 'needs-improvement', recommendation: `Expected 'DENY' or 'SAMEORIGIN', got '${value}'` };
+    validator: (value, allHeaders) => {
+      if (value && (value === 'DENY' || value === 'SAMEORIGIN')) return { status: 'present' };
+      const csp = allHeaders.get('Content-Security-Policy') || '';
+      if (csp.includes('frame-ancestors')) return { status: 'present' };
+      return { status: 'missing', recommendation: 'Add X-Frame-Options: DENY or CSP frame-ancestors directive' };
     },
   },
   {
@@ -84,7 +85,7 @@ export async function GET() {
     const response = await fetch(url, { method: 'HEAD', cache: 'no-store', signal: AbortSignal.timeout(10_000) });
     const headers: SecurityHeader[] = IDEAL_HEADERS.map(({ name, validator }) => {
       const value = response.headers.get(name);
-      const result = value ? validator(value) : { status: 'missing' as const, recommendation: `Add ${name} header` };
+      const result = value ? validator(value, response.headers) : { status: 'missing' as const, recommendation: `Add ${name} header` };
       return { name, value, ...result };
     });
 

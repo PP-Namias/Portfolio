@@ -115,7 +115,7 @@ const nextConfig = {
     return [
       {
         source: '/:path*',
-        headers: securityHeaders,
+        headers: securityHeaders.filter(h => h.key !== 'X-Frame-Options'),
       },
       ...(!isDev
         ? [
