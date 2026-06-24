@@ -2,7 +2,7 @@
 
 ## Summary
 
-This PR brings **18 commits** from `dev` into `main`, covering a full AI audit fix pass, hydration mismatch resolution, performance optimization (canvas removal), SEO improvements (OG images, JSON-LD), security hardening, and accessibility fixes.
+This PR brings **19 commits** from `dev` into `main`, covering a full AI audit fix pass, hydration mismatch resolution, performance optimization (canvas removal), SEO improvements (OG images, JSON-LD), security hardening, and accessibility fixes.
 
 Closes #271 (duplicate close button — already merged to main, included for traceability)
 
@@ -18,7 +18,20 @@ Closes #271 (duplicate close button — already merged to main, included for tra
 - This was the primary cause of site lag on low-end devices
 - `MagicCursor` mouse sparkle effect retained (lightweight DOM-based, only creates elements on mouse move)
 
-### 2. Hydration Mismatch Fix
+### 2. ResumeModal Loading/Error States & Fallback PDF
+
+**Files:** `ResumeModal.tsx`, `ResumeModal.test.tsx`, `public/resume.pdf`
+
+- Reset `pdfLoading`/`pdfError` when modal opens or `resumeUrl` changes
+- Integrated SWR `error` state (previously ignored) for reliable error detection
+- Added 15-second timeout for iframe load failures
+- Added Retry button with `mutate('/api/resume')` to clear SWR cache
+- Two loading phases: "Loading resume..." (SWR fetch) + "Loading PDF..." (iframe load)
+- Changed button text from "Open PDF" to "Download Resume"
+- Added minimal valid fallback PDF at `public/resume.pdf` (~300 bytes)
+- Updated tests: 13 passing (was 7)
+
+### 3. Hydration Mismatch Fix
 
 **Files:** `TechStackSection.tsx`, `ConnectSection.tsx`
 
@@ -26,7 +39,7 @@ Closes #271 (duplicate close button — already merged to main, included for tra
 - **Fix:** Moved ARIA attributes to a plain `<section>` wrapper around `motion.section`
 - Plain HTML elements render identically on server and client
 
-### 3. Rate Limiter IP Spoofing Fix
+### 4. Rate Limiter IP Spoofing Fix
 
 **File:** `src/app/api/chat/route.ts`
 
@@ -34,7 +47,7 @@ Closes #271 (duplicate close button — already merged to main, included for tra
 - **Fix:** Prioritize `cf-connecting-ip` header (Cloudflare-verified, cannot be spoofed)
 - Fall back to `x-forwarded-for` for non-Cloudflare deployments
 
-### 4. Media Gateway Security Hardening
+### 5. Media Gateway Security Hardening
 
 **File:** `src/app/api/media/[...path]/route.ts`
 
@@ -42,7 +55,7 @@ Closes #271 (duplicate close button — already merged to main, included for tra
 - **After:** Returns 501 when secret is not configured (fails closed, no silent proxy)
 - Removed `useUnsignedFallback` variable and `x-media-unsigned` header
 
-### 5. SEO Improvements
+### 6. SEO Improvements
 
 **Files:** `src/app/opengraph-image.tsx`, `src/app/twitter-image.tsx`, `public/robots.txt`, `src/app/blog/[slug]/page.tsx`, `src/components/sections/ProjectDetailPage.tsx`
 
@@ -51,27 +64,27 @@ Closes #271 (duplicate close button — already merged to main, included for tra
 - Added `dateModified` to blog Article JSON-LD
 - Added `BreadcrumbList` JSON-LD to blog posts and project detail pages
 
-### 6. Accessibility Fixes
+### 7. Accessibility Fixes
 
 **Files:** `ConnectSection.tsx`, `TechStackSection.tsx`
 
 - Added `aria-labelledby` with corresponding `id` on heading elements (via plain `<section>` wrapper to avoid hydration mismatch)
 
-### 7. Code Quality & Dead Code Removal
+### 8. Code Quality & Dead Code Removal
 
 **Files:** `src/lib/admin.ts`, `src/lib/validators/chat.ts`, 3 API routes
 
 - Extracted `isAdminRequest` utility to `src/lib/admin.ts` — deduplicated from cache, canary/test, and canary/stats API routes
 - Deleted dead code `src/lib/validators/chat.ts` (77 lines, never imported by any file)
 
-### 8. API Fixes
+### 9. API Fixes
 
 **Files:** `src/app/api/csp-violation/route.ts`, `src/app/api/sanity/live/route.ts`
 
 - Changed CSP violation endpoint from HTTP 204 to 200 — 204 forbids response body, causing silent failures
 - Fixed `isDraftModeEnabled` logic: was checking `process.env[cookieName]` instead of using `draftMode()` from `next/headers`
 
-### 9. Documentation
+### 10. Documentation
 
 **File:** `.env.example`
 
@@ -79,9 +92,10 @@ Closes #271 (duplicate close button — already merged to main, included for tra
 
 ---
 
-## Commits (18)
+## Commits (19)
 
 ```
+c7a783e fix(ResumeModal): add loading/error states, retry, timeout, and fallback PDF
 0cc9944 perf: remove BackgroundFx canvas animation to fix lag
 e2eb2fb fix(a11y): move ARIA attributes from motion.section to plain section to fix hydration mismatch
 da19abb docs: add ADMIN_API_KEY to .env.example
@@ -127,6 +141,7 @@ npx wrangler secret put SANITY_MEDIA_GATEWAY_SECRET
 ## Impact
 
 - **Performance** — removed full-screen canvas animation causing lag on all devices
+- **Resume** — proper loading/error states, retry mechanism, and fallback PDF
 - **Hydration** — eliminated React hydration mismatch warnings on TechStack and Connect sections
 - **Security** — rate limiter uses Cloudflare-verified IP, media gateway fails closed when secret is unset
 - **SEO** — branded OG/Twitter images, AI crawler visibility, structured data (BreadcrumbList, dateModified)
