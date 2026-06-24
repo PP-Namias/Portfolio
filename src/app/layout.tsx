@@ -7,7 +7,6 @@ import { fallbackCmsContent } from '@/lib/cms-content.shared';
 import { FloatingHubWithBoundary } from '@/components/ui/FloatingHub';
 import { ScrollToTop } from '@/components/ui/ScrollToTop';
 import { Analytics } from '@/components/ui/Analytics';
-import { BackgroundFx } from '@/components/ui/BackgroundFx';
 import { MagicCursor } from '@/components/ui/MagicCursor';
 import { JsonLd } from '@/components/seo/JsonLd';
 import { getCmsContent } from '@/lib/cms-content.server';
@@ -128,7 +127,6 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
             Skip to main content
           </a>
           <Providers cmsContent={cmsContent}>
-            <BackgroundFx />
             {children}
             <MagicCursor />
             <FloatingHubWithBoundary />
@@ -165,7 +163,6 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
           Skip to main content
         </a>
         <Providers cmsContent={cmsContent} isDraftMode={isDraftMode}>
-          <BackgroundFx />
           {IS_MAGIC_CURSOR_VISIBLE ? <MagicCursor /> : null}
           {children}
           <FloatingHubWithBoundary />
