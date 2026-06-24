@@ -5,7 +5,6 @@ import useSWR, { useSWRConfig } from 'swr';
 import { Download, Loader2, RefreshCw } from 'lucide-react';
 import { Modal } from './Modal';
 
-const fallbackResumeUrl = '/resume.pdf';
 const LOAD_TIMEOUT_MS = 15_000;
 
 interface ResumeModalProps {
@@ -30,9 +29,9 @@ export function ResumeModal({ open, onClose }: Readonly<ResumeModalProps>) {
   );
 
   const resumeUrl =
-    (typeof data?.resumeUrl === 'string' && data.resumeUrl.trim().length > 0
+    typeof data?.resumeUrl === 'string' && data.resumeUrl.trim().length > 0
       ? data.resumeUrl.trim()
-      : null) ?? fallbackResumeUrl;
+      : null;
 
   // Reset states when modal opens or resume URL changes
   useEffect(() => {
@@ -73,8 +72,9 @@ export function ResumeModal({ open, onClose }: Readonly<ResumeModalProps>) {
   }, [mutate]);
 
   const showFetching = isLoading && !data;
-  const showIframeLoading = pdfLoading && !showFetching && !swrError;
-  const showError = swrError || pdfError;
+  const showIframeLoading = pdfLoading && !showFetching && !swrError && resumeUrl;
+  const showError = (swrError || pdfError) && resumeUrl;
+  const noResume = !showFetching && !resumeUrl;
 
   return (
     <Modal open={open} onClose={onClose} fullScreen showCloseButton={false}>
@@ -84,15 +84,17 @@ export function ResumeModal({ open, onClose }: Readonly<ResumeModalProps>) {
           Resume
         </h2>
         <div className="flex items-center gap-3">
-          <a
-            href={resumeUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 rounded-lg px-3.5 py-1.5 text-xs font-medium bg-accent-pink text-white hover:bg-accent-pink-hover transition-colors"
-          >
-            <Download className="h-3.5 w-3.5" />
-            Download Resume
-          </a>
+          {resumeUrl && (
+            <a
+              href={resumeUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 rounded-lg px-3.5 py-1.5 text-xs font-medium bg-accent-pink text-white hover:bg-accent-pink-hover transition-colors"
+            >
+              <Download className="h-3.5 w-3.5" />
+              Download Resume
+            </a>
+          )}
           <button
             type="button"
             onClick={onClose}
@@ -117,6 +119,21 @@ export function ResumeModal({ open, onClose }: Readonly<ResumeModalProps>) {
           <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-white dark:bg-card-bg-dark z-10">
             <Loader2 className="h-8 w-8 animate-spin text-accent-pink" />
             <p className="text-sm text-text-muted-light dark:text-text-muted-dark">Loading PDF...</p>
+          </div>
+        )}
+
+        {noResume && (
+          <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 bg-white dark:bg-card-bg-dark z-10 px-6 text-center">
+            <p className="text-sm text-text-secondary-light dark:text-text-secondary-dark">
+              No resume available yet.
+            </p>
+            <button
+              type="button"
+              onClick={onClose}
+              className="inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium bg-accent-pink text-white hover:bg-accent-pink-hover transition-colors"
+            >
+              Close
+            </button>
           </div>
         )}
 
@@ -147,7 +164,7 @@ export function ResumeModal({ open, onClose }: Readonly<ResumeModalProps>) {
           </div>
         )}
 
-        {!showFetching && (
+        {!showFetching && resumeUrl && (
           <iframe
             key={resumeUrl}
             src={resumeUrl}

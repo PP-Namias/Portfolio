@@ -4,7 +4,6 @@ import React from 'react';
 import { SWRConfig } from 'swr';
 import { ResumeModal } from '@/components/ui/ResumeModal';
 
-const fallbackResumeUrl = '/resume.pdf';
 const gatewayResumeUrl = '/api/media/sanity/encoded-resume?exp=1&sig=1';
 
 vi.mock('framer-motion', () => {
@@ -87,17 +86,16 @@ describe('ResumeModal', () => {
     expect(screen.getByText('Loading resume...')).toBeInTheDocument();
   });
 
-  it('falls back to local resume when runtime lookup fails', async () => {
+  it('shows no resume available when runtime lookup fails', async () => {
     fetchMock.mockRejectedValueOnce(new Error('offline'));
     renderWithFreshSWR(<ResumeModal open={true} onClose={mockOnClose} />);
 
     await waitFor(() => {
-      const pdfIframe = screen.getByTitle('Resume PDF Viewer');
-      expect(pdfIframe).toHaveAttribute('src', fallbackResumeUrl);
+      expect(screen.getByText('No resume available yet.')).toBeInTheDocument();
     });
 
-    const openLink = screen.getByText('Download Resume');
-    expect(openLink.closest('a')).toHaveAttribute('href', fallbackResumeUrl);
+    expect(screen.queryByTitle('Resume PDF Viewer')).not.toBeInTheDocument();
+    expect(screen.queryByText('Download Resume')).not.toBeInTheDocument();
   });
 
   it('has a close button that calls onClose', async () => {
@@ -134,16 +132,16 @@ describe('ResumeModal', () => {
     expect(screen.queryByText('Loading PDF...')).not.toBeInTheDocument();
   });
 
-  it('shows error UI when SWR fetch fails', async () => {
+  it('shows no resume available when SWR fetch fails', async () => {
     fetchMock.mockRejectedValue(new Error('network error'));
     renderWithFreshSWR(<ResumeModal open={true} onClose={mockOnClose} />);
 
     await waitFor(() => {
-      expect(screen.getByText('Unable to display the resume inline.')).toBeInTheDocument();
+      expect(screen.getByText('No resume available yet.')).toBeInTheDocument();
     });
 
-    expect(screen.getByText('Retry')).toBeInTheDocument();
-    expect(screen.getByText('Open in New Tab')).toBeInTheDocument();
+    expect(screen.queryByText('Retry')).not.toBeInTheDocument();
+    expect(screen.queryByText('Open in New Tab')).not.toBeInTheDocument();
   });
 
   it('shows error UI after timeout if iframe never loads', async () => {
@@ -165,9 +163,18 @@ describe('ResumeModal', () => {
     });
   });
 
-  it('retry button resets states and re-shows loading', async () => {
-    fetchMock.mockRejectedValue(new Error('network error'));
+  it('retry button resets states after timeout', async () => {
+    mockResumeResponse(gatewayResumeUrl);
     renderWithFreshSWR(<ResumeModal open={true} onClose={mockOnClose} />);
+
+    await waitFor(() => {
+      expect(screen.getByTitle('Resume PDF Viewer')).toBeInTheDocument();
+    });
+
+    // Advance past the 15s timeout (iframe never loads)
+    await act(async () => {
+      vi.advanceTimersByTime(15_000);
+    });
 
     await waitFor(() => {
       expect(screen.getByText('Unable to display the resume inline.')).toBeInTheDocument();
@@ -187,14 +194,14 @@ describe('ResumeModal', () => {
     expect(screen.queryByText('Unable to display the resume inline.')).not.toBeInTheDocument();
   });
 
-  it('resets pdfError when modal reopens', async () => {
+  it('resets state when modal reopens', async () => {
     fetchMock.mockRejectedValue(new Error('fail'));
     const { rerender } = renderWithFreshSWR(
       <ResumeModal open={true} onClose={mockOnClose} />,
     );
 
     await waitFor(() => {
-      expect(screen.getByText('Unable to display the resume inline.')).toBeInTheDocument();
+      expect(screen.getByText('No resume available yet.')).toBeInTheDocument();
     });
 
     // Close modal
@@ -218,6 +225,6 @@ describe('ResumeModal', () => {
     await waitFor(() => {
       expect(screen.getByText('Loading resume...')).toBeInTheDocument();
     });
-    expect(screen.queryByText('Unable to display the resume inline.')).not.toBeInTheDocument();
+    expect(screen.queryByText('No resume available yet.')).not.toBeInTheDocument();
   });
 });
