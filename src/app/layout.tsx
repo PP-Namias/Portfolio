@@ -165,6 +165,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
           Skip to main content
         </a>
         <Providers cmsContent={cmsContent} isDraftMode={isDraftMode}>
+          <BackgroundFx />
           {IS_MAGIC_CURSOR_VISIBLE ? <MagicCursor /> : null}
           {children}
           <FloatingHubWithBoundary />
