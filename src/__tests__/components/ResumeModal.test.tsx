@@ -1,13 +1,11 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
 import React from 'react';
 import { SWRConfig } from 'swr';
 import { ResumeModal } from '@/components/ui/ResumeModal';
 
-const fallbackResumeUrl = '/resume.pdf';
 const gatewayResumeUrl = '/api/media/sanity/encoded-resume?exp=1&sig=1';
 
-// Mock framer-motion
 vi.mock('framer-motion', () => {
   const R = require('react');
   return {
@@ -23,24 +21,23 @@ vi.mock('framer-motion', () => {
   };
 });
 
-// Helper to render with a fresh SWR cache. SWR's default provider
-// is a module-level Map that persists across tests, so we wrap
-// each render in SWRConfig with a per-test cache provider. This
-// way 'keeps the local fallback' does not see the cached success
-// from the previous 'hydrates the resume URL' test.
 function renderWithFreshSWR(ui: React.ReactElement) {
   return render(<SWRConfig value={{ provider: () => new Map() }}>{ui}</SWRConfig>);
 }
 
 describe('ResumeModal', () => {
   const mockOnClose = vi.fn();
-
   const fetchMock = vi.fn();
 
   beforeEach(() => {
     vi.clearAllMocks();
+    vi.useFakeTimers({ shouldAdvanceTime: true });
     fetchMock.mockReset();
     globalThis.fetch = fetchMock as typeof fetch;
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
   });
 
   const mockResumeResponse = (resumeUrl = gatewayResumeUrl) => {
@@ -56,65 +53,178 @@ describe('ResumeModal', () => {
   });
 
   it('renders modal with Resume title when open', () => {
+    mockResumeResponse();
     renderWithFreshSWR(<ResumeModal open={true} onClose={mockOnClose} />);
     expect(screen.getByText('Resume')).toBeInTheDocument();
   });
 
-  it('renders download PDF button', async () => {
+  it('renders Open PDF button with correct href', async () => {
     mockResumeResponse(gatewayResumeUrl);
     renderWithFreshSWR(<ResumeModal open={true} onClose={mockOnClose} />);
     await waitFor(() => {
-      const downloadLink = screen.getByText('Download PDF').closest('a');
-      expect(downloadLink).toHaveAttribute('href', gatewayResumeUrl);
-      expect(downloadLink).toHaveAttribute('download');
+      const openLink = screen.getByText('Download Resume').closest('a');
+      expect(openLink).toHaveAttribute('href', gatewayResumeUrl);
+      expect(openLink).toHaveAttribute('target', '_blank');
+      expect(openLink).toHaveAttribute('rel', 'noopener noreferrer');
     });
   });
 
   it('hydrates the resume URL from the runtime endpoint', async () => {
     mockResumeResponse(gatewayResumeUrl);
     renderWithFreshSWR(<ResumeModal open={true} onClose={mockOnClose} />);
-    const pdfIframe = screen.getByTitle('Resume PDF Viewer');
-    expect(pdfIframe).toBeInTheDocument();
 
-    // Wait until the iframe src has been hydrated by the SWR
-    // fetch. The text 'Download PDF' is present immediately
-    // because the fallback URL is always rendered, so we cannot
-    // use that as the wait condition.
-    await waitFor(() => expect(pdfIframe).toHaveAttribute('src', `${gatewayResumeUrl}#view=FitH`));
-    // The SWR fetcher calls fetch(url) with no second arg; SWR
-    // owns the abort/retry lifecycle internally. The test
-    // asserts only that the endpoint was hit, not the call shape.
+    await waitFor(() => {
+      const pdfIframe = screen.getByTitle('Resume PDF Viewer');
+      expect(pdfIframe).toHaveAttribute('src', gatewayResumeUrl);
+    });
     expect(fetchMock).toHaveBeenCalledWith('/api/resume');
   });
 
-  it('has a fallback download link for unsupported browsers', async () => {
-    mockResumeResponse(gatewayResumeUrl);
+  it('shows loading state while fetching resume URL', () => {
+    fetchMock.mockReturnValue(new Promise(() => {}));
     renderWithFreshSWR(<ResumeModal open={true} onClose={mockOnClose} />);
-    const fallbackText = screen.getByText(/doesn't support embedded PDF/i);
-    expect(fallbackText).toBeInTheDocument();
+    expect(screen.getByText('Loading resume...')).toBeInTheDocument();
+  });
+
+  it('shows no resume available when runtime lookup fails', async () => {
+    fetchMock.mockRejectedValueOnce(new Error('offline'));
+    renderWithFreshSWR(<ResumeModal open={true} onClose={mockOnClose} />);
 
     await waitFor(() => {
-      const fallbackLink = screen.getByText('Download Resume').closest('a');
-      expect(fallbackLink).toHaveAttribute('href', gatewayResumeUrl);
-      expect(fallbackLink).toHaveAttribute('download');
+      expect(screen.getByText('No resume available yet.')).toBeInTheDocument();
+    });
+
+    expect(screen.queryByTitle('Resume PDF Viewer')).not.toBeInTheDocument();
+    expect(screen.queryByText('Download Resume')).not.toBeInTheDocument();
+  });
+
+  it('has a close button that calls onClose', async () => {
+    mockResumeResponse(gatewayResumeUrl);
+    renderWithFreshSWR(<ResumeModal open={true} onClose={mockOnClose} />);
+    const closeButton = screen.getByLabelText('Close');
+    fireEvent.click(closeButton);
+    expect(mockOnClose).toHaveBeenCalled();
+  });
+
+  it('shows iframe loading overlay while PDF loads', async () => {
+    mockResumeResponse(gatewayResumeUrl);
+    renderWithFreshSWR(<ResumeModal open={true} onClose={mockOnClose} />);
+
+    // After SWR loads but before iframe onLoad fires
+    await waitFor(() => {
+      expect(screen.getByText('Loading PDF...')).toBeInTheDocument();
     });
   });
 
-  it('keeps the local fallback resume when runtime lookup fails', async () => {
-    fetchMock.mockRejectedValueOnce(new Error('offline'));
+  it('hides loading overlay when iframe onLoad fires', async () => {
+    mockResumeResponse(gatewayResumeUrl);
+    const { container } = renderWithFreshSWR(
+      <ResumeModal open={true} onClose={mockOnClose} />,
+    );
 
-    renderWithFreshSWR(<ResumeModal open={true} onClose={mockOnClose} />);
+    await waitFor(() => {
+      expect(screen.getByText('Loading PDF...')).toBeInTheDocument();
+    });
 
-    const fallbackLink = await screen.findByText('Download Resume');
-    expect(fallbackLink.closest('a')).toHaveAttribute('href', fallbackResumeUrl);
+    const iframe = screen.getByTitle('Resume PDF Viewer');
+    fireEvent.load(iframe);
+
+    expect(screen.queryByText('Loading PDF...')).not.toBeInTheDocument();
   });
 
-  it('has a close button that calls onClose', () => {
+  it('shows no resume available when SWR fetch fails', async () => {
+    fetchMock.mockRejectedValue(new Error('network error'));
+    renderWithFreshSWR(<ResumeModal open={true} onClose={mockOnClose} />);
+
+    await waitFor(() => {
+      expect(screen.getByText('No resume available yet.')).toBeInTheDocument();
+    });
+
+    expect(screen.queryByText('Retry')).not.toBeInTheDocument();
+    expect(screen.queryByText('Open in New Tab')).not.toBeInTheDocument();
+  });
+
+  it('shows error UI after timeout if iframe never loads', async () => {
     mockResumeResponse(gatewayResumeUrl);
     renderWithFreshSWR(<ResumeModal open={true} onClose={mockOnClose} />);
-    // The ResumeModal toolbar has its own close button
-    const closeButtons = screen.getAllByLabelText('Close');
-    fireEvent.click(closeButtons[0]);
-    expect(mockOnClose).toHaveBeenCalled();
+
+    // Wait for SWR to finish
+    await waitFor(() => {
+      expect(screen.getByTitle('Resume PDF Viewer')).toBeInTheDocument();
+    });
+
+    // Advance past the 15s timeout
+    await act(async () => {
+      vi.advanceTimersByTime(15_000);
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText('Unable to display the resume inline.')).toBeInTheDocument();
+    });
+  });
+
+  it('retry button resets states after timeout', async () => {
+    mockResumeResponse(gatewayResumeUrl);
+    renderWithFreshSWR(<ResumeModal open={true} onClose={mockOnClose} />);
+
+    await waitFor(() => {
+      expect(screen.getByTitle('Resume PDF Viewer')).toBeInTheDocument();
+    });
+
+    // Advance past the 15s timeout (iframe never loads)
+    await act(async () => {
+      vi.advanceTimersByTime(15_000);
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText('Unable to display the resume inline.')).toBeInTheDocument();
+    });
+
+    // Now mock a successful response for retry
+    mockResumeResponse(gatewayResumeUrl);
+
+    await act(async () => {
+      fireEvent.click(screen.getByText('Retry'));
+    });
+
+    // SWR re-fetches, iframe loading overlay appears
+    await waitFor(() => {
+      expect(screen.getByText('Loading PDF...')).toBeInTheDocument();
+    });
+    expect(screen.queryByText('Unable to display the resume inline.')).not.toBeInTheDocument();
+  });
+
+  it('resets state when modal reopens', async () => {
+    fetchMock.mockRejectedValue(new Error('fail'));
+    const { rerender } = renderWithFreshSWR(
+      <ResumeModal open={true} onClose={mockOnClose} />,
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText('No resume available yet.')).toBeInTheDocument();
+    });
+
+    // Close modal
+    rerender(
+      <SWRConfig value={{ provider: () => new Map() }}>
+        <ResumeModal open={false} onClose={mockOnClose} />
+      </SWRConfig>,
+    );
+
+    // Mock successful fetch for reopen
+    mockResumeResponse(gatewayResumeUrl);
+
+    // Reopen modal
+    rerender(
+      <SWRConfig value={{ provider: () => new Map() }}>
+        <ResumeModal open={true} onClose={mockOnClose} />
+      </SWRConfig>,
+    );
+
+    // Should show loading, not error
+    await waitFor(() => {
+      expect(screen.getByText('Loading resume...')).toBeInTheDocument();
+    });
+    expect(screen.queryByText('No resume available yet.')).not.toBeInTheDocument();
   });
 });

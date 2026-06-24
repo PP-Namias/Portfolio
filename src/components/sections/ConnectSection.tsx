@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
-import { Calendar, ExternalLink } from 'lucide-react';
+import { Calendar, Coffee, ExternalLink } from 'lucide-react';
 import {
   FaDiscord,
   FaFacebook,
@@ -12,7 +12,7 @@ import {
 } from 'react-icons/fa6';
 import { useModal } from '@/hooks/useModal';
 import { useCmsContent } from '@/hooks/useCmsContent';
-import { DISCORD_PROFILE_URL } from '@/lib/constants';
+import { KO_FI_URL } from '@/lib/constants';
 
 const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   calendar: Calendar,
@@ -30,13 +30,14 @@ export function ConnectSection() {
   const prefersReducedMotion = useReducedMotion();
 
   return (
-    <motion.section
-      initial={prefersReducedMotion ? undefined : { opacity: 0, y: 20 }}
-      whileInView={prefersReducedMotion ? undefined : { opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '-50px' }}
-      transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
-    >
-      <h2 className="text-lg font-semibold text-text-primary-light dark:text-text-primary-dark mb-2">
+    <section aria-labelledby="connect-heading">
+      <motion.section
+        initial={prefersReducedMotion ? undefined : { opacity: 0, y: 20 }}
+        whileInView={prefersReducedMotion ? undefined : { opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: '-50px' }}
+        transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
+      >
+      <h2 id="connect-heading" className="text-lg font-semibold text-text-primary-light dark:text-text-primary-dark mb-2">
         Connect
       </h2>
       <p className="text-[13px] sm:text-sm text-text-secondary-light dark:text-text-secondary-dark mb-2 leading-[1.7]">
@@ -59,17 +60,18 @@ export function ConnectSection() {
         </motion.button>
 
         <motion.a
-          href={DISCORD_PROFILE_URL}
+          href={KO_FI_URL}
           target="_blank"
           rel="noopener noreferrer"
           initial={{ opacity: 0, y: 10 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ delay: 0.1, duration: 0.3 }}
-          className="flex items-center gap-1.5 px-4 py-2.5 text-sm font-medium rounded-lg border border-[#5865F2]/30 bg-[#5865F2]/5 text-[#5865F2] hover:bg-[#5865F2]/10 transition-colors duration-200"
+          className="flex items-center gap-1.5 px-4 py-2.5 text-sm font-medium rounded-lg border border-[#FF5E5B]/30 bg-[#FF5E5B]/5 text-[#FF5E5B] hover:bg-[#FF5E5B]/10 transition-colors duration-200"
+          aria-label="Support me on Ko-fi"
         >
-          <FaDiscord className="h-3.5 w-3.5" aria-hidden="true" />
-          <span>Chat on Discord</span>
+          <Coffee className="h-3.5 w-3.5" aria-hidden="true" />
+          <span>Support me</span>
         </motion.a>
       </div>
 
@@ -95,6 +97,7 @@ export function ConnectSection() {
           );
         })}
       </div>
-    </motion.section>
+      </motion.section>
+    </section>
   );
 }

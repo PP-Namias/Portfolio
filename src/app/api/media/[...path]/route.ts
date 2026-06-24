@@ -72,24 +72,24 @@ export async function GET(request: NextRequest, context: { params: Promise<{ pat
 
   const secret = process.env.SANITY_MEDIA_GATEWAY_SECRET?.trim();
 
-  let useUnsignedFallback = false;
-
   if (!secret) {
-    useUnsignedFallback = true;
-  } else if (!signature) {
+    return buildError(501, 'Media gateway secret not configured');
+  }
+
+  if (!signature) {
     return buildError(401, 'Missing media signature');
-  } else {
-    const sigResult = verifyMediaGatewaySignature({ targetUrl, width, quality, expiresAt, signature });
+  }
 
-    if (!sigResult.valid) {
-      return buildError(sigResult.expired ? 401 : 403, sigResult.expired ? 'Media signature expired' : 'Invalid media signature');
-    }
+  const sigResult = verifyMediaGatewaySignature({ targetUrl, width, quality, expiresAt, signature });
 
-    if (sigResult.expired && expiresAt) {
-      const remainingMs = (expiresAt - Math.floor(Date.now() / 1000)) * 1000;
-      if (remainingMs < 3600_000) {
-        console.warn(`[media-gateway] Signature expiring soon for ${targetUrl} (${Math.round(remainingMs / 60_000)}m remaining)`);
-      }
+  if (!sigResult.valid) {
+    return buildError(sigResult.expired ? 401 : 403, sigResult.expired ? 'Media signature expired' : 'Invalid media signature');
+  }
+
+  if (sigResult.expired && expiresAt) {
+    const remainingMs = (expiresAt - Math.floor(Date.now() / 1000)) * 1000;
+    if (remainingMs < 3600_000) {
+      console.warn(`[media-gateway] Signature expiring soon for ${targetUrl} (${Math.round(remainingMs / 60_000)}m remaining)`);
     }
   }
 
@@ -119,9 +119,8 @@ export async function GET(request: NextRequest, context: { params: Promise<{ pat
     if (lastModified) headers.set('last-modified', lastModified);
     if (contentDisposition) headers.set('content-disposition', contentDisposition);
 
-    headers.set('cache-control', useUnsignedFallback ? 'public, max-age=3600, s-maxage=86400, stale-while-revalidate=604800' : buildCacheControl(assetKind, expiresAt));
+    headers.set('cache-control', buildCacheControl(assetKind, expiresAt));
     headers.set('x-media-asset-kind', assetKind);
-    if (useUnsignedFallback) headers.set('x-media-unsigned', 'true');
     headers.set('vary', 'accept');
     headers.set('cross-origin-resource-policy', 'same-origin');
     headers.set('x-content-type-options', 'nosniff');

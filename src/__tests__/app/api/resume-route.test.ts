@@ -5,7 +5,6 @@ import { flush } from '@/lib/cache';
 
 const fetchMock = vi.fn();
 const sanityResumeUrl = 'https://cdn.sanity.io/files/nl0qw78w/production/529fd6d835d66c9d239aadd53f63a35932e8ac95.pdf';
-const fallbackResumeUrl = '/resume.pdf';
 
 describe('/api/resume route', () => {
   beforeEach(async () => {
@@ -24,7 +23,7 @@ describe('/api/resume route', () => {
 
     const data = await response.json();
     expect(data).toMatchObject({
-      resumeUrl: fallbackResumeUrl,
+      resumeUrl: null,
       isActive: false,
     });
     expect(fetchMock).not.toHaveBeenCalled();
@@ -67,7 +66,7 @@ describe('/api/resume route', () => {
     expect(fetchMock).toHaveBeenCalledTimes(1);
   });
 
-  it('falls back when the Sanity request fails', async () => {
+  it('returns null resumeUrl when the Sanity request fails', async () => {
     vi.stubEnv('NEXT_PUBLIC_SANITY_PROJECT_ID', 'nl0qw78w');
     vi.stubEnv('NEXT_PUBLIC_SANITY_DATASET', 'production');
 
@@ -77,14 +76,14 @@ describe('/api/resume route', () => {
     const data = await response.json();
 
     expect(data).toEqual({
-      resumeUrl: fallbackResumeUrl,
+      resumeUrl: null,
       isActive: false,
       activeResumeCount: 0,
       hasMultipleActiveResumes: false,
     });
   });
 
-  it('falls back when the Sanity request throws', async () => {
+  it('returns null resumeUrl when the Sanity request throws', async () => {
     vi.stubEnv('NEXT_PUBLIC_SANITY_PROJECT_ID', 'nl0qw78w');
     vi.stubEnv('NEXT_PUBLIC_SANITY_DATASET', 'production');
 
@@ -94,7 +93,7 @@ describe('/api/resume route', () => {
     const data = await response.json();
 
     expect(data).toEqual({
-      resumeUrl: fallbackResumeUrl,
+      resumeUrl: null,
       isActive: false,
       activeResumeCount: 0,
       hasMultipleActiveResumes: false,

@@ -2,7 +2,6 @@ import { buildMediaGatewayUrl } from '@/lib/media-gateway';
 import { getOrFetch } from '@/lib/cache';
 import { NextResponse } from 'next/server';
 
-const fallbackResumeUrl = '/resume.pdf';
 const sanityApiVersion = '2021-06-07';
 const RESUME_CACHE_TTL_MS = Number(process.env.CACHE_TTL_DEFAULT) || 300_000;
 const RESUME_CACHE_STALE_MS = Number(process.env.CACHE_TTL_STALE) || 60_000;
@@ -29,17 +28,17 @@ function buildResumeQueryUrl() {
   }
 
   const query = encodeURIComponent(
-    '*[_type == "resume" && isActive == true] | order(_updatedAt desc){"resumeUrl": coalesce(resumeFile.asset->url, resumeUrl, "/resume.pdf"), "isActive": isActive, "fileName": resumeFile.asset->originalFilename, "_id": _id}'
+    '*[_type == "resume" && isActive == true] | order(_updatedAt desc){"resumeUrl": coalesce(resumeFile.asset->url, resumeUrl), "isActive": isActive, "fileName": resumeFile.asset->originalFilename, "_id": _id}'
   );
 
   return `https://${projectId}.api.sanity.io/v${sanityApiVersion}/data/query/${dataset}?query=${query}`;
 }
 
-async function fetchResumeFromSanity(): Promise<{ resumeUrl: string; isActive: boolean; activeResumeCount: number; hasMultipleActiveResumes: boolean }> {
+async function fetchResumeFromSanity(): Promise<{ resumeUrl: string | null; isActive: boolean; activeResumeCount: number; hasMultipleActiveResumes: boolean }> {
   const queryUrl = buildResumeQueryUrl();
 
   if (!queryUrl) {
-    return { resumeUrl: fallbackResumeUrl, isActive: false, activeResumeCount: 0, hasMultipleActiveResumes: false };
+    return { resumeUrl: null, isActive: false, activeResumeCount: 0, hasMultipleActiveResumes: false };
   }
 
   const response = await fetch(queryUrl, {
@@ -49,7 +48,7 @@ async function fetchResumeFromSanity(): Promise<{ resumeUrl: string; isActive: b
   });
 
   if (!response.ok) {
-    return { resumeUrl: fallbackResumeUrl, isActive: false, activeResumeCount: 0, hasMultipleActiveResumes: false };
+    return { resumeUrl: null, isActive: false, activeResumeCount: 0, hasMultipleActiveResumes: false };
   }
 
   const payload = (await response.json()) as {
@@ -61,7 +60,7 @@ async function fetchResumeFromSanity(): Promise<{ resumeUrl: string; isActive: b
       ? [payload.result]
       : [];
   const selectedResume = activeResumes.find((resume) => typeof resume.resumeUrl === 'string' && resume.resumeUrl.trim().length > 0) ?? activeResumes[0];
-  const resumeUrl = buildMediaGatewayUrl(selectedResume?.resumeUrl?.trim() || '', { sign: true }) || fallbackResumeUrl;
+  const resumeUrl = buildMediaGatewayUrl(selectedResume?.resumeUrl?.trim() || '', { sign: true }) || null;
 
   return {
     resumeUrl,
@@ -83,6 +82,6 @@ export async function GET() {
     response.headers.set('Cache-Control', `public, max-age=${Math.floor(RESUME_CACHE_TTL_MS / 1000)}, stale-while-revalidate=${Math.floor(RESUME_CACHE_STALE_MS / 1000)}`);
     return response;
   } catch {
-    return NextResponse.json({ resumeUrl: fallbackResumeUrl, isActive: false, activeResumeCount: 0, hasMultipleActiveResumes: false });
+    return NextResponse.json({ resumeUrl: null, isActive: false, activeResumeCount: 0, hasMultipleActiveResumes: false });
   }
 }

@@ -552,6 +552,10 @@ describe('uncovered section components', () => {
     expect(openModalMock).toHaveBeenCalledWith('booking');
 
     expect(screen.getByText('GitHub')).toBeInTheDocument();
+
+    const kofiLink = screen.getByText('Support me').closest('a');
+    expect(kofiLink).toHaveAttribute('href', 'https://ko-fi.com/pp_namias');
+    expect(kofiLink).toHaveAttribute('target', '_blank');
   });
 
   it('ExperienceTimeline expands and collapses list', () => {
