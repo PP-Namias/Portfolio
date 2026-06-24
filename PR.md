@@ -1,124 +1,105 @@
-# PR: Dev → Main — Chatbot, Image Fixes, Modal Fix, A11y, Performance & Security
+# PR: Dev → Main — Audit Fixes, Hydration, Performance, SEO & Security
 
 ## Summary
 
-This PR brings **28 commits** from `dev` into `main`, covering chatbot personality & UX, production image loading fixes, duplicate modal close button fix, accessibility improvements, performance optimizations, security hardening, and documentation.
+This PR brings **18 commits** from `dev` into `main`, covering a full AI audit fix pass, hydration mismatch resolution, performance optimization (canvas removal), SEO improvements (OG images, JSON-LD), security hardening, and accessibility fixes.
+
+Closes #271 (duplicate close button — already merged to main, included for traceability)
 
 ---
 
 ## Highlights
 
-### 1. AI Chatbot — Tsundere Personality + Welcome Message (#271)
+### 1. Performance — Remove BackgroundFx Canvas Animation
 
-**Files:** `promptBuilder.ts`, `ChatPanel.tsx`, `ChatMessage.tsx`
+**File:** `layout.tsx`
 
-- Updated system prompt with a tsundere personality (informative + playful, ~20-30% personality ratio)
-- AI auto-sends a welcome message when chat opens with 6 clickable topic buttons:
-  - About Keneth, Skills & Tech, Experience, Projects, Schedule Call, Certifications
-- Added `[WELCOME_TOPICS]` tag parsing in `ChatMessage` for the topic card grid
-- Added `profile` and `contact` actions to the action question map
-- Removed the old static empty-state action cards (replaced by AI message)
+- Removed `BackgroundFx` component (full-screen canvas running `requestAnimationFrame` drawing thousands of animated dots with glow/shadow effects every frame)
+- This was the primary cause of site lag on low-end devices
+- `MagicCursor` mouse sparkle effect retained (lightweight DOM-based, only creates elements on mouse move)
 
-### 2. Chatbot Unit Tests (82 new tests)
+### 2. Hydration Mismatch Fix
 
-**Files:** `promptBuilder.test.ts` (44), `providers.test.ts` (28), `rateLimiter.test.ts` (10)
+**Files:** `TechStackSection.tsx`, `ConnectSection.tsx`
 
-- Comprehensive coverage for system prompt generation, intent handling, provider config, circuit breaker, and rate limiting
-- All 105 API tests passing
+- **Bug:** `aria-labelledby` and `id` attributes on Framer Motion's `motion.section` caused React hydration mismatches — server rendered them, client stripped them
+- **Fix:** Moved ARIA attributes to a plain `<section>` wrapper around `motion.section`
+- Plain HTML elements render identically on server and client
 
-### 3. Duplicate Modal Close Button Fix (#271)
+### 3. Rate Limiter IP Spoofing Fix
 
-**Files:** `Modal.tsx`, `BookingModal.tsx`, `ResumeModal.tsx`, `ContactModal.tsx`
+**File:** `src/app/api/chat/route.ts`
 
-- **Bug:** Schedule Meeting, Resume, and Contact modals each had TWO close buttons — one in their toolbar and one floating from the base `Modal` component
-- **Fix:** Added `showCloseButton` prop to `Modal` (defaults to `true`). BookingModal, ResumeModal, and ContactModal now pass `showCloseButton={false}` to suppress the base Modal's close button
-- Each modal now has exactly one close button in its own toolbar
+- **Bug:** Rate limiter used `x-forwarded-for` header which is easily spoofed
+- **Fix:** Prioritize `cf-connecting-ip` header (Cloudflare-verified, cannot be spoofed)
+- Fall back to `x-forwarded-for` for non-Cloudflare deployments
 
-### 4. Production Image Loading Fix
+### 4. Media Gateway Security Hardening
 
-**Files:** `route.ts`, `OptimizedImage.tsx`, `HeroSection.tsx`
+**File:** `src/app/api/media/[...path]/route.ts`
 
-- Media gateway falls back to unsigned mode when `SANITY_MEDIA_GATEWAY_SECRET` is missing (instead of 500 error)
-- `OptimizedImage` uses browser-native `atob()` + `TextDecoder` instead of Node.js `Buffer`
-- Added `ImagePlaceholder` component for graceful degradation
-- Hero section shows initials fallback when profile image is empty
+- **Before:** When `SANITY_MEDIA_GATEWAY_SECRET` was unset, the gateway silently proxied unsigned requests — any image could be accessed without authentication
+- **After:** Returns 501 when secret is not configured (fails closed, no silent proxy)
+- Removed `useUnsignedFallback` variable and `x-media-unsigned` header
 
-### 5. Media Gateway Improvements
+### 5. SEO Improvements
 
-**Files:** `media-gateway.ts`, `media-constants.ts`
+**Files:** `src/app/opengraph-image.tsx`, `src/app/twitter-image.tsx`, `public/robots.txt`, `src/app/blog/[slug]/page.tsx`, `src/components/sections/ProjectDetailPage.tsx`
 
-- Extended signature TTL from 15 minutes to 7 days
-- Added 1-hour grace period for expired signatures
-- Added unsigned passthrough for valid Sanity CDN URLs as fallback
-- Aligned cache-control headers with extended TTL
-- Added signature expiry and fallback monitoring logs
+- Added branded OG/Twitter images using `next/og` `ImageResponse` with edge runtime
+- Added explicit `Allow` rules in `robots.txt` for AI crawlers (GPTBot, ClaudeBot, Google-Extended)
+- Added `dateModified` to blog Article JSON-LD
+- Added `BreadcrumbList` JSON-LD to blog posts and project detail pages
 
-### 6. Accessibility Improvements
+### 6. Accessibility Fixes
 
-**Files:** Multiple section components, `Footer.tsx`
+**Files:** `ConnectSection.tsx`, `TechStackSection.tsx`
 
-- Added `aria-labelledby` to all section elements
-- Fixed footer icon links
-- Added not-found pages for blog and projects routes
-- Added loading and error boundaries for blog and projects routes
+- Added `aria-labelledby` with corresponding `id` on heading elements (via plain `<section>` wrapper to avoid hydration mismatch)
 
-### 7. Performance Optimizations
+### 7. Code Quality & Dead Code Removal
 
-**Files:** `useTheme.ts`, `ChatPanel.tsx`, `page.tsx`
+**Files:** `src/lib/admin.ts`, `src/lib/validators/chat.ts`, 3 API routes
 
-- Memoized unstable callback references in `useTheme` and `ChatPanel`
-- Extracted homepage into server + client components (`HomeContent.tsx`)
+- Extracted `isAdminRequest` utility to `src/lib/admin.ts` — deduplicated from cache, canary/test, and canary/stats API routes
+- Deleted dead code `src/lib/validators/chat.ts` (77 lines, never imported by any file)
 
-### 8. Security Hardening
+### 8. API Fixes
 
-**Files:** `middleware.ts`, `getProjectBySlug`
+**Files:** `src/app/api/csp-violation/route.ts`, `src/app/api/sanity/live/route.ts`
 
-- Removed broken in-memory rate limiter from middleware
-- Sanitized GROQ query in `getProjectBySlug`
-- Documented CSP unsafe-inline requirement for Next.js
+- Changed CSP violation endpoint from HTTP 204 to 200 — 204 forbids response body, causing silent failures
+- Fixed `isDraftModeEnabled` logic: was checking `process.env[cookieName]` instead of using `draftMode()` from `next/headers`
 
 ### 9. Documentation
 
-**Files:** `README.md`, 8 language translations, PRD docs
+**File:** `.env.example`
 
-- Rewrote README with screenshots, updated stats, and badge links
-- Added 8 language translations (DE, ES, FR, JA, KO, PT, RU, ZH)
-- Added media signature fix PRD and resolution docs
+- Added `ADMIN_API_KEY` to `.env.example` (was missing, only existed in `.env`)
 
 ---
 
-## Commits (28)
+## Commits (18)
 
 ```
-1f4026c fix(modal): remove duplicate close button in Booking, Resume, and Contact modals
-19c943c feat(chat): add AI welcome message with quick-action topic buttons
-c2656b4 feat(chat): add tsundere personality to chatbot and comprehensive unit tests
-eb1e258 fix(media): fix production image loading with unsigned fallback and browser-native decoding
-091f7e8 fix(test): update HeroSection label test for aria-labelledby
-222a417 fix(ux,a11y): add not-found pages, fix footer icons, aria-controls
-7742aaf fix(a11y): add aria-labelledby to section elements
-276063a fix(typo): correct ErrorBoundary message text
-957a8fb fix(perf): memoize unstable callback references in useTheme and ChatPanel
-9ccf917 fix(ux): add loading and error boundaries to blog and projects routes
-94e919f fix(code quality): remove console.error monkey-patch from providers
-1660805 fix(perf): extract homepage into server + client components
-acce3f9 fix(security): document CSP unsafe-inline requirement for Next.js
-041b427 fix(security): remove broken in-memory rate limiter from middleware
-e65f86a fix(security): sanitize GROQ query in getProjectBySlug
-d819d48 feat(scripts): unified install, build, and dev for root + studio
-2f5ff1a docs(readme): add 8 language translations with hero screenshot
-adba00f docs(readme): clean minimal style with badge links
-bbdd4a5 docs(readme): rewrite to clean minimal style with screenshots
-acc788a docs(readme): rewrite with screenshots, updated stats, and better structure
-d192a47 docs(prd): add media signature fix plan and resolution
-44181fd docs(media-gateway): document Cloudflare Worker secret setup
-af20fda test(media-gateway): update tests for extended TTL, grace period, and fallback
-f2f219e feat(media-gateway): add signature expiry and fallback monitoring logs
-d427e83 fix(media-gateway): align cache-control headers with extended TTL
-eacc3ee feat(media): add client-side image error recovery with raw CDN fallback
-6f2a639 fix(media-gateway): allow unsigned passthrough for valid Sanity CDN URLs as fallback
-616b6af fix(media-gateway): add 1-hour grace period for expired signatures
-8575931 fix(media-gateway): extend signature TTL from 15 minutes to 7 days
+0cc9944 perf: remove BackgroundFx canvas animation to fix lag
+e2eb2fb fix(a11y): move ARIA attributes from motion.section to plain section to fix hydration mismatch
+da19abb docs: add ADMIN_API_KEY to .env.example
+537bac1 fix(api): fix isDraftModeEnabled logic in sanity/live probe
+78883ed fix(seo): add BreadcrumbList JSON-LD to blog posts and project pages
+d5bd99c fix(seo): add dateModified to blog Article JSON-LD
+26a808a fix(api): change CSP violation endpoint from 204 to 200
+7e6fcfa fix(a11y): add aria-labelledby to ConnectSection and TechStackSection
+c983b9f refactor: extract isAdminRequest to shared src/lib/admin.ts utility
+9c0cea3 chore: remove dead code src/lib/validators/chat.ts
+0091f8c fix(media-gateway): fail closed when SANITY_MEDIA_GATEWAY_SECRET is unset
+3ee6384 fix(layout): add BackgroundFx to production layout branch
+14cec94 fix(chat): prioritize cf-connecting-ip to prevent rate limiter spoofing
+9b7e5eb fix(ResumeModal): add loading/error states and remove sandbox
+02f806b feat(seo): branded OG/Twitter images and AI crawler visibility
+2275e2a refactor(ConnectSection): remove Chat on Discord CTA
+40c1595 feat(ConnectSection): add Ko-fi donation link
+1667b43 test(ResumeModal): update tests to match new component structure
 ```
 
 ---
@@ -126,14 +107,14 @@ eacc3ee feat(media): add client-side image error recovery with raw CDN fallback
 ## Testing
 
 - [x] `npx tsc --noEmit` — 0 errors
-- [x] `npm run test -- --run` — all tests passing
-- [x] `npm run lint` — only pre-existing warnings (unrelated)
+- [x] `npm run test -- --run` — 498 tests passing (46 files)
+- [x] `npx eslint src/` — 0 errors, 1 pre-existing warning (unrelated)
 
 ## Deployment Notes
 
 ### Cloudflare Workers
 
-Set the media gateway secret:
+Set the media gateway secret (required for image signing):
 
 ```bash
 npx wrangler secret put SANITY_MEDIA_GATEWAY_SECRET
@@ -141,13 +122,13 @@ npx wrangler secret put SANITY_MEDIA_GATEWAY_SECRET
 
 ### Environment Variables
 
-`.env.example` updated with `SANITY_MEDIA_GATEWAY_SECRET` documentation.
+`.env.example` updated with `ADMIN_API_KEY` and `SANITY_MEDIA_GATEWAY_SECRET`.
 
 ## Impact
 
-- **Chatbot** — more engaging with personality and guided welcome flow
-- **Images** — all production images load with graceful fallbacks
-- **Modals** — no more duplicate close buttons
-- **Accessibility** — WCAG compliance improvements across all sections
-- **Performance** — reduced unnecessary re-renders and server/client boundary optimization
-- **Security** — removed broken rate limiter, sanitized queries
+- **Performance** — removed full-screen canvas animation causing lag on all devices
+- **Hydration** — eliminated React hydration mismatch warnings on TechStack and Connect sections
+- **Security** — rate limiter uses Cloudflare-verified IP, media gateway fails closed when secret is unset
+- **SEO** — branded OG/Twitter images, AI crawler visibility, structured data (BreadcrumbList, dateModified)
+- **Accessibility** — proper ARIA labeling on section headings
+- **Code quality** — deduplicated admin check utility, removed dead code
