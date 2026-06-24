@@ -1,5 +1,6 @@
 import type {NextRequest} from 'next/server'
 import {NextResponse} from 'next/server'
+import {draftMode} from 'next/headers'
 import {SITE_URL} from '@/lib/site-config'
 
 export const runtime = 'nodejs'
@@ -15,17 +16,17 @@ function withCors(response: NextResponse): NextResponse {
   return response
 }
 
-function isDraftModeEnabled(): boolean {
-  const cookie = process.env.SANITY_DRAFT_COOKIE_NAME || 'sanity-preview'
-  return Boolean(process.env[cookie])
+async function isDraftModeEnabled(): Promise<boolean> {
+  const dm = await draftMode()
+  return dm.isEnabled
 }
 
-export function GET(request: NextRequest) {
+export async function GET(request: NextRequest) {
   if (request.nextUrl.searchParams.get('enable') === '1') {
     return withCors(
       NextResponse.json({
         ok: true,
-        enabled: isDraftModeEnabled(),
+        enabled: await isDraftModeEnabled(),
         revalidatePaths: REVALIDATE_PATHS,
       }),
     )
