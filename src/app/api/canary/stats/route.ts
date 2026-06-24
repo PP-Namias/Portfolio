@@ -1,12 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { CANARY_TOKENS } from '@/lib/canary/config';
 import { getTriggerLog, getTriggerStats } from '@/lib/canary/logger';
-
-function isAdminRequest(request: NextRequest): boolean {
-  const apiKey = process.env.ADMIN_API_KEY?.trim();
-  if (!apiKey) return false;
-  return request.headers.get('x-api-key') === apiKey;
-}
+import { isAdminRequest } from '@/lib/admin';
 
 export async function GET(request: NextRequest) {
   if (!isAdminRequest(request)) {
