@@ -30,13 +30,13 @@ export function ConnectSection() {
   const prefersReducedMotion = useReducedMotion();
 
   return (
-    <motion.section
-      initial={prefersReducedMotion ? undefined : { opacity: 0, y: 20 }}
-      whileInView={prefersReducedMotion ? undefined : { opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '-50px' }}
-      transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
-      aria-labelledby="connect-heading"
-    >
+    <section aria-labelledby="connect-heading">
+      <motion.section
+        initial={prefersReducedMotion ? undefined : { opacity: 0, y: 20 }}
+        whileInView={prefersReducedMotion ? undefined : { opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: '-50px' }}
+        transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
+      >
       <h2 id="connect-heading" className="text-lg font-semibold text-text-primary-light dark:text-text-primary-dark mb-2">
         Connect
       </h2>
@@ -97,6 +97,7 @@ export function ConnectSection() {
           );
         })}
       </div>
-    </motion.section>
+      </motion.section>
+    </section>
   );
 }
