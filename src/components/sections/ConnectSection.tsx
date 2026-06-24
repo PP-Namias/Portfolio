@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
-import { Calendar, ExternalLink } from 'lucide-react';
+import { Calendar, Coffee, ExternalLink } from 'lucide-react';
 import {
   FaDiscord,
   FaFacebook,
@@ -12,7 +12,7 @@ import {
 } from 'react-icons/fa6';
 import { useModal } from '@/hooks/useModal';
 import { useCmsContent } from '@/hooks/useCmsContent';
-import { DISCORD_PROFILE_URL } from '@/lib/constants';
+import { DISCORD_PROFILE_URL, KO_FI_URL } from '@/lib/constants';
 
 const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   calendar: Calendar,
@@ -70,6 +70,21 @@ export function ConnectSection() {
         >
           <FaDiscord className="h-3.5 w-3.5" aria-hidden="true" />
           <span>Chat on Discord</span>
+        </motion.a>
+
+        <motion.a
+          href={KO_FI_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          initial={{ opacity: 0, y: 10 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.15, duration: 0.3 }}
+          className="flex items-center gap-1.5 px-4 py-2.5 text-sm font-medium rounded-lg border border-[#FF5E5B]/30 bg-[#FF5E5B]/5 text-[#FF5E5B] hover:bg-[#FF5E5B]/10 transition-colors duration-200"
+          aria-label="Support me on Ko-fi"
+        >
+          <Coffee className="h-3.5 w-3.5" aria-hidden="true" />
+          <span>Support me</span>
         </motion.a>
       </div>
 
