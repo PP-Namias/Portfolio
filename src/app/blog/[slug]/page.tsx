@@ -103,9 +103,22 @@ export default async function BlogPostPage({ params }: Readonly<{ params: Promis
       }
     : null;
 
+  const breadcrumbJsonLd = post
+    ? {
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: 'Home', item: SITE_URL },
+          { '@type': 'ListItem', position: 2, name: 'Blog', item: `${SITE_URL}/blog` },
+          { '@type': 'ListItem', position: 3, name: post.title },
+        ],
+      }
+    : null;
+
   return (
     <>
       <JsonLd data={jsonLd} id="blog-post-jsonld" />
+      <JsonLd data={breadcrumbJsonLd} id="blog-post-breadcrumb-jsonld" />
       <BlogPostContent post={post ?? null} allPosts={posts} backLabel={blogCopy.backLabel || 'Back to Blog'} />
     </>
   );

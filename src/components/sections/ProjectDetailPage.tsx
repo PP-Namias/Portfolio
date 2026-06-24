@@ -8,6 +8,7 @@ import { ArrowLeft, ExternalLink, Github, FileText } from 'lucide-react';
 import { Project } from '@/types';
 import { resolveContentImageSrc } from '@/lib/media';
 import { JsonLd } from '@/components/seo/JsonLd';
+import { SITE_URL } from '@/lib/site-config';
 
 interface ProjectDetailPageProps {
   project: Project;
@@ -195,7 +196,19 @@ export function ProjectDetailPage({ project }: Readonly<ProjectDetailPageProps>)
                     fill
                     sizes="(max-width: 768px) 100vw, 384px"
                     className="object-cover"
-                  />
+      />
+
+      <JsonLd
+        data={{
+          '@context': 'https://schema.org',
+          '@type': 'BreadcrumbList',
+          itemListElement: [
+            { '@type': 'ListItem', position: 1, name: 'Home', item: SITE_URL },
+            { '@type': 'ListItem', position: 2, name: 'Projects', item: `${SITE_URL}/projects` },
+            { '@type': 'ListItem', position: 3, name: project.title },
+          ],
+        }}
+      />
                   {item.caption && (
                     <div className="absolute bottom-0 inset-x-0 bg-black/60 px-3 py-1.5 text-[11px] text-white">
                       {item.caption}
