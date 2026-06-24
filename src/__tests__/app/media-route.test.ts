@@ -77,17 +77,11 @@ describe('/api/media route', () => {
     expect(response.headers.get('x-media-asset-kind')).toBe('file');
   });
 
-  it('falls back to unsigned proxy when signature is expired', async () => {
+  it('rejects expired signatures with 401 instead of unsigned fallback', async () => {
     process.env.SANITY_MEDIA_GATEWAY_SECRET = 'unit-test-media-secret';
     const targetUrl = 'https://cdn.sanity.io/images/project/production/image-800x600.jpg';
     const encoded = Buffer.from(targetUrl, 'utf8').toString('base64url');
     const farPast = Math.floor(Date.now() / 1000) - 7200;
-
-    const upstreamResponse = new Response('binary-image-data', {
-      status: 200,
-      headers: { 'content-type': 'image/jpeg' },
-    });
-    vi.mocked(fetch).mockResolvedValueOnce(upstreamResponse);
 
     const requestUrl = `http://localhost:3000/api/media/sanity/${encoded}?w=320&q=85&exp=${farPast}&sig=expired-sig`;
     const request = new NextRequest(requestUrl);
@@ -95,9 +89,7 @@ describe('/api/media route', () => {
 
     const response = await GET(request, { params: Promise.resolve({ path }) as Promise<{ path?: string[] }> });
 
-    expect(fetch).toHaveBeenCalledTimes(1);
-    expect(response.status).toBe(200);
-    expect(response.headers.get('x-media-unsigned')).toBe('true');
-    expect(response.headers.get('cache-control')).toContain('max-age=3600');
+    expect(fetch).not.toHaveBeenCalled();
+    expect(response.status).toBe(401);
   });
 });

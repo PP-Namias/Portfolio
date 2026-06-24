@@ -22,3 +22,5 @@ paths-ignore:
   - scripts/**
   # Sanity plans/docs
   - docs/**
+  # Sanity Functions (standalone, run on Sanity infrastructure)
+  - functions/**

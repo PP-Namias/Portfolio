@@ -35,8 +35,6 @@ const contentSecurityPolicy = `
   report-uri /api/csp-violation;
 `;
 
-const reportUri = '/api/csp-violation';
-
 const securityHeaders = [
   {
     key: 'Content-Security-Policy',

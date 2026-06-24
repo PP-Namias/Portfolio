@@ -82,9 +82,10 @@ export async function GET(request: NextRequest, context: { params: Promise<{ pat
     const sigResult = verifyMediaGatewaySignature({ targetUrl, width, quality, expiresAt, signature });
 
     if (!sigResult.valid) {
-      console.warn(`[media-gateway] Signature ${sigResult.expired ? 'expired' : 'invalid'} for ${targetUrl}`);
-      useUnsignedFallback = true;
-    } else if (sigResult.expired && expiresAt) {
+      return buildError(sigResult.expired ? 401 : 403, sigResult.expired ? 'Media signature expired' : 'Invalid media signature');
+    }
+
+    if (sigResult.expired && expiresAt) {
       const remainingMs = (expiresAt - Math.floor(Date.now() / 1000)) * 1000;
       if (remainingMs < 3600_000) {
         console.warn(`[media-gateway] Signature expiring soon for ${targetUrl} (${Math.round(remainingMs / 60_000)}m remaining)`);
