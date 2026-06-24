@@ -44,20 +44,12 @@ export async function generateMetadata(): Promise<Metadata> {
       siteName: 'Jhon Keneth Namias Portfolio',
       type: 'website',
       locale: 'en_US',
-      images: [
-        {
-          url: seo.ogImageUrl || fallbackSeo.ogImageUrl,
-          width: 1200,
-          height: 630,
-          alt: 'Jhon Keneth Namias portfolio preview',
-        },
-      ],
     },
     twitter: {
       card: 'summary_large_image',
+      site: '@PP_Namias',
       title: seo.siteTitle,
       description: seo.siteDescription,
-      images: [seo.twitterImageUrl || seo.ogImageUrl || fallbackSeo.twitterImageUrl],
     },
     icons: {
       icon: '/favicon.svg',
@@ -85,7 +77,7 @@ const jsonLd = {
       email: 'pp.namias@gmail.com',
       image: {
         '@type': 'ImageObject',
-        url: `${SITE_URL}/og-image.svg`,
+        url: `${SITE_URL}/opengraph-image`,
         width: 1200,
         height: 630,
         alt: 'Jhon Keneth Ryan Namias - Full Stack Developer',

@@ -40,10 +40,13 @@ import TwitterImage, {
 describe('app metadata routes', () => {
   beforeEach(() => {
     vi.resetModules();
+    globalThis.fetch = vi.fn().mockResolvedValue({
+      arrayBuffer: () => Promise.resolve(new ArrayBuffer(0)),
+    });
   });
 
-  it('generates open graph image with expected runtime and metadata', () => {
-    const response = OpenGraphImage() as unknown as { options: { width: number; height: number } };
+  it('generates open graph image with expected runtime and metadata', async () => {
+    const response = (await OpenGraphImage()) as unknown as { options: { width: number; height: number } };
 
     expect(ogRuntime).toBe('edge');
     expect(ogContentType).toBe('image/png');
@@ -52,8 +55,8 @@ describe('app metadata routes', () => {
     expect(response.options).toMatchObject({ width: 1200, height: 630 });
   });
 
-  it('generates twitter image with expected runtime and metadata', () => {
-    const response = TwitterImage() as unknown as { options: { width: number; height: number } };
+  it('generates twitter image with expected runtime and metadata', async () => {
+    const response = (await TwitterImage()) as unknown as { options: { width: number; height: number } };
 
     expect(twRuntime).toBe('edge');
     expect(twContentType).toBe('image/png');
