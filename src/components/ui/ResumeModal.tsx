@@ -110,7 +110,7 @@ export function ResumeModal({ open, onClose }: Readonly<ResumeModalProps>) {
   const noResume = !showFetching && !resumeUrl;
 
   const iframeSrc = resumeUrl
-    ? `${resumeUrl}#toolbar=0&navpanes=0`
+    ? `${resumeUrl}#zoom=90`
     : '';
 
   return (

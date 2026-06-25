@@ -75,7 +75,7 @@ describe('ResumeModal', () => {
 
     await waitFor(() => {
       const pdfIframe = screen.getByTitle('Resume PDF Viewer');
-      expect(pdfIframe).toHaveAttribute('src', `${gatewayResumeUrl}#toolbar=0&navpanes=0`);
+      expect(pdfIframe).toHaveAttribute('src', `${gatewayResumeUrl}#zoom=90`);
     });
     expect(fetchMock).toHaveBeenCalledWith('/api/resume');
   });

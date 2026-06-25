@@ -54,7 +54,7 @@ export function BookingModal({ open, onClose }: Readonly<BookingModalProps>) {
   }, [open, selectedEvent, calTheme]);
 
   return (
-    <Modal open={open} onClose={onClose} fullScreen showCloseButton={false}>
+    <Modal open={open} onClose={onClose} fullScreen showCloseButton={false} scrollable={false}>
       {/* Toolbar */}
       <div className="flex items-center justify-between px-5 py-3 border-b border-border-light dark:border-border-dark flex-shrink-0 transition-colors duration-300">
         <div className="flex items-center gap-4">
@@ -102,8 +102,7 @@ export function BookingModal({ open, onClose }: Readonly<BookingModalProps>) {
 
       {/* Cal.com Embed */}
       <div
-        className="relative flex-1 bg-surface-light dark:bg-surface-dark transition-colors duration-300"
-        style={{ height: 'calc(92vh - 60px)', minHeight: '500px' }}
+        className="relative flex-1 min-h-0 bg-surface-light dark:bg-surface-dark transition-colors duration-300"
       >
         {isEmbedLoading && (
           <div className="absolute inset-0 z-10 flex items-center justify-center bg-surface-light dark:bg-surface-dark transition-colors duration-300">
