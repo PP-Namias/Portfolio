@@ -6,8 +6,6 @@ import { Download, Loader2, RefreshCw } from 'lucide-react';
 import { Modal } from './Modal';
 
 const LOAD_TIMEOUT_MS = 15_000;
-const PDF_RATIO = 8.5 / 11;
-const TOOLBAR_HEIGHT = 45;
 const BACKDROP_PADDING = 48;
 const SAFETY_MARGIN = 16;
 
@@ -15,19 +13,9 @@ function calcPanelStyle(): React.CSSProperties {
   if (typeof window === 'undefined') return { width: 600, height: 840 };
   const vh = window.innerHeight;
   const vw = window.innerWidth;
-  const maxH = vh - BACKDROP_PADDING - SAFETY_MARGIN;
-  const maxW = vw - BACKDROP_PADDING - SAFETY_MARGIN;
-  const pdfMaxH = maxH - TOOLBAR_HEIGHT;
-  let pdfH = pdfMaxH;
-  let pdfW = pdfH * PDF_RATIO;
-  if (pdfW > maxW) {
-    pdfW = maxW;
-    pdfH = pdfW / PDF_RATIO;
-  }
-  return {
-    width: Math.max(Math.round(pdfW), 320),
-    height: Math.round(pdfH + TOOLBAR_HEIGHT),
-  };
+  const h = Math.round(vh - BACKDROP_PADDING - SAFETY_MARGIN);
+  const w = Math.min(Math.round(vw - BACKDROP_PADDING - SAFETY_MARGIN), 900);
+  return { width: w, height: h };
 }
 
 interface ResumeModalProps {
@@ -109,9 +97,7 @@ export function ResumeModal({ open, onClose }: Readonly<ResumeModalProps>) {
   const showError = (swrError || pdfError) && resumeUrl;
   const noResume = !showFetching && !resumeUrl;
 
-  const iframeSrc = resumeUrl
-    ? `${resumeUrl}#zoom=90`
-    : '';
+  const iframeSrc = resumeUrl ?? '';
 
   return (
     <Modal open={open} onClose={onClose} showCloseButton={false} scrollable={false} panelStyle={panelStyle}>

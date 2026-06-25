@@ -13,6 +13,8 @@ interface BookingModalProps {
 const CAL_USERNAME = 'pp-namias';
 const CAL_BASE_URL = 'https://cal.com';
 const BOOKING_MODAL_EVENT_KEY = 'booking-modal-event';
+const BACKDROP_PADDING = 48;
+const SAFETY_MARGIN = 16;
 
 const EVENT_TYPES = [
   { slug: 'introductory-call', label: 'Introductory Call', duration: '30 min' },
@@ -20,10 +22,20 @@ const EVENT_TYPES = [
 
 type BookingEventSlug = (typeof EVENT_TYPES)[number]['slug'];
 
+function calcPanelStyle(): React.CSSProperties {
+  if (typeof window === 'undefined') return { width: 960, height: 700 };
+  const vh = window.innerHeight;
+  const vw = window.innerWidth;
+  const h = Math.round(vh - BACKDROP_PADDING - SAFETY_MARGIN);
+  const w = Math.min(Math.round(vw - BACKDROP_PADDING - SAFETY_MARGIN), 1100);
+  return { width: w, height: h };
+}
+
 export function BookingModal({ open, onClose }: Readonly<BookingModalProps>) {
   const { resolvedTheme, mounted } = useTheme();
   const [selectedEvent, setSelectedEvent] = useState<BookingEventSlug>(EVENT_TYPES[0].slug);
   const [isEmbedLoading, setIsEmbedLoading] = useState(true);
+  const [panelStyle, setPanelStyle] = useState<React.CSSProperties>(calcPanelStyle);
 
   const calTheme = mounted && resolvedTheme === 'light' ? 'light' : 'dark';
   const embedUrl = useMemo(
@@ -53,8 +65,16 @@ export function BookingModal({ open, onClose }: Readonly<BookingModalProps>) {
     setIsEmbedLoading(true);
   }, [open, selectedEvent, calTheme]);
 
+  useEffect(() => {
+    if (!open) return;
+    const update = () => setPanelStyle(calcPanelStyle());
+    update();
+    window.addEventListener('resize', update);
+    return () => window.removeEventListener('resize', update);
+  }, [open]);
+
   return (
-    <Modal open={open} onClose={onClose} fullScreen showCloseButton={false} scrollable={false}>
+    <Modal open={open} onClose={onClose} showCloseButton={false} scrollable={false} panelStyle={panelStyle}>
       {/* Toolbar */}
       <div className="flex items-center justify-between px-5 py-3 border-b border-border-light dark:border-border-dark flex-shrink-0 transition-colors duration-300">
         <div className="flex items-center gap-4">
