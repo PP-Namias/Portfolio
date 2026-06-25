@@ -149,7 +149,7 @@ export function Modal({ open, onClose, title, children, fullScreen = false, desc
             )}
 
             {/* Content */}
-            <div className={`flex-1 ${scrollable ? 'overflow-y-auto' : 'overflow-hidden'}`}>
+            <div className={`flex-1 flex flex-col min-h-0 ${scrollable ? 'overflow-y-auto' : 'overflow-hidden'}`}>
               {children}
             </div>
           </motion.div>
