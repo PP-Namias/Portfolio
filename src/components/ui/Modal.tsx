@@ -22,9 +22,13 @@ interface ModalProps {
   descriptionId?: string;
   /** When false, suppresses the built-in close button (for modals with their own toolbar close). Defaults to true. */
   showCloseButton?: boolean;
+  /** When false, the content area does not scroll (children manage their own overflow). Defaults to true. */
+  scrollable?: boolean;
+  /** Custom inline styles for the panel (width, height, etc.). When provided, fullScreen sizing classes are skipped. */
+  panelStyle?: React.CSSProperties;
 }
 
-export function Modal({ open, onClose, title, children, fullScreen = false, descriptionId, showCloseButton = true }: Readonly<ModalProps>) {
+export function Modal({ open, onClose, title, children, fullScreen = false, descriptionId, showCloseButton = true, scrollable = true, panelStyle }: Readonly<ModalProps>) {
   const panelRef = useRef<HTMLDivElement>(null);
 
   // Lock body scroll when open
@@ -98,11 +102,14 @@ export function Modal({ open, onClose, title, children, fullScreen = false, desc
           {/* Panel */}
           <motion.div
             ref={panelRef}
-            className={`relative z-10 w-full bg-white dark:bg-card-bg-dark rounded-xl border border-border-light dark:border-border-dark shadow-2xl overflow-hidden flex flex-col transition-colors duration-300 ${
-              fullScreen
-                ? 'max-w-5xl max-h-[92vh]'
-                : 'max-w-2xl max-h-[85vh]'
+            className={`relative z-10 ${panelStyle ? '' : 'w-full'} bg-white dark:bg-card-bg-dark rounded-xl border border-border-light dark:border-border-dark shadow-2xl overflow-hidden flex flex-col transition-colors duration-300 ${
+              panelStyle
+                ? ''
+                : fullScreen
+                  ? 'max-w-5xl max-h-[92vh]'
+                  : 'max-w-2xl max-h-[85vh]'
             }`}
+            style={panelStyle}
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
@@ -142,7 +149,7 @@ export function Modal({ open, onClose, title, children, fullScreen = false, desc
             )}
 
             {/* Content */}
-            <div className="flex-1 overflow-y-auto">
+            <div className={`flex-1 ${scrollable ? 'overflow-y-auto' : 'overflow-hidden'}`}>
               {children}
             </div>
           </motion.div>
