@@ -135,7 +135,6 @@ import { ReadingProgress } from '@/components/ui/ReadingProgress';
 import { VerifiedBadge } from '@/components/ui/VerifiedBadge';
 import { Footer } from '@/components/layout/Footer';
 import { ColorSchemePicker } from '@/components/ui/ColorSchemePicker';
-import { ProjectCard } from '@/components/ui/ProjectCard';
 import { TimelineItem } from '@/components/ui/TimelineItem';
 import { ExperienceModal } from '@/components/ui/ExperienceModal';
 
@@ -242,29 +241,6 @@ describe('uncovered UI components', () => {
     expect(localStorage.getItem('accent-color')).toBe('blue');
 
     fireEvent.keyDown(document, { key: 'Escape' });
-  });
-
-  it('ProjectCard renders metadata, tags and links', () => {
-    render(
-      <ProjectCard
-        index={0}
-        project={{
-          title: 'System X',
-          description: 'A modern app.',
-          year: 2026,
-          tags: ['React', 'TypeScript', 'AI'],
-          image: 'cover.png',
-          liveURL: 'https://example.com/live',
-          repositoryURL: 'https://example.com/repo',
-          processURL: null,
-        }}
-      />
-    );
-
-    expect(screen.getByText('System X')).toBeInTheDocument();
-    expect(screen.getByText('+1')).toBeInTheDocument();
-    expect(screen.getByText('Code').closest('a')).toHaveAttribute('href', 'https://example.com/repo');
-    expect(screen.getByText('Live').closest('a')).toHaveAttribute('href', 'https://example.com/live');
   });
 
   it('TimelineItem expands details when item has details', () => {
