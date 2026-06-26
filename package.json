@@ -28,7 +28,7 @@
     "build": "concurrently --names next,sanity --prefix-colors cyan,magenta --kill-others-on-fail \"next build\" \"npm run build:studio\"",
     "build:studio": "cd studio && npm run build",
     "start": "next start",
-    "lint": "eslint src studio --ext .ts,.tsx,.js,.jsx",
+    "lint": "eslint src studio",
     "test": "vitest run",
     "test:watch": "vitest",
     "cloudflare:build": "opennextjs-cloudflare build --dangerouslyUseUnsupportedNextVersion",
