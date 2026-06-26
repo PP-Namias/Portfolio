@@ -294,13 +294,11 @@ export function ChatPanel({ onBack, onClose, messages, setMessages }: Readonly<C
     }
 
     if (action === 'linkedin') {
-      // eslint-disable-next-line react-doctor/avoid-stateful-window-open
       window.open('https://www.linkedin.com/in/pp-namias/', '_blank');
       return;
     }
 
     if (action === 'github') {
-      // eslint-disable-next-line react-doctor/avoid-stateful-window-open
       window.open('https://github.com/PP-Namias', '_blank');
       return;
     }
