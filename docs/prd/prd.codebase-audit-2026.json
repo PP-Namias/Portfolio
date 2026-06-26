@@ -1,0 +1,276 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Codebase Audit & Cleanup — Full-Stack Review 2026",
+  "version": "1.0.0",
+  "date": "2026-06-27",
+  "branch": "dev",
+  "summary": "Comprehensive codebase audit covering file hygiene, code quality, test coverage, and dependency health. All findings organized by severity for phased implementation.",
+  "auditAgents": [
+    "file-hygiene-explore",
+    "code-quality-general",
+    "test-coverage-general",
+    "dependency-config-general"
+  ],
+  "phases": [
+    {
+      "id": "phase-1",
+      "name": "Delete unnecessary files",
+      "priority": "high",
+      "commits": [
+        {
+          "id": "slice-1a",
+          "title": "chore: delete temp and build artifact files",
+          "description": "Remove page-output.txt, not-found-preview.png, tsconfig.tsbuildinfo (root + studio), amplify.yml",
+          "severity": "high",
+          "files": [
+            "page-output.txt",
+            "not-found-preview.png",
+            "tsconfig.tsbuildinfo",
+            "studio/tsconfig.tsbuildinfo",
+            "amplify.yml"
+          ]
+        },
+        {
+          "id": "slice-1b",
+          "title": "chore: delete leftover .astro directory",
+          "description": "Remove entire .astro/ directory — leftover from a prior Astro framework, project is Next.js",
+          "severity": "high",
+          "files": [".astro/"]
+        },
+        {
+          "id": "slice-1c",
+          "title": "chore: delete studio build artifacts and stale data",
+          "description": "Remove studio/dist/, studio/data_downloads/data.ndjson, studio/data_downloads/production-backup.tar.gz, studio/data/exports/, studio/pnpm-lock.yaml",
+          "severity": "high",
+          "files": [
+            "studio/dist/",
+            "studio/data_downloads/data.ndjson",
+            "studio/data_downloads/production-backup.tar.gz",
+            "studio/data/exports/",
+            "studio/pnpm-lock.yaml"
+          ]
+        },
+        {
+          "id": "slice-1d",
+          "title": "chore: delete redundant boilerplate files",
+          "description": "Remove SUPPORT.md (redundant with CONTRIBUTING.md) and CHANGELOG.dev.md (stale dev branch log)",
+          "severity": "medium",
+          "files": [
+            "SUPPORT.md",
+            "CHANGELOG.dev.md"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "phase-2",
+      "name": "Delete orphaned source files",
+      "priority": "high",
+      "commits": [
+        {
+          "id": "slice-2a",
+          "title": "refactor: delete orphaned lib modules with zero imports",
+          "description": "Remove src/lib/local-cache.ts, src/lib/seo-image.ts, src/lib/cms-data.ts — all have zero production imports",
+          "severity": "high",
+          "files": [
+            "src/lib/local-cache.ts",
+            "src/lib/seo-image.ts",
+            "src/lib/cms-data.ts"
+          ]
+        },
+        {
+          "id": "slice-2b",
+          "title": "refactor: delete orphaned SEO types and superseded ProjectCard",
+          "description": "Remove src/components/seo/types.ts (zero imports) and src/components/ui/ProjectCard.tsx (only imported in tests, superseded by inline implementations)",
+          "severity": "high",
+          "files": [
+            "src/components/seo/types.ts",
+            "src/components/ui/ProjectCard.tsx"
+          ]
+        },
+        {
+          "id": "slice-2c",
+          "title": "refactor: delete orphaned CMS barrel module",
+          "description": "Remove src/components/cms/ directory (index.ts, sanity-field.lib.ts, sanity-field.types.ts, SanityField.tsx) — zero external imports, superseded by src/utils/sanity-data-attribute.ts. Update test that imports from it.",
+          "severity": "high",
+          "files": ["src/components/cms/"]
+        }
+      ]
+    },
+    {
+      "id": "phase-3",
+      "name": "Clean stale documentation",
+      "priority": "medium",
+      "commits": [
+        {
+          "id": "slice-3a",
+          "title": "docs: remove stale Sanity planning docs",
+          "description": "Remove docs/sanity-import-plan.md (completed import), docs/sanity_plans/ directory (18 completed planning files), studio/PLAN.md (completed restructuring)",
+          "severity": "medium",
+          "files": [
+            "docs/sanity-import-plan.md",
+            "docs/sanity_plans/",
+            "studio/PLAN.md"
+          ]
+        },
+        {
+          "id": "slice-3b",
+          "title": "docs: remove stale react-doctor historical reports",
+          "description": "Remove docs/react-doctor/baseline.txt, epic-3-report.md, epic-4-report.md, epic-5-report.md, PR_NOTES.md, triage.md — keep only scoreboard.md and score.md",
+          "severity": "low",
+          "files": [
+            "docs/react-doctor/baseline.txt",
+            "docs/react-doctor/epic-3-report.md",
+            "docs/react-doctor/epic-4-report.md",
+            "docs/react-doctor/epic-5-report.md",
+            "docs/react-doctor/PR_NOTES.md",
+            "docs/react-doctor/triage.md"
+          ]
+        },
+        {
+          "id": "slice-3c",
+          "title": "docs: remove translated README files",
+          "description": "Remove docs/README_de.md, docs/README_es.md, docs/README_fr.md, docs/README_ja.md, docs/README_ko.md, docs/README_pt.md, docs/README_ru.md, docs/README_zh.md — no evidence of international contributors",
+          "severity": "low",
+          "files": [
+            "docs/README_de.md",
+            "docs/README_es.md",
+            "docs/README_fr.md",
+            "docs/README_ja.md",
+            "docs/README_ko.md",
+            "docs/README_pt.md",
+            "docs/README_ru.md",
+            "docs/README_zh.md"
+          ]
+        },
+        {
+          "id": "slice-3d",
+          "title": "docs: remove stale misc docs",
+          "description": "Remove docs/about-section-preview.md (one-time artifact), docs/CONTINUATION_PROMPT.md (stale session prompt with wrong path), studio/prd/ (completed epic PRDs)",
+          "severity": "low",
+          "files": [
+            "docs/about-section-preview.md",
+            "docs/CONTINUATION_PROMPT.md",
+            "studio/prd/"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "phase-4",
+      "name": "Fix code quality issues",
+      "priority": "high",
+      "commits": [
+        {
+          "id": "slice-4a",
+          "title": "fix(security): add sandbox attribute to ResumeModal iframe",
+          "description": "Add sandbox=\"allow-same-origin\" to the ResumeModal iframe for security hardening",
+          "severity": "high",
+          "files": ["src/components/ui/ResumeModal.tsx"]
+        },
+        {
+          "id": "slice-4b",
+          "title": "fix(types): replace any type in BlogPostContent with proper Components type",
+          "description": "Replace `const markdownComponents: any = {...}` with proper react-markdown Components type in src/components/blog/BlogPostContent.tsx",
+          "severity": "high",
+          "files": ["src/components/blog/BlogPostContent.tsx"]
+        },
+        {
+          "id": "slice-4c",
+          "title": "fix(types): remove double cast window.open hack in ChatPanel",
+          "description": "Replace `(window.open as unknown as ...)` double-cast with a proper typed wrapper or eslint-disable comment in src/components/ui/ChatPanel.tsx",
+          "severity": "medium",
+          "files": ["src/components/ui/ChatPanel.tsx"]
+        },
+        {
+          "id": "slice-4d",
+          "title": "fix(code): replace var declaration with proper globalThis typing in media.ts",
+          "description": "Replace `var __resolveContentImageSrc_cache` with a properly typed module-level Map using declare global or a module-scoped variable",
+          "severity": "low",
+          "files": ["src/lib/media.ts"]
+        },
+        {
+          "id": "slice-4e",
+          "title": "fix(react): add prefers-reduced-motion guard to MagicCursor",
+          "description": "Check window.matchMedia('(prefers-reduced-motion: reduce)') and skip cursor trail animation when user prefers reduced motion",
+          "severity": "medium",
+          "files": ["src/components/ui/MagicCursor.tsx"]
+        },
+        {
+          "id": "slice-4f",
+          "title": "fix(react): remove no-op useMemo in useCmsContent",
+          "description": "Remove `useMemo(() => value, [value])` which provides no caching benefit in src/hooks/useCmsContent.tsx",
+          "severity": "low",
+          "files": ["src/hooks/useCmsContent.tsx"]
+        },
+        {
+          "id": "slice-4g",
+          "title": "fix(style): normalize quote style in MagicCursor imports",
+          "description": "Change double quotes to single quotes in MagicCursor.tsx imports for consistency with codebase",
+          "severity": "low",
+          "files": ["src/components/ui/MagicCursor.tsx"]
+        }
+      ]
+    },
+    {
+      "id": "phase-5",
+      "name": "Fix configuration issues",
+      "priority": "medium",
+      "commits": [
+        {
+          "id": "slice-5a",
+          "title": "fix(config): remove deprecated --ext flag from lint script",
+          "description": "Change ESLint script from `eslint src studio --ext .ts,.tsx,.js,.jsx` to `eslint src studio` since ESLint 9 flat config ignores --ext",
+          "severity": "medium",
+          "files": ["package.json"]
+        },
+        {
+          "id": "slice-5b",
+          "title": "fix(config): update vitest coverage config to remove as any",
+          "description": "Fix the `as any` type assertion in vitest.config.ts coverage config",
+          "severity": "low",
+          "files": ["vitest.config.ts"]
+        },
+        {
+          "id": "slice-5c",
+          "title": "docs: update .env.example with missing variables",
+          "description": "Add REDIS_CACHE_URL, REDIS_CACHE_TOKEN, UPSTASH_REDIS_REST_URL, UPSTASH_REDIS_REST_TOKEN, NEXT_PUBLIC_SANITY_STUDIO_URL, SANITY_STUDIO_URL to .env.example",
+          "severity": "low",
+          "files": [".env.example"]
+        },
+        {
+          "id": "slice-5d",
+          "title": "fix(deps): remove unused styled-components from root package.json",
+          "description": "Remove styled-components from root dependencies (studio has its own copy). Remove unused @sanity/functions from root devDependencies.",
+          "severity": "medium",
+          "files": ["package.json", "package-lock.json"]
+        }
+      ]
+    },
+    {
+      "id": "phase-6",
+      "name": "Verification",
+      "priority": "high",
+      "commits": [
+        {
+          "id": "slice-6a",
+          "title": "test: run full test suite and fix any failures",
+          "description": "Run npm run lint, npx tsc --noEmit, npm run test -- --run. Fix any failures caused by deleted files or code changes.",
+          "severity": "high",
+          "files": []
+        }
+      ]
+    }
+  ],
+  "statistics": {
+    "totalFindings": 42,
+    "bySeverity": {
+      "high": 16,
+      "medium": 14,
+      "low": 12
+    },
+    "filesToDelete": 35,
+    "filesToModify": 10,
+    "estimatedCommits": 18
+  }
+}
