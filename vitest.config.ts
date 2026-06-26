@@ -22,7 +22,7 @@ export default defineConfig({
         '**/*.d.ts',
         'src/types/**',
       ],
-    } as any,
+    },
   },
   resolve: {
     alias: {
