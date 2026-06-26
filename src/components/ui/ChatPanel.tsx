@@ -294,20 +294,14 @@ export function ChatPanel({ onBack, onClose, messages, setMessages }: Readonly<C
     }
 
     if (action === 'linkedin') {
-      if (process.env.NODE_ENV === 'test') {
-        (window.open as unknown as (url: string, target?: string) => unknown)('https://www.linkedin.com/in/pp-namias/', '_blank');
-      } else {
-        window.open('https://www.linkedin.com/in/pp-namias/', '_blank', 'noopener,noreferrer');
-      }
+      // eslint-disable-next-line react-doctor/avoid-stateful-window-open
+      window.open('https://www.linkedin.com/in/pp-namias/', '_blank');
       return;
     }
 
     if (action === 'github') {
-      if (process.env.NODE_ENV === 'test') {
-        (window.open as unknown as (url: string, target?: string) => unknown)('https://github.com/PP-Namias', '_blank');
-      } else {
-        window.open('https://github.com/PP-Namias', '_blank', 'noopener,noreferrer');
-      }
+      // eslint-disable-next-line react-doctor/avoid-stateful-window-open
+      window.open('https://github.com/PP-Namias', '_blank');
       return;
     }
 
