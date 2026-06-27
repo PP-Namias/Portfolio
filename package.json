@@ -44,7 +44,8 @@
     "doctor:json": "react-doctor --json > .react-doctor/report.json",
     "doctor:baseline": "react-doctor --json > .react-doctor/baseline.json",
     "doctor:check": "react-doctor --json --fail-on error",
-    "doctor:diff": "react-doctor --diff"
+    "doctor:diff": "react-doctor --diff",
+    "prepare": "husky"
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
@@ -87,6 +88,7 @@
     "jsdom": "^28.1.0",
     "lint-staged": "^17.0.8",
     "patch-package": "^8.0.1",
+    "prettier": "^3.9.0",
     "react-doctor": "0.5.8",
     "tailwindcss": "^3.4.17",
     "typescript": "^5.7.3",

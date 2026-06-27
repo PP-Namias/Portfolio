@@ -1,0 +1,34 @@
+#!/usr/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+echo "[hooks] Running pre-commit checks..."
+
+# 1. Lint staged files (ESLint + Prettier)
+echo "[hooks] Running lint-staged..."
+npx lint-staged
+if [ $? -ne 0 ]; then
+  echo "[hooks] lint-staged failed. Fix the issues above and try again."
+  exit 1
+fi
+
+# 2. Secret scanning with gitleaks (optional)
+if command -v gitleaks >/dev/null 2>&1; then
+  echo "[hooks] Running gitleaks secret scan..."
+  gitleaks detect --source . --verbose --redact
+  if [ $? -ne 0 ]; then
+    echo "[hooks] gitleaks detected secrets! Remove them before committing."
+    exit 1
+  fi
+else
+  echo "[hooks] Skipping gitleaks (not installed). Install via: scoop install gitleaks"
+fi
+
+# 3. TypeScript type check
+echo "[hooks] Running TypeScript type check..."
+npx tsc --noEmit
+if [ $? -ne 0 ]; then
+  echo "[hooks] TypeScript errors found. Fix type errors before committing."
+  exit 1
+fi
+
+echo "[hooks] All pre-commit checks passed."
