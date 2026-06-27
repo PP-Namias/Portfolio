@@ -55,10 +55,7 @@
           "title": "chore: delete redundant boilerplate files",
           "description": "Remove SUPPORT.md (redundant with CONTRIBUTING.md) and CHANGELOG.dev.md (stale dev branch log)",
           "severity": "medium",
-          "files": [
-            "SUPPORT.md",
-            "CHANGELOG.dev.md"
-          ]
+          "files": ["SUPPORT.md", "CHANGELOG.dev.md"]
         }
       ]
     },
@@ -72,21 +69,14 @@
           "title": "refactor: delete orphaned lib modules with zero imports",
           "description": "Remove src/lib/local-cache.ts, src/lib/seo-image.ts, src/lib/cms-data.ts — all have zero production imports",
           "severity": "high",
-          "files": [
-            "src/lib/local-cache.ts",
-            "src/lib/seo-image.ts",
-            "src/lib/cms-data.ts"
-          ]
+          "files": ["src/lib/local-cache.ts", "src/lib/seo-image.ts", "src/lib/cms-data.ts"]
         },
         {
           "id": "slice-2b",
           "title": "refactor: delete orphaned SEO types and superseded ProjectCard",
           "description": "Remove src/components/seo/types.ts (zero imports) and src/components/ui/ProjectCard.tsx (only imported in tests, superseded by inline implementations)",
           "severity": "high",
-          "files": [
-            "src/components/seo/types.ts",
-            "src/components/ui/ProjectCard.tsx"
-          ]
+          "files": ["src/components/seo/types.ts", "src/components/ui/ProjectCard.tsx"]
         },
         {
           "id": "slice-2c",
@@ -107,11 +97,7 @@
           "title": "docs: remove stale Sanity planning docs",
           "description": "Remove docs/sanity-import-plan.md (completed import), docs/sanity_plans/ directory (18 completed planning files), studio/PLAN.md (completed restructuring)",
           "severity": "medium",
-          "files": [
-            "docs/sanity-import-plan.md",
-            "docs/sanity_plans/",
-            "studio/PLAN.md"
-          ]
+          "files": ["docs/sanity-import-plan.md", "docs/sanity_plans/", "studio/PLAN.md"]
         },
         {
           "id": "slice-3b",
@@ -148,11 +134,7 @@
           "title": "docs: remove stale misc docs",
           "description": "Remove docs/about-section-preview.md (one-time artifact), docs/CONTINUATION_PROMPT.md (stale session prompt with wrong path), studio/prd/ (completed epic PRDs)",
           "severity": "low",
-          "files": [
-            "docs/about-section-preview.md",
-            "docs/CONTINUATION_PROMPT.md",
-            "studio/prd/"
-          ]
+          "files": ["docs/about-section-preview.md", "docs/CONTINUATION_PROMPT.md", "studio/prd/"]
         }
       ]
     },
@@ -358,17 +340,115 @@
           "files": []
         }
       ]
+    },
+    {
+      "id": "phase-9",
+      "name": "Sanity Studio Audit Fixes",
+      "priority": "high",
+      "commits": [
+        {
+          "id": "slice-9a",
+          "title": "fix(studio): correct broken GROQ filters in desk structure",
+          "description": "Fix isFeatured→featured and isShowcase→showcaseDetail in deskStructure.ts GROQ filters. These were referencing non-existent fields.",
+          "severity": "high",
+          "files": ["studio/structure/deskStructure.ts"]
+        },
+        {
+          "id": "slice-9b",
+          "title": "fix(studio): remove stale heroSection references",
+          "description": "Remove heroSection from HOMEPAGE_TYPES in viewOnSiteAction, WORD_RANGES in ContentHealth, and AI_ACTIONS in prompts.ts. Hero content lives on profile singleton.",
+          "severity": "high",
+          "files": [
+            "studio/actions/viewOnSiteAction.tsx",
+            "studio/components/inspector/ContentHealth.tsx",
+            "studio/ai/prompts.ts"
+          ]
+        },
+        {
+          "id": "slice-9c",
+          "title": "fix(studio): correct stale field references in health queries",
+          "description": "Fix ContentHealthPanel overview→summary field, and vision/queries coverImage→image in broken references query.",
+          "severity": "high",
+          "files": ["studio/components/health/ContentHealthPanel.tsx", "studio/vision/queries.ts"]
+        },
+        {
+          "id": "slice-9d",
+          "title": "fix(studio): correct field name mismatches",
+          "description": "Fix issueDate→issuedAt in Welcome.tsx template and expiryAfterIssue validator in rules.ts.",
+          "severity": "high",
+          "files": ["studio/components/Welcome.tsx", "studio/validation/rules.ts"]
+        },
+        {
+          "id": "slice-9e",
+          "title": "fix(studio): remove unused imports",
+          "description": "Remove CheckmarkCircleIcon, EditIcon, OnboardingTour, httpsOnly, seoTitleLength, seoDescriptionLength, requiredForPublish imports.",
+          "severity": "medium",
+          "files": [
+            "studio/components/health/ContentHealthPanel.tsx",
+            "studio/presentation/PresentationNavigator.tsx",
+            "studio/sanity.config.ts",
+            "studio/schemaTypes/experience.ts",
+            "studio/schemaTypes/project.ts"
+          ]
+        },
+        {
+          "id": "slice-9f",
+          "title": "refactor(studio): remove dead code exports",
+          "description": "Remove unused _registry document type definition, ExperienceDurationInput export, and publishAndRevalidateModalAction.",
+          "severity": "medium",
+          "files": [
+            "studio/schemaTypes/_registry.ts",
+            "studio/components/inputs/ExperienceDuration.tsx",
+            "studio/actions/publishAndRevalidateModalAction.tsx"
+          ]
+        },
+        {
+          "id": "slice-9g",
+          "title": "fix(studio): remove dead readOnly onChange handlers",
+          "description": "Remove onChange handlers from readOnly inputs in ExperienceDurationField and ReadingTimeField.",
+          "severity": "low",
+          "files": [
+            "studio/components/inputs/ExperienceDurationField.tsx",
+            "studio/components/inputs/ReadingTimeField.tsx"
+          ]
+        },
+        {
+          "id": "slice-9h",
+          "title": "feat(studio): add missing validation rules to schema fields",
+          "description": "Add validation rules to project.order, project.category, experience.startDate, post.metaTitle, post.metaDescription, certification.credentialUrl, and techStack.technologies[].proficiency.",
+          "severity": "medium",
+          "files": [
+            "studio/schemaTypes/project.ts",
+            "studio/schemaTypes/experience.ts",
+            "studio/schemaTypes/post.ts",
+            "studio/schemaTypes/certification.ts",
+            "studio/schemaTypes/techStack.ts"
+          ]
+        },
+        {
+          "id": "slice-9i",
+          "title": "feat(studio): add missing previews and orderings",
+          "description": "Add preview configurations to galleryCategory, category, membership schemas. Add orderings to recommendation and membership schemas.",
+          "severity": "low",
+          "files": [
+            "studio/schemaTypes/galleryCategory.ts",
+            "studio/schemaTypes/category.ts",
+            "studio/schemaTypes/membership.ts",
+            "studio/schemaTypes/recommendation.ts"
+          ]
+        }
+      ]
     }
   ],
   "statistics": {
-    "totalFindings": 54,
+    "totalFindings": 63,
     "bySeverity": {
-      "high": 28,
-      "medium": 14,
-      "low": 12
+      "high": 32,
+      "medium": 18,
+      "low": 13
     },
     "filesToDelete": 35,
-    "filesToModify": 18,
-    "estimatedCommits": 30
+    "filesToModify": 27,
+    "estimatedCommits": 40
   }
 }
