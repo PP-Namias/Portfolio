@@ -67,6 +67,12 @@ const config = [
       'react-hooks/set-state-in-effect': 'off',
     },
   },
+  {
+    files: ['studio/**'],
+    rules: {
+      '@next/next/no-img-element': 'off',
+    },
+  },
 ];
 
 export default config;

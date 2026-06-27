@@ -1,4 +1,4 @@
-import {defineField, defineType} from 'sanity'
+import {defineField} from 'sanity'
 
 const DOCUMENT_KINDS = ['singleton', 'collection', 'reference', 'object'] as const
 

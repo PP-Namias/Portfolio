@@ -1,10 +1,10 @@
 import React from 'react'
-import {set, type StringInputProps} from 'sanity'
+import type {StringInputProps} from 'sanity'
 
 import {formatDuration, parseDateLike} from '../../utils/text'
 
 export function ExperienceDurationField(props: StringInputProps) {
-  const {value, onChange} = props
+  const {value} = props
   const document = (props as unknown as {document?: any}).document
   const startDate = document?.startDate ?? null
   const endDate = document?.endDate ?? null
