@@ -157,3 +157,6 @@ docs/security/pentestagent/knowledge/
 # Sanity backups
 /studio/data_downloads/*
 !/studio/data_downloads/README.md
+
+# Husky internal directory
+.husky/_
