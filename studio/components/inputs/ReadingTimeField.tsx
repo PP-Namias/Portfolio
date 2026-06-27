@@ -44,7 +44,6 @@ export function ReadingTimeField(props: StringInputProps) {
         aria-label="Computed reading time (read-only)"
         readOnly
         value={(value as string) || computed}
-        onChange={(event) => onChange(set(event.target.value))}
         style={{
           width: '100%',
           padding: '0.5rem 0.75rem',

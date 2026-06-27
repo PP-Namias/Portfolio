@@ -46,7 +46,6 @@ export function ExperienceDurationField(props: StringInputProps) {
         aria-label="Computed duration (read-only)"
         readOnly
         value={computed}
-        onChange={(event) => onChange(set(event.target.value))}
         style={{
           width: '100%',
           padding: '0.5rem 0.75rem',
