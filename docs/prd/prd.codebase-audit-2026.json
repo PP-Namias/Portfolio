@@ -260,17 +260,52 @@
           "files": []
         }
       ]
+    },
+    {
+      "id": "phase-7",
+      "name": "HTTP 418 Bot Blocking & Security Hardening",
+      "priority": "high",
+      "commits": [
+        {
+          "id": "slice-7a",
+          "title": "feat(security): create bot-blocker utility with detection patterns",
+          "description": "Create src/lib/bot-blocker.ts with known malicious user-agent signatures, empty UA detection, scanner/bot pattern matching. Returns HTTP 418 (I'm a teapot) to block unwanted automated scrapers.",
+          "severity": "high",
+          "files": ["src/lib/bot-blocker.ts"]
+        },
+        {
+          "id": "slice-7b",
+          "title": "feat(security): integrate bot-blocker into middleware",
+          "description": "Update src/middleware.ts to call bot-blocker on every request. Block known scrapers, empty UAs, and unauthorized traffic with HTTP 418.",
+          "severity": "high",
+          "files": ["src/middleware.ts"]
+        },
+        {
+          "id": "slice-7c",
+          "title": "feat(security): add global rate limiting to API routes",
+          "description": "Extend middleware to apply rate limiting to all API routes (not just chat). Use Upstash Redis with in-memory fallback. 30 requests per 60s per IP for general API, 10 per 60s for chat.",
+          "severity": "high",
+          "files": ["src/middleware.ts", "src/lib/rate-limiter.ts"]
+        },
+        {
+          "id": "slice-7d",
+          "title": "test(security): add bot-blocker unit tests",
+          "description": "Write tests for bot-blocker utility: known bad UAs, empty UA, good UAs pass through, rate limiter logic.",
+          "severity": "medium",
+          "files": ["src/__tests__/lib/bot-blocker.test.ts"]
+        }
+      ]
     }
   ],
   "statistics": {
-    "totalFindings": 42,
+    "totalFindings": 46,
     "bySeverity": {
-      "high": 16,
+      "high": 20,
       "medium": 14,
       "low": 12
     },
     "filesToDelete": 35,
-    "filesToModify": 10,
-    "estimatedCommits": 18
+    "filesToModify": 14,
+    "estimatedCommits": 22
   }
 }
