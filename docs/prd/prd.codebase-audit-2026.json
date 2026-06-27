@@ -295,17 +295,80 @@
           "files": ["src/__tests__/lib/bot-blocker.test.ts"]
         }
       ]
+    },
+    {
+      "id": "phase-8",
+      "name": "Development Workflow Guardrails",
+      "priority": "high",
+      "commits": [
+        {
+          "id": "slice-8a",
+          "title": "chore(deps): install husky, lint-staged, commitlint, gitleaks",
+          "description": "Install husky (git hooks), lint-staged (run linters on staged files), @commitlint/cli + @commitlint/config-conventional (commit message enforcement), and gitleaks-cli (secret scanning).",
+          "severity": "high",
+          "files": ["package.json"]
+        },
+        {
+          "id": "slice-8b",
+          "title": "chore(config): add .editorconfig for consistent editor settings",
+          "description": "Create .editorconfig with indent_style=space, indent_size=2, trim_trailing_whitespace, insert_final_newline. Ensures all contributors use consistent formatting.",
+          "severity": "low",
+          "files": [".editorconfig"]
+        },
+        {
+          "id": "slice-8c",
+          "title": "chore(config): configure lint-staged in package.json",
+          "description": "Add lint-staged config to run ESLint + Prettier on staged .ts/.tsx files, and Prettier on .json/.css/.md files. Prevents committing unlinted code.",
+          "severity": "high",
+          "files": ["package.json"]
+        },
+        {
+          "id": "slice-8d",
+          "title": "chore(config): create commitlint config",
+          "description": "Create commitlint.config.mjs with @commitlint/config-conventional. Enforces conventional commit format (type(scope): subject). Prevents bad commit messages.",
+          "severity": "high",
+          "files": ["commitlint.config.mjs"]
+        },
+        {
+          "id": "slice-8e",
+          "title": "feat(git): create pre-commit hook",
+          "description": "Create .husky/pre-commit hook that runs: (1) lint-staged, (2) gitleaks detect for secret scanning, (3) npx tsc --noEmit for type checking. Blocks commits that fail any check.",
+          "severity": "high",
+          "files": [".husky/pre-commit"]
+        },
+        {
+          "id": "slice-8f",
+          "title": "feat(git): create commit-msg hook",
+          "description": "Create .husky/commit-msg hook that runs commitlint against the commit message. Blocks commits with non-conventional format.",
+          "severity": "high",
+          "files": [".husky/commit-msg"]
+        },
+        {
+          "id": "slice-8g",
+          "title": "chore(config): add prepare script to package.json",
+          "description": "Add `prepare: husky` script so hooks are automatically installed on npm install. Also add gitleaks to devDependencies.",
+          "severity": "high",
+          "files": ["package.json"]
+        },
+        {
+          "id": "slice-8h",
+          "title": "test(guardrails): verify all hooks work correctly",
+          "description": "Test: (1) pre-commit blocks bad code, (2) commit-msg blocks bad messages, (3) gitleaks catches secrets, (4) lint-staged runs ESLint, (5) tsc catches type errors.",
+          "severity": "medium",
+          "files": []
+        }
+      ]
     }
   ],
   "statistics": {
-    "totalFindings": 46,
+    "totalFindings": 54,
     "bySeverity": {
-      "high": 20,
+      "high": 28,
       "medium": 14,
       "low": 12
     },
     "filesToDelete": 35,
-    "filesToModify": 14,
-    "estimatedCommits": 22
+    "filesToModify": 18,
+    "estimatedCommits": 30
   }
 }
