@@ -11,8 +11,8 @@ import {
   UsersIcon,
   BookIcon,
   EyeOpenIcon,
-      FilterIcon,
-      EditIcon,
+  FilterIcon,
+  EditIcon,
 } from '@sanity/icons'
 
 /**
@@ -83,7 +83,7 @@ export function deskStructure(S: StructureBuilder) {
                           S.documentList()
                             .title('All Projects')
                             .filter('_type == "project"')
-                            .defaultOrdering([{field: 'title', direction: 'asc'}])
+                            .defaultOrdering([{field: 'title', direction: 'asc'}]),
                         ),
                       S.listItem()
                         .title('Featured')
@@ -91,8 +91,8 @@ export function deskStructure(S: StructureBuilder) {
                         .child(
                           S.documentList()
                             .title('Featured Projects')
-                            .filter('_type == "project" && isFeatured == true')
-                            .defaultOrdering([{field: 'title', direction: 'asc'}])
+                            .filter('_type == "project" && featured == true')
+                            .defaultOrdering([{field: 'title', direction: 'asc'}]),
                         ),
                       S.listItem()
                         .title('Showcase')
@@ -100,10 +100,10 @@ export function deskStructure(S: StructureBuilder) {
                         .child(
                           S.documentList()
                             .title('Showcase Projects')
-                            .filter('_type == "project" && isShowcase == true')
-                            .defaultOrdering([{field: 'title', direction: 'asc'}])
+                            .filter('_type == "project" && showcaseDetail == true')
+                            .defaultOrdering([{field: 'title', direction: 'asc'}]),
                         ),
-                    ])
+                    ]),
                 ),
               // Experience with filtered views
               S.listItem()
@@ -120,7 +120,7 @@ export function deskStructure(S: StructureBuilder) {
                           S.documentList()
                             .title('All Experience')
                             .filter('_type == "experience"')
-                            .defaultOrdering([{field: 'startDate', direction: 'desc'}])
+                            .defaultOrdering([{field: 'startDate', direction: 'desc'}]),
                         ),
                       S.listItem()
                         .title('Current')
@@ -129,7 +129,7 @@ export function deskStructure(S: StructureBuilder) {
                           S.documentList()
                             .title('Current Experience')
                             .filter('_type == "experience" && endDate == null')
-                            .defaultOrdering([{field: 'startDate', direction: 'desc'}])
+                            .defaultOrdering([{field: 'startDate', direction: 'desc'}]),
                         ),
                       S.listItem()
                         .title('Past')
@@ -138,9 +138,9 @@ export function deskStructure(S: StructureBuilder) {
                           S.documentList()
                             .title('Past Experience')
                             .filter('_type == "experience" && defined(endDate)')
-                            .defaultOrdering([{field: 'startDate', direction: 'desc'}])
+                            .defaultOrdering([{field: 'startDate', direction: 'desc'}]),
                         ),
-                    ])
+                    ]),
                 ),
               S.documentTypeListItem('certification').title('Certifications').icon(StarFilledIcon),
               S.documentTypeListItem('galleryImage').title('Gallery').icon(ImagesIcon),
@@ -171,7 +171,7 @@ export function deskStructure(S: StructureBuilder) {
                           S.documentList()
                             .title('All Posts')
                             .filter('_type == "post"')
-                            .defaultOrdering([{field: 'publishedAt', direction: 'desc'}])
+                            .defaultOrdering([{field: 'publishedAt', direction: 'desc'}]),
                         ),
                       S.listItem()
                         .title('Published')
@@ -180,7 +180,7 @@ export function deskStructure(S: StructureBuilder) {
                           S.documentList()
                             .title('Published Posts')
                             .filter('_type == "post" && !(_id in path("drafts.**"))')
-                            .defaultOrdering([{field: 'publishedAt', direction: 'desc'}])
+                            .defaultOrdering([{field: 'publishedAt', direction: 'desc'}]),
                         ),
                       S.listItem()
                         .title('Drafts')
@@ -189,9 +189,9 @@ export function deskStructure(S: StructureBuilder) {
                           S.documentList()
                             .title('Draft Posts')
                             .filter('_type == "post" && _id in path("drafts.**")')
-                            .defaultOrdering([{field: 'publishedAt', direction: 'desc'}])
+                            .defaultOrdering([{field: 'publishedAt', direction: 'desc'}]),
                         ),
-                    ])
+                    ]),
                 ),
               S.documentTypeListItem('author').title('Authors').icon(UserIcon),
               S.documentTypeListItem('category').title('Categories').icon(DocumentsIcon),
@@ -226,8 +226,10 @@ export function deskStructure(S: StructureBuilder) {
                 .child(
                   S.documentList()
                     .title('All Draft Documents')
-                    .filter('_id in path("drafts.**") && _type != "sanity.imageAsset" && _type != "sanity.fileAsset"')
-                    .defaultOrdering([{field: '_updatedAt', direction: 'desc'}])
+                    .filter(
+                      '_id in path("drafts.**") && _type != "sanity.imageAsset" && _type != "sanity.fileAsset"',
+                    )
+                    .defaultOrdering([{field: '_updatedAt', direction: 'desc'}]),
                 ),
             ]),
         ),
