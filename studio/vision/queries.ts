@@ -48,8 +48,8 @@ export const visionQueries: Record<string, VisionQuery> = {
     description: 'References pointing to non-existent documents.',
     query: /* groq */ `
 {
-  "projects": *[_type == "project" && defined(coverImage)]
-    [count(coverImage) > 0 && !defined(*[_id == ^.coverImage._ref][0])],
+  "projects": *[_type == "project" && defined(image)]
+    [count(image) > 0 && !defined(*[_id == ^.image._ref][0])],
   "posts":    *[_type == "post" && defined(mainImage)]
     [count(mainImage) > 0 && !defined(*[_id == ^.mainImage._ref][0])],
   "certs":    *[_type == "certification" && defined(issuer)]
