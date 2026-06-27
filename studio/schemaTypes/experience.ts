@@ -1,7 +1,7 @@
 import {defineField, defineType} from 'sanity'
 
 import {ExperienceDurationField} from '../components/inputs/ExperienceDurationField'
-import {httpsOnly, requireAltText, summaryLength, endDateAfterStart} from '../validation/rules'
+import {requireAltText, summaryLength, endDateAfterStart} from '../validation/rules'
 
 export default defineType({
   name: 'experience',

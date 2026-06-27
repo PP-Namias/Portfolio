@@ -12,7 +12,6 @@ import {previewLocations} from './preview/previewLocations'
 import {templateRegistry} from './templates'
 import {studioBadges} from './components/badges/statusBadges'
 import {Welcome} from './components/Welcome'
-import {OnboardingTour} from './components/Onboarding'
 import {ContentHealth} from './components/inspector/ContentHealth'
 import {SeoPreview} from './components/inspector/SeoPreview'
 import {JsonInspector} from './components/inspector/JsonInspector'
@@ -22,7 +21,12 @@ import './theme/grid.css'
 import {savedQueriesToolPlugin} from './vision/SavedQueriesView'
 import {deskStructure} from './structure/deskStructure'
 import {PresentationNavigator} from './presentation/PresentationNavigator'
-import {getDraftModeEnablePath, getStudioPreviewOrigin, loadStudioEnvironment, requireStudioEnv} from './env'
+import {
+  getDraftModeEnablePath,
+  getStudioPreviewOrigin,
+  loadStudioEnvironment,
+  requireStudioEnv,
+} from './env'
 
 loadStudioEnvironment()
 
@@ -124,9 +128,7 @@ export default defineConfig({
 
   schema: {
     types: schemaTypes,
-    templates: [
-      ...Object.values(templateRegistry).flat(),
-    ] as any,
+    templates: [...Object.values(templateRegistry).flat()] as any,
   },
 
   components: {

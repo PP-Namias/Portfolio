@@ -1,7 +1,7 @@
 import React, {useEffect, useState, useCallback} from 'react'
 import {Card, Stack, Text, Badge, Button, Flex, Box} from '@sanity/ui'
 import {useClient} from 'sanity'
-import {CheckmarkCircleIcon, WarningFilledIcon, ClockIcon, RefreshIcon} from '@sanity/icons'
+import {WarningFilledIcon, ClockIcon, RefreshIcon} from '@sanity/icons'
 
 interface HealthIssue {
   id: string
