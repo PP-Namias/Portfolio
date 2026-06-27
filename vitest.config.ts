@@ -15,6 +15,7 @@ export default defineConfig({
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html'],
+      // @ts-expect-error -- vitest types don't expose `all` but v8 provider supports it
       all: true,
       include: ['src/**/*.{ts,tsx}'],
       exclude: [
