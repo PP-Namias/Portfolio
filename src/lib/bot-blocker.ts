@@ -45,6 +45,7 @@ const BLOCKED_UA_PATTERNS: RegExp[] = [
   /builtwith/i,
   /censys/i,
   /shodan/i,
+  /nuclei/i,
   /zoominfobot/i,
   /sogou/i,
   /exabot/i,
