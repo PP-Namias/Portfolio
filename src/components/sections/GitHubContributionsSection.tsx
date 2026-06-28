@@ -1,16 +1,23 @@
 'use client'
 
 import { useEffect, useMemo, useState } from 'react'
+import Image from 'next/image'
 import { motion, useReducedMotion } from 'framer-motion'
 import { ExternalLink } from 'lucide-react'
 
 const GITHUB_USERNAME = 'PP-Namias'
 const CONTRIBUTIONS_API = `https://github-contributions-api.jogruber.de/v4/${GITHUB_USERNAME}`
+const FALLBACK_SVG = `https://ghchart.rshah.org/${GITHUB_USERNAME}`
 
 interface ContributionDay {
   date: string
   count: number
   level: 0 | 1 | 2 | 3 | 4
+}
+
+interface ApiResponseBody {
+  total?: Record<string, number> | number
+  contributions?: ContributionDay[]
 }
 
 interface ContributionData {
@@ -33,6 +40,21 @@ function getLevelColor(level: number): string {
 function formatDate(dateStr: string): string {
   const date = new Date(dateStr + 'T00:00:00')
   return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+}
+
+function sumTotal(total: ApiResponseBody['total']): number {
+  if (typeof total === 'number') return total
+  if (total && typeof total === 'object') {
+    return Object.values(total).reduce((sum, v) => sum + (typeof v === 'number' ? v : 0), 0)
+  }
+  return 0
+}
+
+function normalizeResponse(json: ApiResponseBody): ContributionData {
+  return {
+    total: sumTotal(json.total),
+    contributions: Array.isArray(json.contributions) ? json.contributions : [],
+  }
 }
 
 function getWeeksFromContributions(contributions: ContributionDay[]): ContributionDay[][] {
@@ -88,35 +110,36 @@ function computeStreak(contributions: ContributionDay[]): { current: number; lon
   return { current, longest }
 }
 
+type FetchState = 'loading' | 'api' | 'fallback' | 'error'
+
 export function GitHubContributionsSection() {
+  const [state, setState] = useState<FetchState>('loading')
   const [data, setData] = useState<ContributionData | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
   const prefersReducedMotion = useReducedMotion()
 
   useEffect(() => {
     const controller = new AbortController()
 
-    async function fetchContributions() {
+    async function load() {
       try {
         const res = await fetch(CONTRIBUTIONS_API, { signal: controller.signal })
         if (!res.ok) throw new Error(`HTTP ${res.status}`)
-        const json = await res.json()
-        setData(json)
-      } catch (err) {
-        if (err instanceof DOMException && err.name === 'AbortError') return
-        setError(err instanceof Error ? err.message : 'Failed to load')
-      } finally {
-        setLoading(false)
+        const json: ApiResponseBody = await res.json()
+        const normalized = normalizeResponse(json)
+        if (normalized.contributions.length === 0) throw new Error('Empty data')
+        setData(normalized)
+        setState('api')
+      } catch {
+        if (controller.signal.aborted) return
+        setState('fallback')
       }
     }
 
-    fetchContributions()
+    load()
     return () => controller.abort()
   }, [])
 
   const weeks = useMemo(() => getWeeksFromContributions(data?.contributions ?? []), [data])
-
   const streak = useMemo(() => computeStreak(data?.contributions ?? []), [data])
 
   const monthLabels = useMemo(() => {
@@ -168,13 +191,13 @@ export function GitHubContributionsSection() {
         </p>
       </div>
 
-      {loading && (
+      {state === 'loading' && (
         <div className="flex items-center justify-center py-12">
           <div className="h-6 w-6 animate-spin rounded-full border-2 border-accent-pink border-t-transparent" />
         </div>
       )}
 
-      {error && (
+      {state === 'error' && (
         <div className="py-8 text-center text-sm text-text-muted-light dark:text-text-muted-dark">
           <p>Unable to load contribution data.</p>
           <a
@@ -189,7 +212,44 @@ export function GitHubContributionsSection() {
         </div>
       )}
 
-      {data && (
+      {state === 'fallback' && (
+        <div className="space-y-4">
+          <div className="overflow-x-auto pb-2">
+            <Image
+              src={FALLBACK_SVG}
+              alt={`${GITHUB_USERNAME}'s GitHub contribution chart`}
+              width={720}
+              height={105}
+              unoptimized
+              className="h-[105px] min-w-[720px] w-auto"
+              loading="lazy"
+            />
+          </div>
+          <div className="flex items-center gap-1 text-[10px] text-text-muted-light dark:text-text-muted-dark">
+            <span>Less</span>
+            {[0, 1, 2, 3, 4].map((level) => (
+              <div
+                key={level}
+                className={`h-[11px] w-[11px] rounded-[2px] ${getLevelColor(level)}`}
+              />
+            ))}
+            <span>More</span>
+          </div>
+          <div className="pt-2">
+            <a
+              href={`https://github.com/${GITHUB_USERNAME}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 text-sm text-accent-pink hover:underline"
+            >
+              View full profile on GitHub
+              <ExternalLink className="h-3.5 w-3.5" />
+            </a>
+          </div>
+        </div>
+      )}
+
+      {state === 'api' && data && (
         <div className="space-y-4">
           <div className="flex flex-wrap gap-4 text-sm">
             <div className="rounded-lg bg-surface-light dark:bg-surface-dark px-3 py-2">
@@ -209,7 +269,7 @@ export function GitHubContributionsSection() {
             <div className="rounded-lg bg-surface-light dark:bg-surface-dark px-3 py-2">
               <span className="font-semibold text-emerald-500">{streak.longest}</span>{' '}
               <span className="text-text-secondary-light dark:text-text-secondary-dark">
-                day longest streak span
+                day longest streak
               </span>
             </div>
           </div>
