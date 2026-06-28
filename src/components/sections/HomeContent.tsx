@@ -1,72 +1,73 @@
-'use client';
+'use client'
 
-import { useEffect, useMemo, useRef, useState } from 'react';
-import { HeroSection } from '@/components/sections/HeroSection';
-import { AboutSection } from '@/components/sections/AboutSection';
-import { TechStackSection } from '@/components/sections/TechStackSection';
-import { ProjectsSection } from '@/components/sections/ProjectsSection';
-import { ProjectsSectionRevamped } from '@/components/sections/ProjectsSectionRevamped';
-import { BlogSection } from '@/components/sections/BlogSection';
-import { CertificationsSection } from '@/components/sections/CertificationsSection';
-import { ExperienceTimeline } from '@/components/sections/ExperienceTimeline';
-import { ConnectSection } from '@/components/sections/ConnectSection';
-import { GallerySection } from '@/components/sections/GallerySection';
-import { Footer } from '@/components/layout/Footer';
-import { Card } from '@/components/ui/Card';
-import { SectionErrorBoundary } from '@/components/ui/ErrorBoundary';
-import { IS_PROJECTS_REVAMP_ENABLED } from '@/lib/features';
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { HeroSection } from '@/components/sections/HeroSection'
+import { AboutSection } from '@/components/sections/AboutSection'
+import { TechStackSection } from '@/components/sections/TechStackSection'
+import { ProjectsSection } from '@/components/sections/ProjectsSection'
+import { ProjectsSectionRevamped } from '@/components/sections/ProjectsSectionRevamped'
+import { BlogSection } from '@/components/sections/BlogSection'
+import { CertificationsSection } from '@/components/sections/CertificationsSection'
+import { ExperienceTimeline } from '@/components/sections/ExperienceTimeline'
+import { ConnectSection } from '@/components/sections/ConnectSection'
+import { GallerySection } from '@/components/sections/GallerySection'
+import { GitHubContributionsSection } from '@/components/sections/GitHubContributionsSection'
+import { Footer } from '@/components/layout/Footer'
+import { Card } from '@/components/ui/Card'
+import { SectionErrorBoundary } from '@/components/ui/ErrorBoundary'
+import { IS_GITHUB_CHART_VISIBLE, IS_PROJECTS_REVAMP_ENABLED } from '@/lib/features'
 
-type StickySide = 'left' | 'right' | null;
+type StickySide = 'left' | 'right' | null
 
 export function HomeContent() {
-  const leftColumnRef = useRef<HTMLDivElement | null>(null);
-  const rightColumnRef = useRef<HTMLDivElement | null>(null);
-  const [stickySide, setStickySide] = useState<StickySide>('right');
+  const leftColumnRef = useRef<HTMLDivElement | null>(null)
+  const rightColumnRef = useRef<HTMLDivElement | null>(null)
+  const [stickySide, setStickySide] = useState<StickySide>('right')
 
   useEffect(() => {
     const updateStickySide = () => {
       if (window.innerWidth < 1024) {
-        setStickySide(null);
-        return;
+        setStickySide(null)
+        return
       }
 
-      const leftHeight = leftColumnRef.current?.getBoundingClientRect().height ?? 0;
-      const rightHeight = rightColumnRef.current?.getBoundingClientRect().height ?? 0;
+      const leftHeight = leftColumnRef.current?.getBoundingClientRect().height ?? 0
+      const rightHeight = rightColumnRef.current?.getBoundingClientRect().height ?? 0
 
       if (!leftHeight || !rightHeight) {
-        return;
+        return
       }
 
-      const equalHeightThreshold = 24;
+      const equalHeightThreshold = 24
       if (Math.abs(leftHeight - rightHeight) <= equalHeightThreshold) {
-        setStickySide(null);
-        return;
+        setStickySide(null)
+        return
       }
 
-      setStickySide(leftHeight < rightHeight ? 'left' : 'right');
-    };
+      setStickySide(leftHeight < rightHeight ? 'left' : 'right')
+    }
 
-    updateStickySide();
+    updateStickySide()
 
     const observer = new ResizeObserver(() => {
-      updateStickySide();
-    });
+      updateStickySide()
+    })
 
     if (leftColumnRef.current) {
-      observer.observe(leftColumnRef.current);
+      observer.observe(leftColumnRef.current)
     }
 
     if (rightColumnRef.current) {
-      observer.observe(rightColumnRef.current);
+      observer.observe(rightColumnRef.current)
     }
 
-    window.addEventListener('resize', updateStickySide);
+    window.addEventListener('resize', updateStickySide)
 
     return () => {
-      observer.disconnect();
-      window.removeEventListener('resize', updateStickySide);
-    };
-  }, []);
+      observer.disconnect()
+      window.removeEventListener('resize', updateStickySide)
+    }
+  }, [])
 
   const leftColumnClass = useMemo(
     () =>
@@ -77,7 +78,7 @@ export function HomeContent() {
         .filter(Boolean)
         .join(' '),
     [stickySide]
-  );
+  )
 
   const rightColumnClass = useMemo(
     () =>
@@ -88,7 +89,7 @@ export function HomeContent() {
         .filter(Boolean)
         .join(' '),
     [stickySide]
-  );
+  )
 
   return (
     <main id="main-content" className="mx-auto max-w-container px-4 sm:px-6 pt-8 lg:pt-12">
@@ -135,6 +136,14 @@ export function HomeContent() {
         </Card>
       </div>
 
+      {IS_GITHUB_CHART_VISIBLE && (
+        <Card className="mt-4">
+          <SectionErrorBoundary name="GitHubContributionsSection">
+            <GitHubContributionsSection />
+          </SectionErrorBoundary>
+        </Card>
+      )}
+
       <Card className="mt-4">
         <SectionErrorBoundary name="GallerySection">
           <GallerySection />
@@ -143,5 +152,5 @@ export function HomeContent() {
 
       <Footer />
     </main>
-  );
+  )
 }
