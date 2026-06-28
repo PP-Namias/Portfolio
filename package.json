@@ -102,7 +102,7 @@
   },
   "lint-staged": {
     "*.{ts,tsx}": [
-      "eslint --max-warnings=0",
+      "eslint --no-warn-ignored",
       "prettier --write"
     ],
     "*.{json,css,md}": [

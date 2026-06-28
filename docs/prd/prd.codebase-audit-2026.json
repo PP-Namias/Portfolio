@@ -438,17 +438,59 @@
           ]
         }
       ]
+    },
+    {
+      "id": "phase-10",
+      "name": "GitHub Contributions Chart",
+      "priority": "high",
+      "commits": [
+        {
+          "id": "slice-10a",
+          "title": "docs(prd): add phase 10 — GitHub contributions chart",
+          "description": "Add PRD entry for the GitHub contributions heatmap section on the homepage.",
+          "severity": "high",
+          "files": ["docs/prd/prd.codebase-audit-2026.json"]
+        },
+        {
+          "id": "slice-10b",
+          "title": "feat(deps): install octokit for GitHub API",
+          "description": "Install @octokit/rest for fetching GitHub contribution data.",
+          "severity": "high",
+          "files": ["package.json"]
+        },
+        {
+          "id": "slice-10c",
+          "title": "feat(components): create GitHubContributionsSection",
+          "description": "Create src/components/sections/GitHubContributionsSection.tsx — client component that fetches GitHub contribution calendar data and renders a heatmap with total contributions, current streak, and longest streak stats.",
+          "severity": "high",
+          "files": ["src/components/sections/GitHubContributionsSection.tsx"]
+        },
+        {
+          "id": "slice-10d",
+          "title": "feat: add feature flag and integrate section",
+          "description": "Add IS_GITHUB_CHART_VISIBLE to features.ts. Integrate GitHubContributionsSection into HomeContent.tsx between Certifications and Gallery.",
+          "severity": "high",
+          "files": ["src/lib/features.ts", "src/components/sections/HomeContent.tsx"]
+        },
+        {
+          "id": "slice-10e",
+          "title": "test: verify section renders and data fetches",
+          "description": "Write unit tests for GitHubContributionsSection. Verify the component renders with mock data.",
+          "severity": "medium",
+          "files": ["src/__tests__/components/GitHubContributionsSection.test.tsx"]
+        }
+      ]
     }
   ],
   "statistics": {
-    "totalFindings": 63,
+    "totalFindings": 68,
     "bySeverity": {
-      "high": 32,
+      "high": 37,
       "medium": 18,
       "low": 13
     },
     "filesToDelete": 35,
-    "filesToModify": 27,
-    "estimatedCommits": 40
+    "filesToModify": 32,
+    "estimatedCommits": 50
   }
 }
