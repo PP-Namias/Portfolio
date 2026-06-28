@@ -160,3 +160,5 @@ docs/security/pentestagent/knowledge/
 
 # Husky internal directory
 .husky/_
+
+page-check.html
