@@ -192,7 +192,7 @@ export function GitHubContributionsSection() {
       </div>
 
       {state === 'loading' && (
-        <div className="flex items-center justify-center py-12">
+        <div className="flex items-center justify-center py-12" role="status">
           <div className="h-6 w-6 animate-spin rounded-full border-2 border-accent-pink border-t-transparent" />
         </div>
       )}
