@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react'
 import Image from 'next/image'
-import { motion, useReducedMotion } from 'framer-motion'
+import { motion } from 'framer-motion'
 import { ExternalLink } from 'lucide-react'
 
 const GITHUB_USERNAME = 'PP-Namias'
@@ -115,7 +115,6 @@ type FetchState = 'loading' | 'api' | 'fallback' | 'error'
 export function GitHubContributionsSection() {
   const [state, setState] = useState<FetchState>('loading')
   const [data, setData] = useState<ContributionData | null>(null)
-  const prefersReducedMotion = useReducedMotion()
 
   useEffect(() => {
     const controller = new AbortController()
@@ -165,17 +164,11 @@ export function GitHubContributionsSection() {
     return labels
   }, [weeks])
 
-  const animationVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0 },
-  }
-
   return (
     <motion.section
-      initial={prefersReducedMotion ? undefined : 'hidden'}
-      whileInView={prefersReducedMotion ? undefined : 'visible'}
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-50px' }}
-      variants={animationVariants}
       transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
       aria-labelledby="github-contributions-heading"
     >
