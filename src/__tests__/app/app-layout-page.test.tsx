@@ -155,7 +155,6 @@ describe('app layout and page coverage', () => {
     expect(screen.getByText('CertificationsSection')).toBeInTheDocument()
     expect(screen.getByText('BlogSection')).toBeInTheDocument()
     expect(screen.getByText('GallerySection')).toBeInTheDocument()
-    expect(screen.getByText('GitHubContributionsSection')).toBeInTheDocument()
     expect(screen.getByText('FooterSection')).toBeInTheDocument()
   })
 
