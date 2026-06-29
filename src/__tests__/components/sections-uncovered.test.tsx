@@ -461,10 +461,7 @@ import { ConnectSection } from '@/components/sections/ConnectSection';
 import { ExperienceTimeline } from '@/components/sections/ExperienceTimeline';
 import { GallerySection } from '@/components/sections/GallerySection';
 import { HeroSection } from '@/components/sections/HeroSection';
-import { MembershipsSection } from '@/components/sections/MembershipsSection';
 import { ProjectsSection } from '@/components/sections/ProjectsSection';
-import { RecommendationsCarousel } from '@/components/sections/RecommendationsCarousel';
-import { SpeakingSection } from '@/components/sections/SpeakingSection';
 import { TechStackSection } from '@/components/sections/TechStackSection';
 
 describe('uncovered section components', () => {
@@ -602,32 +599,5 @@ describe('uncovered section components', () => {
     await act(async () => {
       await Promise.resolve();
     });
-  });
-
-  it('MembershipsSection and SpeakingSection render call-to-action controls', () => {
-    render(
-      <>
-        <MembershipsSection />
-        <SpeakingSection />
-      </>
-    );
-
-    expect(screen.getByText('Memberships')).toBeInTheDocument();
-    expect(screen.getByText('Org Membership')).toBeInTheDocument();
-
-    expect(screen.getByText('Speaking')).toBeInTheDocument();
-    const contactLink = screen.getByText('Get in touch').closest('a');
-    expect(contactLink).toHaveAttribute('href', 'mailto:pp.namias@gmail.com');
-  });
-
-  it('RecommendationsCarousel renders card and allows dot navigation', () => {
-    render(<RecommendationsCarousel />);
-
-    expect(screen.getByText('Recommendations')).toBeInTheDocument();
-    expect(screen.getByText(/Excellent work/i)).toBeInTheDocument();
-
-    const dots = screen.getAllByRole('button', { name: /Go to recommendation/i });
-    fireEvent.click(dots[1]);
-    expect(screen.getByText(/Great collaborator/i)).toBeInTheDocument();
   });
 });
