@@ -128,6 +128,9 @@ dist
 # Stores VSCode versions used for testing VSCode extensions
 .vscode-test
 
+# IDE settings (do not force on contributors)
+.vscode/
+
 # yarn v3
 .pnp.*
 .yarn/*
@@ -164,3 +167,9 @@ docs/security/pentestagent/knowledge/
 page-check.html
 
 page-prod.html
+
+# One-time script output
+scripts/import-report.json
+
+# Stale API cache
+docs/github-projects.json
