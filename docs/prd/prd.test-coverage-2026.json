@@ -1,0 +1,829 @@
+{
+  "$schema": "https://json.schemastore.org/prd",
+  "id": "prd-test-coverage-2026",
+  "title": "100% Automated Test Coverage — Portfolio",
+  "version": "1.0.0",
+  "status": "planned",
+  "created": "2026-06-30",
+  "author": "opencode/mimo-v2.5-free",
+  "summary": "Achieve 90%+ statement coverage and 80%+ branch coverage across all source files. Every file in src/ gets at least a smoke test. Granular commits on dev branch for maximum history depth.",
+
+  "baseline": {
+    "date": "2026-06-30",
+    "statements": 69.0,
+    "branches": 54.29,
+    "functions": 71.14,
+    "lines": 70.62,
+    "testFiles": 46,
+    "totalTests": 505,
+    "commitOnDev": 64
+  },
+
+  "targets": {
+    "statements": ">= 90%",
+    "branches": ">= 80%",
+    "functions": ">= 90%",
+    "lines": ">= 90%",
+    "minimumPerFile": ">= 60% (no file at 0%)",
+    "enforcement": "vitest --coverage with thresholds in CI"
+  },
+
+  "coverageGaps": {
+    "zeroCoverage": [
+      { "file": "src/middleware.ts", "lines": 61, "priority": "critical", "category": "security" },
+      { "file": "src/lib/rate-limiter.ts", "lines": 82, "priority": "critical", "category": "security" },
+      { "file": "src/sanity/lib/live.ts", "lines": 31, "priority": "high", "category": "cms" },
+      { "file": "src/components/analytics/Analytics.tsx", "lines": 29, "priority": "medium", "category": "component" },
+      { "file": "src/lib/canary/types.ts", "lines": 1, "priority": "low", "category": "types" },
+      { "file": "src/app/api/sanity/live/route.ts", "lines": 43, "priority": "high", "category": "api" },
+      { "file": "src/app/api/canary/admin/route.ts", "lines": 65, "priority": "medium", "category": "api" },
+      { "file": "src/app/api/canary/config/route.ts", "lines": 26, "priority": "medium", "category": "api" },
+      { "file": "src/app/api/canary/stats/route.ts", "lines": 39, "priority": "medium", "category": "api" },
+      { "file": "src/app/api/canary/test/route.ts", "lines": 50, "priority": "medium", "category": "api" },
+      { "file": "src/app/wp-admin-canary/route.ts", "lines": 78, "priority": "low", "category": "canary" },
+      { "file": "src/app/phpmyadmin-canary/route.ts", "lines": 97, "priority": "low", "category": "canary" },
+      { "file": "src/app/robots-canary.txt/route.ts", "lines": 51, "priority": "low", "category": "canary" },
+      { "file": "src/app/sitemap-canary.xml/route.ts", "lines": 62, "priority": "low", "category": "canary" },
+      { "file": "src/app/wp-admin-canary/route.ts (page admin)", "lines": 189, "priority": "low", "category": "canary" }
+    ],
+    "lowCoverage": [
+      { "file": "src/lib/cms-content.server.ts", "stmts": 21.81, "lines": 914, "priority": "critical", "category": "data" },
+      { "file": "src/lib/cms-content.shared.ts", "stmts": 44.44, "priority": "high", "category": "data" },
+      { "file": "src/lib/redis-cache.ts", "stmts": 42.25, "priority": "high", "category": "cache" },
+      { "file": "src/lib/canary/notify.ts", "stmts": 35.71, "priority": "medium", "category": "canary" },
+      { "file": "src/lib/cache.ts", "stmts": 79.68, "priority": "medium", "category": "cache" },
+      { "file": "src/lib/date.ts", "stmts": 75, "priority": "low", "category": "util" },
+      { "file": "src/lib/admin.ts", "stmts": 75, "priority": "low", "category": "util" },
+      { "file": "src/lib/media-gateway.ts", "stmts": 89.83, "priority": "low", "category": "media" },
+      { "file": "src/components/ui/hacked-text.tsx", "stmts": 57.14, "priority": "low", "category": "component" },
+      { "file": "src/components/ui/JsonLd.tsx", "stmts": 66.66, "priority": "low", "category": "component" },
+      { "file": "src/sanity/lib/client.ts", "stmts": 56.52, "priority": "high", "category": "cms" },
+      { "file": "src/lib/canary/logger.ts", "stmts": 93.93, "priority": "low", "category": "canary" }
+    ]
+  },
+
+  "phases": [
+    {
+      "id": "phase-1",
+      "title": "Coverage Infrastructure & Thresholds",
+      "priority": "critical",
+      "estimatedCommits": 5,
+      "description": "Set up coverage thresholds in vitest, create test utilities, and add coverage check to CI. This ensures no regressions.",
+      "slices": [
+        {
+          "id": "1a",
+          "title": "Add vitest coverage thresholds to vitest.config.ts",
+          "type": "test-infra",
+          "files": ["vitest.config.ts"],
+          "testFile": null,
+          "commitMsg": "test(config): add coverage thresholds to vitest config",
+          "verification": "npx vitest run --coverage exits cleanly with thresholds"
+        },
+        {
+          "id": "1b",
+          "title": "Create shared test helpers (mock sanity client, mock fetch, mock next headers)",
+          "type": "test-infra",
+          "files": [],
+          "testFile": "src/__tests__/setup.ts",
+          "commitMsg": "test(helpers): add shared mock factories for sanity, fetch, next/headers",
+          "verification": "import works from any test file"
+        },
+        {
+          "id": "1c",
+          "title": "Add coverage summary script to package.json",
+          "type": "test-infra",
+          "files": ["package.json"],
+          "testFile": null,
+          "commitMsg": "chore(scripts): add test:coverage script for quick coverage check",
+          "verification": "npm run test:coverage runs and prints summary"
+        },
+        {
+          "id": "1d",
+          "title": "Create coverage baseline snapshot for tracking improvements",
+          "type": "test-infra",
+          "files": [],
+          "testFile": "docs/test-coverage/baseline-2026-06-30.json",
+          "commitMsg": "docs(coverage): add baseline snapshot for tracking",
+          "verification": "file exists with current coverage numbers"
+        },
+        {
+          "id": "1e",
+          "title": "Add pre-push hook to warn on coverage regression",
+          "type": "test-infra",
+          "files": [],
+          "testFile": null,
+          "commitMsg": "chore(hooks): add coverage regression check to pre-push",
+          "verification": "hook runs vitest --coverage on push"
+        }
+      ]
+    },
+    {
+      "id": "phase-2",
+      "title": "Security Layer Tests (Critical — 0% Coverage)",
+      "priority": "critical",
+      "estimatedCommits": 6,
+      "description": "Test middleware, rate-limiter, and bot-blocker edge cases. These are security-critical and currently at 0% or untested paths.",
+      "slices": [
+        {
+          "id": "2a",
+          "title": "Middleware: bot blocking returns 418 for known UAs",
+          "type": "unit-test",
+          "files": ["src/middleware.ts"],
+          "testFile": "src/__tests__/middleware/bot-blocking.test.ts",
+          "commitMsg": "test(middleware): add bot blocking 418 response tests",
+          "verification": "npx vitest run src/__tests__/middleware/bot-blocking.test.ts"
+        },
+        {
+          "id": "2b",
+          "title": "Middleware: rate limiting returns 429 for API routes",
+          "type": "unit-test",
+          "files": ["src/middleware.ts"],
+          "testFile": "src/__tests__/middleware/rate-limit.test.ts",
+          "commitMsg": "test(middleware): add rate limiting 429 response tests",
+          "verification": "npx vitest run src/__tests__/middleware/rate-limit.test.ts"
+        },
+        {
+          "id": "2c",
+          "title": "Middleware: non-blocked requests pass through",
+          "type": "unit-test",
+          "files": ["src/middleware.ts"],
+          "testFile": "src/__tests__/middleware/pass-through.test.ts",
+          "commitMsg": "test(middleware): add pass-through tests for valid requests",
+          "verification": "npx vitest run src/__tests__/middleware/pass-through.test.ts"
+        },
+        {
+          "id": "2d",
+          "title": "Rate-limiter: in-memory fallback when Upstash not configured",
+          "type": "unit-test",
+          "files": ["src/lib/rate-limiter.ts"],
+          "testFile": "src/__tests__/lib/rate-limiter.test.ts",
+          "commitMsg": "test(rate-limiter): add in-memory fallback tests",
+          "verification": "npx vitest run src/__tests__/lib/rate-limiter.test.ts"
+        },
+        {
+          "id": "2e",
+          "title": "Rate-limiter: Upstash path when env vars set",
+          "type": "unit-test",
+          "files": ["src/lib/rate-limiter.ts"],
+          "testFile": "src/__tests__/lib/rate-limiter-upstash.test.ts",
+          "commitMsg": "test(rate-limiter): add Upstash integration tests with mock fetch",
+          "verification": "npx vitest run src/__tests__/lib/rate-limiter-upstash.test.ts"
+        },
+        {
+          "id": "2f",
+          "title": "Middleware: content-type validation for POST/PUT/PATCH",
+          "type": "unit-test",
+          "files": ["src/middleware.ts"],
+          "testFile": "src/__tests__/middleware/content-type.test.ts",
+          "commitMsg": "test(middleware): add content-type validation tests",
+          "verification": "npx vitest run src/__tests__/middleware/content-type.test.ts"
+        }
+      ]
+    },
+    {
+      "id": "phase-3",
+      "title": "CMS Data Layer Tests (Critical — 21% Coverage)",
+      "priority": "critical",
+      "estimatedCommits": 8,
+      "description": "Test cms-content.server.ts (914 lines, 21% covered), cms-content.shared.ts, sanity client, and live.ts. These power all dynamic content.",
+      "slices": [
+        {
+          "id": "3a",
+          "title": "Sanity client: getPublicClient and getPreviewClient factory tests",
+          "type": "unit-test",
+          "files": ["src/sanity/lib/client.ts"],
+          "testFile": "src/__tests__/sanity/client.test.ts",
+          "commitMsg": "test(sanity): add client factory tests for public and preview",
+          "verification": "npx vitest run src/__tests__/sanity/client.test.ts"
+        },
+        {
+          "id": "3b",
+          "title": "Sanity live: defineLive returns sanityFetch and SanityLive",
+          "type": "unit-test",
+          "files": ["src/sanity/lib/live.ts"],
+          "testFile": "src/__tests__/sanity/live.test.ts",
+          "commitMsg": "test(sanity): add defineLive factory and sanityFetch tests",
+          "verification": "npx vitest run src/__tests__/sanity/live.test.ts"
+        },
+        {
+          "id": "3c",
+          "title": "cms-content.shared: fallbackCmsContent shape and default values",
+          "type": "unit-test",
+          "files": ["src/lib/cms-content.shared.ts"],
+          "testFile": "src/__tests__/lib/cms-content.shared.test.ts",
+          "commitMsg": "test(cms-shared): add fallbackCmsContent default value tests",
+          "verification": "npx vitest run src/__tests__/lib/cms-content.shared.test.ts"
+        },
+        {
+          "id": "3d",
+          "title": "cms-content.server: getProjectId, getDataset, getSanityHeaders helpers",
+          "type": "unit-test",
+          "files": ["src/lib/cms-content.server.ts"],
+          "testFile": "src/__tests__/lib/cms-content.server.test.ts",
+          "commitMsg": "test(cms-server): add helper function unit tests",
+          "verification": "npx vitest run src/__tests__/lib/cms-content.server.test.ts"
+        },
+        {
+          "id": "3e",
+          "title": "cms-content.server: queryCache deduplication logic",
+          "type": "unit-test",
+          "files": ["src/lib/cms-content.server.ts"],
+          "testFile": "src/__tests__/lib/cms-content.server-cache.test.ts",
+          "commitMsg": "test(cms-server): add query cache deduplication tests",
+          "verification": "npx vitest run src/__tests__/lib/cms-content.server-cache.test.ts"
+        },
+        {
+          "id": "3f",
+          "title": "cms-content.server: getCmsContent with mocked Sanity client",
+          "type": "integration-test",
+          "files": ["src/lib/cms-content.server.ts"],
+          "testFile": "src/__tests__/lib/cms-content.server.test.ts",
+          "commitMsg": "test(cms-server): add getCmsContent integration with mock sanity",
+          "verification": "npx vitest run src/__tests__/lib/cms-content.server.test.ts"
+        },
+        {
+          "id": "3g",
+          "title": "cms-content.server: blog visibility toggle branches",
+          "type": "unit-test",
+          "files": ["src/lib/cms-content.server.ts"],
+          "testFile": "src/__tests__/lib/cms-content.server-blog.test.ts",
+          "commitMsg": "test(cms-server): add blog visibility branch tests",
+          "verification": "npx vitest run src/__tests__/lib/cms-content.server-blog.test.ts"
+        },
+        {
+          "id": "3h",
+          "title": "cms-content.server: error handling (Sanity fetch failure, network error)",
+          "type": "edge-case-test",
+          "files": ["src/lib/cms-content.server.ts"],
+          "testFile": "src/__tests__/lib/cms-content.server-errors.test.ts",
+          "commitMsg": "test(cms-server): add error handling and resilience tests",
+          "verification": "npx vitest run src/__tests__/lib/cms-content.server-errors.test.ts"
+        }
+      ]
+    },
+    {
+      "id": "phase-4",
+      "title": "Cache Layer Tests (High — 42% Coverage)",
+      "priority": "high",
+      "estimatedCommits": 5,
+      "description": "Test redis-cache.ts (42%), cache.ts (79%), and SWR config. Cache is critical for performance and data consistency.",
+      "slices": [
+        {
+          "id": "4a",
+          "title": "redis-cache: get/set/delete with mocked Redis",
+          "type": "unit-test",
+          "files": ["src/lib/redis-cache.ts"],
+          "testFile": "src/__tests__/lib/redis-cache.test.ts",
+          "commitMsg": "test(redis-cache): add get/set/delete operation tests",
+          "verification": "npx vitest run src/__tests__/lib/redis-cache.test.ts"
+        },
+        {
+          "id": "4b",
+          "title": "redis-cache: TTL expiry and stale-while-revalidate pattern",
+          "type": "unit-test",
+          "files": ["src/lib/redis-cache.ts"],
+          "testFile": "src/__tests__/lib/redis-cache-ttl.test.ts",
+          "commitMsg": "test(redis-cache): add TTL expiry and SWR tests",
+          "verification": "npx vitest run src/__tests__/lib/redis-cache-ttl.test.ts"
+        },
+        {
+          "id": "4c",
+          "title": "redis-cache: error handling (connection failure, timeout)",
+          "type": "edge-case-test",
+          "files": ["src/lib/redis-cache.ts"],
+          "testFile": "src/__tests__/lib/redis-cache-errors.test.ts",
+          "commitMsg": "test(redis-cache): add connection failure and timeout tests",
+          "verification": "npx vitest run src/__tests__/lib/redis-cache-errors.test.ts"
+        },
+        {
+          "id": "4d",
+          "title": "cache.ts: getOrFetch with in-memory caching",
+          "type": "unit-test",
+          "files": ["src/lib/cache.ts"],
+          "testFile": "src/__tests__/lib/cache-extended.test.ts",
+          "commitMsg": "test(cache): add getOrFetch memory caching tests",
+          "verification": "npx vitest run src/__tests__/lib/cache-extended.test.ts"
+        },
+        {
+          "id": "4e",
+          "title": "cache.ts: concurrent request deduplication",
+          "type": "edge-case-test",
+          "files": ["src/lib/cache.ts"],
+          "testFile": "src/__tests__/lib/cache-dedup.test.ts",
+          "commitMsg": "test(cache): add concurrent request deduplication tests",
+          "verification": "npx vitest run src/__tests__/lib/cache-dedup.test.ts"
+        }
+      ]
+    },
+    {
+      "id": "phase-5",
+      "title": "API Route Tests (0% Coverage — 12 routes)",
+      "priority": "high",
+      "estimatedCommits": 14,
+      "description": "Test all API routes that currently have 0% coverage. Each route gets its own test file with request/response mocking.",
+      "slices": [
+        {
+          "id": "5a",
+          "title": "API route: /api/sanity/live — live preview toggle",
+          "type": "api-test",
+          "files": ["src/app/api/sanity/live/route.ts"],
+          "testFile": "src/__tests__/api/sanity-live-route.test.ts",
+          "commitMsg": "test(api): add sanity live preview route tests",
+          "verification": "npx vitest run src/__tests__/api/sanity-live-route.test.ts"
+        },
+        {
+          "id": "5b",
+          "title": "API route: /api/canary/admin — admin auth and CRUD",
+          "type": "api-test",
+          "files": ["src/app/api/canary/admin/route.ts"],
+          "testFile": "src/__tests__/api/canary-admin.test.ts",
+          "commitMsg": "test(api): add canary admin route tests",
+          "verification": "npx vitest run src/__tests__/api/canary-admin.test.ts"
+        },
+        {
+          "id": "5c",
+          "title": "API route: /api/canary/config — config read/update",
+          "type": "api-test",
+          "files": ["src/app/api/canary/config/route.ts"],
+          "testFile": "src/__tests__/api/canary-config.test.ts",
+          "commitMsg": "test(api): add canary config route tests",
+          "verification": "npx vitest run src/__tests__/api/canary-config.test.ts"
+        },
+        {
+          "id": "5d",
+          "title": "API route: /api/canary/stats — stats aggregation",
+          "type": "api-test",
+          "files": ["src/app/api/canary/stats/route.ts"],
+          "testFile": "src/__tests__/api/canary-stats.test.ts",
+          "commitMsg": "test(api): add canary stats route tests",
+          "verification": "npx vitest run src/__tests__/api/canary-stats.test.ts"
+        },
+        {
+          "id": "5e",
+          "title": "API route: /api/canary/test — test trigger endpoint",
+          "type": "api-test",
+          "files": ["src/app/api/canary/test/route.ts"],
+          "testFile": "src/__tests__/api/canary-test.test.ts",
+          "commitMsg": "test(api): add canary test trigger route tests",
+          "verification": "npx vitest run src/__tests__/api/canary-test.test.ts"
+        },
+        {
+          "id": "5f",
+          "title": "API route: /api/chat — full chat flow with mocked providers",
+          "type": "api-test",
+          "files": ["src/app/api/chat/route.ts"],
+          "testFile": "src/__tests__/api/chat-route.test.ts",
+          "commitMsg": "test(api): add chat route full flow tests",
+          "verification": "npx vitest run src/__tests__/api/chat-route.test.ts"
+        },
+        {
+          "id": "5g",
+          "title": "API route: /api/csp-violation — CSP report ingestion",
+          "type": "api-test",
+          "files": ["src/app/api/csp-violation/route.ts"],
+          "testFile": "src/__tests__/api/csp-violation-route.test.ts",
+          "commitMsg": "test(api): add CSP violation report route tests",
+          "verification": "npx vitest run src/__tests__/api/csp-violation-route.test.ts"
+        },
+        {
+          "id": "5h",
+          "title": "API route: /api/security-headers — header inspection",
+          "type": "api-test",
+          "files": ["src/app/api/security-headers/route.ts"],
+          "testFile": "src/__tests__/api/security-headers-route.test.ts",
+          "commitMsg": "test(api): add security headers inspection route tests",
+          "verification": "npx vitest run src/__tests__/api/security-headers-route.test.ts"
+        },
+        {
+          "id": "5i",
+          "title": "API route: /api/resume — resume download/streaming",
+          "type": "api-test",
+          "files": ["src/app/api/resume/route.ts"],
+          "testFile": "src/__tests__/api/resume-route.test.ts",
+          "commitMsg": "test(api): add resume download route tests",
+          "verification": "npx vitest run src/__tests__/api/resume-route.test.ts"
+        },
+        {
+          "id": "5j",
+          "title": "API route: /api/performance/cache — cache status check",
+          "type": "api-test",
+          "files": ["src/app/api/performance/cache/route.ts"],
+          "testFile": "src/__tests__/api/performance-cache.test.ts",
+          "commitMsg": "test(api): add performance cache status route tests",
+          "verification": "npx vitest run src/__tests__/api/performance-cache.test.ts"
+        },
+        {
+          "id": "5k",
+          "title": "API route: /api/draft-mode/enable — draft mode toggle",
+          "type": "api-test",
+          "files": ["src/app/api/draft-mode/enable/route.ts"],
+          "testFile": "src/__tests__/api/draft-mode-route.test.ts",
+          "commitMsg": "test(api): add draft mode enable route tests",
+          "verification": "npx vitest run src/__tests__/api/draft-mode-route.test.ts"
+        },
+        {
+          "id": "5l",
+          "title": "API route: /api/media/[...path] — media proxy and resizing",
+          "type": "api-test",
+          "files": ["src/app/api/media/[...path]/route.ts"],
+          "testFile": "src/__tests__/api/media-proxy-route.test.ts",
+          "commitMsg": "test(api): add media proxy route tests",
+          "verification": "npx vitest run src/__tests__/api/media-proxy-route.test.ts"
+        },
+        {
+          "id": "5m",
+          "title": "API route: /api/sanity/webhook — revalidation trigger",
+          "type": "api-test",
+          "files": ["src/app/api/sanity/webhook/route.ts"],
+          "testFile": "src/__tests__/api/sanity-webhook-route.test.ts",
+          "commitMsg": "test(api): add sanity webhook revalidation route tests",
+          "verification": "npx vitest run src/__tests__/api/sanity-webhook-route.test.ts"
+        },
+        {
+          "id": "5n",
+          "title": "API route: /api/chat — rate limiting and input validation edge cases",
+          "type": "edge-case-test",
+          "files": ["src/app/api/chat/route.ts"],
+          "testFile": "src/__tests__/api/chat-route-edge.test.ts",
+          "commitMsg": "test(api): add chat route rate limiting and validation edge cases",
+          "verification": "npx vitest run src/__tests__/api/chat-route-edge.test.ts"
+        }
+      ]
+    },
+    {
+      "id": "phase-6",
+      "title": "Canary Route Tests (Low Priority — 5 routes)",
+      "priority": "medium",
+      "estimatedCommits": 5,
+      "description": "Test the 5 canary honeypot routes. These are simple but need coverage to reach 100%.",
+      "slices": [
+        {
+          "id": "6a",
+          "title": "Canary route: /wp-admin-canary returns 404 decoy",
+          "type": "unit-test",
+          "files": ["src/app/wp-admin-canary/route.ts"],
+          "testFile": "src/__tests__/canary/wp-admin-canary.test.ts",
+          "commitMsg": "test(canary): add wp-admin canary route tests",
+          "verification": "npx vitest run src/__tests__/canary/wp-admin-canary.test.ts"
+        },
+        {
+          "id": "6b",
+          "title": "Canary route: /phpmyadmin-canary returns 404 decoy",
+          "type": "unit-test",
+          "files": ["src/app/phpmyadmin-canary/route.ts"],
+          "testFile": "src/__tests__/canary/phpmyadmin-canary.test.ts",
+          "commitMsg": "test(canary): add phpmyadmin canary route tests",
+          "verification": "npx vitest run src/__tests__/canary/phpmyadmin-canary.test.ts"
+        },
+        {
+          "id": "6c",
+          "title": "Canary route: /robots-canary.txt returns disallow-all",
+          "type": "unit-test",
+          "files": ["src/app/robots-canary.txt/route.ts"],
+          "testFile": "src/__tests__/canary/robots-canary.test.ts",
+          "commitMsg": "test(canary): add robots canary route tests",
+          "verification": "npx vitest run src/__tests__/canary/robots-canary.test.ts"
+        },
+        {
+          "id": "6d",
+          "title": "Canary route: /sitemap-canary.xml returns fake sitemap",
+          "type": "unit-test",
+          "files": ["src/app/sitemap-canary.xml/route.ts"],
+          "testFile": "src/__tests__/canary/sitemap-canary.test.ts",
+          "commitMsg": "test(canary): add sitemap canary route tests",
+          "verification": "npx vitest run src/__tests__/canary/sitemap-canary.test.ts"
+        },
+        {
+          "id": "6e",
+          "title": "Canary: notify.ts and logger integration tests",
+          "type": "integration-test",
+          "files": ["src/lib/canary/notify.ts", "src/lib/canary/logger.ts"],
+          "testFile": "src/__tests__/lib/canary-notify.test.ts",
+          "commitMsg": "test(canary): add notification and logger integration tests",
+          "verification": "npx vitest run src/__tests__/lib/canary-notify.test.ts"
+        }
+      ]
+    },
+    {
+      "id": "phase-7",
+      "title": "Component Edge Cases & Missing Branches",
+      "priority": "high",
+      "estimatedCommits": 8,
+      "description": "Boost coverage on components with low branch coverage. Focus on error states, loading states, and conditional rendering.",
+      "slices": [
+        {
+          "id": "7a",
+          "title": "JsonLd: null/undefined data handling",
+          "type": "edge-case-test",
+          "files": ["src/components/ui/JsonLd.tsx"],
+          "testFile": "src/__tests__/components/ui/JsonLd-edge.test.tsx",
+          "commitMsg": "test(ui): add JsonLd null/undefined edge case tests",
+          "verification": "npx vitest run src/__tests__/components/ui/JsonLd-edge.test.tsx"
+        },
+        {
+          "id": "7b",
+          "title": "hacked-text: animation states and cleanup",
+          "type": "edge-case-test",
+          "files": ["src/components/ui/hacked-text.tsx"],
+          "testFile": "src/__tests__/components/ui/hacked-text-edge.test.tsx",
+          "commitMsg": "test(ui): add hacked-text animation lifecycle tests",
+          "verification": "npx vitest run src/__tests__/components/ui/hacked-text-edge.test.tsx"
+        },
+        {
+          "id": "7c",
+          "title": "Analytics: render and script loading",
+          "type": "unit-test",
+          "files": ["src/components/analytics/Analytics.tsx"],
+          "testFile": "src/__tests__/components/Analytics.test.tsx",
+          "commitMsg": "test(components): add Analytics component tests",
+          "verification": "npx vitest run src/__tests__/components/Analytics.test.tsx"
+        },
+        {
+          "id": "7d",
+          "title": "TimelineItem: all variants and states (present, past, current)",
+          "type": "edge-case-test",
+          "files": ["src/components/ui/TimelineItem.tsx"],
+          "testFile": "src/__tests__/components/ui/TimelineItem-edge.test.tsx",
+          "commitMsg": "test(ui): add TimelineItem variant and state tests",
+          "verification": "npx vitest run src/__tests__/components/ui/TimelineItem-edge.test.tsx"
+        },
+        {
+          "id": "7e",
+          "title": "ResumeModal: zoom calculation edge cases",
+          "type": "edge-case-test",
+          "files": ["src/components/ui/ResumeModal.tsx"],
+          "testFile": "src/__tests__/components/ResumeModal-edge.test.tsx",
+          "commitMsg": "test(ui): add ResumeModal zoom edge case tests",
+          "verification": "npx vitest run src/__tests__/components/ResumeModal-edge.test.tsx"
+        },
+        {
+          "id": "7f",
+          "title": "useTheme: localStorage unavailable and system preference fallback",
+          "type": "edge-case-test",
+          "files": ["src/hooks/useTheme.ts"],
+          "testFile": "src/__tests__/hooks/useTheme-edge.test.ts",
+          "commitMsg": "test(hooks): add useTheme localStorage and system preference fallback tests",
+          "verification": "npx vitest run src/__tests__/hooks/useTheme-edge.test.ts"
+        },
+        {
+          "id": "7g",
+          "title": "useAccentColor: persistence and reset edge cases",
+          "type": "edge-case-test",
+          "files": ["src/hooks/useAccentColor.tsx"],
+          "testFile": "src/__tests__/hooks/useAccentColor-edge.test.tsx",
+          "commitMsg": "test(hooks): add useAccentColor persistence edge cases",
+          "verification": "npx vitest run src/__tests__/hooks/useAccentColor-edge.test.tsx"
+        },
+        {
+          "id": "7h",
+          "title": "useModal: open/close transitions and escape key",
+          "type": "edge-case-test",
+          "files": ["src/hooks/useModal.tsx"],
+          "testFile": "src/__tests__/hooks/useModal-edge.test.tsx",
+          "commitMsg": "test(hooks): add useModal transition and keyboard tests",
+          "verification": "npx vitest run src/__tests__/hooks/useModal-edge.test.tsx"
+        }
+      ]
+    },
+    {
+      "id": "phase-8",
+      "title": "App Page & Layout Tests (0% Coverage)",
+      "priority": "medium",
+      "estimatedCommits": 7,
+      "description": "Test Next.js app pages, layouts, error boundaries, and loading states. These are currently at 0% but are important for SSR correctness.",
+      "slices": [
+        {
+          "id": "8a",
+          "title": "App page: /admin/canary — renders admin panel",
+          "type": "page-test",
+          "files": ["src/app/admin/canary/page.tsx"],
+          "testFile": "src/__tests__/app/admin-canary-page.test.tsx",
+          "commitMsg": "test(pages): add admin canary page render tests",
+          "verification": "npx vitest run src/__tests__/app/admin-canary-page.test.tsx"
+        },
+        {
+          "id": "8b",
+          "title": "App page: /projects/[slug] — dynamic route params",
+          "type": "page-test",
+          "files": ["src/app/projects/[slug]/page.tsx"],
+          "testFile": "src/__tests__/app/project-slug-page.test.tsx",
+          "commitMsg": "test(pages): add project slug page dynamic route tests",
+          "verification": "npx vitest run src/__tests__/app/project-slug-page.test.tsx"
+        },
+        {
+          "id": "8c",
+          "title": "App page: /studio — Sanity studio mount",
+          "type": "page-test",
+          "files": ["src/app/studio/page.tsx"],
+          "testFile": "src/__tests__/app/studio-page.test.tsx",
+          "commitMsg": "test(pages): add studio page render tests",
+          "verification": "npx vitest run src/__tests__/app/studio-page.test.tsx"
+        },
+        {
+          "id": "8d",
+          "title": "Error boundaries: all route error.tsx components",
+          "type": "page-test",
+          "files": ["src/app/error.tsx"],
+          "testFile": "src/__tests__/app/error-boundaries.test.tsx",
+          "commitMsg": "test(pages): add error boundary render and reset tests",
+          "verification": "npx vitest run src/__tests__/app/error-boundaries.test.tsx"
+        },
+        {
+          "id": "8e",
+          "title": "Loading states: all route loading.tsx components",
+          "type": "page-test",
+          "files": ["src/app/loading.tsx"],
+          "testFile": "src/__tests__/app/loading-states.test.tsx",
+          "commitMsg": "test(pages): add loading state render tests",
+          "verification": "npx vitest run src/__tests__/app/loading-states.test.tsx"
+        },
+        {
+          "id": "8f",
+          "title": "Not found pages: all route not-found.tsx components",
+          "type": "page-test",
+          "files": ["src/app/not-found.tsx"],
+          "testFile": "src/__tests__/app/not-found-pages.test.tsx",
+          "commitMsg": "test(pages): add not-found page render tests",
+          "verification": "npx vitest run src/__tests__/app/not-found-pages.test.tsx"
+        },
+        {
+          "id": "8g",
+          "title": "App layout: /studio layout with sanity provider",
+          "type": "page-test",
+          "files": ["src/app/studio/layout.tsx"],
+          "testFile": "src/__tests__/app/studio-layout.test.tsx",
+          "commitMsg": "test(pages): add studio layout render tests",
+          "verification": "npx vitest run src/__tests__/app/studio-layout.test.tsx"
+        }
+      ]
+    },
+    {
+      "id": "phase-9",
+      "title": "Utility & Lib Edge Cases",
+      "priority": "low",
+      "estimatedCommits": 5,
+      "description": "Boost coverage on utility modules: date.ts, admin.ts, media-gateway.ts, and remaining canary types.",
+      "slices": [
+        {
+          "id": "9a",
+          "title": "date.ts: all date formatting functions",
+          "type": "unit-test",
+          "files": ["src/lib/date.ts"],
+          "testFile": "src/__tests__/lib/date.test.ts",
+          "commitMsg": "test(lib): add date utility formatting tests",
+          "verification": "npx vitest run src/__tests__/lib/date.test.ts"
+        },
+        {
+          "id": "9b",
+          "title": "admin.ts: admin check edge cases",
+          "type": "unit-test",
+          "files": ["src/lib/admin.ts"],
+          "testFile": "src/__tests__/lib/admin.test.ts",
+          "commitMsg": "test(lib): add admin utility edge case tests",
+          "verification": "npx vitest run src/__tests__/lib/admin.test.ts"
+        },
+        {
+          "id": "9c",
+          "title": "media-gateway: URL construction and error paths",
+          "type": "unit-test",
+          "files": ["src/lib/media-gateway.ts"],
+          "testFile": "src/__tests__/lib/media-gateway-edge.test.ts",
+          "commitMsg": "test(lib): add media-gateway URL and error edge cases",
+          "verification": "npx vitest run src/__tests__/lib/media-gateway-edge.test.ts"
+        },
+        {
+          "id": "9d",
+          "title": "canary/types.ts: type guard and validation tests",
+          "type": "unit-test",
+          "files": ["src/lib/canary/types.ts"],
+          "testFile": "src/__tests__/lib/canary-types.test.ts",
+          "commitMsg": "test(lib): add canary type guard tests",
+          "verification": "npx vitest run src/__tests__/lib/canary-types.test.ts"
+        },
+        {
+          "id": "9e",
+          "title": "lib/constants.ts: validate all constant values",
+          "type": "unit-test",
+          "files": ["src/lib/constants.ts"],
+          "testFile": "src/__tests__/lib/constants.test.ts",
+          "commitMsg": "test(lib): add constants value validation tests",
+          "verification": "npx vitest run src/__tests__/lib/constants.test.ts"
+        }
+      ]
+    },
+    {
+      "id": "phase-10",
+      "title": "Integration & Smoke Tests",
+      "priority": "high",
+      "estimatedCommits": 5,
+      "description": "End-to-end integration tests that verify the full request/response cycle through middleware → API → response.",
+      "slices": [
+        {
+          "id": "10a",
+          "title": "Integration: middleware → bot-block → response cycle",
+          "type": "integration-test",
+          "files": [],
+          "testFile": "src/__tests__/integration/middleware-pipeline.test.ts",
+          "commitMsg": "test(integration): add middleware pipeline integration tests",
+          "verification": "npx vitest run src/__tests__/integration/middleware-pipeline.test.ts"
+        },
+        {
+          "id": "10b",
+          "title": "Integration: Sanity client → cms-content → section render",
+          "type": "integration-test",
+          "files": [],
+          "testFile": "src/__tests__/integration/cms-pipeline.test.ts",
+          "commitMsg": "test(integration): add CMS data pipeline integration tests",
+          "verification": "npx vitest run src/__tests__/integration/cms-pipeline.test.ts"
+        },
+        {
+          "id": "10c",
+          "title": "Integration: chat API full flow (classify → generate → respond)",
+          "type": "integration-test",
+          "files": [],
+          "testFile": "src/__tests__/integration/chat-pipeline.test.ts",
+          "commitMsg": "test(integration): add chat API full flow integration tests",
+          "verification": "npx vitest run src/__tests__/integration/chat-pipeline.test.ts"
+        },
+        {
+          "id": "10d",
+          "title": "Integration: canary trigger → log → notify flow",
+          "type": "integration-test",
+          "files": [],
+          "testFile": "src/__tests__/integration/canary-pipeline.test.ts",
+          "commitMsg": "test(integration): add canary trigger-to-notify pipeline tests",
+          "verification": "npx vitest run src/__tests__/integration/canary-pipeline.test.ts"
+        },
+        {
+          "id": "10e",
+          "title": "Integration: rate limiter → middleware → API 429 flow",
+          "type": "integration-test",
+          "files": [],
+          "testFile": "src/__tests__/integration/rate-limit-pipeline.test.ts",
+          "commitMsg": "test(integration): add rate limit full flow integration tests",
+          "verification": "npx vitest run src/__tests__/integration/rate-limit-pipeline.test.ts"
+        }
+      ]
+    },
+    {
+      "id": "phase-11",
+      "title": "Coverage Enforcement & Finalization",
+      "priority": "critical",
+      "estimatedCommits": 4,
+      "description": "Lock in coverage thresholds, verify all tests pass, generate final coverage report, and document testing patterns.",
+      "slices": [
+        {
+          "id": "11a",
+          "title": "Raise vitest coverage thresholds to 90/80/90/90",
+          "type": "test-infra",
+          "files": ["vitest.config.ts"],
+          "testFile": null,
+          "commitMsg": "test(config): enforce 90/80/90/90 coverage thresholds",
+          "verification": "npx vitest run --coverage passes with thresholds"
+        },
+        {
+          "id": "11b",
+          "title": "Run full test suite and generate final coverage report",
+          "type": "verification",
+          "files": [],
+          "testFile": "docs/test-coverage/final-report-2026.json",
+          "commitMsg": "docs(coverage): add final coverage report snapshot",
+          "verification": "all thresholds met, report saved"
+        },
+        {
+          "id": "11c",
+          "title": "Document testing patterns and best practices",
+          "type": "documentation",
+          "files": [],
+          "testFile": "docs/testing-patterns.md",
+          "commitMsg": "docs(testing): add testing patterns and best practices guide",
+          "verification": "document covers mocking, isolation, edge cases"
+        },
+        {
+          "id": "11d",
+          "title": "Add coverage badge and status check to README",
+          "type": "documentation",
+          "files": ["README.md"],
+          "testFile": null,
+          "commitMsg": "docs(readme): add test coverage badge and status",
+          "verification": "badge displays current coverage percentage"
+        }
+      ]
+    }
+  ],
+
+  "summary2": {
+    "totalPhases": 11,
+    "totalSlices": 73,
+    "estimatedCommits": 73,
+    "estimatedNewTestFiles": 45,
+    "estimatedNewTests": "200-300",
+    "criticalPaths": [
+      "middleware.ts (security)",
+      "rate-limiter.ts (security)",
+      "cms-content.server.ts (data layer)",
+      "All API routes (12 routes at 0%)"
+    ],
+    "verification": "npm run test:coverage must show >= 90% statements, >= 80% branches, >= 90% functions, >= 90% lines"
+  }
+}
