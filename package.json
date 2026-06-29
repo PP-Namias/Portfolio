@@ -31,6 +31,8 @@
     "lint": "eslint src studio",
     "test": "vitest run",
     "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "test:coverage:fail": "vitest run --coverage --runInBand",
     "cloudflare:build": "opennextjs-cloudflare build --dangerouslyUseUnsupportedNextVersion",
     "cloudflare:dev": "wrangler dev",
     "cloudflare:deploy": "opennextjs-cloudflare deploy --dangerouslyUseUnsupportedNextVersion",
