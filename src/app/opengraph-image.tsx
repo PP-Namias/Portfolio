@@ -9,15 +9,37 @@ export const runtime = 'edge';
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
 
-async function loadFont(): Promise<ArrayBuffer> {
-  const res = await fetch(
-    'https://fonts.gstatic.com/s/inter/v18/UcCO3FwrK3iLTeHuS_nVMrMxCp50SjIw2boKoduKmMEVuLyfAZ9hjQ.woff2',
-  );
-  return res.arrayBuffer();
+async function loadFont(): Promise<ArrayBuffer | null> {
+  try {
+    const res = await fetch(
+      'https://fonts.gstatic.com/s/inter/v18/UcCO3FwrK3iLTeHuS_nVMrMxCp50SjIw2boKoduKmMEVuLyfAZ9hjQ.woff2',
+    );
+    if (!res.ok) return null;
+    const contentType = res.headers.get('content-type') || '';
+    if (!contentType.includes('font') && !contentType.includes('woff')) return null;
+    return res.arrayBuffer();
+  } catch {
+    return null;
+  }
 }
 
 export default async function OpenGraphImage() {
   const font = await loadFont();
+
+  const imageConfig: Record<string, unknown> = {
+    ...size,
+  };
+
+  if (font) {
+    imageConfig.fonts = [
+      {
+        name: 'Inter',
+        data: font,
+        style: 'normal',
+        weight: 400,
+      },
+    ];
+  }
 
   return new ImageResponse(
     <div
@@ -235,16 +257,6 @@ export default async function OpenGraphImage() {
         }}
       />
     </div>,
-    {
-      ...size,
-      fonts: [
-        {
-          name: 'Inter',
-          data: font,
-          style: 'normal',
-          weight: 400,
-        },
-      ],
-    },
+    imageConfig,
   );
 }
