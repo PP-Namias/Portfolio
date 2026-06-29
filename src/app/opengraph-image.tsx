@@ -97,7 +97,6 @@ export default async function OpenGraphImage() {
           flexDirection: 'column',
           padding: '60px 80px',
           position: 'relative',
-          zIndex: 1,
           flex: 1,
         }}
       >
@@ -217,7 +216,6 @@ export default async function OpenGraphImage() {
           justifyContent: 'space-between',
           padding: '0 80px 40px',
           position: 'relative',
-          zIndex: 1,
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
