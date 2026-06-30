@@ -144,4 +144,67 @@ describe('cache', () => {
       expect(s.l2).toBeDefined();
     });
   });
+
+  describe('edge cases', () => {
+    it('returns expired entry as null and removes it', async () => {
+      const key = cache.keyFor('expire');
+      cache.set(key, 'data', { ttlMs: 1, skipRedis: true });
+      await new Promise((r) => setTimeout(r, 10));
+      expect(cache.get(key)).toBeNull();
+    });
+
+    it('returns stale entry with stale=true', async () => {
+      const key = cache.keyFor('stale');
+      cache.set(key, 'data', { ttlMs: 100, staleMs: 1, skipRedis: true });
+      await new Promise((r) => setTimeout(r, 10));
+      const result = cache.get(key);
+      expect(result).not.toBeNull();
+      expect(result!.stale).toBe(true);
+    });
+
+    it('getOrFetch returns stale data and triggers background refresh', async () => {
+      const key = cache.keyFor('stale-refresh');
+      const fetcher1 = vi.fn().mockResolvedValue('v1');
+      await cache.getOrFetch(key, fetcher1, { ttlMs: 100, staleMs: 1, skipRedis: true });
+      await new Promise((r) => setTimeout(r, 10));
+
+      const fetcher2 = vi.fn().mockResolvedValue('v2');
+      const result = await cache.getOrFetch(key, fetcher2, { ttlMs: 100, staleMs: 1, skipRedis: true });
+      expect(result.data).toBe('v1');
+      expect(result.stale).toBe(true);
+    });
+
+    it('keyFor produces deterministic output', () => {
+      expect(cache.keyFor('a', 'b')).toBe(cache.keyFor('a', 'b'));
+    });
+
+    it('set with custom ttlMs and staleMs', () => {
+      const key = cache.keyFor('custom');
+      cache.set(key, 'value', { ttlMs: 1000, staleMs: 500, skipRedis: true });
+      const result = cache.get(key);
+      expect(result).toEqual({ data: 'value', stale: false });
+    });
+
+    it('stats returns empty when store is empty', async () => {
+      await cache.flush();
+      const s = await cache.stats();
+      expect(s.l1.size).toBe(0);
+      expect(s.l1.keys).toEqual([]);
+    });
+
+    it('invalidateByTag counts both local and redis deletions', async () => {
+      vi.mocked(redisInvalidateByTag).mockResolvedValueOnce(3);
+      const key = cache.keyFor('ri-tag');
+      cache.set(key, 'v', { tags: ['ri:tag'], skipRedis: true });
+      const count = await cache.invalidateByTag('ri:tag');
+      expect(count).toBe(4);
+    });
+
+    it('flush counts both local and redis deletions', async () => {
+      vi.mocked(redisFlush).mockResolvedValueOnce(5);
+      cache.set(cache.keyFor('f1'), 'a', { skipRedis: true });
+      const count = await cache.flush();
+      expect(count).toBe(6);
+    });
+  });
 });
