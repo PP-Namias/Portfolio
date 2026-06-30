@@ -1,5 +1,10 @@
 import { describe, it, expect } from 'vitest';
-import { fallbackCmsContent } from '@/lib/cms-content.shared';
+import {
+  fallbackCmsContent,
+  fallbackBlogPosts,
+  buildTechCategories,
+  type CmsContent,
+} from '@/lib/cms-content.shared';
 
 describe('fallbackCmsContent', () => {
   it('has profile with required fields', () => {
@@ -78,5 +83,88 @@ describe('fallbackCmsContent', () => {
       expect(t.proficiency).toBeGreaterThanOrEqual(0);
       expect(t.proficiency).toBeLessThanOrEqual(100);
     });
+  });
+
+  it('has seoSettings with required fields', () => {
+    expect(fallbackCmsContent.seoSettings).toBeDefined();
+    expect(typeof fallbackCmsContent.seoSettings.siteTitle).toBe('string');
+    expect(typeof fallbackCmsContent.seoSettings.canonicalUrl).toBe('string');
+    expect(typeof fallbackCmsContent.seoSettings.noindex).toBe('boolean');
+    expect(typeof fallbackCmsContent.seoSettings.nofollow).toBe('boolean');
+  });
+
+  it('has siteSettings with footer and blog', () => {
+    expect(fallbackCmsContent.siteSettings.footer).toBeDefined();
+    expect(typeof fallbackCmsContent.siteSettings.footer.copyright).toBe('string');
+    expect(fallbackCmsContent.siteSettings.blog).toBeDefined();
+    expect(typeof fallbackCmsContent.siteSettings.blog.title).toBe('string');
+  });
+
+  it('has blogPosts array with fallback posts', () => {
+    expect(fallbackCmsContent.blogPosts).toBeInstanceOf(Array);
+    expect(fallbackCmsContent.blogPosts.length).toBe(2);
+  });
+
+  it('has galleryImages, memberships, recommendations arrays', () => {
+    expect(fallbackCmsContent.galleryImages).toBeInstanceOf(Array);
+    expect(fallbackCmsContent.memberships).toBeInstanceOf(Array);
+    expect(fallbackCmsContent.recommendations).toBeInstanceOf(Array);
+  });
+});
+
+describe('fallbackBlogPosts', () => {
+  it('contains exactly 2 blog posts', () => {
+    expect(fallbackBlogPosts).toHaveLength(2);
+  });
+
+  it('each post has required fields', () => {
+    fallbackBlogPosts.forEach((post) => {
+      expect(post.id).toBeDefined();
+      expect(post.slug).toBeDefined();
+      expect(post.title).toBeDefined();
+      expect(post.excerpt).toBeDefined();
+      expect(post.content).toBeDefined();
+      expect(post.date).toBeDefined();
+      expect(post.readTime).toBeDefined();
+      expect(post.tags).toBeInstanceOf(Array);
+      expect(post.coverImage).toBeDefined();
+      expect(typeof post.featured).toBe('boolean');
+    });
+  });
+
+  it('has distinct slugs', () => {
+    const slugs = fallbackBlogPosts.map((p) => p.slug);
+    expect(new Set(slugs).size).toBe(slugs.length);
+  });
+});
+
+describe('buildTechCategories', () => {
+  it('groups technologies by category', () => {
+    const techs = [
+      { name: 'React', category: 'Frontend', proficiency: 90 },
+      { name: 'Node.js', category: 'Backend', proficiency: 85 },
+      { name: 'Vue', category: 'Frontend', proficiency: 70 },
+    ] as CmsContent['technologies'];
+
+    const result = buildTechCategories(techs);
+    expect(Object.keys(result)).toEqual(['Frontend', 'Backend']);
+    expect(result['Frontend']).toHaveLength(2);
+    expect(result['Backend']).toHaveLength(1);
+  });
+
+  it('returns empty object for empty input', () => {
+    const result = buildTechCategories([]);
+    expect(result).toEqual({});
+  });
+
+  it('handles single category', () => {
+    const techs = [
+      { name: 'TypeScript', category: 'Language', proficiency: 95 },
+      { name: 'JavaScript', category: 'Language', proficiency: 95 },
+    ] as CmsContent['technologies'];
+
+    const result = buildTechCategories(techs);
+    expect(Object.keys(result)).toEqual(['Language']);
+    expect(result['Language']).toHaveLength(2);
   });
 });
