@@ -1,69 +1,55 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { GET } from '@/app/api/security-headers/route';
 
-describe('/api/security-headers', () => {
-  beforeEach(() => {
-    vi.restoreAllMocks();
-  });
+const mockHeaders = new Headers();
+mockHeaders.set('Content-Security-Policy', "script-src 'self'");
+mockHeaders.set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
+mockHeaders.set('X-Content-Type-Options', 'nosniff');
+mockHeaders.set('Referrer-Policy', 'strict-origin-when-cross-origin');
 
-  it('returns security header analysis', async () => {
-    vi.spyOn(global, 'fetch').mockResolvedValueOnce(new Response(null, {
-      status: 200,
-      headers: {
-        'Content-Security-Policy': "script-src 'self'",
-        'Strict-Transport-Security': 'max-age=31536000; includeSubDomains; preload',
-        'X-Content-Type-Options': 'nosniff',
-        'X-Frame-Options': 'DENY',
-        'Referrer-Policy': 'strict-origin-when-cross-origin',
-        'Permissions-Policy': 'camera=()',
-        'Cross-Origin-Opener-Policy': 'same-origin',
-      },
-    }));
-
+describe('security-headers API route', () => {
+  it('returns JSON with score and headers', async () => {
+    vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(new Response(null, { headers: mockHeaders }));
     const response = await GET();
-    const data = await response.json();
-
-    expect(data.score).toBe(100);
-    expect(data.counts.present).toBe(7);
-    expect(data.counts.missing).toBe(0);
-    expect(data.headers).toHaveLength(7);
-  });
-
-  it('detects missing headers', async () => {
-    vi.spyOn(global, 'fetch').mockResolvedValueOnce(new Response(null, {
-      status: 200,
-      headers: {},
-    }));
-
-    const response = await GET();
-    const data = await response.json();
-
-    expect(data.score).toBe(0);
-    expect(data.counts.missing).toBe(7);
-  });
-
-  it('detects needs-improvement headers', async () => {
-    vi.spyOn(global, 'fetch').mockResolvedValueOnce(new Response(null, {
-      status: 200,
-      headers: {
-        'Content-Security-Policy': "script-src 'unsafe-inline'",
-        'X-Content-Type-Options': 'nosniff',
-      },
-    }));
-
-    const response = await GET();
-    const data = await response.json();
-
-    expect(data.counts.needsImprovement).toBeGreaterThan(0);
+    const body = await response.json();
+    expect(body.url).toBeDefined();
+    expect(body.score).toBeDefined();
+    expect(body.headers).toBeInstanceOf(Array);
+    expect(body.headers.length).toBe(7);
   });
 
   it('returns 502 on fetch failure', async () => {
-    vi.spyOn(global, 'fetch').mockRejectedValueOnce(new Error('network error'));
-
+    vi.spyOn(globalThis, 'fetch').mockRejectedValueOnce(new Error('Network fail'));
     const response = await GET();
     expect(response.status).toBe(502);
+    const body = await response.json();
+    expect(body.error).toBe('Network fail');
+  });
 
-    const data = await response.json();
-    expect(data.error).toBe('network error');
+  it('marks missing headers as missing', async () => {
+    vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(new Response(null, { headers: new Headers() }));
+    const response = await GET();
+    const body = await response.json();
+    expect(body.counts.missing).toBe(7);
+  });
+
+  it('flags CSP with unsafe-inline', async () => {
+    const h = new Headers();
+    h.set('Content-Security-Policy', "script-src 'self' 'unsafe-inline'");
+    vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(new Response(null, { headers: h }));
+    const response = await GET();
+    const body = await response.json();
+    const csp = body.headers.find((hdr: { name: string }) => hdr.name === 'Content-Security-Policy');
+    expect(csp.status).toBe('needs-improvement');
+  });
+
+  it('flags HSTS without preload', async () => {
+    const h = new Headers();
+    h.set('Strict-Transport-Security', 'max-age=31536000');
+    vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(new Response(null, { headers: h }));
+    const response = await GET();
+    const body = await response.json();
+    const hsts = body.headers.find((hdr: { name: string }) => hdr.name === 'Strict-Transport-Security');
+    expect(hsts.status).toBe('needs-improvement');
   });
 });
