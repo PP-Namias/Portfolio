@@ -1,22 +1,21 @@
-'use client';
+'use client'
 
-
-import Image from '@/components/ui/OptimizedImage';
-import Link from 'next/link';
-import { motion, useReducedMotion } from 'framer-motion';
-import { ArrowLeft, ExternalLink, Github, FileText } from 'lucide-react';
-import { Project } from '@/types';
-import { resolveContentImageSrc } from '@/lib/media';
-import { JsonLd } from '@/components/seo/JsonLd';
-import { SITE_URL } from '@/lib/site-config';
+import Image from '@/components/ui/OptimizedImage'
+import Link from 'next/link'
+import { motion, useReducedMotion } from 'framer-motion'
+import { ArrowLeft, ExternalLink, Github, FileText } from 'lucide-react'
+import { Project } from '@/types'
+import { resolveContentImageSrc } from '@/lib/media'
+import { JsonLd } from '@/components/seo/JsonLd'
+import { SITE_URL } from '@/lib/site-config'
 
 interface ProjectDetailPageProps {
-  project: Project;
+  project: Project
 }
 
 export function ProjectDetailPage({ project }: Readonly<ProjectDetailPageProps>) {
-  const reduceMotion = useReducedMotion();
-  const heroSrc = resolveContentImageSrc(project.image, { folder: 'projects' });
+  const reduceMotion = useReducedMotion()
+  const heroSrc = resolveContentImageSrc(project.image, { folder: 'projects' })
 
   return (
     <>
@@ -196,19 +195,7 @@ export function ProjectDetailPage({ project }: Readonly<ProjectDetailPageProps>)
                     fill
                     sizes="(max-width: 768px) 100vw, 384px"
                     className="object-cover"
-      />
-
-      <JsonLd
-        data={{
-          '@context': 'https://schema.org',
-          '@type': 'BreadcrumbList',
-          itemListElement: [
-            { '@type': 'ListItem', position: 1, name: 'Home', item: SITE_URL },
-            { '@type': 'ListItem', position: 2, name: 'Projects', item: `${SITE_URL}/projects` },
-            { '@type': 'ListItem', position: 3, name: project.title },
-          ],
-        }}
-      />
+                  />
                   {item.caption && (
                     <div className="absolute bottom-0 inset-x-0 bg-black/60 px-3 py-1.5 text-[11px] text-white">
                       {item.caption}
@@ -219,6 +206,18 @@ export function ProjectDetailPage({ project }: Readonly<ProjectDetailPageProps>)
             </div>
           </section>
         )}
+
+        <JsonLd
+          data={{
+            '@context': 'https://schema.org',
+            '@type': 'BreadcrumbList',
+            itemListElement: [
+              { '@type': 'ListItem', position: 1, name: 'Home', item: SITE_URL },
+              { '@type': 'ListItem', position: 2, name: 'Projects', item: `${SITE_URL}/projects` },
+              { '@type': 'ListItem', position: 3, name: project.title },
+            ],
+          }}
+        />
 
         {/* Action links */}
         <div className="mt-8 flex flex-wrap gap-3">
@@ -258,5 +257,5 @@ export function ProjectDetailPage({ project }: Readonly<ProjectDetailPageProps>)
         </div>
       </motion.article>
     </>
-  );
+  )
 }

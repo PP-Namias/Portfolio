@@ -1,0 +1,255 @@
+{
+  "project": "Namias Portfolio - System Audit & Fix Plan",
+  "codeName": "system-audit-fixes",
+  "version": "1.0.0",
+  "owner": "Jhon Keneth Ryan Namias (PP Namias)",
+  "contact": "pp.namias@gmail.com",
+  "lastUpdated": "2026-07-02",
+  "branch": "dev",
+  "status": "in-progress",
+  "summary": "Complete system audit findings and fix plan. 45 issues identified across critical, high, medium, and low severity. Fixes organized into 10 commit slices targeting react-doctor score improvement from 59/100 to 100/100, fixing 3 critical bugs, eliminating code duplication, and improving accessibility.",
+  "auditResults": {
+    "tsc": "PASS (0 errors)",
+    "eslint": "PASS (0 errors, 4 pre-existing warnings)",
+    "vitest": "PASS (736 tests, 0 failures)",
+    "react-doctor": "FAIL (59/100, 18 issues: 1 error, 17 warnings)",
+    "codeAudit": "45 issues found (3 critical, 6 high, 16 medium, 20 low)"
+  },
+  "reactDoctorBreakdown": {
+    "score": 59,
+    "maxScore": 100,
+    "issues": {
+      "security": {
+        "errors": 0,
+        "warnings": 3,
+        "details": "Build pipeline runs code near secrets (3x CI workflows)"
+      },
+      "bugs": {
+        "errors": 1,
+        "warnings": 7,
+        "details": "fetch in useEffect (1 error), time/random in JSX (1), button missing type (6x)"
+      },
+      "performance": {
+        "errors": 0,
+        "warnings": 1,
+        "details": "Unstable context provider value in 3d-card.tsx"
+      },
+      "accessibility": {
+        "errors": 0,
+        "warnings": 3,
+        "details": "Interactive not focusable (1), role instead of tag (1), mouse handler missing focus (1)"
+      },
+      "maintainability": {
+        "errors": 0,
+        "warnings": 2,
+        "details": "Multiple components in one file (3d-card.tsx)"
+      },
+      "security2": {
+        "errors": 0,
+        "warnings": 1,
+        "details": "Unescaped JSON in HTML/script sink (JsonLd.tsx)"
+      }
+    }
+  },
+  "criticalIssues": [
+    {
+      "id": "CRIT-1",
+      "title": "JSX Structural Misplacement in ProjectDetailPage",
+      "file": "src/components/sections/ProjectDetailPage.tsx",
+      "lines": "193-211",
+      "description": "A <JsonLd> component is incorrectly nested inside a gallery image wrapper div. This creates invalid DOM nesting — a <script> tag rendered inside a CSS grid cell. Causes React hydration warnings and visually broken gallery items.",
+      "fix": "Move the <JsonLd> component outside the gallery item div to be a sibling of the top-level fragment."
+    },
+    {
+      "id": "CRIT-2",
+      "title": "GROQ Query Injection in blog-sync.mjs",
+      "file": "scripts/blog-sync.mjs",
+      "lines": "218",
+      "description": "frontmatter.slug is interpolated directly into a GROQ query string. If a slug contains double-quotes or GROQ-special characters, it could break the query or allow injection.",
+      "fix": "Sanitize slug values or use GROQ parameterized queries with double-star escaping."
+    },
+    {
+      "id": "CRIT-3",
+      "title": "Mutable Module-Level State in md-to-portable-text.ts",
+      "file": "scripts/lib/md-to-portable-text.ts",
+      "lines": "24",
+      "description": "let keyCounter = 0 is module-level mutable state. In parallel tests or long-running processes, keys are not deterministic and could collide.",
+      "fix": "Use a function-scoped counter or crypto.randomUUID() for key generation."
+    }
+  ],
+  "highIssues": [
+    {
+      "id": "HIGH-1",
+      "title": "Duplicate Portable Text Converters (5+ copies)",
+      "files": [
+        "scripts/lib/portable-text-to-md.ts",
+        "scripts/blog-sync.mjs",
+        "scripts/import-sanity-posts.mjs",
+        "scripts/lib/md-to-portable-text.ts"
+      ],
+      "description": "The same conversion logic exists in 5+ places. Inline versions in blog-sync.mjs and import-sanity-posts.mjs are simplified and lose data (lists, code blocks, blockquotes, inline formatting).",
+      "fix": "Import from scripts/lib/ in all scripts. Remove inline duplicates."
+    },
+    {
+      "id": "HIGH-2",
+      "title": "Missing Button Type Attributes (6 instances)",
+      "files": [
+        "src/app/admin/canary/page.tsx:102,108",
+        "src/app/blog/[slug]/error.tsx:9",
+        "src/app/blog/error.tsx:9",
+        "src/app/projects/[slug]/error.tsx:9",
+        "src/app/projects/error.tsx:9"
+      ],
+      "description": "Buttons without explicit type attribute default to submit, which can accidentally submit forms.",
+      "fix": "Add type='button' to all non-submit buttons."
+    },
+    {
+      "id": "HIGH-3",
+      "title": "blog-sync.mjs args Referenced via Closure",
+      "file": "scripts/blog-sync.mjs",
+      "lines": "169,204,212,218",
+      "description": "cmdPull and cmdPush reference module-level args variable via closure rather than receiving it as a parameter. Makes functions impure and untestable.",
+      "fix": "Pass args as a parameter to each command function."
+    },
+    {
+      "id": "HIGH-4",
+      "title": "import-sanity-posts.mjs Incorrect Status Logic",
+      "file": "scripts/import-sanity-posts.mjs",
+      "lines": "92",
+      "description": "Status check uses fs.existsSync after writing, so it always returns 'updated' when FORCE is true even on first write.",
+      "fix": "Check existence before writing, not after."
+    },
+    {
+      "id": "HIGH-5",
+      "title": "ConnectSection Nested <section> Without Accessible Name",
+      "file": "src/components/sections/ConnectSection.tsx",
+      "lines": "33-34",
+      "description": "Outer <section> has aria-labelledby but heading is inside inner section. Screen readers announce a section with no direct heading.",
+      "fix": "Remove redundant outer <section> or move heading to be direct child."
+    },
+    {
+      "id": "HIGH-6",
+      "title": "3d-card.tsx useEffect Missing Dependency + Direct DOM Manipulation",
+      "file": "src/components/ui/3d-card.tsx",
+      "lines": "117-129",
+      "description": "useEffect suppresses exhaustive-deps warning. handleAnimations closure captures stale props. Direct style.transform mutation bypasses React.",
+      "fix": "Refactor to use proper dependency array or move animation logic to a custom hook."
+    }
+  ],
+  "phases": [
+    {
+      "id": "PHASE-1",
+      "label": "Critical fixes",
+      "sliceIds": ["SLICE-01", "SLICE-02", "SLICE-03"]
+    },
+    {
+      "id": "PHASE-2",
+      "label": "High fixes",
+      "sliceIds": ["SLICE-04", "SLICE-05", "SLICE-06", "SLICE-07"]
+    },
+    { "id": "PHASE-3", "label": "React-doctor fixes", "sliceIds": ["SLICE-08", "SLICE-09"] },
+    { "id": "PHASE-4", "label": "Verification", "sliceIds": ["SLICE-10"] }
+  ],
+  "commitPlan": {
+    "strategy": "One commit per fix slice. Each commit passes tsc, lint, and vitest.",
+    "slices": [
+      {
+        "id": "SLICE-01",
+        "title": "Fix JSX structural misplacement in ProjectDetailPage",
+        "files": ["src/components/sections/ProjectDetailPage.tsx"],
+        "commitMessage": "fix(ui): move JsonLd outside gallery item wrapper in ProjectDetailPage",
+        "severity": "critical"
+      },
+      {
+        "id": "SLICE-02",
+        "title": "Fix GROQ injection in blog-sync.mjs",
+        "files": ["scripts/blog-sync.mjs"],
+        "commitMessage": "fix(security): sanitize slug in GROQ query to prevent injection",
+        "severity": "critical"
+      },
+      {
+        "id": "SLICE-03",
+        "title": "Fix mutable module-level state in md-to-portable-text.ts",
+        "files": ["scripts/lib/md-to-portable-text.ts"],
+        "commitMessage": "fix(blog): replace mutable module counter with deterministic key generation",
+        "severity": "critical"
+      },
+      {
+        "id": "SLICE-04",
+        "title": "Consolidate duplicate portable text converters",
+        "files": ["scripts/blog-sync.mjs", "scripts/import-sanity-posts.mjs"],
+        "commitMessage": "refactor(blog): replace inline converters with imports from scripts/lib",
+        "severity": "high"
+      },
+      {
+        "id": "SLICE-05",
+        "title": "Fix missing button type attributes",
+        "files": [
+          "src/app/admin/canary/page.tsx",
+          "src/app/blog/[slug]/error.tsx",
+          "src/app/blog/error.tsx",
+          "src/app/projects/[slug]/error.tsx",
+          "src/app/projects/error.tsx"
+        ],
+        "commitMessage": "fix(a11y): add type='button' to all non-submit buttons",
+        "severity": "high"
+      },
+      {
+        "id": "SLICE-06",
+        "title": "Fix blog-sync.mjs args closure + import-sanity-posts.mjs status logic",
+        "files": ["scripts/blog-sync.mjs", "scripts/import-sanity-posts.mjs"],
+        "commitMessage": "fix(blog): pass args as parameter to command functions and fix status logic",
+        "severity": "high"
+      },
+      {
+        "id": "SLICE-07",
+        "title": "Fix ConnectSection nested section accessibility",
+        "files": ["src/components/sections/ConnectSection.tsx"],
+        "commitMessage": "fix(a11y): remove redundant outer section in ConnectSection",
+        "severity": "high"
+      },
+      {
+        "id": "SLICE-08",
+        "title": "Fix react-doctor: time/random in JSX (Footer.tsx)",
+        "files": ["src/components/layout/Footer.tsx"],
+        "commitMessage": "fix(hydration): move Date.now() into useState+useEffect in Footer",
+        "severity": "medium"
+      },
+      {
+        "id": "SLICE-09",
+        "title": "Fix react-doctor: JsonLd XSS, 3d-card context, hacked-text a11y",
+        "files": [
+          "src/components/seo/JsonLd.tsx",
+          "src/components/ui/3d-card.tsx",
+          "src/components/ui/hacked-text.tsx"
+        ],
+        "commitMessage": "fix(security,a11y): sanitize JsonLd JSON, memoize 3d-card context, add onFocus to hacked-text",
+        "severity": "medium"
+      },
+      {
+        "id": "SLICE-10",
+        "title": "Final verification and PRD update",
+        "files": ["docs/prd/prd.system-audit-fixes.json"],
+        "commitMessage": "docs(prd): add system audit fix plan PRD with all findings",
+        "severity": "low"
+      }
+    ]
+  },
+  "openQuestions": [
+    {
+      "question": "Should we fix the CI workflow security warnings (build pipeline secret boundary)?",
+      "answer": "No — these are CI configuration warnings that require changes to GitHub Actions workflows, not application code. They are low-risk for a portfolio site.",
+      "status": "deferred"
+    },
+    {
+      "question": "Should we remove styled-components from package.json?",
+      "answer": "Yes — it appears unused. Will verify with a grep before removing.",
+      "status": "pending"
+    },
+    {
+      "question": "Should we upgrade tsconfig target from ES2017 to ES2022?",
+      "answer": "No — this is a configuration change that could affect build output. Defer to a separate PR.",
+      "status": "deferred"
+    }
+  ]
+}
