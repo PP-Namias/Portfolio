@@ -41,7 +41,10 @@ export function Footer() {
             )
           })}
         </div>
-        <p className="text-[11px] text-text-muted-light dark:text-text-muted-dark">
+        <p
+          className="text-[11px] text-text-muted-light dark:text-text-muted-dark"
+          suppressHydrationWarning
+        >
           &copy; {year ?? new Date().getFullYear()} {profile.name} &middot; Next.js &middot; Sanity
         </p>
       </div>
