@@ -47,6 +47,11 @@
     "doctor:baseline": "react-doctor --json > .react-doctor/baseline.json",
     "doctor:check": "react-doctor --json --fail-on error",
     "doctor:diff": "react-doctor --diff",
+    "blog:sync": "node scripts/blog-sync.mjs",
+    "blog:pull": "node scripts/blog-sync.mjs --pull",
+    "blog:push": "node scripts/blog-sync.mjs --push",
+    "blog:diff": "node scripts/blog-sync.mjs --diff",
+    "blog:import": "node scripts/import-sanity-posts.mjs",
     "prepare": "husky"
   },
   "dependencies": {
@@ -86,6 +91,7 @@
     "concurrently": "^10.0.3",
     "eslint": "^9.0.0",
     "eslint-config-next": "16.2.9",
+    "gray-matter": "^4.0.3",
     "husky": "^9.1.7",
     "jsdom": "^28.1.0",
     "lint-staged": "^17.0.8",
