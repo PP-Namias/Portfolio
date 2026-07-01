@@ -25,7 +25,7 @@ let keyCounter = 0
 
 function genKey(): string {
   keyCounter++
-  return `k${Date.now().toString(36)}${keyCounter}`
+  return `k${keyCounter}`
 }
 
 function parseInlineMarks(text: string): { text: string; marks: string[]; markDefs: PtMarkDef[] } {
