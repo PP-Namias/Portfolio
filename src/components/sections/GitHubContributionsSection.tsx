@@ -1,29 +1,13 @@
 'use client'
 
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { ExternalLink } from 'lucide-react'
+import { useGitHubContributions } from '@/hooks/useGitHubContributions'
 
 const GITHUB_USERNAME = 'PP-Namias'
-const CONTRIBUTIONS_API = `https://github-contributions-api.jogruber.de/v4/${GITHUB_USERNAME}`
 const FALLBACK_SVG = `https://ghchart.rshah.org/${GITHUB_USERNAME}`
-
-interface ContributionDay {
-  date: string
-  count: number
-  level: 0 | 1 | 2 | 3 | 4
-}
-
-interface ApiResponseBody {
-  total?: Record<string, number> | number
-  contributions?: ContributionDay[]
-}
-
-interface ContributionData {
-  total: number
-  contributions: ContributionDay[]
-}
 
 const LEVEL_COLORS = [
   'bg-surface-light dark:bg-surface-dark',
@@ -42,26 +26,13 @@ function formatDate(dateStr: string): string {
   return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
 }
 
-function sumTotal(total: ApiResponseBody['total']): number {
-  if (typeof total === 'number') return total
-  if (total && typeof total === 'object') {
-    return Object.values(total).reduce((sum, v) => sum + (typeof v === 'number' ? v : 0), 0)
-  }
-  return 0
-}
-
-function normalizeResponse(json: ApiResponseBody): ContributionData {
-  return {
-    total: sumTotal(json.total),
-    contributions: Array.isArray(json.contributions) ? json.contributions : [],
-  }
-}
-
-function getWeeksFromContributions(contributions: ContributionDay[]): ContributionDay[][] {
+function getWeeksFromContributions(
+  contributions: { date: string; count: number; level: 0 | 1 | 2 | 3 | 4 }[]
+): { date: string; count: number; level: 0 | 1 | 2 | 3 | 4 }[][] {
   if (contributions.length === 0) return []
 
-  const weeks: ContributionDay[][] = []
-  let currentWeek: ContributionDay[] = []
+  const weeks: { date: string; count: number; level: 0 | 1 | 2 | 3 | 4 }[][] = []
+  let currentWeek: { date: string; count: number; level: 0 | 1 | 2 | 3 | 4 }[] = []
 
   const firstDate = new Date(contributions[0].date + 'T00:00:00')
   const firstDayOfWeek = firstDate.getDay()
@@ -88,7 +59,9 @@ function getWeeksFromContributions(contributions: ContributionDay[]): Contributi
   return weeks
 }
 
-function computeStreak(contributions: ContributionDay[]): { current: number; longest: number } {
+function computeStreak(
+  contributions: { date: string; count: number; level: 0 | 1 | 2 | 3 | 4 }[]
+): { current: number; longest: number } {
   let current = 0
   let longest = 0
   let tempStreak = 0
@@ -110,33 +83,8 @@ function computeStreak(contributions: ContributionDay[]): { current: number; lon
   return { current, longest }
 }
 
-type FetchState = 'loading' | 'api' | 'fallback' | 'error'
-
 export function GitHubContributionsSection() {
-  const [state, setState] = useState<FetchState>('loading')
-  const [data, setData] = useState<ContributionData | null>(null)
-
-  useEffect(() => {
-    const controller = new AbortController()
-
-    async function load() {
-      try {
-        const res = await fetch(CONTRIBUTIONS_API, { signal: controller.signal })
-        if (!res.ok) throw new Error(`HTTP ${res.status}`)
-        const json: ApiResponseBody = await res.json()
-        const normalized = normalizeResponse(json)
-        if (normalized.contributions.length === 0) throw new Error('Empty data')
-        setData(normalized)
-        setState('api')
-      } catch {
-        if (controller.signal.aborted) return
-        setState('fallback')
-      }
-    }
-
-    load()
-    return () => controller.abort()
-  }, [])
+  const { data, isLoading, isError } = useGitHubContributions()
 
   const weeks = useMemo(() => getWeeksFromContributions(data?.contributions ?? []), [data])
   const streak = useMemo(() => computeStreak(data?.contributions ?? []), [data])
@@ -184,13 +132,13 @@ export function GitHubContributionsSection() {
         </p>
       </div>
 
-      {state === 'loading' && (
-        <div className="flex items-center justify-center py-12" role="status">
+      {isLoading && (
+        <output className="flex items-center justify-center py-12">
           <div className="h-6 w-6 animate-spin rounded-full border-2 border-accent-pink border-t-transparent" />
-        </div>
+        </output>
       )}
 
-      {state === 'error' && (
+      {isError && (
         <div className="py-8 text-center text-sm text-text-muted-light dark:text-text-muted-dark">
           <p>Unable to load contribution data.</p>
           <a
@@ -205,7 +153,7 @@ export function GitHubContributionsSection() {
         </div>
       )}
 
-      {state === 'fallback' && (
+      {!isLoading && !isError && !data && (
         <div className="space-y-4">
           <div className="overflow-x-auto pb-2">
             <Image
@@ -242,7 +190,7 @@ export function GitHubContributionsSection() {
         </div>
       )}
 
-      {state === 'api' && data && (
+      {!isLoading && !isError && data && (
         <div className="space-y-4">
           <div className="flex flex-wrap gap-4 text-sm">
             <div className="rounded-lg bg-surface-light dark:bg-surface-dark px-3 py-2">
