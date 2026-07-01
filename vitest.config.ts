@@ -1,7 +1,7 @@
 /// <reference types="vitest" />
-import { defineConfig } from 'vitest/config';
-import react from '@vitejs/plugin-react';
-import path from 'node:path';
+import { defineConfig } from 'vitest/config'
+import react from '@vitejs/plugin-react'
+import path from 'node:path'
 
 export default defineConfig({
   plugins: [react()],
@@ -15,26 +15,19 @@ export default defineConfig({
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html'],
-      // @ts-expect-error -- vitest types don't expose `all` but v8 provider supports it
-      all: true,
       include: ['src/**/*.{ts,tsx}'],
-      exclude: [
-        'src/__tests__/**',
-        '**/*.d.ts',
-        'src/types/**',
-      ],
+      exclude: ['src/__tests__/**', '**/*.d.ts', 'src/types/**'],
       thresholds: {
         statements: 69,
         branches: 54,
         functions: 71,
         lines: 70,
-        raiseOnFail: false,
       },
-    },
+    } as Record<string, unknown>,
   },
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
     },
   },
-});
+})
