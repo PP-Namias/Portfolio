@@ -88,7 +88,7 @@ function parseArgs() {
   }
 }
 
-async function cmdDiff() {
+async function cmdDiff(args) {
   console.log('--- Diff: Local vs Sanity ---\n')
   const remotePosts = await sanityQuery('*[_type == "post" && defined(slug.current)]{ _id, "slug": slug.current, title, published, publishedAt, _updatedAt }')
   const remoteMap = new Map((remotePosts || []).map((p) => [p.slug, p]))
@@ -114,7 +114,7 @@ async function cmdDiff() {
   console.log(`\nLocal: ${localFiles.length} files | Remote: ${(remotePosts || []).length} documents`)
 }
 
-async function cmdPull() {
+async function cmdPull(args) {
   console.log('--- Pull: Sanity -> Local ---\n')
   const remotePosts = await sanityQuery(
     `*[_type == "post" && defined(slug.current)] | order(publishedAt desc) {
@@ -167,7 +167,7 @@ async function cmdPull() {
   console.log(`\nCreated: ${created} | Skipped: ${skipped}`)
 }
 
-async function cmdPush() {
+async function cmdPush(args) {
   console.log('--- Push: Local -> Sanity ---\n')
   if (args.dryRun) console.log('  [DRY RUN] No changes will be made.\n')
 
@@ -227,9 +227,9 @@ async function cmdPush() {
 const args = parseArgs()
 
 try {
-  if (args.diff) await cmdDiff()
-  else if (args.pull) await cmdPull()
-  else if (args.push) await cmdPush()
+  if (args.diff) await cmdDiff(args)
+  else if (args.pull) await cmdPull(args)
+  else if (args.push) await cmdPush(args)
   else {
     console.log('Usage: node scripts/blog-sync.mjs [--pull|--push|--diff] [--force] [--include-drafts] [--dry-run]')
   }

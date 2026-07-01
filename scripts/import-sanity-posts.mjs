@@ -45,8 +45,9 @@ async function fetchAllPosts() {
 function writePost(post) {
   const filename = `${post.slug}.md`
   const filePath = path.join(CONTENT_DIR, filename)
+  const fileExisted = fs.existsSync(filePath)
 
-  if (fs.existsSync(filePath) && !FORCE) {
+  if (fileExisted && !FORCE) {
     return { status: 'skipped', slug: post.slug }
   }
 
@@ -74,7 +75,7 @@ function writePost(post) {
   if (!fs.existsSync(CONTENT_DIR)) fs.mkdirSync(CONTENT_DIR, { recursive: true })
   fs.writeFileSync(filePath, content, 'utf-8')
 
-  return { status: FORCE && fs.existsSync(filePath) ? 'updated' : 'created', slug: post.slug }
+  return { status: fileExisted ? 'updated' : 'created', slug: post.slug }
 }
 
 async function main() {
