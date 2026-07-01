@@ -1,0 +1,590 @@
+{
+  "project": "Namias Portfolio - Smart Blog Content Pipeline",
+  "codeName": "blog-smart-content",
+  "version": "1.0.0",
+  "owner": "Jhon Keneth Ryan Namias (PP Namias)",
+  "contact": "pp.namias@gmail.com",
+  "lastUpdated": "2026-07-02",
+  "branch": "feat/blog-smart-content",
+  "links": {
+    "marketing": "https://namias.tech",
+    "studio": "https://namias-cms.sanity.studio",
+    "repo": "https://github.com/PP-Namias/Portfolio",
+    "existingBlog": "https://namias.tech/blog"
+  },
+  "summary": "Local-first blog content pipeline where every blog post (published and unpublished) lives as a Markdown file with YAML frontmatter in content/blog/. Authors write and review locally, then sync to Sanity CMS for publishing. Includes specialized agent skills for creating, editing, reviewing, diffing, and publishing posts. The Sanity Studio remains the source of truth for live content, but the local MD files become the authoring and review layer on top.",
+  "narrative": "Today all blog content lives exclusively in Sanity CMS. There is no local representation of posts, no way to review drafts before they go live, no version history outside Sanity's built-in revisions, and no way for coding agents to author or edit posts programmatically. The existing add-a-blog-post skill only describes the manual Sanity Studio UI workflow. This PRD introduces a local-first content layer: every blog post (published or draft) is stored as a Markdown file in content/blog/ with YAML frontmatter containing all metadata (title, slug, excerpt, tags, date, published status, SEO fields, author, categories). A bidirectional sync script keeps local files and Sanity documents in sync. New agent skills let you create, edit, preview, diff, and publish posts entirely from the CLI. The workflow becomes: write locally as MD → review the diff → sync to Sanity → publish. This gives the owner full control over what goes live, enables git-based version history for all content, and lets coding agents participate in the content lifecycle.",
+  "principles": [
+    "Local-first: content/blog/ is the authoring surface; Sanity is the publishing surface",
+    "Bidirectional sync: pull from Sanity to local, push from local to Sanity, with conflict detection",
+    "Review before publish: no post goes live without an explicit publish command after review",
+    "Git-versioned: every content change is a git commit with meaningful history",
+    "Frontmatter-driven: all metadata lives in YAML frontmatter; the MD body is the post content",
+    "Backward-compatible: existing Sanity posts are importable; existing GROQ queries are unchanged",
+    "Skill-augmented: specialized agent skills handle create, edit, review, sync, and publish",
+    "Safe: unpublished drafts are clearly marked, never synced to Sanity unless explicitly requested",
+    "Type-safe: frontmatter schema is validated at build time; tsc, lint, vitest stay green",
+    "No comments in code: documentation lives in the PRD and skills only"
+  ],
+  "personas": [
+    {
+      "id": "P-OWNER",
+      "label": "PP Namias (owner)",
+      "goals": [
+        "Write blog posts as local Markdown files I can review before publishing",
+        "See a clear diff of what changed between local and Sanity versions",
+        "Publish only when ready, never accidentally push a draft live",
+        "Use git history to track all content changes",
+        "Have coding agents help draft, edit, or format posts"
+      ],
+      "painPointsToday": [
+        "All blog content is only in Sanity — no local backup or review layer",
+        "Drafts in Sanity can accidentally be published",
+        "No way to review a post side-by-side with its current live version",
+        "Coding agents cannot help with content because there are no local files to edit",
+        "No git history for content changes"
+      ]
+    },
+    {
+      "id": "P-AGENT",
+      "label": "OpenCode / coding agent",
+      "goals": [
+        "Create new blog post MD files with correct frontmatter",
+        "Edit existing post content without touching Sanity directly",
+        "Run sync to push local changes to Sanity",
+        "Preview what will be published before syncing",
+        "Understand the content schema from the frontmatter types"
+      ],
+      "painPointsToday": [
+        "No local files to read or write — must interact through Sanity client",
+        "The add-a-blog-post skill only describes manual Studio UI steps",
+        "No programmatic way to create, edit, or sync posts"
+      ]
+    },
+    {
+      "id": "P-VISITOR",
+      "label": "Portfolio visitor",
+      "goals": [
+        "Read well-formatted blog posts with proper SEO metadata",
+        "See published content only — never drafts or work-in-progress"
+      ],
+      "painPointsToday": ["No awareness of the content pipeline — just reads what is live"]
+    }
+  ],
+  "successMetrics": {
+    "primary": [
+      "Every blog post (published + draft) has a corresponding .md file in content/blog/",
+      "YAML frontmatter is valid and matches the BlogPost type schema",
+      "Sync script can push local MD files to Sanity as post documents",
+      "Sync script can pull Sanity posts down to local MD files",
+      "Publish command only syncs posts where published: true in frontmatter",
+      "Review command shows a diff between local and Sanity versions",
+      "All existing blog routes (/blog, /blog/[slug]) continue to work unchanged",
+      "tsc --noEmit passes with new frontmatter types",
+      "vitest passes with new sync and skill tests",
+      "No accidental draft publishing — dry-run is the default for sync"
+    ],
+    "secondary": [
+      "Agent can create a new blog post via skill (generate MD file with frontmatter)",
+      "Agent can edit an existing post body via skill (modify MD content)",
+      "Git log shows meaningful commit messages for content changes",
+      "Import script can pull all existing Sanity posts to local MD files once",
+      "Frontmatter schema validation catches missing required fields before sync"
+    ]
+  },
+  "nonGoals": [
+    "Replace Sanity Studio as the CMS — Studio remains the publishing backend",
+    "Build a local preview server that renders the blog (use the existing /blog route for preview)",
+    "Add a WYSIWYG editor for the MD files (use any text editor or agent)",
+    "Migrate the blog data model — BlogPost type and GROQ queries stay the same",
+    "Add blog comments, analytics, or social features",
+    "Support MDX — plain Markdown with YAML frontmatter only",
+    "Auto-sync on file change — sync is explicit and command-driven"
+  ],
+  "designDecisions": [
+    {
+      "id": "DD-1",
+      "topic": "Content directory",
+      "choice": "content/blog/ at the repo root, with one .md file per post. File naming: {slug}.md (e.g., content/blog/hello-world.md).",
+      "rationale": "Flat directory is simple. Slug-based filenames make lookup trivial. No nesting needed for a personal blog with <100 posts."
+    },
+    {
+      "id": "DD-2",
+      "topic": "Frontmatter schema",
+      "choice": "YAML frontmatter with fields matching the Sanity post schema: title, slug, excerpt, metaTitle, metaDescription, featured, readTime, publishedAt, publishAt, published, author, categories, tags, coverImage, sourceId. Body is the Markdown content below the frontmatter.",
+      "rationale": "1:1 mapping with Sanity schema means sync is straightforward. No translation layer needed."
+    },
+    {
+      "id": "DD-3",
+      "topic": "Sync direction",
+      "choice": "Bidirectional with explicit direction flags: --push (local → Sanity), --pull (Sanity → local), --diff (compare). Default is dry-run (show what would change).",
+      "rationale": "Explicit direction prevents accidents. Dry-run default means you always see what will happen before it happens."
+    },
+    {
+      "id": "DD-4",
+      "topic": "Conflict resolution",
+      "choice": "Last-write-wins with --force flag. Without --force, conflicts are reported and skipped. The sync script compares updatedAt timestamps and content hashes.",
+      "rationale": "Simple and predictable. --force gives the owner explicit override when needed."
+    },
+    {
+      "id": "DD-5",
+      "topic": "Draft handling",
+      "choice": "Posts with published: false in frontmatter are local-only by default. They are only pushed to Sanity when --include-drafts flag is set. They never appear on the live site.",
+      "rationale": "Drafts stay invisible until explicitly pushed. This prevents accidental publishing."
+    },
+    {
+      "id": "DD-6",
+      "topic": "Skill architecture",
+      "choice": "Five specialized skills: (1) blog-create — generate a new MD file with frontmatter template, (2) blog-edit — modify existing post content, (3) blog-review — show diff between local and Sanity, (4) blog-sync — push/pull between local and Sanity, (5) blog-publish — mark as published and sync. Each skill is a standalone .agents/skills/ entry.",
+      "rationale": "Separation of concerns. Each skill does one thing well. Agents can load the right skill for the task."
+    },
+    {
+      "id": "DD-7",
+      "topic": "Sanity client reuse",
+      "choice": "The sync script uses the existing Sanity client from src/lib/sanity/client.ts (or a new scripts/lib/sanity-client.ts if isolation is needed). No new Sanity tokens.",
+      "rationale": "Reuse existing credentials and client config. No new secrets to manage."
+    },
+    {
+      "id": "DD-8",
+      "topic": "Import strategy",
+      "choice": "One-time import script: scripts/import-sanity-posts.mjs. Pulls all post documents from Sanity, converts Portable Text to Markdown, writes to content/blog/. Skips if file already exists (no overwrite without --force).",
+      "rationale": "Bootstraps the local content directory from existing Sanity data. Idempotent — safe to run multiple times."
+    },
+    {
+      "id": "DD-9",
+      "topic": "TypeScript types",
+      "choice": "New Frontmatter type in src/types/blog.ts that mirrors BlogPost but uses local field names. The sync script translates between Frontmatter and Sanity document shapes.",
+      "rationale": "Type safety for frontmatter validation. Clear translation boundary between local and CMS representations."
+    },
+    {
+      "id": "DD-10",
+      "topic": "File encoding",
+      "choice": "UTF-8 with LF line endings. Frontmatter delimiters: --- (standard YAML). Markdown body uses GFM (GitHub Flavored Markdown) with tables, task lists, and fenced code blocks.",
+      "rationale": "Standard conventions. GFM is universally supported and matches the existing blog renderer (remark-gfm)."
+    }
+  ],
+  "epics": [
+    {
+      "id": "EPIC-0",
+      "title": "Plan, types & schema",
+      "status": "planned",
+      "summary": "Write the PRD, define the Frontmatter TypeScript type, validate the content directory structure, and create the frontmatter schema.",
+      "value": "high",
+      "complexity": "low",
+      "stories": [
+        {
+          "id": "S-0.1",
+          "title": "Write PRD for smart blog content pipeline",
+          "done": false,
+          "details": "Author prd.blog-smart-content.json in docs/prd/. Include all epics, stories, success metrics, non-goals, and design decisions.",
+          "files": ["docs/prd/prd.blog-smart-content.json"]
+        },
+        {
+          "id": "S-0.2",
+          "title": "Create Frontmatter TypeScript type",
+          "done": false,
+          "details": "Create src/types/blog.ts with a Frontmatter interface that mirrors the BlogPost type but is optimized for local MD files. Fields: title (string), slug (string), excerpt (string), metaTitle (string?), metaDescription (string?), featured (boolean), readTime (string?), publishedAt (string), publishAt (string?), published (boolean), author (string), categories (string[]), tags (string[]), coverImage (string?), sourceId (string?). Export the type.",
+          "files": ["src/types/blog.ts"]
+        },
+        {
+          "id": "S-0.3",
+          "title": "Create frontmatter validation schema",
+          "done": false,
+          "details": "Create scripts/lib/frontmatter-schema.ts with a zod schema that validates frontmatter. Required fields: title, slug, excerpt, publishedAt, published, author, tags. Validate at sync time and in tests.",
+          "files": ["scripts/lib/frontmatter-schema.ts"]
+        },
+        {
+          "id": "S-0.4",
+          "title": "Create content/blog/ directory",
+          "done": false,
+          "details": "Create content/blog/ with a .gitkeep file and a README.md explaining the structure. Add content/blog/ to .gitignore if needed (no — it should be tracked in git).",
+          "files": ["content/blog/.gitkeep", "content/blog/README.md"]
+        }
+      ]
+    },
+    {
+      "id": "EPIC-1",
+      "title": "Sync scripts",
+      "status": "planned",
+      "summary": "Build the bidirectional sync scripts: push (local → Sanity), pull (Sanity → local), diff (compare), and the one-time import script.",
+      "value": "high",
+      "complexity": "high",
+      "stories": [
+        {
+          "id": "S-1.1",
+          "title": "Create Sanity client for scripts",
+          "done": false,
+          "details": "Create scripts/lib/sanity-client.ts that initializes a Sanity client using the existing env vars (SANITY_API_READ_TOKEN, SANITY_PROJECT_ID, SANITY_DATASET). Export the client for use by sync scripts.",
+          "files": ["scripts/lib/sanity-client.ts"]
+        },
+        {
+          "id": "S-1.2",
+          "title": "Create MD file parser",
+          "done": false,
+          "details": "Create scripts/lib/md-parser.ts. Functions: parseMdFile(filePath) → { frontmatter: Frontmatter, body: string }, writeMdFile(filePath, frontmatter, body), listMdFiles(dir) → filePath[]. Use gray-matter for YAML parsing.",
+          "files": ["scripts/lib/md-parser.ts"]
+        },
+        {
+          "id": "S-1.3",
+          "title": "Create Portable Text to Markdown converter",
+          "done": false,
+          "details": "Create scripts/lib/portable-text-to-md.ts. Convert Sanity Portable Text blocks to GFM Markdown. Handle: headings (h1-h4), blockquotes, bullet/number lists, bold/italic/code marks, links, inline images, code blocks. Reuse or adapt the existing portableTextToMarkdown from src/lib/cms-content.server.ts if possible.",
+          "files": ["scripts/lib/portable-text-to-md.ts"]
+        },
+        {
+          "id": "S-1.4",
+          "title": "Create Markdown to Portable Text converter",
+          "done": false,
+          "details": "Create scripts/lib/md-to-portable-text.ts. Convert GFM Markdown back to Sanity Portable Text blocks. Handle: headings, blockquotes, lists, marks, links, images, code blocks. This is the inverse of S-1.3.",
+          "files": ["scripts/lib/md-to-portable-text.ts"]
+        },
+        {
+          "id": "S-1.5",
+          "title": "Create pull script (Sanity → local)",
+          "done": false,
+          "details": "Create scripts/blog-sync.mjs with --pull flag. Fetch all post documents from Sanity via GROQ query. For each post: convert Portable Text body to Markdown, map fields to frontmatter, write to content/blog/{slug}.md. Skip if file exists (unless --force). Report what was created/updated/skipped.",
+          "files": ["scripts/blog-sync.mjs"]
+        },
+        {
+          "id": "S-1.6",
+          "title": "Create push script (local → Sanity)",
+          "done": false,
+          "details": "Create scripts/blog-sync.mjs with --push flag. Read all .md files from content/blog/. For each: parse frontmatter, convert Markdown body to Portable Text, create or update Sanity document via Sanity client. Only push posts where published: true (unless --include-drafts). Dry-run by default (show what would change). Report what would be created/updated/deleted.",
+          "files": ["scripts/blog-sync.mjs"]
+        },
+        {
+          "id": "S-1.7",
+          "title": "Create diff script",
+          "done": false,
+          "details": "Create scripts/blog-sync.mjs with --diff flag. Compare local MD files against Sanity documents. Show: new local posts (not in Sanity), updated local posts (content differs), deleted local posts (in Sanity but not local). Use content hashing for comparison.",
+          "files": ["scripts/blog-sync.mjs"]
+        },
+        {
+          "id": "S-1.8",
+          "title": "Create one-time import script",
+          "done": false,
+          "details": "Create scripts/import-sanity-posts.mjs. Fetch all post documents from Sanity. For each: convert Portable Text to Markdown, write to content/blog/{slug}.md with frontmatter. Skip if file exists. Support --force to overwrite. This is a one-time bootstrap tool.",
+          "files": ["scripts/import-sanity-posts.mjs"]
+        },
+        {
+          "id": "S-1.9",
+          "title": "Add npm scripts for blog sync",
+          "done": false,
+          "details": "Add to package.json: 'blog:sync' (node scripts/blog-sync.mjs), 'blog:pull' (node scripts/blog-sync.mjs --pull), 'blog:push' (node scripts/blog-sync.mjs --push), 'blog:diff' (node scripts/blog-sync.mjs --diff), 'blog:import' (node scripts/import-sanity-posts.mjs).",
+          "files": ["package.json"]
+        }
+      ]
+    },
+    {
+      "id": "EPIC-2",
+      "title": "Agent skills",
+      "status": "planned",
+      "summary": "Create five specialized agent skills for the blog content lifecycle: create, edit, review, sync, and publish.",
+      "value": "high",
+      "complexity": "medium",
+      "stories": [
+        {
+          "id": "S-2.1",
+          "title": "Create blog-create skill",
+          "done": false,
+          "details": "Create .agents/skills/blog-create/SKILL.md. Skill generates a new blog post MD file in content/blog/ with a frontmatter template. Steps: (1) ask for title, (2) generate slug from title, (3) set defaults (published: false, date: now, author: 'PP Namias'), (4) create the MD file with frontmatter + placeholder body, (5) confirm the file was created.",
+          "files": [".agents/skills/blog-create/SKILL.md"]
+        },
+        {
+          "id": "S-2.2",
+          "title": "Create blog-edit skill",
+          "done": false,
+          "details": "Create .agents/skills/blog-edit/SKILL.md. Skill modifies an existing blog post. Steps: (1) find the MD file by slug or title, (2) read current content, (3) apply the requested edits to body or frontmatter, (4) write the updated file, (5) confirm changes. Support editing body, tags, excerpt, published status, and other frontmatter fields.",
+          "files": [".agents/skills/blog-edit/SKILL.md"]
+        },
+        {
+          "id": "S-2.3",
+          "title": "Create blog-review skill",
+          "done": false,
+          "details": "Create .agents/skills/blog-review/SKILL.md. Skill shows the current state of all blog posts and their sync status. Steps: (1) list all MD files in content/blog/, (2) for each, show title, published status, date, (3) run diff against Sanity to show which are synced/unsynced/modified, (4) highlight any validation errors in frontmatter.",
+          "files": [".agents/skills/blog-review/SKILL.md"]
+        },
+        {
+          "id": "S-2.4",
+          "title": "Create blog-sync skill",
+          "done": false,
+          "details": "Create .agents/skills/blog-sync/SKILL.md. Skill runs the sync script with the appropriate flags. Steps: (1) run --diff first to show current state, (2) ask user to confirm push or pull, (3) execute the sync, (4) report results. Default to dry-run. Support --include-drafts flag.",
+          "files": [".agents/skills/blog-sync/SKILL.md"]
+        },
+        {
+          "id": "S-2.5",
+          "title": "Create blog-publish skill",
+          "done": false,
+          "details": "Create .agents/skills/blog-publish/SKILL.md. Skill publishes a post by setting published: true in frontmatter and syncing to Sanity. Steps: (1) find the post by slug, (2) show the post content for final review, (3) set published: true and publishedAt: now in frontmatter, (4) run sync --push for that post, (5) verify it appears on the live site.",
+          "files": [".agents/skills/blog-publish/SKILL.md"]
+        }
+      ]
+    },
+    {
+      "id": "EPIC-3",
+      "title": "Tests",
+      "status": "planned",
+      "summary": "Add tests for the frontmatter schema, MD parser, sync logic, and Portable Text converters.",
+      "value": "medium",
+      "complexity": "medium",
+      "stories": [
+        {
+          "id": "S-3.1",
+          "title": "Add frontmatter schema tests",
+          "done": false,
+          "details": "Create src/__tests__/scripts/frontmatter-schema.test.ts. Test: valid frontmatter passes, missing required fields fail, invalid dates fail, published is boolean, tags is array of strings.",
+          "files": ["src/__tests__/scripts/frontmatter-schema.test.ts"]
+        },
+        {
+          "id": "S-3.2",
+          "title": "Add MD parser tests",
+          "done": false,
+          "details": "Create src/__tests__/scripts/md-parser.test.ts. Test: parseMdFile extracts frontmatter and body correctly, writeMdFile creates valid MD, listMdFiles returns all .md files, handles missing file gracefully.",
+          "files": ["src/__tests__/scripts/md-parser.test.ts"]
+        },
+        {
+          "id": "S-3.3",
+          "title": "Add Portable Text to MD converter tests",
+          "done": false,
+          "details": "Create src/__tests__/scripts/portable-text-to-md.test.ts. Test: headings, blockquotes, lists, marks (bold/italic/code), links, inline images, code blocks. Compare against expected GFM output.",
+          "files": ["src/__tests__/scripts/portable-text-to-md.test.ts"]
+        },
+        {
+          "id": "S-3.4",
+          "title": "Add MD to Portable Text converter tests",
+          "done": false,
+          "details": "Create src/__tests__/scripts/md-to-portable-text.test.ts. Test: headings, blockquotes, lists, marks, links, images, code blocks. Round-trip test: MD → Portable Text → MD should preserve content.",
+          "files": ["src/__tests__/scripts/md-to-portable-text.test.ts"]
+        },
+        {
+          "id": "S-3.5",
+          "title": "Add sync script integration tests",
+          "done": false,
+          "details": "Create src/__tests__/scripts/blog-sync.test.ts. Test: --pull creates MD files from mocked Sanity data, --push creates Sanity documents from MD files, --diff shows correct status, --force overwrites existing, dry-run does not modify files. Mock the Sanity client.",
+          "files": ["src/__tests__/scripts/blog-sync.test.ts"]
+        }
+      ]
+    },
+    {
+      "id": "EPIC-4",
+      "title": "Import existing content",
+      "status": "planned",
+      "summary": "Run the one-time import to bootstrap content/blog/ from existing Sanity posts, then verify the imported files.",
+      "value": "medium",
+      "complexity": "low",
+      "stories": [
+        {
+          "id": "S-4.1",
+          "title": "Run import script against Sanity",
+          "done": false,
+          "details": "Execute node scripts/import-sanity-posts.mjs. Verify it pulls all existing published posts from Sanity and writes them as MD files in content/blog/. Check that frontmatter matches the Sanity document fields.",
+          "files": []
+        },
+        {
+          "id": "S-4.2",
+          "title": "Verify imported MD files",
+          "done": false,
+          "details": "Review the imported MD files: check frontmatter validity, confirm body content is correct Markdown, verify slug-based filenames, ensure no data loss from the Portable Text → Markdown conversion.",
+          "files": []
+        },
+        {
+          "id": "S-4.3",
+          "title": "Commit imported content",
+          "done": false,
+          "details": "git add content/blog/ and commit with message: 'content(blog): import existing Sanity posts as local MD files'. This establishes the initial content baseline.",
+          "files": ["content/blog/"]
+        }
+      ]
+    },
+    {
+      "id": "EPIC-5",
+      "title": "Documentation & integration",
+      "status": "planned",
+      "summary": "Update AGENTS.md with new skills, add blog content workflow documentation, and update the existing add-a-blog-post skill.",
+      "value": "medium",
+      "complexity": "low",
+      "stories": [
+        {
+          "id": "S-5.1",
+          "title": "Update AGENTS.md with new skills",
+          "done": false,
+          "details": "Add blog-create, blog-edit, blog-review, blog-sync, blog-publish to the Skills table in AGENTS.md. Add a new 'Content Workflow' section describing the local-first blog pipeline.",
+          "files": ["AGENTS.md"]
+        },
+        {
+          "id": "S-5.2",
+          "title": "Update add-a-blog-post skill",
+          "done": false,
+          "details": "Update .agents/skills/add-a-blog-post/SKILL.md to reference the new blog-create skill as the recommended approach. Keep the Sanity Studio steps as a fallback.",
+          "files": [".agents/skills/add-a-blog-post/SKILL.md"]
+        },
+        {
+          "id": "S-5.3",
+          "title": "Add content/blog/ README",
+          "done": false,
+          "details": "Create content/blog/README.md explaining the directory structure, frontmatter schema, and how to create/edit/publish posts. Include examples of valid frontmatter.",
+          "files": ["content/blog/README.md"]
+        }
+      ]
+    },
+    {
+      "id": "EPIC-6",
+      "title": "Verification",
+      "status": "planned",
+      "summary": "Run the full quality gate: typecheck, lint, vitest, react-doctor, and manual verification of the content pipeline.",
+      "value": "high",
+      "complexity": "low",
+      "stories": [
+        {
+          "id": "S-6.1",
+          "title": "Run tsc, eslint, vitest",
+          "done": false,
+          "details": "Run: npx tsc --noEmit, npm run lint, npm run test -- --run. All must pass with the new tests included.",
+          "files": []
+        },
+        {
+          "id": "S-6.2",
+          "title": "Run react-doctor",
+          "done": false,
+          "details": "Run npm run doctor. Score must stay at 100/100. If a finding lands, fix it in the same PR following the fix-react-doctor-finding skill.",
+          "files": []
+        },
+        {
+          "id": "S-6.3",
+          "title": "End-to-end content pipeline test",
+          "done": false,
+          "details": "Manual verification: (1) create a new post via blog-create skill, (2) edit it via blog-edit skill, (3) review via blog-review skill, (4) sync via blog-sync skill, (5) verify the post appears in Sanity Studio, (6) verify /blog route renders the new post.",
+          "files": []
+        }
+      ]
+    }
+  ],
+  "phases": [
+    {
+      "id": "PHASE-1",
+      "label": "Plan, types & schema",
+      "epics": ["EPIC-0"],
+      "status": "in-progress"
+    },
+    { "id": "PHASE-2", "label": "Sync scripts", "epics": ["EPIC-1"], "status": "planned" },
+    { "id": "PHASE-3", "label": "Agent skills", "epics": ["EPIC-2"], "status": "planned" },
+    { "id": "PHASE-4", "label": "Tests", "epics": ["EPIC-3"], "status": "planned" },
+    {
+      "id": "PHASE-5",
+      "label": "Import existing content",
+      "epics": ["EPIC-4"],
+      "status": "planned"
+    },
+    {
+      "id": "PHASE-6",
+      "label": "Documentation & integration",
+      "epics": ["EPIC-5"],
+      "status": "planned"
+    },
+    { "id": "PHASE-7", "label": "Verification", "epics": ["EPIC-6"], "status": "planned" }
+  ],
+  "commitPlan": {
+    "strategy": "One commit per logical slice. Each commit is self-contained and passes all checks.",
+    "checksPerCommit": ["npx tsc --noEmit", "npm run lint", "npx vitest run"],
+    "slices": [
+      {
+        "id": "SLICE-01",
+        "title": "PRD and types",
+        "files": [
+          "docs/prd/prd.blog-smart-content.json",
+          "src/types/blog.ts",
+          "scripts/lib/frontmatter-schema.ts"
+        ],
+        "commitMessage": "docs(prd): add blog smart content pipeline PRD with types and schema"
+      },
+      {
+        "id": "SLICE-02",
+        "title": "Content directory structure",
+        "files": ["content/blog/.gitkeep", "content/blog/README.md"],
+        "commitMessage": "content(blog): create content/blog directory with README"
+      },
+      {
+        "id": "SLICE-03",
+        "title": "Sanity client for scripts",
+        "files": ["scripts/lib/sanity-client.ts"],
+        "commitMessage": "feat(blog): add Sanity client for sync scripts"
+      },
+      {
+        "id": "SLICE-04",
+        "title": "MD parser and converters",
+        "files": [
+          "scripts/lib/md-parser.ts",
+          "scripts/lib/portable-text-to-md.ts",
+          "scripts/lib/md-to-portable-text.ts"
+        ],
+        "commitMessage": "feat(blog): add MD parser and Portable Text converters"
+      },
+      {
+        "id": "SLICE-05",
+        "title": "Sync scripts",
+        "files": ["scripts/blog-sync.mjs", "scripts/import-sanity-posts.mjs"],
+        "commitMessage": "feat(blog): add bidirectional sync and import scripts"
+      },
+      {
+        "id": "SLICE-06",
+        "title": "NPM scripts",
+        "files": ["package.json"],
+        "commitMessage": "chore(blog): add npm scripts for blog sync workflow"
+      },
+      {
+        "id": "SLICE-07",
+        "title": "Agent skills",
+        "files": [
+          ".agents/skills/blog-create/SKILL.md",
+          ".agents/skills/blog-edit/SKILL.md",
+          ".agents/skills/blog-review/SKILL.md",
+          ".agents/skills/blog-sync/SKILL.md",
+          ".agents/skills/blog-publish/SKILL.md"
+        ],
+        "commitMessage": "feat(skills): add blog content lifecycle skills (create/edit/review/sync/publish)"
+      },
+      {
+        "id": "SLICE-08",
+        "title": "Tests for schema and parsers",
+        "files": [
+          "src/__tests__/scripts/frontmatter-schema.test.ts",
+          "src/__tests__/scripts/md-parser.test.ts",
+          "src/__tests__/scripts/portable-text-to-md.test.ts",
+          "src/__tests__/scripts/md-to-portable-text.test.ts"
+        ],
+        "commitMessage": "test(blog): add frontmatter schema and parser tests"
+      },
+      {
+        "id": "SLICE-09",
+        "title": "Sync integration tests",
+        "files": ["src/__tests__/scripts/blog-sync.test.ts"],
+        "commitMessage": "test(blog): add sync script integration tests"
+      },
+      {
+        "id": "SLICE-10",
+        "title": "Import existing content",
+        "files": ["content/blog/"],
+        "commitMessage": "content(blog): import existing Sanity posts as local MD files"
+      },
+      {
+        "id": "SLICE-11",
+        "title": "Documentation updates",
+        "files": ["AGENTS.md", ".agents/skills/add-a-blog-post/SKILL.md"],
+        "commitMessage": "docs(blog): update AGENTS.md and add-a-blog-post skill with new workflow"
+      },
+      {
+        "id": "SLICE-12",
+        "title": "Final verification",
+        "files": [],
+        "commitMessage": "chore: final verification - all checks passing"
+      }
+    ]
+  },
+  "openQuestions": [
+    "Should the sync script support incremental sync (only changed posts) or always do a full sync? The PRD plans full sync with content hashing for comparison.",
+    "Should the Portable Text converters be in a shared utility or duplicated in scripts/? The PRD plans separate files in scripts/lib/ to avoid coupling with the main app bundle.",
+    "Should the blog-create skill ask for all frontmatter fields interactively, or use smart defaults? The PRD plans smart defaults with an option to customize.",
+    "Should content/blog/ be in .gitignore or tracked in git? The PRD plans tracked in git — this is the whole point of local-first content.",
+    "Should the diff command show full content diffs or just status (new/modified/deleted)? The PRD plans status by default with --full for content diffs."
+  ]
+}
