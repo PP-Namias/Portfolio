@@ -33,9 +33,13 @@ function getSanityConfig() {
   }
 }
 
-async function sanityQuery(query) {
+async function sanityQuery(query, params) {
   const { projectId, dataset, token } = getSanityConfig()
-  const url = `https://${projectId}.api.sanity.io/${SANITY_API_VERSION}/data/query/${dataset}?query=${encodeURIComponent(query)}`
+  let url = `https://${projectId}.api.sanity.io/${SANITY_API_VERSION}/data/query/${dataset}?query=${encodeURIComponent(query)}`
+  if (params) {
+    const paramsEncoded = encodeURIComponent(JSON.stringify(params))
+    url += `&*=${paramsEncoded}`
+  }
   const res = await fetch(url, { headers: { Authorization: `Bearer ${token}` } })
   if (!res.ok) throw new Error(`Sanity query error: ${res.status} ${await res.text()}`)
   return (await res.json()).result
@@ -215,7 +219,10 @@ async function cmdPush() {
       continue
     }
 
-    const existing = await sanityQuery(`*[_type == "post" && slug.current == "${frontmatter.slug}"][0]{ _id }`)
+    const existing = await sanityQuery(
+      '*[_type == "post" && slug.current == $slug][0]{ _id }',
+      { slug: frontmatter.slug }
+    )
 
     const doc = {
       _type: 'post',
