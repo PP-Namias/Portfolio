@@ -1,1 +1,1 @@
-npx vitest run --run 2>&1 | Select-Object -Last 5
+npx vitest run --run 2>&1 | tail -5
