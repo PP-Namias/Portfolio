@@ -13,6 +13,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import matter from 'gray-matter'
+import { portableTextToMarkdown } from './lib/portable-text-to-md.ts'
 
 const SANITY_API_VERSION = 'v2024-01-01'
 const CONTENT_DIR = path.resolve(process.cwd(), 'content/blog')
@@ -41,22 +42,6 @@ async function fetchAllPosts() {
   return (await res.json()).result
 }
 
-function portableTextToMd(blocks) {
-  if (!Array.isArray(blocks)) return ''
-  const lines = []
-  for (const block of blocks) {
-    if (!block || typeof block !== 'object') continue
-    const text = (block.children || []).map((c) => c.text || '').join(' ').trim()
-    if (!text) continue
-    if (block.style === 'h1') lines.push(`# ${text}`)
-    else if (block.style === 'h2') lines.push(`## ${text}`)
-    else if (block.style === 'h3') lines.push(`### ${text}`)
-    else lines.push(text)
-    lines.push('')
-  }
-  return lines.join('\n').trim()
-}
-
 function writePost(post) {
   const filename = `${post.slug}.md`
   const filePath = path.join(CONTENT_DIR, filename)
@@ -83,7 +68,7 @@ function writePost(post) {
     sourceId: post.sourceId || undefined,
   }
 
-  const body = portableTextToMd(post.body)
+  const body = portableTextToMarkdown(post.body)
   const content = matter.stringify(body, frontmatter)
 
   if (!fs.existsSync(CONTENT_DIR)) fs.mkdirSync(CONTENT_DIR, { recursive: true })

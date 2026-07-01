@@ -15,6 +15,8 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import matter from 'gray-matter'
+import { portableTextToMarkdown } from './lib/portable-text-to-md.ts'
+import { markdownToPortableText } from './lib/md-to-portable-text.ts'
 
 const SANITY_API_VERSION = 'v2024-01-01'
 const CONTENT_DIR = path.resolve(process.cwd(), 'content/blog')
@@ -72,44 +74,6 @@ function writeLocalPost(filename, frontmatter, body) {
   if (!fs.existsSync(CONTENT_DIR)) fs.mkdirSync(CONTENT_DIR, { recursive: true })
   const content = matter.stringify(body, frontmatter)
   fs.writeFileSync(path.join(CONTENT_DIR, filename), content, 'utf-8')
-}
-
-function portableTextToMd(blocks) {
-  if (!Array.isArray(blocks)) return ''
-  const lines = []
-  for (const block of blocks) {
-    if (!block || typeof block !== 'object') continue
-    const text = (block.children || []).map((c) => c.text || '').join(' ').trim()
-    if (!text) continue
-    if (block.style === 'h1') lines.push(`# ${text}`)
-    else if (block.style === 'h2') lines.push(`## ${text}`)
-    else if (block.style === 'h3') lines.push(`### ${text}`)
-    else lines.push(text)
-    lines.push('')
-  }
-  return lines.join('\n').trim()
-}
-
-function mdToPortableText(md) {
-  const lines = md.split('\n')
-  const blocks = []
-  for (const line of lines) {
-    if (line.trim() === '') continue
-    if (line.startsWith('```')) continue
-    let style = 'normal'
-    let text = line
-    if (line.startsWith('### ')) { style = 'h3'; text = line.slice(4) }
-    else if (line.startsWith('## ')) { style = 'h2'; text = line.slice(3) }
-    else if (line.startsWith('# ')) { style = 'h1'; text = line.slice(2) }
-    blocks.push({
-      _type: 'block',
-      _key: `k${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`,
-      style,
-      children: [{ _type: 'span', _key: `s${Date.now().toString(36)}`, text }],
-      markDefs: [],
-    })
-  }
-  return blocks
 }
 
 function parseArgs() {
@@ -194,7 +158,7 @@ async function cmdPull() {
       sourceId: post.sourceId || undefined,
     }
 
-    const body = portableTextToMd(post.body)
+    const body = portableTextToMarkdown(post.body)
     writeLocalPost(filename, frontmatter, body)
     console.log(`  CREATE ${post.slug}`)
     created++
@@ -230,7 +194,7 @@ async function cmdPush() {
       title: frontmatter.title,
       slug: { _type: 'slug', current: frontmatter.slug },
       excerpt: frontmatter.excerpt,
-      body: mdToPortableText(body),
+      body: markdownToPortableText(body),
       tags: frontmatter.tags,
       publishedAt: frontmatter.publishedAt,
       publishAt: frontmatter.publishAt,
