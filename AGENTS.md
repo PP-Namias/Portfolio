@@ -5,8 +5,10 @@ This file is the entry point for any agent (opencode, future coding agents, or h
 ## Skills
 
 ### Content Management
+
 - `add-an-experience`, `add-a-project`, `add-a-certification`, `add-a-blog-post` — content workflows
 - `update-the-hero` — hero block editing
+- `blog-create`, `blog-edit`, `blog-review`, `blog-sync`, `blog-publish` — local-first blog content lifecycle
 - `sanity-data-operations` — Sanity schema changes, data migrations, debugging queries, revalidation
 - `sanity-schema-validator` — validates Sanity schemas against best practices, catches common issues
 - `sanity-content-audit` — audits Sanity content for completeness, consistency, and quality
@@ -15,6 +17,7 @@ This file is the entry point for any agent (opencode, future coding agents, or h
 - `sanity-backup-restore` — backup and restore Sanity content and schemas
 
 ### Frontend Development
+
 - `frontend-design` — build beautiful, responsive, accessible UIs with React, Tailwind, and Framer Motion
 - `ui-ux-pro-max` — design system intelligence
 - `component-api-scaffolding` — create React components, API routes, SWR hooks, context providers
@@ -23,6 +26,7 @@ This file is the entry point for any agent (opencode, future coding agents, or h
 - `nextjs-app-router` — Next.js App Router patterns, data fetching, and optimization
 
 ### Quality & Testing
+
 - `run-react-doctor` — how to read the react-doctor report, the 12-rule catalog, the score model
 - `fix-react-doctor-finding` — step-by-step fix workflow for one finding
 - `code-review` — systematic review of TypeScript, React, accessibility, performance, and security
@@ -32,16 +36,19 @@ This file is the entry point for any agent (opencode, future coding agents, or h
 - `performance-auditing` — Lighthouse audits, bundle analysis, image/font optimization, Core Web Vitals
 
 ### Security & DevOps
+
 - `run-pentestagent` — how to set up, configure, and run PentestAgent AI security scans against the portfolio
 - `deployment-infrastructure` — deploy to Vercel/Cloudflare, manage env vars, troubleshoot builds, rollbacks
 - `debugging-error-tracking` — systematic debugging for console errors, hydration, network, performance
 - `seo-optimization` — meta tags, JSON-LD structured data, sitemaps, social previews
 
 ### API & Backend
+
 - `api-design` — REST API patterns, validation, error handling, rate limiting
 - `webhook-design` — webhook implementation, signature verification, event-driven architecture
 
 ### Infrastructure & DevOps
+
 - `cloudflare-workers` — Cloudflare Workers with OpenNext adapter, R2, KV, D1, edge computing
 - `code-migration` — framework and library migration strategies (Next.js 16, Sanity, OpenNext)
 - `dependency-audit` — security vulnerability scanning, licensing, maintenance
@@ -49,14 +56,17 @@ This file is the entry point for any agent (opencode, future coding agents, or h
 - `nextjs-16-migration` — migrate from Next.js 15 to 16 and handle breaking changes
 
 ### Security
+
 - `csp-security-headers` — configure Content Security Policy and security headers
 - `canary-token-system` — manage canary token honeypot system for detecting scanners
 
 ### Analytics & Features
+
 - `analytics-integration` — Umami analytics setup, tracking, and insights
 - `feature-flags` — feature flags for gradual rollouts and A/B testing
 
 ### Documentation & Quality
+
 - `technical-writing` — documentation, READMEs, developer guides
 - `orchestrator` — coordinate multi-step tasks across multiple skills
 - `impeccable` — quick repo-hygiene and consistency checks
@@ -65,6 +75,7 @@ This file is the entry point for any agent (opencode, future coding agents, or h
 - `ci-cd-security` — CI/CD pipeline security and automation
 
 ### OpenCode & MiMo v2.5 Optimization
+
 - `mimo-workflow` — optimized workflows for OpenCode IDE with MiMo v2.5 free model
 - `opencode-optimization` — optimize OpenCode IDE configuration and workflows
 - `fullstack-workflow` — end-to-end full-stack development workflow for Next.js
@@ -74,25 +85,25 @@ This file is the entry point for any agent (opencode, future coding agents, or h
 
 Specialized agents for different domains. Use the right agent for the task.
 
-| Agent | File | Purpose |
-|-------|------|---------|
-| **Frontend** | `.agents/subagents/frontend.md` | React, Next.js, Tailwind, Framer Motion |
-| **Backend** | `.agents/subagents/backend.md` | API routes, server logic, data operations |
-| **Content** | `.agents/subagents/content.md` | Sanity CMS, schemas, GROQ queries |
-| **Security** | `.agents/subagents/security.md` | Security audits, vulnerability scanning |
-| **DevOps** | `.agents/subagents/devops.md` | Deployment, CI/CD, monitoring |
+| Agent        | File                            | Purpose                                   |
+| ------------ | ------------------------------- | ----------------------------------------- |
+| **Frontend** | `.agents/subagents/frontend.md` | React, Next.js, Tailwind, Framer Motion   |
+| **Backend**  | `.agents/subagents/backend.md`  | API routes, server logic, data operations |
+| **Content**  | `.agents/subagents/content.md`  | Sanity CMS, schemas, GROQ queries         |
+| **Security** | `.agents/subagents/security.md` | Security audits, vulnerability scanning   |
+| **DevOps**   | `.agents/subagents/devops.md`   | Deployment, CI/CD, monitoring             |
 
 ## Workflows
 
 Standardized workflows for common tasks. Follow these for consistency.
 
-| Workflow | File | When to Use |
-|----------|------|-------------|
-| **Bug Fix** | `.agents/workflows/bug-fix.md` | Finding and fixing bugs |
-| **Feature Dev** | `.agents/workflows/feature-development.md` | Implementing new features |
-| **Code Review** | `.agents/workflows/code-review.md` | Reviewing code changes |
-| **Portfolio Dev** | `.agents/workflows/portfolio-development.md` | Portfolio-specific development |
-| **MiMo Prompts** | `.agents/workflows/mimo-prompt-guide.md` | Optimizing prompts for MiMo v2.5 |
+| Workflow          | File                                         | When to Use                      |
+| ----------------- | -------------------------------------------- | -------------------------------- |
+| **Bug Fix**       | `.agents/workflows/bug-fix.md`               | Finding and fixing bugs          |
+| **Feature Dev**   | `.agents/workflows/feature-development.md`   | Implementing new features        |
+| **Code Review**   | `.agents/workflows/code-review.md`           | Reviewing code changes           |
+| **Portfolio Dev** | `.agents/workflows/portfolio-development.md` | Portfolio-specific development   |
+| **MiMo Prompts**  | `.agents/workflows/mimo-prompt-guide.md`     | Optimizing prompts for MiMo v2.5 |
 
 ## Home page sections
 
@@ -138,10 +149,35 @@ Local Python 3.8 is insufficient (3.10+ required). The CI pipeline is the primar
 - No comments in code unless asked
 - Follow the patterns established for: SWR for component-scoped data, `<JsonLd>` for JSON-LD, sandbox attribute on every iframe, stable React keys from data, `useMemo` on Context.Provider values
 
+## Blog Content Pipeline
+
+Local-first blog content system. All posts live as `.md` files in `content/blog/`.
+
+### Content directory
+
+- `content/blog/{slug}.md` — one file per post with YAML frontmatter
+- Frontmatter schema: `scripts/lib/frontmatter-schema.ts` (zod)
+- Types: `src/types/blog.ts` (Frontmatter interface)
+
+### Sync scripts
+
+- `npm run blog:diff` — compare local vs Sanity
+- `npm run blog:pull` — pull from Sanity to local
+- `npm run blog:push` — push local to Sanity (dry-run by default)
+- `npm run blog:import` — one-time import from Sanity
+
+### Workflow
+
+1. Write/edit posts as local MD files (use `blog-create` / `blog-edit` skills)
+2. Review with `blog-review` skill
+3. Sync with `blog-sync` skill
+4. Publish with `blog-publish` skill
+
 ## Vercel Web Interface Guidelines
 
 All UI code must follow the [Vercel Web Interface Guidelines](docs/design/vercel-web-interface-guidelines.md).
 Key rules:
+
 - Must: Full keyboard support, visible focus rings, `:focus-visible`
 - Must: Hit target ≥ 24px (mobile ≥ 44px)
 - Must: Loading buttons with spinner & original label
@@ -156,6 +192,7 @@ Key rules:
 - Never: `<div>`/`<span>` with click handlers for navigation
 
 Run the review command:
+
 ```
 curl -fsSL https://vercel.com/design/guidelines/install | bash
 ```
@@ -167,70 +204,72 @@ Full reference: `docs/design/vercel-web-interface-guidelines.md`
 MCP servers give your AI agent access to browser DevTools, component libraries, and more. Configuration is at `opencode.json` at the repo root.
 
 ### Core MCP Servers
-| Server | Config key | Purpose |
-|---|---|---|
-| **Chrome DevTools MCP** | `chrome-devtools` | Browser debugging, performance traces, screenshots, console inspection |
-| **21st.dev Magic MCP** | `@21st-dev/magic` | Generate UI components from natural language (API key required) |
-| **Magic UI MCP** | `@magicuidesign/mcp` | Animated components (marquee, bento, dock, globe, etc.) |
-| **GitHub MCP** | `github` | Issues, PRs, repos, code search, file management |
-| **Filesystem MCP** | `filesystem` | File read/write access with path restrictions |
-| **Sequential Thinking** | `sequential-thinking` | Structured reasoning for complex problems |
-| **Memory** | `memory` | Knowledge graph memory for persistent context |
-| **Brave Search** | `brave-search` | Web search for documentation and API references |
-| **Fetch** | `fetch` | Fetch and analyze web content |
-| **Puppeteer** | `puppeteer` | Advanced browser automation and screenshots |
-| **SQLite** | `sqlite` | Local database for caching and analytics |
-| **Sanity CMS** | `sanity-cms` | Direct Sanity CMS operations |
-| **Sentry** | `sentry` | Error tracking and performance monitoring |
-| **Vercel** | `vercel` | Deployment, edge functions, and analytics |
-| **Docker** | `docker` | Container management |
+
+| Server                  | Config key            | Purpose                                                                |
+| ----------------------- | --------------------- | ---------------------------------------------------------------------- |
+| **Chrome DevTools MCP** | `chrome-devtools`     | Browser debugging, performance traces, screenshots, console inspection |
+| **21st.dev Magic MCP**  | `@21st-dev/magic`     | Generate UI components from natural language (API key required)        |
+| **Magic UI MCP**        | `@magicuidesign/mcp`  | Animated components (marquee, bento, dock, globe, etc.)                |
+| **GitHub MCP**          | `github`              | Issues, PRs, repos, code search, file management                       |
+| **Filesystem MCP**      | `filesystem`          | File read/write access with path restrictions                          |
+| **Sequential Thinking** | `sequential-thinking` | Structured reasoning for complex problems                              |
+| **Memory**              | `memory`              | Knowledge graph memory for persistent context                          |
+| **Brave Search**        | `brave-search`        | Web search for documentation and API references                        |
+| **Fetch**               | `fetch`               | Fetch and analyze web content                                          |
+| **Puppeteer**           | `puppeteer`           | Advanced browser automation and screenshots                            |
+| **SQLite**              | `sqlite`              | Local database for caching and analytics                               |
+| **Sanity CMS**          | `sanity-cms`          | Direct Sanity CMS operations                                           |
+| **Sentry**              | `sentry`              | Error tracking and performance monitoring                              |
+| **Vercel**              | `vercel`              | Deployment, edge functions, and analytics                              |
+| **Docker**              | `docker`              | Container management                                                   |
 
 ### LSP Servers
-| Server | Extensions | Purpose |
-|---|---|---|
-| **TypeScript** | `.ts, .tsx, .js, .jsx` | Intelligent code completion and error detection |
-| **ESLint** | `.ts, .tsx, .js, .jsx` | Real-time linting and code quality |
-| **Prettier** | `.ts, .tsx, .js, .jsx, .css, .json, .md` | Code formatting |
-| **Tailwind CSS** | `.ts, .tsx, .js, .jsx, .css` | Class completion and validation |
-| **HTML** | `.html, .htm` | Markup validation and completion |
-| **CSS** | `.css, .scss, .less` | Style validation and completion |
-| **JSON** | `.json, .jsonc` | Schema validation and completion |
-| **Markdown** | `.md, .mdx` | Documentation editing |
-| **GraphQL** | `.graphql, .gql` | Schema validation and completion |
-| **YAML** | `.yaml, .yml` | Configuration file validation |
-| **Dockerfile** | `Dockerfile` | Container configuration |
-| **Prisma** | `.prisma` | Schema validation |
+
+| Server           | Extensions                               | Purpose                                         |
+| ---------------- | ---------------------------------------- | ----------------------------------------------- |
+| **TypeScript**   | `.ts, .tsx, .js, .jsx`                   | Intelligent code completion and error detection |
+| **ESLint**       | `.ts, .tsx, .js, .jsx`                   | Real-time linting and code quality              |
+| **Prettier**     | `.ts, .tsx, .js, .jsx, .css, .json, .md` | Code formatting                                 |
+| **Tailwind CSS** | `.ts, .tsx, .js, .jsx, .css`             | Class completion and validation                 |
+| **HTML**         | `.html, .htm`                            | Markup validation and completion                |
+| **CSS**          | `.css, .scss, .less`                     | Style validation and completion                 |
+| **JSON**         | `.json, .jsonc`                          | Schema validation and completion                |
+| **Markdown**     | `.md, .mdx`                              | Documentation editing                           |
+| **GraphQL**      | `.graphql, .gql`                         | Schema validation and completion                |
+| **YAML**         | `.yaml, .yml`                            | Configuration file validation                   |
+| **Dockerfile**   | `Dockerfile`                             | Container configuration                         |
+| **Prisma**       | `.prisma`                                | Schema validation                               |
 
 ## Agent Routing
 
 ### By Task Type
 
-| Task | Primary Skill | Secondary Skills |
-|------|---------------|------------------|
-| **New Component** | `component-api-scaffolding` | `frontend-design`, `ui-ux-pro-max` |
-| **API Endpoint** | `api-design` | `webhook-design` |
-| **Bug Fix** | `debugging-error-tracking` | `code-review`, `testing-workflow` |
-| **Performance** | `performance-optimization` | `performance-auditing` |
-| **Security** | `run-pentestagent` | `dependency-audit`, `ci-cd-security`, `csp-security-headers` |
-| **Deployment** | `deployment-infrastructure` | `cloudflare-workers`, `opennext-cloudflare`, `ci-cd-security` |
-| **Content** | `sanity-data-operations` | `add-a-project`, `add-a-blog-post`, `sanity-groq-query` |
-| **Testing** | `testing-workflow` | `code-review`, `react-doctor` |
-| **Documentation** | `technical-writing` | `content-review` |
-| **Analytics** | `analytics-integration` | `feature-flags` |
+| Task              | Primary Skill               | Secondary Skills                                              |
+| ----------------- | --------------------------- | ------------------------------------------------------------- |
+| **New Component** | `component-api-scaffolding` | `frontend-design`, `ui-ux-pro-max`                            |
+| **API Endpoint**  | `api-design`                | `webhook-design`                                              |
+| **Bug Fix**       | `debugging-error-tracking`  | `code-review`, `testing-workflow`                             |
+| **Performance**   | `performance-optimization`  | `performance-auditing`                                        |
+| **Security**      | `run-pentestagent`          | `dependency-audit`, `ci-cd-security`, `csp-security-headers`  |
+| **Deployment**    | `deployment-infrastructure` | `cloudflare-workers`, `opennext-cloudflare`, `ci-cd-security` |
+| **Content**       | `sanity-data-operations`    | `add-a-project`, `add-a-blog-post`, `sanity-groq-query`       |
+| **Testing**       | `testing-workflow`          | `code-review`, `react-doctor`                                 |
+| **Documentation** | `technical-writing`         | `content-review`                                              |
+| **Analytics**     | `analytics-integration`     | `feature-flags`                                               |
 
 ### By Component Area
 
-| Area | Skills |
-|------|--------|
-| **Hero Section** | `update-the-hero`, `frontend-design`, `ui-ux-pro-max` |
-| **Projects** | `add-a-project`, `component-api-scaffolding` |
-| **Blog** | `add-a-blog-post`, `seo-optimization` |
-| **Certifications** | `add-a-certification` |
-| **Experience** | `add-an-experience` |
-| **Gallery** | `frontend-design`, `component-api-scaffolding` |
-| **Contact** | `api-design`, `webhook-design` |
-| **API Routes** | `api-design` |
-| **Sanity Studio** | `sanity-schema-validator`, `sanity-data-operations`, `sanity-groq-query` |
+| Area               | Skills                                                                   |
+| ------------------ | ------------------------------------------------------------------------ |
+| **Hero Section**   | `update-the-hero`, `frontend-design`, `ui-ux-pro-max`                    |
+| **Projects**       | `add-a-project`, `component-api-scaffolding`                             |
+| **Blog**           | `add-a-blog-post`, `seo-optimization`                                    |
+| **Certifications** | `add-a-certification`                                                    |
+| **Experience**     | `add-an-experience`                                                      |
+| **Gallery**        | `frontend-design`, `component-api-scaffolding`                           |
+| **Contact**        | `api-design`, `webhook-design`                                           |
+| **API Routes**     | `api-design`                                                             |
+| **Sanity Studio**  | `sanity-schema-validator`, `sanity-data-operations`, `sanity-groq-query` |
 
 ## Testing
 

@@ -9,6 +9,10 @@ Use this skill when the user wants to add a new `post` document. The
 post will appear on `/blog` (if published) and at `/blog/[slug]` for
 the public.
 
+> **Recommended approach:** For local-first authoring with review before publishing,
+> use the `blog-create` skill instead. This skill describes the Sanity Studio workflow
+> as a fallback when Studio access is preferred.
+
 ## When to use this skill
 
 - Use this when the user says "write a blog post", "publish a post",
