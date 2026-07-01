@@ -61,16 +61,18 @@ export const HackedText = ({ text, className, charset = LETTERS }: HackedTextPro
   }, [runHack])
 
   return (
-    <span
-      className={cn('cursor-default', className)}
+    <button
+      type="button"
+      className={cn(
+        'cursor-default bg-transparent border-none p-0 font-[inherit] text-[inherit]',
+        className
+      )}
       data-value={text}
       onMouseOver={runHack}
       onFocus={runHack}
-      tabIndex={0}
-      role="button"
       aria-label={text}
     >
       {displayText}
-    </span>
+    </button>
   )
 }
