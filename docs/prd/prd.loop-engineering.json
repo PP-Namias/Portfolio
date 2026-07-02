@@ -5,6 +5,7 @@
   "owner": "Jhon Keneth Ryan Namias (PP Namias)",
   "contact": "pp.namias@gmail.com",
   "lastUpdated": "2026-07-03",
+  "completedAt": "2026-07-03",
   "branch": "dev",
   "links": {
     "marketing": "https://namias.tech",
@@ -164,7 +165,7 @@
     {
       "id": "EPIC-0",
       "title": "Core state files",
-      "status": "planned",
+      "status": "done",
       "summary": "Create the four foundational files: STATE.md, LOOP.md, loop-budget.md, loop-run-log.md. These are the spine of the loop-engineering system.",
       "value": "high",
       "complexity": "low",
@@ -172,28 +173,28 @@
         {
           "id": "S-0.1",
           "title": "Create STATE.md with initial structure",
-          "done": false,
+          "done": true,
           "details": "Create STATE.md at repo root. Sections: Last run timestamp, High Priority (active loops waiting on human), Watch List (items to monitor), Recent Noise (ignored this run), Run log reference. Initialize with current date and empty sections.",
           "files": ["STATE.md"]
         },
         {
           "id": "S-0.2",
           "title": "Create LOOP.md documenting active loops",
-          "done": false,
+          "done": true,
           "details": "Create LOOP.md at repo root. Document each loop: name, cadence, skill/workflow file, state reference, phase (L1/L2/L3), handoff rules. Start with 3 loops: Daily Triage, PR Babysitter, Dependency Sweeper. Include multi-loop priority ordering.",
           "files": ["LOOP.md"]
         },
         {
           "id": "S-0.3",
           "title": "Create loop-budget.md with token caps",
-          "done": false,
+          "done": true,
           "details": "Create loop-budget.md at repo root. Table format: loop name, max runs/day, max tokens/day, max sub-agent spawns/run. Include budget exceed handling (pause, log, open issue). Include kill switch documentation.",
           "files": ["loop-budget.md"]
         },
         {
           "id": "S-0.4",
           "title": "Create loop-run-log.md with append-only format",
-          "done": false,
+          "done": true,
           "details": "Create loop-run-log.md at repo root. Header explaining the format. Initial entry with today's date and 'System initialized'. Workflows will append entries via echo >> loop-run-log.md.",
           "files": ["loop-run-log.md"]
         }
@@ -202,7 +203,7 @@
     {
       "id": "EPIC-1",
       "title": "Daily Triage workflow",
-      "status": "planned",
+      "status": "done",
       "summary": "Create .github/workflows/daily-triage.yml — an L1 report-only loop that runs on weekday mornings, checks repo health, and updates STATE.md with findings.",
       "value": "high",
       "complexity": "medium",
@@ -210,28 +211,28 @@
         {
           "id": "S-1.1",
           "title": "Create daily-triage.yml workflow file",
-          "done": false,
+          "done": true,
           "details": "Create .github/workflows/daily-triage.yml. Schedule: cron weekday mornings (e.g. 8am UTC). Trigger: schedule + manual workflow_dispatch. Steps: checkout, check for loop-pause-all label, run npm run lint, run npm run test -- --run, run npm run doctor -- --json, check npm audit, check open issues/PRs count, append summary to loop-run-log.md, update STATE.md with findings. All steps use existing npm scripts.",
           "files": [".github/workflows/daily-triage.yml"]
         },
         {
           "id": "S-1.2",
           "title": "Add loop-pause-all label check to workflow",
-          "done": false,
+          "done": true,
           "details": "Add a step at the start of daily-triage.yml that checks if the loop-pause-all label exists on the repo. If present, skip all subsequent steps and log 'Paused by loop-pause-all label' to loop-run-log.md.",
           "files": [".github/workflows/daily-triage.yml"]
         },
         {
           "id": "S-1.3",
           "title": "Add STATE.md update step",
-          "done": false,
+          "done": true,
           "details": "Add a step that generates the STATE.md content from workflow outputs. Use a script or inline bash to overwrite STATE.md sections: Last run timestamp, High Priority items from failed checks, Watch List from dependency warnings, Recent Noise from ignored items.",
           "files": [".github/workflows/daily-triage.yml"]
         },
         {
           "id": "S-1.4",
           "title": "Add loop-run-log.md append step",
-          "done": false,
+          "done": true,
           "details": "Add a step that appends a timestamped entry to loop-run-log.md with: date, loop name (daily-triage), summary of findings, actions taken (report only), estimated token cost (low for L1).",
           "files": [".github/workflows/daily-triage.yml"]
         }
@@ -240,7 +241,7 @@
     {
       "id": "EPIC-2",
       "title": "PR Babysitter workflow",
-      "status": "planned",
+      "status": "done",
       "summary": "Create .github/workflows/pr-babysitter.yml — an L2 assisted loop that triggers on PR events, runs quality checks, and suggests fixes as PR comments.",
       "value": "high",
       "complexity": "medium",
@@ -248,28 +249,28 @@
         {
           "id": "S-2.1",
           "title": "Create pr-babysitter.yml workflow file",
-          "done": false,
+          "done": true,
           "details": "Create .github/workflows/pr-babysitter.yml. Trigger: pull_request opened, synchronize, reopened. Steps: checkout PR branch, check loop-pause-all label, run npm run lint (capture output), run npm run test -- --run (capture output), run npm run doctor -- --json (capture output), run npx tsc --noEmit (capture output). If any step fails, post a PR comment with the failure summary and suggested fix.",
           "files": [".github/workflows/pr-babysitter.yml"]
         },
         {
           "id": "S-2.2",
           "title": "Add PR comment posting step",
-          "done": false,
+          "done": true,
           "details": "Use actions/github-script or similar to post a comment on the PR when checks fail. Comment format: emoji status, failed check name, error summary, suggested fix (if deterministic, e.g. 'run npm run lint --fix'), link to full workflow run. Only comment on first failure; don't spam on every push.",
           "files": [".github/workflows/pr-babysitter.yml"]
         },
         {
           "id": "S-2.3",
           "title": "Add react-doctor score to PR comment",
-          "done": false,
+          "done": true,
           "details": "When react-doctor score drops below 100, include the score and specific findings in the PR comment. Reference the fix-react-doctor-finding skill for resolution steps.",
           "files": [".github/workflows/pr-babysitter.yml"]
         },
         {
           "id": "S-2.4",
           "title": "Add run log append for PR babysitter",
-          "done": false,
+          "done": true,
           "details": "Append entry to loop-run-log.md for each PR check: date, loop name (pr-babysitter), PR number, checks run, result (pass/fail), actions taken (comment posted or none).",
           "files": [".github/workflows/pr-babysitter.yml"]
         }
@@ -278,7 +279,7 @@
     {
       "id": "EPIC-3",
       "title": "Dependency Sweeper workflow",
-      "status": "planned",
+      "status": "done",
       "summary": "Create .github/workflows/dependency-sweeper.yml — an L2 patch-only loop that checks for vulnerable/outdated dependencies and creates PRs for safe updates.",
       "value": "high",
       "complexity": "medium",
@@ -286,35 +287,35 @@
         {
           "id": "S-3.1",
           "title": "Create dependency-sweeper.yml workflow file",
-          "done": false,
+          "done": true,
           "details": "Create .github/workflows/dependency-sweeper.yml. Schedule: every 6 hours. Trigger: schedule + manual workflow_dispatch. Steps: checkout, check loop-pause-all label, run npm audit --json, run npm outdated --json (parse for patch updates only), filter to patch semver bumps only, create a branch and PR for each eligible update. Major/minor updates go to STATE.md watch list.",
           "files": [".github/workflows/dependency-sweeper.yml"]
         },
         {
           "id": "S-3.2",
           "title": "Add patch-only filtering logic",
-          "done": false,
+          "done": true,
           "details": "Write a bash/node step that parses npm outdated output and filters to only patch version bumps (e.g. 1.2.3 -> 1.2.4). Major and minor updates are logged to STATE.md watch list but not auto-PR'd. Include denylist for packages that should never be auto-updated (e.g. next, react, sanity packages).",
           "files": [".github/workflows/dependency-sweeper.yml"]
         },
         {
           "id": "S-3.3",
           "title": "Add PR creation step",
-          "done": false,
+          "done": true,
           "details": "Use peter-evans/create-pull-request or similar to create a PR for each eligible patch update. PR title: 'chore(deps): bump {package} from {old} to {new}'. PR body: changelog link, test results, risk assessment. Label: 'dependencies'.",
           "files": [".github/workflows/dependency-sweeper.yml"]
         },
         {
           "id": "S-3.4",
           "title": "Add STATE.md watch list update",
-          "done": false,
+          "done": true,
           "details": "When major/minor updates are detected, append them to the Watch List section of STATE.md with a note like 'Major update available: {package} {old} -> {new}. Manual review required.'",
           "files": [".github/workflows/dependency-sweeper.yml"]
         },
         {
           "id": "S-3.5",
           "title": "Add run log append for dependency sweeper",
-          "done": false,
+          "done": true,
           "details": "Append entry to loop-run-log.md: date, loop name (dependency-sweeper), patches found, PRs created, majors/minor logged to watch list, estimated token cost (medium).",
           "files": [".github/workflows/dependency-sweeper.yml"]
         }
@@ -323,7 +324,7 @@
     {
       "id": "EPIC-4",
       "title": "Loop integration with existing systems",
-      "status": "planned",
+      "status": "done",
       "summary": "Wire the loop-engineering files into the existing skills, AGENTS.md, and feature flags system. Ensure loops are discoverable by agents.",
       "value": "medium",
       "complexity": "low",
@@ -331,21 +332,21 @@
         {
           "id": "S-4.1",
           "title": "Update AGENTS.md with loop-engineering section",
-          "done": false,
+          "done": true,
           "details": "Add a 'Loop Engineering' section to AGENTS.md documenting: STATE.md location, LOOP.md location, loop-budget.md, loop-run-log.md, kill switch (loop-pause-all label), how agents should read STATE.md before starting work, and the three active loops.",
           "files": ["AGENTS.md"]
         },
         {
           "id": "S-4.2",
           "title": "Add loop-engineering skill",
-          "done": false,
+          "done": true,
           "details": "Create .agents/skills/loop-engineering/SKILL.md documenting: what loop engineering is, the five building blocks, how to read STATE.md, how to append to loop-run-log.md, budget limits, kill switch, and the three active patterns. Reference the loop-engineering repo for advanced patterns.",
           "files": [".agents/skills/loop-engineering/SKILL.md"]
         },
         {
           "id": "S-4.3",
           "title": "Add loop-related npm scripts",
-          "done": false,
+          "done": true,
           "details": "Add to package.json scripts: 'loop:audit' (echoes current loop readiness), 'loop:status' (cat STATE.md), 'loop:log' (tail loop-run-log.md). These are convenience wrappers, not new tools.",
           "files": ["package.json"]
         }
@@ -354,7 +355,7 @@
     {
       "id": "EPIC-5",
       "title": "Tests for loop workflows",
-      "status": "planned",
+      "status": "done",
       "summary": "Add tests validating the loop-engineering files exist, have correct structure, and workflows reference valid npm scripts.",
       "value": "medium",
       "complexity": "low",
@@ -362,28 +363,28 @@
         {
           "id": "S-5.1",
           "title": "Add STATE.md structure test",
-          "done": false,
+          "done": true,
           "details": "Add a test that validates STATE.md exists at repo root, contains required sections (Last run, High Priority, Watch List, Recent Noise), and is valid markdown.",
           "files": ["tests/loop-engineering.test.ts"]
         },
         {
           "id": "S-5.2",
           "title": "Add LOOP.md structure test",
-          "done": false,
+          "done": true,
           "details": "Add a test that validates LOOP.md exists, contains at least 3 loop entries, each with cadence, skill, and phase documented.",
           "files": ["tests/loop-engineering.test.ts"]
         },
         {
           "id": "S-5.3",
           "title": "Add loop-budget.md structure test",
-          "done": false,
+          "done": true,
           "details": "Add a test that validates loop-budget.md exists, contains a table with at least 3 loops, each with max runs/day and max tokens/day defined.",
           "files": ["tests/loop-engineering.test.ts"]
         },
         {
           "id": "S-5.4",
           "title": "Add workflow file validation tests",
-          "done": false,
+          "done": true,
           "details": "Add tests that validate each loop workflow YAML file exists, is valid YAML, contains the loop-pause-all label check, and references only existing npm scripts.",
           "files": ["tests/loop-engineering.test.ts"]
         }
@@ -392,7 +393,7 @@
     {
       "id": "EPIC-6",
       "title": "Verification",
-      "status": "planned",
+      "status": "done",
       "summary": "Run the full quality gate to ensure loop-engineering additions don't break anything.",
       "value": "high",
       "complexity": "low",
@@ -400,21 +401,21 @@
         {
           "id": "S-6.1",
           "title": "Run tsc, eslint, vitest",
-          "done": false,
+          "done": true,
           "details": "Run: npx tsc --noEmit, npm run lint, npm run test -- --run. All must pass with the new loop-engineering tests included.",
           "files": []
         },
         {
           "id": "S-6.2",
           "title": "Run react-doctor",
-          "done": false,
+          "done": true,
           "details": "Run npm run doctor. Score must stay at 100/100. No new findings from the added files.",
           "files": []
         },
         {
           "id": "S-6.3",
           "title": "Validate workflow YAML syntax",
-          "done": false,
+          "done": true,
           "details": "Run actionlint or yamllint on all three new workflow files to catch syntax errors.",
           "files": []
         }
@@ -422,8 +423,8 @@
     }
   ],
   "phases": [
-    { "id": "PHASE-1", "label": "Core state files", "epics": ["EPIC-0"], "status": "in-progress" },
-    { "id": "PHASE-2", "label": "Daily Triage workflow", "epics": ["EPIC-1"], "status": "planned" },
+    { "id": "PHASE-1", "label": "Core state files", "epics": ["EPIC-0"], "status": "done" },
+    { "id": "PHASE-2", "label": "Daily Triage workflow", "epics": ["EPIC-1"], "status": "done" },
     {
       "id": "PHASE-3",
       "label": "PR Babysitter workflow",
@@ -436,9 +437,9 @@
       "epics": ["EPIC-3"],
       "status": "planned"
     },
-    { "id": "PHASE-5", "label": "Integration & skills", "epics": ["EPIC-4"], "status": "planned" },
-    { "id": "PHASE-6", "label": "Tests", "epics": ["EPIC-5"], "status": "planned" },
-    { "id": "PHASE-7", "label": "Verification", "epics": ["EPIC-6"], "status": "planned" }
+    { "id": "PHASE-5", "label": "Integration & skills", "epics": ["EPIC-4"], "status": "done" },
+    { "id": "PHASE-6", "label": "Tests", "epics": ["EPIC-5"], "status": "done" },
+    { "id": "PHASE-7", "label": "Verification", "epics": ["EPIC-6"], "status": "done" }
   ],
   "openQuestions": [
     "Should the Daily Triage workflow also check Sanity studio health, or keep it focused on the main Next.js app?",
