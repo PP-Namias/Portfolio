@@ -1,0 +1,371 @@
+{
+  "project": "Namias Portfolio — Full System Audit",
+  "codeName": "system-audit",
+  "version": "0.1.0",
+  "owner": "Jhon Keneth Ryan Namias (PP Namias)",
+  "contact": "pp.namias@gmail.com",
+  "lastUpdated": "2026-07-03",
+  "branch": "dev",
+  "links": {
+    "marketing": "https://namias.tech",
+    "studio": "https://namias-cms.sanity.studio",
+    "repo": "https://github.com/PP-Namias/Portfolio"
+  },
+  "summary": "Comprehensive audit of the entire portfolio system covering: (1) loop-engineering workflow integrity, (2) security posture (CSP, rate limiting, action pinning, secrets), (3) smart caching layers (L1/L2/SWR/ISR/service worker), (4) automated test coverage gaps, (5) workflow infrastructure validation, and (6) documentation accuracy. Every finding gets a test or validation. Every fix gets its own commit.",
+  "narrative": "The portfolio has 24 GitHub Actions workflows, 3 loop-engineering loops, 70 test files, a multi-layer cache system, and extensive security configurations. But no single audit has validated that all these systems work together correctly. This PRD creates a systematic audit that: tests every loop-engineering file and workflow, validates security configurations are effective (not just present), confirms caching layers actually cache, identifies test coverage gaps, and checks documentation accuracy. Each audit finding becomes a test. Each fix becomes a commit. The goal is a provably-correct system with automated regression prevention.",
+  "principles": [
+    "Audit everything, assume nothing — validate that configs are correct, not just present",
+    "Every finding gets a test — automated regression prevention, not just a report",
+    "Every fix gets a commit — one slice per change for maximum git history",
+    "Security first — CSP weaknesses, rate limiter gaps, and action pinning inconsistencies are high priority",
+    "Cache correctness — verify that caching layers actually cache and invalidation works",
+    "Documentation accuracy — AGENTS.md must match reality (versions, counts, references)",
+    "No regressions — all existing 708+ tests must continue passing"
+  ],
+  "personas": [
+    {
+      "id": "P-OWNER",
+      "label": "PP Namias (owner)",
+      "goals": [
+        "Know that every system (loops, security, caching, tests) is working correctly",
+        "Have automated tests preventing regressions",
+        "Fix security weaknesses before they are exploited",
+        "Keep documentation accurate and trustworthy"
+      ],
+      "painPointsToday": [
+        "No single audit validating all systems work together",
+        "Documentation has stale version numbers and test counts",
+        "Rate limiting is ineffective without Upstash in production",
+        "Loop-engineering workflows use tag-pinned actions (supply-chain risk)",
+        "CSP includes unsafe-inline for scripts"
+      ]
+    },
+    {
+      "id": "P-AGENT",
+      "label": "OpenCode / future coding agent",
+      "goals": [
+        "Find accurate documentation in AGENTS.md",
+        "Trust that STATE.md reflects actual loop status",
+        "Know which security configs are active and effective",
+        "Understand the caching layers and their TTLs"
+      ],
+      "painPointsToday": [
+        "AGENTS.md says react-doctor@0.4.0 but actual is 0.5.8",
+        "AGENTS.md says 42 test files but actual is 70",
+        "STATE.md says 'no active loops' but all 3 are implemented",
+        "No test coverage for rate limiter effectiveness without Upstash"
+      ]
+    }
+  ],
+  "successMetrics": {
+    "primary": [
+      "All 24 workflows validated: correct triggers, valid YAML, SHA-pinned actions",
+      "All 3 loop-engineering files tested: STATE.md, LOOP.md, loop-budget.md, loop-run-log.md",
+      "Security audit complete: CSP weakness documented, rate limiter gap identified, action pinning fixed",
+      "Caching audit complete: L1/L2/SWR/ISR/service worker validated with tests",
+      "Test coverage gaps identified and new tests added",
+      "Documentation accuracy verified and corrected",
+      "All existing tests (708+) still pass after fixes",
+      "New audit tests added to prevent regressions"
+    ],
+    "secondary": [
+      "Every workflow uses SHA-pinned actions (no tag references)",
+      "Rate limiter has documented fallback behavior",
+      "CSP nonce-based approach documented as future improvement",
+      "AGENTS.md version numbers and test counts match reality",
+      "STATE.md accurately reflects loop status",
+      "Service worker cache version is documented"
+    ]
+  },
+  "nonGoals": [
+    "Rewrite the entire CSP to remove unsafe-inline (requires Next.js framework changes)",
+    "Implement Upstash rate limiting (separate infrastructure task)",
+    "Add new loop-engineering patterns (defer to follow-up)",
+    "Change the test framework or coverage thresholds",
+    "Modify the Cloudflare deployment pipeline"
+  ],
+  "designDecisions": [
+    {
+      "id": "DD-1",
+      "topic": "Audit approach",
+      "choice": "Write audit tests that validate system correctness, not just file existence. Each test checks behavior, not just presence.",
+      "rationale": "File existence tests are weak — they pass even if the file content is wrong. Behavior tests catch real issues."
+    },
+    {
+      "id": "DD-2",
+      "topic": "Fix strategy",
+      "choice": "Create a separate fix PRD after audit completes. Each fix is one commit. No batch fixes.",
+      "rationale": "Separating audit from fix keeps the audit clean and the fixes auditable. One commit per fix is maximally revertable."
+    },
+    {
+      "id": "DD-3",
+      "topic": "Action pinning",
+      "choice": "Pin all GitHub Actions to SHA hashes, matching the convention used by the other 21 workflows.",
+      "rationale": "Supply-chain security. Tag references can be moved; SHA pins cannot. zizmor flags this."
+    },
+    {
+      "id": "DD-4",
+      "topic": "Documentation fixes",
+      "choice": "Correct AGENTS.md version numbers and test counts to match actual values.",
+      "rationale": "Stale documentation erodes trust. Agents relying on AGENTS.md will make wrong assumptions."
+    },
+    {
+      "id": "DD-5",
+      "topic": "Rate limiter",
+      "choice": "Document the fallback behavior and add a test validating in-memory mode works. Do not implement Upstash (separate task).",
+      "rationale": "The rate limiter works — it just degrades gracefully without Upstash. Documenting this is sufficient for the audit."
+    },
+    {
+      "id": "DD-6",
+      "topic": "CSP improvement",
+      "choice": "Document the unsafe-inline weakness and nonce-based improvement path. Do not implement (requires Next.js changes).",
+      "rationale": "Full CSP overhaul is a separate project. The audit identifies it; the fix PRD can plan it."
+    }
+  ],
+  "epics": [
+    {
+      "id": "EPIC-0",
+      "title": "Audit workflow infrastructure",
+      "status": "planned",
+      "summary": "Validate all 24 GitHub Actions workflows: correct triggers, valid YAML, SHA-pinned actions, referenced scripts exist, no broken cross-references.",
+      "value": "high",
+      "complexity": "medium",
+      "stories": [
+        {
+          "id": "S-0.1",
+          "title": "Create workflow validation test suite",
+          "done": false,
+          "details": "Create src/__tests__/audit/workflow-audit.test.ts. Test that each workflow YAML file: (a) exists, (b) is valid YAML, (c) has correct trigger types, (d) references only existing npm scripts, (e) uses SHA-pinned actions (no tag references like @v4).",
+          "files": ["src/__tests__/audit/workflow-audit.test.ts"]
+        },
+        {
+          "id": "S-0.2",
+          "title": "Create action pinning audit test",
+          "done": false,
+          "details": "Create src/__tests__/audit/action-pinning.test.ts. Parse all workflow YAML files, extract all 'uses:' references, validate each is either a local path (./) or a SHA-pinned reference (contains full SHA hash). Flag any tag-based references (@v4, @v7, etc).",
+          "files": ["src/__tests__/audit/action-pinning.test.ts"]
+        },
+        {
+          "id": "S-0.3",
+          "title": "Create workflow cross-reference audit test",
+          "done": false,
+          "details": "Create src/__tests__/audit/workflow-crossref.test.ts. Validate that: problem-detection-advisor.yml monitors workflows that exist, remediation-approval-gate.yml monitors workflows that exist, auto-approve.yml checks job names that match actual job names in referenced workflows.",
+          "files": ["src/__tests__/audit/workflow-crossref.test.ts"]
+        }
+      ]
+    },
+    {
+      "id": "EPIC-1",
+      "title": "Loop-engineering integrity audit",
+      "status": "planned",
+      "summary": "Validate all loop-engineering files and workflows are correct, consistent, and functional.",
+      "value": "high",
+      "complexity": "medium",
+      "stories": [
+        {
+          "id": "S-1.1",
+          "title": "Enhance loop-engineering tests with behavior checks",
+          "done": false,
+          "details": "Update src/__tests__/loop-engineering.test.ts to add behavior tests: (a) STATE.md content is not stale (contains actual loop names, not placeholder text), (b) LOOP.md cadence values are valid cron expressions, (c) loop-budget.md token caps are positive integers, (d) loop-run-log.md format matches the documented schema.",
+          "files": ["src/__tests__/loop-engineering.test.ts"]
+        },
+        {
+          "id": "S-1.2",
+          "title": "Create loop workflow behavior audit test",
+          "done": false,
+          "details": "Create src/__tests__/audit/loop-workflow-audit.test.ts. For each loop workflow: validate the kill switch step exists and checks the correct label, validate STATE.md generation step produces valid markdown, validate run log append step uses correct format.",
+          "files": ["src/__tests__/audit/loop-workflow-audit.test.ts"]
+        },
+        {
+          "id": "S-1.3",
+          "title": "Create loop consistency audit test",
+          "done": false,
+          "details": "Create src/__tests__/audit/loop-consistency.test.ts. Cross-validate: (a) every loop in LOOP.md has a matching workflow file, (b) every loop workflow references the correct loop name in run log entries, (c) loop-budget.md lists every loop in LOOP.md, (d) STATE.md references match actual workflow file names.",
+          "files": ["src/__tests__/audit/loop-consistency.test.ts"]
+        }
+      ]
+    },
+    {
+      "id": "EPIC-2",
+      "title": "Security audit",
+      "status": "planned",
+      "summary": "Audit security configurations: CSP headers, rate limiting, action pinning, secret handling, middleware security.",
+      "value": "high",
+      "complexity": "high",
+      "stories": [
+        {
+          "id": "S-2.1",
+          "title": "Create CSP audit test",
+          "done": false,
+          "details": "Create src/__tests__/audit/csp-audit.test.ts. Validate: (a) CSP header is present in next.config.js, (b) report-uri endpoint is configured, (c) script-src includes 'self', (d) frame-ancestors is restricted, (e) document the unsafe-inline weakness with a TODO comment for nonce-based approach.",
+          "files": ["src/__tests__/audit/csp-audit.test.ts"]
+        },
+        {
+          "id": "S-2.2",
+          "title": "Create rate limiter audit test",
+          "done": false,
+          "details": "Create src/__tests__/audit/rate-limiter-audit.test.ts. Validate: (a) rate limiter is imported in middleware, (b) Upstash fallback to in-memory is documented, (c) rate limit values are reasonable (not 0 or Infinity), (d) test that in-memory mode works correctly.",
+          "files": ["src/__tests__/audit/rate-limiter-audit.test.ts"]
+        },
+        {
+          "id": "S-2.3",
+          "title": "Create security headers audit test",
+          "done": false,
+          "details": "Create src/__tests__/audit/security-headers-audit.test.ts. Validate: (a) HSTS header is present with max-age >= 1 year, (b) X-Content-Type-Options is nosniff, (c) X-Powered-By is suppressed, (d) Referrer-Policy is set, (e) Permissions-Policy restricts camera/microphone/geolocation.",
+          "files": ["src/__tests__/audit/security-headers-audit.test.ts"]
+        },
+        {
+          "id": "S-2.4",
+          "title": "Create secret handling audit test",
+          "done": false,
+          "details": "Create src/__tests__/audit/secret-handling-audit.test.ts. Validate: (a) .env.local is in .gitignore, (b) .env.example exists and documents required vars, (c) no hardcoded secrets in source files (grep for patterns), (d) API key comparison uses timing-safe comparison.",
+          "files": ["src/__tests__/audit/secret-handling-audit.test.ts"]
+        }
+      ]
+    },
+    {
+      "id": "EPIC-3",
+      "title": "Caching audit",
+      "status": "planned",
+      "summary": "Audit all caching layers: L1 in-memory, L2 Upstash Redis, SWR configuration, ISR, service worker, Next.js cache headers.",
+      "value": "high",
+      "complexity": "medium",
+      "stories": [
+        {
+          "id": "S-3.1",
+          "title": "Create L1 cache audit test",
+          "done": false,
+          "details": "Create src/__tests__/audit/cache-l1-audit.test.ts. Validate: (a) cache.ts exports set/get/delete/has functions, (b) TTL default is reasonable (60-600s), (c) stale-while-revalidate is implemented, (d) cache respects max size limit, (e) cache cleanup works.",
+          "files": ["src/__tests__/audit/cache-l1-audit.test.ts"]
+        },
+        {
+          "id": "S-3.2",
+          "title": "Create SWR config audit test",
+          "done": false,
+          "details": "Create src/__tests__/audit/swr-config-audit.test.ts. Validate: (a) SWR config exports correct dedupingInterval, (b) revalidateOnFocus is configured, (c) errorRetryCount is set, (d) keepPreviousData is configured.",
+          "files": ["src/__tests__/audit/swr-config-audit.test.ts"]
+        },
+        {
+          "id": "S-3.3",
+          "title": "Create service worker audit test",
+          "done": false,
+          "details": "Create src/__tests__/audit/service-worker-audit.test.ts. Validate: (a) public/sw.js exists, (b) cache version is documented, (c) static assets are pre-cached, (d) navigation requests use network-first strategy, (e) offline fallback exists.",
+          "files": ["src/__tests__/audit/service-worker-audit.test.ts"]
+        },
+        {
+          "id": "S-3.4",
+          "title": "Create Next.js cache headers audit test",
+          "done": false,
+          "details": "Create src/__tests__/audit/nextjs-cache-audit.test.ts. Validate: (a) next.config.js has cache headers for _next/static, (b) fonts have immutable cache, (c) favicon has appropriate cache, (d) stale-while-revalidate is used where appropriate.",
+          "files": ["src/__tests__/audit/nextjs-cache-audit.test.ts"]
+        }
+      ]
+    },
+    {
+      "id": "EPIC-4",
+      "title": "Test coverage audit",
+      "status": "planned",
+      "summary": "Identify test coverage gaps and add tests for untested critical paths.",
+      "value": "high",
+      "complexity": "medium",
+      "stories": [
+        {
+          "id": "S-4.1",
+          "title": "Create test inventory audit test",
+          "done": false,
+          "details": "Create src/__tests__/audit/test-inventory.test.ts. Validate: (a) test count matches expected minimum (70+ files), (b) critical paths have tests (middleware, API routes, caching, security), (c) no test files are empty, (d) vitest config thresholds are reasonable.",
+          "files": ["src/__tests__/audit/test-inventory.test.ts"]
+        },
+        {
+          "id": "S-4.2",
+          "title": "Create middleware coverage audit test",
+          "done": false,
+          "details": "Create src/__tests__/audit/middleware-coverage.test.ts. Validate: (a) bot-blocker has tests, (b) rate-limiter has tests, (c) content-type validation has tests, (d) middleware integration has tests.",
+          "files": ["src/__tests__/audit/middleware-coverage.test.ts"]
+        }
+      ]
+    },
+    {
+      "id": "EPIC-5",
+      "title": "Documentation accuracy audit",
+      "status": "planned",
+      "summary": "Validate AGENTS.md, STATE.md, and other documentation match actual system state.",
+      "value": "medium",
+      "complexity": "low",
+      "stories": [
+        {
+          "id": "S-5.1",
+          "title": "Create documentation accuracy audit test",
+          "done": false,
+          "details": "Create src/__tests__/audit/docs-accuracy.test.ts. Validate: (a) AGENTS.md react-doctor version matches package.json, (b) AGENTS.md test count matches actual test file count, (c) AGENTS.md workflow references match actual workflow files, (d) STATE.md sections exist and are populated.",
+          "files": ["src/__tests__/audit/docs-accuracy.test.ts"]
+        },
+        {
+          "id": "S-5.2",
+          "title": "Create PRD status audit test",
+          "done": false,
+          "details": "Create src/__tests__/audit/prd-status.test.ts. Validate: (a) all PRD files in docs/prd/ have valid JSON, (b) PRD story counts match actual 'done' counts, (c) no PRD references non-existent files.",
+          "files": ["src/__tests__/audit/prd-status.test.ts"]
+        }
+      ]
+    },
+    {
+      "id": "EPIC-6",
+      "title": "Create fix PRD",
+      "status": "planned",
+      "summary": "After audit completes, create docs/prd/prd.system-audit-fixes.json documenting all findings and planned fixes.",
+      "value": "high",
+      "complexity": "low",
+      "stories": [
+        {
+          "id": "S-6.1",
+          "title": "Create fix PRD from audit findings",
+          "done": false,
+          "details": "Create docs/prd/prd.system-audit-fixes.json. For each audit finding: document the issue, the fix approach, the affected files, and the verification test. Group by priority (high/medium/low).",
+          "files": ["docs/prd/prd.system-audit-fixes.json"]
+        }
+      ]
+    },
+    {
+      "id": "EPIC-7",
+      "title": "Verification",
+      "status": "planned",
+      "summary": "Run the full quality gate: tsc, eslint, vitest (including new audit tests), react-doctor.",
+      "value": "high",
+      "complexity": "low",
+      "stories": [
+        {
+          "id": "S-7.1",
+          "title": "Run tsc, eslint, vitest",
+          "done": false,
+          "details": "Run: npx tsc --noEmit, npm run lint, npm run test -- --run. All must pass with the new audit tests included.",
+          "files": []
+        },
+        {
+          "id": "S-7.2",
+          "title": "Run react-doctor",
+          "done": false,
+          "details": "Run npm run doctor. No new findings from the added audit test files.",
+          "files": []
+        }
+      ]
+    }
+  ],
+  "phases": [
+    { "id": "PHASE-1", "label": "Audit PRD", "epics": ["EPIC-0"], "status": "in-progress" },
+    { "id": "PHASE-2", "label": "Workflow audit", "epics": ["EPIC-0"], "status": "planned" },
+    { "id": "PHASE-3", "label": "Loop audit", "epics": ["EPIC-1"], "status": "planned" },
+    { "id": "PHASE-4", "label": "Security audit", "epics": ["EPIC-2"], "status": "planned" },
+    { "id": "PHASE-5", "label": "Cache audit", "epics": ["EPIC-3"], "status": "planned" },
+    { "id": "PHASE-6", "label": "Test coverage audit", "epics": ["EPIC-4"], "status": "planned" },
+    { "id": "PHASE-7", "label": "Documentation audit", "epics": ["EPIC-5"], "status": "planned" },
+    { "id": "PHASE-8", "label": "Fix PRD", "epics": ["EPIC-6"], "status": "planned" },
+    { "id": "PHASE-9", "label": "Verification", "epics": ["EPIC-7"], "status": "planned" }
+  ],
+  "openQuestions": [
+    "Should the audit tests run in CI or only locally?",
+    "Should we create a dedicated audit workflow that runs all audit tests on a schedule?",
+    "Should the fix PRD include estimated effort for each fix?",
+    "Should we add a 'security audit' label to the fix PRs for tracking?"
+  ]
+}
