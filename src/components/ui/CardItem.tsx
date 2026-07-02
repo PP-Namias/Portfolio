@@ -39,9 +39,9 @@ export const CardItem = ({
     }
   }
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentionally re-runs on hover state only
   useEffect(() => {
     handleAnimations()
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- intentionally re-runs on hover state only
   }, [isMouseEntered])
 
   return (

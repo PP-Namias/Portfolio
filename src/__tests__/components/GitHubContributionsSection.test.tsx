@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { render, screen, waitFor } from '@testing-library/react'
+import { SWRConfig } from 'swr'
 import React from 'react'
 
 vi.mock('framer-motion', () => {
@@ -33,6 +34,7 @@ vi.mock('next/image', () => ({
     alt?: string
     src?: string
     [key: string]: unknown
+    // eslint-disable-next-line @next/next/no-img-element
   }) => <img alt={alt} src={src} {...props} />,
 }))
 
@@ -67,13 +69,19 @@ const mockApiData = {
   ],
 }
 
+function renderWithSWR(ui: React.ReactElement) {
+  return render(
+    <SWRConfig value={{ provider: () => new Map(), dedupingInterval: 0 }}>{ui}</SWRConfig>
+  )
+}
+
 describe('GitHubContributionsSection', () => {
   it('renders the heading immediately', async () => {
     mockFetch.mockReturnValue(new Promise(() => {}))
 
     const { GitHubContributionsSection } =
       await import('@/components/sections/GitHubContributionsSection')
-    render(<GitHubContributionsSection />)
+    renderWithSWR(<GitHubContributionsSection />)
 
     expect(screen.getByText('GitHub Contributions')).toBeInTheDocument()
     expect(screen.getByText('My open source activity over the past year')).toBeInTheDocument()
@@ -84,7 +92,7 @@ describe('GitHubContributionsSection', () => {
 
     const { GitHubContributionsSection } =
       await import('@/components/sections/GitHubContributionsSection')
-    render(<GitHubContributionsSection />)
+    renderWithSWR(<GitHubContributionsSection />)
 
     expect(screen.getByRole('status')).toBeInTheDocument()
   })
@@ -97,7 +105,7 @@ describe('GitHubContributionsSection', () => {
 
     const { GitHubContributionsSection } =
       await import('@/components/sections/GitHubContributionsSection')
-    render(<GitHubContributionsSection />)
+    renderWithSWR(<GitHubContributionsSection />)
 
     await waitFor(() => {
       expect(screen.getByText('300')).toBeInTheDocument()
@@ -110,7 +118,7 @@ describe('GitHubContributionsSection', () => {
     expect(screen.getByText('More')).toBeInTheDocument()
   })
 
-  it('shows fallback SVG when API fails', async () => {
+  it('shows error state when API fails', async () => {
     mockFetch.mockResolvedValue({
       ok: false,
       status: 500,
@@ -118,22 +126,22 @@ describe('GitHubContributionsSection', () => {
 
     const { GitHubContributionsSection } =
       await import('@/components/sections/GitHubContributionsSection')
-    render(<GitHubContributionsSection />)
+    renderWithSWR(<GitHubContributionsSection />)
 
     await waitFor(() => {
-      expect(screen.getByAltText("PP-Namias's GitHub contribution chart")).toBeInTheDocument()
+      expect(screen.getByText('Unable to load contribution data.')).toBeInTheDocument()
     })
   })
 
-  it('shows fallback SVG when network error occurs', async () => {
+  it('shows error state when network error occurs', async () => {
     mockFetch.mockRejectedValue(new Error('Network error'))
 
     const { GitHubContributionsSection } =
       await import('@/components/sections/GitHubContributionsSection')
-    render(<GitHubContributionsSection />)
+    renderWithSWR(<GitHubContributionsSection />)
 
     await waitFor(() => {
-      expect(screen.getByAltText("PP-Namias's GitHub contribution chart")).toBeInTheDocument()
+      expect(screen.getByText('Unable to load contribution data.')).toBeInTheDocument()
     })
   })
 
@@ -145,7 +153,7 @@ describe('GitHubContributionsSection', () => {
 
     const { GitHubContributionsSection } =
       await import('@/components/sections/GitHubContributionsSection')
-    render(<GitHubContributionsSection />)
+    renderWithSWR(<GitHubContributionsSection />)
 
     await waitFor(() => {
       const links = screen.getAllByRole('link')
@@ -168,7 +176,7 @@ describe('GitHubContributionsSection', () => {
 
     const { GitHubContributionsSection } =
       await import('@/components/sections/GitHubContributionsSection')
-    render(<GitHubContributionsSection />)
+    renderWithSWR(<GitHubContributionsSection />)
 
     await waitFor(() => {
       expect(screen.getByText('300')).toBeInTheDocument()
