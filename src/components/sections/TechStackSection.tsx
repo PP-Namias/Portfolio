@@ -16,7 +16,7 @@ export function TechStackSection() {
 
   return (
     <section aria-labelledby="tech-stack-heading">
-      <motion.section
+      <motion.div
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: '-50px' }}
@@ -76,7 +76,7 @@ export function TechStackSection() {
             )}
           </button>
         )}
-      </motion.section>
+      </motion.div>
     </section>
   )
 }
