@@ -52,6 +52,9 @@
     "blog:push": "node scripts/blog-sync.mjs --push",
     "blog:diff": "node scripts/blog-sync.mjs --diff",
     "blog:import": "node scripts/import-sanity-posts.mjs",
+    "loop:status": "cat STATE.md",
+    "loop:log": "tail -20 loop-run-log.md",
+    "loop:budget": "cat loop-budget.md",
     "prepare": "husky"
   },
   "dependencies": {
