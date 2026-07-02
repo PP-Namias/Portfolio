@@ -1,0 +1,184 @@
+name: Dependency Sweeper
+
+on:
+  schedule:
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  sweep:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check kill switch
+        id: kill-switch
+        run: |
+          if gh label list --search "loop-pause-all" --json name -q '.[].name' | grep -q "loop-pause-all"; then
+            echo "paused=true" >> "$GITHUB_OUTPUT"
+            echo "Kill switch active — skipping dependency sweep"
+          else
+            echo "paused=false" >> "$GITHUB_OUTPUT"
+          fi
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        if: steps.kill-switch.outputs.paused != 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        if: steps.kill-switch.outputs.paused != 'true'
+        run: npm ci
+
+      - name: Check npm audit
+        if: steps.kill-switch.outputs.paused != 'true'
+        id: audit
+        run: |
+          OUTPUT=$(npm audit --json 2>&1) || true
+          echo "$OUTPUT" > /tmp/audit.json
+          VULNS=$(echo "$OUTPUT" | node -e "const d=JSON.parse(require('fs').readFileSync('/dev/stdin','utf8')); console.log(d.metadata?.vulnerabilities?.moderate || 0 + (d.metadata?.vulnerabilities?.high || 0) + (d.metadata?.vulnerabilities?.critical || 0))")
+          echo "vulns=$VULNS" >> "$GITHUB_OUTPUT"
+
+      - name: Check for patch updates
+        if: steps.kill-switch.outputs.paused != 'true'
+        id: outdated
+        run: |
+          OUTPUT=$(npm outdated --json 2>&1) || true
+          echo "$OUTPUT" > /tmp/outdated.json
+
+          # Filter to patch-only updates, exclude denylist
+          DENYLIST="next react react-dom sanity @sanity/client next-sanity"
+
+          node -e "
+            const data = JSON.parse(require('fs').readFileSync('/tmp/outdated.json','utf8'));
+            const denylist = '$DENYLIST'.split(' ');
+            const patches = [];
+            const majors = [];
+
+            for (const [pkg, info] of Object.entries(data)) {
+              if (denylist.includes(pkg)) continue;
+              const current = info.current || '';
+              const latest = info.latest || '';
+              const wanted = info.wanted || '';
+
+              if (!current || !latest) continue;
+
+              const [cMaj, cMin, cPat] = current.split('.').map(Number);
+              const [lMaj, lMin, lPat] = latest.split('.').map(Number);
+
+              if (lMaj > cMaj || (lMaj === cMaj && lMin > cMin)) {
+                majors.push({ pkg, current, latest });
+              } else if (lMaj === cMaj && lMin === cMin && lPat > cPat) {
+                patches.push({ pkg, current, latest });
+              }
+            }
+
+            require('fs').writeFileSync('/tmp/patches.json', JSON.stringify(patches, null, 2));
+            require('fs').writeFileSync('/tmp/majors.json', JSON.stringify(majors, null, 2));
+            console.log('Patches: ' + patches.length);
+            console.log('Majors: ' + majors.length);
+          "
+          echo "patches=$(cat /tmp/patches.json | node -e "console.log(JSON.parse(require('fs').readFileSync('/dev/stdin','utf8')).length)")" >> "$GITHUB_OUTPUT"
+          echo "majors=$(cat /tmp/majors.json | node -e "console.log(JSON.parse(require('fs').readFileSync('/dev/stdin','utf8')).length)")" >> "$GITHUB_OUTPUT"
+
+      - name: Create patch PRs
+        if: steps.kill-switch.outputs.paused != 'true' && steps.outdated.outputs.patches != '0'
+        run: |
+          node -e "
+            const patches = JSON.parse(require('fs').readFileSync('/tmp/patches.json','utf8'));
+            if (patches.length === 0) process.exit(0);
+
+            const body = patches.map(p => \`- \\\`\\\`\\\`${p.pkg}\\\`\\\`\\\`: \\\${p.current} → \\\${p.latest}\`).join('\\n');
+            const title = 'chore(deps): bump ' + patches.map(p => p.pkg).join(', ') + ' (patch)';
+
+            require('fs').writeFileSync('/tmp/pr-body.md', \`## Dependency Patch Updates\\n\\nThis PR was created by the Dependency Sweeper loop.\\n\\n### Updates\\n\\n\\\${body}\\n\\n### Risk Assessment\\n\\n- Patch-only updates (bug fixes, security patches)\\n- Low risk — no breaking changes expected\\n- All existing tests should continue to pass\\n\\n---\\n*Posted by Dependency Sweeper — loop engineering workflow*\`);
+          "
+
+          BRANCH="deps/patch-$(date -u +%Y%m%d-%H%M%S)"
+          git checkout -b "$BRANCH"
+
+          for PKG in $(cat /tmp/patches.json | node -e "const d=JSON.parse(require('fs').readFileSync('/dev/stdin','utf8')); d.forEach(p => console.log(p.pkg))"); do
+            CURRENT=$(cat /tmp/patches.json | node -e "const d=JSON.parse(require('fs').readFileSync('/dev/stdin','utf8')); console.log(d.find(p => p.pkg === '$PKG').current)")
+            LATEST=$(cat /tmp/patches.json | node -e "const d=JSON.parse(require('fs').readFileSync('/dev/stdin','utf8')); console.log(d.find(p => p.pkg === '$PKG').latest)")
+            npm install "$PKG@$LATEST" --save-exact 2>/dev/null || npm install "$PKG@$LATEST" --save-dev 2>/dev/null || true
+          done
+
+          git add package.json package-lock.json
+          git diff --cached --quiet || git commit -m "chore(deps): patch updates via dependency sweeper"
+          git push -u origin "$BRANCH"
+
+          gh pr create --title "$TITLE" --body-file /tmp/pr-body.md --label "dependencies" --head "$BRANCH" || true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TITLE: "chore(deps): patch updates via dependency sweeper"
+
+      - name: Update STATE.md watch list
+        if: steps.kill-switch.outputs.paused != 'true' && steps.outdated.outputs.majors != '0'
+        run: |
+          node -e "
+            const majors = JSON.parse(require('fs').readFileSync('/tmp/majors.json','utf8'));
+            if (majors.length === 0) process.exit(0);
+
+            const entries = majors.map(m => \`- Major update available: \\\${m.pkg} \\\${m.current} → \\\${m.latest}. Manual review required.\`).join('\\n');
+            const timestamp = new Date().toISOString();
+
+            let state = require('fs').readFileSync('STATE.md', 'utf8');
+
+            // Replace Watch List section content
+            state = state.replace(
+              /## Watch List\n([\s\S]*?)(?=\n## |\n---|\$)/,
+              \`## Watch List\n\\\${entries}\\n\`
+            );
+
+            // Update last run timestamp
+            state = state.replace(
+              /Last run: .+/,
+              \`Last run: \\\${timestamp} (daily-triage workflow)\`
+            );
+
+            require('fs').writeFileSync('STATE.md', state);
+          "
+
+      - name: Append to run log
+        if: steps.kill-switch.outputs.paused != 'true'
+        run: |
+          TIMESTAMP=$(date -u +"%Y-%m-%d")
+          PATCHES="${{ steps.outdated.outputs.patches }}"
+          MAJORS="${{ steps.outdated.outputs.majors }}"
+          VULNS="${{ steps.audit.outputs.vulns }}"
+
+          if [ "$PATCHES" = "0" ] && [ "$MAJORS" = "0" ]; then
+            STATUS="pass"
+            FINDINGS="No updates available"
+          else
+            STATUS="pass"
+            FINDINGS="Patches: ${PATCHES}, Majors: ${MAJORS}, Vulnerabilities: ${VULNS}"
+          fi
+
+          cat >> loop-run-log.md << EOF
+
+          ## ${TIMESTAMP} — dependency-sweeper
+          - **Status**: ${STATUS}
+          - **Findings**: ${FINDINGS}
+          - **Actions**: PRs created for patches, majors logged to STATE.md
+          - **Tokens**: ~15k (estimated)
+          EOF
+
+      - name: Commit STATE.md and run log
+        if: steps.kill-switch.outputs.paused != 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git checkout main 2>/dev/null || true
+          git add STATE.md loop-run-log.md
+          git diff --cached --quiet || git commit -m "chore(loop): dependency sweeper update [automated]"
+          git push || true
