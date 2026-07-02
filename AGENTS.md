@@ -273,7 +273,7 @@ MCP servers give your AI agent access to browser DevTools, component libraries, 
 
 ## Testing
 
-- 42 test files, 381 tests, all green
+- 42 test files, 736 tests, all green
 - Run: `npm run test -- --run`
 - Test isolation: use `SWRConfig` with `provider: () => new Map()` for any test that exercises a SWR consumer
 - Studios, scripts, and generated code are excluded from both `tsc` and `eslint` config; they have their own lanes
