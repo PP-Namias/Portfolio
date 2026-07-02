@@ -1,88 +1,92 @@
-'use client';
+'use client'
 
-import { useState, useEffect, useCallback, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles } from 'lucide-react';
-import { HubMenu } from './HubMenu';
-import { ChatPanel } from './ChatPanel';
-import { SectionErrorBoundary } from './ErrorBoundary';
-import type { ChatMessage as ChatMessageType, HubState } from '@/types';
+import { useState, useEffect, useCallback, useRef } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { Sparkles } from 'lucide-react'
+import dynamic from 'next/dynamic'
+
+const HubMenu = dynamic(() => import('./HubMenu').then((mod) => mod.HubMenu))
+const ChatPanel = dynamic(() => import('./ChatPanel').then((mod) => mod.ChatPanel))
+import { SectionErrorBoundary } from './ErrorBoundary'
+import type { ChatMessage as ChatMessageType, HubState } from '@/types'
 
 export function FloatingHub() {
-  const [hubState, setHubState] = useState<HubState>('closed');
-  const [messages, setMessages] = useState<ChatMessageType[]>([]);
-  const [hasInteracted, setHasInteracted] = useState(false);
-  const panelRef = useRef<HTMLDivElement>(null);
+  const [hubState, setHubState] = useState<HubState>('closed')
+  const [messages, setMessages] = useState<ChatMessageType[]>([])
+  const [hasInteracted, setHasInteracted] = useState(false)
+  const panelRef = useRef<HTMLDivElement>(null)
 
-  const close = useCallback(() => setHubState('closed'), []);
+  const close = useCallback(() => setHubState('closed'), [])
   const openMenu = useCallback(() => {
-    setHubState('menu');
+    setHubState('menu')
     if (!hasInteracted) {
-      setHasInteracted(true);
-      try { sessionStorage.setItem('hub_interacted', '1'); } catch {}
+      setHasInteracted(true)
+      try {
+        sessionStorage.setItem('hub_interacted', '1')
+      } catch {}
     }
-  }, [hasInteracted]);
-  const openChat = useCallback(() => setHubState('chat'), []);
+  }, [hasInteracted])
+  const openChat = useCallback(() => setHubState('chat'), [])
 
   // Load sessionStorage flag on mount
   useEffect(() => {
     try {
       if (sessionStorage.getItem('hub_interacted') === '1') {
-        setHasInteracted(true);
+        setHasInteracted(true)
       }
     } catch {}
-  }, []);
+  }, [])
 
   // Escape key handling: chat → menu → closed
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key !== 'Escape') return;
-      if (hubState === 'chat') setHubState('menu');
-      else if (hubState === 'menu') setHubState('closed');
-    };
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [hubState]);
+      if (e.key !== 'Escape') return
+      if (hubState === 'chat') setHubState('menu')
+      else if (hubState === 'menu') setHubState('closed')
+    }
+    document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [hubState])
 
   // Click-outside-to-close (desktop only, sm: breakpoint = 640px)
   useEffect(() => {
-    if (hubState === 'closed') return;
+    if (hubState === 'closed') return
     const handleMouseDown = (e: MouseEvent) => {
-      if (window.innerWidth < 640) return;
+      if (window.innerWidth < 640) return
       if (panelRef.current && !panelRef.current.contains(e.target as Node)) {
-        setHubState('closed');
+        setHubState('closed')
       }
-    };
-    document.addEventListener('mousedown', handleMouseDown);
-    return () => document.removeEventListener('mousedown', handleMouseDown);
-  }, [hubState]);
+    }
+    document.addEventListener('mousedown', handleMouseDown)
+    return () => document.removeEventListener('mousedown', handleMouseDown)
+  }, [hubState])
 
   // Focus trap within open panel
   useEffect(() => {
-    if (hubState === 'closed') return;
+    if (hubState === 'closed') return
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key !== 'Tab' || !panelRef.current) return;
+      if (e.key !== 'Tab' || !panelRef.current) return
       const focusable = panelRef.current.querySelectorAll<HTMLElement>(
         'a[href], button:not([disabled]), input:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
-      );
-      if (focusable.length === 0) return;
-      const first = focusable[0];
-      const last = focusable[focusable.length - 1];
+      )
+      if (focusable.length === 0) return
+      const first = focusable[0]
+      const last = focusable[focusable.length - 1]
       if (e.shiftKey) {
         if (document.activeElement === first) {
-          e.preventDefault();
-          last.focus();
+          e.preventDefault()
+          last.focus()
         }
       } else {
         if (document.activeElement === last) {
-          e.preventDefault();
-          first.focus();
+          e.preventDefault()
+          first.focus()
         }
       }
-    };
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [hubState]);
+    }
+    document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [hubState])
 
   return (
     <div className="print:hidden">
@@ -133,9 +137,7 @@ export function FloatingHub() {
             data-lenis-prevent
             className="fixed z-50 bottom-0 right-0 sm:bottom-5 sm:right-5 w-full h-full sm:w-96 sm:h-[540px] sm:rounded-2xl flex flex-col overflow-hidden border border-border-light dark:border-border-dark bg-white dark:bg-card-bg-dark shadow-2xl"
           >
-            {hubState === 'menu' && (
-              <HubMenu onClose={close} onOpenChat={openChat} />
-            )}
+            {hubState === 'menu' && <HubMenu onClose={close} onOpenChat={openChat} />}
             {hubState === 'chat' && (
               <ChatPanel
                 onBack={openMenu}
@@ -148,7 +150,7 @@ export function FloatingHub() {
         )}
       </AnimatePresence>
     </div>
-  );
+  )
 }
 
 export function FloatingHubWithBoundary() {
@@ -156,5 +158,5 @@ export function FloatingHubWithBoundary() {
     <SectionErrorBoundary name="FloatingHub">
       <FloatingHub />
     </SectionErrorBoundary>
-  );
+  )
 }

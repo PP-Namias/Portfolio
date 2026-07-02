@@ -29,7 +29,7 @@ export function TechStackSection() {
           Tech Stack
         </h2>
 
-        <div className="space-y-3">
+        <div id="tech-stack-list" className="space-y-3">
           <AnimatePresence mode="popLayout">
             {visible.map(([category, techs], catIndex) => (
               <motion.div
@@ -63,6 +63,7 @@ export function TechStackSection() {
             type="button"
             onClick={() => setExpanded((prev) => !prev)}
             aria-expanded={expanded}
+            aria-controls="tech-stack-list"
             className="flex items-center gap-1 mx-auto mt-3 text-xs font-medium text-text-muted-light dark:text-text-muted-dark hover:text-accent-pink dark:hover:text-accent-pink transition-colors"
           >
             {expanded ? (

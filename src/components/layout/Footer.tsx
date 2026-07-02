@@ -23,7 +23,7 @@ export function Footer() {
   return (
     <footer className="mt-8 pb-6 pt-4 border-t border-border-light dark:border-border-dark">
       <div className="flex flex-col items-center gap-2.5">
-        <div className="flex items-center gap-2.5">
+        <nav aria-label="Social links" className="flex items-center gap-2.5">
           {socials.map((link) => {
             const Icon = socialIcons[link.name]
             if (!Icon) return null
@@ -40,7 +40,7 @@ export function Footer() {
               </a>
             )
           })}
-        </div>
+        </nav>
         <p
           className="text-[11px] text-text-muted-light dark:text-text-muted-dark"
           suppressHydrationWarning

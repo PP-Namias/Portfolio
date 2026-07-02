@@ -6,12 +6,18 @@ import { AboutSection } from '@/components/sections/AboutSection'
 import { TechStackSection } from '@/components/sections/TechStackSection'
 import { ProjectsSection } from '@/components/sections/ProjectsSection'
 import { ProjectsSectionRevamped } from '@/components/sections/ProjectsSectionRevamped'
-import { BlogSection } from '@/components/sections/BlogSection'
-import { CertificationsSection } from '@/components/sections/CertificationsSection'
 import { ExperienceTimeline } from '@/components/sections/ExperienceTimeline'
 import { ConnectSection } from '@/components/sections/ConnectSection'
-import { GallerySection } from '@/components/sections/GallerySection'
-import { GitHubContributionsSection } from '@/components/sections/GitHubContributionsSection'
+import dynamic from 'next/dynamic'
+
+const GallerySection = dynamic(() => import('./GallerySection').then((mod) => mod.GallerySection))
+const BlogSection = dynamic(() => import('./BlogSection').then((mod) => mod.BlogSection))
+const CertificationsSection = dynamic(() =>
+  import('./CertificationsSection').then((mod) => mod.CertificationsSection)
+)
+const GitHubContributionsSection = dynamic(() =>
+  import('./GitHubContributionsSection').then((mod) => mod.GitHubContributionsSection)
+)
 import { Footer } from '@/components/layout/Footer'
 import { Card } from '@/components/ui/Card'
 import { SectionErrorBoundary } from '@/components/ui/ErrorBoundary'
@@ -93,9 +99,11 @@ export function HomeContent() {
 
   return (
     <main id="main-content" className="mx-auto max-w-container px-4 sm:px-6 pt-8 lg:pt-12">
-      <Card className="mb-4">
-        <HeroSection />
-      </Card>
+      <header>
+        <Card className="mb-4">
+          <HeroSection />
+        </Card>
+      </header>
 
       <div className="grid grid-cols-1 lg:grid-cols-[62%_1fr] lg:items-start gap-4 mt-4">
         <div className={leftColumnClass}>

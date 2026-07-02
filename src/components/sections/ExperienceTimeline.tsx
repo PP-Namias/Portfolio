@@ -1,22 +1,22 @@
-'use client';
+'use client'
 
-import React, { useMemo, useState } from 'react';
-import { motion, useReducedMotion } from 'framer-motion';
-import { ChevronDown, ChevronUp } from 'lucide-react';
-import { TimelineItem } from '@/components/ui/TimelineItem';
-import { useCmsContent } from '@/hooks/useCmsContent';
+import React, { useMemo, useState } from 'react'
+import { motion, useReducedMotion } from 'framer-motion'
+import { ChevronDown, ChevronUp } from 'lucide-react'
+import { TimelineItem } from '@/components/ui/TimelineItem'
+import { useCmsContent } from '@/hooks/useCmsContent'
 
 export function ExperienceTimeline() {
-  const { experiences } = useCmsContent();
-  const prefersReducedMotion = useReducedMotion();
-  const [isExpanded, setIsExpanded] = useState(false);
+  const { experiences } = useCmsContent()
+  const prefersReducedMotion = useReducedMotion()
+  const [isExpanded, setIsExpanded] = useState(false)
 
   const visibleExperiences = useMemo(
     () => (isExpanded ? experiences : experiences.slice(0, 3)),
     [isExpanded, experiences]
-  );
+  )
 
-  const isExpandable = experiences.length > 3;
+  const isExpandable = experiences.length > 3
 
   return (
     <motion.section
@@ -26,13 +26,16 @@ export function ExperienceTimeline() {
       viewport={{ once: true, margin: '-50px' }}
       transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
     >
-      <h2 id="experience-heading" className="text-lg font-semibold text-text-primary-light dark:text-text-primary-dark mb-2.5">
+      <h2
+        id="experience-heading"
+        className="text-lg font-semibold text-text-primary-light dark:text-text-primary-dark mb-2.5"
+      >
         Experience
       </h2>
       <p className="text-[13px] sm:text-sm text-text-secondary-light dark:text-text-secondary-dark mb-3.5 leading-relaxed">
         Recent roles across project leadership, technical execution, and delivery operations.
       </p>
-      <motion.div layout>
+      <motion.div id="experience-list" layout>
         {visibleExperiences.map((exp, index) => (
           <TimelineItem
             key={`${exp.company}-${exp.position}`}
@@ -49,12 +52,17 @@ export function ExperienceTimeline() {
             onClick={() => setIsExpanded((prev) => !prev)}
             className="mt-3 inline-flex items-center gap-1.5 text-[13px] font-medium text-accent-pink hover:text-accent-pink-hover dark:hover:text-accent-pink-hover-dark transition-colors"
             aria-expanded={isExpanded}
+            aria-controls="experience-list"
           >
             {isExpanded ? 'Show Less' : 'View Full Experience'}
-            {isExpanded ? <ChevronUp className="h-3.5 w-3.5" aria-hidden="true" /> : <ChevronDown className="h-3.5 w-3.5" aria-hidden="true" />}
+            {isExpanded ? (
+              <ChevronUp className="h-3.5 w-3.5" aria-hidden="true" />
+            ) : (
+              <ChevronDown className="h-3.5 w-3.5" aria-hidden="true" />
+            )}
           </motion.button>
         )}
       </motion.div>
     </motion.section>
-  );
+  )
 }

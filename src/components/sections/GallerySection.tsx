@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect, useMemo, useCallback } from 'react'
+import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react'
 import Image from '@/components/ui/OptimizedImage'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ChevronLeft, ChevronRight, X, ChevronDown, ChevronUp } from 'lucide-react'
@@ -9,6 +9,9 @@ import { resolveContentImageSrc } from '@/lib/media'
 import { formatDateUtc } from '@/lib/date'
 
 const INITIAL_COUNT = 9
+
+const FOCUSABLE_SELECTOR =
+  'a[href], button:not([disabled]), input:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
 
 // Assigns span classes for visual variety — only the first image gets 2x2, rest are 1x1
 // This avoids gaps in the dense grid while still giving a hero treatment
@@ -22,6 +25,7 @@ export function GallerySection() {
   const [activeTag, setActiveTag] = useState('All')
   const [expanded, setExpanded] = useState(false)
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null)
+  const lightboxRef = useRef<HTMLDivElement>(null)
 
   const filterTags = useMemo(() => {
     const tagCounts = new Map<string, number>()
@@ -110,6 +114,34 @@ export function GallerySection() {
     }
   }, [selectedIndex])
 
+  // Focus lightbox when opened
+  useEffect(() => {
+    if (selectedIndex === null) return
+    lightboxRef.current?.focus()
+  }, [selectedIndex])
+
+  // Focus trap for lightbox
+  useEffect(() => {
+    if (selectedIndex === null) return
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key !== 'Tab' || !lightboxRef.current) return
+      const focusable = lightboxRef.current.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR)
+      if (focusable.length === 0) return
+      const first = focusable[0]
+      const last = focusable[focusable.length - 1]
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault()
+        last.focus()
+      }
+      if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault()
+        first.focus()
+      }
+    }
+    document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [selectedIndex])
+
   const selectedImage = selectedIndex === null ? null : filtered[selectedIndex]
 
   return (
@@ -148,7 +180,10 @@ export function GallerySection() {
       </div>
 
       {/* Masonry-style grid */}
-      <div className="grid grid-cols-2 gap-2 auto-rows-[150px] sm:grid-cols-3 sm:auto-rows-[170px] md:grid-cols-4 [grid-auto-flow:dense]">
+      <div
+        id="gallery-list"
+        className="grid grid-cols-2 gap-2 auto-rows-[150px] sm:grid-cols-3 sm:auto-rows-[170px] md:grid-cols-4 [grid-auto-flow:dense]"
+      >
         <AnimatePresence mode="popLayout">
           {visibleImages.map((image, index) => {
             const globalIndex = filtered.indexOf(image)
@@ -202,6 +237,7 @@ export function GallerySection() {
             type="button"
             onClick={() => setExpanded((prev) => !prev)}
             aria-expanded={expanded}
+            aria-controls="gallery-list"
             className="flex items-center gap-1 text-xs font-medium text-text-muted-light dark:text-text-muted-dark hover:text-accent-pink dark:hover:text-accent-pink transition-colors"
           >
             {expanded ? (
@@ -222,6 +258,8 @@ export function GallerySection() {
       <AnimatePresence>
         {selectedImage && selectedIndex !== null && (
           <motion.div
+            ref={lightboxRef}
+            tabIndex={-1}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}

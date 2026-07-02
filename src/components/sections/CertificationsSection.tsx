@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect, useMemo } from 'react'
+import React, { useState, useEffect, useMemo, useRef } from 'react'
 import Image from '@/components/ui/OptimizedImage'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, ChevronDown, ChevronUp } from 'lucide-react'
@@ -14,6 +14,9 @@ function getCertificationImageSrc(cert: { image: string; imageUrl?: string }): s
   return resolveContentImageSrc(cert.imageUrl, { folder: 'certifications' })
 }
 
+const FOCUSABLE_SELECTOR =
+  'a[href], button:not([disabled]), input:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+
 export function CertificationsSection() {
   const { certifications } = useCmsContent()
   const [selectedCert, setSelectedCert] = useState<{
@@ -23,6 +26,7 @@ export function CertificationsSection() {
   } | null>(null)
   const [activeIssuer, setActiveIssuer] = useState('All')
   const [expanded, setExpanded] = useState(false)
+  const lightboxRef = useRef<HTMLDivElement>(null)
 
   const issuers = ['All', ...Array.from(new Set(certifications.map((c) => c.issuer)))]
 
@@ -47,6 +51,43 @@ export function CertificationsSection() {
     }
     if (selectedCert) document.addEventListener('keydown', handleEscape)
     return () => document.removeEventListener('keydown', handleEscape)
+  }, [selectedCert])
+
+  useEffect(() => {
+    if (selectedCert === null) return
+    lightboxRef.current?.focus()
+  }, [selectedCert])
+
+  useEffect(() => {
+    if (selectedCert === null) {
+      document.body.style.overflow = ''
+    } else {
+      document.body.style.overflow = 'hidden'
+    }
+    return () => {
+      document.body.style.overflow = ''
+    }
+  }, [selectedCert])
+
+  useEffect(() => {
+    if (selectedCert === null) return
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key !== 'Tab' || !lightboxRef.current) return
+      const focusable = lightboxRef.current.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR)
+      if (focusable.length === 0) return
+      const first = focusable[0]
+      const last = focusable[focusable.length - 1]
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault()
+        last.focus()
+      }
+      if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault()
+        first.focus()
+      }
+    }
+    document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
   }, [selectedCert])
 
   return (
@@ -82,7 +123,7 @@ export function CertificationsSection() {
         ))}
       </div>
 
-      <div className="grid grid-cols-2 gap-2">
+      <div id="certifications-list" className="grid grid-cols-2 gap-2">
         {visibleCerts.map((cert, index) => (
           <motion.button
             type="button"
@@ -129,6 +170,7 @@ export function CertificationsSection() {
           type="button"
           onClick={() => setExpanded((prev) => !prev)}
           aria-expanded={expanded}
+          aria-controls="certifications-list"
           className="flex items-center gap-1 mx-auto mt-3 text-xs font-medium text-text-muted-light dark:text-text-muted-dark hover:text-accent-pink dark:hover:text-accent-pink transition-colors"
         >
           {expanded ? (
@@ -147,6 +189,8 @@ export function CertificationsSection() {
       <AnimatePresence>
         {selectedCert && (
           <motion.div
+            ref={lightboxRef}
+            tabIndex={-1}
             className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4"
             role="dialog"
             aria-modal="true"
