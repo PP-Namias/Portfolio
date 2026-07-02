@@ -36,8 +36,11 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
 
-      - name: Install Dependencies
-        run: npm ci
+      - name: Install Dependencies (no lifecycle scripts)
+        run: npm ci --ignore-scripts
+
+      - name: Rebuild native modules
+        run: npm rebuild
 
       - name: Security Audit
         run: |
@@ -72,14 +75,18 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
 
-      - name: Install and Build
-        run: |
-          npm ci
-          npm run build
+      - name: Install Dependencies (no lifecycle scripts)
+        run: npm ci --ignore-scripts
+
+      - name: Rebuild native modules
+        run: npm rebuild
+
+      - name: Build
         env:
           NEXT_PUBLIC_SANITY_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_SANITY_PROJECT_ID || 'nl0qw78w' }}
           NEXT_PUBLIC_SANITY_DATASET: ${{ secrets.NEXT_PUBLIC_SANITY_DATASET || 'production' }}
           SANITY_API_READ_TOKEN: ${{ secrets.SANITY_API_READ_TOKEN || '' }}
+        run: npm run build
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@dd903d2e4f5405488e5ef1422510ee31c8b32357

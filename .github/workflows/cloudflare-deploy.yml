@@ -16,13 +16,10 @@ env:
   NODE_VERSION: '22'
 
 jobs:
-  deploy-worker:
-    name: Deploy Portfolio Worker
+  build-worker:
+    name: Build Portfolio
     runs-on: ubuntu-latest
-    timeout-minutes: 30
-    permissions:
-      contents: read
-      id-token: write
+    timeout-minutes: 20
     steps:
       - name: Checkout
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
@@ -35,8 +32,11 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
 
-      - name: Install dependencies
-        run: npm ci
+      - name: Install dependencies (no lifecycle scripts)
+        run: npm ci --ignore-scripts
+
+      - name: Rebuild native modules
+        run: npm rebuild
 
       - name: Generate SBOM (CycloneDX)
         run: npx @cyclonedx/cyclonedx-npm --output-format JSON --output-file sbom.cdx.json --spec-version 1.5
@@ -77,39 +77,38 @@ jobs:
           if-no-files-found: error
           retention-days: 365
 
-      - name: Build and deploy to Cloudflare
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-        run: npm run cloudflare:deploy
+      - name: Build
+        run: npm run build
 
-  deploy-studio:
-    name: Deploy Sanity Studio
+      - name: Upload .next artifact
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: next-build-${{ github.run_id }}
+          path: .next
+          if-no-files-found: error
+          retention-days: 1
+
+  deploy-worker:
+    name: Deploy to Cloudflare
+    needs: build-worker
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      id-token: write
     steps:
       - name: Checkout
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
         with:
           persist-credentials: false
 
-      - name: Setup Node.js
-        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+      - name: Download .next artifact
+        uses: actions/download-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
+          name: next-build-${{ github.run_id }}
 
-      - name: Install root dependencies
-        run: npm ci
-
-      - name: Install studio dependencies
-        run: npm ci --prefix studio
-
-      - name: Deploy studio
+      - name: Deploy to Cloudflare
         env:
-          SANITY_STUDIO_DEPLOY_TOKEN: ${{ secrets.SANITY_STUDIO_DEPLOY_TOKEN }}
-          NEXT_PUBLIC_SANITY_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_SANITY_PROJECT_ID }}
-          NEXT_PUBLIC_SANITY_DATASET: ${{ secrets.NEXT_PUBLIC_SANITY_DATASET }}
-          SANITY_REVALIDATE_SECRET: ${{ secrets.SANITY_REVALIDATE_SECRET }}
-          NEXT_PUBLIC_SITE_URL: ${{ secrets.NEXT_PUBLIC_SITE_URL }}
-        run: npm --prefix studio run deploy
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: npx wrangler deploy
