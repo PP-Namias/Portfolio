@@ -277,3 +277,36 @@ MCP servers give your AI agent access to browser DevTools, component libraries, 
 - Run: `npm run test -- --run`
 - Test isolation: use `SWRConfig` with `provider: () => new Map()` for any test that exercises a SWR consumer
 - Studios, scripts, and generated code are excluded from both `tsc` and `eslint` config; they have their own lanes
+
+## Loop Engineering
+
+This repo uses loop engineering patterns (inspired by [cobusgreyling/loop-engineering](https://github.com/cobusgreyling/loop-engineering)). Loops automate maintenance tasks on a cadence.
+
+### Core files
+
+| File              | Purpose                                                    |
+| ----------------- | ---------------------------------------------------------- |
+| `STATE.md`        | Live loop state — what is active, blocked, or watch-listed |
+| `LOOP.md`         | Documents all active loops, cadence, and gates             |
+| `loop-budget.md`  | Daily token caps per loop                                  |
+| `loop-run-log.md` | Append-only run history                                    |
+
+### Active loops
+
+| Loop                   | Cadence      | Workflow                                   | Phase |
+| ---------------------- | ------------ | ------------------------------------------ | ----- |
+| **Daily Triage**       | 1d weekdays  | `.github/workflows/daily-triage.yml`       | L1    |
+| **PR Babysitter**      | on PR events | `.github/workflows/pr-babysitter.yml`      | L2    |
+| **Dependency Sweeper** | 6h           | `.github/workflows/dependency-sweeper.yml` | L2    |
+
+### Kill switch
+
+- Label: `loop-pause-all` — when present on the repo, all loop workflows skip execution.
+- Resume: remove the label and clear the pause in `STATE.md`.
+
+### Agent behavior
+
+- Read `STATE.md` before starting work to understand what loops are active.
+- Append to `loop-run-log.md` after completing automated tasks.
+- Respect `loop-budget.md` token caps.
+- Use `loop-engineering` skill for detailed instructions.
