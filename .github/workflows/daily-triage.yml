@@ -1,0 +1,180 @@
+name: Daily Triage
+
+on:
+  schedule:
+    - cron: '0 8 * * 1-5'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  triage:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check kill switch
+        id: kill-switch
+        run: |
+          if gh label list --search "loop-pause-all" --json name -q '.[].name' | grep -q "loop-pause-all"; then
+            echo "paused=true" >> "$GITHUB_OUTPUT"
+            echo "Kill switch active — skipping triage"
+          else
+            echo "paused=false" >> "$GITHUB_OUTPUT"
+          fi
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        if: steps.kill-switch.outputs.paused != 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        if: steps.kill-switch.outputs.paused != 'true'
+        run: npm ci
+
+      - name: Run lint
+        if: steps.kill-switch.outputs.paused != 'true'
+        id: lint
+        run: |
+          if npm run lint 2>&1 | tee /tmp/lint-output.txt; then
+            echo "status=pass" >> "$GITHUB_OUTPUT"
+          else
+            echo "status=fail" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Run tests
+        if: steps.kill-switch.outputs.paused != 'true'
+        id: test
+        run: |
+          if npm run test -- --run 2>&1 | tee /tmp/test-output.txt; then
+            echo "status=pass" >> "$GITHUB_OUTPUT"
+          else
+            echo "status=fail" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Run react-doctor
+        if: steps.kill-switch.outputs.paused != 'true'
+        id: doctor
+        run: |
+          if npm run doctor -- --json 2>&1 | tee /tmp/doctor-output.txt; then
+            echo "status=pass" >> "$GITHUB_OUTPUT"
+          else
+            echo "status=fail" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Check npm audit
+        if: steps.kill-switch.outputs.paused != 'true'
+        id: audit
+        run: |
+          if npm audit --audit-level=moderate 2>&1 | tee /tmp/audit-output.txt; then
+            echo "status=pass" >> "$GITHUB_OUTPUT"
+          else
+            echo "status=fail" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Count open issues and PRs
+        if: steps.kill-switch.outputs.paused != 'true'
+        id: counts
+        run: |
+          ISSUES=$(gh issue list --state open --json number -q '.|length')
+          PRS=$(gh pr list --state open --json number -q '.|length')
+          echo "issues=$ISSUES" >> "$GITHUB_OUTPUT"
+          echo "prs=$PRS" >> "$GITHUB_OUTPUT"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Generate STATE.md
+        if: steps.kill-switch.outputs.paused != 'true'
+        run: |
+          TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+          LINT_STATUS="${{ steps.lint.outputs.status }}"
+          TEST_STATUS="${{ steps.test.outputs.status }}"
+          DOCTOR_STATUS="${{ steps.doctor.outputs.status }}"
+          AUDIT_STATUS="${{ steps.audit.outputs.status }}"
+          ISSUES="${{ steps.counts.outputs.issues }}"
+          PRS="${{ steps.counts.outputs.prs }}"
+
+          HIGH_PRIORITY=""
+          WATCH_LIST=""
+
+          if [ "$LINT_STATUS" = "fail" ]; then
+            HIGH_PRIORITY="${HIGH_PRIORITY}\n- Lint failing — run \`npm run lint\` and fix errors"
+          fi
+          if [ "$TEST_STATUS" = "fail" ]; then
+            HIGH_PRIORITY="${HIGH_PRIORITY}\n- Tests failing — run \`npm run test -- --run\` and fix failures"
+          fi
+          if [ "$DOCTOR_STATUS" = "fail" ]; then
+            HIGH_PRIORITY="${HIGH_PRIORITY}\n- react-doctor score dropped — run \`npm run doctor\` and follow fix-react-doctor-finding skill"
+          fi
+          if [ "$AUDIT_STATUS" = "fail" ]; then
+            WATCH_LIST="${WATCH_LIST}\n- npm audit has moderate+ vulnerabilities — review and patch"
+          fi
+
+          if [ -z "$HIGH_PRIORITY" ]; then
+            HIGH_PRIORITY="\n- All checks passing. No action needed."
+          fi
+          if [ -z "$WATCH_LIST" ]; then
+            WATCH_LIST="\n—"
+          fi
+
+          cat > STATE.md << EOF
+          # Loop State — PP Namias Portfolio
+
+          Last run: ${TIMESTAMP} (daily-triage workflow)
+
+          ## High Priority (loop is acting or waiting on human)
+          $(echo -e "$HIGH_PRIORITY")
+
+          ## Watch List
+          $(echo -e "$WATCH_LIST")
+          - Open issues: ${ISSUES} | Open PRs: ${PRS}
+
+          ## Recent Noise (ignored this run)
+          —
+
+          ---
+
+          Run log: Updated by \`.github/workflows/daily-triage.yml\`. See \`LOOP.md\` for cadence and gates.
+          EOF
+
+      - name: Append to run log
+        if: steps.kill-switch.outputs.paused != 'true'
+        run: |
+          TIMESTAMP=$(date -u +"%Y-%m-%d")
+          LINT="${{ steps.lint.outputs.status }}"
+          TEST="${{ steps.test.outputs.status }}"
+          DOCTOR="${{ steps.doctor.outputs.status }}"
+          AUDIT="${{ steps.audit.outputs.status }}"
+
+          if [ "$LINT" = "pass" ] && [ "$TEST" = "pass" ] && [ "$DOCTOR" = "pass" ] && [ "$AUDIT" = "pass" ]; then
+            STATUS="pass"
+            FINDINGS="All checks passing"
+          else
+            STATUS="fail"
+            FINDINGS="Lint: ${LINT}, Tests: ${TEST}, Doctor: ${DOCTOR}, Audit: ${AUDIT}"
+          fi
+
+          cat >> loop-run-log.md << EOF
+
+          ## ${TIMESTAMP} — daily-triage
+          - **Status**: ${STATUS}
+          - **Findings**: ${FINDINGS}
+          - **Actions**: Report only (L1)
+          - **Tokens**: ~5k (estimated)
+          EOF
+
+      - name: Commit STATE.md and run log
+        if: steps.kill-switch.outputs.paused != 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add STATE.md loop-run-log.md
+          git diff --cached --quiet || git commit -m "chore(loop): daily triage update STATE.md + run log [automated]"
+          git push
