@@ -4,8 +4,8 @@ import { render, screen, fireEvent } from '@testing-library/react'
 vi.mock('next/image', () => ({
   default: (props: Record<string, unknown>) => {
     const { onError, ...rest } = props
-    // eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text
     return (
+      // eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text
       <img
         data-testid="next-image"
         {...(rest as React.ImgHTMLAttributes<HTMLImageElement>)}
