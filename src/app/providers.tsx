@@ -9,6 +9,15 @@ import type { CmsContent } from '@/lib/cms-content.shared'
 import { SwrConfigProvider } from '@/lib/swr-config'
 import { SITE_URL } from '@/lib/site-config'
 import { useEffect, useMemo } from 'react'
+import { IS_REACT_SCAN_ENABLED } from '@/lib/features'
+
+if (IS_REACT_SCAN_ENABLED && typeof window !== 'undefined') {
+  import('react-scan').then((scan) => {
+    scan.scan({
+      enabled: process.env.NODE_ENV === 'development',
+    })
+  })
+}
 
 interface ProvidersProps {
   readonly children: React.ReactNode
