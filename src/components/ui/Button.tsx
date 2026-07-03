@@ -35,10 +35,36 @@ const buttonVariants = cva(
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>, VariantProps<typeof buttonVariants> {
   asChild?: boolean
+  internal?: boolean
+  href?: string
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, asChild = false, ...props }, ref) => {
+  ({ className, variant, size, asChild = false, internal = false, href, ...props }, ref) => {
+    if (href && internal) {
+      return (
+        <a
+          href={href}
+          className={cn(buttonVariants({ variant, size, className }))}
+          ref={ref as React.Ref<HTMLAnchorElement>}
+          {...(props as React.AnchorHTMLAttributes<HTMLAnchorElement>)}
+        />
+      )
+    }
+
+    if (href) {
+      return (
+        <a
+          href={href}
+          className={cn(buttonVariants({ variant, size, className }))}
+          ref={ref as React.Ref<HTMLAnchorElement>}
+          target="_blank"
+          rel="noopener noreferrer"
+          {...(props as React.AnchorHTMLAttributes<HTMLAnchorElement>)}
+        />
+      )
+    }
+
     const Comp = asChild ? Slot : 'button'
     return (
       <Comp className={cn(buttonVariants({ variant, size, className }))} ref={ref} {...props} />
