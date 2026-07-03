@@ -173,3 +173,6 @@ scripts/import-report.json
 
 # Stale API cache
 docs/github-projects.json
+
+# Graphify knowledge graph output
+graphify-out/cost.json
