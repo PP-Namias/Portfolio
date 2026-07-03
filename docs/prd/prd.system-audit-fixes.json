@@ -24,7 +24,7 @@
     {
       "id": "EPIC-0",
       "title": "SHA-pin loop-engineering workflows",
-      "status": "planned",
+      "status": "done",
       "summary": "Replace tag-based action references (@v4, @v7) with SHA-pinned versions in daily-triage.yml, pr-babysitter.yml, and dependency-sweeper.yml.",
       "value": "high",
       "complexity": "low",
@@ -32,21 +32,21 @@
         {
           "id": "S-0.1",
           "title": "SHA-pin daily-triage.yml actions",
-          "done": false,
+          "done": true,
           "details": "Replace actions/checkout@v4, actions/setup-node@v4 with SHA-pinned versions matching the other 21 workflows.",
           "files": [".github/workflows/daily-triage.yml"]
         },
         {
           "id": "S-0.2",
           "title": "SHA-pin pr-babysitter.yml actions",
-          "done": false,
+          "done": true,
           "details": "Replace actions/checkout@v4, actions/setup-node@v4, actions/github-script@v7 with SHA-pinned versions.",
           "files": [".github/workflows/pr-babysitter.yml"]
         },
         {
           "id": "S-0.3",
           "title": "SHA-pin dependency-sweeper.yml actions",
-          "done": false,
+          "done": true,
           "details": "Replace actions/checkout@v4, actions/setup-node@v4 with SHA-pinned versions.",
           "files": [".github/workflows/dependency-sweeper.yml"]
         }
@@ -55,7 +55,7 @@
     {
       "id": "EPIC-1",
       "title": "Fix AGENTS.md accuracy",
-      "status": "planned",
+      "status": "done",
       "summary": "Update react-doctor version from 0.4.0 to 0.5.8 and update test file count to match actual.",
       "value": "high",
       "complexity": "low",
@@ -63,14 +63,14 @@
         {
           "id": "S-1.1",
           "title": "Update react-doctor version in AGENTS.md",
-          "done": false,
+          "done": true,
           "details": "Change 'react-doctor@0.4.0' to 'react-doctor@0.5.8' to match package.json.",
           "files": ["AGENTS.md"]
         },
         {
           "id": "S-1.2",
           "title": "Update test file count in AGENTS.md",
-          "done": false,
+          "done": true,
           "details": "Update '42 test files, 736 tests' to match actual count (86+ files, 700+ tests).",
           "files": ["AGENTS.md"]
         }
@@ -79,7 +79,7 @@
     {
       "id": "EPIC-2",
       "title": "Fix loop-engineering state",
-      "status": "planned",
+      "status": "done",
       "summary": "Update STATE.md to remove stale placeholder text and add budget exceed documentation to loop-budget.md.",
       "value": "high",
       "complexity": "low",
@@ -87,14 +87,14 @@
         {
           "id": "S-2.1",
           "title": "Update STATE.md with actual loop status",
-          "done": false,
+          "done": true,
           "details": "Replace placeholder text 'No active loops yet' with actual loop status showing all 3 loops are implemented.",
           "files": ["STATE.md"]
         },
         {
           "id": "S-2.2",
           "title": "Add budget exceed section to loop-budget.md",
-          "done": false,
+          "done": true,
           "details": "Add 'On budget exceed' section with steps: pause scheduler, log event, open issue.",
           "files": ["loop-budget.md"]
         }
@@ -103,7 +103,7 @@
     {
       "id": "EPIC-3",
       "title": "Fix test assertions to match actual APIs",
-      "status": "planned",
+      "status": "done",
       "summary": "Update rate limiter, bot blocker, and media gateway test assertions to match actual function exports.",
       "value": "high",
       "complexity": "medium",
@@ -111,21 +111,21 @@
         {
           "id": "S-3.1",
           "title": "Fix rate limiter audit test assertions",
-          "done": false,
+          "done": true,
           "details": "Update test to match actual rate limiter API: check for actual exported function names, not assumed ones.",
           "files": ["src/__tests__/audit/rate-limiter-audit.test.ts"]
         },
         {
           "id": "S-3.2",
           "title": "Fix bot blocker audit test assertions",
-          "done": false,
+          "done": true,
           "details": "Update test to match actual bot blocker API: check for actual exported function names.",
           "files": ["src/__tests__/audit/rate-limiter-audit.test.ts"]
         },
         {
           "id": "S-3.3",
           "title": "Fix media gateway HMAC test assertion",
-          "done": false,
+          "done": true,
           "details": "Update test to check for actual HMAC implementation pattern used in media-gateway.ts.",
           "files": ["src/__tests__/audit/secret-handling-audit.test.ts"]
         }
@@ -134,7 +134,7 @@
     {
       "id": "EPIC-4",
       "title": "Fix PRD JSON validity",
-      "status": "planned",
+      "status": "done",
       "summary": "Fix any invalid JSON in PRD files that causes parse failures.",
       "value": "medium",
       "complexity": "low",
@@ -142,7 +142,7 @@
         {
           "id": "S-4.1",
           "title": "Validate and fix all PRD JSON files",
-          "done": false,
+          "done": true,
           "details": "Run JSON.parse on all docs/prd/*.json files, fix any syntax errors.",
           "files": ["docs/prd/*.json"]
         }
@@ -151,7 +151,7 @@
     {
       "id": "EPIC-5",
       "title": "Update audit PRD status",
-      "status": "planned",
+      "status": "done",
       "summary": "Mark all audit PRD stories as done and update system-audit PRD with completion status.",
       "value": "medium",
       "complexity": "low",
@@ -159,14 +159,14 @@
         {
           "id": "S-5.1",
           "title": "Update system-audit.json PRD status",
-          "done": false,
+          "done": true,
           "details": "Mark all audit stories as done, update phases to completed.",
           "files": ["docs/prd/prd.system-audit.json"]
         },
         {
           "id": "S-5.2",
           "title": "Mark fix PRD stories as done",
-          "done": false,
+          "done": true,
           "details": "Mark all fix stories as done after implementation.",
           "files": ["docs/prd/prd.system-audit-fixes.json"]
         }
@@ -175,7 +175,7 @@
     {
       "id": "EPIC-6",
       "title": "Verification",
-      "status": "planned",
+      "status": "done",
       "summary": "Run full quality gate: tsc, eslint, vitest (all audit tests must pass), react-doctor.",
       "value": "high",
       "complexity": "low",
@@ -183,14 +183,14 @@
         {
           "id": "S-6.1",
           "title": "Run tsc, eslint, vitest",
-          "done": false,
+          "done": true,
           "details": "Run: npx tsc --noEmit, npm run lint, npm run test -- --run. All audit tests must pass.",
           "files": []
         },
         {
           "id": "S-6.2",
           "title": "Run react-doctor",
-          "done": false,
+          "done": true,
           "details": "Run npm run doctor. No new findings.",
           "files": []
         }
@@ -198,12 +198,47 @@
     }
   ],
   "phases": [
-    { "id": "PHASE-1", "label": "SHA-pin workflows", "epics": ["EPIC-0"], "status": "in-progress" },
-    { "id": "PHASE-2", "label": "Fix documentation", "epics": ["EPIC-1"], "status": "planned" },
-    { "id": "PHASE-3", "label": "Fix loop state", "epics": ["EPIC-2"], "status": "planned" },
-    { "id": "PHASE-4", "label": "Fix test assertions", "epics": ["EPIC-3"], "status": "planned" },
-    { "id": "PHASE-5", "label": "Fix PRD validity", "epics": ["EPIC-4"], "status": "planned" },
-    { "id": "PHASE-6", "label": "Update PRD status", "epics": ["EPIC-5"], "status": "planned" },
-    { "id": "PHASE-7", "label": "Verification", "epics": ["EPIC-6"], "status": "planned" }
+    {
+      "id": "PHASE-1",
+      "label": "SHA-pin workflows",
+      "epics": ["EPIC-0"],
+      "status": "done"
+    },
+    {
+      "id": "PHASE-2",
+      "label": "Fix documentation",
+      "epics": ["EPIC-1"],
+      "status": "done"
+    },
+    {
+      "id": "PHASE-3",
+      "label": "Fix loop state",
+      "epics": ["EPIC-2"],
+      "status": "done"
+    },
+    {
+      "id": "PHASE-4",
+      "label": "Fix test assertions",
+      "epics": ["EPIC-3"],
+      "status": "done"
+    },
+    {
+      "id": "PHASE-5",
+      "label": "Fix PRD validity",
+      "epics": ["EPIC-4"],
+      "status": "done"
+    },
+    {
+      "id": "PHASE-6",
+      "label": "Update PRD status",
+      "epics": ["EPIC-5"],
+      "status": "done"
+    },
+    {
+      "id": "PHASE-7",
+      "label": "Verification",
+      "epics": ["EPIC-6"],
+      "status": "done"
+    }
   ]
 }
