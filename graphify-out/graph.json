@@ -1,0 +1,241 @@
+{
+  "directed": false,
+  "multigraph": false,
+  "graph": {},
+  "nodes": [
+    {
+      "label": "pre-commit-zizmor.sh",
+      "file_type": "code",
+      "source_file": "scripts/pre-commit-zizmor.sh",
+      "source_location": "L1",
+      "metadata": {
+        "language": "bash",
+        "kind": "file"
+      },
+      "_origin": "ast",
+      "id": "scripts_pre_commit_zizmor",
+      "community": 0,
+      "norm_label": "pre-commit-zizmor.sh"
+    },
+    {
+      "label": "pre-commit-zizmor.sh script",
+      "file_type": "code",
+      "source_file": "scripts/pre-commit-zizmor.sh",
+      "source_location": "L1",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_entrypoint"
+      },
+      "_origin": "ast",
+      "id": "scripts_pre_commit_zizmor_sh__entry",
+      "community": 0,
+      "norm_label": "pre-commit-zizmor.sh script"
+    },
+    {
+      "label": "setup-pentestagent.ps1",
+      "file_type": "code",
+      "source_file": "scripts/setup-pentestagent.ps1",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "scripts_setup_pentestagent_ps1_scripts_setup_pentestagent",
+      "community": 5,
+      "norm_label": "setup-pentestagent.ps1"
+    },
+    {
+      "label": "setup-pentestagent.sh",
+      "file_type": "code",
+      "source_file": "scripts/setup-pentestagent.sh",
+      "source_location": "L1",
+      "metadata": {
+        "language": "bash",
+        "kind": "file"
+      },
+      "_origin": "ast",
+      "id": "scripts_setup_pentestagent_sh_scripts_setup_pentestagent",
+      "community": 1,
+      "norm_label": "setup-pentestagent.sh"
+    },
+    {
+      "label": "setup-pentestagent.sh script",
+      "file_type": "code",
+      "source_file": "scripts/setup-pentestagent.sh",
+      "source_location": "L1",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_entrypoint"
+      },
+      "_origin": "ast",
+      "id": "scripts_setup_pentestagent_sh__entry",
+      "community": 1,
+      "norm_label": "setup-pentestagent.sh script"
+    },
+    {
+      "label": "backup.ps1",
+      "file_type": "code",
+      "source_file": "studio/scripts/backup.ps1",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "studio_scripts_backup_ps1_studio_scripts_backup",
+      "community": 6,
+      "norm_label": "backup.ps1"
+    },
+    {
+      "label": "backup.sh",
+      "file_type": "code",
+      "source_file": "studio/scripts/backup.sh",
+      "source_location": "L1",
+      "metadata": {
+        "language": "bash",
+        "kind": "file"
+      },
+      "_origin": "ast",
+      "id": "studio_scripts_backup_sh_studio_scripts_backup",
+      "community": 2,
+      "norm_label": "backup.sh"
+    },
+    {
+      "label": "backup.sh script",
+      "file_type": "code",
+      "source_file": "studio/scripts/backup.sh",
+      "source_location": "L1",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_entrypoint"
+      },
+      "_origin": "ast",
+      "id": "studio_scripts_backup_sh__entry",
+      "community": 2,
+      "norm_label": "backup.sh script"
+    },
+    {
+      "label": "restore.ps1",
+      "file_type": "code",
+      "source_file": "studio/scripts/restore.ps1",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "studio_scripts_restore_ps1_studio_scripts_restore",
+      "community": 7,
+      "norm_label": "restore.ps1"
+    },
+    {
+      "label": "restore.sh",
+      "file_type": "code",
+      "source_file": "studio/scripts/restore.sh",
+      "source_location": "L1",
+      "metadata": {
+        "language": "bash",
+        "kind": "file"
+      },
+      "_origin": "ast",
+      "id": "studio_scripts_restore_sh_studio_scripts_restore",
+      "community": 3,
+      "norm_label": "restore.sh"
+    },
+    {
+      "label": "restore.sh script",
+      "file_type": "code",
+      "source_file": "studio/scripts/restore.sh",
+      "source_location": "L1",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_entrypoint"
+      },
+      "_origin": "ast",
+      "id": "studio_scripts_restore_sh__entry",
+      "community": 3,
+      "norm_label": "restore.sh script"
+    },
+    {
+      "label": "verify.ps1",
+      "file_type": "code",
+      "source_file": "studio/scripts/verify.ps1",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "studio_scripts_verify_ps1_studio_scripts_verify",
+      "community": 8,
+      "norm_label": "verify.ps1"
+    },
+    {
+      "label": "verify.sh",
+      "file_type": "code",
+      "source_file": "studio/scripts/verify.sh",
+      "source_location": "L1",
+      "metadata": {
+        "language": "bash",
+        "kind": "file"
+      },
+      "_origin": "ast",
+      "id": "studio_scripts_verify_sh_studio_scripts_verify",
+      "community": 4,
+      "norm_label": "verify.sh"
+    },
+    {
+      "label": "verify.sh script",
+      "file_type": "code",
+      "source_file": "studio/scripts/verify.sh",
+      "source_location": "L1",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_entrypoint"
+      },
+      "_origin": "ast",
+      "id": "studio_scripts_verify_sh__entry",
+      "community": 4,
+      "norm_label": "verify.sh script"
+    }
+  ],
+  "links": [
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/pre-commit-zizmor.sh",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "scripts_pre_commit_zizmor",
+      "target": "scripts_pre_commit_zizmor_sh__entry",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "scripts/setup-pentestagent.sh",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "scripts_setup_pentestagent_sh_scripts_setup_pentestagent",
+      "target": "scripts_setup_pentestagent_sh__entry",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "studio/scripts/backup.sh",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "studio_scripts_backup_sh_studio_scripts_backup",
+      "target": "studio_scripts_backup_sh__entry",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "studio/scripts/restore.sh",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "studio_scripts_restore_sh_studio_scripts_restore",
+      "target": "studio_scripts_restore_sh__entry",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "studio/scripts/verify.sh",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "studio_scripts_verify_sh_studio_scripts_verify",
+      "target": "studio_scripts_verify_sh__entry",
+      "confidence_score": 1.0
+    }
+  ],
+  "hyperedges": [],
+  "built_at_commit": "75b5d827347ec1e592f4533dc54c96a3fa2e09d1"
+}

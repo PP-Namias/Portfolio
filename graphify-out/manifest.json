@@ -1,0 +1,52 @@
+{
+  "public/backups-canary/database.sql": {
+    "mtime": 1781581948.5560455,
+    "ast_hash": "7926340e1092f7df4a943a4fbaee16f1",
+    "semantic_hash": ""
+  },
+  "scripts/pre-commit-zizmor.sh": {
+    "mtime": 1780858445.6801987,
+    "ast_hash": "ed3b6935e047dde390658c67b4c0203e",
+    "semantic_hash": ""
+  },
+  "scripts/setup-pentestagent.ps1": {
+    "mtime": 1780858421.125728,
+    "ast_hash": "fcc7579d3cbcb4e301b71572c7a704b7",
+    "semantic_hash": ""
+  },
+  "scripts/setup-pentestagent.sh": {
+    "mtime": 1780858421.2892241,
+    "ast_hash": "0064cf96706d7adc2c94f42f3b384658",
+    "semantic_hash": ""
+  },
+  "studio/scripts/backup.ps1": {
+    "mtime": 1781277834.3665779,
+    "ast_hash": "5f66f9fb0d2cb470c3d9bd56a911fcff",
+    "semantic_hash": ""
+  },
+  "studio/scripts/backup.sh": {
+    "mtime": 1781277599.8372045,
+    "ast_hash": "4dc39328edb03058b7216086dc5bfead",
+    "semantic_hash": ""
+  },
+  "studio/scripts/restore.ps1": {
+    "mtime": 1781277608.0339653,
+    "ast_hash": "1d61e6766bd3392267099675dadf95d3",
+    "semantic_hash": ""
+  },
+  "studio/scripts/restore.sh": {
+    "mtime": 1781277621.605728,
+    "ast_hash": "43fa3741f9c19487b57f5d2dc7bebcf2",
+    "semantic_hash": ""
+  },
+  "studio/scripts/verify.ps1": {
+    "mtime": 1781277630.78055,
+    "ast_hash": "660b35e0de0cd62b0d7fcdbb5b5c0e12",
+    "semantic_hash": ""
+  },
+  "studio/scripts/verify.sh": {
+    "mtime": 1781277639.8680458,
+    "ast_hash": "16e4f91eb94b3a12681a0917057e31f2",
+    "semantic_hash": ""
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "0": "pre-commit-zizmor.sh",
+  "1": "setup-pentestagent.sh script",
+  "2": "backup.sh script",
+  "3": "restore.sh script",
+  "4": "verify.sh script",
+  "5": "setup-pentestagent.ps1",
+  "6": "backup.ps1",
+  "7": "restore.ps1",
+  "8": "verify.ps1"
+}

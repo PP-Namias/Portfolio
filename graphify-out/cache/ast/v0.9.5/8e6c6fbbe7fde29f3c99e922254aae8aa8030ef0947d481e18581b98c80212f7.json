@@ -1,0 +1,13 @@
+{
+  "nodes": [
+    {
+      "id": "c_users_admin_desktop_pp_namias_portfolio_scripts_setup_pentestagent_ps1",
+      "label": "setup-pentestagent.ps1",
+      "file_type": "code",
+      "source_file": "scripts/setup-pentestagent.ps1",
+      "source_location": "L1"
+    }
+  ],
+  "edges": [],
+  "raw_calls": []
+}
