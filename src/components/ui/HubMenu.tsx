@@ -1,76 +1,68 @@
-'use client';
+'use client'
 
-import { useState, useRef, useCallback, useEffect, type ComponentType } from 'react';
-import Image from '@/components/ui/OptimizedImage';
-import { motion, AnimatePresence } from 'framer-motion';
-import { FaGithub, FaLinkedinIn, FaXTwitter } from 'react-icons/fa6';
-import {
-  Bot,
-  FileDown,
-  Calendar,
-  Mail,
-  Share2,
-  X,
-  ArrowUpRight,
-} from 'lucide-react';
-import { HubMenuItem } from './HubMenuItem';
-import { useModal } from '@/hooks/useModal';
-import { useCmsContent } from '@/hooks/useCmsContent';
-import { IS_BLOG_VISIBLE } from '@/lib/features';
-import { resolveContentImageSrc } from '@/lib/media';
+import { useState, useRef, useCallback, useEffect, type ComponentType } from 'react'
+import Image from '@/components/ui/OptimizedImage'
+import { motion, AnimatePresence } from 'framer-motion'
+import { FaGithub, FaLinkedinIn, FaXTwitter } from 'react-icons/fa6'
+import { Bot, FileDown, Calendar, Mail, Share2, X, ArrowUpRight } from 'lucide-react'
+import { HubMenuItem } from './HubMenuItem'
+import { useModal } from '@/hooks/useModal'
+import { useCmsContent } from '@/hooks/useCmsContent'
+import { IS_BLOG_VISIBLE, IS_GRAPHIFY_ENABLED } from '@/lib/features'
+import { resolveContentImageSrc } from '@/lib/media'
 
 interface HubMenuProps {
-  onClose: () => void;
-  onOpenChat: () => void;
+  onClose: () => void
+  onOpenChat: () => void
 }
 
-const CONNECT_SOCIALS = ['github', 'linkedin', 'x', 'twitter'] as const;
+const CONNECT_SOCIALS = ['github', 'linkedin', 'x', 'twitter'] as const
 
 const socialIconMap: Record<string, ComponentType<{ className?: string }>> = {
   github: FaGithub,
   linkedin: FaLinkedinIn,
   x: FaXTwitter,
   twitter: FaXTwitter,
-};
+}
 
 export function HubMenu({ onClose, onOpenChat }: Readonly<HubMenuProps>) {
-  const [connectExpanded, setConnectExpanded] = useState(false);
-  const { openModal } = useModal();
-  const { profile, socialLinks, hero } = useCmsContent();
-  const menuRef = useRef<HTMLDivElement>(null);
+  const [connectExpanded, setConnectExpanded] = useState(false)
+  const { openModal } = useModal()
+  const { profile, socialLinks, hero } = useCmsContent()
+  const menuRef = useRef<HTMLDivElement>(null)
   const profileImageSrc = resolveContentImageSrc(hero.profileImageUrl, {
     folder: 'profile',
-  });
+  })
 
-  const calLink = socialLinks.find((s) => s.name === 'cal');
+  const calLink = socialLinks.find((s) => s.name === 'cal')
   const connectLinks = socialLinks.filter((s) =>
     CONNECT_SOCIALS.includes(s.name as (typeof CONNECT_SOCIALS)[number])
-  );
+  )
 
   const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
-    if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return;
-    e.preventDefault();
-    const items = menuRef.current?.querySelectorAll<HTMLElement>('[role="menuitem"]');
-    if (!items || items.length === 0) return;
-    const current = document.activeElement as HTMLElement;
-    const idx = Array.from(items).indexOf(current);
-    let next: number;
+    if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return
+    e.preventDefault()
+    const items = menuRef.current?.querySelectorAll<HTMLElement>('[role="menuitem"]')
+    if (!items || items.length === 0) return
+    const current = document.activeElement as HTMLElement
+    const idx = Array.from(items).indexOf(current)
+    let next: number
     if (e.key === 'ArrowDown') {
-      next = idx < items.length - 1 ? idx + 1 : 0;
+      next = idx < items.length - 1 ? idx + 1 : 0
     } else {
-      next = idx > 0 ? idx - 1 : items.length - 1;
+      next = idx > 0 ? idx - 1 : items.length - 1
     }
-    items[next].focus();
-  }, []);
+    items[next].focus()
+  }, [])
 
   useEffect(() => {
     // Auto-focus first menu item when menu opens
     const timer = setTimeout(() => {
-      const firstItem = menuRef.current?.querySelector<HTMLElement>('[role="menuitem"]');
-      firstItem?.focus();
-    }, 100);
-    return () => clearTimeout(timer);
-  }, []);
+      const firstItem = menuRef.current?.querySelector<HTMLElement>('[role="menuitem"]')
+      firstItem?.focus()
+    }, 100)
+    return () => clearTimeout(timer)
+  }, [])
 
   return (
     <>
@@ -180,7 +172,10 @@ export function HubMenu({ onClose, onOpenChat }: Readonly<HubMenuProps>) {
           label="View Resume"
           subtitle="View & download my CV"
           index={1}
-          onClick={() => { openModal('resume'); onClose(); }}
+          onClick={() => {
+            openModal('resume')
+            onClose()
+          }}
           iconColorClass="text-blue-500"
           iconBgClass="bg-blue-500/10"
         />
@@ -191,7 +186,10 @@ export function HubMenu({ onClose, onOpenChat }: Readonly<HubMenuProps>) {
             label="Schedule a Meeting"
             subtitle="Book on Cal.com"
             index={2}
-            onClick={() => { openModal('booking'); onClose(); }}
+            onClick={() => {
+              openModal('booking')
+              onClose()
+            }}
             iconColorClass="text-emerald-500"
             iconBgClass="bg-emerald-500/10"
           />
@@ -205,7 +203,10 @@ export function HubMenu({ onClose, onOpenChat }: Readonly<HubMenuProps>) {
           label="Send Email"
           subtitle={profile.email}
           index={3}
-          onClick={() => { window.location.href = `mailto:${profile.email}`; onClose(); }}
+          onClick={() => {
+            window.location.href = `mailto:${profile.email}`
+            onClose()
+          }}
           iconColorClass="text-amber-500"
           iconBgClass="bg-amber-500/10"
         />
@@ -232,7 +233,7 @@ export function HubMenu({ onClose, onOpenChat }: Readonly<HubMenuProps>) {
             >
               <div className="flex items-center gap-2 py-2.5 pl-[48px]">
                 {connectLinks.map((link, i) => {
-                  const Icon = socialIconMap[link.name] || Share2;
+                  const Icon = socialIconMap[link.name] || Share2
                   return (
                     <motion.a
                       key={link.name}
@@ -247,7 +248,7 @@ export function HubMenu({ onClose, onOpenChat }: Readonly<HubMenuProps>) {
                     >
                       <Icon className="h-3.5 w-3.5" />
                     </motion.a>
-                  );
+                  )
                 })}
               </div>
             </motion.div>
@@ -266,6 +267,19 @@ export function HubMenu({ onClose, onOpenChat }: Readonly<HubMenuProps>) {
             iconBgClass="bg-indigo-500/10"
           />
         )}
+
+        {IS_GRAPHIFY_ENABLED && (
+          <HubMenuItem
+            icon={ArrowUpRight}
+            label="Codebase Explorer"
+            subtitle="Interactive knowledge graph"
+            index={6}
+            href="/explorer"
+            onClick={onClose}
+            iconColorClass="text-cyan-500"
+            iconBgClass="bg-cyan-500/10"
+          />
+        )}
       </div>
 
       {/* Footer — minimal status */}
@@ -277,18 +291,19 @@ export function HubMenu({ onClose, onOpenChat }: Readonly<HubMenuProps>) {
       >
         <button
           type="button"
-          onClick={() => { openModal('booking'); onClose(); }}
+          onClick={() => {
+            openModal('booking')
+            onClose()
+          }}
           className="w-full flex items-center justify-center gap-1.5 text-xs text-text-muted-light dark:text-text-muted-dark hover:text-accent-pink transition-colors group"
         >
           <span className="inline-flex items-center gap-1.5 font-medium">
-            <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
-            {' '}
-            Book a meeting
+            <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" /> Book a
+            meeting
           </span>
           <ArrowUpRight className="h-3 w-3 opacity-0 -translate-y-0.5 group-hover:opacity-100 group-hover:translate-y-0 transition-[opacity,transform] duration-200" />
         </button>
       </motion.div>
     </>
-  );
+  )
 }
-
