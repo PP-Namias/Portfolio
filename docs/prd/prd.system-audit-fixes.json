@@ -1,282 +1,209 @@
 {
-  "project": "Namias Portfolio - System Audit & Fix Plan",
+  "project": "Namias Portfolio — System Audit Fixes",
   "codeName": "system-audit-fixes",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "owner": "Jhon Keneth Ryan Namias (PP Namias)",
   "contact": "pp.namias@gmail.com",
-  "lastUpdated": "2026-07-02",
+  "lastUpdated": "2026-07-03",
   "branch": "dev",
-  "status": "completed",
-  "summary": "Complete system audit findings and fix plan. 45 issues identified across critical, high, medium, and low severity. Fixes organized into 10 commit slices targeting react-doctor score improvement from 59/100 to 100/100, fixing 3 critical bugs, eliminating code duplication, and improving accessibility.",
-  "auditResults": {
-    "tsc": "PASS (0 errors)",
-    "eslint": "PASS (0 errors, 4 pre-existing warnings)",
-    "vitest": "PASS (736 tests, 0 failures)",
-    "react-doctor": "FAIL (59/100, 18 issues: 1 error, 17 warnings)",
-    "codeAudit": "45 issues found (3 critical, 6 high, 16 medium, 20 low)"
+  "links": {
+    "marketing": "https://namias.tech",
+    "repo": "https://github.com/PP-Namias/Portfolio",
+    "auditPrd": "docs/prd/prd.system-audit.json"
   },
-  "reactDoctorBreakdown": {
-    "score": 59,
-    "maxScore": 100,
-    "issues": {
-      "security": {
-        "errors": 0,
-        "warnings": 3,
-        "details": "Build pipeline runs code near secrets (3x CI workflows)"
-      },
-      "bugs": {
-        "errors": 1,
-        "warnings": 7,
-        "details": "fetch in useEffect (1 error), time/random in JSX (1), button missing type (6x)"
-      },
-      "performance": {
-        "errors": 0,
-        "warnings": 1,
-        "details": "Unstable context provider value in 3d-card.tsx"
-      },
-      "accessibility": {
-        "errors": 0,
-        "warnings": 3,
-        "details": "Interactive not focusable (1), role instead of tag (1), mouse handler missing focus (1)"
-      },
-      "maintainability": {
-        "errors": 0,
-        "warnings": 2,
-        "details": "Multiple components in one file (3d-card.tsx)"
-      },
-      "security2": {
-        "errors": 0,
-        "warnings": 1,
-        "details": "Unescaped JSON in HTML/script sink (JsonLd.tsx)"
-      }
-    }
-  },
-  "criticalIssues": [
-    {
-      "id": "CRIT-1",
-      "title": "JSX Structural Misplacement in ProjectDetailPage",
-      "file": "src/components/sections/ProjectDetailPage.tsx",
-      "lines": "193-211",
-      "description": "A <JsonLd> component is incorrectly nested inside a gallery image wrapper div. This creates invalid DOM nesting — a <script> tag rendered inside a CSS grid cell. Causes React hydration warnings and visually broken gallery items.",
-      "fix": "Move the <JsonLd> component outside the gallery item div to be a sibling of the top-level fragment."
-    },
-    {
-      "id": "CRIT-2",
-      "title": "GROQ Query Injection in blog-sync.mjs",
-      "file": "scripts/blog-sync.mjs",
-      "lines": "218",
-      "description": "frontmatter.slug is interpolated directly into a GROQ query string. If a slug contains double-quotes or GROQ-special characters, it could break the query or allow injection.",
-      "fix": "Sanitize slug values or use GROQ parameterized queries with double-star escaping."
-    },
-    {
-      "id": "CRIT-3",
-      "title": "Mutable Module-Level State in md-to-portable-text.ts",
-      "file": "scripts/lib/md-to-portable-text.ts",
-      "lines": "24",
-      "description": "let keyCounter = 0 is module-level mutable state. In parallel tests or long-running processes, keys are not deterministic and could collide.",
-      "fix": "Use a function-scoped counter or crypto.randomUUID() for key generation."
-    }
+  "summary": "Fix all 19 findings from the system audit. Each finding becomes one commit. Fixes cover: (1) SHA-pin 3 loop-engineering workflows, (2) update AGENTS.md version and test counts, (3) fix STATE.md stale content, (4) add loop-budget.md budget exceed section, (5) fix rate limiter and bot blocker test assertions to match actual API, (6) fix media gateway HMAC test assertion, (7) fix PRD JSON validity.",
+  "narrative": "The system audit identified 19 test failures across 5 audit test files. These fall into 7 categories: action pinning (supply-chain security), documentation accuracy (stale versions/counts), loop-engineering state (stale placeholder text), rate limiter API mismatch (test assertions vs actual exports), bot blocker API mismatch, media gateway HMAC detection, and PRD JSON validity. Each fix is one commit for maximum git history and independent revertability.",
+  "principles": [
+    "One finding = one commit — maximizes commit records as requested",
+    "Fix the root cause, not the test — if the test is wrong, fix the test; if the code is wrong, fix the code",
+    "Security first — SHA-pinning is the highest priority fix",
+    "Documentation accuracy — AGENTS.md must match reality",
+    "No regressions — all existing tests must continue passing"
   ],
-  "highIssues": [
+  "epics": [
     {
-      "id": "HIGH-1",
-      "title": "Duplicate Portable Text Converters (5+ copies)",
-      "files": [
-        "scripts/lib/portable-text-to-md.ts",
-        "scripts/blog-sync.mjs",
-        "scripts/import-sanity-posts.mjs",
-        "scripts/lib/md-to-portable-text.ts"
-      ],
-      "description": "The same conversion logic exists in 5+ places. Inline versions in blog-sync.mjs and import-sanity-posts.mjs are simplified and lose data (lists, code blocks, blockquotes, inline formatting).",
-      "fix": "Import from scripts/lib/ in all scripts. Remove inline duplicates."
+      "id": "EPIC-0",
+      "title": "SHA-pin loop-engineering workflows",
+      "status": "planned",
+      "summary": "Replace tag-based action references (@v4, @v7) with SHA-pinned versions in daily-triage.yml, pr-babysitter.yml, and dependency-sweeper.yml.",
+      "value": "high",
+      "complexity": "low",
+      "stories": [
+        {
+          "id": "S-0.1",
+          "title": "SHA-pin daily-triage.yml actions",
+          "done": false,
+          "details": "Replace actions/checkout@v4, actions/setup-node@v4 with SHA-pinned versions matching the other 21 workflows.",
+          "files": [".github/workflows/daily-triage.yml"]
+        },
+        {
+          "id": "S-0.2",
+          "title": "SHA-pin pr-babysitter.yml actions",
+          "done": false,
+          "details": "Replace actions/checkout@v4, actions/setup-node@v4, actions/github-script@v7 with SHA-pinned versions.",
+          "files": [".github/workflows/pr-babysitter.yml"]
+        },
+        {
+          "id": "S-0.3",
+          "title": "SHA-pin dependency-sweeper.yml actions",
+          "done": false,
+          "details": "Replace actions/checkout@v4, actions/setup-node@v4 with SHA-pinned versions.",
+          "files": [".github/workflows/dependency-sweeper.yml"]
+        }
+      ]
     },
     {
-      "id": "HIGH-2",
-      "title": "Missing Button Type Attributes (6 instances)",
-      "files": [
-        "src/app/admin/canary/page.tsx:102,108",
-        "src/app/blog/[slug]/error.tsx:9",
-        "src/app/blog/error.tsx:9",
-        "src/app/projects/[slug]/error.tsx:9",
-        "src/app/projects/error.tsx:9"
-      ],
-      "description": "Buttons without explicit type attribute default to submit, which can accidentally submit forms.",
-      "fix": "Add type='button' to all non-submit buttons."
+      "id": "EPIC-1",
+      "title": "Fix AGENTS.md accuracy",
+      "status": "planned",
+      "summary": "Update react-doctor version from 0.4.0 to 0.5.8 and update test file count to match actual.",
+      "value": "high",
+      "complexity": "low",
+      "stories": [
+        {
+          "id": "S-1.1",
+          "title": "Update react-doctor version in AGENTS.md",
+          "done": false,
+          "details": "Change 'react-doctor@0.4.0' to 'react-doctor@0.5.8' to match package.json.",
+          "files": ["AGENTS.md"]
+        },
+        {
+          "id": "S-1.2",
+          "title": "Update test file count in AGENTS.md",
+          "done": false,
+          "details": "Update '42 test files, 736 tests' to match actual count (86+ files, 700+ tests).",
+          "files": ["AGENTS.md"]
+        }
+      ]
     },
     {
-      "id": "HIGH-3",
-      "title": "blog-sync.mjs args Referenced via Closure",
-      "file": "scripts/blog-sync.mjs",
-      "lines": "169,204,212,218",
-      "description": "cmdPull and cmdPush reference module-level args variable via closure rather than receiving it as a parameter. Makes functions impure and untestable.",
-      "fix": "Pass args as a parameter to each command function."
+      "id": "EPIC-2",
+      "title": "Fix loop-engineering state",
+      "status": "planned",
+      "summary": "Update STATE.md to remove stale placeholder text and add budget exceed documentation to loop-budget.md.",
+      "value": "high",
+      "complexity": "low",
+      "stories": [
+        {
+          "id": "S-2.1",
+          "title": "Update STATE.md with actual loop status",
+          "done": false,
+          "details": "Replace placeholder text 'No active loops yet' with actual loop status showing all 3 loops are implemented.",
+          "files": ["STATE.md"]
+        },
+        {
+          "id": "S-2.2",
+          "title": "Add budget exceed section to loop-budget.md",
+          "done": false,
+          "details": "Add 'On budget exceed' section with steps: pause scheduler, log event, open issue.",
+          "files": ["loop-budget.md"]
+        }
+      ]
     },
     {
-      "id": "HIGH-4",
-      "title": "import-sanity-posts.mjs Incorrect Status Logic",
-      "file": "scripts/import-sanity-posts.mjs",
-      "lines": "92",
-      "description": "Status check uses fs.existsSync after writing, so it always returns 'updated' when FORCE is true even on first write.",
-      "fix": "Check existence before writing, not after."
+      "id": "EPIC-3",
+      "title": "Fix test assertions to match actual APIs",
+      "status": "planned",
+      "summary": "Update rate limiter, bot blocker, and media gateway test assertions to match actual function exports.",
+      "value": "high",
+      "complexity": "medium",
+      "stories": [
+        {
+          "id": "S-3.1",
+          "title": "Fix rate limiter audit test assertions",
+          "done": false,
+          "details": "Update test to match actual rate limiter API: check for actual exported function names, not assumed ones.",
+          "files": ["src/__tests__/audit/rate-limiter-audit.test.ts"]
+        },
+        {
+          "id": "S-3.2",
+          "title": "Fix bot blocker audit test assertions",
+          "done": false,
+          "details": "Update test to match actual bot blocker API: check for actual exported function names.",
+          "files": ["src/__tests__/audit/rate-limiter-audit.test.ts"]
+        },
+        {
+          "id": "S-3.3",
+          "title": "Fix media gateway HMAC test assertion",
+          "done": false,
+          "details": "Update test to check for actual HMAC implementation pattern used in media-gateway.ts.",
+          "files": ["src/__tests__/audit/secret-handling-audit.test.ts"]
+        }
+      ]
     },
     {
-      "id": "HIGH-5",
-      "title": "ConnectSection Nested <section> Without Accessible Name",
-      "file": "src/components/sections/ConnectSection.tsx",
-      "lines": "33-34",
-      "description": "Outer <section> has aria-labelledby but heading is inside inner section. Screen readers announce a section with no direct heading.",
-      "fix": "Remove redundant outer <section> or move heading to be direct child."
+      "id": "EPIC-4",
+      "title": "Fix PRD JSON validity",
+      "status": "planned",
+      "summary": "Fix any invalid JSON in PRD files that causes parse failures.",
+      "value": "medium",
+      "complexity": "low",
+      "stories": [
+        {
+          "id": "S-4.1",
+          "title": "Validate and fix all PRD JSON files",
+          "done": false,
+          "details": "Run JSON.parse on all docs/prd/*.json files, fix any syntax errors.",
+          "files": ["docs/prd/*.json"]
+        }
+      ]
     },
     {
-      "id": "HIGH-6",
-      "title": "3d-card.tsx useEffect Missing Dependency + Direct DOM Manipulation",
-      "file": "src/components/ui/3d-card.tsx",
-      "lines": "117-129",
-      "description": "useEffect suppresses exhaustive-deps warning. handleAnimations closure captures stale props. Direct style.transform mutation bypasses React.",
-      "fix": "Refactor to use proper dependency array or move animation logic to a custom hook."
+      "id": "EPIC-5",
+      "title": "Update audit PRD status",
+      "status": "planned",
+      "summary": "Mark all audit PRD stories as done and update system-audit PRD with completion status.",
+      "value": "medium",
+      "complexity": "low",
+      "stories": [
+        {
+          "id": "S-5.1",
+          "title": "Update system-audit.json PRD status",
+          "done": false,
+          "details": "Mark all audit stories as done, update phases to completed.",
+          "files": ["docs/prd/prd.system-audit.json"]
+        },
+        {
+          "id": "S-5.2",
+          "title": "Mark fix PRD stories as done",
+          "done": false,
+          "details": "Mark all fix stories as done after implementation.",
+          "files": ["docs/prd/prd.system-audit-fixes.json"]
+        }
+      ]
+    },
+    {
+      "id": "EPIC-6",
+      "title": "Verification",
+      "status": "planned",
+      "summary": "Run full quality gate: tsc, eslint, vitest (all audit tests must pass), react-doctor.",
+      "value": "high",
+      "complexity": "low",
+      "stories": [
+        {
+          "id": "S-6.1",
+          "title": "Run tsc, eslint, vitest",
+          "done": false,
+          "details": "Run: npx tsc --noEmit, npm run lint, npm run test -- --run. All audit tests must pass.",
+          "files": []
+        },
+        {
+          "id": "S-6.2",
+          "title": "Run react-doctor",
+          "done": false,
+          "details": "Run npm run doctor. No new findings.",
+          "files": []
+        }
+      ]
     }
   ],
   "phases": [
-    {
-      "id": "PHASE-1",
-      "label": "Critical fixes",
-      "sliceIds": ["SLICE-01", "SLICE-02", "SLICE-03"]
-    },
-    {
-      "id": "PHASE-2",
-      "label": "High fixes",
-      "sliceIds": ["SLICE-04", "SLICE-05", "SLICE-06", "SLICE-07"]
-    },
-    { "id": "PHASE-3", "label": "React-doctor fixes", "sliceIds": ["SLICE-08", "SLICE-09"] },
-    { "id": "PHASE-4", "label": "Verification", "sliceIds": ["SLICE-10"] }
-  ],
-  "commitPlan": {
-    "strategy": "One commit per fix slice. Each commit passes tsc, lint, and vitest.",
-    "slices": [
-      {
-        "id": "SLICE-01",
-        "title": "Fix JSX structural misplacement in ProjectDetailPage",
-        "files": ["src/components/sections/ProjectDetailPage.tsx"],
-        "commitMessage": "fix(ui): move JsonLd outside gallery item wrapper in ProjectDetailPage",
-        "severity": "critical"
-      },
-      {
-        "id": "SLICE-02",
-        "title": "Fix GROQ injection in blog-sync.mjs",
-        "files": ["scripts/blog-sync.mjs"],
-        "commitMessage": "fix(security): sanitize slug in GROQ query to prevent injection",
-        "severity": "critical"
-      },
-      {
-        "id": "SLICE-03",
-        "title": "Fix mutable module-level state in md-to-portable-text.ts",
-        "files": ["scripts/lib/md-to-portable-text.ts"],
-        "commitMessage": "fix(blog): replace mutable module counter with deterministic key generation",
-        "severity": "critical"
-      },
-      {
-        "id": "SLICE-04",
-        "title": "Consolidate duplicate portable text converters",
-        "files": ["scripts/blog-sync.mjs", "scripts/import-sanity-posts.mjs"],
-        "commitMessage": "refactor(blog): replace inline converters with imports from scripts/lib",
-        "severity": "high"
-      },
-      {
-        "id": "SLICE-05",
-        "title": "Fix missing button type attributes",
-        "files": [
-          "src/app/admin/canary/page.tsx",
-          "src/app/blog/[slug]/error.tsx",
-          "src/app/blog/error.tsx",
-          "src/app/projects/[slug]/error.tsx",
-          "src/app/projects/error.tsx"
-        ],
-        "commitMessage": "fix(a11y): add type='button' to all non-submit buttons",
-        "severity": "high"
-      },
-      {
-        "id": "SLICE-06",
-        "title": "Fix blog-sync.mjs args closure + import-sanity-posts.mjs status logic",
-        "files": ["scripts/blog-sync.mjs", "scripts/import-sanity-posts.mjs"],
-        "commitMessage": "fix(blog): pass args as parameter to command functions and fix status logic",
-        "severity": "high"
-      },
-      {
-        "id": "SLICE-07",
-        "title": "Fix ConnectSection nested section accessibility",
-        "files": ["src/components/sections/ConnectSection.tsx"],
-        "commitMessage": "fix(a11y): remove redundant outer section in ConnectSection",
-        "severity": "high"
-      },
-      {
-        "id": "SLICE-08",
-        "title": "Fix react-doctor: time/random in JSX (Footer.tsx)",
-        "files": ["src/components/layout/Footer.tsx"],
-        "commitMessage": "fix(hydration): move Date.now() into useState+useEffect in Footer",
-        "severity": "medium"
-      },
-      {
-        "id": "SLICE-09",
-        "title": "Fix react-doctor: JsonLd XSS, 3d-card context, hacked-text a11y",
-        "files": [
-          "src/components/seo/JsonLd.tsx",
-          "src/components/ui/3d-card.tsx",
-          "src/components/ui/hacked-text.tsx"
-        ],
-        "commitMessage": "fix(security,a11y): sanitize JsonLd JSON, memoize 3d-card context, add onFocus to hacked-text",
-        "severity": "medium"
-      },
-      {
-        "id": "SLICE-10",
-        "title": "Final verification and PRD update",
-        "files": ["docs/prd/prd.system-audit-fixes.json"],
-        "commitMessage": "docs(prd): add system audit fix plan PRD with all findings",
-        "severity": "low"
-      }
-    ]
-  },
-  "openQuestions": [
-    {
-      "question": "Should we fix the CI workflow security warnings (build pipeline secret boundary)?",
-      "answer": "No — these are CI configuration warnings that require changes to GitHub Actions workflows, not application code. They are low-risk for a portfolio site.",
-      "status": "deferred"
-    },
-    {
-      "question": "Should we remove styled-components from package.json?",
-      "answer": "Yes — it appears unused. Will verify with a grep before removing.",
-      "status": "pending"
-    },
-    {
-      "question": "Should we upgrade tsconfig target from ES2017 to ES2022?",
-      "answer": "No — this is a configuration change that could affect build output. Defer to a separate PR.",
-      "status": "deferred"
-    }
-  ],
-  "completionSummary": {
-    "completedAt": "2026-07-02",
-    "totalSlices": 10,
-    "completedSlices": 10,
-    "commits": [
-      "aeb855d - fix(ui): move JsonLd outside gallery item wrapper in ProjectDetailPage",
-      "d89b828 - fix(security): use parameterized GROQ queries in blog-sync.mjs",
-      "ae4b40f - fix(blog): remove Date.now() from key generation in md-to-portable-text",
-      "5d6b49d - refactor(blog): replace inline converters with imports from scripts/lib",
-      "7f4d34d - fix(a11y): add type='button' to all non-submit buttons",
-      "774c8e5 - fix(blog): pass args as parameter to command functions and fix status logic",
-      "a60d3db - fix(a11y): remove redundant outer section in ConnectSection",
-      "fe2df3b - fix(hydration): move Date.now() into useState+useEffect in Footer",
-      "6946079 - fix(security,a11y): add onFocus to hacked-text, memoize 3d-card context"
-    ],
-    "issuesFixed": {
-      "critical": 3,
-      "high": 6,
-      "medium": 4,
-      "low": 0
-    },
-    "remainingIssues": {
-      "reactDoctor": "18 issues remain (59/100 score). Most are in test files or require architectural changes.",
-      "ciSecurity": "3 CI workflow warnings remain (build pipeline secret boundary). Low risk for portfolio.",
-      "codeQuality": "4 pre-existing eslint warnings remain (test file img elements, 3d-card exhaustive-deps)"
-    }
-  }
+    { "id": "PHASE-1", "label": "SHA-pin workflows", "epics": ["EPIC-0"], "status": "in-progress" },
+    { "id": "PHASE-2", "label": "Fix documentation", "epics": ["EPIC-1"], "status": "planned" },
+    { "id": "PHASE-3", "label": "Fix loop state", "epics": ["EPIC-2"], "status": "planned" },
+    { "id": "PHASE-4", "label": "Fix test assertions", "epics": ["EPIC-3"], "status": "planned" },
+    { "id": "PHASE-5", "label": "Fix PRD validity", "epics": ["EPIC-4"], "status": "planned" },
+    { "id": "PHASE-6", "label": "Update PRD status", "epics": ["EPIC-5"], "status": "planned" },
+    { "id": "PHASE-7", "label": "Verification", "epics": ["EPIC-6"], "status": "planned" }
+  ]
 }
