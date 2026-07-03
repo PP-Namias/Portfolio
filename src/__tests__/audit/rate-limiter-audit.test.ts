@@ -21,8 +21,8 @@ describe('Security Audit — Rate Limiter', () => {
     expect(middleware).toContain('rate-limiter')
   })
 
-  it('rate limiter exports checkRateLimit function', () => {
-    expect(rateLimiter).toContain('checkRateLimit')
+  it('rate limiter exports isGlobalRateLimited function', () => {
+    expect(rateLimiter).toContain('isGlobalRateLimited')
   })
 
   it('rate limiter has Upstash integration', () => {
@@ -58,7 +58,7 @@ describe('Security Audit — Rate Limiter', () => {
   })
 
   it('rate limiter is applied to API routes in middleware', () => {
-    expect(middleware).toContain('checkRateLimit')
+    expect(middleware).toContain('isGlobalRateLimited')
     expect(middleware).toContain('/api/')
   })
 })
@@ -70,8 +70,8 @@ describe('Security Audit — Bot Blocker', () => {
     botBlocker = read('src/lib/bot-blocker.ts')
   })
 
-  it('bot blocker exports isBlocked function', () => {
-    expect(botBlocker).toContain('isBlocked')
+  it('bot blocker exports checkBot function', () => {
+    expect(botBlocker).toContain('checkBot')
   })
 
   it('bot blocker has user-agent patterns', () => {

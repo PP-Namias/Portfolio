@@ -101,9 +101,9 @@ describe('Security Audit — Secret Handling', () => {
   describe('media gateway security', () => {
     it('media gateway uses HMAC signing', () => {
       const gateway = read('src/lib/media-gateway.ts')
-      expect(gateway).toContain('HMAC') ||
-        expect(gateway).toContain('hmac') ||
-        expect(gateway).toContain('createHmac')
+      const hasHmac =
+        gateway.includes('HMAC') || gateway.includes('hmac') || gateway.includes('createHmac')
+      expect(hasHmac).toBe(true)
     })
 
     it('media gateway does not expose secret in URL', () => {
