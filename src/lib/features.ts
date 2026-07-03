@@ -5,3 +5,4 @@ export const IS_MAGIC_CURSOR_VISIBLE = true
 export const IS_PROJECTS_REVAMP_ENABLED = true
 export const IS_GRAPHIFY_ENABLED = true
 export const IS_MAGIC_UI_ENABLED = true
+export const IS_REACT_SCAN_ENABLED = true
