@@ -27,7 +27,7 @@ describe('Security Audit — Rate Limiter', () => {
 
   it('rate limiter has Upstash integration', () => {
     expect(rateLimiter).toContain('upstashUrl')
-    expect(rateLimiter).toContain('@upstash/redis')
+    expect(rateLimiter).toContain('UPSTASH_REDIS_REST_URL')
   })
 
   it('rate limiter has in-memory fallback', () => {
