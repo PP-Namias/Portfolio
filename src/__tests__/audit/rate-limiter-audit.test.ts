@@ -26,7 +26,7 @@ describe('Security Audit — Rate Limiter', () => {
   })
 
   it('rate limiter has Upstash integration', () => {
-    expect(rateLimiter).toContain('UPSTASH')
+    expect(rateLimiter).toContain('upstashUrl')
     expect(rateLimiter).toContain('@upstash/redis')
   })
 
@@ -51,9 +51,9 @@ describe('Security Audit — Rate Limiter', () => {
 
   it('rate limiter documents fallback behavior', () => {
     const hasFallbackDocs =
-      rateLimiter.includes('fallback') ||
-      rateLimiter.includes('in-memory') ||
-      rateLimiter.includes('Without Upstash')
+      rateLimiter.includes('memoryRateLimitMap') ||
+      rateLimiter.includes('isRateLimitedInMemory') ||
+      rateLimiter.includes('isUpstashConfigured')
     expect(hasFallbackDocs).toBe(true)
   })
 
@@ -81,7 +81,7 @@ describe('Security Audit — Bot Blocker', () => {
   })
 
   it('bot blocker has path patterns', () => {
-    expect(botBlocker).toContain('paths')
+    expect(botBlocker).toContain('BLOCKED_PATH_PATTERNS')
   })
 
   it('bot blocker is used in middleware', () => {
