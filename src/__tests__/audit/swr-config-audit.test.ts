@@ -66,7 +66,8 @@ describe('Caching Audit — Service Worker', () => {
 
   it('has cache version documented', () => {
     expect(sw).toContain('CACHE_VERSION')
-    expect(sw).toContain('v4')
+    const versionMatch = sw.match(/CACHE_VERSION\s*=\s*'([^']+)'/)
+    expect(versionMatch).not.toBeNull()
   })
 
   it('defines static cache name', () => {

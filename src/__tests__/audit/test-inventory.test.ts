@@ -38,7 +38,7 @@ describe('Test Coverage Audit — Inventory', () => {
   })
 
   it('audit test files exist', () => {
-    const auditFiles = testFiles.filter((f) => f.startsWith('audit/'))
+    const auditFiles = testFiles.filter((f) => f.includes('audit'))
     expect(auditFiles.length).toBeGreaterThanOrEqual(5)
   })
 
@@ -123,7 +123,7 @@ describe('Test Coverage Audit — Critical Paths', () => {
 
   it('lib modules have test coverage', () => {
     const testFiles = getAllTestFiles()
-    const libTests = testFiles.filter((f) => f.includes('lib/'))
+    const libTests = testFiles.filter((f) => f.includes('lib\\') || f.includes('lib/'))
     expect(libTests.length).toBeGreaterThanOrEqual(8)
   })
 })

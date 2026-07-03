@@ -120,46 +120,50 @@ describe('Test Coverage Audit — Audit Tests Themselves', () => {
   const testFiles = getAllTestFiles()
 
   it('workflow audit test exists', () => {
-    expect(testFiles.some((f) => f.includes('audit/workflow-audit'))).toBe(true)
+    expect(testFiles.some((f) => f.includes('audit') && f.includes('workflow-audit'))).toBe(true)
   })
 
   it('action pinning audit test exists', () => {
-    expect(testFiles.some((f) => f.includes('audit/action-pinning'))).toBe(true)
+    expect(testFiles.some((f) => f.includes('audit') && f.includes('action-pinning'))).toBe(true)
   })
 
   it('workflow crossref audit test exists', () => {
-    expect(testFiles.some((f) => f.includes('audit/workflow-crossref'))).toBe(true)
+    expect(testFiles.some((f) => f.includes('audit') && f.includes('workflow-crossref'))).toBe(true)
   })
 
   it('loop workflow audit test exists', () => {
-    expect(testFiles.some((f) => f.includes('audit/loop-workflow-audit'))).toBe(true)
+    expect(testFiles.some((f) => f.includes('audit') && f.includes('loop-workflow-audit'))).toBe(
+      true
+    )
   })
 
   it('loop consistency audit test exists', () => {
-    expect(testFiles.some((f) => f.includes('audit/loop-consistency'))).toBe(true)
+    expect(testFiles.some((f) => f.includes('audit') && f.includes('loop-consistency'))).toBe(true)
   })
 
   it('CSP audit test exists', () => {
-    expect(testFiles.some((f) => f.includes('audit/csp-audit'))).toBe(true)
+    expect(testFiles.some((f) => f.includes('audit') && f.includes('csp-audit'))).toBe(true)
   })
 
   it('rate limiter audit test exists', () => {
-    expect(testFiles.some((f) => f.includes('audit/rate-limiter-audit'))).toBe(true)
+    expect(testFiles.some((f) => f.includes('audit') && f.includes('rate-limiter-audit'))).toBe(
+      true
+    )
   })
 
   it('secret handling audit test exists', () => {
-    expect(testFiles.some((f) => f.includes('audit/secret-handling'))).toBe(true)
+    expect(testFiles.some((f) => f.includes('audit') && f.includes('secret-handling'))).toBe(true)
   })
 
   it('cache L1 audit test exists', () => {
-    expect(testFiles.some((f) => f.includes('audit/cache-l1-audit'))).toBe(true)
+    expect(testFiles.some((f) => f.includes('audit') && f.includes('cache-l1-audit'))).toBe(true)
   })
 
   it('SWR config audit test exists', () => {
-    expect(testFiles.some((f) => f.includes('audit/swr-config-audit'))).toBe(true)
+    expect(testFiles.some((f) => f.includes('audit') && f.includes('swr-config-audit'))).toBe(true)
   })
 
   it('test inventory audit test exists', () => {
-    expect(testFiles.some((f) => f.includes('audit/test-inventory'))).toBe(true)
+    expect(testFiles.some((f) => f.includes('audit') && f.includes('test-inventory'))).toBe(true)
   })
 })
