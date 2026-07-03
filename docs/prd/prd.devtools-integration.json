@@ -1,0 +1,546 @@
+{
+  "project": "Namias Portfolio - Developer Tools Integration",
+  "codeName": "devtools-integration",
+  "version": "1.0.0",
+  "owner": "Jhon Keneth Ryan Namias (PP Namias)",
+  "contact": "pp.namias@gmail.com",
+  "lastUpdated": "2026-07-03",
+  "branch": "feat/devtools-integration",
+  "links": {
+    "marketing": "https://namias.tech",
+    "studio": "https://namias-cms.sanity.studio",
+    "repo": "https://github.com/PP-Namias/Portfolio",
+    "githubProfile": "https://github.com/PP-Namias"
+  },
+  "summary": "Integrate 5 production-ready developer tools: shadcn/ui for UI components, Magic UI for animations, React Scan for performance monitoring, Upstash Rate Limit for rate limiting, and Sentry for error tracking. Each tool is feature-flagged and implemented incrementally with one commit per slice.",
+  "principles": [
+    "Commit-per-slice: every change gets its own commit",
+    "Feature-flagged: each tool can be enabled/disabled independently",
+    "Backward-compatible: existing functionality preserved",
+    "Testable: every integration has tests",
+    "Accessible: WCAG 2.1 AA compliance maintained"
+  ],
+  "epics": [
+    {
+      "id": "EPIC-1",
+      "title": "shadcn/ui Integration",
+      "description": "Replace custom UI components with production-ready shadcn/ui components built on Radix UI primitives",
+      "stories": [
+        {
+          "id": "EPIC-1-S1",
+          "title": "Initialize shadcn/ui configuration",
+          "acceptanceCriteria": [
+            "components.json created",
+            "tailwind.config.ts updated with shadcn theme",
+            "lib/utils.ts created with cn() helper",
+            "CSS variables for shadcn added to globals.css"
+          ],
+          "tasks": [
+            "Create components.json",
+            "Create lib/utils.ts with cn() helper",
+            "Update tailwind.config.ts",
+            "Add CSS variables to globals.css",
+            "Commit configuration"
+          ]
+        },
+        {
+          "id": "EPIC-1-S2",
+          "title": "Install core shadcn/ui components",
+          "acceptanceCriteria": [
+            "Button component installed",
+            "Card component installed",
+            "Input component installed",
+            "Badge component installed",
+            "Dialog component installed"
+          ],
+          "tasks": [
+            "Install @radix-ui/react-dialog",
+            "Install @radix-ui/react-slot",
+            "Install class-variance-authority",
+            "Install tailwind-merge",
+            "Create Button component",
+            "Create Card component",
+            "Create Input component",
+            "Create Badge component",
+            "Create Dialog component"
+          ]
+        },
+        {
+          "id": "EPIC-1-S3",
+          "title": "Replace custom Button with shadcn Button",
+          "acceptanceCriteria": [
+            "Custom Button component replaced",
+            "All button variants working",
+            "Loading states preserved",
+            "Accessibility maintained"
+          ],
+          "tasks": [
+            "Update Button component imports",
+            "Replace custom Button usage",
+            "Test all button variants",
+            "Verify loading states",
+            "Commit button replacement"
+          ]
+        },
+        {
+          "id": "EPIC-1-S4",
+          "title": "Replace custom Card with shadcn Card",
+          "acceptanceCriteria": [
+            "Custom Card component replaced",
+            "All card sections working",
+            "Dark mode support maintained"
+          ],
+          "tasks": [
+            "Update Card component imports",
+            "Replace custom Card usage",
+            "Test dark mode",
+            "Commit card replacement"
+          ]
+        },
+        {
+          "id": "EPIC-1-S5",
+          "title": "Replace custom Modal with shadcn Dialog",
+          "acceptanceCriteria": [
+            "Custom Modal component replaced",
+            "All modals working (Resume, Booking, Contact)",
+            "Focus trap working",
+            "Escape key handling preserved"
+          ],
+          "tasks": [
+            "Update Modal component imports",
+            "Replace custom Modal usage",
+            "Test focus trap",
+            "Test escape key",
+            "Commit modal replacement"
+          ]
+        },
+        {
+          "id": "EPIC-1-S6",
+          "title": "Replace custom Input with shadcn Input",
+          "acceptanceCriteria": [
+            "Custom Input component replaced",
+            "Form validation working",
+            "Error states preserved"
+          ],
+          "tasks": [
+            "Update Input component imports",
+            "Replace custom Input usage",
+            "Test form validation",
+            "Commit input replacement"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "EPIC-2",
+      "title": "Magic UI Integration",
+      "description": "Add stunning animated components from Magic UI to enhance visual appeal",
+      "stories": [
+        {
+          "id": "EPIC-2-S1",
+          "title": "Initialize Magic UI configuration",
+          "acceptanceCriteria": [
+            "Magic UI components.json created",
+            "Animation utilities installed",
+            "CSS animations added"
+          ],
+          "tasks": [
+            "Create Magic UI components.json",
+            "Install framer-motion if not present",
+            "Add animation CSS variables",
+            "Commit Magic UI configuration"
+          ]
+        },
+        {
+          "id": "EPIC-2-S2",
+          "title": "Add Marquee component for testimonials",
+          "acceptanceCriteria": [
+            "Marquee component installed",
+            "Infinite scroll animation working",
+            "Pause on hover working",
+            "Accessible"
+          ],
+          "tasks": [
+            "Install Marquee component",
+            "Add to testimonials section",
+            "Configure speed and direction",
+            "Add pause on hover",
+            "Test accessibility",
+            "Commit marquee component"
+          ]
+        },
+        {
+          "id": "EPIC-2-S3",
+          "title": "Add Bento Grid for projects showcase",
+          "acceptanceCriteria": [
+            "Bento Grid component installed",
+            "Responsive layout working",
+            "Animations smooth"
+          ],
+          "tasks": [
+            "Install Bento Grid component",
+            "Replace existing grid layout",
+            "Configure responsive breakpoints",
+            "Add hover animations",
+            "Commit bento grid"
+          ]
+        },
+        {
+          "id": "EPIC-2-S4",
+          "title": "Add Dock for navigation",
+          "acceptanceCriteria": [
+            "Dock component installed",
+            "macOS-style dock working",
+            "Icons magnify on hover",
+            "Keyboard accessible"
+          ],
+          "tasks": [
+            "Install Dock component",
+            "Add to navigation",
+            "Configure icon magnification",
+            "Add keyboard navigation",
+            "Commit dock navigation"
+          ]
+        },
+        {
+          "id": "EPIC-2-S5",
+          "title": "Add Globe component for location",
+          "acceptanceCriteria": [
+            "Globe component installed",
+            "Interactive 3D globe working",
+            "Location markers visible",
+            "Performance optimized"
+          ],
+          "tasks": [
+            "Install Globe component",
+            "Add to About section",
+            "Configure location markers",
+            "Optimize performance",
+            "Commit globe component"
+          ]
+        },
+        {
+          "id": "EPIC-2-S6",
+          "title": "Add Background Beams for hero",
+          "acceptanceCriteria": [
+            "Background Beams component installed",
+            "Animated beams working",
+            "Performance optimized",
+            "Reduced motion supported"
+          ],
+          "tasks": [
+            "Install Background Beams component",
+            "Add to Hero section",
+            "Configure beam animation",
+            "Add reduced motion support",
+            "Commit background beams"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "EPIC-3",
+      "title": "React Scan Integration",
+      "description": "Add performance monitoring to detect and fix slow renders",
+      "stories": [
+        {
+          "id": "EPIC-3-S1",
+          "title": "Initialize React Scan configuration",
+          "acceptanceCriteria": [
+            "react-scan installed",
+            "Configuration file created",
+            "Feature flag IS_REACT_SCAN_ENABLED added"
+          ],
+          "tasks": [
+            "Install react-scan",
+            "Create scan.config.ts",
+            "Add IS_REACT_SCAN_ENABLED feature flag",
+            "Commit React Scan configuration"
+          ]
+        },
+        {
+          "id": "EPIC-3-S2",
+          "title": "Add React Scan to providers",
+          "acceptanceCriteria": [
+            "React Scan provider added",
+            "Scan enabled in development",
+            "Scan disabled in production"
+          ],
+          "tasks": [
+            "Update providers.tsx",
+            "Add Scan component",
+            "Configure development only",
+            "Commit React Scan provider"
+          ]
+        },
+        {
+          "id": "EPIC-3-S3",
+          "title": "Add performance dashboard",
+          "acceptanceCriteria": [
+            "Performance metrics displayed",
+            "Render count shown",
+            "Re-renders highlighted",
+            "Accessible"
+          ],
+          "tasks": [
+            "Create PerformanceDashboard component",
+            "Add render count display",
+            "Add re-render highlighting",
+            "Add to admin page",
+            "Commit performance dashboard"
+          ]
+        },
+        {
+          "id": "EPIC-3-S4",
+          "title": "Fix performance issues detected",
+          "acceptanceCriteria": [
+            "Slow renders identified",
+            "Re-renders optimized",
+            "Bundle size reduced",
+            "Performance score improved"
+          ],
+          "tasks": [
+            "Run React Scan analysis",
+            "Identify slow components",
+            "Add useMemo/useCallback",
+            "Optimize re-renders",
+            "Commit performance fixes"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "EPIC-4",
+      "title": "Upstash Rate Limit Integration",
+      "description": "Replace custom rate limiter with production-ready Upstash solution",
+      "stories": [
+        {
+          "id": "EPIC-4-S1",
+          "title": "Initialize Upstash Rate Limit configuration",
+          "acceptanceCriteria": [
+            "@upstash/ratelimit installed",
+            "Configuration file created",
+            "Feature flag IS_UPSTASH_RATE_LIMIT_ENABLED added"
+          ],
+          "tasks": [
+            "Install @upstash/ratelimit",
+            "Create rate-limit.config.ts",
+            "Add IS_UPSTASH_RATE_LIMIT_ENABLED feature flag",
+            "Commit Upstash configuration"
+          ]
+        },
+        {
+          "id": "EPIC-4-S2",
+          "title": "Create Upstash Rate Limit utility",
+          "acceptanceCriteria": [
+            "Rate limit utility created",
+            "Sliding window algorithm working",
+            "Redis connection configured",
+            "Fallback to in-memory working"
+          ],
+          "tasks": [
+            "Create upstash-rate-limit.ts",
+            "Configure sliding window",
+            "Add Redis connection",
+            "Add in-memory fallback",
+            "Commit rate limit utility"
+          ]
+        },
+        {
+          "id": "EPIC-4-S3",
+          "title": "Replace custom rate limiter",
+          "acceptanceCriteria": [
+            "Custom rate limiter replaced",
+            "API routes using Upstash",
+            "Middleware updated",
+            "Performance improved"
+          ],
+          "tasks": [
+            "Update API routes",
+            "Update middleware",
+            "Remove custom rate limiter",
+            "Test rate limiting",
+            "Commit rate limiter replacement"
+          ]
+        },
+        {
+          "id": "EPIC-4-S4",
+          "title": "Add rate limit configuration",
+          "acceptanceCriteria": [
+            "Rate limits configurable per route",
+            "Burst limits configured",
+            "IP-based limiting working",
+            "Headers returned"
+          ],
+          "tasks": [
+            "Add route-specific limits",
+            "Configure burst limits",
+            "Add IP extraction",
+            "Add rate limit headers",
+            "Commit rate limit configuration"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "EPIC-5",
+      "title": "Sentry Error Tracking Integration",
+      "description": "Add comprehensive error tracking and performance monitoring with Sentry",
+      "stories": [
+        {
+          "id": "EPIC-5-S1",
+          "title": "Initialize Sentry configuration",
+          "acceptanceCriteria": [
+            "@sentry/nextjs installed",
+            "sentry.client.config.ts created",
+            "sentry.server.config.ts created",
+            "sentry.edge.config.ts created"
+          ],
+          "tasks": [
+            "Install @sentry/nextjs",
+            "Create sentry.client.config.ts",
+            "Create sentry.server.config.ts",
+            "Create sentry.edge.config.ts",
+            "Commit Sentry configuration"
+          ]
+        },
+        {
+          "id": "EPIC-5-S2",
+          "title": "Update Next.js config for Sentry",
+          "acceptanceCriteria": [
+            "next.config.js updated",
+            "Sentry webpack plugin added",
+            "Source maps uploaded",
+            "Auth token configured"
+          ],
+          "tasks": [
+            "Update next.config.js",
+            "Add Sentry webpack plugin",
+            "Configure source maps",
+            "Add auth token to env",
+            "Commit Next.js config"
+          ]
+        },
+        {
+          "id": "EPIC-5-S3",
+          "title": "Add Sentry to error boundaries",
+          "acceptanceCriteria": [
+            "Error boundaries capturing errors",
+            "Errors sent to Sentry",
+            "User feedback working",
+            "Breadcrumbs captured"
+          ],
+          "tasks": [
+            "Update ErrorBoundary component",
+            "Add Sentry error capture",
+            "Add user feedback",
+            "Add breadcrumbs",
+            "Commit error boundaries"
+          ]
+        },
+        {
+          "id": "EPIC-5-S4",
+          "title": "Add Sentry performance monitoring",
+          "acceptanceCriteria": [
+            "Transaction tracking working",
+            "Span tracking working",
+            "Web Vitals captured",
+            "API routes monitored"
+          ],
+          "tasks": [
+            "Add transaction tracking",
+            "Add span tracking",
+            "Add Web Vitals capture",
+            "Add API route monitoring",
+            "Commit performance monitoring"
+          ]
+        },
+        {
+          "id": "EPIC-5-S5",
+          "title": "Add Sentry alerts and notifications",
+          "acceptanceCriteria": [
+            "Slack integration configured",
+            "Email alerts configured",
+            "Alert rules created",
+            "Issue tracking working"
+          ],
+          "tasks": [
+            "Configure Slack integration",
+            "Configure email alerts",
+            "Create alert rules",
+            "Test issue tracking",
+            "Commit alerts configuration"
+          ]
+        }
+      ]
+    }
+  ],
+  "commitPlan": {
+    "strategy": "One commit per slice. Each commit is self-contained and passes all checks.",
+    "checksPerCommit": ["npx tsc --noEmit", "npm run lint", "npx vitest run"]
+  },
+  "dependencies": [
+    {
+      "name": "@radix-ui/react-dialog",
+      "version": "^1.0.0",
+      "purpose": "Modal dialog primitive for shadcn/ui"
+    },
+    {
+      "name": "@radix-ui/react-slot",
+      "version": "^1.0.0",
+      "purpose": "Component composition for shadcn/ui"
+    },
+    {
+      "name": "class-variance-authority",
+      "version": "^0.7.0",
+      "purpose": "Variant management for shadcn/ui"
+    },
+    {
+      "name": "tailwind-merge",
+      "version": "^2.0.0",
+      "purpose": "Tailwind class merging for shadcn/ui"
+    },
+    {
+      "name": "react-scan",
+      "version": "^1.0.0",
+      "purpose": "Performance monitoring"
+    },
+    {
+      "name": "@upstash/ratelimit",
+      "version": "^2.0.0",
+      "purpose": "Rate limiting"
+    },
+    {
+      "name": "@sentry/nextjs",
+      "version": "^8.0.0",
+      "purpose": "Error tracking"
+    }
+  ],
+  "featureFlags": [
+    {
+      "name": "IS_SHADCN_ENABLED",
+      "defaultValue": true,
+      "description": "Controls shadcn/ui component usage"
+    },
+    {
+      "name": "IS_MAGIC_UI_ENABLED",
+      "defaultValue": true,
+      "description": "Controls Magic UI animated components"
+    },
+    {
+      "name": "IS_REACT_SCAN_ENABLED",
+      "defaultValue": true,
+      "description": "Controls React Scan performance monitoring"
+    },
+    {
+      "name": "IS_UPSTASH_RATE_LIMIT_ENABLED",
+      "defaultValue": false,
+      "description": "Controls Upstash rate limiter"
+    },
+    {
+      "name": "IS_SENTRY_ENABLED",
+      "defaultValue": true,
+      "description": "Controls Sentry error tracking"
+    }
+  ]
+}
