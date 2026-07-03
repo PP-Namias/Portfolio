@@ -1,0 +1,694 @@
+{
+  "project": "Namias Portfolio - Graphify Knowledge Graph Integration",
+  "codeName": "graphify-integration",
+  "version": "1.0.0",
+  "owner": "Jhon Keneth Ryan Namias (PP Namias)",
+  "contact": "pp.namias@gmail.com",
+  "lastUpdated": "2026-07-03",
+  "branch": "feat/graphify-integration",
+  "links": {
+    "marketing": "https://namias.tech",
+    "studio": "https://namias-cms.sanity.studio",
+    "repo": "https://github.com/PP-Namias/Portfolio",
+    "githubProfile": "https://github.com/PP-Namias",
+    "graphify": "https://github.com/safishamsi/graphify"
+  },
+  "summary": "Integrate Graphify knowledge graph tool to create an interactive codebase visualization and architecture explorer. Generates a queryable knowledge graph of the entire portfolio codebase, powers a new 'Codebase Explorer' section with interactive graph visualization, and provides architectural insights through god nodes, community detection, and relationship mapping.",
+  "designReference": {
+    "description": "Interactive knowledge graph visualization showing codebase architecture, relationships between components, and key concepts. Dark theme with glowing nodes, animated edges, and community-colored clusters.",
+    "graphExplorerPage": {
+      "heading": "Codebase Explorer",
+      "subheading": "Interactive Knowledge Graph",
+      "layout": "Full-width graph visualization with sidebar controls",
+      "features": [
+        "Interactive D3.js force-directed graph",
+        "Click nodes to view details",
+        "Filter by file type, community, or relationship",
+        "Search functionality",
+        "Zoom/pan controls",
+        "Mini-map for navigation"
+      ]
+    },
+    "architectureSection": {
+      "heading": "Architecture Insights",
+      "subheading": "Key concepts and relationships",
+      "layout": "Card grid with god nodes, communities, and suggested questions",
+      "features": [
+        "God nodes display (most-connected concepts)",
+        "Community clusters with names",
+        "Suggested questions from graph analysis",
+        "Confidence tags (EXTRACTED, INFERRED, AMBIGUOUS)"
+      ]
+    }
+  },
+  "principles": [
+    "Commit-per-slice: every change gets its own commit",
+    "Feature-flagged: IS_GRAPHIFY_ENABLED gates everything",
+    "Accessible: keyboard nav, focus rings, reduced-motion",
+    "Testable: every component has tests",
+    "Performance: lazy-load graph visualization, use WebGL for large graphs",
+    "Privacy: code processed locally, no external API calls for AST extraction",
+    "Progressive enhancement: fallback to static report if graph fails to load"
+  ],
+  "epics": [
+    {
+      "id": "EPIC-1",
+      "title": "Graphify Setup and Configuration",
+      "description": "Install Graphify, configure it for the portfolio, and generate initial knowledge graph",
+      "stories": [
+        {
+          "id": "EPIC-1-STORY-1",
+          "title": "Install Graphify and configure for portfolio",
+          "acceptanceCriteria": [
+            "Graphify installed via uv tool install graphifyy",
+            "Graphify skill registered with OpenCode",
+            ".graphifyignore configured to exclude node_modules, dist, coverage",
+            "graphify-out/ directory added to .gitignore"
+          ],
+          "tasks": [
+            "Install graphifyy package",
+            "Run graphify install --platform opencode",
+            "Create .graphifyignore with exclusion patterns",
+            "Add graphify-out/ to .gitignore",
+            "Verify installation with graphify --version"
+          ]
+        },
+        {
+          "id": "EPIC-1-STORY-2",
+          "title": "Generate initial knowledge graph",
+          "acceptanceCriteria": [
+            "graphify-out/ directory created with graph.json, graph.html, GRAPH_REPORT.md",
+            "Graph contains all source files in src/",
+            "Graph includes Sanity schemas in studio/",
+            "Graph includes test files",
+            "Graph includes documentation files"
+          ],
+          "tasks": [
+            "Run graphify extract . --force",
+            "Verify graph.json contains expected nodes and edges",
+            "Review GRAPH_REPORT.md for insights",
+            "Commit graphify-out/ to repository"
+          ]
+        },
+        {
+          "id": "EPIC-1-STORY-3",
+          "title": "Set up automatic graph updates on git commit",
+          "acceptanceCriteria": [
+            "Post-commit hook installed",
+            "Graph auto-rebuilds on commit (AST only, no API cost)",
+            "Graph merge driver configured for parallel commits"
+          ],
+          "tasks": [
+            "Run graphify hook install",
+            "Verify hook fires on commit",
+            "Test parallel commit scenario",
+            "Document hook in AGENTS.md"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "EPIC-2",
+      "title": "Graph Data Layer",
+      "description": "Create API routes and hooks to serve graph data to the frontend",
+      "stories": [
+        {
+          "id": "EPIC-2-STORY-1",
+          "title": "Create graph data API route",
+          "acceptanceCriteria": [
+            "GET /api/graph endpoint created",
+            "Returns graph.json contents",
+            "Cached with L1 in-memory cache (300s TTL)",
+            "Rate limited to prevent abuse",
+            "Health check endpoint at /api/graph/health"
+          ],
+          "tasks": [
+            "Create src/app/api/graph/route.ts",
+            "Implement graph data reading from graphify-out/graph.json",
+            "Add L1 caching with cache.ts",
+            "Add rate limiting",
+            "Create health check endpoint",
+            "Add tests for API route"
+          ]
+        },
+        {
+          "id": "EPIC-2-STORY-2",
+          "title": "Create graph query API route",
+          "acceptanceCriteria": [
+            "POST /api/graph/query endpoint created",
+            "Accepts query string and returns matching nodes/edges",
+            "Implements basic graph traversal",
+            "Returns node details with relationships",
+            "Rate limited to prevent abuse"
+          ],
+          "tasks": [
+            "Create src/app/api/graph/query/route.ts",
+            "Implement query parsing and graph traversal",
+            "Add node detail lookup",
+            "Add relationship traversal",
+            "Add rate limiting",
+            "Add tests for query API"
+          ]
+        },
+        {
+          "id": "EPIC-2-STORY-3",
+          "title": "Create useGraph hook",
+          "acceptanceCriteria": [
+            "SWR-based hook for graph data",
+            "Caches graph data client-side",
+            "Provides loading/error states",
+            "Supports graph updates via mutate"
+          ],
+          "tasks": [
+            "Create src/hooks/useGraph.ts",
+            "Implement SWR configuration",
+            "Add graph data transformation",
+            "Add error handling",
+            "Add tests for hook"
+          ]
+        },
+        {
+          "id": "EPIC-2-STORY-4",
+          "title": "Create useGraphQuery hook",
+          "acceptanceCriteria": [
+            "SWR-based hook for graph queries",
+            "Accepts query string",
+            "Returns matching nodes and edges",
+            "Supports query caching",
+            "Debounces rapid query changes"
+          ],
+          "tasks": [
+            "Create src/hooks/useGraphQuery.ts",
+            "Implement query debouncing",
+            "Add SWR configuration",
+            "Add query result transformation",
+            "Add tests for hook"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "EPIC-3",
+      "title": "Graph Visualization Components",
+      "description": "Build interactive graph visualization using D3.js and WebGL",
+      "stories": [
+        {
+          "id": "EPIC-3-STORY-1",
+          "title": "Install D3.js and visualization dependencies",
+          "acceptanceCriteria": [
+            "d3, d3-force, d3-zoom installed",
+            "d3-types installed for TypeScript support",
+            "Dependencies added to package.json"
+          ],
+          "tasks": [
+            "Install d3 and related packages",
+            "Install TypeScript types",
+            "Verify installation"
+          ]
+        },
+        {
+          "id": "EPIC-3-STORY-2",
+          "title": "Create GraphCanvas component",
+          "acceptanceCriteria": [
+            "Renders force-directed graph using D3.js",
+            "Nodes colored by community",
+            "Edges show relationships",
+            "Supports zoom and pan",
+            "Handles click events on nodes",
+            "Responsive design",
+            "Reduced motion support"
+          ],
+          "tasks": [
+            "Create src/components/graph/GraphCanvas.tsx",
+            "Implement D3 force simulation",
+            "Add node rendering with community colors",
+            "Add edge rendering",
+            "Implement zoom/pan controls",
+            "Add click event handling",
+            "Add responsive design",
+            "Add prefers-reduced-motion support",
+            "Add tests"
+          ]
+        },
+        {
+          "id": "EPIC-3-STORY-3",
+          "title": "Create GraphControls component",
+          "acceptanceCriteria": [
+            "Filter controls for node types",
+            "Search input for nodes",
+            "Zoom in/out/reset buttons",
+            "Layout toggle (force-directed, radial, hierarchical)",
+            "Community filter",
+            "Responsive design"
+          ],
+          "tasks": [
+            "Create src/components/graph/GraphControls.tsx",
+            "Implement filter controls",
+            "Add search functionality",
+            "Add zoom controls",
+            "Add layout toggle",
+            "Add community filter",
+            "Add responsive design",
+            "Add tests"
+          ]
+        },
+        {
+          "id": "EPIC-3-STORY-4",
+          "title": "Create GraphNodeDetail component",
+          "acceptanceCriteria": [
+            "Shows node details on click",
+            "Displays file path, type, connections",
+            "Shows related nodes",
+            "Shows confidence tags",
+            "Closes on outside click or Escape key",
+            "Accessible"
+          ],
+          "tasks": [
+            "Create src/components/graph/GraphNodeDetail.tsx",
+            "Implement node detail display",
+            "Add related nodes list",
+            "Add confidence tag display",
+            "Add close behavior",
+            "Add keyboard navigation",
+            "Add tests"
+          ]
+        },
+        {
+          "id": "EPIC-3-STORY-5",
+          "title": "Create GraphMiniMap component",
+          "acceptanceCriteria": [
+            "Shows overview of entire graph",
+            "Highlights current viewport",
+            "Click to navigate",
+            "Responsive design"
+          ],
+          "tasks": [
+            "Create src/components/graph/GraphMiniMap.tsx",
+            "Implement mini-map rendering",
+            "Add viewport indicator",
+            "Add click-to-navigate",
+            "Add responsive design",
+            "Add tests"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "EPIC-4",
+      "title": "Codebase Explorer Page",
+      "description": "Create dedicated page for interactive graph exploration",
+      "stories": [
+        {
+          "id": "EPIC-4-STORY-1",
+          "title": "Create /explorer page route",
+          "acceptanceCriteria": [
+            "Page at /explorer",
+            "Feature-flagged with IS_GRAPHIFY_ENABLED",
+            "Lazy-loads graph components",
+            "SEO metadata and JSON-LD",
+            "Responsive layout"
+          ],
+          "tasks": [
+            "Create src/app/explorer/page.tsx",
+            "Add feature flag",
+            "Implement dynamic imports",
+            "Add SEO metadata",
+            "Add JSON-LD structured data",
+            "Add responsive layout",
+            "Add tests"
+          ]
+        },
+        {
+          "id": "EPIC-4-STORY-2",
+          "title": "Create ExplorerPage component",
+          "acceptanceCriteria": [
+            "Full-width graph visualization",
+            "Sidebar with controls and details",
+            "Header with title and navigation",
+            "Loading states",
+            "Error handling",
+            "Reduced motion support"
+          ],
+          "tasks": [
+            "Create src/components/sections/ExplorerPage.tsx",
+            "Implement layout with sidebar",
+            "Add graph canvas integration",
+            "Add controls integration",
+            "Add detail panel",
+            "Add loading states",
+            "Add error handling",
+            "Add reduced motion support",
+            "Add tests"
+          ]
+        },
+        {
+          "id": "EPIC-4-STORY-3",
+          "title": "Add explorer link to navigation",
+          "acceptanceCriteria": [
+            "Link in FloatingHub menu",
+            "Link in footer",
+            "Keyboard accessible",
+            "Feature-flagged"
+          ],
+          "tasks": [
+            "Update FloatingHub.tsx with explorer link",
+            "Update Footer.tsx with explorer link",
+            "Add keyboard navigation",
+            "Add feature flag checks",
+            "Add tests"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "EPIC-5",
+      "title": "Architecture Insights Section",
+      "description": "Display graph analysis insights on home page",
+      "stories": [
+        {
+          "id": "EPIC-5-STORY-1",
+          "title": "Create ArchitectureInsights component",
+          "acceptanceCriteria": [
+            "Displays god nodes (most-connected concepts)",
+            "Shows community clusters",
+            "Lists suggested questions",
+            "Shows confidence distribution",
+            "Responsive card grid layout",
+            "Feature-flagged with IS_GRAPHIFY_ENABLED"
+          ],
+          "tasks": [
+            "Create src/components/sections/ArchitectureInsights.tsx",
+            "Implement god nodes display",
+            "Add community clusters display",
+            "Add suggested questions display",
+            "Add confidence distribution",
+            "Add responsive layout",
+            "Add feature flag",
+            "Add tests"
+          ]
+        },
+        {
+          "id": "EPIC-5-STORY-2",
+          "title": "Add architecture insights to home page",
+          "acceptanceCriteria": [
+            "Section appears after TechStackSection",
+            "Lazy-loaded via dynamic import",
+            "Feature-flagged",
+            "Responsive design"
+          ],
+          "tasks": [
+            "Update HomeContent.tsx to include ArchitectureInsights",
+            "Add dynamic import",
+            "Add feature flag check",
+            "Add responsive design",
+            "Add tests"
+          ]
+        },
+        {
+          "id": "EPIC-5-STORY-3",
+          "title": "Create useArchitectureInsights hook",
+          "acceptanceCriteria": [
+            "Fetches graph report data",
+            "Extracts god nodes, communities, questions",
+            "Caches data client-side",
+            "Provides loading/error states"
+          ],
+          "tasks": [
+            "Create src/hooks/useArchitectureInsights.ts",
+            "Implement data fetching",
+            "Add data extraction logic",
+            "Add caching",
+            "Add loading/error states",
+            "Add tests"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "EPIC-6",
+      "title": "Graph API Integration",
+      "description": "Integrate graph querying into existing AI chat system",
+      "stories": [
+        {
+          "id": "EPIC-6-STORY-1",
+          "title": "Extend chat API with graph context",
+          "acceptanceCriteria": [
+            "Chat API can query graph for context",
+            "Graph insights included in AI responses",
+            "Query logging for graph usage",
+            "Fallback to non-graph responses"
+          ],
+          "tasks": [
+            "Update src/app/api/chat/route.ts",
+            "Add graph query integration",
+            "Add context injection",
+            "Add query logging",
+            "Add fallback handling",
+            "Add tests"
+          ]
+        },
+        {
+          "id": "EPIC-6-STORY-2",
+          "title": "Add graph query commands to chat",
+          "acceptanceCriteria": [
+            "User can ask 'show graph for <topic>'",
+            "User can ask 'what connects X to Y?'",
+            "User can ask 'explain <concept>'",
+            "Responses include node details and relationships"
+          ],
+          "tasks": [
+            "Add graph query intent detection",
+            "Implement graph query parsing",
+            "Add response formatting",
+            "Add error handling",
+            "Add tests"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "EPIC-7",
+      "title": "Graph Export and Sharing",
+      "description": "Enable graph export and sharing capabilities",
+      "stories": [
+        {
+          "id": "EPIC-7-STORY-1",
+          "title": "Create graph export API",
+          "acceptanceCriteria": [
+            "GET /api/graph/export?format=json downloads graph.json",
+            "GET /api/graph/export?format=html downloads graph.html",
+            "GET /api/graph/export?format=svg downloads graph.svg",
+            "Rate limited"
+          ],
+          "tasks": [
+            "Create src/app/api/graph/export/route.ts",
+            "Implement JSON export",
+            "Implement HTML export",
+            "Implement SVG export",
+            "Add rate limiting",
+            "Add tests"
+          ]
+        },
+        {
+          "id": "EPIC-7-STORY-2",
+          "title": "Add export buttons to explorer page",
+          "acceptanceCriteria": [
+            "Export as JSON button",
+            "Export as HTML button",
+            "Export as SVG button",
+            "Download triggers on click",
+            "Loading states during export"
+          ],
+          "tasks": [
+            "Update ExplorerPage.tsx with export buttons",
+            "Implement download triggers",
+            "Add loading states",
+            "Add error handling",
+            "Add tests"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "EPIC-8",
+      "title": "Testing and Documentation",
+      "description": "Comprehensive tests and documentation for graph integration",
+      "stories": [
+        {
+          "id": "EPIC-8-STORY-1",
+          "title": "Write unit tests for graph components",
+          "acceptanceCriteria": [
+            "Tests for GraphCanvas component",
+            "Tests for GraphControls component",
+            "Tests for GraphNodeDetail component",
+            "Tests for GraphMiniMap component",
+            "Tests for useGraph hook",
+            "Tests for useGraphQuery hook",
+            "Tests for API routes",
+            "All tests pass"
+          ],
+          "tasks": [
+            "Write tests for GraphCanvas",
+            "Write tests for GraphControls",
+            "Write tests for GraphNodeDetail",
+            "Write tests for GraphMiniMap",
+            "Write tests for useGraph",
+            "Write tests for useGraphQuery",
+            "Write tests for API routes",
+            "Run all tests and verify"
+          ]
+        },
+        {
+          "id": "EPIC-8-STORY-2",
+          "title": "Write integration tests",
+          "acceptanceCriteria": [
+            "Tests for /explorer page",
+            "Tests for architecture insights section",
+            "Tests for graph export",
+            "Tests for chat integration",
+            "All tests pass"
+          ],
+          "tasks": [
+            "Write tests for /explorer page",
+            "Write tests for architecture insights",
+            "Write tests for graph export",
+            "Write tests for chat integration",
+            "Run all tests and verify"
+          ]
+        },
+        {
+          "id": "EPIC-8-STORY-3",
+          "title": "Update documentation",
+          "acceptanceCriteria": [
+            "AGENTS.md updated with graph integration section",
+            "README.md updated with graph features",
+            "New skill file for graph operations",
+            "Architecture documentation updated"
+          ],
+          "tasks": [
+            "Update AGENTS.md",
+            "Update README.md",
+            "Create .agents/skills/graphify/SKILL.md",
+            "Update docs/STUDIO_ARCHITECTURE.md",
+            "Update CHANGELOG.md"
+          ]
+        }
+      ]
+    }
+  ],
+  "implementationSteps": [
+    {
+      "step": 1,
+      "action": "Set up Graphify and generate initial graph",
+      "status": "pending"
+    },
+    {
+      "step": 2,
+      "action": "Create graph data API routes",
+      "status": "pending"
+    },
+    {
+      "step": 3,
+      "action": "Build graph visualization components",
+      "status": "pending"
+    },
+    {
+      "step": 4,
+      "action": "Create /explorer page",
+      "status": "pending"
+    },
+    {
+      "step": 5,
+      "action": "Add architecture insights to home page",
+      "status": "pending"
+    },
+    {
+      "step": 6,
+      "action": "Integrate with chat API",
+      "status": "pending"
+    },
+    {
+      "step": 7,
+      "action": "Add graph export capabilities",
+      "status": "pending"
+    },
+    {
+      "step": 8,
+      "action": "Write tests and documentation",
+      "status": "pending"
+    }
+  ],
+  "dependencies": [
+    {
+      "name": "d3",
+      "version": "^7.9.0",
+      "purpose": "Graph visualization and force simulation"
+    },
+    {
+      "name": "d3-force",
+      "version": "^3.0.0",
+      "purpose": "Force-directed graph layout"
+    },
+    {
+      "name": "d3-zoom",
+      "version": "^3.0.0",
+      "purpose": "Zoom and pan controls"
+    },
+    {
+      "name": "@types/d3",
+      "version": "^7.4.0",
+      "purpose": "TypeScript types for D3"
+    }
+  ],
+  "risks": [
+    {
+      "risk": "Large graph size may cause performance issues",
+      "mitigation": "Implement virtual rendering, limit visible nodes, use WebGL for large graphs"
+    },
+    {
+      "risk": "Graph updates may be slow on large codebase",
+      "mitigation": "Use incremental updates, cache aggressively, background processing"
+    },
+    {
+      "risk": "D3.js learning curve for maintenance",
+      "mitigation": "Document components thoroughly, create reusable patterns, add tests"
+    },
+    {
+      "risk": "Browser compatibility issues with WebGL",
+      "mitigation": "Provide Canvas fallback, test across browsers, progressive enhancement"
+    }
+  ],
+  "successMetrics": [
+    {
+      "metric": "Graph generation time",
+      "target": "< 30 seconds for full graph",
+      "measurement": "Time to run graphify extract"
+    },
+    {
+      "metric": "Graph visualization load time",
+      "target": "< 2 seconds for interactive graph",
+      "measurement": "Time to render GraphCanvas component"
+    },
+    {
+      "metric": "Query response time",
+      "target": "< 100ms for graph queries",
+      "measurement": "API response time for /api/graph/query"
+    },
+    {
+      "metric": "Test coverage",
+      "target": "> 90% for graph components",
+      "measurement": "Vitest coverage report"
+    },
+    {
+      "metric": "Accessibility score",
+      "target": "WCAG 2.1 AA compliance",
+      "measurement": "Accessibility audit"
+    }
+  ],
+  "featureFlag": {
+    "name": "IS_GRAPHIFY_ENABLED",
+    "file": "src/lib/features.ts",
+    "defaultValue": false,
+    "description": "Controls visibility of graph explorer and architecture insights"
+  }
+}
