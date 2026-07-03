@@ -1,4 +1,4 @@
-﻿{
+{
   "project": "Namias CMS - Showcase Studio",
   "codeName": "atlas",
   "version": "1.0.0",
@@ -56,10 +56,7 @@
         "Extend the studio without re-reading every plugin.",
         "Run a full local + preview environment with one command."
       ],
-      "painPointsToday": [
-        "Schema sprawl with no type registry.",
-        "No documented extension points."
-      ]
+      "painPointsToday": ["Schema sprawl with no type registry.", "No documented extension points."]
     }
   ],
   "successMetrics": {
@@ -131,7 +128,11 @@
           "title": "Sanity Live Content API on the marketing site",
           "done": false,
           "details": "Switch the existing Sanity client to `next-sanity` Live Content API in `src/sanity/lib/client.ts`. Use `defineLive` + `sanityFetch` with `perspective: 'previewDrafts'` and revalidate on every change via the `tag` system.",
-          "files": ["src/sanity/lib/client.ts", "src/sanity/lib/live.ts", "src/app/api/draft/route.ts"],
+          "files": [
+            "src/sanity/lib/client.ts",
+            "src/sanity/lib/live.ts",
+            "src/app/api/draft/route.ts"
+          ],
           "acceptance": [
             "Editing `heroSection.headline` reflects on / within 1 second.",
             "Publishing a draft triggers revalidation; the live page updates without a manual refresh."
@@ -142,7 +143,11 @@
           "title": "Visual Editing overlays",
           "done": false,
           "details": "Add `<SanityLive />` + `<VisualEditing />` from `next-sanity` to the root layout. Tag every rendered field with a `data-sanity` attribute using a single `<SanityField />` helper so the overlay can find the right document/field.",
-          "files": ["src/app/layout.tsx", "src/components/cms/SanityField.tsx", "src/sanity/lib/overlays.ts"],
+          "files": [
+            "src/app/layout.tsx",
+            "src/components/cms/SanityField.tsx",
+            "src/sanity/lib/overlays.ts"
+          ],
           "acceptance": [
             "Clicking a paragraph on namias.tech with `?sanity-edit=1` opens a popover with 'Edit in Studio'.",
             "The popover deep-links into the studio at the right document + field."
@@ -182,7 +187,10 @@
           "title": "Computed 'duration' field on experience",
           "done": false,
           "details": "Read-only field that shows the human-readable duration (e.g. '2y 4m') next to the start/end dates. Implemented as a custom input that subscribes to startDate/endDate.",
-          "files": ["studio/components/inputs/ExperienceDuration.tsx", "studio/schemaTypes/experience.ts"]
+          "files": [
+            "studio/components/inputs/ExperienceDuration.tsx",
+            "studio/schemaTypes/experience.ts"
+          ]
         },
         {
           "id": "S-2.2",
@@ -196,7 +204,10 @@
           "title": "Custom SEO inspector with live SERP preview",
           "done": false,
           "details": "Replaces the default SEO panel with a custom inspector that renders a Google-style SERP preview from `seoTitle` + `seoDescription` + `seoImage`. Highlights missing fields. Adds a Twitter / OG preview tab.",
-          "files": ["studio/components/inspector/SeoPreview.tsx", "studio/components/inspector/SocialPreview.tsx"]
+          "files": [
+            "studio/components/inspector/SeoPreview.tsx",
+            "studio/components/inspector/SocialPreview.tsx"
+          ]
         },
         {
           "id": "S-2.4",
@@ -263,7 +274,11 @@
           "title": "Scheduled publishing",
           "done": false,
           "details": "Add a `publishAt` datetime field on posts and projects. The `publishAndRefreshAction` honours the field; a Sanity Function promotes scheduled documents on time.",
-          "files": ["studio/schemaTypes/post.ts", "studio/schemaTypes/project.ts", "functions/scheduled-publish/**"]
+          "files": [
+            "studio/schemaTypes/post.ts",
+            "studio/schemaTypes/project.ts",
+            "functions/scheduled-publish/**"
+          ]
         }
       ]
     },
