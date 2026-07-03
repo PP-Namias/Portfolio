@@ -107,7 +107,7 @@ describe('Loop Engineering — Behavior Audit', () => {
     it('documents budget exceed handling', () => {
       const content = read('loop-budget.md')
       expect(content).toContain('On budget exceed')
-      expect(content).toContain('kill switch')
+      expect(content.toLowerCase()).toContain('kill switch')
     })
   })
 
