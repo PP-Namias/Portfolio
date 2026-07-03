@@ -18,10 +18,17 @@ const CertificationsSection = dynamic(() =>
 const GitHubContributionsSection = dynamic(() =>
   import('./GitHubContributionsSection').then((mod) => mod.GitHubContributionsSection)
 )
+const ArchitectureInsights = dynamic(() =>
+  import('./ArchitectureInsights').then((mod) => mod.ArchitectureInsights)
+)
 import { Footer } from '@/components/layout/Footer'
 import { Card } from '@/components/ui/Card'
 import { SectionErrorBoundary } from '@/components/ui/ErrorBoundary'
-import { IS_GITHUB_CHART_VISIBLE, IS_PROJECTS_REVAMP_ENABLED } from '@/lib/features'
+import {
+  IS_GITHUB_CHART_VISIBLE,
+  IS_PROJECTS_REVAMP_ENABLED,
+  IS_GRAPHIFY_ENABLED,
+} from '@/lib/features'
 
 type StickySide = 'left' | 'right' | null
 
@@ -158,6 +165,14 @@ export function HomeContent() {
         <Card className="mt-4">
           <SectionErrorBoundary name="GitHubContributionsSection">
             <GitHubContributionsSection />
+          </SectionErrorBoundary>
+        </Card>
+      )}
+
+      {IS_GRAPHIFY_ENABLED && (
+        <Card className="mt-4">
+          <SectionErrorBoundary name="ArchitectureInsights">
+            <ArchitectureInsights />
           </SectionErrorBoundary>
         </Card>
       )}
