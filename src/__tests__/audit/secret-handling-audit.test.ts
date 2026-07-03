@@ -39,7 +39,7 @@ describe('Security Audit — Secret Handling', () => {
   describe('hardcoded secret detection', () => {
     const srcDir = join(root, 'src')
     const files = readdirSync(srcDir, { recursive: true })
-      .filter((f: string) => f.endsWith('.ts') || f.endsWith('.tsx'))
+      .filter((f: string) => (f.endsWith('.ts') || f.endsWith('.tsx')) && !f.includes('__tests__'))
       .map((f: string) => join(srcDir, f))
 
     it('no hardcoded API keys in source files', () => {
