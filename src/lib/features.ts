@@ -4,3 +4,4 @@ export const IS_GITHUB_CHART_VISIBLE = false
 export const IS_MAGIC_CURSOR_VISIBLE = true
 export const IS_PROJECTS_REVAMP_ENABLED = true
 export const IS_GRAPHIFY_ENABLED = true
+export const IS_MAGIC_UI_ENABLED = true
