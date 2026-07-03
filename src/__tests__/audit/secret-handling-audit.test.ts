@@ -16,7 +16,7 @@ describe('Security Audit — Secret Handling', () => {
   describe('.env file security', () => {
     it('.env.local is in .gitignore', () => {
       const gitignore = readGitignore()
-      expect(gitignore).toContain('.env.local')
+      expect(gitignore).toContain('.env.*')
     })
 
     it('.env.example exists', () => {
