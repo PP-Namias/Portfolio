@@ -31,26 +31,35 @@ export function HomeContent() {
   const [stickySide, setStickySide] = useState<StickySide>('right')
 
   useEffect(() => {
+    let timeoutId: ReturnType<typeof setTimeout> | null = null
+
     const updateStickySide = () => {
-      if (window.innerWidth < 1024) {
-        setStickySide(null)
-        return
-      }
+      if (timeoutId) return
 
-      const leftHeight = leftColumnRef.current?.getBoundingClientRect().height ?? 0
-      const rightHeight = rightColumnRef.current?.getBoundingClientRect().height ?? 0
+      timeoutId = setTimeout(() => {
+        timeoutId = null
 
-      if (!leftHeight || !rightHeight) {
-        return
-      }
+        if (window.innerWidth < 1024) {
+          setStickySide((prev) => (prev !== null ? null : prev))
+          return
+        }
 
-      const equalHeightThreshold = 24
-      if (Math.abs(leftHeight - rightHeight) <= equalHeightThreshold) {
-        setStickySide(null)
-        return
-      }
+        const leftHeight = leftColumnRef.current?.getBoundingClientRect().height ?? 0
+        const rightHeight = rightColumnRef.current?.getBoundingClientRect().height ?? 0
 
-      setStickySide(leftHeight < rightHeight ? 'left' : 'right')
+        if (!leftHeight || !rightHeight) {
+          return
+        }
+
+        const equalHeightThreshold = 24
+        if (Math.abs(leftHeight - rightHeight) <= equalHeightThreshold) {
+          setStickySide((prev) => (prev !== null ? null : prev))
+          return
+        }
+
+        const next: StickySide = leftHeight < rightHeight ? 'left' : 'right'
+        setStickySide((prev) => (prev === next ? prev : next))
+      }, 150)
     }
 
     updateStickySide()
@@ -70,6 +79,7 @@ export function HomeContent() {
     window.addEventListener('resize', updateStickySide)
 
     return () => {
+      if (timeoutId) clearTimeout(timeoutId)
       observer.disconnect()
       window.removeEventListener('resize', updateStickySide)
     }

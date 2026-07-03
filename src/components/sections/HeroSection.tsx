@@ -12,7 +12,6 @@ import { ColorSchemePicker } from '@/components/ui/ColorSchemePicker'
 import { HackedText } from '@/components/ui/hacked-text'
 import { useModal } from '@/hooks/useModal'
 import { useCmsContent } from '@/hooks/useCmsContent'
-import { IS_BLOG_VISIBLE } from '@/lib/features'
 import { sanityField } from '@/utils/sanity-data-attribute'
 
 const socialIconMap: Record<string, React.ComponentType<{ className?: string }>> = {
@@ -215,14 +214,6 @@ export function HeroSection() {
               <span>{profile.location}</span>
             </div>
             <span className="text-border-light dark:text-border-dark">·</span>
-            <span className="inline-flex items-center gap-1.5 text-green-600 dark:text-green-400">
-              <span className="relative flex h-1.5 w-1.5">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75" />
-                <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-green-500" />
-              </span>
-              {hero.availabilityLabel || 'Available'}
-            </span>
-            <span className="text-border-light dark:text-border-dark">·</span>
             <div className="flex items-center gap-1">
               {displayedSocials.map((link, i) => {
                 const Icon = socialIconMap[link.name]
@@ -249,21 +240,6 @@ export function HeroSection() {
                   </motion.a>
                 )
               })}
-              {IS_BLOG_VISIBLE && (
-                <>
-                  <span className="mx-0.5 h-3.5 w-px bg-border-light dark:bg-border-dark" />
-                  <motion.a
-                    href="/blog"
-                    className="h-7 rounded px-1.5 flex items-center text-[12px] font-medium text-text-muted-light dark:text-text-muted-dark hover:text-accent-pink transition-colors"
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: 0.68, type: 'spring', stiffness: 300, damping: 20 }}
-                    whileHover={{ y: -1 }}
-                  >
-                    Blog
-                  </motion.a>
-                </>
-              )}
             </div>
           </motion.div>
 
