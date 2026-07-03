@@ -1,0 +1,10 @@
+node_modules/
+dist/
+coverage/
+.open-next/
+public/sw.js
+*.generated.*
+.DS_Store
+Thumbs.db
+graphify-out/cost.json
+graphify-out/cache/
