@@ -113,7 +113,7 @@ Standardized workflows for common tasks. Follow these for consistency.
 
 ## React quality gate
 
-- Tool: `react-doctor@0.4.0` (pinned to exact version in `package.json`)
+- Tool: `react-doctor@0.5.8` (pinned to exact version in `package.json`)
 - Config: `doctor.config.json` at the repo root
 - Scripts: `npm run doctor`, `npm run doctor:json`, `npm run doctor:check`, `npm run doctor:baseline`, `npm run doctor:diff`
 - CI gate: `.github/workflows/react-doctor.yml` (threshold = 0 findings = 100/100)
@@ -273,7 +273,7 @@ MCP servers give your AI agent access to browser DevTools, component libraries, 
 
 ## Testing
 
-- 42 test files, 736 tests, all green
+- 86+ test files, 700+ tests, all green
 - Run: `npm run test -- --run`
 - Test isolation: use `SWRConfig` with `provider: () => new Map()` for any test that exercises a SWR consumer
 - Studios, scripts, and generated code are excluded from both `tsc` and `eslint` config; they have their own lanes
