@@ -38,6 +38,11 @@ export function Particles({ className, count = 50, color = '#ec4899' }: Particle
     resize()
     window.addEventListener('resize', resize)
 
+    const resolvedColor =
+      color === '#ec4899'
+        ? `rgb(${getComputedStyle(document.documentElement).getPropertyValue('--accent-rgb').trim() || '236 72 153'})`
+        : color
+
     const particles = Array.from({ length: count }, (_, i) => ({
       x: seededRandom(i * 2) * canvas.offsetWidth,
       y: seededRandom(i * 2 + 1) * canvas.offsetHeight,
@@ -64,7 +69,7 @@ export function Particles({ className, count = 50, color = '#ec4899' }: Particle
 
         ctx.beginPath()
         ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2)
-        ctx.fillStyle = color
+        ctx.fillStyle = resolvedColor
         ctx.globalAlpha = particle.opacity
         ctx.fill()
       })
