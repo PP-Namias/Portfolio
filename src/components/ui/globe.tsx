@@ -54,7 +54,7 @@ export function Globe({ className, markers = [] }: GlobeProps) {
       // Draw globe outline
       ctx.beginPath()
       ctx.arc(centerX, centerY, radius, 0, Math.PI * 2)
-      ctx.strokeStyle = '#334155'
+      ctx.strokeStyle = 'rgb(var(--color-neutral-500) / 0.5)'
       ctx.lineWidth = 1
       ctx.stroke()
 
@@ -64,7 +64,7 @@ export function Globe({ className, markers = [] }: GlobeProps) {
         const lineWidth = Math.cos((i * Math.PI) / 180) * radius
         ctx.beginPath()
         ctx.ellipse(centerX, y, lineWidth, 5, 0, 0, Math.PI * 2)
-        ctx.strokeStyle = '#1e293b'
+        ctx.strokeStyle = 'rgb(var(--color-neutral-500) / 0.3)'
         ctx.lineWidth = 0.5
         ctx.stroke()
       }
@@ -74,7 +74,7 @@ export function Globe({ className, markers = [] }: GlobeProps) {
         const angle = ((i + rotation) * Math.PI) / 180
         ctx.beginPath()
         ctx.ellipse(centerX, centerY, Math.abs(Math.cos(angle)) * radius, radius, 0, 0, Math.PI * 2)
-        ctx.strokeStyle = '#1e293b'
+        ctx.strokeStyle = 'rgb(var(--color-neutral-500) / 0.3)'
         ctx.lineWidth = 0.5
         ctx.stroke()
       }
@@ -89,7 +89,7 @@ export function Globe({ className, markers = [] }: GlobeProps) {
         if (Math.cos(lng) > 0) {
           ctx.beginPath()
           ctx.arc(x, y, 4, 0, Math.PI * 2)
-          ctx.fillStyle = '#ec4899'
+          ctx.fillStyle = 'rgb(var(--accent-rgb))'
           ctx.fill()
         }
       })
