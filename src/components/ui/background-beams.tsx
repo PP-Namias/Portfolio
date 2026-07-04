@@ -31,6 +31,10 @@ export function BackgroundBeams({ className }: BackgroundBeamsProps) {
     resize()
     window.addEventListener('resize', resize)
 
+    const accentRgb =
+      getComputedStyle(document.documentElement).getPropertyValue('--accent-rgb').trim() ||
+      '236 72 153'
+
     const beams = Array.from({ length: 5 }, (_, i) => ({
       x: Math.random() * canvas.offsetWidth,
       y: Math.random() * canvas.offsetHeight,
@@ -61,9 +65,9 @@ export function BackgroundBeams({ className }: BackgroundBeamsProps) {
           beam.x + Math.cos(beam.angle) * beam.length,
           beam.y + Math.sin(beam.angle) * beam.length
         )
-        gradient.addColorStop(0, 'rgba(236, 72, 153, 0)')
-        gradient.addColorStop(0.5, 'rgba(236, 72, 153, 0.3)')
-        gradient.addColorStop(1, 'rgba(236, 72, 153, 0)')
+        gradient.addColorStop(0, `rgba(${accentRgb}, 0)`)
+        gradient.addColorStop(0.5, `rgba(${accentRgb}, 0.3)`)
+        gradient.addColorStop(1, `rgba(${accentRgb}, 0)`)
 
         ctx.beginPath()
         ctx.moveTo(beam.x, beam.y)
