@@ -23,7 +23,7 @@ export function BentoCard({ children, className, span = 'default' }: BentoCardPr
   return (
     <div
       className={cn(
-        'group relative rounded-xl border bg-card p-6 shadow-sm transition-all duration-300 hover:shadow-md hover:border-accent-pink/50',
+        'group relative rounded-xl border bg-card p-6 shadow-sm transition-[box-shadow,border-color] duration-300 hover:shadow-md hover:border-accent-pink/50',
         span === 'col-span-2' && 'md:col-span-2',
         span === 'row-span-2' && 'md:row-span-2',
         span === 'col-span-2-row-span-2' && 'md:col-span-2 md:row-span-2',
