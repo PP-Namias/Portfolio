@@ -64,6 +64,9 @@ const config: Config = {
         accent: {
           DEFAULT: 'hsl(var(--accent))',
           foreground: 'hsl(var(--accent-foreground))',
+          pink: '#ec4899',
+          'pink-hover': '#db2777',
+          'pink-hover-dark': '#f472b6',
         },
         popover: {
           DEFAULT: 'hsl(var(--popover))',
