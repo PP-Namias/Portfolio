@@ -128,8 +128,8 @@ body {
 
 html:not(.dark) body {
   background-image:
-    radial-gradient(1200px 640px at 0% -20%, rgb(var(--accent) / 0.08), transparent 55%),
-    radial-gradient(900px 520px at 100% -10%, rgb(var(--accent) / 0.05), transparent 50%);
+    radial-gradient(1200px 640px at 0% -20%, rgb(var(--accent-rgb) / 0.08), transparent 55%),
+    radial-gradient(900px 520px at 100% -10%, rgb(var(--accent-rgb) / 0.05), transparent 50%);
   background-attachment: fixed;
 }
 
@@ -153,17 +153,17 @@ html:not(.dark) body {
 }
 
 .chat-scrollbar::-webkit-scrollbar-thumb {
-  background-color: rgb(var(--accent) / 0.2);
+  background-color: rgb(var(--accent-rgb) / 0.2);
   border-radius: 4px;
 }
 
 .chat-scrollbar::-webkit-scrollbar-thumb:hover {
-  background-color: rgb(var(--accent) / 0.4);
+  background-color: rgb(var(--accent-rgb) / 0.4);
 }
 
 .chat-scrollbar {
   scrollbar-width: thin;
-  scrollbar-color: rgb(var(--accent) / 0.2) transparent;
+  scrollbar-color: rgb(var(--accent-rgb) / 0.2) transparent;
 }
 
 /* PDF viewer slim scrollbar */
@@ -176,17 +176,17 @@ html:not(.dark) body {
 }
 
 .pdf-viewer-scroll::-webkit-scrollbar-thumb {
-  background-color: rgb(var(--accent) / 0.25);
+  background-color: rgb(var(--accent-rgb) / 0.25);
   border-radius: 3px;
 }
 
 .pdf-viewer-scroll::-webkit-scrollbar-thumb:hover {
-  background-color: rgb(var(--accent) / 0.45);
+  background-color: rgb(var(--accent-rgb) / 0.45);
 }
 
 .pdf-viewer-scroll {
   scrollbar-width: thin;
-  scrollbar-color: rgb(var(--accent) / 0.25) transparent;
+  scrollbar-color: rgb(var(--accent-rgb) / 0.25) transparent;
 }
 
 /* Prevent double-tap zoom on interactive elements */
@@ -198,7 +198,7 @@ a,
 
 /* Custom selection color */
 ::selection {
-  background-color: rgb(var(--accent) / 0.2);
+  background-color: rgb(var(--accent-rgb) / 0.2);
   color: inherit;
 }
 
@@ -206,7 +206,7 @@ a,
 button:focus-visible,
 a:focus-visible,
 [role='button']:focus-visible {
-  outline: 2px solid rgb(var(--accent));
+  outline: 2px solid rgb(var(--accent-rgb));
   outline-offset: 2px;
   border-radius: 4px;
 }
