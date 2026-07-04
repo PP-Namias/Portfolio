@@ -90,7 +90,13 @@ export function Globe({ className, markers = [] }: GlobeProps) {
 
   return (
     <div className={cn('relative', className)}>
-      <canvas ref={canvasRef} width={300} height={300} className="w-full h-full" />
+      <canvas
+        ref={canvasRef}
+        width={300}
+        height={300}
+        className="w-full h-full"
+        aria-hidden="true"
+      />
     </div>
   )
 }
