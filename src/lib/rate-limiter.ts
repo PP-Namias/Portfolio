@@ -1,5 +1,6 @@
 import { Ratelimit } from '@upstash/ratelimit'
 import { Redis } from '@upstash/redis'
+import { IS_UPSTASH_RATE_LIMIT_ENABLED } from '@/lib/features'
 
 const memoryRateLimitMap = new Map<string, { count: number; resetAt: number }>()
 
@@ -11,7 +12,7 @@ const upstashToken = process.env.UPSTASH_REDIS_REST_TOKEN
 
 let ratelimit: Ratelimit | null = null
 
-if (upstashUrl && upstashToken) {
+if (IS_UPSTASH_RATE_LIMIT_ENABLED && upstashUrl && upstashToken) {
   const redis = new Redis({
     url: upstashUrl,
     token: upstashToken,
