@@ -88,7 +88,12 @@ export function BackgroundBeams({ className }: BackgroundBeamsProps) {
 
   return (
     <div className={cn('absolute inset-0 overflow-hidden', className)}>
-      <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" style={{ opacity: 0.5 }} />
+      <canvas
+        ref={canvasRef}
+        className="absolute inset-0 w-full h-full"
+        style={{ opacity: 0.5 }}
+        aria-hidden="true"
+      />
     </div>
   )
 }
