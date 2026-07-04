@@ -28,9 +28,23 @@ export function Globe({ className, markers = [] }: GlobeProps) {
     let animationId: number
     let rotation = 0
 
+    const resize = () => {
+      const parent = canvas.parentElement
+      if (!parent) return
+      const size = Math.min(parent.offsetWidth, parent.offsetHeight)
+      canvas.width = size * window.devicePixelRatio
+      canvas.height = size * window.devicePixelRatio
+      ctx.scale(window.devicePixelRatio, window.devicePixelRatio)
+      canvas.style.width = `${size}px`
+      canvas.style.height = `${size}px`
+    }
+
+    resize()
+    window.addEventListener('resize', resize)
+
     const draw = () => {
-      const width = canvas.width
-      const height = canvas.height
+      const width = canvas.width / window.devicePixelRatio
+      const height = canvas.height / window.devicePixelRatio
       const centerX = width / 2
       const centerY = height / 2
       const radius = Math.min(width, height) / 2 - 20
@@ -88,18 +102,13 @@ export function Globe({ className, markers = [] }: GlobeProps) {
 
     return () => {
       cancelAnimationFrame(animationId)
+      window.removeEventListener('resize', resize)
     }
   }, [markers])
 
   return (
-    <div className={cn('relative', className)}>
-      <canvas
-        ref={canvasRef}
-        width={300}
-        height={300}
-        className="w-full h-full"
-        aria-hidden="true"
-      />
+    <div className={cn('relative w-full h-full min-h-[300px]', className)}>
+      <canvas ref={canvasRef} className="w-full h-full" aria-hidden="true" />
     </div>
   )
 }
