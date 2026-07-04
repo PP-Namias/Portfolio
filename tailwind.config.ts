@@ -116,6 +116,10 @@ const config: Config = {
           '0%': { transform: 'translateY(-100%)' },
           '100%': { transform: 'translateY(0%)' },
         },
+        'pulse-ring': {
+          '0%': { transform: 'scale(0.33)' },
+          '80%, 100%': { opacity: '0' },
+        },
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
@@ -125,6 +129,7 @@ const config: Config = {
         'marquee-reverse': 'marquee-reverse var(--duration) linear infinite',
         'marquee-vertical': 'marquee-vertical var(--duration) linear infinite',
         'marquee-vertical-reverse': 'marquee-vertical-reverse var(--duration) linear infinite',
+        'pulse-ring': 'pulse-ring 2s ease-out infinite',
       },
     },
   },
