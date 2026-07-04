@@ -22,7 +22,6 @@ if (IS_REACT_SCAN_ENABLED && typeof window !== 'undefined') {
 interface ProvidersProps {
   readonly children: React.ReactNode
   readonly cmsContent?: CmsContent
-  readonly isDraftMode?: boolean
 }
 
 function useServiceWorker() {
