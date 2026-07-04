@@ -9,6 +9,9 @@ Sentry.init({
   // Set environment for proper error grouping
   environment: process.env.NODE_ENV || 'development',
 
+  // Set release for source map association
+  release: process.env.SENTRY_RELEASE || 'namias-portfolio@latest',
+
   // Setting this option to true will print useful information to the console while it's setting up Sentry.
   debug: false,
 
