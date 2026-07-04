@@ -12,6 +12,18 @@ Sentry.init({
   // Set release for source map association
   release: process.env.SENTRY_RELEASE || 'namias-portfolio@latest',
 
+  // Filter out known noisy third-party errors
+  denyUrls: [
+    'https://www.google-analytics.com',
+    'https://analytics.google.com',
+    'https://googletagmanager.com',
+    'https://www.googletagmanager.com',
+    'https://connect.facebook.net',
+    'https://platform.twitter.com',
+    'https://snap.licdn.com',
+    'https://sc-static.net',
+  ],
+
   // Setting this option to true will print useful information to the console while it's setting up Sentry.
   debug: false,
 
