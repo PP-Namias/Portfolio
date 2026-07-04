@@ -24,6 +24,9 @@ export function Particles({ className, count = 50, color = '#ec4899' }: Particle
     const ctx = canvas.getContext('2d')
     if (!ctx) return
 
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    if (prefersReducedMotion) return
+
     let animationId: number
 
     const resize = () => {
