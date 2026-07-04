@@ -21,7 +21,6 @@ export function BackgroundBeams({ className }: BackgroundBeamsProps) {
     if (prefersReducedMotion) return
 
     let animationId: number
-    let time = 0
 
     const resize = () => {
       canvas.width = canvas.offsetWidth * window.devicePixelRatio
@@ -77,7 +76,6 @@ export function BackgroundBeams({ className }: BackgroundBeamsProps) {
         ctx.stroke()
       })
 
-      time += 0.016
       animationId = requestAnimationFrame(draw)
     }
 
