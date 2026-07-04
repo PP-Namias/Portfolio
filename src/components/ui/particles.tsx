@@ -80,7 +80,7 @@ export function Particles({ className, count = 50, color = '#ec4899' }: Particle
 
   return (
     <div className={cn('absolute inset-0 overflow-hidden', className)}>
-      <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />
+      <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" aria-hidden="true" />
     </div>
   )
 }
