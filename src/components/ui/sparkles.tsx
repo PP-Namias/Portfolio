@@ -83,7 +83,7 @@ export function Sparkles({
 
   return (
     <div className={cn('absolute inset-0 overflow-hidden', className)}>
-      <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />
+      <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" aria-hidden="true" />
     </div>
   )
 }
