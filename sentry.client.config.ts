@@ -4,7 +4,7 @@ Sentry.init({
   dsn: process.env.SENTRY_DSN,
 
   // Adjust this value in production, or use sourcesMapStore for reliable source maps
-  tracesSampleRate: 1,
+  tracesSampleRate: 0.2,
 
   // Setting this option to true will print useful information to the console while it's setting up Sentry.
   debug: false,
