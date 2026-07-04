@@ -1,12 +1,11 @@
-'use client';
+'use client'
 
-
-import { Moon, Sun } from 'lucide-react';
-import { useTheme } from '@/hooks/useTheme';
-import { cn } from '@/lib/utils';
+import { Moon, Sun } from 'lucide-react'
+import { useTheme } from '@/hooks/useTheme'
+import { cn } from '@/lib/utils'
 
 export function ThemeToggle() {
-  const { isDark, toggleTheme, mounted } = useTheme();
+  const { isDark, toggleTheme, mounted } = useTheme()
 
   if (!mounted) {
     return (
@@ -17,7 +16,7 @@ export function ThemeToggle() {
       >
         <div className="h-5 w-5" />
       </button>
-    );
+    )
   }
 
   return (
@@ -34,5 +33,5 @@ export function ThemeToggle() {
     >
       {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
     </button>
-  );
+  )
 }
