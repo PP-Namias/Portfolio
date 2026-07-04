@@ -12,6 +12,9 @@ Sentry.init({
   // Set release for source map association
   release: process.env.SENTRY_RELEASE || 'namias-portfolio@latest',
 
+  // Limit breadcrumbs to reduce memory usage
+  maxBreadcrumbs: 50,
+
   // Setting this option to true will print useful information to the console while it's setting up Sentry.
   debug: false,
 })
