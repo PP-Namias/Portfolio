@@ -22,6 +22,9 @@ export function Globe({ className, markers = [] }: GlobeProps) {
     const ctx = canvas.getContext('2d')
     if (!ctx) return
 
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    if (prefersReducedMotion) return
+
     let animationId: number
     let rotation = 0
 
