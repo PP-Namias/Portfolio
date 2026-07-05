@@ -74,11 +74,11 @@ async function getBlogContent() {
 }
 
 async function getContent() {
-  return `<SYSTEM>This document contains comprehensive information about ${USER.displayName}'s professional profile, portfolio, and blog content. It includes personal details, work experience, projects, achievements, certifications, and all published blog posts. This data is formatted for consumption by Large Language Models (LLMs) to provide accurate and up-to-date information about ${USER.displayName}'s background, skills, and expertise as a Design Engineer.</SYSTEM>
+  return `<SYSTEM>This document contains comprehensive information about ${USER.displayName}'s professional profile, portfolio, and blog content. It includes personal details, work experience, projects, achievements, certifications, and all published blog posts. This data is formatted for consumption by Large Language Models (LLMs) to provide accurate and up-to-date information about ${USER.displayName}'s background, skills, and expertise as a Full Stack Engineer & AI Automation Specialist.</SYSTEM>
 
-# chanhdai.com
+# namias.tech
 
-> A pixel-perfect dev portfolio and shadcn registry showcasing my work as a Design Engineer.
+> A pixel-perfect dev portfolio and shadcn registry showcasing my work as a Full Stack Engineer & AI Automation Specialist.
 
 ${aboutText}
 ${experienceText}

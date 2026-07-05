@@ -54,13 +54,13 @@ const nextConfig: NextConfig = {
   reactStrictMode: true,
   typedRoutes: true,
   transpilePackages: ["next-mdx-remote"],
-  allowedDevOrigins: ["ncdai.localhost", "ncdai.local"],
+  allowedDevOrigins: ["namias.localhost", "namias.local"],
   devIndicators: false,
   images: {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "assets.chanhdai.com",
+        hostname: "namias.tech",
         port: "",
       },
       {

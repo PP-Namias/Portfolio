@@ -10,7 +10,7 @@ updates:
     schedule:
       interval: "monthly"
     assignees:
-      - "ncdai"
+      - "PP-Namias"
     groups:
       # Collapse all action bumps into a single PR to reduce noise.
       github-actions:

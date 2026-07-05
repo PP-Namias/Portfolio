@@ -1,0 +1,353 @@
+{
+  "id": "PRD-PORTFOLIO-V2-NAMIAS-REBRAND",
+  "title": "Portfolio V2 — Namias Rebrand & Error Fixes",
+  "version": "1.0.0",
+  "status": "in-progress",
+  "created": "2026-07-06",
+  "description": "Rebrand portfolio-v2 from ncdai/chanhdai to PP Namias (Jhon Keneth Ryan Namias). Fix runtime errors, create env file, update all user data, social links, config, and content.",
+
+  "context": {
+    "currentBrand": "ncdai / Chanh Dai (chanhdai.com)",
+    "targetBrand": "PP Namias / Jhon Keneth Ryan Namias (namias.tech)",
+    "githubUsername": "PP-Namias",
+    "email": "pp.namias@gmail.com",
+    "website": "https://namias.tech",
+    "location": "Caloocan City, Philippines",
+    "title": "Full Stack Engineer & AI Automation Specialist"
+  },
+
+  "bugs": [
+    {
+      "id": "BUG-1",
+      "title": "GitHub contributions API URL undefined",
+      "error": "Failed to parse URL from undefined/v4/ncdai?y=last",
+      "cause": "GITHUB_CONTRIBUTIONS_API_URL env var not set, no .env.local exists",
+      "files": [
+        "src/features/portfolio/data/github-contributions.ts",
+        "src/features/portfolio/components/profile-activity-mosaic-cover/index.tsx"
+      ],
+      "fix": "Add fallback || 'https://github-contributions-api.jogruber.de' and create .env.local"
+    },
+    {
+      "id": "BUG-2",
+      "title": "OpenPanel client ID undefined",
+      "cause": "NEXT_PUBLIC_OPENPANEL_CLIENT_ID not set",
+      "files": ["src/lib/openpanel.ts"],
+      "fix": "Add null check before init"
+    }
+  ],
+
+  "epics": [
+    {
+      "id": "EPIC-1",
+      "title": "Environment & Error Fixes",
+      "priority": "critical",
+      "stories": [
+        {
+          "id": "S1.1",
+          "title": "Create .env.local with all required variables",
+          "file": ".env.local",
+          "description": "Create env file with values from v1 where available, placeholder for missing ones"
+        },
+        {
+          "id": "S1.2",
+          "title": "Add fallback for GITHUB_CONTRIBUTIONS_API_URL",
+          "file": "src/features/portfolio/data/github-contributions.ts",
+          "description": "Add || 'https://github-contributions-api.jogruber.de' fallback"
+        },
+        {
+          "id": "S1.3",
+          "title": "Add fallback in profile-activity-mosaic-cover",
+          "file": "src/features/portfolio/components/profile-activity-mosaic-cover/index.tsx",
+          "description": "Add same fallback for GITHUB_CONTRIBUTIONS_API_URL"
+        },
+        {
+          "id": "S1.4",
+          "title": "Fix OpenPanel null check",
+          "file": "src/lib/openpanel.ts",
+          "description": "Guard against undefined env vars"
+        }
+      ]
+    },
+    {
+      "id": "EPIC-2",
+      "title": "User Data Rebrand",
+      "priority": "high",
+      "stories": [
+        {
+          "id": "S2.1",
+          "title": "Update user.ts with Namias identity",
+          "file": "src/features/portfolio/data/user.ts",
+          "changes": {
+            "firstName": "Jhon Keneth",
+            "lastName": "Namias",
+            "displayName": "PP Namias",
+            "username": "PP-Namias",
+            "bio": "Full Stack Engineer & AI Automation Specialist. Building production systems across enterprise, AI, and IoT.",
+            "address": "Caloocan City, Philippines",
+            "emailB64": "cHAubmFtaWFzQGdtYWlsLmNvbQ==",
+            "website": "https://namias.tech",
+            "jobTitle": "Full Stack Engineer",
+            "avatar": "https://github.com/PP-Namias.png",
+            "avatarVariants": "use placeholder or same avatar for all",
+            "ogImage": "https://namias.tech/og",
+            "namePronunciationUrl": "",
+            "timeZone": "Asia/Manila",
+            "keywords": ["pp-namias", "jhon keneth namias", "namias", "full stack engineer", "ai automation"],
+            "about": "Full bio rewrite for Namias",
+            "flipSentences": [
+              "Full Stack Engineer & AI Automation Specialist",
+              "Building production systems that scale",
+              "React, TypeScript, Node.js, Python",
+              "University of Caloocan City, Batch 2026"
+            ],
+            "jobs": [
+              { "title": "Software Developer", "company": "JS Pharmacy", "website": "" },
+              { "title": "AI Solutions Developer", "company": "Wilshire Financial Network", "website": "" }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "EPIC-3",
+      "title": "Social Links Rebrand",
+      "priority": "high",
+      "stories": [
+        {
+          "id": "S3.1",
+          "title": "Update social-links.ts with Namias handles",
+          "file": "src/features/portfolio/data/social-links.ts",
+          "changes": {
+            "x": { "handle": "@PP_Namias", "href": "https://x.com/PP_Namias" },
+            "github": { "handle": "PP-Namias", "href": "https://github.com/PP-Namias" },
+            "linkedin": { "handle": "pp-namias", "href": "https://linkedin.com/in/pp-namias/" },
+            "youtube": { "handle": "@pp_namias", "href": "https://www.youtube.com/@pp_namias" },
+            "discord": { "handle": "pp-namias", "href": "https://discord.com/users/683914336376455200" },
+            "instagram": { "handle": "@pp_namias", "href": "https://www.instagram.com/pp_namias/" }
+          }
+        }
+      ]
+    },
+    {
+      "id": "EPIC-4",
+      "title": "Site Config Rebrand",
+      "priority": "high",
+      "stories": [
+        {
+          "id": "S4.1",
+          "title": "Update site.ts URLs and repo references",
+          "file": "src/config/site.ts",
+          "changes": {
+            "SITE_INFO.url": "process.env.NEXT_PUBLIC_APP_URL || 'https://namias.tech'",
+            "LICENSE.url": "https://github.com/PP-Namias/Portfolio/blob/main/LICENSE",
+            "SOURCE_CODE_GITHUB_REPO": "PP-Namias/Portfolio",
+            "SOURCE_CODE_GITHUB_URL": "https://github.com/PP-Namias/Portfolio",
+            "SPONSORSHIP_URL": "https://github.com/sponsors/PP-Namias",
+            "UTM_PARAMS.utm_source": "namias.tech"
+          }
+        },
+        {
+          "id": "S4.2",
+          "title": "Update next.config.ts image hosts and dev origins",
+          "file": "next.config.ts",
+          "changes": {
+            "allowedDevOrigins": ["namias.localhost", "namias.local"],
+            "images.remotePatterns.hostname": "namias.tech"
+          }
+        },
+        {
+          "id": "S4.3",
+          "title": "Update package.json metadata",
+          "file": "package.json",
+          "changes": {
+            "name": "namias.tech",
+            "homepage": "https://namias.tech",
+            "author.email": "pp.namias@gmail.com",
+            "author.url": "https://github.com/PP-Namias"
+          }
+        },
+        {
+          "id": "S4.4",
+          "title": "Update components.json registry namespace",
+          "file": "components.json",
+          "changes": {
+            "registries.@namias": "https://namias.tech/r/{name}.json"
+          }
+        }
+      ]
+    },
+    {
+      "id": "EPIC-5",
+      "title": "Content & Data Updates",
+      "priority": "medium",
+      "stories": [
+        {
+          "id": "S5.1",
+          "title": "Update projects.ts with Namias projects",
+          "file": "src/features/portfolio/data/projects.ts",
+          "description": "Replace ncdai projects with PP Namias projects or keep generic ones"
+        },
+        {
+          "id": "S5.2",
+          "title": "Update experiences.ts with Namias work history",
+          "file": "src/features/portfolio/data/experiences.tsx",
+          "description": "JS Pharmacy, Wilshire Financial Network"
+        },
+        {
+          "id": "S5.3",
+          "title": "Update education data",
+          "file": "src/features/portfolio/data/education.ts",
+          "description": "University of Caloocan City, BS Computer Science, Batch 2026"
+        },
+        {
+          "id": "S5.4",
+          "title": "Update certifications data",
+          "file": "src/features/portfolio/data/certifications.ts",
+          "description": "Add any Namias certifications"
+        },
+        {
+          "id": "S5.5",
+          "title": "Update tech-stack.tsx",
+          "file": "src/features/portfolio/data/tech-stack.tsx",
+          "description": "React, TypeScript, Node.js, Python, AI Automation"
+        },
+        {
+          "id": "S5.6",
+          "title": "Update insights.ts",
+          "file": "src/features/portfolio/data/insights.ts",
+          "description": "Namias-relevant insights"
+        },
+        {
+          "id": "S5.7",
+          "title": "Update bookmarks.tsx",
+          "file": "src/features/portfolio/data/bookmarks.tsx",
+          "description": "Namias-relevant bookmarks"
+        },
+        {
+          "id": "S5.8",
+          "title": "Update awards.tsx",
+          "file": "src/features/portfolio/data/awards.tsx",
+          "description": "Namias awards and achievements"
+        },
+        {
+          "id": "S5.9",
+          "title": "Update testimonials.tsx",
+          "file": "src/features/portfolio/data/testimonials.tsx",
+          "description": "Namias testimonials or keep as placeholders"
+        }
+      ]
+    },
+    {
+      "id": "EPIC-6",
+      "title": "Blog Content",
+      "priority": "low",
+      "stories": [
+        {
+          "id": "S6.1",
+          "title": "Update blog MDX files for Namias brand",
+          "files": "src/features/doc/content/blog/*.mdx",
+          "description": "Update or replace blog posts to reflect Namias brand"
+        }
+      ]
+    },
+    {
+      "id": "EPIC-7",
+      "title": "Verification",
+      "priority": "high",
+      "stories": [
+        {
+          "id": "S7.1",
+          "title": "Run dev server and verify all pages load",
+          "description": "Test /, /blog, /components, /sponsors, /testimonials, dynamic routes"
+        },
+        {
+          "id": "S7.2",
+          "title": "Run TypeScript check",
+          "description": "npx tsc --noEmit must pass"
+        },
+        {
+          "id": "S7.3",
+          "title": "Run ESLint",
+          "description": "npx eslint . must pass"
+        },
+        {
+          "id": "S7.4",
+          "title": "Commit all changes",
+          "description": "Individual commits per file following conventional commits"
+        }
+      ]
+    }
+  ],
+
+  "envGuide": {
+    "description": "How to get each environment variable value",
+    "variables": {
+      "NEXT_PUBLIC_APP_URL": {
+        "value": "https://namias.tech",
+        "source": "Your production domain",
+        "howToGet": "Use your deployed domain URL"
+      },
+      "NEXT_PUBLIC_REGISTRY_NAMESPACE": {
+        "value": "@pp-namias",
+        "source": "Your npm/package namespace",
+        "howToGet": "Choose a namespace for your shadcn registry"
+      },
+      "NEXT_PUBLIC_REGISTRY_NAMESPACE_URL": {
+        "value": "https://namias.tech/r/{name}.json",
+        "source": "Your site URL + registry path",
+        "howToGet": "Auto-generated from your domain"
+      },
+      "GITHUB_API_TOKEN": {
+        "value": "",
+        "source": "GitHub Settings > Developer settings > Personal access tokens",
+        "howToGet": "Go to https://github.com/settings/tokens, create a token with 'public_repo' scope for star count API"
+      },
+      "GITHUB_CONTRIBUTIONS_API_URL": {
+        "value": "https://github-contributions-api.jogruber.de",
+        "source": "Public API - no key needed",
+        "howToGet": "This is a free public API, just use the URL as-is"
+      },
+      "NEXT_PUBLIC_DMCA_URL": {
+        "value": "https://www.dmca.com/ProtectionPro.aspx",
+        "source": "DMCA.com - optional",
+        "howToGet": "Register at dmca.com for a protection badge (free)"
+      },
+      "NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN": {
+        "value": "",
+        "source": "PostHog - optional analytics",
+        "howToGet": "Sign up at https://posthog.com, create project, copy API key from Settings > Project"
+      },
+      "NEXT_PUBLIC_POSTHOG_HOST": {
+        "value": "",
+        "source": "PostHog - optional analytics",
+        "howToGet": "Use https://us.i.posthog.com for US cloud or https://eu.i.posthog.com for EU"
+      },
+      "NEXT_PUBLIC_OPENPANEL_CLIENT_ID": {
+        "value": "",
+        "source": "OpenPanel - optional analytics",
+        "howToGet": "Sign up at https://dashboard.openpanel.dev, create project, copy Client ID from Settings > Clients"
+      },
+      "OPENPANEL_PROJECT_ID": {
+        "value": "",
+        "source": "OpenPanel dashboard",
+        "howToGet": "Same dashboard as above, copy Project ID"
+      },
+      "OPENPANEL_CLIENT_ID": {
+        "value": "",
+        "source": "OpenPanel dashboard (server-side)",
+        "howToGet": "Same as NEXT_PUBLIC version but for server-side"
+      },
+      "OPENPANEL_CLIENT_SECRET": {
+        "value": "",
+        "source": "OpenPanel dashboard",
+        "howToGet": "Copy Client Secret from Settings > Clients"
+      },
+      "ADS_TXT": {
+        "value": "",
+        "source": "Optional - for ad monetization",
+        "howToGet": "Leave empty if not running ads"
+      }
+    }
+  }
+}

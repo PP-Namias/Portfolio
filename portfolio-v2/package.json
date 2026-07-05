@@ -1,24 +1,24 @@
 {
-  "name": "chanhdai.com",
+  "name": "namias.tech",
   "version": "0.1.0",
-  "description": "A pixel-perfect dev portfolio and shadcn registry.",
-  "homepage": "https://chanhdai.com",
+  "description": "PP Namias - Full Stack Engineer & AI Automation Specialist portfolio.",
+  "homepage": "https://namias.tech",
   "license": "MIT",
   "author": {
-    "name": "Nguyen Chanh Dai",
-    "email": "dai@chanhdai.com",
-    "url": "https://github.com/ncdai"
+    "name": "Jhon Keneth Ryan Namias",
+    "email": "pp.namias@gmail.com",
+    "url": "https://github.com/PP-Namias"
   },
   "contributors": [
     {
-      "name": "Nguyen Chanh Dai",
-      "email": "dai@chanhdai.com",
-      "url": "https://github.com/ncdai"
+      "name": "Jhon Keneth Ryan Namias",
+      "email": "pp.namias@gmail.com",
+      "url": "https://github.com/PP-Namias"
     }
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ncdai/chanhdai.com.git"
+    "url": "git+https://github.com/PP-Namias/Portfolio.git"
   },
   "scripts": {
     "dev": "next dev",

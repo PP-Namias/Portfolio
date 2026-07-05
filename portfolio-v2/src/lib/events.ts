@@ -43,6 +43,6 @@ export function trackEvent(input: Event) {
   if (event) {
     console.log("trackEvent:", event)
     posthog.capture(event.name, event.properties)
-    op.track(event.name, event.properties)
+    op?.track(event.name, event.properties)
   }
 }
