@@ -5,59 +5,20 @@ import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { ExternalLink } from 'lucide-react'
 import { useGitHubContributions } from '@/hooks/useGitHubContributions'
+import { transformToHeatmapData } from '@/lib/github-heatmap-data'
+import {
+  HeatmapCells,
+  HeatmapChart,
+  HeatmapInteractionBoundary,
+  HeatmapInteractionProvider,
+  HeatmapLegend,
+  HeatmapTooltip,
+  HeatmapXAxis,
+  HeatmapYAxis,
+} from '@/components/charts/heatmap'
 
 const GITHUB_USERNAME = 'PP-Namias'
 const FALLBACK_SVG = `https://ghchart.rshah.org/${GITHUB_USERNAME}`
-
-const LEVEL_COLORS = [
-  'bg-surface-light dark:bg-surface-dark',
-  'bg-emerald-200 dark:bg-emerald-900',
-  'bg-emerald-400 dark:bg-emerald-700',
-  'bg-emerald-500 dark:bg-emerald-500',
-  'bg-emerald-700 dark:bg-emerald-300',
-]
-
-function getLevelColor(level: number): string {
-  return LEVEL_COLORS[Math.min(level, 4)] || LEVEL_COLORS[0]
-}
-
-function formatDate(dateStr: string): string {
-  const date = new Date(dateStr + 'T00:00:00')
-  return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
-}
-
-function getWeeksFromContributions(
-  contributions: { date: string; count: number; level: 0 | 1 | 2 | 3 | 4 }[]
-): { date: string; count: number; level: 0 | 1 | 2 | 3 | 4 }[][] {
-  if (contributions.length === 0) return []
-
-  const weeks: { date: string; count: number; level: 0 | 1 | 2 | 3 | 4 }[][] = []
-  let currentWeek: { date: string; count: number; level: 0 | 1 | 2 | 3 | 4 }[] = []
-
-  const firstDate = new Date(contributions[0].date + 'T00:00:00')
-  const firstDayOfWeek = firstDate.getDay()
-
-  for (let i = 0; i < firstDayOfWeek; i++) {
-    currentWeek.push({ date: '', count: 0, level: 0 })
-  }
-
-  for (const day of contributions) {
-    currentWeek.push(day)
-    if (currentWeek.length === 7) {
-      weeks.push(currentWeek)
-      currentWeek = []
-    }
-  }
-
-  if (currentWeek.length > 0) {
-    while (currentWeek.length < 7) {
-      currentWeek.push({ date: '', count: 0, level: 0 })
-    }
-    weeks.push(currentWeek)
-  }
-
-  return weeks
-}
 
 function computeStreak(
   contributions: { date: string; count: number; level: 0 | 1 | 2 | 3 | 4 }[]
@@ -86,31 +47,8 @@ function computeStreak(
 export function GitHubContributionsSection() {
   const { data, isLoading, isError } = useGitHubContributions()
 
-  const weeks = useMemo(() => getWeeksFromContributions(data?.contributions ?? []), [data])
+  const heatmapData = useMemo(() => transformToHeatmapData(data?.contributions ?? []), [data])
   const streak = useMemo(() => computeStreak(data?.contributions ?? []), [data])
-
-  const monthLabels = useMemo(() => {
-    if (weeks.length === 0) return []
-    const labels: { label: string; index: number }[] = []
-    let lastMonth = -1
-
-    for (let i = 0; i < weeks.length; i++) {
-      const firstDayOfWeek = weeks[i].find((d) => d.date)
-      if (firstDayOfWeek) {
-        const month = new Date(firstDayOfWeek.date + 'T00:00:00').getMonth()
-        if (month !== lastMonth) {
-          labels.push({
-            label: new Date(firstDayOfWeek.date + 'T00:00:00').toLocaleDateString('en-US', {
-              month: 'short',
-            }),
-            index: i,
-          })
-          lastMonth = month
-        }
-      }
-    }
-    return labels
-  }, [weeks])
 
   return (
     <motion.section
@@ -171,7 +109,19 @@ export function GitHubContributionsSection() {
             {[0, 1, 2, 3, 4].map((level) => (
               <div
                 key={level}
-                className={`h-[11px] w-[11px] rounded-[2px] ${getLevelColor(level)}`}
+                className="h-[11px] w-[11px] rounded-[2px]"
+                style={{
+                  backgroundColor:
+                    level === 0
+                      ? 'var(--chart-scale-01)'
+                      : level === 1
+                        ? 'var(--chart-scale-02)'
+                        : level === 2
+                          ? 'var(--chart-scale-03)'
+                          : level === 3
+                            ? 'var(--chart-scale-04)'
+                            : 'var(--chart-scale-05)',
+                }}
               />
             ))}
             <span>More</span>
@@ -216,60 +166,19 @@ export function GitHubContributionsSection() {
           </div>
 
           <div className="overflow-x-auto pb-2">
-            <div className="inline-flex flex-col gap-0.5 min-w-[720px]">
-              <div className="flex gap-0.5 ml-10">
-                {monthLabels.map((m, i) => (
-                  <div
-                    key={`${m.label}-${i}`}
-                    className="text-[10px] text-text-muted-light dark:text-text-muted-dark"
-                    style={{ marginLeft: i === 0 ? m.index * 14 : 14, width: 0 }}
-                  >
-                    {m.label}
-                  </div>
-                ))}
-              </div>
-
-              <div className="flex gap-0.5">
-                <div className="flex flex-col justify-between text-[10px] text-text-muted-light dark:text-text-muted-dark pr-1 py-0.5">
-                  <span>&nbsp;</span>
-                  <span>Mon</span>
-                  <span>&nbsp;</span>
-                  <span>Wed</span>
-                  <span>&nbsp;</span>
-                  <span>Fri</span>
-                  <span>&nbsp;</span>
-                </div>
-
-                {weeks.map((week, wi) => (
-                  <div key={wi} className="flex flex-col gap-0.5">
-                    {week.map((day, di) => (
-                      <div
-                        key={`${wi}-${di}`}
-                        className={`h-[11px] w-[11px] rounded-[2px] ${getLevelColor(day.level)} ${
-                          day.date ? 'cursor-default' : ''
-                        }`}
-                        title={
-                          day.date
-                            ? `${day.count} contribution${day.count !== 1 ? 's' : ''} on ${formatDate(day.date)}`
-                            : ''
-                        }
-                      />
-                    ))}
-                  </div>
-                ))}
-              </div>
+            <div className="min-w-[720px]">
+              <HeatmapInteractionProvider>
+                <HeatmapInteractionBoundary>
+                  <HeatmapChart data={heatmapData} layout="fluid" gap={2}>
+                    <HeatmapCells cornerRadius={2} interactive />
+                    <HeatmapXAxis />
+                    <HeatmapYAxis tickFilter="all" labelFormat="initial" />
+                    <HeatmapTooltip />
+                  </HeatmapChart>
+                  <HeatmapLegend lessLabel="Less" moreLabel="More" cellSize={11} gap={2} />
+                </HeatmapInteractionBoundary>
+              </HeatmapInteractionProvider>
             </div>
-          </div>
-
-          <div className="flex items-center gap-1 text-[10px] text-text-muted-light dark:text-text-muted-dark">
-            <span>Less</span>
-            {[0, 1, 2, 3, 4].map((level) => (
-              <div
-                key={level}
-                className={`h-[11px] w-[11px] rounded-[2px] ${getLevelColor(level)}`}
-              />
-            ))}
-            <span>More</span>
           </div>
 
           <div className="pt-2">
