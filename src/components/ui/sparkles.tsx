@@ -46,11 +46,6 @@ export function Sparkles({
     resize()
     window.addEventListener('resize', resize)
 
-    const resolvedColor =
-      color === '#ec4899'
-        ? `rgb(${getComputedStyle(document.documentElement).getPropertyValue('--accent-rgb').trim() || '236 72 153'})`
-        : color
-
     const sparkles = Array.from({ length: count }, (_, i) => ({
       x: seededRandom(i * 2) * canvas.offsetWidth,
       y: seededRandom(i * 2 + 1) * canvas.offsetHeight,
@@ -72,7 +67,7 @@ export function Sparkles({
 
         ctx.beginPath()
         ctx.arc(sparkle.x, sparkle.y, sparkle.size, 0, Math.PI * 2)
-        ctx.fillStyle = resolvedColor
+        ctx.fillStyle = color
         ctx.globalAlpha = sparkle.opacity
         ctx.fill()
       })
