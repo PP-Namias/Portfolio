@@ -1,5 +1,6 @@
 allowBuilds:
   core-js: false
+  esbuild: set this to true or false
   msw: false
   protobufjs: false
   puppeteer: false
