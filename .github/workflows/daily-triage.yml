@@ -38,10 +38,12 @@ jobs:
       - name: Install dependencies
         if: steps.kill-switch.outputs.paused != 'true'
         run: npm ci
+        working-directory: portfolio-v1
 
       - name: Run lint
         if: steps.kill-switch.outputs.paused != 'true'
         id: lint
+        working-directory: portfolio-v1
         run: |
           if npm run lint 2>&1 | tee /tmp/lint-output.txt; then
             echo "status=pass" >> "$GITHUB_OUTPUT"
@@ -52,6 +54,7 @@ jobs:
       - name: Run tests
         if: steps.kill-switch.outputs.paused != 'true'
         id: test
+        working-directory: portfolio-v1
         run: |
           if npm run test -- --run 2>&1 | tee /tmp/test-output.txt; then
             echo "status=pass" >> "$GITHUB_OUTPUT"
@@ -62,6 +65,7 @@ jobs:
       - name: Run react-doctor
         if: steps.kill-switch.outputs.paused != 'true'
         id: doctor
+        working-directory: portfolio-v1
         run: |
           if npm run doctor -- --json 2>&1 | tee /tmp/doctor-output.txt; then
             echo "status=pass" >> "$GITHUB_OUTPUT"
@@ -72,6 +76,7 @@ jobs:
       - name: Check npm audit
         if: steps.kill-switch.outputs.paused != 'true'
         id: audit
+        working-directory: portfolio-v1
         run: |
           if npm audit --audit-level=moderate 2>&1 | tee /tmp/audit-output.txt; then
             echo "status=pass" >> "$GITHUB_OUTPUT"

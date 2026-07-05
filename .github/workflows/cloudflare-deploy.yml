@@ -34,12 +34,15 @@ jobs:
 
       - name: Install dependencies (no lifecycle scripts)
         run: npm ci --ignore-scripts
+        working-directory: portfolio-v1
 
       - name: Rebuild native modules
         run: npm rebuild
+        working-directory: portfolio-v1
 
       - name: Generate SBOM (CycloneDX)
         run: npx @cyclonedx/cyclonedx-npm --output-format JSON --output-file sbom.cdx.json --spec-version 1.5
+        working-directory: portfolio-v1
 
       - name: Upload SBOM
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
@@ -79,6 +82,7 @@ jobs:
 
       - name: Build
         run: npm run build
+        working-directory: portfolio-v1
 
       - name: Upload .next artifact
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
@@ -112,3 +116,4 @@ jobs:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: npx wrangler deploy
+        working-directory: portfolio-v1

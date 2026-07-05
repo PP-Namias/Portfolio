@@ -38,10 +38,12 @@ jobs:
       - name: Install dependencies
         if: steps.kill-switch.outputs.paused != 'true'
         run: npm ci
+        working-directory: portfolio-v1
 
       - name: Check npm audit
         if: steps.kill-switch.outputs.paused != 'true'
         id: audit
+        working-directory: portfolio-v1
         run: |
           OUTPUT=$(npm audit --json 2>&1) || true
           echo "$OUTPUT" > /tmp/audit.json
@@ -51,6 +53,7 @@ jobs:
       - name: Check for patch updates
         if: steps.kill-switch.outputs.paused != 'true'
         id: outdated
+        working-directory: portfolio-v1
         run: |
           OUTPUT=$(npm outdated --json 2>&1) || true
           echo "$OUTPUT" > /tmp/outdated.json
@@ -92,6 +95,7 @@ jobs:
 
       - name: Create patch PRs
         if: steps.kill-switch.outputs.paused != 'true' && steps.outdated.outputs.patches != '0'
+        working-directory: portfolio-v1
         run: |
           node -e "
             const patches = JSON.parse(require('fs').readFileSync('/tmp/patches.json','utf8'));

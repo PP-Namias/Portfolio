@@ -42,6 +42,30 @@
 
 Production portfolio for [namias.tech](https://namias.tech) — a modal-first, Sanity-driven Next.js application with a modern animation system, secure media gateway, AI chat, and automated CI/CD quality gates.
 
+### Monorepo Structure
+
+```
+Portfolio/
+├── portfolio-v1/    ← Current portfolio (Next.js 15, Sanity CMS, Tailwind)
+├── portfolio-v2/    ← Next-gen redesign (in progress)
+├── docs/            ← Shared docs (security, MCP)
+├── .github/         ← CI/CD workflows (target portfolio-v1/)
+└── .agents/         ← Agent skills and subagents
+```
+
+| Project | Status | Stack |
+|---------|--------|-------|
+| **portfolio-v1** | Live at [namias.tech](https://namias.tech) | Next.js 15, React 18, Tailwind, Sanity, Cloudflare |
+| **portfolio-v2** | Skeleton | Next.js 15, React 19, Tailwind v4, Sanity CMS |
+
+```bash
+# Work on v1
+cd portfolio-v1 && npm install && npm run dev
+
+# Work on v2
+cd portfolio-v2 && npm install && npm run dev
+```
+
 ### Highlights
 
 - **Modal-first UX** — Resume, Experience, Booking, and Project Detail modals with smooth transitions

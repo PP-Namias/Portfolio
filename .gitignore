@@ -87,9 +87,6 @@ dist
 
 # Gatsby files
 .cache/
-# Comment in the public line in if your project uses Gatsby and not Next.js
-# https://nextjs.org/blog/next-9-1#public-directory-support
-# public
 
 # vuepress build output
 .vuepress/dist
@@ -145,7 +142,6 @@ vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 
 # react-doctor working dir (transient reports, diff artifacts)
-# The canonical historical baseline lives in docs/react-doctor/baseline.{json,txt}
 .react-doctor/
 
 # PentestAgent cloned repo (not committed — use setup script)
@@ -153,26 +149,24 @@ vite.config.ts.timestamp-*
 .pentestagent/
 
 # PentestAgent transient findings and artifacts
-# The canonical findings live in docs/security/pentestagent/findings/
 docs/security/pentestagent/loot/
 docs/security/pentestagent/knowledge/
 
 # Sanity backups
-/studio/data_downloads/*
-!/studio/data_downloads/README.md
+portfolio-v1/studio/data_downloads/*
+!portfolio-v1/studio/data_downloads/README.md
 
 # Husky internal directory
 .husky/_
 
-page-check.html
-
-page-prod.html
+portfolio-v1/page-check.html
+portfolio-v1/page-prod.html
 
 # One-time script output
-scripts/import-report.json
+portfolio-v1/scripts/import-report.json
 
 # Stale API cache
 docs/github-projects.json
 
 # Graphify knowledge graph output
-graphify-out/cost.json
+portfolio-v1/graphify-out/cost.json

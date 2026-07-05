@@ -40,9 +40,11 @@ jobs:
 
       - name: Install Dependencies
         run: npm ci
+        working-directory: portfolio-v1
 
       - name: Run React Doctor
         id: doctor
+        working-directory: portfolio-v1
         run: |
           set -e
           npm run doctor:json

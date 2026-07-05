@@ -35,15 +35,19 @@ jobs:
 
       - name: Install Dependencies (no lifecycle scripts)
         run: npm ci --ignore-scripts
+        working-directory: portfolio-v1
 
       - name: Rebuild native modules
         run: npm rebuild
+        working-directory: portfolio-v1
 
       - name: Lint Check
         run: npm run lint
+        working-directory: portfolio-v1
 
       - name: Type Check
         run: npx tsc --noEmit
+        working-directory: portfolio-v1
 
       - name: Build
         env:
@@ -51,12 +55,14 @@ jobs:
           NEXT_PUBLIC_SANITY_DATASET: ${{ secrets.NEXT_PUBLIC_SANITY_DATASET || 'production' }}
           SANITY_API_READ_TOKEN: ${{ secrets.SANITY_API_READ_TOKEN || '' }}
         run: npm run build
+        working-directory: portfolio-v1
         # NOTE: Build requires Sanity env vars for ISR content fetching.
         # Secrets are read-only tokens (not deploy keys) and the build step
         # only executes trusted project code (npm run build), not lifecycle scripts.
 
       - name: Run Tests
         run: npm test
+        working-directory: portfolio-v1
 
   security:
     name: Security Scan
@@ -77,12 +83,15 @@ jobs:
 
       - name: Install Dependencies (no lifecycle scripts)
         run: npm ci --ignore-scripts
+        working-directory: portfolio-v1
 
       - name: Rebuild native modules
         run: npm rebuild
+        working-directory: portfolio-v1
 
       - name: Security Audit
         run: npm audit --audit-level moderate || echo "Audit completed with warnings"
+        working-directory: portfolio-v1
 
   comment:
     name: PR Status
