@@ -1,0 +1,164 @@
+{
+  "id": "PRD-GITHUB-HEATMAP-UPGRADE",
+  "title": "GitHub Stats Heatmap Upgrade",
+  "version": "1.0.0",
+  "status": "in-progress",
+  "created": "2026-07-05",
+  "description": "Replace custom GitHub contributions heatmap with @bklit/heatmap-chart — a production-grade composable chart with animated cells, interactive tooltips, and theme-aware level colors.",
+  "author": "PP-Namias",
+
+  "goals": [
+    "Replace custom SVG/dot heatmap with @bklit/heatmap-chart component",
+    "Transform API contributions data into HeatmapChart column/bin format",
+    "Add animated cell enter, hover dimming, and interactive tooltip",
+    "Show stats (total, current streak, longest streak) alongside heatmap",
+    "Keep existing fallback SVG and loading/error states",
+    "Respect prefers-reduced-motion",
+    "Add dark/light mode level colors"
+  ],
+
+  "out-of-scope": [
+    "Changing the GitHub contributions API endpoint",
+    "Adding new API fields beyond what's already fetched",
+    "Replacing the SWR data fetching hook"
+  ],
+
+  "epics": [
+    {
+      "id": "EPIC-1",
+      "title": "Install @bklit/heatmap-chart",
+      "stories": [
+        {
+          "id": "S1.1",
+          "title": "Install @bklit/heatmap-chart package",
+          "files": ["package.json"],
+          "tasks": [
+            "Run: pnpm add @bklit/heatmap-chart",
+            "Verify package installed in node_modules"
+          ],
+          "commitMessage": "deps(charts): add @bklit/heatmap-chart"
+        }
+      ]
+    },
+    {
+      "id": "EPIC-2",
+      "title": "Data transformation utility",
+      "stories": [
+        {
+          "id": "S2.1",
+          "title": "Create data transformer function",
+          "description": "Transform API contributions array { date, count, level } into HeatmapChart format { bin: weekIndex, bins: [{ bin: dayIndex, count, date }] }. Use getHeatmapContributionLevel for level mapping. Group by week using getDay() for row index.",
+          "files": ["src/lib/github-heatmap-data.ts"],
+          "tasks": [
+            "Create getHeatmapContributionLevel(count) — maps count to 0-4 level",
+            "Create transformToHeatmapData(contributions) — groups days into week columns",
+            "Each column = { bin: weekIndex, bins: [{ bin: dayOfWeek, count, date: Date }] }",
+            "Export transform function as default"
+          ],
+          "commitMessage": "feat(github): add data transformer for @bklit/heatmap-chart format"
+        }
+      ]
+    },
+    {
+      "id": "EPIC-3",
+      "title": "Theme colors for heatmap levels",
+      "stories": [
+        {
+          "id": "S3.1",
+          "title": "Add chart-scale CSS variables",
+          "description": "Add --chart-scale-01 through --chart-scale-05 CSS variables to globals.css for light and dark themes. Map to GitHub's green scale (light: white/emerald-100/200/300/400, dark: surface/dark-emerald shades).",
+          "files": ["src/app/globals.css"],
+          "tasks": [
+            "Add --chart-scale-01 to --chart-scale-05 in :root (light)",
+            "Add --chart-scale-01 to --chart-scale-05 in .dark (dark)",
+            "Add --chart-tooltip-background for tooltip styling",
+            "Add --chart-scale-pattern-color for pattern fills"
+          ],
+          "commitMessage": "style(github): add chart-scale CSS variables for heatmap theming"
+        }
+      ]
+    },
+    {
+      "id": "EPIC-4",
+      "title": "Replace heatmap component",
+      "stories": [
+        {
+          "id": "S4.1",
+          "title": "Rewrite GitHubContributionsSection with @bklit",
+          "description": "Replace custom dot grid with HeatmapInteractionProvider + HeatmapChart + HeatmapCells + HeatmapXAxis + HeatmapYAxis + HeatmapLegend + HeatmapTooltip. Keep stats cards, loading/error states, and GitHub link. Use transformToHeatmapData to convert API data.",
+          "files": ["src/components/sections/GitHubContributionsSection.tsx"],
+          "tasks": [
+            "Import @bklit/chart components",
+            "Import transformToHeatmapData utility",
+            "Replace custom grid divs with HeatmapChart composable API",
+            "Add HeatmapCells with cornerRadius=2, gap=2",
+            "Add HeatmapXAxis (month labels), HeatmapYAxis (weekday initials)",
+            "Add HeatmapLegend with Less/More labels",
+            "Add HeatmapTooltip with custom date formatter",
+            "Keep stats cards (total, current streak, longest streak)",
+            "Keep loading spinner, error state, fallback SVG",
+            "Keep framer-motion section animation",
+            "Wrap in HeatmapInteractionProvider",
+            "Respect prefers-reduced-motion by disabling animation on reduced motion"
+          ],
+          "commitMessage": "feat(github): replace custom heatmap with @bklit/heatmap-chart"
+        }
+      ]
+    },
+    {
+      "id": "EPIC-5",
+      "title": "Build verification",
+      "stories": [
+        {
+          "id": "S5.1",
+          "title": "Run build and type check",
+          "tasks": [
+            "Run npx tsc --noEmit to verify no type errors",
+            "Run npm run lint to verify no lint errors",
+            "Verify the component renders in the browser"
+          ],
+          "commitMessage": null
+        }
+      ]
+    }
+  ],
+
+  "data-flow": {
+    "api": {
+      "endpoint": "https://github-contributions-api.jogruber.de/v4/PP-Namias",
+      "response": "{ total: number, contributions: [{ date: string, count: number, level: 0|1|2|3|4 }] }",
+      "hook": "useGitHubContributions (SWR, 60s dedup)"
+    },
+    "transformation": {
+      "input": "contribution[] — flat array of 365 days",
+      "output": "HeatmapColumn[] — one column per week, each with 7 bins",
+      "mapping": "date string → new Date(date), count → getHeatmapContributionLevel(count), day index = getDay(date)"
+    },
+    "component": {
+      "provider": "HeatmapInteractionProvider",
+      "chart": "HeatmapChart data={heatmapData} layout='fluid' weekStartDay={0}",
+      "cells": "HeatmapCells cornerRadius=2 gap=2",
+      "xAxis": "HeatmapXAxis tickFilter='odd' labelFormat='full'",
+      "yAxis": "HeatmapYAxis tickFilter='all' labelFormat='initial'",
+      "legend": "HeatmapLegend lessLabel='Less' moreLabel='More'",
+      "tooltip": "HeatmapTooltip formatLabel custom formatter"
+    }
+  },
+
+  "level-colors": {
+    "light": {
+      "0": "#ebedf0",
+      "1": "#9be9a8",
+      "2": "#40c463",
+      "3": "#30a14e",
+      "4": "#216e39"
+    },
+    "dark": {
+      "0": "#161b22",
+      "1": "#0e4429",
+      "2": "#006d32",
+      "3": "#26a641",
+      "4": "#39d353"
+    }
+  }
+}
