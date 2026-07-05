@@ -57,27 +57,39 @@ export function GitHubContributionsSection() {
       viewport={{ once: true, margin: '-50px' }}
       transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
       aria-labelledby="github-contributions-heading"
+      className="rounded-2xl border border-border-light dark:border-border-dark bg-white dark:bg-card-bg-dark p-6"
     >
-      <div className="mb-4">
-        <h2
-          id="github-contributions-heading"
-          className="text-lg font-semibold text-text-primary-light dark:text-text-primary-dark"
+      <div className="mb-5 flex items-center justify-between">
+        <div>
+          <h2
+            id="github-contributions-heading"
+            className="text-base font-semibold text-text-primary-light dark:text-text-primary-dark"
+          >
+            GitHub Contributions
+          </h2>
+          <p className="text-xs text-text-muted-light dark:text-text-muted-dark mt-0.5">
+            Activity over the past year
+          </p>
+        </div>
+        <a
+          href={`https://github.com/${GITHUB_USERNAME}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-1 text-xs text-text-muted-light dark:text-text-muted-dark transition-colors hover:text-accent-pink"
         >
-          GitHub Contributions
-        </h2>
-        <p className="text-sm text-text-secondary-light dark:text-text-secondary-dark mt-1">
-          My open source activity over the past year
-        </p>
+          @{GITHUB_USERNAME}
+          <ExternalLink className="h-3 w-3" />
+        </a>
       </div>
 
       {isLoading && (
-        <output className="flex items-center justify-center py-12">
-          <div className="h-6 w-6 animate-spin rounded-full border-2 border-accent-pink border-t-transparent" />
+        <output className="flex items-center justify-center py-16">
+          <div className="h-5 w-5 animate-spin rounded-full border-2 border-text-muted-light dark:border-text-muted-dark border-t-transparent" />
         </output>
       )}
 
       {isError && (
-        <div className="py-8 text-center text-sm text-text-muted-light dark:text-text-muted-dark">
+        <div className="py-12 text-center text-sm text-text-muted-light dark:text-text-muted-dark">
           <p>Unable to load contribution data.</p>
           <a
             href={`https://github.com/${GITHUB_USERNAME}`}
@@ -92,8 +104,8 @@ export function GitHubContributionsSection() {
       )}
 
       {!isLoading && !isError && !data && (
-        <div className="space-y-4">
-          <div className="overflow-x-auto pb-2">
+        <div className="space-y-3">
+          <div className="overflow-x-auto">
             <Image
               src={FALLBACK_SVG}
               alt={`${GITHUB_USERNAME}'s GitHub contribution chart`}
@@ -104,12 +116,12 @@ export function GitHubContributionsSection() {
               loading="lazy"
             />
           </div>
-          <div className="flex items-center gap-1 text-[10px] text-text-muted-light dark:text-text-muted-dark">
+          <div className="flex items-center justify-end gap-1 text-[10px] text-text-muted-light dark:text-text-muted-dark">
             <span>Less</span>
             {[0, 1, 2, 3, 4].map((level) => (
               <div
                 key={level}
-                className="h-[11px] w-[11px] rounded-[2px]"
+                className="h-[10px] w-[10px] rounded-[2px]"
                 style={{
                   backgroundColor:
                     level === 0
@@ -126,46 +138,33 @@ export function GitHubContributionsSection() {
             ))}
             <span>More</span>
           </div>
-          <div className="pt-2">
-            <a
-              href={`https://github.com/${GITHUB_USERNAME}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 text-sm text-accent-pink hover:underline"
-            >
-              View full profile on GitHub
-              <ExternalLink className="h-3.5 w-3.5" />
-            </a>
-          </div>
         </div>
       )}
 
       {!isLoading && !isError && data && (
         <div className="space-y-4">
-          <div className="flex flex-wrap gap-4 text-sm">
-            <div className="rounded-lg bg-surface-light dark:bg-surface-dark px-3 py-2">
-              <span className="font-semibold text-text-primary-light dark:text-text-primary-dark">
+          <div className="flex flex-wrap gap-3 text-xs">
+            <div className="flex items-baseline gap-1.5 rounded-md bg-surface-light dark:bg-surface-dark px-3 py-1.5">
+              <span className="font-semibold text-text-primary-light dark:text-text-primary-dark tabular-nums">
                 {data.total.toLocaleString()}
-              </span>{' '}
-              <span className="text-text-secondary-light dark:text-text-secondary-dark">
-                contributions in the last year
+              </span>
+              <span className="text-text-muted-light dark:text-text-muted-dark">contributions</span>
+            </div>
+            <div className="flex items-baseline gap-1.5 rounded-md bg-surface-light dark:bg-surface-dark px-3 py-1.5">
+              <span className="font-semibold text-emerald-500 tabular-nums">{streak.current}</span>
+              <span className="text-text-muted-light dark:text-text-muted-dark">
+                current streak
               </span>
             </div>
-            <div className="rounded-lg bg-surface-light dark:bg-surface-dark px-3 py-2">
-              <span className="font-semibold text-emerald-500">{streak.current}</span>{' '}
-              <span className="text-text-secondary-light dark:text-text-secondary-dark">
-                day current streak
-              </span>
-            </div>
-            <div className="rounded-lg bg-surface-light dark:bg-surface-dark px-3 py-2">
-              <span className="font-semibold text-emerald-500">{streak.longest}</span>{' '}
-              <span className="text-text-secondary-light dark:text-text-secondary-dark">
-                day longest streak
+            <div className="flex items-baseline gap-1.5 rounded-md bg-surface-light dark:bg-surface-dark px-3 py-1.5">
+              <span className="font-semibold text-emerald-500 tabular-nums">{streak.longest}</span>
+              <span className="text-text-muted-light dark:text-text-muted-dark">
+                longest streak
               </span>
             </div>
           </div>
 
-          <div className="overflow-x-auto pb-2">
+          <div className="overflow-x-auto">
             <div className="min-w-[720px]">
               <HeatmapInteractionProvider>
                 <HeatmapInteractionBoundary>
@@ -175,22 +174,12 @@ export function GitHubContributionsSection() {
                     <HeatmapYAxis tickFilter="all" labelFormat="initial" />
                     <HeatmapTooltip />
                   </HeatmapChart>
-                  <HeatmapLegend lessLabel="Less" moreLabel="More" cellSize={11} gap={2} />
+                  <div className="flex justify-end">
+                    <HeatmapLegend lessLabel="Less" moreLabel="More" cellSize={10} gap={2} />
+                  </div>
                 </HeatmapInteractionBoundary>
               </HeatmapInteractionProvider>
             </div>
-          </div>
-
-          <div className="pt-2">
-            <a
-              href={`https://github.com/${GITHUB_USERNAME}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 text-sm text-accent-pink hover:underline"
-            >
-              View full profile on GitHub
-              <ExternalLink className="h-3.5 w-3.5" />
-            </a>
           </div>
         </div>
       )}
