@@ -1,0 +1,568 @@
+{
+  "id": "PRD-PORTFOLIO-V2-SANITY-CMS",
+  "title": "Portfolio V2 — Sanity CMS Integration & Layout Redesign",
+  "version": "1.0.0",
+  "status": "in-progress",
+  "created": "2026-07-06",
+  "description": "Integrate Sanity CMS into portfolio-v2. Replace all hardcoded TypeScript data with Sanity-fetched content. Set up Sanity Studio, schemas, GROQ queries, draft mode, webhooks. Update profile with mobile number and daily.dev. Redesign layout and styling.",
+
+  "context": {
+    "currentStack": "Next.js 16, React 19, Tailwind v4, TypeScript",
+    "targetCMS": "Sanity v4 (project: nl0qw78w, dataset: production)",
+    "v1Studio": "portfolio-v1/studio/ — fully configured with 20 schemas",
+    "goal": "Portfolio V2 powered by Sanity CMS with live editing",
+    "mobile": "+63 927 253 3969",
+    "dailydev": "https://daily.dev/ppnamias"
+  },
+
+  "architecture": {
+    "dataFlow": "Sanity API → GROQ queries → Server Components → Frontend",
+    "caching": "Next.js ISR + tag-based revalidation via webhooks",
+    "draftMode": "Studio Presentation tool → /api/draft-mode/enable → preview client",
+    "studio": "Embedded Sanity Studio at /studio route",
+    "schemas": "20 document types matching v1 structure"
+  },
+
+  "epics": [
+    {
+      "id": "EPIC-1",
+      "title": "Sanity Infrastructure",
+      "priority": "high",
+      "stories": [
+        {
+          "id": "S1.1",
+          "title": "Install Sanity dependencies",
+          "command": "pnpm add @sanity/client @sanity/image-url next-sanity sanity",
+          "description": "Add core Sanity packages to portfolio-v2"
+        },
+        {
+          "id": "S1.2",
+          "title": "Install Sanity dev dependencies",
+          "command": "pnpm add -D @sanity/vision @sanity/assist",
+          "description": "Add Studio tools (Vision for GROQ playground, Assist for AI)"
+        },
+        {
+          "id": "S1.3",
+          "title": "Create .env.local Sanity variables",
+          "file": ".env.local",
+          "description": "Add NEXT_PUBLIC_SANITY_PROJECT_ID, NEXT_PUBLIC_SANITY_DATASET, SANITY_API_READ_TOKEN, SANITY_REVALIDATE_SECRET"
+        },
+        {
+          "id": "S1.4",
+          "title": "Create Sanity client configuration",
+          "file": "src/lib/sanity/client.ts",
+          "description": "Create public, preview, and read clients with CDN, perspective, and stega settings"
+        },
+        {
+          "id": "S1.5",
+          "title": "Create Sanity image URL builder",
+          "file": "src/lib/sanity/image.ts",
+          "description": "Configure @sanity/image-url with project dataset for image transformations"
+        },
+        {
+          "id": "S1.6",
+          "title": "Create GROQ query constants",
+          "file": "src/lib/sanity/queries.ts",
+          "description": "Define all GROQ query strings as typed constants"
+        }
+      ]
+    },
+    {
+      "id": "EPIC-2",
+      "title": "Sanity Schemas — Singletons",
+      "priority": "high",
+      "stories": [
+        {
+          "id": "S2.1",
+          "title": "Create profile schema",
+          "file": "src/sanity/schemas/profile.ts",
+          "fields": ["firstName", "lastName", "displayName", "username", "title", "email", "phone", "location", "website", "avatar", "about", "socialLinks", "education", "availability"]
+        },
+        {
+          "id": "S2.2",
+          "title": "Create siteSettings schema",
+          "file": "src/sanity/schemas/siteSettings.ts",
+          "fields": ["siteTitle", "siteDescription", "ogImage", "theme", "analytics", "socialLinks", "footerText"]
+        },
+        {
+          "id": "S2.3",
+          "title": "Create techStack schema",
+          "file": "src/sanity/schemas/techStack.ts",
+          "fields": ["title", "technologies[] (name, icon, category, proficiency, url)"]
+        },
+        {
+          "id": "S2.4",
+          "title": "Create blockContent schema",
+          "file": "src/sanity/schemas/blockContent.ts",
+          "description": "Portable Text array with headings, lists, marks, annotations, inline images"
+        }
+      ]
+    },
+    {
+      "id": "EPIC-3",
+      "title": "Sanity Schemas — Collections",
+      "priority": "high",
+      "stories": [
+        {
+          "id": "S3.1",
+          "title": "Create project schema",
+          "file": "src/sanity/schemas/project.ts",
+          "fields": ["title", "slug", "summary", "description", "category", "technologies[]", "image", "gallery[]", "liveUrl", "repoUrl", "featured", "order", "status"]
+        },
+        {
+          "id": "S3.2",
+          "title": "Create experience schema",
+          "file": "src/sanity/schemas/experience.ts",
+          "fields": ["role", "company", "location", "startDate", "endDate", "employmentType", "description", "skills[]", "highlights[]", "order"]
+        },
+        {
+          "id": "S3.3",
+          "title": "Create certification schema",
+          "file": "src/sanity/schemas/certification.ts",
+          "fields": ["title", "issuer", "issuedAt", "expiresAt", "credentialUrl", "category", "image"]
+        },
+        {
+          "id": "S3.4",
+          "title": "Create education schema",
+          "file": "src/sanity/schemas/education.ts",
+          "fields": ["institution", "degree", "field", "startYear", "endYear", "gpa", "honors", "activities[]"]
+        },
+        {
+          "id": "S3.5",
+          "title": "Create socialLink schema",
+          "file": "src/sanity/schemas/socialLink.ts",
+          "fields": ["platform", "handle", "url", "isPrimary"]
+        },
+        {
+          "id": "S3.6",
+          "title": "Create testimonial schema",
+          "file": "src/sanity/schemas/testimonial.ts",
+          "fields": ["quote", "author", "role", "company", "avatar", "rating", "featured"]
+        },
+        {
+          "id": "S3.7",
+          "title": "Create award schema",
+          "file": "src/sanity/schemas/award.ts",
+          "fields": ["title", "prize", "date", "category", "description", "url", "image"]
+        },
+        {
+          "id": "S3.8",
+          "title": "Create bookmark schema",
+          "file": "src/sanity/schemas/bookmark.ts",
+          "fields": ["title", "url", "description", "category", "favicon"]
+        },
+        {
+          "id": "S3.9",
+          "title": "Create post schema (blog)",
+          "file": "src/sanity/schemas/post.ts",
+          "fields": ["title", "slug", "excerpt", "body (blockContent)", "mainImage", "publishedAt", "published", "categories[]", "tags[]"]
+        },
+        {
+          "id": "S3.10",
+          "title": "Create category schema",
+          "file": "src/sanity/schemas/category.ts",
+          "fields": ["title", "slug", "description"]
+        }
+      ]
+    },
+    {
+      "id": "EPIC-4",
+      "title": "Sanity Schema Index & Studio Config",
+      "priority": "high",
+      "stories": [
+        {
+          "id": "S4.1",
+          "title": "Create schema index",
+          "file": "src/sanity/schemas/index.ts",
+          "description": "Export all schemas as array for Studio and client"
+        },
+        {
+          "id": "S4.2",
+          "title": "Create Sanity Studio config",
+          "file": "src/sanity/sanity.config.ts",
+          "description": "Configure Studio with structureTool, presentationTool, visionTool, assist"
+        },
+        {
+          "id": "S4.3",
+          "title": "Create sanity.cli.ts",
+          "file": "src/sanity/sanity.cli.ts",
+          "description": "CLI config for Studio deployment and codegen"
+        }
+      ]
+    },
+    {
+      "id": "EPIC-5",
+      "title": "Sanity Studio Route",
+      "priority": "high",
+      "stories": [
+        {
+          "id": "S5.1",
+          "title": "Create Studio layout",
+          "file": "src/app/(studio)/layout.tsx",
+          "description": "Root layout for Studio route group"
+        },
+        {
+          "id": "S5.2",
+          "title": "Create Studio page",
+          "file": "src/app/(studio)/studio/[[...tool]]/page.tsx",
+          "description": "Studio page with SanityClientProvider and StudioProvider"
+        },
+        {
+          "id": "S5.3",
+          "title": "Create Studio config route",
+          "file": "src/app/(studio)/studio/config.ts",
+          "description": "Studio-specific configuration"
+        }
+      ]
+    },
+    {
+      "id": "EPIC-6",
+      "title": "Data Fetching Layer",
+      "priority": "high",
+      "stories": [
+        {
+          "id": "S6.1",
+          "title": "Create Sanity data fetching functions",
+          "file": "src/lib/sanity/data.ts",
+          "description": "getCmsContent(), getProfile(), getProjects(), getExperiences(), etc."
+        },
+        {
+          "id": "S6.2",
+          "title": "Create profile fetch function",
+          "file": "src/lib/sanity/fetch-profile.ts",
+          "description": "Fetch profile singleton with GROQ, handle fallback"
+        },
+        {
+          "id": "S6.3",
+          "title": "Create projects fetch function",
+          "file": "src/lib/sanity/fetch-projects.ts",
+          "description": "Fetch all projects ordered by featured rank"
+        },
+        {
+          "id": "S6.4",
+          "title": "Create experiences fetch function",
+          "file": "src/lib/sanity/fetch-experiences.ts",
+          "description": "Fetch experiences ordered by date"
+        },
+        {
+          "id": "S6.5",
+          "title": "Create certifications fetch function",
+          "file": "src/lib/sanity/fetch-certifications.ts",
+          "description": "Fetch certifications with resolved references"
+        },
+        {
+          "id": "S6.6",
+          "title": "Create education fetch function",
+          "file": "src/lib/sanity/fetch-education.ts",
+          "description": "Fetch education entries"
+        },
+        {
+          "id": "S6.7",
+          "title": "Create social links fetch function",
+          "file": "src/lib/sanity/fetch-social-links.ts",
+          "description": "Fetch social links from profile"
+        },
+        {
+          "id": "S6.8",
+          "title": "Create testimonials fetch function",
+          "file": "src/lib/sanity/fetch-testimonials.ts",
+          "description": "Fetch testimonials ordered by featured"
+        },
+        {
+          "id": "S6.9",
+          "title": "Create awards fetch function",
+          "file": "src/lib/sanity/fetch-awards.ts",
+          "description": "Fetch awards ordered by date"
+        },
+        {
+          "id": "S6.10",
+          "title": "Create bookmarks fetch function",
+          "file": "src/lib/sanity/fetch-bookmarks.ts",
+          "description": "Fetch bookmarks ordered by category"
+        },
+        {
+          "id": "S6.11",
+          "title": "Create tech stack fetch function",
+          "file": "src/lib/sanity/fetch-tech-stack.ts",
+          "description": "Fetch tech stack with technologies"
+        },
+        {
+          "id": "S6.12",
+          "title": "Create blog posts fetch function",
+          "file": "src/lib/sanity/fetch-posts.ts",
+          "description": "Fetch published blog posts with categories"
+        },
+        {
+          "id": "S6.13",
+          "title": "Create Sanity fetch wrapper with caching",
+          "file": "src/lib/sanity/fetch.ts",
+          "description": "Typed fetch wrapper with Next.js cache tags and ISR"
+        },
+        {
+          "id": "S6.14",
+          "title": "Create fallback data module",
+          "file": "src/lib/sanity/fallback.ts",
+          "description": "Fallback data when Sanity is unavailable"
+        }
+      ]
+    },
+    {
+      "id": "EPIC-7",
+      "title": "Component Migration — Home Page",
+      "priority": "high",
+      "stories": [
+        {
+          "id": "S7.1",
+          "title": "Convert page.tsx to async server component",
+          "file": "src/app/(app)/page.tsx",
+          "description": "Fetch all data from Sanity in server component, pass as props"
+        },
+        {
+          "id": "S7.2",
+          "title": "Update ProfileHeader to accept Sanity data",
+          "file": "src/features/portfolio/components/profile-header.tsx",
+          "description": "Replace hardcoded USER import with props from Sanity"
+        },
+        {
+          "id": "S7.3",
+          "title": "Update Overview to accept Sanity data",
+          "file": "src/features/portfolio/components/overview/index.tsx",
+          "description": "Replace hardcoded USER import with props"
+        },
+        {
+          "id": "S7.4",
+          "title": "Update SocialLinks to accept Sanity data",
+          "file": "src/features/portfolio/components/social-links.tsx",
+          "description": "Replace hardcoded SOCIAL_LINKS import with props"
+        },
+        {
+          "id": "S7.5",
+          "title": "Update TechStack to accept Sanity data",
+          "file": "src/features/portfolio/components/tech-stack.tsx",
+          "description": "Replace hardcoded TECH_STACK import with props"
+        },
+        {
+          "id": "S7.6",
+          "title": "Update Experiences to accept Sanity data",
+          "file": "src/features/portfolio/components/experiences/index.tsx",
+          "description": "Replace hardcoded EXPERIENCES import with props"
+        },
+        {
+          "id": "S7.7",
+          "title": "Update Projects to accept Sanity data",
+          "file": "src/features/portfolio/components/projects/index.tsx",
+          "description": "Replace hardcoded PROJECTS import with props"
+        },
+        {
+          "id": "S7.8",
+          "title": "Update Certifications to accept Sanity data",
+          "file": "src/features/portfolio/components/certifications/index.tsx",
+          "description": "Replace hardcoded CERTIFICATIONS import with props"
+        },
+        {
+          "id": "S7.9",
+          "title": "Update Education to accept Sanity data",
+          "file": "src/features/portfolio/components/education/index.tsx",
+          "description": "Replace hardcoded EDUCATION import with props"
+        },
+        {
+          "id": "S7.10",
+          "title": "Update Awards to accept Sanity data",
+          "file": "src/features/portfolio/components/awards/index.tsx",
+          "description": "Replace hardcoded AWARDS import with props"
+        },
+        {
+          "id": "S7.11",
+          "title": "Update Bookmarks to accept Sanity data",
+          "file": "src/features/portfolio/components/bookmarks/index.tsx",
+          "description": "Replace hardcoded BOOKMARKS import with props"
+        },
+        {
+          "id": "S7.12",
+          "title": "Update Testimonials to accept Sanity data",
+          "file": "src/features/portfolio/components/testimonials.tsx",
+          "description": "Replace hardcoded TESTIMONIALS import with props"
+        }
+      ]
+    },
+    {
+      "id": "EPIC-8",
+      "title": "Component Migration — Layout & Config",
+      "priority": "high",
+      "stories": [
+        {
+          "id": "S8.1",
+          "title": "Update root layout.tsx metadata from Sanity",
+          "file": "src/app/layout.tsx",
+          "description": "Fetch siteSettings for dynamic metadata"
+        },
+        {
+          "id": "S8.2",
+          "title": "Update site.ts config from Sanity",
+          "file": "src/config/site.ts",
+          "description": "Make site config dynamic from Sanity siteSettings"
+        },
+        {
+          "id": "S8.3",
+          "title": "Update JSON-LD config from Sanity",
+          "file": "src/config/json-ld.ts",
+          "description": "Generate structured data from Sanity profile"
+        },
+        {
+          "id": "S8.4",
+          "title": "Update sitemap.ts from Sanity",
+          "file": "src/app/sitemap.ts",
+          "description": "Generate sitemap from Sanity content"
+        },
+        {
+          "id": "S8.5",
+          "title": "Update robots.ts from Sanity",
+          "file": "src/app/robots.ts",
+          "description": "Generate robots.txt from Sanity settings"
+        }
+      ]
+    },
+    {
+      "id": "EPIC-9",
+      "title": "Draft Mode & Preview",
+      "priority": "medium",
+      "stories": [
+        {
+          "id": "S9.1",
+          "title": "Create draft mode enable route",
+          "file": "src/app/api/draft-mode/enable/route.ts",
+          "description": "Enable draft mode with Sanity read client"
+        },
+        {
+          "id": "S9.2",
+          "title": "Create draft mode disable route",
+          "file": "src/app/api/draft-mode/disable/route.ts",
+          "description": "Disable draft mode"
+        },
+        {
+          "id": "S9.3",
+          "title": "Create Sanity Live provider",
+          "file": "src/components/sanity-live.tsx",
+          "description": "SanityLive component for real-time updates in draft mode"
+        },
+        {
+          "id": "S9.4",
+          "title": "Add visual editing to Studio",
+          "file": "src/sanity/sanity.config.ts",
+          "description": "Configure presentationTool for visual editing"
+        }
+      ]
+    },
+    {
+      "id": "EPIC-10",
+      "title": "Webhooks & Revalidation",
+      "priority": "medium",
+      "stories": [
+        {
+          "id": "S10.1",
+          "title": "Create Sanity webhook route",
+          "file": "src/app/api/sanity/webhook/route.ts",
+          "description": "Handle publish/unpublish webhooks, invalidate cache tags, revalidate paths"
+        },
+        {
+          "id": "S10.2",
+          "title": "Create cache tag utilities",
+          "file": "src/lib/sanity/cache-tags.ts",
+          "description": "Map document types to cache tags for ISR invalidation"
+        },
+        {
+          "id": "S10.3",
+          "title": "Add revalidation secret to env",
+          "description": "Add SANITY_REVALIDATE_SECRET to .env.local"
+        }
+      ]
+    },
+    {
+      "id": "EPIC-11",
+      "title": "Profile Updates",
+      "priority": "medium",
+      "stories": [
+        {
+          "id": "S11.1",
+          "title": "Add mobile number to profile schema",
+          "file": "src/sanity/schemas/profile.ts",
+          "value": "+63 927 253 3969"
+        },
+        {
+          "id": "S11.2",
+          "title": "Add daily.dev to social links",
+          "file": "src/sanity/schemas/socialLink.ts",
+          "value": "https://daily.dev/ppnamias"
+        },
+        {
+          "id": "S11.3",
+          "title": "Update hardcoded fallback data with new profile info",
+          "file": "src/lib/sanity/fallback.ts",
+          "description": "Add mobile and daily.dev to fallback data"
+        }
+      ]
+    },
+    {
+      "id": "EPIC-12",
+      "title": "Build & Test Fixes",
+      "priority": "high",
+      "stories": [
+        {
+          "id": "S12.1",
+          "title": "Run TypeScript check and fix errors",
+          "command": "pnpm check-types",
+          "description": "Fix all type errors from Sanity integration"
+        },
+        {
+          "id": "S12.2",
+          "title": "Run ESLint and fix errors",
+          "command": "pnpm lint",
+          "description": "Fix all lint errors"
+        },
+        {
+          "id": "S12.3",
+          "title": "Run tests and fix failures",
+          "command": "pnpm test:run",
+          "description": "Fix all test failures"
+        },
+        {
+          "id": "S12.4",
+          "title": "Run production build",
+          "command": "pnpm build",
+          "description": "Ensure production build succeeds"
+        },
+        {
+          "id": "S12.5",
+          "title": "Verify all routes return 200",
+          "description": "Test all pages load correctly with Sanity data"
+        }
+      ]
+    }
+  ],
+
+  "commitPlan": {
+    "strategy": "One commit per story slice",
+    "naming": "type(scope): description",
+    "types": ["feat", "fix", "chore", "docs", "refactor"],
+    "totalExpectedCommits": 65,
+    "examples": [
+      "chore(v2): install @sanity/client and next-sanity",
+      "feat(v2): create Sanity client configuration",
+      "feat(v2): create profile schema",
+      "feat(v2): create Sanity Studio route",
+      "feat(v2): create GROQ data fetching functions",
+      "refactor(v2): migrate home page to Sanity data",
+      "feat(v2): add draft mode enable/disable routes",
+      "feat(v2): create Sanity webhook handler",
+      "fix(v2): add mobile number and daily.dev to profile"
+    ]
+  },
+
+  "verification": {
+    "typescript": "pnpm check-types must pass",
+    "eslint": "pnpm lint must pass",
+    "tests": "pnpm test:run must pass",
+    "build": "pnpm build must succeed",
+    "routes": ["/", "/blog", "/components", "/studio", "/api/sanity/webhook"]
+  }
+}
