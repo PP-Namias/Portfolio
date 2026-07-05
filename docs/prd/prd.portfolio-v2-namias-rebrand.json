@@ -2,7 +2,8 @@
   "id": "PRD-PORTFOLIO-V2-NAMIAS-REBRAND",
   "title": "Portfolio V2 — Namias Rebrand & Error Fixes",
   "version": "1.0.0",
-  "status": "in-progress",
+  "status": "completed",
+  "completedDate": "2026-07-06",
   "created": "2026-07-06",
   "description": "Rebrand portfolio-v2 from ncdai/chanhdai to PP Namias (Jhon Keneth Ryan Namias). Fix runtime errors, create env file, update all user data, social links, config, and content.",
 
@@ -66,6 +67,12 @@
           "title": "Fix OpenPanel null check",
           "file": "src/lib/openpanel.ts",
           "description": "Guard against undefined env vars"
+        },
+        {
+          "id": "S1.5",
+          "title": "Fix OpenPanel events.ts optional chaining",
+          "file": "src/lib/events.ts",
+          "description": "Add optional chaining op?.track() for null safety"
         }
       ]
     },
@@ -174,6 +181,85 @@
           "changes": {
             "registries.@namias": "https://namias.tech/r/{name}.json"
           }
+        },
+        {
+          "id": "S4.5",
+          "title": "Update registry/index.ts namespace and homepage",
+          "file": "src/registry/index.ts",
+          "changes": {
+            "name": "pp-namias",
+            "homepage": "https://namias.tech/components"
+          }
+        },
+        {
+          "id": "S4.6",
+          "title": "Update registry docs URLs from chanhdai.com to namias.tech",
+          "files": [
+            "src/registry/components/_registry.ts",
+            "src/registry/styles/_registry.ts",
+            "src/registry/lib/_registry.ts"
+          ],
+          "description": "Replace all chanhdai.com docs URLs with namias.tech"
+        },
+        {
+          "id": "S4.7",
+          "title": "Update config/registry.ts comments",
+          "file": "src/config/registry.ts",
+          "description": "Update JSDoc examples from @ncdai to @pp-namias"
+        },
+        {
+          "id": "S4.8",
+          "title": "Update llms.txt header",
+          "file": "src/app/(llms)/llms.txt/route.ts",
+          "changes": {
+            "header": "# namias.tech",
+            "subtitle": "Full Stack Engineer & AI Automation Specialist"
+          }
+        },
+        {
+          "id": "S4.9",
+          "title": "Update llms-full.txt header",
+          "file": "src/app/(llms)/llms-full.txt/route.ts",
+          "changes": {
+            "header": "# namias.tech",
+            "subtitle": "Full Stack Engineer & AI Automation Specialist"
+          }
+        },
+        {
+          "id": "S4.10",
+          "title": "Update doc-page-actions GitHub link",
+          "file": "src/features/doc/components/doc-page-actions.tsx",
+          "changes": {
+            "href": "https://github.com/PP-Namias/Portfolio/blob/main/portfolio-v2/src/features/doc/content/..."
+          }
+        },
+        {
+          "id": "S4.11",
+          "title": "Update github-stars-demo repo",
+          "file": "src/registry/examples/github-stars-demo.tsx",
+          "changes": {
+            "repo": "PP-Namias/Portfolio",
+            "stargazersCount": 0
+          }
+        }
+      ]
+    },
+    {
+      "id": "EPIC-5B",
+      "title": "Social Icons & Components",
+      "priority": "high",
+      "stories": [
+        {
+          "id": "S5B.1",
+          "title": "Create InstagramIcon component",
+          "file": "src/components/icons.tsx",
+          "description": "Add InstagramIcon SVG for social links"
+        },
+        {
+          "id": "S5B.2",
+          "title": "Update social-link-icons.tsx",
+          "file": "src/features/portfolio/components/social-link-icons.tsx",
+          "description": "Replace DailyDotDevIcon with InstagramIcon, match social-links.ts keys"
         }
       ]
     },
@@ -255,26 +341,32 @@
       "id": "EPIC-7",
       "title": "Verification",
       "priority": "high",
+      "status": "completed",
       "stories": [
         {
           "id": "S7.1",
           "title": "Run dev server and verify all pages load",
-          "description": "Test /, /blog, /components, /sponsors, /testimonials, dynamic routes"
+          "description": "Test /, /blog, /components, /sponsors, /testimonials, dynamic routes",
+          "status": "completed"
         },
         {
           "id": "S7.2",
           "title": "Run TypeScript check",
-          "description": "npx tsc --noEmit must pass"
+          "description": "npx tsc --noEmit must pass",
+          "status": "completed"
         },
         {
           "id": "S7.3",
           "title": "Run ESLint",
-          "description": "npx eslint . must pass"
+          "description": "npx eslint . must pass",
+          "status": "completed"
         },
         {
           "id": "S7.4",
           "title": "Commit all changes",
-          "description": "Individual commits per file following conventional commits"
+          "description": "Individual commits per file following conventional commits",
+          "status": "completed",
+          "commit": "d3a262c6"
         }
       ]
     }
@@ -348,6 +440,30 @@
         "source": "Optional - for ad monetization",
         "howToGet": "Leave empty if not running ads"
       }
+    }
+  },
+
+  "summary": {
+    "totalFilesChanged": 28,
+    "totalInsertions": 630,
+    "totalDeletions": 632,
+    "commitHash": "d3a262c6",
+    "commitMessage": "feat(portfolio-v2): rebrand from chanhdai to PP Namias",
+    "completedEpics": 8,
+    "completedStories": 22,
+    "verification": {
+      "typescript": "pass",
+      "eslint": "pass",
+      "devServer": "running on localhost:3000",
+      "routes": ["/", "/blog", "/components", "/about.md", "/experience.md", "/projects.md", "/certifications.md", "/llms.txt", "/sitemap.xml"]
+    },
+    "remainingReferences": {
+      "externalCDN": "assets.chanhdai.com (images, fonts, sounds - cannot change)",
+      "npmPackages": "@ncdai/react-wheel-picker (published package - cannot change)",
+      "externalSites": "react-wheel-picker.chanhdai.com (external product site)",
+      "blogContent": "Historical MDX posts reference chanhdai brand",
+      "internalComponents": "ChanDaiMark, ChanDaiWordmark (cosmetic - can rename later)",
+      "cssUtility": "prose-ncdai (cosmetic - used in MDX examples)"
     }
   }
 }
