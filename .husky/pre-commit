@@ -1,12 +1,13 @@
 echo "[hooks] Running pre-commit checks..."
 
-# 1. Lint staged files (ESLint + Prettier)
+# 1. Lint staged files (ESLint + Prettier) — runs from portfolio-v1/
 echo "[hooks] Running lint-staged..."
-npx lint-staged
+cd portfolio-v1 && npx lint-staged
 if [ $? -ne 0 ]; then
   echo "[hooks] lint-staged failed. Fix the issues above and try again."
   exit 1
 fi
+cd ..
 
 # 2. Secret scanning with gitleaks (optional)
 if command -v gitleaks >/dev/null 2>&1; then
@@ -20,12 +21,13 @@ else
   echo "[hooks] Skipping gitleaks (not installed). Install via: scoop install gitleaks"
 fi
 
-# 3. TypeScript type check
+# 3. TypeScript type check — runs from portfolio-v1/
 echo "[hooks] Running TypeScript type check..."
-npx tsc --noEmit
+cd portfolio-v1 && npx tsc --noEmit
 if [ $? -ne 0 ]; then
   echo "[hooks] TypeScript errors found. Fix type errors before committing."
   exit 1
 fi
+cd ..
 
 echo "[hooks] All pre-commit checks passed."

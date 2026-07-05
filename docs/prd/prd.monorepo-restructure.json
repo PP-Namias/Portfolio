@@ -1,0 +1,232 @@
+{
+  "id": "PRD-MONOREPO-RESTRUCTURE",
+  "title": "Monorepo Restructure — Portfolio V1 + V2",
+  "version": "1.0.0",
+  "status": "in-progress",
+  "created": "2026-07-06",
+  "description": "Restructure the flat repo into a monorepo with portfolio-v1/ (current site) and portfolio-v2/ (future redesign). Sanity CMS studio lives inside v1 but will be refactored into a shared package later.",
+
+  "goals": [
+    "Move current portfolio project into portfolio-v1/ subdirectory",
+    "Create portfolio-v2/ skeleton for future redesign",
+    "Keep shared repo infrastructure at root (.github, .agents, docs, AGENTS.md)",
+    "All CI/CD workflows target portfolio-v1/ until v2 is ready",
+    "Sanity studio stays inside portfolio-v1/studio/ for now",
+    "No functional changes — pure file moves and path updates"
+  ],
+
+  "non-goals": [
+    "Creating a pnpm/turborepo workspace (future step)",
+    "Moving Sanity studio to a shared package (future step)",
+    "Building portfolio-v2 features",
+    "Changing any application code or behavior"
+  ],
+
+  "directory-structure": {
+    "root": [
+      ".git/",
+      ".github/          — CI/CD workflows (updated paths)",
+      ".agents/          — Skills and subagents",
+      ".devcontainer/",
+      ".vscode/",
+      ".husky/",
+      "docs/             — PRDs, design docs, security",
+      "AGENTS.md",
+      "STATE.md",
+      "LOOP.md",
+      "loop-budget.md",
+      "loop-run-log.md",
+      "CHANGELOG.md",
+      "CONTRIBUTING.md",
+      "SECURITY.md",
+      "LICENSE",
+      "README.md",
+      ".gitignore",
+      ".editorconfig",
+      ".npmrc",
+      ".prettierrc",
+      ".gitleaks.toml",
+      ".checkov.yaml",
+      ".trivyignore",
+      "commitlint.config.mjs"
+    ],
+    "portfolio-v1": [
+      "package.json",
+      "package-lock.json",
+      "next.config.js",
+      "next-env.d.ts",
+      "tailwind.config.ts",
+      "postcss.config.js",
+      "tsconfig.json",
+      "tsconfig.tsbuildinfo",
+      "vitest.config.ts",
+      "eslint.config.mjs",
+      "open-next.config.ts",
+      "wrangler.jsonc",
+      "doctor.config.json",
+      "magicui.json",
+      "components.json",
+      "sentry.client.config.ts",
+      "sentry.server.config.ts",
+      "sentry.edge.config.ts",
+      "osv-scanner.toml",
+      ".env.example",
+      ".env.local",
+      ".graphifyignore",
+      ".checkov.yaml",
+      "src/",
+      "studio/",
+      "public/",
+      "content/",
+      "scripts/",
+      "functions/",
+      "tests/",
+      "patches/",
+      "graphify-out/",
+      "page-check.html",
+      "page-prod.html"
+    ],
+    "portfolio-v2": [
+      "package.json",
+      "next.config.js",
+      "tailwind.config.ts",
+      "postcss.config.js",
+      "tsconfig.json",
+      "eslint.config.mjs",
+      "src/app/layout.tsx",
+      "src/app/page.tsx",
+      "src/app/globals.css",
+      "public/.gitkeep",
+      "README.md"
+    ]
+  },
+
+  "epics": [
+    {
+      "id": "EPIC-1",
+      "title": "Prepare root for monorepo",
+      "stories": [
+        {
+          "id": "S1.1",
+          "title": "Create portfolio-v1/ and portfolio-v2/ directories",
+          "files": ["portfolio-v1/", "portfolio-v2/"],
+          "tasks": ["mkdir portfolio-v1", "mkdir portfolio-v2"],
+          "commitMessage": "chore(root): create portfolio-v1 and portfolio-v2 directories"
+        }
+      ]
+    },
+    {
+      "id": "EPIC-2",
+      "title": "Move current project into portfolio-v1/",
+      "stories": [
+        {
+          "id": "S2.1",
+          "title": "Move all project files into portfolio-v1/",
+          "description": "Use git mv to move all project files (package.json, src/, studio/, public/, content/, scripts/, functions/, tests/, patches/, configs) into portfolio-v1/. This preserves git history.",
+          "files": [
+            "package.json", "package-lock.json", "next.config.js", "next-env.d.ts",
+            "tailwind.config.ts", "postcss.config.js", "tsconfig.json", "tsconfig.tsbuildinfo",
+            "vitest.config.ts", "eslint.config.mjs", "open-next.config.ts", "wrangler.jsonc",
+            "doctor.config.json", "magicui.json", "components.json",
+            "sentry.client.config.ts", "sentry.server.config.ts", "sentry.edge.config.ts",
+            "osv-scanner.toml", ".env.example", ".env.local", ".graphifyignore",
+            "src/", "studio/", "public/", "content/", "scripts/", "functions/",
+            "tests/", "patches/", "graphify-out/", "page-check.html", "page-prod.html"
+          ],
+          "commitMessage": "refactor(root): move current portfolio into portfolio-v1/"
+        }
+      ]
+    },
+    {
+      "id": "EPIC-3",
+      "title": "Create portfolio-v2 skeleton",
+      "stories": [
+        {
+          "id": "S3.1",
+          "title": "Create minimal Next.js v2 skeleton",
+          "description": "Create portfolio-v2/ with minimal Next.js App Router structure: package.json, next.config.js, tailwind.config.ts, postcss.config.js, tsconfig.json, eslint.config.mjs, src/app/layout.tsx, src/app/page.tsx, src/app/globals.css, public/.gitkeep, README.md.",
+          "files": [
+            "portfolio-v2/package.json",
+            "portfolio-v2/next.config.js",
+            "portfolio-v2/tailwind.config.ts",
+            "portfolio-v2/postcss.config.js",
+            "portfolio-v2/tsconfig.json",
+            "portfolio-v2/eslint.config.mjs",
+            "portfolio-v2/src/app/layout.tsx",
+            "portfolio-v2/src/app/page.tsx",
+            "portfolio-v2/src/app/globals.css",
+            "portfolio-v2/public/.gitkeep",
+            "portfolio-v2/README.md"
+          ],
+          "commitMessage": "feat(v2): create portfolio-v2 Next.js skeleton"
+        }
+      ]
+    },
+    {
+      "id": "EPIC-4",
+      "title": "Update CI/CD workflows",
+      "stories": [
+        {
+          "id": "S4.1",
+          "title": "Update all workflow working directories",
+          "description": "Update all 24 GitHub Actions workflows to use portfolio-v1/ as working directory. Add working-directory: portfolio-v1/ to all steps that run npm/pnpm commands. Keep deployment workflows pointed at v1 until v2 is ready.",
+          "files": [".github/workflows/*.yml"],
+          "tasks": [
+            "Add working-directory: portfolio-v1 to all npm/pnpm steps",
+            "Update sanity schema check paths",
+            "Update react-doctor paths",
+            "Update pentestagent paths",
+            "Update build/deploy workflows",
+            "Keep studio deploy pointing to portfolio-v1/studio/"
+          ],
+          "commitMessage": "ci(root): update all workflows to target portfolio-v1/"
+        }
+      ]
+    },
+    {
+      "id": "EPIC-5",
+      "title": "Update root-level configs and docs",
+      "stories": [
+        {
+          "id": "S5.1",
+          "title": "Update AGENTS.md and README.md",
+          "description": "Update AGENTS.md to reflect new monorepo structure. Update README.md to describe both v1 and v2 projects.",
+          "files": ["AGENTS.md", "README.md"],
+          "commitMessage": "docs(root): update AGENTS.md and README.md for monorepo"
+        },
+        {
+          "id": "S5.2",
+          "title": "Update .gitignore for monorepo",
+          "description": "Update .gitignore to handle both portfolio-v1/ and portfolio-v2/ node_modules, .next, dist, coverage, etc.",
+          "files": [".gitignore"],
+          "commitMessage": "chore(root): update .gitignore for monorepo structure"
+        }
+      ]
+    },
+    {
+      "id": "EPIC-6",
+      "title": "Verify v1 build",
+      "stories": [
+        {
+          "id": "S6.1",
+          "title": "Run TypeScript check from portfolio-v1/",
+          "tasks": ["cd portfolio-v1 && npx tsc --noEmit"],
+          "commitMessage": null
+        },
+        {
+          "id": "S6.2",
+          "title": "Run lint from portfolio-v1/",
+          "tasks": ["cd portfolio-v1 && npm run lint"],
+          "commitMessage": null
+        }
+      ]
+    }
+  ],
+
+  "risk-mitigation": {
+    "git-history": "Use git mv (not cp + rm) to preserve file history",
+    "ci-cd": "Test workflows after path updates — one broken path = failed builds",
+    "sanity-studio": "Studio lives inside v1 — no path changes needed for its internal imports",
+    "env-files": ".env.local moves with v1 — developer must recreate if needed"
+  }
+}
