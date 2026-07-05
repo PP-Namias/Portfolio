@@ -1,6 +1,7 @@
 import { createClient } from "@sanity/client";
 import imageUrlBuilder from "@sanity/image-url";
-import type { SanityImageSource } from "@sanity/image-url/lib/types/types";
+
+type SanityImageSource = Parameters<ReturnType<typeof imageUrlBuilder>["image"]>[0];
 
 const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!;
 const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET || "production";
@@ -22,6 +23,7 @@ function getClient(perspective: "published" | "previewDrafts" = "published") {
 
 export const sanityClient = getClient("published");
 export const previewClient = getClient("previewDrafts");
+export const client = sanityClient;
 
 export function pickClient(isPreview = false) {
   return isPreview ? previewClient : sanityClient;
@@ -37,4 +39,5 @@ export function urlForPreview(source: SanityImageSource) {
   return builder.image(source).width(800).quality(80);
 }
 
+export type { SanityImageSource };
 export { projectId, dataset, apiVersion };

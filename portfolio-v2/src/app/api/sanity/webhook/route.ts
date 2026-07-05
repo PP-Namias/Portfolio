@@ -19,12 +19,17 @@ const TYPE_TO_TAG: Record<string, string> = {
   category: "cms:posts",
 };
 
+interface WebhookBody {
+  _type?: string;
+  _id?: string;
+}
+
 export async function POST(request: NextRequest) {
   if (!SANITY_REVALIDATE_SECRET) {
     return NextResponse.json({ error: "Missing secret" }, { status: 500 });
   }
 
-  const body = await request.json();
+  const body = (await request.json()) as WebhookBody;
   const secret = request.headers.get("x-sanity-secret");
 
   if (secret !== SANITY_REVALIDATE_SECRET) {
@@ -34,7 +39,7 @@ export async function POST(request: NextRequest) {
   const { _type, _id } = body;
 
   if (_type && TYPE_TO_TAG[_type]) {
-    revalidateTag(TYPE_TO_TAG[_type]);
+    revalidateTag(TYPE_TO_TAG[_type], "default");
   }
 
   revalidatePath("/");
