@@ -154,7 +154,7 @@ export const components: Registry["items"] = [
         "@apply underline decoration-current/30 decoration-1 underline-offset-3 transition-colors hover:decoration-current":
           {},
       },
-      "@utility prose-ncdai": {
+      "@utility prose-namias": {
         "@apply prose-headings:font-medium prose-headings:tracking-tight prose-headings:text-pretty md:prose-headings:text-balance":
           {},
         "@apply prose-a:font-normal prose-a:wrap-break-word prose-a:text-foreground prose-a:link-underline":
