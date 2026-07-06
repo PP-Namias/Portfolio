@@ -4,7 +4,7 @@
  * Run with: npx tsx src/sanity/scripts/seed.ts
  *
  * Seeds the Sanity dataset with PP Namias portfolio data.
- * Requires SANITY_API_READ_TOKEN in environment.
+ * Requires SANITY_API_WRITE_TOKEN in environment.
  */
 
 import { createClient } from "@sanity/client";
@@ -13,7 +13,7 @@ const client = createClient({
   projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!,
   dataset: process.env.NEXT_PUBLIC_SANITY_DATASET || "production",
   apiVersion: "2026-02-19",
-  token: process.env.SANITY_API_READ_TOKEN,
+  token: process.env.SANITY_API_WRITE_TOKEN,
   useCdn: false,
 });
 
