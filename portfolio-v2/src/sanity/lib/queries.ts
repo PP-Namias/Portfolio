@@ -10,7 +10,15 @@ export const QUERIES = {
     location,
     website,
     dailyDev,
-    avatar,
+    avatar{
+      asset->{
+        url,
+        metadata{
+          dimensions,
+          lqip
+        }
+      }
+    },
     about,
     aboutText,
     socialLinks[]->{
@@ -52,8 +60,26 @@ export const QUERIES = {
     description,
     category,
     technologies,
-    image,
-    gallery,
+    image{
+      asset->{
+        url,
+        metadata{
+          dimensions,
+          lqip
+        }
+      }
+    },
+    gallery[]{
+      asset->{
+        url,
+        metadata{
+          dimensions,
+          lqip
+        }
+      },
+      caption,
+      alt
+    },
     liveUrl,
     repoUrl,
     featured,
@@ -84,7 +110,15 @@ export const QUERIES = {
       title,
       slug
     },
-    image,
+    image{
+      asset->{
+        url,
+        metadata{
+          dimensions,
+          lqip
+        }
+      }
+    },
     order
   }`,
 
@@ -149,7 +183,17 @@ export const QUERIES = {
     title,
     slug,
     excerpt,
-    mainImage,
+    mainImage{
+      asset->{
+        url,
+        metadata{
+          dimensions,
+          lqip
+        }
+      },
+      caption,
+      alt
+    },
     publishedAt,
     categories[]->{
       title,
@@ -163,7 +207,17 @@ export const QUERIES = {
     slug,
     excerpt,
     body,
-    mainImage,
+    mainImage{
+      asset->{
+        url,
+        metadata{
+          dimensions,
+          lqip
+        }
+      },
+      caption,
+      alt
+    },
     publishedAt,
     categories[]->{
       title,
