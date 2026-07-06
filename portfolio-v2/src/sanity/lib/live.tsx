@@ -1,7 +1,5 @@
 "use client";
 
-import useLivePreview from "@sanity/preview-kit";
-
 export function SanityLive() {
   if (process.env.NODE_ENV !== "development") {
     return null;
