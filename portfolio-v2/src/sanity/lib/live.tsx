@@ -1,8 +1,6 @@
 "use client";
 
-import { useLivePreview } from "@sanity/preview-kit";
-import { client } from "@/sanity/lib/client";
-import { QUERIES } from "@/sanity/lib/queries";
+import useLivePreview from "@sanity/preview-kit";
 
 export function SanityLive() {
   if (process.env.NODE_ENV !== "development") {
@@ -26,22 +24,4 @@ export function SanityLive() {
       Sanity Live
     </div>
   );
-}
-
-interface LivePreviewProviderProps {
-  children: React.ReactNode;
-}
-
-export function LivePreviewProvider({ children }: LivePreviewProviderProps) {
-  const { data, isLoading } = useLivePreview({
-    preview: true,
-    query: QUERIES.profile,
-    params: {},
-  });
-
-  if (isLoading) {
-    return <div style={{ opacity: 0.5 }}>{children}</div>;
-  }
-
-  return <>{children}</>;
 }

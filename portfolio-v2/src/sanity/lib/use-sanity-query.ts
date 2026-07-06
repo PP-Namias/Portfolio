@@ -3,7 +3,8 @@
 import useSWR from "swr";
 import type { CmsContent } from "@/sanity/lib/get-cms-content";
 
-const fetcher = (url: string) => fetch(url).then((res) => res.json());
+const fetcher = (url: string): Promise<CmsContent> =>
+  fetch(url).then((res) => res.json() as Promise<CmsContent>);
 
 export function useSanityQuery<T extends keyof CmsContent>(
   key: T

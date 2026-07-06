@@ -35,7 +35,7 @@ export function SanityDataProvider({
   useEffect(() => {
     if (!initialData) {
       fetch("/api/sanity/data")
-        .then((res) => res.json())
+        .then((res) => res.json() as Promise<CmsContent>)
         .then((data) => {
           if (data) {
             setCms(data);
