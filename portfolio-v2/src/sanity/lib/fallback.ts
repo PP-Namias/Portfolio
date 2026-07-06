@@ -1,0 +1,56 @@
+import type { CmsContent } from "./get-cms-content";
+
+export const fallbackCmsContent: CmsContent = {
+  profile: {
+    firstName: "Jhon Keneth",
+    lastName: "Namias",
+    displayName: "PP Namias",
+    username: "PP-Namias",
+    title: "Full Stack Engineer & AI Automation Specialist",
+    email: "pp.namias@gmail.com",
+    phone: "+63 927 253 3969",
+    location: "Caloocan City, Philippines",
+    website: "https://namias.tech",
+    dailyDev: "https://daily.dev/ppnamias",
+    avatar: null,
+    about: [],
+    aboutText:
+      "Full Stack Engineer & AI Automation Specialist with a passion for building production systems that scale. Graduated Cum Laude with a BS in Computer Science from the University of Caloocan City (Batch 2026). I've delivered 5+ live applications serving over 1,000 concurrent users, including an enterprise HRIS for 500+ employees and 8 deployed AI chatbot systems.",
+    socialLinks: [],
+    education: [],
+    availability: true,
+    resumeUrl: "",
+  },
+  projects: [],
+  experiences: [],
+  certifications: [],
+  education: [
+    {
+      institution: "University of Caloocan City",
+      degree: "Bachelor of Science",
+      field: "Computer Science",
+      startYear: 2022,
+      endYear: 2026,
+      gpa: "Cum Laude",
+      honors: ["Dean's Lister"],
+      activities: [],
+    },
+  ],
+  socialLinks: [],
+  testimonials: [],
+  awards: [],
+  bookmarks: [],
+  techStack: null,
+  siteSettings: {
+    siteTitle: "PP Namias | Portfolio",
+    siteDescription:
+      "Full Stack Engineer & AI Automation Specialist — building production systems that scale.",
+    ogImage: null,
+    favicon: null,
+    accentColor: "#ec4899",
+    footerText: "Built with Next.js, Tailwind CSS, and Sanity CMS",
+    ga4Id: "",
+    posthogToken: "",
+    openpanelClientId: "",
+  },
+};
