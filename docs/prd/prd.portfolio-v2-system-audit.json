@@ -169,6 +169,27 @@
     "strategy": "One commit per story slice — maximize commit records",
     "naming": "type(scope): description",
     "totalStories": 68,
-    "estimatedCommits": 68
+    "estimatedCommits": 68,
+    "completedCommits": 27,
+    "remainingCommits": 41
+  },
+
+  "progress": {
+    "completedEpics": [
+      "EPIC-1: Fix Critical Rebrand References (8 stories)",
+      "EPIC-2: Rename chanhdai Component Files (5 stories)",
+      "EPIC-3: Fix CSS Utility Name (4 stories)",
+      "EPIC-4: Fix Build Scripts (3 stories)",
+      "EPIC-8: Fix Sanity CMS Bugs (6 stories)",
+      "EPIC-10: Fix TypeScript Errors (2 stories)",
+      "EPIC-11: Update Documentation (5 stories)",
+      "EPIC-12: Add Missing Environment Variables (3 stories)"
+    ],
+    "remainingEpics": [
+      "EPIC-5: Fix Registry Examples/Blocks Rebrand (11 stories)",
+      "EPIC-6: Fix Sponsor/Affiliate Links (1 story)",
+      "EPIC-7: Fix Agent Skills (10 stories)",
+      "EPIC-9: Enhance Sanity Schemas (7 stories)"
+    ]
   }
 }
