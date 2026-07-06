@@ -8,6 +8,7 @@ import {
 } from "date-fns"
 
 import { GITHUB_USERNAME } from "@/config/site"
+import { httpsFetch } from "@/lib/https-fetch"
 
 import type { Activity } from "./activity-mosaic"
 import { ActivityMosaicCover } from "./activity-mosaic-cover"
@@ -69,18 +70,12 @@ const getGitHubContributions = unstable_cache(
     const years = getYearRange(cellCount)
     const yearQueries = years.map((year) => `y=${year}`).join("&")
 
-    const res = await fetch(
-      `${process.env.GITHUB_CONTRIBUTIONS_API_URL || "https://github-contributions-api.jogruber.de"}/v4/${username}?${yearQueries}`
-    )
+    const url = `${process.env.GITHUB_CONTRIBUTIONS_API_URL || "https://github-contributions-api.jogruber.de"}/v4/${username}?${yearQueries}`
 
-    if (!res.ok) {
-      throw new Error(`Failed to fetch GitHub Contributions: ${res.statusText}`)
-    }
-
-    const { contributions } = (await res.json()) as GitHubContributionsResponse
+    const { contributions } = await httpsFetch<GitHubContributionsResponse>(url)
 
     return buildContributionGrid(contributions, cellCount)
   },
   ["github-contributions", "activity-mosaic"],
-  { revalidate: 7 * 24 * 60 * 60 } // Cache for 7 days
+  { revalidate: 7 * 24 * 60 * 60 }
 )
