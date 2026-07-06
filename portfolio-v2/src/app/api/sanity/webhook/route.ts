@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
   const { _type, _id } = body;
 
   if (_type && TYPE_TO_TAG[_type]) {
-    revalidateTag(TYPE_TO_TAG[_type], "default");
+    revalidateTag(TYPE_TO_TAG[_type]);
   }
 
   revalidatePath("/");
