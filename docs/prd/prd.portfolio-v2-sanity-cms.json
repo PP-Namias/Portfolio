@@ -564,5 +564,43 @@
     "tests": "pnpm test:run must pass",
     "build": "pnpm build must succeed",
     "routes": ["/", "/blog", "/components", "/studio", "/api/sanity/webhook"]
+  },
+
+  "progress": {
+    "totalCommits": 18,
+    "commits": [
+      "7829c7fe docs(prd): add portfolio-v2 Sanity CMS integration PRDs",
+      "79fbfc19 chore(v2): install Sanity CMS dependencies",
+      "c5c3836c chore(v2): install Sanity dev dependencies",
+      "fddb9810 feat(v2): create Sanity client, image builder, and GROQ queries",
+      "de1787f1 feat(v2): create Sanity singleton schemas",
+      "b27e214f feat(v2): create Sanity collection schemas",
+      "10ae3db4 feat(v2): create Sanity Studio config and route",
+      "e793b152 feat(v2): create Sanity data fetching layer",
+      "a5d98d05 feat(v2): create draft mode and webhook routes",
+      "42d3217d fix(v2): resolve TypeScript errors in Sanity integration",
+      "1351058c fix(v2): resolve ESLint errors in Sanity API routes",
+      "d5be5b95 chore(v2): add .env.example with Sanity CMS variables",
+      "1de65aa3 feat(v2): create Sanity fallback data module",
+      "510119da feat(v2): create Sanity seed data script",
+      "c7f0c799 feat(v2): create Sanity data provider and API route",
+      "51d56c06 feat(v2): create SanityLive component for draft mode",
+      "9628822f feat(v2): create useSanityQuery hook for SWR data fetching",
+      "0d1d0839 fix(v2): resolve TypeScript errors in Sanity client code"
+    ],
+    "completedEpics": [
+      "EPIC-1: Sanity Infrastructure",
+      "EPIC-2: Sanity Schemas",
+      "EPIC-3: Sanity Studio",
+      "EPIC-4: Data Fetching Layer",
+      "EPIC-6: Draft Mode",
+      "EPIC-7: Webhooks"
+    ],
+    "remainingEpics": [
+      "EPIC-5: Component Migration (home page integration)",
+      "EPIC-8: Profile Updates (mobile, daily.dev - in fallback)",
+      "EPIC-9: Build & Test Fixes",
+      "EPIC-10: Final Verification"
+    ]
   }
 }
