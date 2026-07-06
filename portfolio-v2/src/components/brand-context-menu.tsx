@@ -14,8 +14,8 @@ import {
   ContextMenuTrigger,
 } from "@/components/ui/context-menu"
 
-import { ChanhDaiMark, getMarkSVG } from "./chanhdai-mark"
-import { getWordmarkSVG } from "./chanhdai-wordmark"
+import { NamiasMark, getMarkSVG } from "./namias-mark"
+import { getWordmarkSVG } from "./namias-wordmark"
 
 export function BrandContextMenu({ children }: { children: React.ReactNode }) {
   const { success } = useTiks()
@@ -32,7 +32,7 @@ export function BrandContextMenu({ children }: { children: React.ReactNode }) {
             success()
           }}
         >
-          <ChanhDaiMark />
+          <NamiasMark />
           Copy Mark as SVG
         </ContextMenuItem>
 
