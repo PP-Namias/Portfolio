@@ -480,7 +480,7 @@ export function CommandMenu({
                 onHighlight={() => {
                   setSelectedCommandKind("link")
                 }}
-                onSelect={() => handleOpenLink("/blog/chanhdai-brand")}
+                onSelect={() => handleOpenLink("/blog/pp-namias-brand")}
               >
                 <SquareDashedIcon />
                 Brand Guidelines
@@ -488,7 +488,7 @@ export function CommandMenu({
 
               <CommandMenuItem onHighlight={handleCommandHighlight} asChild>
                 <a
-                  href="https://assets.chanhdai.com/chanhdai-brand.zip"
+                  href="https://namias.tech/pp-namias-brand.zip"
                   download
                 >
                   <DownloadIcon />
