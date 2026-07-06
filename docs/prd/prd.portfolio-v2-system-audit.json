@@ -1,0 +1,174 @@
+{
+  "id": "PRD-PORTFOLIO-V2-SYSTEM-AUDIT",
+  "title": "Portfolio V2 — Full System Audit & Rebrand Completion",
+  "version": "1.0.0",
+  "status": "in-progress",
+  "created": "2026-07-07",
+  "description": "Comprehensive system audit covering rebrand completion, Sanity CMS enhancement, agent skill fixes, code quality, and documentation. Goal: maximize commit records through individual story commits.",
+
+  "auditSummary": {
+    "skills": { "total": 58, "ok": 36, "warning": 19, "error": 3 },
+    "rebrand": { "filesWithOldBrand": 45, "criticalUI": 8, "scripts": 3, "registry": 15, "docs": 10 },
+    "sanity": { "schemasComplete": false, "componentsUsingSanity": 0, "componentsUsingHardcoded": 22, "bugs": 4 },
+    "quality": { "typescript": "FAIL (14 errors)", "eslint": "PASS", "tests": "PASS (21/21)", "build": "FAIL" }
+  },
+
+  "epics": [
+    {
+      "id": "EPIC-1",
+      "title": "Fix Critical Rebrand References (UI/Metadata)",
+      "priority": "critical",
+      "stories": [
+        { "id": "S1.1", "title": "Fix layout.tsx author/creator metadata", "file": "src/app/layout.tsx", "status": "pending" },
+        { "id": "S1.2", "title": "Fix manifest.webmanifest PWA name", "file": "src/app/manifest.webmanifest", "status": "pending" },
+        { "id": "S1.3", "title": "Fix command-menu.tsx brand links", "file": "src/components/command-menu.tsx", "status": "pending" },
+        { "id": "S1.4", "title": "Fix brand-context-menu.tsx brand links", "file": "src/components/brand-context-menu.tsx", "status": "pending" },
+        { "id": "S1.5", "title": "Fix awards.tsx chanhdai link", "file": "src/features/portfolio/data/awards.tsx", "status": "pending" },
+        { "id": "S1.6", "title": "Fix daikanoid game constants", "file": "src/components/daikanoid/constants.ts", "status": "pending" },
+        { "id": "S1.7", "title": "Fix daikanoid logos", "file": "src/components/daikanoid/logos.ts", "status": "pending" },
+        { "id": "S1.8", "title": "Fix game page assets", "file": "src/app/game/page.tsx", "status": "pending" }
+      ]
+    },
+    {
+      "id": "EPIC-2",
+      "title": "Rename chanhdai Component Files",
+      "priority": "critical",
+      "stories": [
+        { "id": "S2.1", "title": "Rename chanhdai-mark.tsx to namias-mark.tsx", "file": "src/components/chanhdai-mark.tsx", "status": "pending" },
+        { "id": "S2.2", "title": "Rename chanhdai-wordmark.tsx to namias-wordmark.tsx", "file": "src/components/chanhdai-wordmark.tsx", "status": "pending" },
+        { "id": "S2.3", "title": "Rename chanhdai-mark-isometric.tsx to namias-mark-isometric.tsx", "file": "src/features/portfolio/components/chanhdai-mark-isometric.tsx", "status": "pending" },
+        { "id": "S2.4", "title": "Update all imports referencing old filenames", "files": ["src/features/portfolio/components/brand.tsx", "src/features/portfolio/components/profile-header.tsx", "src/features/portfolio/components/profile-cover.tsx", "src/app/og/page.tsx", "src/components/site-header.tsx", "src/components/site-header-mark.tsx", "src/components/command-menu.tsx", "src/components/brand-context-menu.tsx", "src/features/doc/components/component-icon.tsx"], "status": "pending" },
+        { "id": "S2.5", "title": "Update SVG ID prefixes in namias-mark-isometric.tsx", "file": "src/features/portfolio/components/namias-mark-isometric.tsx", "status": "pending" }
+      ]
+    },
+    {
+      "id": "EPIC-3",
+      "title": "Fix CSS Utility Name",
+      "priority": "high",
+      "stories": [
+        { "id": "S3.1", "title": "Rename prose-ncdai to prose-namias in globals.css", "file": "src/styles/globals.css", "status": "pending" },
+        { "id": "S3.2", "title": "Update prose-ncdai references in typography.tsx", "file": "src/components/ui/typography.tsx", "status": "pending" },
+        { "id": "S3.3", "title": "Update prose-ncdai in registry work-experience", "file": "src/registry/components/work-experience/work-experience.tsx", "status": "pending" },
+        { "id": "S3.4", "title": "Update prose-ncdai in registry _registry.ts", "file": "src/registry/components/_registry.ts", "status": "pending" }
+      ]
+    },
+    {
+      "id": "EPIC-4",
+      "title": "Fix Build Scripts",
+      "priority": "high",
+      "stories": [
+        { "id": "S4.1", "title": "Fix capture.mts default URL and output dir", "file": "src/scripts/capture.mts", "status": "pending" },
+        { "id": "S4.2", "title": "Fix capture-sync.mts output dir", "file": "src/scripts/capture-sync.mts", "status": "pending" },
+        { "id": "S4.3", "title": "Fix build-registry.mts name/homepage/author", "file": "src/scripts/build-registry.mts", "status": "pending" }
+      ]
+    },
+    {
+      "id": "EPIC-5",
+      "title": "Fix Registry Examples/Blocks Rebrand",
+      "priority": "medium",
+      "stories": [
+        { "id": "S5.1", "title": "Fix github-contributions examples (4 files)", "files": ["src/registry/examples/github-contributions-demo.tsx", "src/registry/examples/github-contributions-default-theme.tsx", "src/registry/examples/github-contributions-halloween-theme.tsx", "src/registry/examples/github-contributions-winter-theme.tsx"], "status": "pending" },
+        { "id": "S5.2", "title": "Fix social-links-01 block", "file": "src/registry/blocks/social-links-01/social-links-01.tsx", "status": "pending" },
+        { "id": "S5.3", "title": "Fix testimonials blocks (01, 02)", "files": ["src/registry/blocks/testimonials-01/testimonials-01.tsx", "src/registry/blocks/testimonials-02/testimonials-02.tsx"], "status": "pending" },
+        { "id": "S5.4", "title": "Fix team-01 block", "file": "src/registry/blocks/team-01/team-01.tsx", "status": "pending" },
+        { "id": "S5.5", "title": "Fix spinning-circular-text demos", "files": ["src/registry/examples/spinning-circular-text-demo.tsx", "src/registry/examples/spinning-circular-text-demo-2.tsx"], "status": "pending" },
+        { "id": "S5.6", "title": "Fix middle-truncation demo", "file": "src/registry/examples/middle-truncation-demo.tsx", "status": "pending" },
+        { "id": "S5.7", "title": "Fix glow-card-grid demos", "files": ["src/registry/examples/glow-card-grid-demo.tsx", "src/registry/examples/glow-card-grid-dialkit.tsx"], "status": "pending" },
+        { "id": "S5.8", "title": "Fix brand-assets-menu demo", "file": "src/registry/examples/brand-assets-menu-demo.tsx", "status": "pending" },
+        { "id": "S5.9", "title": "Fix experience-01 block", "file": "src/registry/blocks/experience-01/experience-01.tsx", "status": "pending" },
+        { "id": "S5.10", "title": "Fix blog-01 and blog-02 blocks", "files": ["src/registry/blocks/blog-01/blog-01.tsx", "src/registry/blocks/blog-02/blog-02.tsx"], "status": "pending" },
+        { "id": "S5.11", "title": "Fix other demo files (haptic, slide-to-unlock, work-experience)", "files": ["src/registry/examples/haptic-demo.tsx", "src/registry/examples/slide-to-unlock-demo.tsx", "src/registry/examples/work-experience-demo.tsx"], "status": "pending" }
+      ]
+    },
+    {
+      "id": "EPIC-6",
+      "title": "Fix Sponsor/Affiliate Links",
+      "priority": "low",
+      "stories": [
+        { "id": "S6.1", "title": "Fix sponsor data affiliate links", "file": "src/features/sponsor/data.tsx", "status": "pending" }
+      ]
+    },
+    {
+      "id": "EPIC-7",
+      "title": "Fix Agent Skills",
+      "priority": "high",
+      "stories": [
+        { "id": "S7.1", "title": "Add YAML frontmatter to loop-engineering skill", "file": ".agents/skills/loop-engineering/SKILL.md", "status": "pending" },
+        { "id": "S7.2", "title": "Add YAML frontmatter to run-pentestagent skill", "file": ".agents/skills/run-pentestagent/SKILL.md", "status": "pending" },
+        { "id": "S7.3", "title": "Add YAML frontmatter to ci-cd-security skill", "file": ".agents/skills/ci-cd-security/SKILL.md", "status": "pending" },
+        { "id": "S7.4", "title": "Add YAML frontmatter to sanity-backup-restore skill", "file": ".agents/skills/sanity-backup-restore/SKILL.md", "status": "pending" },
+        { "id": "S7.5", "title": "Add YAML frontmatter to sanity-content-audit skill", "file": ".agents/skills/sanity-content-audit/SKILL.md", "status": "pending" },
+        { "id": "S7.6", "title": "Add YAML frontmatter to sanity-groq-optimizer skill", "file": ".agents/skills/sanity-groq-optimizer/SKILL.md", "status": "pending" },
+        { "id": "S7.7", "title": "Add YAML frontmatter to sanity-migration-helper skill", "file": ".agents/skills/sanity-migration-helper/SKILL.md", "status": "pending" },
+        { "id": "S7.8", "title": "Add YAML frontmatter to sanity-schema-validator skill", "file": ".agents/skills/sanity-schema-validator/SKILL.md", "status": "pending" },
+        { "id": "S7.9", "title": "Fix portfolio-v2 ncdai-writing-component-docs skill", "file": "portfolio-v2/.agents/skills/ncdai-writing-component-docs/SKILL.md", "status": "pending" },
+        { "id": "S7.10", "title": "Fix root AGENTS.md invalid skill references", "file": "AGENTS.md", "status": "pending" }
+      ]
+    },
+    {
+      "id": "EPIC-8",
+      "title": "Fix Sanity CMS Bugs",
+      "priority": "critical",
+      "stories": [
+        { "id": "S8.1", "title": "Fix webhook revalidateTag signature", "file": "src/app/api/sanity/webhook/route.ts", "status": "pending" },
+        { "id": "S8.2", "title": "Fix seed script to use write token", "file": "src/sanity/scripts/seed.ts", "status": "pending" },
+        { "id": "S8.3", "title": "Add missing seed data (testimonials, awards, bookmarks, posts)", "file": "src/sanity/scripts/seed.ts", "status": "pending" },
+        { "id": "S8.4", "title": "Fix profile query to resolve avatar asset URL", "file": "src/sanity/lib/queries.ts", "status": "pending" },
+        { "id": "S8.5", "title": "Fix project/experience queries to resolve image asset URLs", "file": "src/sanity/lib/queries.ts", "status": "pending" },
+        { "id": "S8.6", "title": "Add SANITY_API_WRITE_TOKEN to .env.example", "file": ".env.example", "status": "pending" }
+      ]
+    },
+    {
+      "id": "EPIC-9",
+      "title": "Enhance Sanity Schemas",
+      "priority": "high",
+      "stories": [
+        { "id": "S9.1", "title": "Expand siteSettings schema (SEO, theme, sections, analytics)", "file": "src/sanity/schemas/siteSettings.ts", "status": "pending" },
+        { "id": "S9.2", "title": "Add seoSettings schema", "file": "src/sanity/schemas/seoSettings.ts", "status": "pending" },
+        { "id": "S9.3", "title": "Add galleryImage schema", "file": "src/sanity/schemas/galleryImage.ts", "status": "pending" },
+        { "id": "S9.4", "title": "Add author schema for blog posts", "file": "src/sanity/schemas/author.ts", "status": "pending" },
+        { "id": "S9.5", "title": "Add validation rules to project schema", "file": "src/sanity/schemas/project.ts", "status": "pending" },
+        { "id": "S9.6", "title": "Add validation rules to experience schema", "file": "src/sanity/schemas/experience.ts", "status": "pending" },
+        { "id": "S9.7", "title": "Update schema index with new schemas", "file": "src/sanity/schemas/index.ts", "status": "pending" }
+      ]
+    },
+    {
+      "id": "EPIC-10",
+      "title": "Fix TypeScript Errors",
+      "priority": "critical",
+      "stories": [
+        { "id": "S10.1", "title": "Fix mdx.tsx React 19 type compatibility (13 errors)", "file": "src/components/mdx.tsx", "status": "pending" },
+        { "id": "S10.2", "title": "Fix auto-type-table.tsx React 19 type compatibility", "file": "src/features/doc/components/auto-type-table/auto-type-table.tsx", "status": "pending" }
+      ]
+    },
+    {
+      "id": "EPIC-11",
+      "title": "Update Documentation",
+      "priority": "medium",
+      "stories": [
+        { "id": "S11.1", "title": "Fix portfolio-v2/AGENTS.md rebrand", "file": "portfolio-v2/AGENTS.md", "status": "pending" },
+        { "id": "S11.2", "title": "Fix portfolio-v2/DEVELOPMENT.md rebrand", "file": "portfolio-v2/DEVELOPMENT.md", "status": "pending" },
+        { "id": "S11.3", "title": "Fix portfolio-v2/CODE_OF_CONDUCT.md rebrand", "file": "portfolio-v2/CODE_OF_CONDUCT.md", "status": "pending" },
+        { "id": "S11.4", "title": "Fix portfolio-v2/README.md rebrand", "file": "portfolio-v2/README.md", "status": "pending" },
+        { "id": "S11.5", "title": "Fix .gitignore old brand references", "file": "portfolio-v2/.gitignore", "status": "pending" }
+      ]
+    },
+    {
+      "id": "EPIC-12",
+      "title": "Add Missing Environment Variables",
+      "priority": "high",
+      "stories": [
+        { "id": "S12.1", "title": "Add R2 variables to .env.example", "file": ".env.example", "status": "pending" },
+        { "id": "S12.2", "title": "Add SANITY_API_WRITE_TOKEN to .env.example", "file": ".env.example", "status": "pending" },
+        { "id": "S12.3", "title": "Add SANITY_DRAFT_SECRET to .env.example", "file": ".env.example", "status": "pending" }
+      ]
+    }
+  ],
+
+  "commitPlan": {
+    "strategy": "One commit per story slice — maximize commit records",
+    "naming": "type(scope): description",
+    "totalStories": 68,
+    "estimatedCommits": 68
+  }
+}
