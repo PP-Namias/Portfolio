@@ -1,4 +1,4 @@
-# AI agent guidelines for chanhdai.com
+# AI agent guidelines for PP Namias portfolio
 
 Next.js 16 (App Router) portfolio, blog, and shadcn registry website.
 
