@@ -347,6 +347,33 @@
     "strategy": "One commit per story slice — maximize commit records",
     "naming": "type(scope): description",
     "totalStories": 30,
-    "estimatedCommits": 30
+    "estimatedCommits": 30,
+    "completedCommits": 16,
+    "remainingCommits": 14
+  },
+
+  "progress": {
+    "completedEpics": [
+      "EPIC-1: Playwright MCP Server Configuration (4 stories)",
+      "EPIC-2: Automated Route Testing (3 stories)",
+      "EPIC-3: Automated Visual Regression Testing (1 story)",
+      "EPIC-4: Automated Accessibility Testing (1 story)",
+      "EPIC-5: Automated Screenshot Capture (1 story)",
+      "EPIC-6: Automated Performance Testing (1 story)",
+      "EPIC-7: Automated SEO Testing (1 story)",
+      "EPIC-8: Automated Form & Interaction Testing (1 story)",
+      "EPIC-9: CI/CD Integration (1 story)",
+      "EPIC-10: Playwright MCP Skill & Documentation (1 story)"
+    ],
+    "remainingEpics": [
+      "EPIC-3: Component visual tests (2 stories)",
+      "EPIC-4: Keyboard navigation, color contrast tests (2 stories)",
+      "EPIC-5: Responsive screenshots, OG image capture (2 stories)",
+      "EPIC-6: Network performance tests (1 story)",
+      "EPIC-7: Structured data, sitemap tests (2 stories)",
+      "EPIC-8: Theme toggle, navigation tests (2 stories)",
+      "EPIC-9: Playwright test report upload (1 story)",
+      "EPIC-10: Update AGENTS.md, test documentation (2 stories)"
+    ]
   }
 }
