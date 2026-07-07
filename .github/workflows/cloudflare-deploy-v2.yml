@@ -1,0 +1,120 @@
+name: Deploy V2 to Cloudflare
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "portfolio-v2/**"
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-v2-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  NODE_VERSION: "24"
+
+jobs:
+  build:
+    name: Build Portfolio V2
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@a77888c2e89879868c0c6994869e968691a5c6f4 # v4.1.0
+        with:
+          version: 11.5.3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.1.0
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "pnpm"
+          cache-dependency-path: portfolio-v2/pnpm-lock.yaml
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@48ed66cfb513e3e1e14b08a09389c06df8156260 # v2.0.1
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+        working-directory: portfolio-v2
+
+      - name: Build registry
+        run: pnpm registry:build
+        working-directory: portfolio-v2
+
+      - name: Build for Cloudflare
+        run: pnpm build
+        working-directory: portfolio-v2
+        env:
+          NODE_OPTIONS: "--max-old-space-size=4096"
+
+      - name: Upload .next artifact
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: next-build-v2-${{ github.run_id }}
+          path: portfolio-v2/.next
+          if-no-files-found: error
+          retention-days: 1
+
+  deploy:
+    name: Deploy to Cloudflare
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@a77888c2e89879868c0c6994869e968691a5c6f4 # v4.1.0
+        with:
+          version: 11.5.3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.1.0
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "pnpm"
+          cache-dependency-path: portfolio-v2/pnpm-lock.yaml
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+        working-directory: portfolio-v2
+
+      - name: Download .next artifact
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: next-build-v2-${{ github.run_id }}
+          path: portfolio-v2/.next
+
+      - name: Deploy to Cloudflare
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: npx wrangler deploy
+        working-directory: portfolio-v2
+
+      - name: Create job summary
+        if: always()
+        run: |
+          echo "## V2 Cloudflare Deployment" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Status**: ${{ job.status }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **URL**: https://v2.namias.tech" >> $GITHUB_STEP_SUMMARY
+          echo "- **Commit**: ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
