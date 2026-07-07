@@ -1,0 +1,352 @@
+{
+  "id": "PRD-PLAYWRIGHT-MCP-AUTOMATION",
+  "title": "Playwright MCP — Automated Testing & Browser Automation",
+  "version": "1.0.0",
+  "status": "in-progress",
+  "created": "2026-07-07",
+  "description": "Integrate Playwright MCP server for automated testing, visual regression, accessibility auditing, route testing, screenshot capture, and browser automation across the portfolio.",
+
+  "context": {
+    "goal": "Fully automate testing and browser interactions using Playwright MCP",
+    "benefits": [
+      "Automated visual regression testing",
+      "Automated accessibility auditing (WCAG 2.1 AA)",
+      "Automated route testing (all pages load correctly)",
+      "Automated screenshot capture for documentation",
+      "Automated performance testing",
+      "Automated SEO validation (meta tags, structured data)",
+      "Automated form testing",
+      "Network monitoring and API mocking"
+    ],
+    "mcpServer": "@playwright/mcp@latest",
+    "transport": "stdio (default) or HTTP (standalone)",
+    "browsers": ["chromium", "firefox", "webkit"]
+  },
+
+  "architecture": {
+    "mcpConfig": "opencode.json at repo root",
+    "testDir": "tests/playwright/",
+    "fixturesDir": "tests/playwright/fixtures/",
+    "screenshotsDir": "tests/playwright/screenshots/",
+    "reportsDir": "tests/playwright/reports/",
+    "scripts": {
+      "test": "npx playwright test",
+      "test:ui": "npx playwright test --ui",
+      "test:headed": "npx playwright test --headed",
+      "test:debug": "npx playwright test --debug",
+      "report": "npx playwright show-report"
+    }
+  },
+
+  "epics": [
+    {
+      "id": "EPIC-1",
+      "title": "Playwright MCP Server Configuration",
+      "priority": "critical",
+      "stories": [
+        {
+          "id": "S1.1",
+          "title": "Create opencode.json with Playwright MCP server config",
+          "file": "opencode.json",
+          "description": "Configure Playwright MCP server in opencode.json for OpenCode IDE integration",
+          "status": "pending"
+        },
+        {
+          "id": "S1.2",
+          "title": "Install Playwright dependencies",
+          "command": "pnpm add -D @playwright/test @playwright/mcp",
+          "description": "Add Playwright test runner and MCP server packages",
+          "status": "pending"
+        },
+        {
+          "id": "S1.3",
+          "title": "Create playwright.config.ts",
+          "file": "playwright.config.ts",
+          "description": "Configure Playwright test runner with browsers, timeouts, reporters",
+          "status": "pending"
+        },
+        {
+          "id": "S1.4",
+          "title": "Create .mcp.json for MCP client configuration",
+          "file": ".mcp.json",
+          "description": "Add Playwright MCP server to .mcp.json for universal MCP client support",
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": "EPIC-2",
+      "title": "Automated Route Testing",
+      "priority": "critical",
+      "stories": [
+        {
+          "id": "S2.1",
+          "title": "Create route test suite for all pages",
+          "file": "tests/playwright/routes.spec.ts",
+          "description": "Test all 36 routes return 200 OK and render correctly",
+          "status": "pending"
+        },
+        {
+          "id": "S2.2",
+          "title": "Create dynamic route tests (blog, components)",
+          "file": "tests/playwright/dynamic-routes.spec.ts",
+          "description": "Test dynamic routes with real slugs from content",
+          "status": "pending"
+        },
+        {
+          "id": "S2.3",
+          "title": "Create API route tests",
+          "file": "tests/playwright/api-routes.spec.ts",
+          "description": "Test all API routes return valid responses",
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": "EPIC-3",
+      "title": "Automated Visual Regression Testing",
+      "priority": "high",
+      "stories": [
+        {
+          "id": "S3.1",
+          "title": "Create visual regression test suite",
+          "file": "tests/playwright/visual-regression.spec.ts",
+          "description": "Capture and compare screenshots of all pages",
+          "status": "pending"
+        },
+        {
+          "id": "S3.2",
+          "title": "Create component visual tests",
+          "file": "tests/playwright/component-visual.spec.ts",
+          "description": "Visual tests for key components (hero, projects, certifications)",
+          "status": "pending"
+        },
+        {
+          "id": "S3.3",
+          "title": "Create dark/light mode visual tests",
+          "file": "tests/playwright/theme-visual.spec.ts",
+          "description": "Visual tests for both color modes",
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": "EPIC-4",
+      "title": "Automated Accessibility Testing",
+      "priority": "high",
+      "stories": [
+        {
+          "id": "S4.1",
+          "title": "Create accessibility audit test suite",
+          "file": "tests/playwright/accessibility.spec.ts",
+          "description": "Run axe-core accessibility audits on all pages",
+          "status": "pending"
+        },
+        {
+          "id": "S4.2",
+          "title": "Create keyboard navigation tests",
+          "file": "tests/playwright/keyboard-navigation.spec.ts",
+          "description": "Test full keyboard navigation across all interactive elements",
+          "status": "pending"
+        },
+        {
+          "id": "S4.3",
+          "title": "Create color contrast tests",
+          "file": "tests/playwright/color-contrast.spec.ts",
+          "description": "Verify WCAG 2.1 AA color contrast requirements",
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": "EPIC-5",
+      "title": "Automated Screenshot Capture",
+      "priority": "medium",
+      "stories": [
+        {
+          "id": "S5.1",
+          "title": "Create full-page screenshot capture script",
+          "file": "tests/playwright/screenshots.spec.ts",
+          "description": "Capture full-page screenshots of all routes for documentation",
+          "status": "pending"
+        },
+        {
+          "id": "S5.2",
+          "title": "Create responsive screenshot capture",
+          "file": "tests/playwright/responsive-screenshots.spec.ts",
+          "description": "Capture screenshots at mobile, tablet, and desktop viewports",
+          "status": "pending"
+        },
+        {
+          "id": "S5.3",
+          "title": "Create OG image screenshot capture",
+          "file": "tests/playwright/og-screenshots.spec.ts",
+          "description": "Capture OpenGraph images for social media sharing",
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": "EPIC-6",
+      "title": "Automated Performance Testing",
+      "priority": "medium",
+      "stories": [
+        {
+          "id": "S6.1",
+          "title": "Create Core Web Vitals test suite",
+          "file": "tests/playwright/performance.spec.ts",
+          "description": "Measure LCP, INP, CLS, FCP, TBT on all pages",
+          "status": "pending"
+        },
+        {
+          "id": "S6.2",
+          "title": "Create network performance tests",
+          "file": "tests/playwright/network.spec.ts",
+          "description": "Monitor network requests, check for render-blocking resources",
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": "EPIC-7",
+      "title": "Automated SEO Testing",
+      "priority": "medium",
+      "stories": [
+        {
+          "id": "S7.1",
+          "title": "Create meta tag validation tests",
+          "file": "tests/playwright/seo-meta.spec.ts",
+          "description": "Validate title, description, OG tags, Twitter cards on all pages",
+          "status": "pending"
+        },
+        {
+          "id": "S7.2",
+          "title": "Create structured data validation tests",
+          "file": "tests/playwright/seo-jsonld.spec.ts",
+          "description": "Validate JSON-LD structured data on all pages",
+          "status": "pending"
+        },
+        {
+          "id": "S7.3",
+          "title": "Create sitemap and robots.txt tests",
+          "file": "tests/playwright/seo-sitemap.spec.ts",
+          "description": "Validate sitemap.xml and robots.txt are correct",
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": "EPIC-8",
+      "title": "Automated Form & Interaction Testing",
+      "priority": "low",
+      "stories": [
+        {
+          "id": "S8.1",
+          "title": "Create command menu tests",
+          "file": "tests/playwright/command-menu.spec.ts",
+          "description": "Test command menu opens, searches, and navigates correctly",
+          "status": "pending"
+        },
+        {
+          "id": "S8.2",
+          "title": "Create theme toggle tests",
+          "file": "tests/playwright/theme-toggle.spec.ts",
+          "description": "Test dark/light mode toggle works correctly",
+          "status": "pending"
+        },
+        {
+          "id": "S8.3",
+          "title": "Create navigation tests",
+          "file": "tests/playwright/navigation.spec.ts",
+          "description": "Test all navigation links and menus work correctly",
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": "EPIC-9",
+      "title": "CI/CD Integration",
+      "priority": "high",
+      "stories": [
+        {
+          "id": "S9.1",
+          "title": "Create GitHub Actions workflow for Playwright tests",
+          "file": ".github/workflows/playwright.yml",
+          "description": "Run Playwright tests on every PR and push to main",
+          "status": "pending"
+        },
+        {
+          "id": "S9.2",
+          "title": "Create Playwright test report upload",
+          "file": ".github/workflows/playwright-report.yml",
+          "description": "Upload test reports and screenshots as artifacts",
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": "EPIC-10",
+      "title": "Playwright MCP Skill & Documentation",
+      "priority": "medium",
+      "stories": [
+        {
+          "id": "S10.1",
+          "title": "Create Playwright MCP skill file",
+          "file": ".agents/skills/playwright-mcp/SKILL.md",
+          "description": "Document Playwright MCP capabilities and usage patterns",
+          "status": "pending"
+        },
+        {
+          "id": "S10.2",
+          "title": "Update AGENTS.md with Playwright MCP section",
+          "file": "AGENTS.md",
+          "description": "Add Playwright MCP to the agent guidelines",
+          "status": "pending"
+        },
+        {
+          "id": "S10.3",
+          "title": "Create Playwright test documentation",
+          "file": "docs/playwright-testing.md",
+          "description": "Comprehensive guide for Playwright testing in this portfolio",
+          "status": "pending"
+        }
+      ]
+    }
+  ],
+
+  "mcpConfiguration": {
+    "opencode.json": {
+      "mcpServers": {
+        "playwright": {
+          "command": "npx",
+          "args": ["@playwright/mcp@latest"],
+          "env": {}
+        }
+      }
+    },
+    ".mcp.json": {
+      "mcpServers": {
+        "playwright": {
+          "command": "npx",
+          "args": ["@playwright/mcp@latest"]
+        }
+      }
+    }
+  },
+
+  "testCategories": {
+    "routes": "All page routes return 200 and render correctly",
+    "visual": "Visual regression testing with screenshot comparison",
+    "accessibility": "WCAG 2.1 AA compliance testing",
+    "performance": "Core Web Vitals and network performance",
+    "seo": "Meta tags, structured data, sitemap validation",
+    "interaction": "Form submission, navigation, theme toggle"
+  },
+
+  "commitPlan": {
+    "strategy": "One commit per story slice — maximize commit records",
+    "naming": "type(scope): description",
+    "totalStories": 30,
+    "estimatedCommits": 30
+  }
+}
