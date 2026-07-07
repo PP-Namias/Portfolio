@@ -1,0 +1,10 @@
+{
+  "$schema": "https://opencode.ai/schema.json",
+  "mcpServers": {
+    "playwright": {
+      "command": "npx",
+      "args": ["@playwright/mcp@latest"],
+      "env": {}
+    }
+  }
+}
