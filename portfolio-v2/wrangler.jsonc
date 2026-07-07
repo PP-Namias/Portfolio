@@ -1,0 +1,18 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "namias-v2",
+  "main": ".open-next/worker.js",
+  "compatibility_date": "2026-07-08",
+  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  "build": {
+    "command": "npx opennextjs-cloudflare build --dangerouslyUseUnsupportedNextVersion"
+  },
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  }
+  // Required Worker secrets (set via `wrangler secret put <NAME>`):
+  // - SANITY_API_READ_TOKEN: Sanity API read token
+  // - SANITY_REVALIDATE_SECRET: Secret for on-demand ISR revalidation
+  // - SANITY_MEDIA_GATEWAY_SECRET: HMAC secret for signing media gateway URLs
+}
