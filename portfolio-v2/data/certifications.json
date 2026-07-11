@@ -1,0 +1,97 @@
+[
+  {
+    "title": "TESDA NC III Certified (Java)",
+    "issuer": "TESDA",
+    "issueDate": "2024",
+    "credentialID": "",
+    "credentialURL": ""
+  },
+  {
+    "title": "HackerRank Problem Solving (Basic)",
+    "issuer": "HackerRank",
+    "issuerIconName": "hackerrank",
+    "issueDate": "2024",
+    "credentialID": "",
+    "credentialURL": "https://www.hackerrank.com/certificates/iframe/problem-solving-basic"
+  },
+  {
+    "title": "HackerRank REST API (Intermediate)",
+    "issuer": "HackerRank",
+    "issuerIconName": "hackerrank",
+    "issueDate": "2024",
+    "credentialID": "",
+    "credentialURL": "https://www.hackerrank.com/certificates/iframe/rest-api-intermediate"
+  },
+  {
+    "title": "HackerRank Node.js (Basic)",
+    "issuer": "HackerRank",
+    "issuerIconName": "hackerrank",
+    "issueDate": "2024",
+    "credentialID": "",
+    "credentialURL": "https://www.hackerrank.com/certificates/iframe/nodejs-basic"
+  },
+  {
+    "title": "HackerRank React (Basic)",
+    "issuer": "HackerRank",
+    "issuerIconName": "hackerrank",
+    "issueDate": "2024",
+    "credentialID": "",
+    "credentialURL": "https://www.hackerrank.com/certificates/iframe/react-basic"
+  },
+  {
+    "title": "HackerRank JavaScript (Basic)",
+    "issuer": "HackerRank",
+    "issuerIconName": "hackerrank",
+    "issueDate": "2024",
+    "credentialID": "",
+    "credentialURL": "https://www.hackerrank.com/certificates/iframe/javascript-basic"
+  },
+  {
+    "title": "HackerRank SQL (Basic)",
+    "issuer": "HackerRank",
+    "issuerIconName": "hackerrank",
+    "issueDate": "2024",
+    "credentialID": "",
+    "credentialURL": "https://www.hackerrank.com/certificates/iframe/sql-basic"
+  },
+  {
+    "title": "HackerRank Python (Basic)",
+    "issuer": "HackerRank",
+    "issuerIconName": "hackerrank",
+    "issueDate": "2024",
+    "credentialID": "",
+    "credentialURL": "https://www.hackerrank.com/certificates/iframe/python-basic"
+  },
+  {
+    "title": "HackerRank Java (Basic)",
+    "issuer": "HackerRank",
+    "issuerIconName": "hackerrank",
+    "issueDate": "2024",
+    "credentialID": "",
+    "credentialURL": "https://www.hackerrank.com/certificates/iframe/java-basic"
+  },
+  {
+    "title": "HackerRank R (Basic)",
+    "issuer": "HackerRank",
+    "issuerIconName": "hackerrank",
+    "issueDate": "2024",
+    "credentialID": "",
+    "credentialURL": "https://www.hackerrank.com/certificates/iframe/r-basic"
+  },
+  {
+    "title": "HackerRank Frontend Developer (React)",
+    "issuer": "HackerRank",
+    "issuerIconName": "hackerrank",
+    "issueDate": "2024",
+    "credentialID": "",
+    "credentialURL": "https://www.hackerrank.com/certificates/iframe/frontend-developer-react"
+  },
+  {
+    "title": "HackerRank Software Engineer",
+    "issuer": "HackerRank",
+    "issuerIconName": "hackerrank",
+    "issueDate": "2024",
+    "credentialID": "",
+    "credentialURL": "https://www.hackerrank.com/certificates/iframe/software-engineer"
+  }
+]
