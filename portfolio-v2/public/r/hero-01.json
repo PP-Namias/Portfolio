@@ -6,7 +6,7 @@
   "description": "A hero section with a golden spiral background.",
   "registryDependencies": [
     "button",
-    "https://chanhdai.com/r/style.json"
+    "https://namias.tech/r/style.json"
   ],
   "files": [
     {
