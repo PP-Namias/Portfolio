@@ -1,0 +1,47 @@
+{
+  "craftedBy": {
+    "name": "PP Namias",
+    "handle": "@PP_Namias",
+    "url": "https://x.com/PP_Namias"
+  },
+  "inspiredBy": [
+    {
+      "name": "Tailwind CSS",
+      "url": "https://tailwindcss.com"
+    },
+    {
+      "name": "shadcn/ui",
+      "url": "https://ui.shadcn.com"
+    },
+    {
+      "name": "Vercel",
+      "url": "https://vercel.com"
+    },
+    {
+      "name": "chanhdai.com",
+      "url": "https://chanhdai.com"
+    }
+  ],
+  "deployedOn": {
+    "name": "Vercel",
+    "url": "https://vercel.com"
+  },
+  "analytics": [
+    {
+      "name": "OpenPanel",
+      "url": "https://openpanel.dev"
+    },
+    {
+      "name": "Umami",
+      "url": "https://umami.is"
+    }
+  ],
+  "sourceCode": {
+    "name": "GitHub",
+    "url": "https://github.com/PP-Namias/Portfolio"
+  },
+  "license": {
+    "name": "MIT License",
+    "url": "https://github.com/PP-Namias/Portfolio/blob/main/LICENSE"
+  }
+}
