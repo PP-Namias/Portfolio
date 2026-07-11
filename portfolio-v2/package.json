@@ -160,6 +160,19 @@
     "@types/react": "19.2.17",
     "@types/react-dom": "19.2.3"
   },
+  "pnpm": {
+    "overrides": {
+      "dompurify": ">=3.4.11",
+      "uuid": ">=3.4.0",
+      "brace-expansion": ">=5.0.6",
+      "protobufjs": ">=7.6.3",
+      "@opentelemetry/core": ">=2.8.0",
+      "typeorm": ">=0.3.29",
+      "js-yaml@3": ">=3.15.0",
+      "js-yaml@4": ">=4.1.2",
+      "@eslint/plugin-kit": ">=0.3.4"
+    }
+  },
   "engines": {
     "node": ">=22.x",
     "pnpm": ">=9"
