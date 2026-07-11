@@ -1,0 +1,2355 @@
+# Instructions
+
+- Following Playwright test failed.
+- Explain why, be concise, respect Playwright best practices.
+- Provide a snippet of code with the fix, if possible.
+
+# Test info
+
+- Name: network-performance.spec.ts >> Network Performance >> should track network requests
+- Location: tests\playwright\network-performance.spec.ts:55:7
+
+# Error details
+
+```
+Error: expect(received).toBeLessThan(expected)
+
+Expected: < 50
+Received:   59
+```
+
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - banner [ref=e3]:
+      - generic [ref=e4]:
+        - link "Home" [ref=e6] [cursor=pointer]:
+          - /url: /
+          - img [ref=e7]
+        - navigation [ref=e9]:
+          - link "Components" [ref=e10] [cursor=pointer]:
+            - /url: /components
+          - link "Blocks" [ref=e11] [cursor=pointer]:
+            - /url: /blocks
+          - link "Blog" [ref=e12] [cursor=pointer]:
+            - /url: /blog
+          - link "Sponsors" [ref=e13] [cursor=pointer]:
+            - /url: /sponsors
+        - generic [ref=e14]:
+          - button "Ctrl K" [ref=e15]:
+            - img
+            - generic [ref=e16]:
+              - generic: Ctrl
+              - generic: K
+          - generic [ref=e17]:
+            - generic [ref=e18]: Command Palette
+            - paragraph [ref=e19]: Search for a command to run...
+          - link "0 GitHub stars" [ref=e20] [cursor=pointer]:
+            - /url: https://github.com/PP-Namias/Portfolio?utm_source=namias.tech
+            - img
+            - generic [ref=e21]: "0"
+            - generic [ref=e22]: GitHub stars
+          - button "Toggle mode" [ref=e23]:
+            - generic [ref=e24]:
+              - img
+    - main [ref=e25]:
+      - generic [ref=e27]:
+        - generic [ref=e28]:
+          - figure "FIG_001" [ref=e29]:
+            - img [ref=e30]
+            - generic: FIG_001
+          - button "Toggle Avatar Lights" [ref=e46]:
+            - generic:
+              - generic:
+                - img "Avatar with lights off in light mode"
+              - generic:
+                - img "Avatar with lights on in light mode"
+              - generic:
+                - img "Avatar with lights off in dark mode"
+              - generic:
+                - img "Avatar with lights on in dark mode"
+          - generic [ref=e48]:
+            - generic [ref=e49]:
+              - heading "PP Namias" [level=1] [ref=e50]
+              - img [ref=e51]
+            - paragraph [ref=e54]: Full Stack Engineer & AI Automation Specialist
+        - generic [ref=e56]:
+          - heading "Overview" [level=2] [ref=e57]
+          - generic [ref=e58]:
+            - generic [ref=e59]:
+              - generic [ref=e60]:
+                - img
+              - paragraph [ref=e61]:
+                - text: Software Developer @
+                - link "JS Pharmacy" [ref=e62] [cursor=pointer]:
+                  - /url: "#experience-js-pharmacy"
+            - generic [ref=e63]:
+              - generic [ref=e64]:
+                - img
+              - paragraph [ref=e65]:
+                - text: AI Solutions Developer @
+                - link "Wilshire Financial Network" [ref=e66] [cursor=pointer]:
+                  - /url: "#experience-wilshire-financial"
+            - generic [ref=e67]:
+              - generic [ref=e68]:
+                - img
+              - paragraph [ref=e69]:
+                - 'link "Location: Caloocan City, Philippines" [ref=e70] [cursor=pointer]':
+                  - /url: https://www.google.com/maps/search/?api=1&query=Caloocan%20City%2C%20Philippines
+                  - text: Caloocan City, Philippines
+            - generic [ref=e71]:
+              - generic [ref=e72]:
+                - img
+              - paragraph [ref=e73]: 03:56 AM // same time
+            - generic [ref=e74]:
+              - generic [ref=e75]:
+                - img
+              - paragraph:
+                - link:
+                  - /url: "tel:"
+              - button "Copy" [ref=e77]:
+                - generic [ref=e78]:
+                  - img
+            - generic [ref=e79]:
+              - generic [ref=e80]:
+                - img
+              - paragraph [ref=e81]:
+                - link "pp.namias@gmail.com" [ref=e82] [cursor=pointer]:
+                  - /url: mailto:pp.namias@gmail.com
+              - button "Copy" [ref=e84]:
+                - generic [ref=e85]:
+                  - img
+            - generic [ref=e86]:
+              - generic [ref=e87]:
+                - img
+              - paragraph [ref=e88]:
+                - 'link "Personal website: namias.tech" [ref=e89] [cursor=pointer]':
+                  - /url: https://namias.tech
+                  - text: namias.tech
+            - generic [ref=e90]:
+              - generic [ref=e91]:
+                - img
+              - paragraph [ref=e92]: he/him
+        - generic [ref=e93]:
+          - heading "Social Links" [level=2] [ref=e94]
+          - list [ref=e96]:
+            - listitem [ref=e97]:
+              - button "X" [ref=e98] [cursor=pointer]:
+                - img
+                - generic [ref=e99]: X
+            - listitem [ref=e100]:
+              - button "GitHub" [ref=e101] [cursor=pointer]:
+                - img
+                - generic [ref=e102]: GitHub
+            - listitem [ref=e103]:
+              - button "LinkedIn" [ref=e104] [cursor=pointer]:
+                - img
+                - generic [ref=e105]: LinkedIn
+            - listitem [ref=e106]:
+              - button "Discord" [ref=e107] [cursor=pointer]:
+                - img
+                - generic [ref=e108]: Discord
+            - listitem [ref=e109]:
+              - button "YouTube" [ref=e110] [cursor=pointer]:
+                - img
+                - generic [ref=e111]: YouTube
+            - listitem [ref=e112]:
+              - button "Instagram" [ref=e113] [cursor=pointer]:
+                - img
+                - generic [ref=e114]: Instagram
+        - generic [ref=e115]:
+          - heading "GitHub Contributions" [level=2] [ref=e116]
+          - generic "GitHub Contributions Graph" [ref=e117]:
+            - img [ref=e119]:
+              - generic [ref=e120]:
+                - generic [ref=e121]: Jul
+                - generic [ref=e122]: Aug
+                - generic [ref=e123]: Sep
+                - generic [ref=e124]: Oct
+                - generic [ref=e125]: Nov
+                - generic [ref=e126]: Dec
+                - generic [ref=e127]: Jan
+                - generic [ref=e128]: Feb
+                - generic [ref=e129]: Mar
+                - generic [ref=e130]: Apr
+                - generic [ref=e131]: May
+                - generic [ref=e132]: Jun
+            - generic [ref=e867]:
+              - generic [ref=e868]: 11,313 contributions in the past 365 days.
+              - generic [ref=e869]:
+                - generic [ref=e870]: Less
+                - img [ref=e871]
+                - img [ref=e873]
+                - img [ref=e875]
+                - img [ref=e877]
+                - img [ref=e879]
+                - generic [ref=e881]: More
+        - generic [ref=e884]:
+          - heading "Good morning" [level=2] [ref=e886]
+          - generic [ref=e888]:
+            - paragraph [ref=e889]: I'm Jhon Keneth Ryan Namias (call me Namias) — a Full Stack Engineer & AI Automation Specialist with a passion for building production systems that scale.
+            - paragraph [ref=e890]: Graduated Cum Laude with a BS in Computer Science from the University of Caloocan City (Batch 2026), recognized as a Dean's Lister throughout my studies.
+            - paragraph [ref=e891]: I've delivered 5+ live applications serving over 1,000 concurrent users, including an enterprise HRIS for 500+ employees and 8 deployed AI chatbot systems. Skilled in React, TypeScript, Node.js, Python, and AI Automation.
+        - generic [ref=e893]:
+          - heading "Trusted by top builders on X" [level=2] [ref=e895]:
+            - text: Trusted by top builders on
+            - link "X" [ref=e896] [cursor=pointer]:
+              - /url: https://x.com/PP_Namias
+              - text: 𝕏
+          - generic [ref=e897]:
+            - figure "Guillermo Rauch Guillermo Rauch CEO @Vercel" [ref=e899]:
+              - blockquote [ref=e900]:
+                - paragraph [ref=e901]: awesome. Love the components, especially slide-to-unlock. Great job
+              - generic [ref=e902]:
+                - img "Guillermo Rauch" [ref=e904]
+                - link "Guillermo Rauch" [ref=e906] [cursor=pointer]:
+                  - /url: https://x.com/rauchg/status/1978913158514237669
+                  - text: Guillermo Rauch
+                - generic [ref=e908]: CEO @Vercel
+              - generic:
+                - img
+            - figure "shadcn shadcn Creator of shadcn/ui" [ref=e910]:
+              - blockquote [ref=e911]:
+                - paragraph [ref=e912]: You’re doing amazing work.
+              - generic [ref=e913]:
+                - img "shadcn" [ref=e915]
+                - link "shadcn" [ref=e917] [cursor=pointer]:
+                  - /url: https://x.com/shadcn/status/2032193591133495700
+                  - text: shadcn
+                - generic [ref=e919]: Creator of shadcn/ui
+              - generic:
+                - img
+            - generic [ref=e921]:
+              - generic [ref=e923]:
+                - figure "OrcDev OrcDev Creator of 8bitcn.com" [ref=e926]:
+                  - blockquote [ref=e927]:
+                    - paragraph [ref=e928]: same! Đại is very talented! love his work
+                  - generic [ref=e929]:
+                    - img "OrcDev" [ref=e931]
+                    - link "OrcDev" [ref=e933] [cursor=pointer]:
+                      - /url: https://x.com/orcdev/status/2058273274098860335
+                      - text: OrcDev
+                    - generic [ref=e935]: Creator of 8bitcn.com
+                - figure "HireTimSF.com HireTimSF.com Building @menu_ceo" [ref=e938]:
+                  - blockquote [ref=e939]:
+                    - paragraph [ref=e940]: This guy is really talented Design engineer. I am a big fan of his work.
+                  - generic [ref=e941]:
+                    - img "HireTimSF.com" [ref=e943]
+                    - link "HireTimSF.com" [ref=e945] [cursor=pointer]:
+                      - /url: https://x.com/hiretimsf/status/2058272162369466488
+                      - text: HireTimSF.com
+                    - generic [ref=e947]: Building @menu_ceo
+                - figure "shadcn shadcn Creator of shadcn/ui" [ref=e950]:
+                  - blockquote [ref=e951]:
+                    - paragraph [ref=e952]: See @iamncdai Wheel Picker. It’s on the registry. Quick install.
+                  - generic [ref=e953]:
+                    - img "shadcn" [ref=e955]
+                    - link "shadcn" [ref=e957] [cursor=pointer]:
+                      - /url: https://x.com/shadcn/status/2057717991387869600
+                      - text: shadcn
+                    - generic [ref=e959]: Creator of shadcn/ui
+                - figure "joshpuckett joshpuckett Teaching at interfacecraft.dev" [ref=e962]:
+                  - blockquote [ref=e963]:
+                    - paragraph [ref=e964]: Good recreation! Focus state is nice touch
+                  - generic [ref=e965]:
+                    - img "joshpuckett" [ref=e967]
+                    - link "joshpuckett" [ref=e969] [cursor=pointer]:
+                      - /url: https://x.com/joshpuckett/status/2045487801618284892
+                      - text: joshpuckett
+                    - generic [ref=e971]: Teaching at interfacecraft.dev
+                - figure "dimi dimi Design Engineer" [ref=e974]:
+                  - blockquote [ref=e975]:
+                    - paragraph [ref=e976]: i like this subtle version a lot more than the over-the-top examples i see everywhere, very nice
+                  - generic [ref=e977]:
+                    - img "dimi" [ref=e979]
+                    - link "dimi" [ref=e981] [cursor=pointer]:
+                      - /url: https://x.com/dimicx/status/2035018694053577149
+                      - text: dimi
+                    - generic [ref=e983]: Design Engineer
+                - figure "khushi.vy khushi.vy Software Engineer" [ref=e986]:
+                  - blockquote [ref=e987]:
+                    - paragraph [ref=e988]: Goated portfolio. I love the whole UI in Vercel style
+                  - generic [ref=e989]:
+                    - img "khushi.vy" [ref=e991]
+                    - link "khushi.vy" [ref=e993] [cursor=pointer]:
+                      - /url: https://x.com/khushiirl/status/2025894411155206168
+                      - text: khushi.vy
+                    - generic [ref=e995]: Software Engineer
+                - figure "Megh Megh Creator of patterncraft.fun" [ref=e998]:
+                  - blockquote [ref=e999]:
+                    - paragraph [ref=e1000]: The best looking website I’ve ever seen? @iamncdai portfolio!
+                  - generic [ref=e1001]:
+                    - img "Megh" [ref=e1003]
+                    - link "Megh" [ref=e1005] [cursor=pointer]:
+                      - /url: https://x.com/meghtrix/status/2017658774530781471
+                      - text: Megh
+                    - generic [ref=e1007]: Creator of patterncraft.fun
+                - figure "shadcncraft shadcncraft shadcncraft.com" [ref=e1010]:
+                  - blockquote [ref=e1011]:
+                    - paragraph [ref=e1012]: Love your work Dai! You’re a great talent :-)
+                  - generic [ref=e1013]:
+                    - img "shadcncraft" [ref=e1015]
+                    - link "shadcncraft" [ref=e1017] [cursor=pointer]:
+                      - /url: https://x.com/shadcncraft/status/2017091317244055988
+                      - text: shadcncraft
+                    - generic [ref=e1019]: shadcncraft.com
+                - figure "Kartikey Kartikey Engineer" [ref=e1022]:
+                  - blockquote [ref=e1023]:
+                    - paragraph [ref=e1024]:
+                      - text: best portfolio I’ve ever seen, minimal, clean and sick
+                      - img "🙌🏼" [ref=e1025]
+                  - generic [ref=e1026]:
+                    - img "Kartikey" [ref=e1028]
+                    - link "Kartikey" [ref=e1030] [cursor=pointer]:
+                      - /url: https://x.com/KartikeyStack/status/2016717957938974963
+                      - text: Kartikey
+                    - generic [ref=e1032]: Engineer
+                - figure "OrcDev OrcDev Creator of 8bitcn.com" [ref=e1035]:
+                  - blockquote [ref=e1036]:
+                    - paragraph [ref=e1037]: "@iamncdai is one of the best design engineers!"
+                  - generic [ref=e1038]:
+                    - img "OrcDev" [ref=e1040]
+                    - link "OrcDev" [ref=e1042] [cursor=pointer]:
+                      - /url: https://x.com/orcdev/status/2011373509310878010
+                      - text: OrcDev
+                    - generic [ref=e1044]: Creator of 8bitcn.com
+                - figure "Duncan Duncan Engineering @Documenso" [ref=e1047]:
+                  - blockquote [ref=e1048]:
+                    - paragraph [ref=e1049]: great work on your portfolio, you deserve it
+                  - generic [ref=e1050]:
+                    - img "Duncan" [ref=e1052]
+                    - link "Duncan" [ref=e1054] [cursor=pointer]:
+                      - /url: https://x.com/ephraimduncan/status/2008254368806826312
+                      - text: Duncan
+                    - generic [ref=e1056]: Engineering @Documenso
+                - figure "Francesco Ciulla Francesco Ciulla Developer Advocate @daily.dev" [ref=e1059]:
+                  - blockquote [ref=e1060]:
+                    - paragraph [ref=e1061]: your portfolio is stunning. i created mine some weeks ago but this is another planet.
+                  - generic [ref=e1062]:
+                    - img "Francesco Ciulla" [ref=e1064]
+                    - link "Francesco Ciulla" [ref=e1066] [cursor=pointer]:
+                      - /url: https://x.com/FrancescoCiull4/status/2006332479536529608
+                      - text: Francesco Ciulla
+                    - generic [ref=e1068]: Developer Advocate @daily.dev
+                - figure "Ajay Patel Ajay Patel Creator of shadcnstudio.com" [ref=e1071]:
+                  - blockquote [ref=e1072]:
+                    - paragraph [ref=e1073]:
+                      - text: Perfect iOS-like wheel picker for the web
+                      - img "🙌" [ref=e1074]
+                  - generic [ref=e1075]:
+                    - img "Ajay Patel" [ref=e1077]
+                    - link "Ajay Patel" [ref=e1079] [cursor=pointer]:
+                      - /url: https://x.com/ajaypatel_aj/status/2003723039029231737
+                      - text: Ajay Patel
+                    - generic [ref=e1081]: Creator of shadcnstudio.com
+                - figure "Christopher Burns Christopher Burns Creator of c15t.com" [ref=e1084]:
+                  - blockquote [ref=e1085]:
+                    - paragraph [ref=e1086]: This is super cool, Full circle moment (the prototype for c15t actually used shadcn)
+                  - generic [ref=e1087]:
+                    - img "Christopher Burns" [ref=e1089]
+                    - link "Christopher Burns" [ref=e1091] [cursor=pointer]:
+                      - /url: https://x.com/BurnedChris/status/2000947403571204445
+                      - text: Christopher Burns
+                    - generic [ref=e1093]: Creator of c15t.com
+                - figure "Sahaj Sahaj Creator of tweakcn.com" [ref=e1096]:
+                  - blockquote [ref=e1097]:
+                    - paragraph [ref=e1098]: remember seeing it on @mannupaaji’s review. it’s one of the best looking ones I’ve seen
+                  - generic [ref=e1099]:
+                    - img "Sahaj" [ref=e1101]
+                    - link "Sahaj" [ref=e1103] [cursor=pointer]:
+                      - /url: https://x.com/iamsahaj_xyz/status/1982814244501381239
+                      - text: Sahaj
+                    - generic [ref=e1105]: Creator of tweakcn.com
+                - figure "OrcDev OrcDev Creator of 8bitcn.com" [ref=e1108]:
+                  - blockquote [ref=e1109]:
+                    - paragraph [ref=e1110]: Seriously, this is one of the best portfolio templates I’ve ever seen.
+                  - generic [ref=e1111]:
+                    - img "OrcDev" [ref=e1113]
+                    - link "OrcDev" [ref=e1115] [cursor=pointer]:
+                      - /url: https://x.com/orcdev/status/1980378575170859446
+                      - text: OrcDev
+                    - generic [ref=e1117]: Creator of 8bitcn.com
+                - figure "Jean P.D. Meijer Jean P.D. Meijer Design Engineer" [ref=e1120]:
+                  - blockquote [ref=e1121]:
+                    - paragraph [ref=e1122]:
+                      - text: congrats you deserve it! react wheel picker is so smooth, its insane
+                      - img "🐐" [ref=e1123]
+                  - generic [ref=e1124]:
+                    - img "Jean P.D. Meijer" [ref=e1126]
+                    - link "Jean P.D. Meijer" [ref=e1128] [cursor=pointer]:
+                      - /url: https://x.com/initjean/status/1948159885960438151
+                      - text: Jean P.D. Meijer
+                    - generic [ref=e1130]: Design Engineer
+                - figure "Kap Kap Head of Developer Community @Vercel" [ref=e1133]:
+                  - blockquote [ref=e1134]:
+                    - paragraph [ref=e1135]: one of my favorite projects that submitted! you are crushing it!
+                  - generic [ref=e1136]:
+                    - img "Kap" [ref=e1138]
+                    - link "Kap" [ref=e1140] [cursor=pointer]:
+                      - /url: https://x.com/kapehe_ok/status/1948104774358106612
+                      - text: Kap
+                    - generic [ref=e1142]: Head of Developer Community @Vercel
+                - figure "Steven Tey Steven Tey Founder @Dub.co" [ref=e1145]:
+                  - blockquote [ref=e1146]:
+                    - paragraph [ref=e1147]:
+                      - text: whoa, this is really dope – needs to get added to @shadcn UI
+                      - img "👀" [ref=e1148]
+                  - generic [ref=e1149]:
+                    - img "Steven Tey" [ref=e1151]
+                    - link "Steven Tey" [ref=e1153] [cursor=pointer]:
+                      - /url: https://x.com/steventey/status/1936934909370830924
+                      - text: Steven Tey
+                    - generic [ref=e1155]: Founder @Dub.co
+                - figure "GitHub Projects Community GitHub Projects Community Followed by @github" [ref=e1158]:
+                  - blockquote [ref=e1159]:
+                    - paragraph [ref=e1160]: Everything you’d want in a picker, minus the styling headaches. Awesome job!
+                  - generic [ref=e1161]:
+                    - img "GitHub Projects Community" [ref=e1163]
+                    - link "GitHub Projects Community" [ref=e1165] [cursor=pointer]:
+                      - /url: https://x.com/GithubProjects/status/1931034244337271044
+                      - text: GitHub Projects Community
+                    - generic [ref=e1167]: Followed by @github
+              - generic [ref=e1168]:
+                - figure "OrcDev OrcDev Creator of 8bitcn.com" [ref=e1171]:
+                  - blockquote [ref=e1172]:
+                    - paragraph [ref=e1173]: same! Đại is very talented! love his work
+                  - generic [ref=e1174]:
+                    - img "OrcDev" [ref=e1176]
+                    - link "OrcDev" [ref=e1178] [cursor=pointer]:
+                      - /url: https://x.com/orcdev/status/2058273274098860335
+                      - text: OrcDev
+                    - generic [ref=e1180]: Creator of 8bitcn.com
+                - figure "HireTimSF.com HireTimSF.com Building @menu_ceo" [ref=e1183]:
+                  - blockquote [ref=e1184]:
+                    - paragraph [ref=e1185]: This guy is really talented Design engineer. I am a big fan of his work.
+                  - generic [ref=e1186]:
+                    - img "HireTimSF.com" [ref=e1188]
+                    - link "HireTimSF.com" [ref=e1190] [cursor=pointer]:
+                      - /url: https://x.com/hiretimsf/status/2058272162369466488
+                      - text: HireTimSF.com
+                    - generic [ref=e1192]: Building @menu_ceo
+                - figure "shadcn shadcn Creator of shadcn/ui" [ref=e1195]:
+                  - blockquote [ref=e1196]:
+                    - paragraph [ref=e1197]: See @iamncdai Wheel Picker. It’s on the registry. Quick install.
+                  - generic [ref=e1198]:
+                    - img "shadcn" [ref=e1200]
+                    - link "shadcn" [ref=e1202] [cursor=pointer]:
+                      - /url: https://x.com/shadcn/status/2057717991387869600
+                      - text: shadcn
+                    - generic [ref=e1204]: Creator of shadcn/ui
+                - figure "joshpuckett joshpuckett Teaching at interfacecraft.dev" [ref=e1207]:
+                  - blockquote [ref=e1208]:
+                    - paragraph [ref=e1209]: Good recreation! Focus state is nice touch
+                  - generic [ref=e1210]:
+                    - img "joshpuckett" [ref=e1212]
+                    - link "joshpuckett" [ref=e1214] [cursor=pointer]:
+                      - /url: https://x.com/joshpuckett/status/2045487801618284892
+                      - text: joshpuckett
+                    - generic [ref=e1216]: Teaching at interfacecraft.dev
+                - figure "dimi dimi Design Engineer" [ref=e1219]:
+                  - blockquote [ref=e1220]:
+                    - paragraph [ref=e1221]: i like this subtle version a lot more than the over-the-top examples i see everywhere, very nice
+                  - generic [ref=e1222]:
+                    - img "dimi" [ref=e1224]
+                    - link "dimi" [ref=e1226] [cursor=pointer]:
+                      - /url: https://x.com/dimicx/status/2035018694053577149
+                      - text: dimi
+                    - generic [ref=e1228]: Design Engineer
+                - figure "khushi.vy khushi.vy Software Engineer" [ref=e1231]:
+                  - blockquote [ref=e1232]:
+                    - paragraph [ref=e1233]: Goated portfolio. I love the whole UI in Vercel style
+                  - generic [ref=e1234]:
+                    - img "khushi.vy" [ref=e1236]
+                    - link "khushi.vy" [ref=e1238] [cursor=pointer]:
+                      - /url: https://x.com/khushiirl/status/2025894411155206168
+                      - text: khushi.vy
+                    - generic [ref=e1240]: Software Engineer
+                - figure "Megh Megh Creator of patterncraft.fun" [ref=e1243]:
+                  - blockquote [ref=e1244]:
+                    - paragraph [ref=e1245]: The best looking website I’ve ever seen? @iamncdai portfolio!
+                  - generic [ref=e1246]:
+                    - img "Megh" [ref=e1248]
+                    - link "Megh" [ref=e1250] [cursor=pointer]:
+                      - /url: https://x.com/meghtrix/status/2017658774530781471
+                      - text: Megh
+                    - generic [ref=e1252]: Creator of patterncraft.fun
+                - figure "shadcncraft shadcncraft shadcncraft.com" [ref=e1255]:
+                  - blockquote [ref=e1256]:
+                    - paragraph [ref=e1257]: Love your work Dai! You’re a great talent :-)
+                  - generic [ref=e1258]:
+                    - img "shadcncraft" [ref=e1260]
+                    - link "shadcncraft" [ref=e1262] [cursor=pointer]:
+                      - /url: https://x.com/shadcncraft/status/2017091317244055988
+                      - text: shadcncraft
+                    - generic [ref=e1264]: shadcncraft.com
+                - figure "Kartikey Kartikey Engineer" [ref=e1267]:
+                  - blockquote [ref=e1268]:
+                    - paragraph [ref=e1269]:
+                      - text: best portfolio I’ve ever seen, minimal, clean and sick
+                      - img "🙌🏼" [ref=e1270]
+                  - generic [ref=e1271]:
+                    - img "Kartikey" [ref=e1273]
+                    - link "Kartikey" [ref=e1275] [cursor=pointer]:
+                      - /url: https://x.com/KartikeyStack/status/2016717957938974963
+                      - text: Kartikey
+                    - generic [ref=e1277]: Engineer
+                - figure "OrcDev OrcDev Creator of 8bitcn.com" [ref=e1280]:
+                  - blockquote [ref=e1281]:
+                    - paragraph [ref=e1282]: "@iamncdai is one of the best design engineers!"
+                  - generic [ref=e1283]:
+                    - img "OrcDev" [ref=e1285]
+                    - link "OrcDev" [ref=e1287] [cursor=pointer]:
+                      - /url: https://x.com/orcdev/status/2011373509310878010
+                      - text: OrcDev
+                    - generic [ref=e1289]: Creator of 8bitcn.com
+                - figure "Duncan Duncan Engineering @Documenso" [ref=e1292]:
+                  - blockquote [ref=e1293]:
+                    - paragraph [ref=e1294]: great work on your portfolio, you deserve it
+                  - generic [ref=e1295]:
+                    - img "Duncan" [ref=e1297]
+                    - link "Duncan" [ref=e1299] [cursor=pointer]:
+                      - /url: https://x.com/ephraimduncan/status/2008254368806826312
+                      - text: Duncan
+                    - generic [ref=e1301]: Engineering @Documenso
+                - figure "Francesco Ciulla Francesco Ciulla Developer Advocate @daily.dev" [ref=e1304]:
+                  - blockquote [ref=e1305]:
+                    - paragraph [ref=e1306]: your portfolio is stunning. i created mine some weeks ago but this is another planet.
+                  - generic [ref=e1307]:
+                    - img "Francesco Ciulla" [ref=e1309]
+                    - link "Francesco Ciulla" [ref=e1311] [cursor=pointer]:
+                      - /url: https://x.com/FrancescoCiull4/status/2006332479536529608
+                      - text: Francesco Ciulla
+                    - generic [ref=e1313]: Developer Advocate @daily.dev
+                - figure "Ajay Patel Ajay Patel Creator of shadcnstudio.com" [ref=e1316]:
+                  - blockquote [ref=e1317]:
+                    - paragraph [ref=e1318]:
+                      - text: Perfect iOS-like wheel picker for the web
+                      - img "🙌" [ref=e1319]
+                  - generic [ref=e1320]:
+                    - img "Ajay Patel" [ref=e1322]
+                    - link "Ajay Patel" [ref=e1324] [cursor=pointer]:
+                      - /url: https://x.com/ajaypatel_aj/status/2003723039029231737
+                      - text: Ajay Patel
+                    - generic [ref=e1326]: Creator of shadcnstudio.com
+                - figure "Christopher Burns Christopher Burns Creator of c15t.com" [ref=e1329]:
+                  - blockquote [ref=e1330]:
+                    - paragraph [ref=e1331]: This is super cool, Full circle moment (the prototype for c15t actually used shadcn)
+                  - generic [ref=e1332]:
+                    - img "Christopher Burns" [ref=e1334]
+                    - link "Christopher Burns" [ref=e1336] [cursor=pointer]:
+                      - /url: https://x.com/BurnedChris/status/2000947403571204445
+                      - text: Christopher Burns
+                    - generic [ref=e1338]: Creator of c15t.com
+                - figure "Sahaj Sahaj Creator of tweakcn.com" [ref=e1341]:
+                  - blockquote [ref=e1342]:
+                    - paragraph [ref=e1343]: remember seeing it on @mannupaaji’s review. it’s one of the best looking ones I’ve seen
+                  - generic [ref=e1344]:
+                    - img "Sahaj" [ref=e1346]
+                    - link "Sahaj" [ref=e1348] [cursor=pointer]:
+                      - /url: https://x.com/iamsahaj_xyz/status/1982814244501381239
+                      - text: Sahaj
+                    - generic [ref=e1350]: Creator of tweakcn.com
+                - figure "OrcDev OrcDev Creator of 8bitcn.com" [ref=e1353]:
+                  - blockquote [ref=e1354]:
+                    - paragraph [ref=e1355]: Seriously, this is one of the best portfolio templates I’ve ever seen.
+                  - generic [ref=e1356]:
+                    - img "OrcDev" [ref=e1358]
+                    - link "OrcDev" [ref=e1360] [cursor=pointer]:
+                      - /url: https://x.com/orcdev/status/1980378575170859446
+                      - text: OrcDev
+                    - generic [ref=e1362]: Creator of 8bitcn.com
+                - figure "Jean P.D. Meijer Jean P.D. Meijer Design Engineer" [ref=e1365]:
+                  - blockquote [ref=e1366]:
+                    - paragraph [ref=e1367]:
+                      - text: congrats you deserve it! react wheel picker is so smooth, its insane
+                      - img "🐐" [ref=e1368]
+                  - generic [ref=e1369]:
+                    - img "Jean P.D. Meijer" [ref=e1371]
+                    - link "Jean P.D. Meijer" [ref=e1373] [cursor=pointer]:
+                      - /url: https://x.com/initjean/status/1948159885960438151
+                      - text: Jean P.D. Meijer
+                    - generic [ref=e1375]: Design Engineer
+                - figure "Kap Kap Head of Developer Community @Vercel" [ref=e1378]:
+                  - blockquote [ref=e1379]:
+                    - paragraph [ref=e1380]: one of my favorite projects that submitted! you are crushing it!
+                  - generic [ref=e1381]:
+                    - img "Kap" [ref=e1383]
+                    - link "Kap" [ref=e1385] [cursor=pointer]:
+                      - /url: https://x.com/kapehe_ok/status/1948104774358106612
+                      - text: Kap
+                    - generic [ref=e1387]: Head of Developer Community @Vercel
+                - figure "Steven Tey Steven Tey Founder @Dub.co" [ref=e1390]:
+                  - blockquote [ref=e1391]:
+                    - paragraph [ref=e1392]:
+                      - text: whoa, this is really dope – needs to get added to @shadcn UI
+                      - img "👀" [ref=e1393]
+                  - generic [ref=e1394]:
+                    - img "Steven Tey" [ref=e1396]
+                    - link "Steven Tey" [ref=e1398] [cursor=pointer]:
+                      - /url: https://x.com/steventey/status/1936934909370830924
+                      - text: Steven Tey
+                    - generic [ref=e1400]: Founder @Dub.co
+                - figure "GitHub Projects Community GitHub Projects Community Followed by @github" [ref=e1403]:
+                  - blockquote [ref=e1404]:
+                    - paragraph [ref=e1405]: Everything you’d want in a picker, minus the styling headaches. Awesome job!
+                  - generic [ref=e1406]:
+                    - img "GitHub Projects Community" [ref=e1408]
+                    - link "GitHub Projects Community" [ref=e1410] [cursor=pointer]:
+                      - /url: https://x.com/GithubProjects/status/1931034244337271044
+                      - text: GitHub Projects Community
+                    - generic [ref=e1412]: Followed by @github
+            - generic [ref=e1414]:
+              - generic [ref=e1416]:
+                - figure "Evil Rabbit Evil Rabbit Founding Designer @Vercel" [ref=e1419]:
+                  - blockquote [ref=e1420]:
+                    - paragraph [ref=e1421]: sick
+                  - generic [ref=e1422]:
+                    - img "Evil Rabbit" [ref=e1424]
+                    - link "Evil Rabbit" [ref=e1426] [cursor=pointer]:
+                      - /url: https://x.com/evilrabbit_/status/2058279035390820692
+                      - text: Evil Rabbit
+                    - generic [ref=e1428]: Founding Designer @Vercel
+                - figure "Gurbinder Gurbinder Creator of evilcharts.com" [ref=e1431]:
+                  - blockquote [ref=e1432]:
+                    - paragraph [ref=e1433]: cool
+                  - generic [ref=e1434]:
+                    - img "Gurbinder" [ref=e1436]
+                    - link "Gurbinder" [ref=e1438] [cursor=pointer]:
+                      - /url: https://x.com/legionsdev/status/2057222692789756152
+                      - text: Gurbinder
+                    - generic [ref=e1440]: Creator of evilcharts.com
+                - figure "Ahmad Awais Ahmad Awais CEO @CommandCodeAI" [ref=e1443]:
+                  - blockquote [ref=e1444]:
+                    - paragraph [ref=e1445]: lovely sliders!! awesome work!
+                  - generic [ref=e1446]:
+                    - img "Ahmad Awais" [ref=e1448]
+                    - link "Ahmad Awais" [ref=e1450] [cursor=pointer]:
+                      - /url: https://x.com/MrAhmadAwais/status/2052029483415425506
+                      - text: Ahmad Awais
+                    - generic [ref=e1452]: CEO @CommandCodeAI
+                - figure "Evil Rabbit Evil Rabbit Founding Designer @Vercel" [ref=e1455]:
+                  - blockquote [ref=e1456]:
+                    - paragraph [ref=e1457]:
+                      - text: niiiice one!
+                      - img "🤍" [ref=e1458]
+                  - generic [ref=e1459]:
+                    - img "Evil Rabbit" [ref=e1461]
+                    - link "Evil Rabbit" [ref=e1463] [cursor=pointer]:
+                      - /url: https://x.com/evilrabbit_/status/2046010757943566809
+                      - text: Evil Rabbit
+                    - generic [ref=e1465]: Founding Designer @Vercel
+                - figure "François Best François Best Creator of nuqs.dev" [ref=e1468]:
+                  - blockquote [ref=e1469]:
+                    - paragraph [ref=e1470]:
+                      - text: This looks insanely good
+                      - img "👀" [ref=e1471]
+                      - img "🔥" [ref=e1472]
+                  - generic [ref=e1473]:
+                    - img "François Best" [ref=e1475]
+                    - link "François Best" [ref=e1477] [cursor=pointer]:
+                      - /url: https://x.com/fortysevenfx/status/2040166992305328371
+                      - text: François Best
+                    - generic [ref=e1479]: Creator of nuqs.dev
+                - figure "Evil Rabbit Evil Rabbit Founding Designer @Vercel" [ref=e1482]:
+                  - blockquote [ref=e1483]:
+                    - paragraph [ref=e1484]:
+                      - img "🖤" [ref=e1485]
+                  - generic [ref=e1486]:
+                    - img "Evil Rabbit" [ref=e1488]
+                    - link "Evil Rabbit" [ref=e1490] [cursor=pointer]:
+                      - /url: https://x.com/evilrabbit_/status/2040096654196613419
+                      - text: Evil Rabbit
+                    - generic [ref=e1492]: Founding Designer @Vercel
+                - figure "joshpuckett joshpuckett Teaching at interfacecraft.dev" [ref=e1495]:
+                  - blockquote [ref=e1496]:
+                    - paragraph [ref=e1497]:
+                      - text: Yooo I love this
+                      - img "🎨" [ref=e1498]
+                  - generic [ref=e1499]:
+                    - img "joshpuckett" [ref=e1501]
+                    - link "joshpuckett" [ref=e1503] [cursor=pointer]:
+                      - /url: https://x.com/joshpuckett/status/2038713206764617896
+                      - text: joshpuckett
+                    - generic [ref=e1505]: Teaching at interfacecraft.dev
+                - figure "Harsh Harsh Building componentry.fun" [ref=e1508]:
+                  - blockquote [ref=e1509]:
+                    - paragraph [ref=e1510]: Cleannnn
+                  - generic [ref=e1511]:
+                    - img "Harsh" [ref=e1513]
+                    - link "Harsh" [ref=e1515] [cursor=pointer]:
+                      - /url: https://x.com/harshjdhv/status/2035010611512508481
+                      - text: Harsh
+                    - generic [ref=e1517]: Building componentry.fun
+                - figure "David Haz David Haz Creator of reactbits.dev" [ref=e1520]:
+                  - blockquote [ref=e1521]:
+                    - paragraph [ref=e1522]: Looks incredible!
+                  - generic [ref=e1523]:
+                    - img "David Haz" [ref=e1525]
+                    - link "David Haz" [ref=e1527] [cursor=pointer]:
+                      - /url: https://x.com/davidhdev/status/2034191466281513275
+                      - text: David Haz
+                    - generic [ref=e1529]: Creator of reactbits.dev
+                - figure "OrcDev OrcDev Creator of 8bitcn.com" [ref=e1532]:
+                  - blockquote [ref=e1533]:
+                    - paragraph [ref=e1534]: Đại is amazing
+                  - generic [ref=e1535]:
+                    - img "OrcDev" [ref=e1537]
+                    - link "OrcDev" [ref=e1539] [cursor=pointer]:
+                      - /url: https://x.com/orcdev/status/2032398810035417582
+                      - text: OrcDev
+                    - generic [ref=e1541]: Creator of 8bitcn.com
+                - figure "KapishDima KapishDima Creator of soundcn.xyz" [ref=e1544]:
+                  - blockquote [ref=e1545]:
+                    - paragraph [ref=e1546]:
+                      - text: As always, brilliant
+                      - img "🙏" [ref=e1547]
+                  - generic [ref=e1548]:
+                    - img "KapishDima" [ref=e1550]
+                    - link "KapishDima" [ref=e1552] [cursor=pointer]:
+                      - /url: https://x.com/kapish_dima/status/2028094092366807227
+                      - text: KapishDima
+                    - generic [ref=e1554]: Creator of soundcn.xyz
+                - figure "Brandon McConnell Brandon McConnell Frontend Engineer @mintlify" [ref=e1557]:
+                  - blockquote [ref=e1558]:
+                    - paragraph [ref=e1559]:
+                      - text: amazing, such cool libraries
+                      - img "🔥" [ref=e1560]
+                  - generic [ref=e1561]:
+                    - img "Brandon McConnell" [ref=e1563]
+                    - link "Brandon McConnell" [ref=e1565] [cursor=pointer]:
+                      - /url: https://x.com/branmcconnell/status/2028391281198862377
+                      - text: Brandon McConnell
+                    - generic [ref=e1567]: Frontend Engineer @mintlify
+                - figure "David Haz David Haz Creator of reactbits.dev" [ref=e1570]:
+                  - blockquote [ref=e1571]:
+                    - paragraph [ref=e1572]:
+                      - text: That’s so cool
+                      - img "😭" [ref=e1573]
+                  - generic [ref=e1574]:
+                    - img "David Haz" [ref=e1576]
+                    - link "David Haz" [ref=e1578] [cursor=pointer]:
+                      - /url: https://x.com/davidhdev/status/2025902761926132112
+                      - text: David Haz
+                    - generic [ref=e1580]: Creator of reactbits.dev
+                - figure "Matt Matt Creator of ui.bklit.com" [ref=e1583]:
+                  - blockquote [ref=e1584]:
+                    - paragraph [ref=e1585]:
+                      - text: great work bro
+                      - img "🤜🏼" [ref=e1586]
+                      - img "🤛🏼" [ref=e1587]
+                  - generic [ref=e1588]:
+                    - img "Matt" [ref=e1590]
+                    - link "Matt" [ref=e1592] [cursor=pointer]:
+                      - /url: https://x.com/uixmat/status/2023145872771436904
+                      - text: Matt
+                    - generic [ref=e1594]: Creator of ui.bklit.com
+                - figure "nuqs nuqs nuqs.dev" [ref=e1597]:
+                  - blockquote [ref=e1598]:
+                    - paragraph [ref=e1599]: Looks great!
+                  - generic [ref=e1600]:
+                    - img "nuqs" [ref=e1602]
+                    - link "nuqs" [ref=e1604] [cursor=pointer]:
+                      - /url: https://x.com/nuqs47ng/status/2020417206103023847
+                      - text: nuqs
+                    - generic [ref=e1606]: nuqs.dev
+                - figure "JohnPhamous JohnPhamous Design Engineer @Vercel" [ref=e1609]:
+                  - blockquote [ref=e1610]:
+                    - paragraph [ref=e1611]: nice
+                  - generic [ref=e1612]:
+                    - img "JohnPhamous" [ref=e1614]
+                    - link "JohnPhamous" [ref=e1616] [cursor=pointer]:
+                      - /url: https://x.com/JohnPhamous/status/2018355370855674244
+                      - text: JohnPhamous
+                    - generic [ref=e1618]: Design Engineer @Vercel
+                - figure "David Haz David Haz Creator of reactbits.dev" [ref=e1621]:
+                  - blockquote [ref=e1622]:
+                    - paragraph [ref=e1623]:
+                      - text: Simple and clean, love it!
+                      - img "🌟" [ref=e1624]
+                  - generic [ref=e1625]:
+                    - img "David Haz" [ref=e1627]
+                    - link "David Haz" [ref=e1629] [cursor=pointer]:
+                      - /url: https://x.com/davidhdev/status/2017868986969444511
+                      - text: David Haz
+                    - generic [ref=e1631]: Creator of reactbits.dev
+                - figure "shadcn shadcn Creator of shadcn/ui" [ref=e1634]:
+                  - blockquote [ref=e1635]:
+                    - paragraph [ref=e1636]: Congrats. Way to go.
+                  - generic [ref=e1637]:
+                    - img "shadcn" [ref=e1639]
+                    - link "shadcn" [ref=e1641] [cursor=pointer]:
+                      - /url: https://x.com/shadcn/status/2011452657702154747
+                      - text: shadcn
+                    - generic [ref=e1643]: Creator of shadcn/ui
+                - figure "Ajay Patel Ajay Patel Creator of shadcnstudio.com" [ref=e1646]:
+                  - blockquote [ref=e1647]:
+                    - paragraph [ref=e1648]:
+                      - text: This Portfolio is something else
+                      - img "😍" [ref=e1649]
+                  - generic [ref=e1650]:
+                    - img "Ajay Patel" [ref=e1652]
+                    - link "Ajay Patel" [ref=e1654] [cursor=pointer]:
+                      - /url: https://x.com/ajaypatel_aj/status/1992946036558778494
+                      - text: Ajay Patel
+                    - generic [ref=e1656]: Creator of shadcnstudio.com
+                - figure "shadcn shadcn Creator of shadcn/ui" [ref=e1659]:
+                  - blockquote [ref=e1660]:
+                    - paragraph [ref=e1661]: Nice
+                  - generic [ref=e1662]:
+                    - img "shadcn" [ref=e1664]
+                    - link "shadcn" [ref=e1666] [cursor=pointer]:
+                      - /url: https://x.com/shadcn/status/1992950153976991893
+                      - text: shadcn
+                    - generic [ref=e1668]: Creator of shadcn/ui
+                - figure "Zaid Zaid Creator of scira.ai" [ref=e1671]:
+                  - blockquote [ref=e1672]:
+                    - paragraph [ref=e1673]: super clean
+                  - generic [ref=e1674]:
+                    - img "Zaid" [ref=e1676]
+                    - link "Zaid" [ref=e1678] [cursor=pointer]:
+                      - /url: https://x.com/zaidmukaddam/status/1984599685974409374
+                      - text: Zaid
+                    - generic [ref=e1680]: Creator of scira.ai
+                - figure "Yonaries Yonaries Making orabrowser.com" [ref=e1683]:
+                  - blockquote [ref=e1684]:
+                    - paragraph [ref=e1685]: incredible portfolio i’ve seen by far
+                  - generic [ref=e1686]:
+                    - img "Yonaries" [ref=e1688]
+                    - link "Yonaries" [ref=e1690] [cursor=pointer]:
+                      - /url: https://x.com/YonathanDejene/status/1984529637309886639
+                      - text: Yonaries
+                    - generic [ref=e1692]: Making orabrowser.com
+                - figure "Aaron Aaron Design Engineer" [ref=e1695]:
+                  - blockquote [ref=e1696]:
+                    - paragraph [ref=e1697]: super cool portfolio!
+                  - generic [ref=e1698]:
+                    - img "Aaron" [ref=e1700]
+                    - link "Aaron" [ref=e1702] [cursor=pointer]:
+                      - /url: https://x.com/aaronmahlke/status/1955606729657344490
+                      - text: Aaron
+                    - generic [ref=e1704]: Design Engineer
+                - figure "Manu Arora Manu Arora Creator of ui.aceternity.com" [ref=e1707]:
+                  - blockquote [ref=e1708]:
+                    - paragraph [ref=e1709]: Great work on the portfolio
+                  - generic [ref=e1710]:
+                    - img "Manu Arora" [ref=e1712]
+                    - link "Manu Arora" [ref=e1714] [cursor=pointer]:
+                      - /url: https://x.com/mannupaaji/status/1944755561117163597
+                      - text: Manu Arora
+                    - generic [ref=e1716]: Creator of ui.aceternity.com
+                - figure "jordwalke jordwalke Creator of React" [ref=e1719]:
+                  - blockquote [ref=e1720]:
+                    - paragraph [ref=e1721]: Also, cool wheel picker!
+                  - generic [ref=e1722]:
+                    - img "jordwalke" [ref=e1724]
+                    - link "jordwalke" [ref=e1726] [cursor=pointer]:
+                      - /url: https://x.com/jordwalke/status/1937166049868439854
+                      - text: jordwalke
+                    - generic [ref=e1728]: Creator of React
+                - figure "jordwalke jordwalke Creator of React" [ref=e1731]:
+                  - blockquote [ref=e1732]:
+                    - paragraph [ref=e1733]: Looks great
+                  - generic [ref=e1734]:
+                    - img "jordwalke" [ref=e1736]
+                    - link "jordwalke" [ref=e1738] [cursor=pointer]:
+                      - /url: https://x.com/jordwalke/status/1937165909778657589
+                      - text: jordwalke
+                    - generic [ref=e1740]: Creator of React
+                - figure "Max Prilutskiy Max Prilutskiy CEO @Lingo.dev" [ref=e1743]:
+                  - blockquote [ref=e1744]:
+                    - paragraph [ref=e1745]: i like your style! :)
+                  - generic [ref=e1746]:
+                    - img "Max Prilutskiy" [ref=e1748]
+                    - link "Max Prilutskiy" [ref=e1750] [cursor=pointer]:
+                      - /url: https://x.com/MaxPrilutskiy/status/1923952193893466379
+                      - text: Max Prilutskiy
+                    - generic [ref=e1752]: CEO @Lingo.dev
+              - generic [ref=e1753]:
+                - figure "Evil Rabbit Evil Rabbit Founding Designer @Vercel" [ref=e1756]:
+                  - blockquote [ref=e1757]:
+                    - paragraph [ref=e1758]: sick
+                  - generic [ref=e1759]:
+                    - img "Evil Rabbit" [ref=e1761]
+                    - link "Evil Rabbit" [ref=e1763] [cursor=pointer]:
+                      - /url: https://x.com/evilrabbit_/status/2058279035390820692
+                      - text: Evil Rabbit
+                    - generic [ref=e1765]: Founding Designer @Vercel
+                - figure "Gurbinder Gurbinder Creator of evilcharts.com" [ref=e1768]:
+                  - blockquote [ref=e1769]:
+                    - paragraph [ref=e1770]: cool
+                  - generic [ref=e1771]:
+                    - img "Gurbinder" [ref=e1773]
+                    - link "Gurbinder" [ref=e1775] [cursor=pointer]:
+                      - /url: https://x.com/legionsdev/status/2057222692789756152
+                      - text: Gurbinder
+                    - generic [ref=e1777]: Creator of evilcharts.com
+                - figure "Ahmad Awais Ahmad Awais CEO @CommandCodeAI" [ref=e1780]:
+                  - blockquote [ref=e1781]:
+                    - paragraph [ref=e1782]: lovely sliders!! awesome work!
+                  - generic [ref=e1783]:
+                    - img "Ahmad Awais" [ref=e1785]
+                    - link "Ahmad Awais" [ref=e1787] [cursor=pointer]:
+                      - /url: https://x.com/MrAhmadAwais/status/2052029483415425506
+                      - text: Ahmad Awais
+                    - generic [ref=e1789]: CEO @CommandCodeAI
+                - figure "Evil Rabbit Evil Rabbit Founding Designer @Vercel" [ref=e1792]:
+                  - blockquote [ref=e1793]:
+                    - paragraph [ref=e1794]:
+                      - text: niiiice one!
+                      - img "🤍" [ref=e1795]
+                  - generic [ref=e1796]:
+                    - img "Evil Rabbit" [ref=e1798]
+                    - link "Evil Rabbit" [ref=e1800] [cursor=pointer]:
+                      - /url: https://x.com/evilrabbit_/status/2046010757943566809
+                      - text: Evil Rabbit
+                    - generic [ref=e1802]: Founding Designer @Vercel
+                - figure "François Best François Best Creator of nuqs.dev" [ref=e1805]:
+                  - blockquote [ref=e1806]:
+                    - paragraph [ref=e1807]:
+                      - text: This looks insanely good
+                      - img "👀" [ref=e1808]
+                      - img "🔥" [ref=e1809]
+                  - generic [ref=e1810]:
+                    - img "François Best" [ref=e1812]
+                    - link "François Best" [ref=e1814] [cursor=pointer]:
+                      - /url: https://x.com/fortysevenfx/status/2040166992305328371
+                      - text: François Best
+                    - generic [ref=e1816]: Creator of nuqs.dev
+                - figure "Evil Rabbit Evil Rabbit Founding Designer @Vercel" [ref=e1819]:
+                  - blockquote [ref=e1820]:
+                    - paragraph [ref=e1821]:
+                      - img "🖤" [ref=e1822]
+                  - generic [ref=e1823]:
+                    - img "Evil Rabbit" [ref=e1825]
+                    - link "Evil Rabbit" [ref=e1827] [cursor=pointer]:
+                      - /url: https://x.com/evilrabbit_/status/2040096654196613419
+                      - text: Evil Rabbit
+                    - generic [ref=e1829]: Founding Designer @Vercel
+                - figure "joshpuckett joshpuckett Teaching at interfacecraft.dev" [ref=e1832]:
+                  - blockquote [ref=e1833]:
+                    - paragraph [ref=e1834]:
+                      - text: Yooo I love this
+                      - img "🎨" [ref=e1835]
+                  - generic [ref=e1836]:
+                    - img "joshpuckett" [ref=e1838]
+                    - link "joshpuckett" [ref=e1840] [cursor=pointer]:
+                      - /url: https://x.com/joshpuckett/status/2038713206764617896
+                      - text: joshpuckett
+                    - generic [ref=e1842]: Teaching at interfacecraft.dev
+                - figure "Harsh Harsh Building componentry.fun" [ref=e1845]:
+                  - blockquote [ref=e1846]:
+                    - paragraph [ref=e1847]: Cleannnn
+                  - generic [ref=e1848]:
+                    - img "Harsh" [ref=e1850]
+                    - link "Harsh" [ref=e1852] [cursor=pointer]:
+                      - /url: https://x.com/harshjdhv/status/2035010611512508481
+                      - text: Harsh
+                    - generic [ref=e1854]: Building componentry.fun
+                - figure "David Haz David Haz Creator of reactbits.dev" [ref=e1857]:
+                  - blockquote [ref=e1858]:
+                    - paragraph [ref=e1859]: Looks incredible!
+                  - generic [ref=e1860]:
+                    - img "David Haz" [ref=e1862]
+                    - link "David Haz" [ref=e1864] [cursor=pointer]:
+                      - /url: https://x.com/davidhdev/status/2034191466281513275
+                      - text: David Haz
+                    - generic [ref=e1866]: Creator of reactbits.dev
+                - figure "OrcDev OrcDev Creator of 8bitcn.com" [ref=e1869]:
+                  - blockquote [ref=e1870]:
+                    - paragraph [ref=e1871]: Đại is amazing
+                  - generic [ref=e1872]:
+                    - img "OrcDev" [ref=e1874]
+                    - link "OrcDev" [ref=e1876] [cursor=pointer]:
+                      - /url: https://x.com/orcdev/status/2032398810035417582
+                      - text: OrcDev
+                    - generic [ref=e1878]: Creator of 8bitcn.com
+                - figure "KapishDima KapishDima Creator of soundcn.xyz" [ref=e1881]:
+                  - blockquote [ref=e1882]:
+                    - paragraph [ref=e1883]:
+                      - text: As always, brilliant
+                      - img "🙏" [ref=e1884]
+                  - generic [ref=e1885]:
+                    - img "KapishDima" [ref=e1887]
+                    - link "KapishDima" [ref=e1889] [cursor=pointer]:
+                      - /url: https://x.com/kapish_dima/status/2028094092366807227
+                      - text: KapishDima
+                    - generic [ref=e1891]: Creator of soundcn.xyz
+                - figure "Brandon McConnell Brandon McConnell Frontend Engineer @mintlify" [ref=e1894]:
+                  - blockquote [ref=e1895]:
+                    - paragraph [ref=e1896]:
+                      - text: amazing, such cool libraries
+                      - img "🔥" [ref=e1897]
+                  - generic [ref=e1898]:
+                    - img "Brandon McConnell" [ref=e1900]
+                    - link "Brandon McConnell" [ref=e1902] [cursor=pointer]:
+                      - /url: https://x.com/branmcconnell/status/2028391281198862377
+                      - text: Brandon McConnell
+                    - generic [ref=e1904]: Frontend Engineer @mintlify
+                - figure "David Haz David Haz Creator of reactbits.dev" [ref=e1907]:
+                  - blockquote [ref=e1908]:
+                    - paragraph [ref=e1909]:
+                      - text: That’s so cool
+                      - img "😭" [ref=e1910]
+                  - generic [ref=e1911]:
+                    - img "David Haz" [ref=e1913]
+                    - link "David Haz" [ref=e1915] [cursor=pointer]:
+                      - /url: https://x.com/davidhdev/status/2025902761926132112
+                      - text: David Haz
+                    - generic [ref=e1917]: Creator of reactbits.dev
+                - figure "Matt Matt Creator of ui.bklit.com" [ref=e1920]:
+                  - blockquote [ref=e1921]:
+                    - paragraph [ref=e1922]:
+                      - text: great work bro
+                      - img "🤜🏼" [ref=e1923]
+                      - img "🤛🏼" [ref=e1924]
+                  - generic [ref=e1925]:
+                    - img "Matt" [ref=e1927]
+                    - link "Matt" [ref=e1929] [cursor=pointer]:
+                      - /url: https://x.com/uixmat/status/2023145872771436904
+                      - text: Matt
+                    - generic [ref=e1931]: Creator of ui.bklit.com
+                - figure "nuqs nuqs nuqs.dev" [ref=e1934]:
+                  - blockquote [ref=e1935]:
+                    - paragraph [ref=e1936]: Looks great!
+                  - generic [ref=e1937]:
+                    - img "nuqs" [ref=e1939]
+                    - link "nuqs" [ref=e1941] [cursor=pointer]:
+                      - /url: https://x.com/nuqs47ng/status/2020417206103023847
+                      - text: nuqs
+                    - generic [ref=e1943]: nuqs.dev
+                - figure "JohnPhamous JohnPhamous Design Engineer @Vercel" [ref=e1946]:
+                  - blockquote [ref=e1947]:
+                    - paragraph [ref=e1948]: nice
+                  - generic [ref=e1949]:
+                    - img "JohnPhamous" [ref=e1951]
+                    - link "JohnPhamous" [ref=e1953] [cursor=pointer]:
+                      - /url: https://x.com/JohnPhamous/status/2018355370855674244
+                      - text: JohnPhamous
+                    - generic [ref=e1955]: Design Engineer @Vercel
+                - figure "David Haz David Haz Creator of reactbits.dev" [ref=e1958]:
+                  - blockquote [ref=e1959]:
+                    - paragraph [ref=e1960]:
+                      - text: Simple and clean, love it!
+                      - img "🌟" [ref=e1961]
+                  - generic [ref=e1962]:
+                    - img "David Haz" [ref=e1964]
+                    - link "David Haz" [ref=e1966] [cursor=pointer]:
+                      - /url: https://x.com/davidhdev/status/2017868986969444511
+                      - text: David Haz
+                    - generic [ref=e1968]: Creator of reactbits.dev
+                - figure "shadcn shadcn Creator of shadcn/ui" [ref=e1971]:
+                  - blockquote [ref=e1972]:
+                    - paragraph [ref=e1973]: Congrats. Way to go.
+                  - generic [ref=e1974]:
+                    - img "shadcn" [ref=e1976]
+                    - link "shadcn" [ref=e1978] [cursor=pointer]:
+                      - /url: https://x.com/shadcn/status/2011452657702154747
+                      - text: shadcn
+                    - generic [ref=e1980]: Creator of shadcn/ui
+                - figure "Ajay Patel Ajay Patel Creator of shadcnstudio.com" [ref=e1983]:
+                  - blockquote [ref=e1984]:
+                    - paragraph [ref=e1985]:
+                      - text: This Portfolio is something else
+                      - img "😍" [ref=e1986]
+                  - generic [ref=e1987]:
+                    - img "Ajay Patel" [ref=e1989]
+                    - link "Ajay Patel" [ref=e1991] [cursor=pointer]:
+                      - /url: https://x.com/ajaypatel_aj/status/1992946036558778494
+                      - text: Ajay Patel
+                    - generic [ref=e1993]: Creator of shadcnstudio.com
+                - figure "shadcn shadcn Creator of shadcn/ui" [ref=e1996]:
+                  - blockquote [ref=e1997]:
+                    - paragraph [ref=e1998]: Nice
+                  - generic [ref=e1999]:
+                    - img "shadcn" [ref=e2001]
+                    - link "shadcn" [ref=e2003] [cursor=pointer]:
+                      - /url: https://x.com/shadcn/status/1992950153976991893
+                      - text: shadcn
+                    - generic [ref=e2005]: Creator of shadcn/ui
+                - figure "Zaid Zaid Creator of scira.ai" [ref=e2008]:
+                  - blockquote [ref=e2009]:
+                    - paragraph [ref=e2010]: super clean
+                  - generic [ref=e2011]:
+                    - img "Zaid" [ref=e2013]
+                    - link "Zaid" [ref=e2015] [cursor=pointer]:
+                      - /url: https://x.com/zaidmukaddam/status/1984599685974409374
+                      - text: Zaid
+                    - generic [ref=e2017]: Creator of scira.ai
+                - figure "Yonaries Yonaries Making orabrowser.com" [ref=e2020]:
+                  - blockquote [ref=e2021]:
+                    - paragraph [ref=e2022]: incredible portfolio i’ve seen by far
+                  - generic [ref=e2023]:
+                    - img "Yonaries" [ref=e2025]
+                    - link "Yonaries" [ref=e2027] [cursor=pointer]:
+                      - /url: https://x.com/YonathanDejene/status/1984529637309886639
+                      - text: Yonaries
+                    - generic [ref=e2029]: Making orabrowser.com
+                - figure "Aaron Aaron Design Engineer" [ref=e2032]:
+                  - blockquote [ref=e2033]:
+                    - paragraph [ref=e2034]: super cool portfolio!
+                  - generic [ref=e2035]:
+                    - img "Aaron" [ref=e2037]
+                    - link "Aaron" [ref=e2039] [cursor=pointer]:
+                      - /url: https://x.com/aaronmahlke/status/1955606729657344490
+                      - text: Aaron
+                    - generic [ref=e2041]: Design Engineer
+                - figure "Manu Arora Manu Arora Creator of ui.aceternity.com" [ref=e2044]:
+                  - blockquote [ref=e2045]:
+                    - paragraph [ref=e2046]: Great work on the portfolio
+                  - generic [ref=e2047]:
+                    - img "Manu Arora" [ref=e2049]
+                    - link "Manu Arora" [ref=e2051] [cursor=pointer]:
+                      - /url: https://x.com/mannupaaji/status/1944755561117163597
+                      - text: Manu Arora
+                    - generic [ref=e2053]: Creator of ui.aceternity.com
+                - figure "jordwalke jordwalke Creator of React" [ref=e2056]:
+                  - blockquote [ref=e2057]:
+                    - paragraph [ref=e2058]: Also, cool wheel picker!
+                  - generic [ref=e2059]:
+                    - img "jordwalke" [ref=e2061]
+                    - link "jordwalke" [ref=e2063] [cursor=pointer]:
+                      - /url: https://x.com/jordwalke/status/1937166049868439854
+                      - text: jordwalke
+                    - generic [ref=e2065]: Creator of React
+                - figure "jordwalke jordwalke Creator of React" [ref=e2068]:
+                  - blockquote [ref=e2069]:
+                    - paragraph [ref=e2070]: Looks great
+                  - generic [ref=e2071]:
+                    - img "jordwalke" [ref=e2073]
+                    - link "jordwalke" [ref=e2075] [cursor=pointer]:
+                      - /url: https://x.com/jordwalke/status/1937165909778657589
+                      - text: jordwalke
+                    - generic [ref=e2077]: Creator of React
+                - figure "Max Prilutskiy Max Prilutskiy CEO @Lingo.dev" [ref=e2080]:
+                  - blockquote [ref=e2081]:
+                    - paragraph [ref=e2082]: i like your style! :)
+                  - generic [ref=e2083]:
+                    - img "Max Prilutskiy" [ref=e2085]
+                    - link "Max Prilutskiy" [ref=e2087] [cursor=pointer]:
+                      - /url: https://x.com/MaxPrilutskiy/status/1923952193893466379
+                      - text: Max Prilutskiy
+                    - generic [ref=e2089]: CEO @Lingo.dev
+          - button "All builders" [ref=e2091] [cursor=pointer]:
+            - text: All builders
+            - img
+        - generic [ref=e2093]:
+          - heading "Components(35) Copy link to section" [level=2] [ref=e2095]:
+            - link "Components" [ref=e2096] [cursor=pointer]:
+              - /url: "#components"
+            - superscript [ref=e2097]: (35)
+            - button "Copy link to section" [ref=e2098]:
+              - generic [ref=e2099]:
+                - img
+          - list [ref=e2102]:
+            - listitem [ref=e2103]:
+              - link "New Spotlight Logo" [ref=e2104] [cursor=pointer]:
+                - /url: /components/spotlight-logo
+                - generic [ref=e2105]:
+                  - img
+                  - generic "New" [ref=e2106]
+                - heading "Spotlight Logo" [level=3] [ref=e2108]
+            - listitem [ref=e2109]:
+              - link "New Line Nav" [ref=e2110] [cursor=pointer]:
+                - /url: /components/line-nav
+                - generic [ref=e2111]:
+                  - img
+                  - generic "New" [ref=e2112]
+                - heading "Line Nav" [level=3] [ref=e2114]
+            - listitem [ref=e2115]:
+              - link "New Share Menu" [ref=e2116] [cursor=pointer]:
+                - /url: /components/share-menu
+                - generic [ref=e2117]:
+                  - img
+                  - generic "New" [ref=e2118]
+                - heading "Share Menu" [level=3] [ref=e2120]
+            - listitem [ref=e2121]:
+              - link "New Testimonial 2" [ref=e2122] [cursor=pointer]:
+                - /url: /components/testimonial-2
+                - generic [ref=e2123]:
+                  - img
+                  - generic "New" [ref=e2124]
+                - heading "Testimonial 2" [level=3] [ref=e2126]
+            - listitem [ref=e2127]:
+              - link "New Logos Carousel" [ref=e2128] [cursor=pointer]:
+                - /url: /components/logos-carousel
+                - generic [ref=e2129]:
+                  - img
+                  - generic "New" [ref=e2130]
+                - heading "Logos Carousel" [level=3] [ref=e2132]
+            - listitem [ref=e2133]:
+              - link "Chevrons Up Down Icon" [ref=e2134] [cursor=pointer]:
+                - /url: /components/chevrons-up-down-icon
+                - generic [ref=e2135]:
+                  - img
+                - heading "Chevrons Up Down Icon" [level=3] [ref=e2136]
+            - listitem [ref=e2137]:
+              - link "Mobius Loop Icon" [ref=e2138] [cursor=pointer]:
+                - /url: /components/mobius-loop-icon
+                - generic [ref=e2139]:
+                  - img
+                - heading "Mobius Loop Icon" [level=3] [ref=e2140]
+            - listitem [ref=e2141]:
+              - link "Spinning Circular Text" [ref=e2142] [cursor=pointer]:
+                - /url: /components/spinning-circular-text
+                - generic [ref=e2143]:
+                  - img
+                - heading "Spinning Circular Text" [level=3] [ref=e2144]
+            - listitem [ref=e2145]:
+              - link "Dot Grid Spotlight" [ref=e2146] [cursor=pointer]:
+                - /url: /components/dot-grid-spotlight
+                - generic [ref=e2147]:
+                  - img
+                - heading "Dot Grid Spotlight" [level=3] [ref=e2148]
+            - listitem [ref=e2149]:
+              - link "Icon Swap" [ref=e2150] [cursor=pointer]:
+                - /url: /components/icon-swap
+                - generic [ref=e2151]:
+                  - img
+                - heading "Icon Swap" [level=3] [ref=e2152]
+            - listitem [ref=e2153]:
+              - link "Brand Assets Menu" [ref=e2154] [cursor=pointer]:
+                - /url: /components/brand-assets-menu
+                - generic [ref=e2155]:
+                  - img
+                - heading "Brand Assets Menu" [level=3] [ref=e2156]
+            - listitem [ref=e2157]:
+              - link "Fluid Gradient Text" [ref=e2158] [cursor=pointer]:
+                - /url: /components/fluid-gradient-text
+                - generic [ref=e2159]:
+                  - img
+                - heading "Fluid Gradient Text" [level=3] [ref=e2160]
+          - button "All components" [ref=e2163] [cursor=pointer]:
+            - text: All components
+            - img
+        - generic [ref=e2165]:
+          - heading "Blog(13) Copy link to section" [level=2] [ref=e2167]:
+            - link "Blog" [ref=e2168] [cursor=pointer]:
+              - /url: "#blog"
+            - superscript [ref=e2169]: (13)
+            - button "Copy link to section" [ref=e2170]:
+              - generic [ref=e2171]:
+                - img
+          - list [ref=e2173]:
+            - listitem [ref=e2174]:
+              - generic [ref=e2175]:
+                - img "React Wheel Picker joins Vercel Open Source Program" [ref=e2177]
+                - generic [ref=e2178]:
+                  - heading "React Wheel Picker joins Vercel Open Source Program" [level=3] [ref=e2179]:
+                    - link "React Wheel Picker joins Vercel Open Source Program" [ref=e2180] [cursor=pointer]:
+                      - /url: /blog/react-wheel-picker-joins-vercel-open-source-program
+                      - text: React Wheel Picker joins Vercel Open Source Program
+                  - generic [ref=e2182]:
+                    - term [ref=e2183]: Published on
+                    - definition [ref=e2184]:
+                      - time [ref=e2185]: 24.07.2025
+            - listitem [ref=e2186]:
+              - generic [ref=e2187]:
+                - img "Followed by @shadcn on X" [ref=e2189]
+                - generic [ref=e2190]:
+                  - heading "Followed by @shadcn on X" [level=3] [ref=e2191]:
+                    - link "Followed by @shadcn on X" [ref=e2192] [cursor=pointer]:
+                      - /url: /blog/followed-by-shadcn-on-x
+                      - text: Followed by @shadcn on X
+                  - generic [ref=e2194]:
+                    - term [ref=e2195]: Published on
+                    - definition [ref=e2196]:
+                      - time [ref=e2197]: 21.06.2025
+            - listitem [ref=e2198]:
+              - generic [ref=e2199]:
+                - img "OrcDev discovered the wildest shadcn component libraries ever" [ref=e2201]
+                - generic [ref=e2202]:
+                  - heading "OrcDev discovered the wildest shadcn component libraries ever" [level=3] [ref=e2203]:
+                    - link "OrcDev discovered the wildest shadcn component libraries ever" [ref=e2204] [cursor=pointer]:
+                      - /url: /blog/orcdev-discovered-the-wildest-shadcn-component-libraries-ever
+                      - text: OrcDev discovered the wildest shadcn component libraries ever
+                  - generic [ref=e2206]:
+                    - term [ref=e2207]: Published on
+                    - definition [ref=e2208]:
+                      - time [ref=e2209]: 27.03.2026
+            - listitem [ref=e2210]:
+              - generic [ref=e2211]:
+                - img "OrcDev and Francesco Ciulla reviewed my open source portfolio" [ref=e2213]
+                - generic [ref=e2214]:
+                  - heading "OrcDev and Francesco Ciulla reviewed my open source portfolio" [level=3] [ref=e2215]:
+                    - link "OrcDev and Francesco Ciulla reviewed my open source portfolio" [ref=e2216] [cursor=pointer]:
+                      - /url: /blog/orcdev-and-francesco-ciulla-reviewed-my-open-source-portfolio
+                      - text: OrcDev and Francesco Ciulla reviewed my open source portfolio
+                  - generic [ref=e2218]:
+                    - term [ref=e2219]: Published on
+                    - definition [ref=e2220]:
+                      - time [ref=e2221]: 04.01.2026
+            - listitem [ref=e2222]:
+              - generic [ref=e2223]:
+                - 'img "chanhdai.com highlighted in video by creator of Aceternity UI: Make your portfolio unforgettable" [ref=e2225]'
+                - generic [ref=e2226]:
+                  - 'heading "chanhdai.com highlighted in video by creator of Aceternity UI: Make your portfolio unforgettable" [level=3] [ref=e2227]':
+                    - 'link "chanhdai.com highlighted in video by creator of Aceternity UI: Make your portfolio unforgettable" [ref=e2228] [cursor=pointer]':
+                      - /url: /blog/chanhdai-com-highlighted-in-video-by-creator-of-aceternity-ui-make-your-portfolio-unforgettable
+                      - text: "chanhdai.com highlighted in video by creator of Aceternity UI: Make your portfolio unforgettable"
+                  - generic [ref=e2230]:
+                    - term [ref=e2231]: Published on
+                    - definition [ref=e2232]:
+                      - time [ref=e2233]: 18.11.2025
+            - listitem [ref=e2234]:
+              - generic [ref=e2235]:
+                - img "Tips for creating beautiful image borders" [ref=e2237]
+                - generic [ref=e2238]:
+                  - heading "Tips for creating beautiful image borders" [level=3] [ref=e2239]:
+                    - link "Tips for creating beautiful image borders" [ref=e2240] [cursor=pointer]:
+                      - /url: /blog/tips-for-creating-beautiful-image-borders
+                      - text: Tips for creating beautiful image borders
+                  - generic [ref=e2242]:
+                    - term [ref=e2243]: Published on
+                    - definition [ref=e2244]:
+                      - time [ref=e2245]: 13.09.2025
+          - button "All posts" [ref=e2247] [cursor=pointer]:
+            - text: All posts
+            - img
+        - generic [ref=e2249]:
+          - heading "Stack Copy link to section" [level=2] [ref=e2251]:
+            - link "Stack" [ref=e2252] [cursor=pointer]:
+              - /url: "#stack"
+            - button "Copy link to section" [ref=e2253]:
+              - generic [ref=e2254]:
+                - img
+          - generic [ref=e2255]:
+            - generic [ref=e2256]:
+              - generic [ref=e2257]: 01Language
+              - list "Language" [ref=e2258]:
+                - listitem [ref=e2259]:
+                  - link "TypeScript" [ref=e2260] [cursor=pointer]:
+                    - /url: https://www.typescriptlang.org
+                    - img
+                    - text: TypeScript
+                - listitem [ref=e2261]:
+                  - link "JavaScript" [ref=e2262] [cursor=pointer]:
+                    - /url: https://developer.mozilla.org/en-US/docs/Web/JavaScript
+                    - img
+                    - text: JavaScript
+                - listitem [ref=e2263]:
+                  - link "Python" [ref=e2264] [cursor=pointer]:
+                    - /url: https://www.python.org
+                    - img
+                    - text: Python
+            - generic [ref=e2265]:
+              - generic [ref=e2266]: 02Frontend
+              - list "Frontend" [ref=e2267]:
+                - listitem [ref=e2268]:
+                  - link "React" [ref=e2269] [cursor=pointer]:
+                    - /url: https://react.dev
+                    - img
+                    - text: React
+                - listitem [ref=e2270]:
+                  - link "Next.js" [ref=e2271] [cursor=pointer]:
+                    - /url: https://nextjs.org
+                    - img
+                    - text: Next.js
+                - listitem [ref=e2272]:
+                  - link "Tailwind CSS" [ref=e2273] [cursor=pointer]:
+                    - /url: https://tailwindcss.com
+                    - img
+                    - text: Tailwind CSS
+                - listitem [ref=e2274]:
+                  - link "shadcn/ui" [ref=e2275] [cursor=pointer]:
+                    - /url: https://ui.shadcn.com
+                    - img
+                    - text: shadcn/ui
+                - listitem [ref=e2276]:
+                  - link "Radix UI" [ref=e2277] [cursor=pointer]:
+                    - /url: https://www.radix-ui.com
+                    - img
+                    - text: Radix UI
+                - listitem [ref=e2278]:
+                  - link "Base UI" [ref=e2279] [cursor=pointer]:
+                    - /url: https://base-ui.com
+                    - img
+                    - text: Base UI
+                - listitem [ref=e2280]:
+                  - link "Motion" [ref=e2281] [cursor=pointer]:
+                    - /url: https://motion.dev
+                    - img
+                    - text: Motion
+                - listitem [ref=e2282]:
+                  - link "Expo" [ref=e2283] [cursor=pointer]:
+                    - /url: https://expo.dev
+                    - img
+                    - text: Expo
+                - listitem [ref=e2284]:
+                  - link "TanStack" [ref=e2285] [cursor=pointer]:
+                    - /url: https://tanstack.com
+                    - img
+                    - text: TanStack
+                - listitem [ref=e2286]:
+                  - link "MobX-State-Tree" [ref=e2287] [cursor=pointer]:
+                    - /url: https://mobx-state-tree.js.org
+                    - img
+                    - text: MobX-State-Tree
+            - generic [ref=e2288]:
+              - generic [ref=e2289]: 03Backend & Database
+              - list "Backend & Database" [ref=e2290]:
+                - listitem [ref=e2291]:
+                  - link "Node.js" [ref=e2292] [cursor=pointer]:
+                    - /url: https://nodejs.org
+                    - img
+                    - text: Node.js
+                - listitem [ref=e2293]:
+                  - link "Bun" [ref=e2294] [cursor=pointer]:
+                    - /url: https://bun.sh
+                    - img
+                    - text: Bun
+                - listitem [ref=e2295]:
+                  - link "PostgreSQL" [ref=e2296] [cursor=pointer]:
+                    - /url: https://www.postgresql.org
+                    - img
+                    - text: PostgreSQL
+                - listitem [ref=e2297]:
+                  - link "MongoDB" [ref=e2298] [cursor=pointer]:
+                    - /url: https://www.mongodb.com
+                    - img
+                    - text: MongoDB
+                - listitem [ref=e2299]:
+                  - link "Redis" [ref=e2300] [cursor=pointer]:
+                    - /url: https://redis.io
+                    - img
+                    - text: Redis
+                - listitem [ref=e2301]:
+                  - link "nginx" [ref=e2302] [cursor=pointer]:
+                    - /url: https://nginx.org
+                    - img
+                    - text: nginx
+            - generic [ref=e2303]:
+              - generic [ref=e2304]: 04Workflow & AI
+              - list "Workflow & AI" [ref=e2305]:
+                - listitem [ref=e2306]:
+                  - link "Cursor" [ref=e2307] [cursor=pointer]:
+                    - /url: https://cursor.com
+                    - img
+                    - text: Cursor
+                - listitem [ref=e2308]:
+                  - link "Claude" [ref=e2309] [cursor=pointer]:
+                    - /url: https://claude.ai
+                    - img
+                    - text: Claude
+                - listitem [ref=e2310]:
+                  - link "Gemini" [ref=e2311] [cursor=pointer]:
+                    - /url: https://gemini.google.com
+                    - img
+                    - text: Gemini
+                - listitem [ref=e2312]:
+                  - link "ChatGPT" [ref=e2313] [cursor=pointer]:
+                    - /url: https://chatgpt.com
+                    - img
+                    - text: ChatGPT
+                - listitem [ref=e2314]:
+                  - link "Git" [ref=e2315] [cursor=pointer]:
+                    - /url: https://git-scm.com
+                    - img
+                    - text: Git
+                - listitem [ref=e2316]:
+                  - link "GitHub" [ref=e2317] [cursor=pointer]:
+                    - /url: https://github.com
+                    - img
+                    - text: GitHub
+                - listitem [ref=e2318]:
+                  - link "Docker" [ref=e2319] [cursor=pointer]:
+                    - /url: https://www.docker.com
+                    - img
+                    - text: Docker
+                - listitem [ref=e2320]:
+                  - link "Vercel" [ref=e2321] [cursor=pointer]:
+                    - /url: https://vercel.com
+                    - img
+                    - text: Vercel
+            - generic [ref=e2322]:
+              - generic [ref=e2323]: 05Analytics
+              - list "Analytics" [ref=e2324]:
+                - listitem [ref=e2325]:
+                  - link "OpenPanel" [ref=e2326] [cursor=pointer]:
+                    - /url: https://openpanel.dev
+                    - img
+                    - text: OpenPanel
+                - listitem [ref=e2327]:
+                  - link "PostHog" [ref=e2328] [cursor=pointer]:
+                    - /url: https://posthog.com
+                    - img
+                    - text: PostHog
+            - generic [ref=e2329]:
+              - generic [ref=e2330]: 06Design
+              - list "Design" [ref=e2331]:
+                - listitem [ref=e2332]:
+                  - link "Figma" [ref=e2333] [cursor=pointer]:
+                    - /url: https://www.figma.com
+                    - img
+                    - text: Figma
+                - listitem [ref=e2334]:
+                  - link "Paper" [ref=e2335] [cursor=pointer]:
+                    - /url: https://paper.design
+                    - img
+                    - text: Paper
+                - listitem [ref=e2336]:
+                  - link "Photoshop" [ref=e2337] [cursor=pointer]:
+                    - /url: https://www.adobe.com/vn_en/products/photoshop.html
+                    - img
+                    - text: Photoshop
+        - generic [ref=e2339]:
+          - heading "Experience Copy link to section" [level=2] [ref=e2341]:
+            - link "Experience" [ref=e2342] [cursor=pointer]:
+              - /url: "#experience"
+            - button "Copy link to section" [ref=e2343]:
+              - generic [ref=e2344]:
+                - img
+          - generic [ref=e2345]:
+            - generic [ref=e2346]:
+              - generic [ref=e2350]:
+                - heading "JS Pharmacy" [level=3] [ref=e2351]
+                - generic [ref=e2352]:
+                  - term [ref=e2353]: Location
+                  - definition [ref=e2354]: Philippines
+                  - term [ref=e2355]: Location type
+                  - definition [ref=e2356]: (Remote)
+                  - term [ref=e2357]: Employment status
+                  - definition [ref=e2358]:
+                    - generic [ref=e2359]: Current
+              - generic [ref=e2364]:
+                - button "Software Developer Employment Type Full-time Employment Period 2025 — Present Duration 1y 7m" [expanded] [ref=e2365]:
+                  - generic [ref=e2366]:
+                    - img [ref=e2368]
+                    - heading "Software Developer" [level=4] [ref=e2372]
+                    - img [ref=e2374]
+                  - generic [ref=e2377]:
+                    - generic [ref=e2378]:
+                      - term [ref=e2379]: Employment Type
+                      - definition [ref=e2380]: Full-time
+                    - generic [ref=e2381]:
+                      - term [ref=e2382]: Employment Period
+                      - definition [ref=e2383]:
+                        - generic [ref=e2384]: "2025"
+                        - generic [ref=e2385]: —
+                        - img "Present" [ref=e2386]
+                    - generic [ref=e2388]:
+                      - term [ref=e2389]: Duration
+                      - definition [ref=e2390]: 1y 7m
+                - list [ref=e2393]:
+                  - listitem [ref=e2394]: Building and maintaining full stack web applications
+                  - listitem [ref=e2395]: Developing API integrations and database architectures
+                  - listitem [ref=e2396]: Implementing responsive UI/UX designs
+                  - listitem [ref=e2397]: Collaborating with cross-functional teams on production systems
+                - list [ref=e2398]:
+                  - listitem [ref=e2399]:
+                    - generic [ref=e2400]: React
+                  - listitem [ref=e2401]:
+                    - generic [ref=e2402]: TypeScript
+                  - listitem [ref=e2403]:
+                    - generic [ref=e2404]: Node.js
+                  - listitem [ref=e2405]:
+                    - generic [ref=e2406]: Python
+                  - listitem [ref=e2407]:
+                    - generic [ref=e2408]: Database Design
+                  - listitem [ref=e2409]:
+                    - generic [ref=e2410]: API Development
+            - generic [ref=e2411]:
+              - generic [ref=e2415]:
+                - heading "Wilshire Financial Network" [level=3] [ref=e2416]
+                - generic [ref=e2417]:
+                  - term [ref=e2418]: Location
+                  - definition [ref=e2419]: United States
+                  - term [ref=e2420]: Location type
+                  - definition [ref=e2421]: (Remote)
+              - generic [ref=e2423]:
+                - button "AI Solutions Developer Employment Type Full-time Employment Period 06.2024 — 01.2025 Duration 8m" [ref=e2424]:
+                  - generic [ref=e2425]:
+                    - img [ref=e2427]
+                    - heading "AI Solutions Developer" [level=4] [ref=e2429]
+                    - img [ref=e2431]
+                  - generic [ref=e2434]:
+                    - generic [ref=e2435]:
+                      - term [ref=e2436]: Employment Type
+                      - definition [ref=e2437]: Full-time
+                    - generic [ref=e2438]:
+                      - term [ref=e2439]: Employment Period
+                      - definition [ref=e2440]:
+                        - generic [ref=e2441]: "06.2024"
+                        - generic [ref=e2442]: —
+                        - generic [ref=e2443]: "01.2025"
+                    - generic [ref=e2444]:
+                      - term [ref=e2445]: Duration
+                      - definition [ref=e2446]: 8m
+                - list [ref=e2447]:
+                  - listitem [ref=e2448]:
+                    - generic [ref=e2449]: AI Automation
+                  - listitem [ref=e2450]:
+                    - generic [ref=e2451]: Python
+                  - listitem [ref=e2452]:
+                    - generic [ref=e2453]: LLM Integration
+                  - listitem [ref=e2454]:
+                    - generic [ref=e2455]: Prompt Engineering
+                  - listitem [ref=e2456]:
+                    - generic [ref=e2457]: Financial Tech
+                  - listitem [ref=e2458]:
+                    - generic [ref=e2459]: Data Processing
+            - generic [ref=e2460]:
+              - generic [ref=e2461]:
+                - generic [ref=e2462]:
+                  - img
+                - heading "Freelance" [level=3] [ref=e2464]
+              - generic [ref=e2466]:
+                - button "Full Stack Developer Employment Type Part-time Employment Period 2023 — 2024 Duration 1y" [ref=e2467]:
+                  - generic [ref=e2468]:
+                    - img [ref=e2470]
+                    - heading "Full Stack Developer" [level=4] [ref=e2474]
+                    - img [ref=e2476]
+                  - generic [ref=e2479]:
+                    - generic [ref=e2480]:
+                      - term [ref=e2481]: Employment Type
+                      - definition [ref=e2482]: Part-time
+                    - generic [ref=e2483]:
+                      - term [ref=e2484]: Employment Period
+                      - definition [ref=e2485]:
+                        - generic [ref=e2486]: "2023"
+                        - generic [ref=e2487]: —
+                        - generic [ref=e2488]: "2024"
+                    - generic [ref=e2489]:
+                      - term [ref=e2490]: Duration
+                      - definition [ref=e2491]: 1y
+                - list [ref=e2492]:
+                  - listitem [ref=e2493]:
+                    - generic [ref=e2494]: React
+                  - listitem [ref=e2495]:
+                    - generic [ref=e2496]: TypeScript
+                  - listitem [ref=e2497]:
+                    - generic [ref=e2498]: Node.js
+                  - listitem [ref=e2499]:
+                    - generic [ref=e2500]: Python
+                  - listitem [ref=e2501]:
+                    - generic [ref=e2502]: AI Automation
+                  - listitem [ref=e2503]:
+                    - generic [ref=e2504]: Database Design
+                  - listitem [ref=e2505]:
+                    - generic [ref=e2506]: API Development
+        - generic [ref=e2508]:
+          - heading "Education Copy link to section" [level=2] [ref=e2510]:
+            - link "Education" [ref=e2511] [cursor=pointer]:
+              - /url: "#education"
+            - button "Copy link to section" [ref=e2512]:
+              - generic [ref=e2513]:
+                - img
+          - generic [ref=e2516]:
+            - button "University of Caloocan City Employment period 08.2022 — 06.2026 Degree Bachelor of Science Field of study Computer Science" [ref=e2517]:
+              - generic [ref=e2518]:
+                - img [ref=e2520]
+                - heading "University of Caloocan City" [level=3] [ref=e2523]
+                - img [ref=e2525]
+              - generic [ref=e2528]:
+                - generic [ref=e2529]:
+                  - term [ref=e2530]: Employment period
+                  - definition [ref=e2531]:
+                    - generic [ref=e2532]: "08.2022"
+                    - generic [ref=e2533]: —
+                    - generic [ref=e2534]: "06.2026"
+                - generic [ref=e2536]:
+                  - term [ref=e2537]: Degree
+                  - definition [ref=e2538]: Bachelor of Science
+                - generic [ref=e2540]:
+                  - term [ref=e2541]: Field of study
+                  - definition [ref=e2542]: Computer Science
+            - list [ref=e2543]:
+              - listitem [ref=e2544]:
+                - generic [ref=e2545]: React
+              - listitem [ref=e2546]:
+                - generic [ref=e2547]: TypeScript
+              - listitem [ref=e2548]:
+                - generic [ref=e2549]: Node.js
+              - listitem [ref=e2550]:
+                - generic [ref=e2551]: Python
+              - listitem [ref=e2552]:
+                - generic [ref=e2553]: Java
+              - listitem [ref=e2554]:
+                - generic [ref=e2555]: PHP
+              - listitem [ref=e2556]:
+                - generic [ref=e2557]: MySQL
+              - listitem [ref=e2558]:
+                - generic [ref=e2559]: Data Structures
+              - listitem [ref=e2560]:
+                - generic [ref=e2561]: Algorithms
+              - listitem [ref=e2562]:
+                - generic [ref=e2563]: Software Engineering
+        - generic [ref=e2565]:
+          - heading "Projects(5) Copy link to section" [level=2] [ref=e2567]:
+            - link "Projects" [ref=e2568] [cursor=pointer]:
+              - /url: "#projects"
+            - superscript [ref=e2569]: (5)
+            - button "Copy link to section" [ref=e2570]:
+              - generic [ref=e2571]:
+                - img
+          - generic [ref=e2572]:
+            - list [ref=e2573]:
+              - listitem [ref=e2574]:
+                - generic [ref=e2576]:
+                  - img [ref=e2577]
+                  - button "namias.tech Period 01.2024 — Present Open project" [ref=e2579]:
+                    - generic [ref=e2580]:
+                      - heading "namias.tech" [level=3] [ref=e2581]
+                      - generic [ref=e2582]:
+                        - term [ref=e2583]: Period
+                        - definition [ref=e2584]:
+                          - generic [ref=e2585]: "01.2024"
+                          - generic [ref=e2586]: —
+                          - img "Present" [ref=e2587]
+                    - link "Open project" [ref=e2589] [cursor=pointer]:
+                      - /url: https://github.com/PP-Namias/Portfolio?utm_source=namias.tech
+                      - img
+                    - img [ref=e2591]
+              - listitem [ref=e2594]:
+                - generic [ref=e2596]:
+                  - img [ref=e2597]
+                  - button "AI Chatbot Systems Period 06.2024 — Present Open project" [ref=e2599]:
+                    - generic [ref=e2600]:
+                      - heading "AI Chatbot Systems" [level=3] [ref=e2601]
+                      - generic [ref=e2602]:
+                        - term [ref=e2603]: Period
+                        - definition [ref=e2604]:
+                          - generic [ref=e2605]: "06.2024"
+                          - generic [ref=e2606]: —
+                          - img "Present" [ref=e2607]
+                    - link "Open project" [ref=e2609] [cursor=pointer]:
+                      - /url: ""
+                      - img
+                    - img [ref=e2611]
+              - listitem [ref=e2614]:
+                - generic [ref=e2616]:
+                  - img [ref=e2617]
+                  - button "Enterprise HRIS Period 2024 — Present Open project" [ref=e2619]:
+                    - generic [ref=e2620]:
+                      - heading "Enterprise HRIS" [level=3] [ref=e2621]
+                      - generic [ref=e2622]:
+                        - term [ref=e2623]: Period
+                        - definition [ref=e2624]:
+                          - generic [ref=e2625]: "2024"
+                          - generic [ref=e2626]: —
+                          - img "Present" [ref=e2627]
+                    - link "Open project" [ref=e2629] [cursor=pointer]:
+                      - /url: ""
+                      - img
+                    - img [ref=e2631]
+              - listitem [ref=e2634]:
+                - generic [ref=e2636]:
+                  - img [ref=e2637]
+                  - button "JS Pharmacy Platform Period 2025 — Present Open project" [ref=e2639]:
+                    - generic [ref=e2640]:
+                      - heading "JS Pharmacy Platform" [level=3] [ref=e2641]
+                      - generic [ref=e2642]:
+                        - term [ref=e2643]: Period
+                        - definition [ref=e2644]:
+                          - generic [ref=e2645]: "2025"
+                          - generic [ref=e2646]: —
+                          - img "Present" [ref=e2647]
+                    - link "Open project" [ref=e2649] [cursor=pointer]:
+                      - /url: ""
+                      - img
+                    - img [ref=e2651]
+            - button "Show more" [ref=e2655]:
+              - generic [ref=e2656]: Show more
+              - img
+        - generic [ref=e2658]:
+          - heading "Awards(26) Copy link to section" [level=2] [ref=e2660]:
+            - link "Awards" [ref=e2661] [cursor=pointer]:
+              - /url: "#awards"
+            - superscript [ref=e2662]: (26)
+            - button "Copy link to section" [ref=e2663]:
+              - generic [ref=e2664]:
+                - img
+          - generic [ref=e2665]:
+            - list [ref=e2666]:
+              - listitem [ref=e2667]:
+                - generic [ref=e2669]:
+                  - generic [ref=e2670]:
+                    - img
+                  - button "▲Vercel OSS Program Prize Summer 2025 cohort Awarded in 07.2025 Received in Grade Personal project Open reference attachment" [ref=e2672]:
+                    - generic [ref=e2673]:
+                      - heading "▲Vercel OSS Program" [level=3] [ref=e2674]
+                      - generic [ref=e2675]:
+                        - generic [ref=e2676]:
+                          - term [ref=e2677]: Prize
+                          - definition [ref=e2678]: Summer 2025 cohort
+                        - generic [ref=e2680]:
+                          - term [ref=e2681]: Awarded in
+                          - definition [ref=e2682]:
+                            - time [ref=e2683]: "07.2025"
+                        - generic [ref=e2685]:
+                          - term [ref=e2686]: Received in Grade
+                          - definition [ref=e2687]: Personal project
+                    - link "Open reference attachment" [ref=e2688] [cursor=pointer]:
+                      - /url: https://vercel.com/blog/summer-2025-oss-program#react-wheel-picker
+                      - img
+                    - img [ref=e2690]
+              - listitem [ref=e2693]:
+                - generic [ref=e2695]:
+                  - generic [ref=e2696]:
+                    - img
+                  - button "10th Design, Manufacturing, and Application Award 2022 Prize Bronze Medal Awarded in 11.2022 Received in Grade University Open reference attachment" [ref=e2698]:
+                    - generic [ref=e2699]:
+                      - heading "10th Design, Manufacturing, and Application Award 2022" [level=3] [ref=e2700]
+                      - generic [ref=e2701]:
+                        - generic [ref=e2702]:
+                          - term [ref=e2703]: Prize
+                          - definition [ref=e2704]: Bronze Medal
+                        - generic [ref=e2706]:
+                          - term [ref=e2707]: Awarded in
+                          - definition [ref=e2708]:
+                            - time [ref=e2709]: "11.2022"
+                        - generic [ref=e2711]:
+                          - term [ref=e2712]: Received in Grade
+                          - definition [ref=e2713]: University
+                    - link "Open reference attachment" [ref=e2714] [cursor=pointer]:
+                      - /url: https://drive.google.com/file/d/1gmOG9_FTNAwdeR_eraYMCBBqaYuZOgoJ/view?usp=sharing
+                      - img
+                    - img [ref=e2716]
+              - listitem [ref=e2719]:
+                - generic [ref=e2721]:
+                  - generic [ref=e2722]:
+                    - img
+                  - button "Business Startup Competition 2019 Prize 2nd Prize Awarded in 05.2019 Received in Grade University Open reference attachment" [ref=e2724]:
+                    - generic [ref=e2725]:
+                      - heading "Business Startup Competition 2019" [level=3] [ref=e2726]
+                      - generic [ref=e2727]:
+                        - generic [ref=e2728]:
+                          - term [ref=e2729]: Prize
+                          - definition [ref=e2730]: 2nd Prize
+                        - generic [ref=e2732]:
+                          - term [ref=e2733]: Awarded in
+                          - definition [ref=e2734]:
+                            - time [ref=e2735]: "05.2019"
+                        - generic [ref=e2737]:
+                          - term [ref=e2738]: Received in Grade
+                          - definition [ref=e2739]: University
+                    - link "Open reference attachment" [ref=e2740] [cursor=pointer]:
+                      - /url: https://drive.google.com/file/d/1A_bwayALMZIfd12wL85SVGwAHD8lJjgh/view?usp=sharing
+                      - img
+                    - img [ref=e2742]
+              - listitem [ref=e2745]:
+                - generic [ref=e2747]:
+                  - generic [ref=e2748]:
+                    - img
+                  - button "Can Tho City Youth and Children’s Creativity Contest 2018 Prize 2nd Prize Awarded in 08.2018 Received in Grade Grade 12 Open reference attachment" [ref=e2750]:
+                    - generic [ref=e2751]:
+                      - heading "Can Tho City Youth and Children’s Creativity Contest 2018" [level=3] [ref=e2752]
+                      - generic [ref=e2753]:
+                        - generic [ref=e2754]:
+                          - term [ref=e2755]: Prize
+                          - definition [ref=e2756]: 2nd Prize
+                        - generic [ref=e2758]:
+                          - term [ref=e2759]: Awarded in
+                          - definition [ref=e2760]:
+                            - time [ref=e2761]: "08.2018"
+                        - generic [ref=e2763]:
+                          - term [ref=e2764]: Received in Grade
+                          - definition [ref=e2765]: Grade 12
+                    - link "Open reference attachment" [ref=e2766] [cursor=pointer]:
+                      - /url: https://drive.google.com/file/d/1gWK5V29q6RMwZ8Qgsx6ZkRI7EzAd4n5e/view?usp=sharing
+                      - img
+                    - img [ref=e2768]
+              - listitem [ref=e2771]:
+                - generic [ref=e2773]:
+                  - generic [ref=e2774]:
+                    - img
+                  - button "National Young Informatics Contest 2018 Prize 3rd Prize Awarded in 08.2018 Received in Grade Grade 12 Open reference attachment" [ref=e2776]:
+                    - generic [ref=e2777]:
+                      - heading "National Young Informatics Contest 2018" [level=3] [ref=e2778]
+                      - generic [ref=e2779]:
+                        - generic [ref=e2780]:
+                          - term [ref=e2781]: Prize
+                          - definition [ref=e2782]: 3rd Prize
+                        - generic [ref=e2784]:
+                          - term [ref=e2785]: Awarded in
+                          - definition [ref=e2786]:
+                            - time [ref=e2787]: "08.2018"
+                        - generic [ref=e2789]:
+                          - term [ref=e2790]: Received in Grade
+                          - definition [ref=e2791]: Grade 12
+                    - link "Open reference attachment" [ref=e2792] [cursor=pointer]:
+                      - /url: https://drive.google.com/file/d/1Te5Ygi89H3j4pH5Yvm9ipDKEcghQXYy_/view?usp=sharing
+                      - img
+                    - img [ref=e2794]
+              - listitem [ref=e2797]:
+                - generic [ref=e2799]:
+                  - generic [ref=e2800]:
+                    - img
+                  - button "Can Tho City Young Informatics Contest 2018 Prize 3rd Prize Awarded in 04.2018 Received in Grade Grade 12 Open reference attachment" [ref=e2802]:
+                    - generic [ref=e2803]:
+                      - heading "Can Tho City Young Informatics Contest 2018" [level=3] [ref=e2804]
+                      - generic [ref=e2805]:
+                        - generic [ref=e2806]:
+                          - term [ref=e2807]: Prize
+                          - definition [ref=e2808]: 3rd Prize
+                        - generic [ref=e2810]:
+                          - term [ref=e2811]: Awarded in
+                          - definition [ref=e2812]:
+                            - time [ref=e2813]: "04.2018"
+                        - generic [ref=e2815]:
+                          - term [ref=e2816]: Received in Grade
+                          - definition [ref=e2817]: Grade 12
+                    - link "Open reference attachment" [ref=e2818] [cursor=pointer]:
+                      - /url: https://drive.google.com/file/d/1rh02NpKpPr7AQnXldQk8FGgbc837EPeQ/view?usp=sharing
+                      - img
+                    - img [ref=e2820]
+            - button "Show more" [ref=e2824]:
+              - generic [ref=e2825]: Show more
+              - img
+        - generic [ref=e2827]:
+          - heading "Certifications(21) Copy link to section" [level=2] [ref=e2829]:
+            - link "Certifications" [ref=e2830] [cursor=pointer]:
+              - /url: "#certs"
+            - superscript [ref=e2831]: (21)
+            - button "Copy link to section" [ref=e2832]:
+              - generic [ref=e2833]:
+                - img
+          - generic [ref=e2834]:
+            - list [ref=e2835]:
+              - listitem [ref=e2836]:
+                - generic [ref=e2837]:
+                  - img [ref=e2839]
+                  - generic [ref=e2842]:
+                    - heading "Certificate of Trademark Registration No. 594593" [level=3] [ref=e2843]:
+                      - link "Certificate of Trademark Registration No. 594593" [ref=e2844] [cursor=pointer]:
+                        - /url: https://drive.google.com/file/d/1XrT62TF4FjItkT2TVq29OzJRm32Bcwfk/view?usp=sharing
+                        - text: Certificate of Trademark Registration No. 594593
+                    - generic [ref=e2846]:
+                      - generic [ref=e2847]:
+                        - term [ref=e2848]: Issued by
+                        - definition [ref=e2849]: "@Intellectual Property Office of Viet Nam"
+                      - generic [ref=e2851]:
+                        - term [ref=e2852]: Issued on
+                        - definition [ref=e2853]:
+                          - time [ref=e2854]: 04.02.2026
+                  - img [ref=e2855]
+              - listitem [ref=e2858]:
+                - generic [ref=e2859]:
+                  - img [ref=e2861]
+                  - generic [ref=e2863]:
+                    - heading "Gemini Certified Educator" [level=3] [ref=e2864]:
+                      - link "Gemini Certified Educator" [ref=e2865] [cursor=pointer]:
+                        - /url: https://edu.google.accredible.com/c05d3bad-3be0-4915-b41c-b8384357093a
+                        - text: Gemini Certified Educator
+                    - generic [ref=e2867]:
+                      - generic [ref=e2868]:
+                        - term [ref=e2869]: Issued by
+                        - definition [ref=e2870]: "@Google for Education"
+                      - generic [ref=e2872]:
+                        - term [ref=e2873]: Issued on
+                        - definition [ref=e2874]:
+                          - time [ref=e2875]: 09.12.2025
+                  - img [ref=e2876]
+              - listitem [ref=e2879]:
+                - generic [ref=e2880]:
+                  - img [ref=e2882]
+                  - generic [ref=e2885]:
+                    - heading "Certificate of Trademark Registration No. 584461" [level=3] [ref=e2886]:
+                      - link "Certificate of Trademark Registration No. 584461" [ref=e2887] [cursor=pointer]:
+                        - /url: https://drive.google.com/file/d/1paFtOlUGRgH6hXJ47hl3kxCA4HflAHje/view?usp=sharing
+                        - text: Certificate of Trademark Registration No. 584461
+                    - generic [ref=e2889]:
+                      - generic [ref=e2890]:
+                        - term [ref=e2891]: Issued by
+                        - definition [ref=e2892]: "@Intellectual Property Office of Viet Nam"
+                      - generic [ref=e2894]:
+                        - term [ref=e2895]: Issued on
+                        - definition [ref=e2896]:
+                          - time [ref=e2897]: 04.12.2025
+                  - img [ref=e2898]
+              - listitem [ref=e2901]:
+                - generic [ref=e2902]:
+                  - img [ref=e2904]
+                  - generic [ref=e2906]:
+                    - heading "Animations on the Web" [level=3] [ref=e2907]:
+                      - link "Animations on the Web" [ref=e2908] [cursor=pointer]:
+                        - /url: https://animations.dev/certificate/dfb419c8-5ed7-43f2-b60c-446bc50a39b1
+                        - text: Animations on the Web
+                    - generic [ref=e2910]:
+                      - generic [ref=e2911]:
+                        - term [ref=e2912]: Issued by
+                        - definition [ref=e2913]: "@animations.dev"
+                      - generic [ref=e2915]:
+                        - term [ref=e2916]: Issued on
+                        - definition [ref=e2917]:
+                          - time [ref=e2918]: 03.11.2025
+                  - img [ref=e2919]
+              - listitem [ref=e2922]:
+                - generic [ref=e2923]:
+                  - img [ref=e2925]
+                  - generic [ref=e2928]:
+                    - heading "Certificate of Trademark Registration No. 565092" [level=3] [ref=e2929]:
+                      - link "Certificate of Trademark Registration No. 565092" [ref=e2930] [cursor=pointer]:
+                        - /url: https://drive.google.com/file/d/1NgRp81ZAAUKEtuI9RefG0e8yni6JkoE8/view?usp=sharing
+                        - text: Certificate of Trademark Registration No. 565092
+                    - generic [ref=e2932]:
+                      - generic [ref=e2933]:
+                        - term [ref=e2934]: Issued by
+                        - definition [ref=e2935]: "@Intellectual Property Office of Viet Nam"
+                      - generic [ref=e2937]:
+                        - term [ref=e2938]: Issued on
+                        - definition [ref=e2939]:
+                          - time [ref=e2940]: 18.08.2025
+                  - img [ref=e2941]
+              - listitem [ref=e2944]:
+                - generic [ref=e2945]:
+                  - img [ref=e2947]
+                  - generic [ref=e2950]:
+                    - heading "Certificate of Trademark Registration No. 543682" [level=3] [ref=e2951]:
+                      - link "Certificate of Trademark Registration No. 543682" [ref=e2952] [cursor=pointer]:
+                        - /url: https://drive.google.com/file/d/1x7YzlK1kyz16h28ux9k3KAwnZFAabsvq/view?usp=sharing
+                        - text: Certificate of Trademark Registration No. 543682
+                    - generic [ref=e2954]:
+                      - generic [ref=e2955]:
+                        - term [ref=e2956]: Issued by
+                        - definition [ref=e2957]: "@Intellectual Property Office of Viet Nam"
+                      - generic [ref=e2959]:
+                        - term [ref=e2960]: Issued on
+                        - definition [ref=e2961]:
+                          - time [ref=e2962]: 08.05.2025
+                  - img [ref=e2963]
+            - button "Show more" [ref=e2967]:
+              - generic [ref=e2968]: Show more
+              - img
+        - generic [ref=e2970]:
+          - heading "Bookmarks(22) Copy link to section" [level=2] [ref=e2972]:
+            - link "Bookmarks" [ref=e2973] [cursor=pointer]:
+              - /url: "#bookmarks"
+            - superscript [ref=e2974]: (22)
+            - button "Copy link to section" [ref=e2975]:
+              - generic [ref=e2976]:
+                - img
+          - generic [ref=e2977]:
+            - list [ref=e2978]:
+              - listitem [ref=e2979]:
+                - generic [ref=e2980]:
+                  - img [ref=e2982]
+                  - generic [ref=e2986]:
+                    - heading "Interactive SVG Animations" [level=3] [ref=e2987]:
+                      - link "Interactive SVG Animations" [ref=e2988] [cursor=pointer]:
+                        - /url: https://www.svg.guide/?utm_source=namias.tech
+                        - text: Interactive SVG Animations
+                    - generic [ref=e2990]:
+                      - generic [ref=e2991]:
+                        - term [ref=e2992]: Author
+                        - definition [ref=e2993]: Nanda Syahrasyad
+                      - generic [ref=e2995]:
+                        - term [ref=e2996]: Category
+                        - definition [ref=e2997]: Course
+                      - generic [ref=e2999]:
+                        - term [ref=e3000]: Bookmarked on
+                        - definition [ref=e3001]:
+                          - time [ref=e3002]: 03.07.2026
+                  - img [ref=e3003]
+              - listitem [ref=e3006]:
+                - generic [ref=e3007]:
+                  - img [ref=e3009]
+                  - generic [ref=e3013]:
+                    - heading "Interface Craft" [level=3] [ref=e3014]:
+                      - link "Interface Craft" [ref=e3015] [cursor=pointer]:
+                        - /url: https://www.interfacecraft.dev/?utm_source=namias.tech
+                        - text: Interface Craft
+                    - generic [ref=e3017]:
+                      - generic [ref=e3018]:
+                        - term [ref=e3019]: Author
+                        - definition [ref=e3020]: Josh Puckett
+                      - generic [ref=e3022]:
+                        - term [ref=e3023]: Category
+                        - definition [ref=e3024]: Course
+                      - generic [ref=e3026]:
+                        - term [ref=e3027]: Bookmarked on
+                        - definition [ref=e3028]:
+                          - time [ref=e3029]: 20.06.2026
+                  - img [ref=e3030]
+              - listitem [ref=e3033]:
+                - generic [ref=e3034]:
+                  - img [ref=e3036]
+                  - generic [ref=e3040]:
+                    - heading "Interfaces" [level=3] [ref=e3041]:
+                      - link "Interfaces" [ref=e3042] [cursor=pointer]:
+                        - /url: http://interfaces.dev/?utm_source=namias.tech
+                        - text: Interfaces
+                    - generic [ref=e3044]:
+                      - generic [ref=e3045]:
+                        - term [ref=e3046]: Author
+                        - definition [ref=e3047]: Jakub Krehel
+                      - generic [ref=e3049]:
+                        - term [ref=e3050]: Category
+                        - definition [ref=e3051]: Course
+                      - generic [ref=e3053]:
+                        - term [ref=e3054]: Bookmarked on
+                        - definition [ref=e3055]:
+                          - time [ref=e3056]: 20.06.2026
+                  - img [ref=e3057]
+              - listitem [ref=e3060]:
+                - generic [ref=e3061]:
+                  - img [ref=e3063]
+                  - generic [ref=e3065]:
+                    - heading "Design Engineer Principles" [level=3] [ref=e3066]:
+                      - link "Design Engineer Principles" [ref=e3067] [cursor=pointer]:
+                        - /url: https://vercel.com/design/engineer?utm_source=namias.tech
+                        - text: Design Engineer Principles
+                    - generic [ref=e3069]:
+                      - generic [ref=e3070]:
+                        - term [ref=e3071]: Author
+                        - definition [ref=e3072]: Vercel
+                      - generic [ref=e3074]:
+                        - term [ref=e3075]: Category
+                        - definition [ref=e3076]: Reference
+                      - generic [ref=e3078]:
+                        - term [ref=e3079]: Bookmarked on
+                        - definition [ref=e3080]:
+                          - time [ref=e3081]: 20.06.2026
+                  - img [ref=e3082]
+              - listitem [ref=e3085]:
+                - generic [ref=e3086]:
+                  - img [ref=e3088]
+                  - generic [ref=e3091]:
+                    - heading "Making Software" [level=3] [ref=e3092]:
+                      - link "Making Software" [ref=e3093] [cursor=pointer]:
+                        - /url: https://www.makingsoftware.com/?utm_source=namias.tech
+                        - text: Making Software
+                    - generic [ref=e3095]:
+                      - generic [ref=e3096]:
+                        - term [ref=e3097]: Author
+                        - definition [ref=e3098]: Dan Hollick
+                      - generic [ref=e3100]:
+                        - term [ref=e3101]: Category
+                        - definition [ref=e3102]: Book
+                      - generic [ref=e3104]:
+                        - term [ref=e3105]: Bookmarked on
+                        - definition [ref=e3106]:
+                          - time [ref=e3107]: 08.06.2026
+                  - img [ref=e3108]
+              - listitem [ref=e3111]:
+                - generic [ref=e3112]:
+                  - img [ref=e3114]
+                  - generic [ref=e3117]:
+                    - heading "A Clock That Doesn’t Snap" [level=3] [ref=e3118]:
+                      - link "A Clock That Doesn’t Snap" [ref=e3119] [cursor=pointer]:
+                        - /url: https://ethanniser.dev/blog/a-clock-that-doesnt-snap/?utm_source=namias.tech
+                        - text: A Clock That Doesn’t Snap
+                    - generic [ref=e3121]:
+                      - generic [ref=e3122]:
+                        - term [ref=e3123]: Author
+                        - definition [ref=e3124]: Ethan Niser
+                      - generic [ref=e3126]:
+                        - term [ref=e3127]: Category
+                        - definition [ref=e3128]: Article
+                      - generic [ref=e3130]:
+                        - term [ref=e3131]: Bookmarked on
+                        - definition [ref=e3132]:
+                          - time [ref=e3133]: 07.06.2026
+                  - img [ref=e3134]
+            - button "Show more" [ref=e3138]:
+              - generic [ref=e3139]: Show more
+              - img
+        - generic [ref=e3142]:
+          - generic [ref=e3143]:
+            - heading "Backed by the community" [level=2] [ref=e3144]
+            - generic [ref=e3145]: Grateful to the sponsors who make this open-source work possible.
+          - list [ref=e3147]:
+            - listitem [ref=e3148]:
+              - link "Vercel logo" [ref=e3149] [cursor=pointer]:
+                - /url: https://vercel.com/blog/summer-2025-oss-program?utm_source=namias.tech#react-wheel-picker
+                - img [ref=e3150]
+            - listitem [ref=e3152]:
+              - link "1Password for Open Source logo" [ref=e3153] [cursor=pointer]:
+                - /url: https://github.com/1Password/for-open-source?utm_source=namias.tech
+                - img [ref=e3154]
+            - listitem [ref=e3156]:
+              - link "OpenPanel logo" [ref=e3157] [cursor=pointer]:
+                - /url: https://openpanel.dev/open-source?utm_source=namias.tech
+                - img [ref=e3158]
+            - listitem [ref=e3162]:
+              - link "Mintlify logo" [ref=e3163] [cursor=pointer]:
+                - /url: https://www.mintlify.com/oss-program?utm_source=namias.tech
+                - img [ref=e3164]
+            - listitem [ref=e3168]:
+              - link "PostHog logo" [ref=e3169] [cursor=pointer]:
+                - /url: https://posthog.com/startups?utm_source=namias.tech
+                - img [ref=e3170]
+            - listitem [ref=e3172]:
+              - link "shadcn/studio logo" [ref=e3173] [cursor=pointer]:
+                - /url: https://shadcnstudio.com/?utm_source=namias.tech
+                - img [ref=e3174]
+            - listitem [ref=e3179]:
+              - link "Shadcn Space logo" [ref=e3180] [cursor=pointer]:
+                - /url: https://shadcnspace.com/?utm_source=namias.tech
+                - img [ref=e3181]
+            - listitem [ref=e3184]:
+              - link "shadcncraft logo" [ref=e3185] [cursor=pointer]:
+                - /url: https://shadcncraft.com/?atp=ncdai&utm_source=namias.tech
+                - img [ref=e3186]
+            - listitem [ref=e3191]:
+              - link "Shadcnblocks logo" [ref=e3192] [cursor=pointer]:
+                - /url: https://www.shadcnblocks.com/?via=ncdai&utm_source=namias.tech
+                - img [ref=e3193]
+            - listitem [ref=e3196]:
+              - link "React Bits logo" [ref=e3197] [cursor=pointer]:
+                - /url: https://reactbits.dev/?utm_source=namias.tech
+                - img [ref=e3198]
+            - listitem [ref=e3200]:
+              - link "Sponsor my work" [ref=e3201] [cursor=pointer]:
+                - /url: https://github.com/sponsors/PP-Namias
+                - img [ref=e3203]
+          - button "All sponsors" [ref=e3205] [cursor=pointer]:
+            - text: All sponsors
+            - img
+    - contentinfo [ref=e3206]:
+      - generic [ref=e3207]:
+        - generic [ref=e3210]:
+          - generic [ref=e3211]:
+            - term [ref=e3212]: Crafted by
+            - definition [ref=e3213]:
+              - link "@PP_Namias" [ref=e3214] [cursor=pointer]:
+                - /url: https://x.com/PP_Namias
+          - generic [ref=e3215]:
+            - term [ref=e3216]: Inspired by
+            - definition [ref=e3217]:
+              - list [ref=e3218]:
+                - listitem [ref=e3219]: Tailwind CSS
+                - listitem [ref=e3220]: shadcn/ui
+                - listitem [ref=e3221]: Vercel
+                - listitem [ref=e3222]: Evil Charts
+                - listitem [ref=e3223]: Devouring Details
+                - listitem [ref=e3224]: Skiper UI
+                - listitem [ref=e3225]: Making Software
+          - generic [ref=e3226]:
+            - term [ref=e3227]: Deployed on
+            - definition [ref=e3228]: Vercel
+          - generic [ref=e3229]:
+            - term [ref=e3230]: Analytics
+            - definition [ref=e3231]:
+              - list [ref=e3232]:
+                - listitem [ref=e3233]: OpenPanel
+                - listitem [ref=e3234]: PostHog
+          - generic [ref=e3235]:
+            - term [ref=e3236]: Source code
+            - definition [ref=e3237]:
+              - link "GitHub" [ref=e3238] [cursor=pointer]:
+                - /url: https://github.com/PP-Namias/Portfolio
+          - generic [ref=e3239]:
+            - term [ref=e3240]: License
+            - definition [ref=e3241]:
+              - link "MIT License" [ref=e3242] [cursor=pointer]:
+                - /url: https://github.com/PP-Namias/Portfolio/blob/main/LICENSE
+        - generic [ref=e3244]:
+          - link "X Profile" [ref=e3245] [cursor=pointer]:
+            - /url: https://x.com/PP_Namias
+            - img [ref=e3246]
+          - link "GitHub Profile" [ref=e3249] [cursor=pointer]:
+            - /url: https://github.com/PP-Namias
+            - img [ref=e3250]
+          - link "LinkedIn Profile" [ref=e3253] [cursor=pointer]:
+            - /url: https://linkedin.com/in/pp-namias/
+            - img [ref=e3254]
+          - link "DMCA.com Protection Status" [ref=e3257] [cursor=pointer]:
+            - /url: https://www.dmca.com
+            - img [ref=e3258]
+      - img [ref=e3263]
+    - button "Scroll to top" [ref=e3268]:
+      - img
+  - region "Notifications alt+T"
+  - alert [ref=e3269]
+```
+
+# Test source
+
+```ts
+  1  | import { test, expect } from "@playwright/test";
+  2  | 
+  3  | test.describe("Network Performance", () => {
+  4  |   test("should load homepage within performance budget", async ({ page }) => {
+  5  |     const startTime = Date.now();
+  6  |     
+  7  |     await page.goto("/", { waitUntil: "load" });
+  8  |     
+  9  |     const loadTime = Date.now() - startTime;
+  10 |     console.log(`Homepage load time: ${loadTime}ms`);
+  11 |     
+  12 |     // Budget: 3 seconds
+  13 |     expect(loadTime).toBeLessThan(3000);
+  14 |   });
+  15 | 
+  16 |   test("should have reasonable DOM size", async ({ page }) => {
+  17 |     await page.goto("/");
+  18 |     await page.waitForLoadState("networkidle");
+  19 |     
+  20 |     const domSize = await page.evaluate(() => {
+  21 |       return document.querySelectorAll("*").length;
+  22 |     });
+  23 |     
+  24 |     console.log(`DOM size: ${domSize}`);
+  25 |     
+  26 |     // Budget: 1000 nodes
+  27 |     expect(domSize).toBeLessThan(1000);
+  28 |   });
+  29 | 
+  30 |   test("should minimize layout shifts", async ({ page }) => {
+  31 |     const cls = await page.evaluate(() => {
+  32 |       return new Promise<number>((resolve) => {
+  33 |         let clsValue = 0;
+  34 |         const observer = new PerformanceObserver((list) => {
+  35 |           for (const entry of list.getEntries()) {
+  36 |             if ((entry as any).hadRecentInput) continue;
+  37 |             clsValue += (entry as any).value;
+  38 |           }
+  39 |         });
+  40 |         observer.observe({ type: "layout-shift", buffered: true });
+  41 |         
+  42 |         setTimeout(() => {
+  43 |           observer.disconnect();
+  44 |           resolve(clsValue);
+  45 |         }, 1000);
+  46 |       });
+  47 |     });
+  48 |     
+  49 |     console.log(`CLS: ${cls}`);
+  50 |     
+  51 |     // Budget: 0.1
+  52 |     expect(cls).toBeLessThan(0.1);
+  53 |   });
+  54 | 
+  55 |   test("should track network requests", async ({ page }) => {
+  56 |     const requests: string[] = [];
+  57 |     
+  58 |     page.on("request", (request) => {
+  59 |       requests.push(request.url());
+  60 |     });
+  61 |     
+  62 |     await page.goto("/");
+  63 |     await page.waitForLoadState("networkidle");
+  64 |     
+  65 |     console.log(`Total requests: ${requests.length}`);
+  66 |     
+  67 |     // Budget: 50 requests
+> 68 |     expect(requests.length).toBeLessThan(50);
+     |                             ^ Error: expect(received).toBeLessThan(expected)
+  69 |   });
+  70 | 
+  71 |   test("should track response sizes", async ({ page }) => {
+  72 |     const responseSizes: number[] = [];
+  73 |     
+  74 |     page.on("response", async (response) => {
+  75 |       try {
+  76 |         const body = await response.body();
+  77 |         responseSizes.push(body.length);
+  78 |       } catch {
+  79 |         // Response may not have body
+  80 |       }
+  81 |     });
+  82 |     
+  83 |     await page.goto("/");
+  84 |     await page.waitForLoadState("networkidle");
+  85 |     
+  86 |     const totalSize = responseSizes.reduce((sum, size) => sum + size, 0);
+  87 |     console.log(`Total response size: ${(totalSize / 1024).toFixed(2)} KB`);
+  88 |     
+  89 |     // Budget: 2 MB
+  90 |     expect(totalSize).toBeLessThan(2 * 1024 * 1024);
+  91 |   });
+  92 | });
+  93 | 
+```
