@@ -2,13 +2,16 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { draftMode } from "next/headers";
 import { client } from "@/sanity/lib/client";
+import { timingSafeEqual } from "crypto";
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const secret = searchParams.get("secret");
   const redirect = searchParams.get("redirect") || "/";
 
-  if (secret !== process.env.SANITY_REVALIDATE_SECRET) {
+  const secretBuffer = Buffer.from(secret ?? "");
+  const expectedBuffer = Buffer.from(process.env.SANITY_REVALIDATE_SECRET ?? "");
+  if (secretBuffer.length !== expectedBuffer.length || !timingSafeEqual(secretBuffer, expectedBuffer)) {
     return NextResponse.json({ error: "Invalid secret" }, { status: 401 });
   }
 
