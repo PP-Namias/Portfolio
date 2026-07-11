@@ -1,0 +1,40 @@
+[
+  {
+    "id": "portfolio-launch",
+    "title": "Launching namias.tech: My Developer Portfolio",
+    "slug": "launching-namias-tech-portfolio",
+    "publishedAt": "2026-06-15",
+    "description": "Building a high-performance developer portfolio with Next.js 16, featuring multi-tier data fetching, HMAC security, and AI-driven testing.",
+    "tags": ["Next.js", "TypeScript", "Portfolio", "Web Development"],
+    "readingTime": "8 min read",
+    "isFeatured": true
+  },
+  {
+    "id": "klaro-hackathon",
+    "title": "Building Klaro: A Multilingual AI Health Platform",
+    "slug": "building-klaro-multilingual-ai-health-platform",
+    "publishedAt": "2026-05-20",
+    "description": "How we built a context-aware, multilingual AI engine supporting Filipino dialects in a 5-day hackathon sprint.",
+    "tags": ["AI", "tRPC", "PostgreSQL", "Hackathon"],
+    "readingTime": "10 min read",
+    "isFeatured": true
+  },
+  {
+    "id": "enterprise-hris",
+    "title": "Building an Enterprise HRIS for 500+ Employees",
+    "slug": "building-enterprise-hris",
+    "publishedAt": "2025-10-05",
+    "description": "Technical deep-dive into building a scalable Enterprise Human Resource Information System with React, TypeScript, Electron, and PostgreSQL.",
+    "tags": ["React", "TypeScript", "Electron", "Enterprise"],
+    "readingTime": "12 min read"
+  },
+  {
+    "id": "ai-chatbot-deployment",
+    "title": "Deploying 8 AI Chatbot Systems: A Production Guide",
+    "slug": "deploying-ai-chatbot-systems",
+    "publishedAt": "2025-09-28",
+    "description": "Lessons learned from deploying 8 production AI chatbot systems with advanced prompt routing and context-injection.",
+    "tags": ["AI", "Automation", "LLM", "Production"],
+    "readingTime": "9 min read"
+  }
+]
