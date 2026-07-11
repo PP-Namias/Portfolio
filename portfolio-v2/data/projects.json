@@ -1,0 +1,101 @@
+[
+  {
+    "id": "portfolio-website",
+    "title": "namias.tech",
+    "period": {
+      "start": "06.2026"
+    },
+    "link": "https://github.com/PP-Namias/Portfolio",
+    "skills": [
+      "Next.js 16",
+      "TypeScript",
+      "HMAC Verification",
+      "Vitest",
+      "Playwright",
+      "CI/CD"
+    ],
+    "description": "High-performance web application utilizing Next.js 16 (App Router) and TypeScript.",
+    "details": [
+      "Engineered a robust multi-tier data fetching pipeline (L1/L2/L3)",
+      "Built a secure media gateway utilizing HMAC verification",
+      "Hardened infrastructure using 19 automated CI/CD workflows",
+      "410 Vitest cases and AI-driven penetration testing",
+      "Perfect 100/100 react-doctor score and 98/100 security posture"
+    ],
+    "logo": "https://github.com/PP-Namias.png",
+    "isExpanded": true
+  },
+  {
+    "id": "klaro",
+    "title": "Klaro",
+    "period": {
+      "start": "05.2026"
+    },
+    "link": "https://github.com/PP-Namias/Klaro",
+    "skills": [
+      "tRPC",
+      "Zod",
+      "PostgreSQL",
+      "Drizzle ORM",
+      "Better Auth",
+      "AI"
+    ],
+    "description": "Context-aware, multilingual AI engine supporting Filipino dialects with a fully type-safe backend.",
+    "details": [
+      "DevKada Hackathon Project",
+      "Delivered secure digital health platform within 5-day sprint",
+      "Geolocation algorithmic matching for facility discovery",
+      "Better Auth for secure state management"
+    ],
+    "logo": "https://github.com/PP-Namias.png"
+  },
+  {
+    "id": "mash",
+    "title": "M.A.S.H.",
+    "period": {
+      "start": "03.2026"
+    },
+    "link": "https://www.mashmarket.app",
+    "skills": [
+      "C++",
+      "Python",
+      "Distributed Systems",
+      "Jaeger",
+      "Grafana",
+      "IoT"
+    ],
+    "description": "Distributed smart agriculture ecosystem spanning 8 repositories with fault-tolerant hardware gateway.",
+    "details": [
+      "Thesis Project",
+      "Engineered fault-tolerant hardware gateway using C++ and Python",
+      "Complex data-filtering algorithms for I2C sensor anomalies",
+      "Distributed tracing (Jaeger) and real-time Grafana dashboards"
+    ],
+    "logo": "https://github.com/PP-Namias.png"
+  },
+  {
+    "id": "ucc-ingo",
+    "title": "Ucc-Ingo",
+    "period": {
+      "start": "04.2026"
+    },
+    "link": "https://github.com/computerscience-ucc/project-iron-ingot",
+    "skills": [
+      "Next.js 15",
+      "Sanity v3",
+      "SSR",
+      "ISR",
+      "CSP/HSTS",
+      "CI/CD"
+    ],
+    "description": "Open Source Core Contributor — Full-stack overhaul migrating the platform to Next.js 15 and Sanity v3.",
+    "details": [
+      "Resolved CSR render blocking via SSR and ISR",
+      "Hardened API layer against prompt injection and IP spoofing",
+      "Enforced strict CSP/HSTS headers",
+      "Stabilized 16 CI/CD pipelines with automated security scanning",
+      "Delivered optimized digital hub for 1,000+ active users"
+    ],
+    "logo": "https://github.com/PP-Namias.png"
+  }
+]
