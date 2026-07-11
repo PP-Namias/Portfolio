@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { revalidatePath, revalidateTag } from "next/cache";
+import { timingSafeEqual } from "crypto";
 
 const SANITY_REVALIDATE_SECRET = process.env.SANITY_REVALIDATE_SECRET;
 
@@ -33,7 +34,9 @@ export async function POST(request: NextRequest) {
   const body = (await request.json()) as WebhookBody;
   const secret = request.headers.get("x-sanity-secret");
 
-  if (secret !== SANITY_REVALIDATE_SECRET) {
+  const secretBuffer = Buffer.from(secret ?? "");
+  const expectedBuffer = Buffer.from(SANITY_REVALIDATE_SECRET);
+  if (secretBuffer.length !== expectedBuffer.length || !timingSafeEqual(secretBuffer, expectedBuffer)) {
     return NextResponse.json({ error: "Invalid secret" }, { status: 401 });
   }
 
