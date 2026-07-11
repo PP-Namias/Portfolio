@@ -1,0 +1,268 @@
+[
+  {
+    "key": "typescript",
+    "title": "TypeScript",
+    "href": "https://www.typescriptlang.org",
+    "icon": "TsIcon",
+    "categories": ["Language"]
+  },
+  {
+    "key": "javascript",
+    "title": "JavaScript",
+    "href": "https://developer.mozilla.org/en-US/docs/Web/JavaScript",
+    "icon": "JsIcon",
+    "categories": ["Language"]
+  },
+  {
+    "key": "python",
+    "title": "Python",
+    "href": "https://www.python.org",
+    "icon": "PythonIcon",
+    "categories": ["Language"]
+  },
+  {
+    "key": "java",
+    "title": "Java",
+    "href": "https://www.java.com",
+    "icon": "JavaIcon",
+    "categories": ["Language"]
+  },
+  {
+    "key": "dart",
+    "title": "Dart",
+    "href": "https://dart.dev",
+    "icon": "DartIcon",
+    "categories": ["Language"]
+  },
+  {
+    "key": "sql",
+    "title": "SQL",
+    "href": "https://www.w3schools.com/sql",
+    "icon": "SqlIcon",
+    "categories": ["Language"]
+  },
+  {
+    "key": "c",
+    "title": "C",
+    "href": "https://en.wikipedia.org/wiki/C_(programming_language)",
+    "icon": "CIcon",
+    "categories": ["Language"]
+  },
+  {
+    "key": "cpp",
+    "title": "C++",
+    "href": "https://cplusplus.com",
+    "icon": "CppIcon",
+    "categories": ["Language"]
+  },
+  {
+    "key": "react",
+    "title": "React",
+    "href": "https://react.dev",
+    "icon": "ReactIcon",
+    "categories": ["Frontend"]
+  },
+  {
+    "key": "nextjs",
+    "title": "Next.js",
+    "href": "https://nextjs.org",
+    "icon": "NextjsIcon",
+    "categories": ["Frontend"]
+  },
+  {
+    "key": "nestjs",
+    "title": "NestJS",
+    "href": "https://nestjs.com",
+    "icon": "NestjsIcon",
+    "categories": ["Frontend"]
+  },
+  {
+    "key": "spring-boot",
+    "title": "Spring Boot",
+    "href": "https://spring.io/projects/spring-boot",
+    "icon": "SpringBootIcon",
+    "categories": ["Frontend"]
+  },
+  {
+    "key": "express",
+    "title": "Express.js",
+    "href": "https://expressjs.com",
+    "icon": "ExpressIcon",
+    "categories": ["Frontend"]
+  },
+  {
+    "key": "flutter",
+    "title": "Flutter",
+    "href": "https://flutter.dev",
+    "icon": "FlutterIcon",
+    "categories": ["Frontend"]
+  },
+  {
+    "key": "electron",
+    "title": "Electron",
+    "href": "https://www.electronjs.org",
+    "icon": "ElectronIcon",
+    "categories": ["Frontend"]
+  },
+  {
+    "key": "vite",
+    "title": "Vite",
+    "href": "https://vitejs.dev",
+    "icon": "ViteIcon",
+    "categories": ["Frontend"]
+  },
+  {
+    "key": "nodejs",
+    "title": "Node.js",
+    "href": "https://nodejs.org",
+    "icon": "NodejsIcon",
+    "categories": ["Backend"]
+  },
+  {
+    "key": "postgresql",
+    "title": "PostgreSQL",
+    "href": "https://www.postgresql.org",
+    "icon": "PostgresqlIcon",
+    "categories": ["Database"]
+  },
+  {
+    "key": "sqlite",
+    "title": "SQLite",
+    "href": "https://www.sqlite.org",
+    "icon": "SqliteIcon",
+    "categories": ["Database"]
+  },
+  {
+    "key": "firebase",
+    "title": "Firebase",
+    "href": "https://firebase.google.com",
+    "icon": "FirebaseIcon",
+    "categories": ["Database"]
+  },
+  {
+    "key": "supabase",
+    "title": "Supabase",
+    "href": "https://supabase.com",
+    "icon": "SupabaseIcon",
+    "categories": ["Database"]
+  },
+  {
+    "key": "docker",
+    "title": "Docker",
+    "href": "https://www.docker.com",
+    "icon": "DockerIcon",
+    "categories": ["DevOps"]
+  },
+  {
+    "key": "gcp",
+    "title": "Google Cloud Platform",
+    "href": "https://cloud.google.com",
+    "icon": "GCPIcon",
+    "categories": ["DevOps"]
+  },
+  {
+    "key": "azure",
+    "title": "Azure",
+    "href": "https://azure.microsoft.com",
+    "icon": "AzureIcon",
+    "categories": ["DevOps"]
+  },
+  {
+    "key": "vercel",
+    "title": "Vercel",
+    "href": "https://vercel.com",
+    "icon": "VercelIcon",
+    "categories": ["DevOps"]
+  },
+  {
+    "key": "railway",
+    "title": "Railway",
+    "href": "https://railway.app",
+    "icon": "RailwayIcon",
+    "categories": ["DevOps"]
+  },
+  {
+    "key": "jest",
+    "title": "Jest",
+    "href": "https://jestjs.io",
+    "icon": "JestIcon",
+    "categories": ["Testing"]
+  },
+  {
+    "key": "vitest",
+    "title": "Vitest",
+    "href": "https://vitest.dev",
+    "icon": "VitestIcon",
+    "categories": ["Testing"]
+  },
+  {
+    "key": "playwright",
+    "title": "Playwright",
+    "href": "https://playwright.dev",
+    "icon": "PlaywrightIcon",
+    "categories": ["Testing"]
+  },
+  {
+    "key": "puppeteer",
+    "title": "Puppeteer",
+    "href": "https://pptr.dev",
+    "icon": "PuppeteerIcon",
+    "categories": ["Testing"]
+  },
+  {
+    "key": "tensorflow",
+    "title": "TensorFlow",
+    "href": "https://www.tensorflow.org",
+    "icon": "TensorFlowIcon",
+    "categories": ["AI/ML"]
+  },
+  {
+    "key": "pytorch",
+    "title": "PyTorch",
+    "href": "https://pytorch.org",
+    "icon": "PyTorchIcon",
+    "categories": ["AI/ML"]
+  },
+  {
+    "key": "scikit-learn",
+    "title": "Scikit-learn",
+    "href": "https://scikit-learn.org",
+    "icon": "ScikitLearnIcon",
+    "categories": ["AI/ML"]
+  },
+  {
+    "key": "openai-api",
+    "title": "OpenAI API",
+    "href": "https://platform.openai.com",
+    "icon": "OpenAIIcon",
+    "categories": ["AI/ML"]
+  },
+  {
+    "key": "gemini-api",
+    "title": "Gemini API",
+    "href": "https://ai.google.dev",
+    "icon": "GeminiIcon",
+    "categories": ["AI/ML"]
+  },
+  {
+    "key": "git",
+    "title": "Git",
+    "href": "https://git-scm.com",
+    "icon": "GitIcon",
+    "categories": ["Workflow"]
+  },
+  {
+    "key": "github",
+    "title": "GitHub",
+    "href": "https://github.com",
+    "icon": "GitHubIcon",
+    "categories": ["Workflow"]
+  },
+  {
+    "key": "figma",
+    "title": "Figma",
+    "href": "https://www.figma.com",
+    "icon": "FigmaIcon",
+    "categories": ["Design"]
+  }
+]
