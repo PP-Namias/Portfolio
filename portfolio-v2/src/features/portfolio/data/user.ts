@@ -2,42 +2,54 @@ import type { User } from "@/features/portfolio/types/user"
 
 export const USER: User = {
   firstName: "Jhon Keneth",
-  lastName: "Namias",
+  lastName: "Ryan B. Namias",
   displayName: "PP Namias",
   username: "PP-Namias",
   gender: "male",
   pronouns: "he/him",
-  bio: "Full Stack Engineer & AI Automation Specialist. Building production systems across enterprise, AI, and IoT.",
+  bio: "Creating with code. Small details matter.",
   flipSentences: [
-    "Full Stack Engineer & AI Automation Specialist",
-    "Building production systems that scale",
-    "React, TypeScript, Node.js, Python",
+    "Full-Stack Engineer & AI Solutions Developer",
+    "Building scalable enterprise applications",
+    "React, TypeScript, Python, Node.js",
     "University of Caloocan City, Batch 2026",
   ],
-  address: "Caloocan City, Philippines",
-  phoneNumberB64: "",
+  address: "Manila, Philippines",
+  phoneNumberB64: "KzYzOTI3MjUzMzk2OQ==", // base64 of +639272533969
   emailB64: "cHAubmFtaWFzQGdtYWlsLmNvbQ==", // base64 of pp.namias@gmail.com
   website: "https://namias.tech",
-  jobTitle: "Full Stack Engineer",
+  jobTitle: "Full-Stack Engineer",
   jobs: [
     {
-      title: "Software Developer",
-      company: "JS Pharmacy",
+      title: "Software Engineering Intern",
+      company: "Aeternitas Chapels & Columbarium",
       website: "",
-      experienceId: "js-pharmacy",
+      experienceId: "aeternitas",
     },
     {
-      title: "AI Solutions Developer",
+      title: "AI Solutions Developer / Automation Specialist",
       company: "Wilshire Financial Network",
       website: "",
       experienceId: "wilshire-financial",
     },
+    {
+      title: "Fullstack Developer",
+      company: "Jimirene Maternity Clinic",
+      website: "",
+      experienceId: "jimirene",
+    },
+    {
+      title: "Software Developer",
+      company: "J5 Pharmacy",
+      website: "",
+      experienceId: "j5-pharmacy",
+    },
   ],
-  about: `I'm Jhon Keneth Ryan Namias (call me Namias) — a Full Stack Engineer & AI Automation Specialist with a passion for building production systems that scale.
+  about: `I'm Jhon Keneth Ryan Namias (call me Namias) — a Full-Stack Engineer & AI Solutions Developer with a strong track record of designing, developing, and deploying scalable enterprise applications.
 
-Graduated Cum Laude with a BS in Computer Science from the University of Caloocan City (Batch 2026), recognized as a Dean's Lister throughout my studies.
+Expertise in building intuitive user experiences and secure backend APIs utilizing React, TypeScript, and Python. Proven ability to integrate LLMs and AI agents into business workflows to automate operations, reduce costs, and enforce enterprise-grade security standards.
 
-I've delivered 5+ live applications serving over 1,000 concurrent users, including an enterprise HRIS for 500+ employees and 8 deployed AI chatbot systems. Skilled in React, TypeScript, Node.js, Python, and AI Automation.`,
+Graduated Cum Laude with a BS in Computer Science from the University of Caloocan City (Batch 2026). Delivered 5+ live applications serving over 1,000 concurrent users, including an enterprise HRIS for 500+ employees and 8 deployed AI chatbot systems.`,
   avatar: "https://github.com/PP-Namias.png",
   avatarVariants: {
     lightOff: "https://github.com/PP-Namias.png",
@@ -53,8 +65,8 @@ I've delivered 5+ live applications serving over 1,000 concurrent users, includi
     "jhon keneth namias",
     "jhon keneth ryan namias",
     "namias",
-    "full stack engineer",
-    "ai automation",
+    "full-stack engineer",
+    "ai solutions developer",
     "react developer",
     "typescript",
     "node.js",
