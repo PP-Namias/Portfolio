@@ -10,8 +10,8 @@
     "jotai"
   ],
   "registryDependencies": [
-    "https://chanhdai.com/r/icon-swap.json",
-    "https://chanhdai.com/r/copy-button.json"
+    "https://namias.tech/r/icon-swap.json",
+    "https://namias.tech/r/copy-button.json"
   ],
   "files": [
     {
@@ -41,7 +41,7 @@
       "code-foreground": "oklch(0.985 0 0)"
     }
   },
-  "docs": "https://chanhdai.com/components/code-block-command",
+  "docs": "https://namias.tech/components/code-block-command",
   "categories": [
     "data-display"
   ],
