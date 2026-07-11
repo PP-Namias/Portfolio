@@ -12,6 +12,8 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: "Invalid secret" }, { status: 401 });
   }
 
+  const safeRedirect = redirect.startsWith("/") && !redirect.startsWith("//") ? redirect : "/";
+
   const token = process.env.SANITY_API_READ_TOKEN;
   if (!token) {
     return NextResponse.json({ error: "Missing SANITY_API_READ_TOKEN" }, { status: 500 });
@@ -32,5 +34,5 @@ export async function GET(request: NextRequest) {
   const draft = await draftMode();
   draft.enable();
 
-  return NextResponse.redirect(new URL(redirect, request.url));
+  return NextResponse.redirect(new URL(safeRedirect, request.url));
 }
