@@ -7,7 +7,7 @@ export type AiAction = {
 }
 
 export const AI_ACTIONS: Record<string, AiAction[]> = {
-  profile: [
+  heroSection: [
     {
       id: 'shorten-headline',
       title: 'Shorten headline',

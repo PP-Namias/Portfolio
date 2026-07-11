@@ -115,10 +115,11 @@ vi.mock('@/hooks/useCmsContent', () => ({
 }));
 
 describe('ProjectsSectionRevamped', () => {
-  it('renders the section heading', async () => {
+  it('renders the section heading with project count', async () => {
     const { ProjectsSectionRevamped } = await import('@/components/sections/ProjectsSectionRevamped');
     render(<ProjectsSectionRevamped />);
     expect(screen.getByText('Recent Projects')).toBeDefined();
+    expect(screen.getByText(/6 total/)).toBeDefined();
   });
 
   it('renders a View All link to /projects', async () => {

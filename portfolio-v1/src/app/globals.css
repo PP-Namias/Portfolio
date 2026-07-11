@@ -2,108 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
-  :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
-    --radius: 0.5rem;
-    --chart-1: oklch(0.32 0 none);
-    --chart-2: oklch(0.41 0 none);
-    --chart-3: oklch(0.54 0 none);
-    --chart-4: oklch(0.71 0 none);
-    --chart-5: oklch(0.89 0 none);
-    --chart-background: oklch(1 0 0);
-    --chart-foreground: oklch(0.145 0.004 285);
-    --chart-foreground-muted: oklch(0.55 0.014 260);
-    --chart-line-primary: var(--chart-1);
-    --chart-line-secondary: var(--chart-2);
-    --chart-crosshair: oklch(0.4 0.1828 274.34);
-    --chart-grid: oklch(0.9 0 0);
-    --chart-brush-border: var(--chart-grid);
-    --chart-tooltip-background: oklch(0.21 0.006 285 / 0.8);
-    --chart-tooltip-foreground: oklch(0.985 0 0);
-    --chart-tooltip-muted: oklch(0.65 0.01 260);
-    --chart-marker-background: oklch(0.97 0.005 260);
-    --chart-marker-border: oklch(0.85 0.01 260);
-    --chart-marker-foreground: oklch(0.3 0.01 260);
-    --chart-label: oklch(0.45 0.01 260);
-    --chart-scale-01: #ebedf0;
-    --chart-scale-02: #9be9a8;
-    --chart-scale-03: #40c463;
-    --chart-scale-04: #30a14e;
-    --chart-scale-05: #216e39;
-    --chart-scale-pattern-color: #ebedf0;
-  }
-
-  .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
-    --chart-1: oklch(1 0 none);
-    --chart-2: oklch(0.73 0 none);
-    --chart-3: oklch(0.51 0 none);
-    --chart-4: oklch(0.39 0 none);
-    --chart-5: oklch(0.32 0 none);
-    --chart-background: oklch(0.145 0 0);
-    --chart-foreground: oklch(0.45 0 0);
-    --chart-foreground-muted: oklch(0.65 0.01 260);
-    --chart-crosshair: oklch(0.45 0 0);
-    --chart-grid: oklch(0.25 0 0);
-    --chart-brush-border: var(--chart-grid);
-    --chart-marker-background: oklch(0.25 0.01 260);
-    --chart-marker-border: oklch(0.4 0.01 260);
-    --chart-marker-foreground: oklch(0.9 0 0);
-    --chart-label: oklch(0.75 0.01 260);
-    --chart-scale-01: #161b22;
-    --chart-scale-02: #0e4429;
-    --chart-scale-03: #006d32;
-    --chart-scale-04: #26a641;
-    --chart-scale-05: #39d353;
-    --chart-scale-pattern-color: #161b22;
-  }
-
-  * {
-    border-color: hsl(var(--border));
-  }
-  body {
-    background-color: hsl(var(--background));
-    color: hsl(var(--foreground));
-  }
-}
-
 :root {
   --background: #f4f6fb;
   --surface: #f8fafc;
@@ -139,8 +37,7 @@ html {
   scroll-behavior: auto;
 }
 
-html.lenis,
-html.lenis body {
+html.lenis, html.lenis body {
   height: auto;
 }
 
@@ -172,9 +69,7 @@ html.lenis body {
 body {
   background-color: var(--background);
   color: var(--text-primary);
-  transition:
-    background-color 0.3s ease,
-    color 0.3s ease;
+  transition: background-color 0.3s ease, color 0.3s ease;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -243,9 +138,7 @@ html:not(.dark) body {
 }
 
 /* Prevent double-tap zoom on interactive elements */
-button,
-a,
-[role='button'] {
+button, a, [role="button"] {
   touch-action: manipulation;
 }
 
@@ -258,7 +151,7 @@ a,
 /* Focus-visible ring for interactive elements — keyboard-only accessibility */
 button:focus-visible,
 a:focus-visible,
-[role='button']:focus-visible {
+[role="button"]:focus-visible {
   outline: 2px solid rgb(var(--accent));
   outline-offset: 2px;
   border-radius: 4px;
@@ -266,15 +159,15 @@ a:focus-visible,
 
 /* Reduced motion — respect user preferences */
 @media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
+  *, *::before, *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
 }
+
+
 
 @layer utilities {
   .text-balance {
@@ -283,14 +176,8 @@ a:focus-visible,
 }
 
 @keyframes pulse-ring {
-  0% {
-    transform: scale(1);
-    opacity: 0.5;
-  }
-  100% {
-    transform: scale(1.5);
-    opacity: 0;
-  }
+  0% { transform: scale(1); opacity: 0.5; }
+  100% { transform: scale(1.5); opacity: 0; }
 }
 
 /* Print stylesheet — clean printable view */
@@ -323,25 +210,24 @@ a:focus-visible,
   /* Hide interactive and non-essential elements */
   .floating-hub,
   [data-floating-hub],
-  button[aria-label='Open menu'],
+  button[aria-label="Open menu"],
   .sr-only {
     display: none !important;
   }
 
   /* Ensure cards have visible borders in print */
-  [class*='border-border'] {
+  [class*="border-border"] {
     border-color: #d1d5db !important;
   }
 
   /* Prevent page breaks inside cards */
-  section,
-  article {
+  section, article {
     break-inside: avoid;
   }
 
   /* Make links show their URL */
-  a[href^='http']:not([href*='namias.tech'])::after {
-    content: ' (' attr(href) ')';
+  a[href^="http"]:not([href*="namias.tech"])::after {
+    content: " (" attr(href) ")";
     font-size: 9pt;
     color: #6b7280;
     word-break: break-all;

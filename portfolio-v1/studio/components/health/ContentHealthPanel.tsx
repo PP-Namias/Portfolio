@@ -1,7 +1,7 @@
 import React, {useEffect, useState, useCallback} from 'react'
 import {Card, Stack, Text, Badge, Button, Flex, Box} from '@sanity/ui'
 import {useClient} from 'sanity'
-import {WarningFilledIcon, ClockIcon, RefreshIcon} from '@sanity/icons'
+import {CheckmarkCircleIcon, WarningFilledIcon, ClockIcon, RefreshIcon} from '@sanity/icons'
 
 interface HealthIssue {
   id: string
@@ -85,7 +85,7 @@ export function ContentHealthPanel() {
 
       // Check projects for missing fields
       const projects = await client.fetch(
-        `*[_type == "project"]{_id, title, shortDescription, summary}`,
+        `*[_type == "project"]{_id, title, shortDescription, overview}`
       )
       for (const project of projects || []) {
         if (!project.shortDescription) {
@@ -99,21 +99,23 @@ export function ContentHealthPanel() {
             field: 'shortDescription',
           })
         }
-        if (!project.summary) {
+        if (!project.overview) {
           fetchedIssues.push({
-            id: `incomplete-${project._id}-summary`,
+            id: `incomplete-${project._id}-overview`,
             type: 'incomplete',
             severity: 'warning',
-            message: `Project "${project.title}" is missing summary`,
+            message: `Project "${project.title}" is missing overview`,
             documentType: 'project',
             documentId: project._id,
-            field: 'summary',
+            field: 'overview',
           })
         }
       }
 
       // Check blog posts for missing fields
-      const posts = await client.fetch(`*[_type == "post"]{_id, title, excerpt, publishedAt}`)
+      const posts = await client.fetch(
+        `*[_type == "post"]{_id, title, excerpt, publishedAt}`
+      )
       for (const post of posts || []) {
         if (!post.excerpt) {
           fetchedIssues.push({
@@ -134,11 +136,11 @@ export function ContentHealthPanel() {
 
       const staleProjects = await client.fetch(
         `*[_type == "project" && _updatedAt < $threshold]{_id, title, _updatedAt}`,
-        {threshold: staleThreshold.toISOString()},
+        {threshold: staleThreshold.toISOString()}
       )
       for (const project of staleProjects || []) {
         const daysSince = Math.floor(
-          (Date.now() - new Date(project._updatedAt).getTime()) / (1000 * 60 * 60 * 24),
+          (Date.now() - new Date(project._updatedAt).getTime()) / (1000 * 60 * 60 * 24)
         )
         fetchedIssues.push({
           id: `stale-${project._id}`,
@@ -153,11 +155,11 @@ export function ContentHealthPanel() {
 
       const stalePosts = await client.fetch(
         `*[_type == "post" && _updatedAt < $threshold]{_id, title, _updatedAt}`,
-        {threshold: staleThreshold.toISOString()},
+        {threshold: staleThreshold.toISOString()}
       )
       for (const post of stalePosts || []) {
         const daysSince = Math.floor(
-          (Date.now() - new Date(post._updatedAt).getTime()) / (1000 * 60 * 60 * 24),
+          (Date.now() - new Date(post._updatedAt).getTime()) / (1000 * 60 * 60 * 24)
         )
         fetchedIssues.push({
           id: `stale-${post._id}`,
@@ -172,7 +174,7 @@ export function ContentHealthPanel() {
 
       // Check for orphaned recommendations (no project reference)
       const orphanedRecs = await client.fetch(
-        `*[_type == "recommendation" && !defined(project)]{_id, name}`,
+        `*[_type == "recommendation" && !defined(project)]{_id, name}`
       )
       for (const rec of orphanedRecs || []) {
         fetchedIssues.push({
@@ -224,23 +226,11 @@ export function ContentHealthPanel() {
   const getSeverityBadge = (severity: string) => {
     switch (severity) {
       case 'error':
-        return (
-          <Badge tone="critical" fontSize={1}>
-            Error
-          </Badge>
-        )
+        return <Badge tone="critical" fontSize={1}>Error</Badge>
       case 'warning':
-        return (
-          <Badge tone="caution" fontSize={1}>
-            Warning
-          </Badge>
-        )
+        return <Badge tone="caution" fontSize={1}>Warning</Badge>
       default:
-        return (
-          <Badge tone="primary" fontSize={1}>
-            Info
-          </Badge>
-        )
+        return <Badge tone="primary" fontSize={1}>Info</Badge>
     }
   }
 
@@ -292,9 +282,7 @@ export function ContentHealthPanel() {
                       flexDirection: 'column',
                     }}
                   >
-                    <span
-                      style={{fontSize: 18, fontWeight: 700, color: getScoreColor(summary.score)}}
-                    >
+                    <span style={{fontSize: 18, fontWeight: 700, color: getScoreColor(summary.score)}}>
                       {summary.score}
                     </span>
                   </div>

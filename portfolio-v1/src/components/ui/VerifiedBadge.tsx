@@ -1,6 +1,7 @@
-'use client'
+'use client';
 
-import { BadgeCheck } from 'lucide-react'
+
+import { BadgeCheck } from 'lucide-react';
 
 export function VerifiedBadge() {
   return (
@@ -9,5 +10,5 @@ export function VerifiedBadge() {
       role="img"
       aria-label="Verified"
     />
-  )
+  );
 }

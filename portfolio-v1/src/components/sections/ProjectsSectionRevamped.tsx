@@ -1,35 +1,35 @@
-'use client'
+'use client';
 
-import React, { useMemo } from 'react'
-import { motion, useReducedMotion } from 'framer-motion'
-import Link from 'next/link'
-import { ArrowRight } from 'lucide-react'
-import { useCmsContent } from '@/hooks/useCmsContent'
-import { Project } from '@/types'
+import React, { useMemo } from 'react';
+import { motion, useReducedMotion } from 'framer-motion';
+import Link from 'next/link';
+import { ArrowRight } from 'lucide-react';
+import { useCmsContent } from '@/hooks/useCmsContent';
+import { Project } from '@/types';
 
-const RECENT_LIMIT = 4
+const RECENT_LIMIT = 4;
 
 function sortProjectsByTier(entries: Project[]): Project[] {
-  const tierOrder = { featured: 0, standard: 1, archived: 2 }
+  const tierOrder = { featured: 0, standard: 1, archived: 2 };
   return [...entries].sort((a, b) => {
-    const aRank = tierOrder[a.tier ?? 'standard'] ?? 1
-    const bRank = tierOrder[b.tier ?? 'standard'] ?? 1
-    if (aRank !== bRank) return aRank - bRank
-    const aFeatured = a.featuredRank ?? Number.MAX_SAFE_INTEGER
-    const bFeatured = b.featuredRank ?? Number.MAX_SAFE_INTEGER
-    if (aFeatured !== bFeatured) return aFeatured - bFeatured
-    return b.year - a.year
-  })
+    const aRank = tierOrder[a.tier ?? 'standard'] ?? 1;
+    const bRank = tierOrder[b.tier ?? 'standard'] ?? 1;
+    if (aRank !== bRank) return aRank - bRank;
+    const aFeatured = a.featuredRank ?? Number.MAX_SAFE_INTEGER;
+    const bFeatured = b.featuredRank ?? Number.MAX_SAFE_INTEGER;
+    if (aFeatured !== bFeatured) return aFeatured - bFeatured;
+    return b.year - a.year;
+  });
 }
 
 export function ProjectsSectionRevamped() {
-  const { projects } = useCmsContent()
-  const reduceMotion = useReducedMotion()
+  const { projects } = useCmsContent();
+  const reduceMotion = useReducedMotion();
 
   const recentProjects = useMemo(
     () => sortProjectsByTier(projects).slice(0, RECENT_LIMIT),
     [projects]
-  )
+  );
 
   return (
     <motion.section
@@ -44,6 +44,9 @@ export function ProjectsSectionRevamped() {
           <h2 className="text-lg font-semibold text-text-primary-light dark:text-text-primary-dark">
             Recent Projects
           </h2>
+          <p className="mt-1 text-xs text-text-muted-light dark:text-text-muted-dark">
+            {projects.length} total &middot; showing latest {recentProjects.length}
+          </p>
         </div>
         <Link
           href="/projects"
@@ -72,26 +75,22 @@ export function ProjectsSectionRevamped() {
         </p>
       )}
     </motion.section>
-  )
+  );
 }
 
 interface RecentCardProps {
-  project: Project
-  index: number
-  reduceMotion: boolean
+  project: Project;
+  index: number;
+  reduceMotion: boolean;
 }
 
 function RecentCard({ project, index, reduceMotion }: Readonly<RecentCardProps>) {
-  const detailHref = project.liveURL || project.repositoryURL || null
-  const hasLink = Boolean(detailHref)
+  const detailHref = project.liveURL || project.repositoryURL || null;
+  const hasLink = Boolean(detailHref);
 
   const cardTransition = reduceMotion
     ? { duration: 0 }
-    : {
-        duration: 0.3,
-        ease: [0.25, 0.1, 0.25, 1] as [number, number, number, number],
-        delay: index * 0.05,
-      }
+    : { duration: 0.3, ease: [0.25, 0.1, 0.25, 1] as [number, number, number, number], delay: index * 0.05 };
 
   return (
     <motion.article
@@ -120,5 +119,5 @@ function RecentCard({ project, index, reduceMotion }: Readonly<RecentCardProps>)
         {project.shortDescription || project.description}
       </p>
     </motion.article>
-  )
+  );
 }

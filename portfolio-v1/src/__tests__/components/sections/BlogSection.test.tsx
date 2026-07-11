@@ -123,11 +123,12 @@ describe('BlogSection', () => {
     expect(container).toBeEmptyDOMElement();
   });
 
-  it('renders the Blog header', () => {
+  it('renders the Blog header and a count badge', () => {
     useCmsContentMock.mockReturnValue({ blogPosts: samplePosts });
 
     render(<BlogSection />);
     expect(screen.getByRole('heading', { name: /^Blog/ })).toBeInTheDocument();
+    expect(screen.getByText(String(samplePosts.length))).toBeInTheDocument();
   });
 
   it('shows the latest 3 posts sorted by date desc', () => {

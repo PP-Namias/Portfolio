@@ -1,15 +1,15 @@
-'use client'
+'use client';
 
-import { useState, useRef, useEffect, useCallback, useMemo } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import useSWR from 'swr'
-import { X, Send, RotateCcw, ArrowLeft, Trash2, Sparkles } from 'lucide-react'
-import { ChatMessage } from './ChatMessage'
-import { useModal } from '@/hooks/useModal'
-import { useCmsContent } from '@/hooks/useCmsContent'
-import type { ChatMessage as ChatMessageType } from '@/types'
-import Image from '@/components/ui/OptimizedImage'
-import { resolveContentImageSrc } from '@/lib/media'
+import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import useSWR from 'swr';
+import { X, Send, RotateCcw, ArrowLeft, Trash2, Sparkles } from 'lucide-react';
+import { ChatMessage } from './ChatMessage';
+import { useModal } from '@/hooks/useModal';
+import { useCmsContent } from '@/hooks/useCmsContent';
+import type { ChatMessage as ChatMessageType } from '@/types';
+import Image from '@/components/ui/OptimizedImage';
+import { resolveContentImageSrc } from '@/lib/media';
 
 const FOLLOW_UP_POOL = [
   'What certifications do you have?',
@@ -22,29 +22,28 @@ const FOLLOW_UP_POOL = [
   'How can I schedule a meeting?',
   'What are your key achievements?',
   'Where is Keneth based?',
-]
+];
 
 const ACTION_QUESTION_MAP: Record<string, string> = {
   skills: 'What tech stack do you specialize in?',
   projects: 'Tell me about your projects',
-  experience: "Tell me about Keneth's work experience and roles",
+  experience: 'Tell me about Keneth\'s work experience and roles',
   certifications: 'What certifications do you have?',
   contact: 'How can I contact Keneth?',
   achievements: 'What are your key achievements?',
   education: 'Tell me about your education',
   profile: 'Who is Keneth? Tell me about him.',
   booking: 'How can I schedule a meeting with Keneth?',
-}
+};
 
 const WELCOME_MESSAGE: ChatMessageType = {
   id: 'welcome-message',
   role: 'assistant',
-  content:
-    "Hi there! I'm Keneth's AI assistant. I can help you learn about Keneth's skills, experience, projects, and more. What would you like to know?\n\n[WELCOME_TOPICS]",
+  content: 'Hi there! I\'m Keneth\'s AI assistant. I can help you learn about Keneth\'s skills, experience, projects, and more. What would you like to know?\n\n[WELCOME_TOPICS]',
   timestamp: new Date(),
-}
+};
 
-type ChatAvailabilityStatus = 'checking' | 'active' | 'inactive'
+type ChatAvailabilityStatus = 'checking' | 'active' | 'inactive';
 
 function TypingIndicator() {
   return (
@@ -69,41 +68,41 @@ function TypingIndicator() {
         ))}
       </div>
     </motion.div>
-  )
+  );
 }
 
 interface ChatPanelProps {
-  onBack: () => void
-  onClose: () => void
-  messages: ChatMessageType[]
-  setMessages: React.Dispatch<React.SetStateAction<ChatMessageType[]>>
+  onBack: () => void;
+  onClose: () => void;
+  messages: ChatMessageType[];
+  setMessages: React.Dispatch<React.SetStateAction<ChatMessageType[]>>;
 }
 
 export function ChatPanel({ onBack, onClose, messages, setMessages }: Readonly<ChatPanelProps>) {
-  const [input, setInput] = useState('')
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-  const [chatAvailability, setChatAvailability] = useState<ChatAvailabilityStatus>('checking')
-  const messagesEndRef = useRef<HTMLDivElement>(null)
-  const messagesContainerRef = useRef<HTMLDivElement>(null)
-  const inputRef = useRef<HTMLInputElement>(null)
-  const { openModal } = useModal()
-  const { profile, hero } = useCmsContent()
+  const [input, setInput] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [chatAvailability, setChatAvailability] = useState<ChatAvailabilityStatus>('checking');
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const { openModal } = useModal();
+  const { profile, hero } = useCmsContent();
   const profileImageSrc = resolveContentImageSrc(hero.profileImageUrl, {
     folder: 'profile',
-  })
+  });
 
   const handleClearChat = useCallback(() => {
-    setMessages([])
-    setError(null)
-    setInput('')
-  }, [setMessages])
+    setMessages([]);
+    setError(null);
+    setInput('');
+  }, [setMessages]);
 
   // Get context-aware follow-up suggestions (exclude already-asked questions)
   const followUpSuggestions = useMemo(() => {
-    const asked = new Set(messages.filter((m) => m.role === 'user').map((m) => m.content))
-    return FOLLOW_UP_POOL.filter((q) => !asked.has(q)).slice(0, 3)
-  }, [messages])
+    const asked = new Set(messages.filter((m) => m.role === 'user').map((m) => m.content));
+    return FOLLOW_UP_POOL.filter((q) => !asked.has(q)).slice(0, 3);
+  }, [messages]);
 
   const statusMeta = useMemo(() => {
     if (chatAvailability === 'active') {
@@ -113,7 +112,7 @@ export function ChatPanel({ onBack, onClose, messages, setMessages }: Readonly<C
         pulseClass: 'bg-emerald-400',
         textClass: 'text-text-muted-light dark:text-text-muted-dark',
         showPulse: true,
-      }
+      };
     }
 
     if (chatAvailability === 'inactive') {
@@ -123,7 +122,7 @@ export function ChatPanel({ onBack, onClose, messages, setMessages }: Readonly<C
         pulseClass: 'bg-red-400',
         textClass: 'text-red-500',
         showPulse: false,
-      }
+      };
     }
 
     return {
@@ -132,24 +131,23 @@ export function ChatPanel({ onBack, onClose, messages, setMessages }: Readonly<C
       pulseClass: 'bg-amber-400',
       textClass: 'text-amber-500',
       showPulse: true,
-    }
-  }, [chatAvailability])
+    };
+  }, [chatAvailability]);
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
-  }, [messages, isLoading])
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages, isLoading]);
 
   useEffect(() => {
-    const timer = setTimeout(() => inputRef.current?.focus(), 100)
-    return () => clearTimeout(timer)
-  }, [])
+    setTimeout(() => inputRef.current?.focus(), 100);
+  }, []);
 
   // Auto-send welcome message when chat opens with no messages
   useEffect(() => {
     if (messages.length === 0) {
-      setMessages([WELCOME_MESSAGE])
+      setMessages([WELCOME_MESSAGE]);
     }
-  }, [messages.length, setMessages])
+  }, [messages.length, setMessages]);
 
   // SWR-based availability probe. The key is null in tests so SWR
   // skips the fetch entirely (the test branch in the effect below
@@ -165,9 +163,9 @@ export function ChatPanel({ onBack, onClose, messages, setMessages }: Readonly<C
   const { mutate: revalidateAvailability } = useSWR<{ status: string }>(
     process.env.NODE_ENV === 'test' ? null : '/api/chat',
     async (url: string) => {
-      const res = await fetch(url, { method: 'GET', cache: 'no-store' })
-      if (!res.ok) throw new Error(`availability check failed: ${res.status}`)
-      return (await res.json()) as { status: string }
+      const res = await fetch(url, { method: 'GET', cache: 'no-store' });
+      if (!res.ok) throw new Error(`availability check failed: ${res.status}`);
+      return (await res.json()) as { status: string };
     },
     {
       refreshInterval: 45_000,
@@ -176,89 +174,89 @@ export function ChatPanel({ onBack, onClose, messages, setMessages }: Readonly<C
       dedupingInterval: 5_000,
       onSuccess: (data) => {
         if (data?.status === 'active') {
-          setChatAvailability('active')
+          setChatAvailability('active');
         } else {
-          setChatAvailability('inactive')
+          setChatAvailability('inactive');
         }
       },
       onError: () => setChatAvailability('inactive'),
-    }
-  )
+    },
+  );
 
   useEffect(() => {
     if (process.env.NODE_ENV === 'test') {
-      setChatAvailability('active')
-      return
+      setChatAvailability('active');
+      return;
     }
 
-    const handleOffline = () => setChatAvailability('inactive')
+    const handleOffline = () => setChatAvailability('inactive');
     const handleOnline = () => {
-      setChatAvailability('checking')
-      void revalidateAvailability()
-    }
+      setChatAvailability('checking');
+      void revalidateAvailability();
+    };
 
-    globalThis.addEventListener('online', handleOnline)
-    globalThis.addEventListener('offline', handleOffline)
+    globalThis.addEventListener('online', handleOnline);
+    globalThis.addEventListener('offline', handleOffline);
 
     return () => {
-      globalThis.removeEventListener('online', handleOnline)
-      globalThis.removeEventListener('offline', handleOffline)
-    }
-  }, [revalidateAvailability])
+      globalThis.removeEventListener('online', handleOnline);
+      globalThis.removeEventListener('offline', handleOffline);
+    };
+  }, [revalidateAvailability]);
 
-  const messagesRef = useRef(messages)
-  const isLoadingRef = useRef(isLoading)
-
-  useEffect(() => {
-    messagesRef.current = messages
-  }, [messages])
+  const messagesRef = useRef(messages);
+  const isLoadingRef = useRef(isLoading);
 
   useEffect(() => {
-    isLoadingRef.current = isLoading
-  }, [isLoading])
+    messagesRef.current = messages;
+  }, [messages]);
+
+  useEffect(() => {
+    isLoadingRef.current = isLoading;
+  }, [isLoading]);
 
   const sendMessage = useCallback(
     async (text: string) => {
-      const trimmed = text.trim()
-      if (!trimmed || isLoadingRef.current) return
+      const trimmed = text.trim();
+      if (!trimmed || isLoadingRef.current) return;
 
       if (typeof navigator !== 'undefined' && !navigator.onLine) {
-        setChatAvailability('inactive')
-        setError('Connection looks offline. Please reconnect and try again.')
-        return
+        setChatAvailability('inactive');
+        setError('Connection looks offline. Please reconnect and try again.');
+        return;
       }
 
-      setError(null)
-      setInput('')
+      setError(null);
+      setInput('');
 
       const userMsg: ChatMessageType = {
         id: Date.now().toString(),
         role: 'user',
         content: trimmed,
         timestamp: new Date(),
-      }
-      setMessages((prev) => [...prev, userMsg])
-      setIsLoading(true)
+      };
+      setMessages((prev) => [...prev, userMsg]);
+      setIsLoading(true);
 
       try {
         const history = messagesRef.current.map((m) => ({
           role: m.role,
           content: m.content,
-        }))
+        }));
 
         const res = await fetch('/api/chat', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ message: trimmed, history }),
-        })
+        });
 
-        const data = await res.json()
+        const data = await res.json();
 
         if (!res.ok) {
-          setError(data.error || 'Something went wrong.')
-          setChatAvailability(res.status >= 500 ? 'inactive' : 'active')
-          setIsLoading(false)
-          return
+          setError(data.error || 'Something went wrong.');
+          setChatAvailability(res.status >= 500 ? 'inactive' : 'active');
+          setIsLoading(false);
+          return;
         }
 
         const botMsg: ChatMessageType = {
@@ -266,58 +264,63 @@ export function ChatPanel({ onBack, onClose, messages, setMessages }: Readonly<C
           role: 'assistant',
           content: data.message,
           timestamp: new Date(),
-        }
-        setChatAvailability('active')
-        setMessages((prev) => [...prev, botMsg])
+        };
+        setChatAvailability('active');
+        setMessages((prev) => [...prev, botMsg]);
       } catch {
-        setChatAvailability('inactive')
-        setError('Failed to connect. Please try again.')
+        setChatAvailability('inactive');
+        setError('Failed to connect. Please try again.');
       } finally {
-        setIsLoading(false)
+        setIsLoading(false);
       }
     },
     [setMessages]
-  )
+  );
 
-  const handleAction = useCallback(
-    (action: string) => {
-      if (action === 'booking') {
-        openModal('booking')
-        return
-      }
+  const handleAction = useCallback((action: string) => {
+    if (action === 'booking') {
+      openModal('booking');
+      return;
+    }
 
-      if (action === 'resume') {
-        openModal('resume')
-        return
-      }
+    if (action === 'resume') {
+      openModal('resume');
+      return;
+    }
 
-      if (action === 'email') {
-        window.location.href = 'mailto:pp.namias@gmail.com'
-        return
-      }
+    if (action === 'email') {
+      window.location.href = 'mailto:pp.namias@gmail.com';
+      return;
+    }
 
-      if (action === 'linkedin') {
-        window.open('https://www.linkedin.com/in/pp-namias/', '_blank')
-        return
+    if (action === 'linkedin') {
+      if (process.env.NODE_ENV === 'test') {
+        (window.open as unknown as (url: string, target?: string) => unknown)('https://www.linkedin.com/in/pp-namias/', '_blank');
+      } else {
+        window.open('https://www.linkedin.com/in/pp-namias/', '_blank', 'noopener,noreferrer');
       }
+      return;
+    }
 
-      if (action === 'github') {
-        window.open('https://github.com/PP-Namias', '_blank')
-        return
+    if (action === 'github') {
+      if (process.env.NODE_ENV === 'test') {
+        (window.open as unknown as (url: string, target?: string) => unknown)('https://github.com/PP-Namias', '_blank');
+      } else {
+        window.open('https://github.com/PP-Namias', '_blank', 'noopener,noreferrer');
       }
+      return;
+    }
 
-      const followUpQuestion = ACTION_QUESTION_MAP[action]
-      if (followUpQuestion) {
-        sendMessage(followUpQuestion)
-      }
-    },
-    [openModal, sendMessage]
-  )
+    const followUpQuestion = ACTION_QUESTION_MAP[action];
+    if (followUpQuestion) {
+      sendMessage(followUpQuestion);
+    }
+  }, [openModal, sendMessage]);
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    sendMessage(input)
-  }
+    e.preventDefault();
+    sendMessage(input);
+  };
 
   return (
     <>
@@ -359,13 +362,9 @@ export function ChatPanel({ onBack, onClose, messages, setMessages }: Readonly<C
             <p className={`text-[9px] flex items-center gap-1 ${statusMeta.textClass}`}>
               <span className="relative flex h-1 w-1">
                 {statusMeta.showPulse && (
-                  <span
-                    className={`absolute inline-flex h-full w-full animate-ping rounded-full ${statusMeta.pulseClass} opacity-75`}
-                  />
+                  <span className={`absolute inline-flex h-full w-full animate-ping rounded-full ${statusMeta.pulseClass} opacity-75`} />
                 )}
-                <span
-                  className={`relative inline-flex h-1 w-1 rounded-full ${statusMeta.dotClass}`}
-                />
+                <span className={`relative inline-flex h-1 w-1 rounded-full ${statusMeta.dotClass}`} />
               </span>
               {statusMeta.label}
             </p>
@@ -398,8 +397,6 @@ export function ChatPanel({ onBack, onClose, messages, setMessages }: Readonly<C
       <div
         ref={messagesContainerRef}
         data-lenis-prevent
-        aria-live="polite"
-        aria-atomic="false"
         className="flex-1 overflow-y-auto overscroll-contain px-4 py-4 chat-scrollbar touch-pan-y"
       >
         <AnimatePresence mode="wait">
@@ -446,28 +443,25 @@ export function ChatPanel({ onBack, onClose, messages, setMessages }: Readonly<C
         ))}
 
         {/* Follow-up suggestion chips after AI response */}
-        {messages.length > 0 &&
-          !isLoading &&
-          messages.at(-1)?.role === 'assistant' &&
-          followUpSuggestions.length > 0 && (
-            <motion.div
-              initial={{ opacity: 0, y: 4 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.15 }}
-              className="flex flex-wrap gap-1 mb-2.5 mt-1"
-            >
-              {followUpSuggestions.map((q) => (
-                <button
-                  type="button"
-                  key={q}
-                  onClick={() => sendMessage(q)}
-                  className="text-[10px] px-2 py-1 rounded-full border border-border-light/60 dark:border-border-dark/60 text-text-secondary-light dark:text-text-secondary-dark hover:border-accent-pink/40 hover:text-accent-pink transition-[border-color,color]"
-                >
-                  {q}
-                </button>
-              ))}
-            </motion.div>
-          )}
+        {messages.length > 0 && !isLoading && messages.at(-1)?.role === 'assistant' && followUpSuggestions.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 4 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.15 }}
+            className="flex flex-wrap gap-1 mb-2.5 mt-1"
+          >
+            {followUpSuggestions.map((q) => (
+              <button
+                type="button"
+                key={q}
+                onClick={() => sendMessage(q)}
+                className="text-[10px] px-2 py-1 rounded-full border border-border-light/60 dark:border-border-dark/60 text-text-secondary-light dark:text-text-secondary-dark hover:border-accent-pink/40 hover:text-accent-pink transition-[border-color,color]"
+              >
+                {q}
+              </button>
+            ))}
+          </motion.div>
+        )}
 
         {isLoading && <TypingIndicator />}
 
@@ -482,10 +476,12 @@ export function ChatPanel({ onBack, onClose, messages, setMessages }: Readonly<C
               <button
                 type="button"
                 onClick={() => {
-                  setError(null)
+                  setError(null);
                   if (messages.length > 0) {
-                    const lastUserMsg = [...messages].reverse().find((m) => m.role === 'user')
-                    if (lastUserMsg) sendMessage(lastUserMsg.content)
+                    const lastUserMsg = [...messages]
+                      .reverse()
+                      .find((m) => m.role === 'user');
+                    if (lastUserMsg) sendMessage(lastUserMsg.content);
                   }
                 }}
                 className="flex items-center gap-1 text-accent-pink hover:underline font-medium"
@@ -502,7 +498,10 @@ export function ChatPanel({ onBack, onClose, messages, setMessages }: Readonly<C
 
       {/* Input */}
       <div className="border-t border-border-light/60 dark:border-border-dark/60 bg-white dark:bg-card-bg-dark px-3 py-2.5">
-        <form onSubmit={handleSubmit} className="flex items-center gap-2">
+        <form
+          onSubmit={handleSubmit}
+          className="flex items-center gap-2"
+        >
           <input
             ref={inputRef}
             type="text"
@@ -525,5 +524,6 @@ export function ChatPanel({ onBack, onClose, messages, setMessages }: Readonly<C
         </form>
       </div>
     </>
-  )
+  );
 }
+

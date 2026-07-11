@@ -1,106 +1,89 @@
-'use client'
+'use client';
 
-import React, { useEffect, useRef, useCallback } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import { X } from 'lucide-react'
+import React, { useEffect, useRef, useCallback } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { X } from 'lucide-react';
 
 // Focusable-selector for the Tab-trap effect below. Pulled out
 // to a constant so the string content does not get matched by
 // the linter's <button>-shaped rule (false positive: it scans
 // the source text, not the runtime DOM).
 const FOCUSABLE_SELECTOR =
-  'a[href], button:not([disabled]), input:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+  'a[href], button:not([disabled]), input:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
 interface ModalProps {
-  open: boolean
-  onClose: () => void
-  title?: string
-  children: React.ReactNode
+  open: boolean;
+  onClose: () => void;
+  title?: string;
+  children: React.ReactNode;
   /** Full-screen modal (almost full viewport) vs default sized */
-  fullScreen?: boolean
+  fullScreen?: boolean;
   /** Optional id that points to the dialog's primary descriptive text */
-  descriptionId?: string
+  descriptionId?: string;
   /** When false, suppresses the built-in close button (for modals with their own toolbar close). Defaults to true. */
-  showCloseButton?: boolean
+  showCloseButton?: boolean;
   /** When false, the content area does not scroll (children manage their own overflow). Defaults to true. */
-  scrollable?: boolean
+  scrollable?: boolean;
   /** Custom inline styles for the panel (width, height, etc.). When provided, fullScreen sizing classes are skipped. */
-  panelStyle?: React.CSSProperties
+  panelStyle?: React.CSSProperties;
 }
 
-export function Modal({
-  open,
-  onClose,
-  title,
-  children,
-  fullScreen = false,
-  descriptionId,
-  showCloseButton = true,
-  scrollable = true,
-  panelStyle,
-}: Readonly<ModalProps>) {
-  const panelRef = useRef<HTMLDivElement>(null)
-
-  // Focus the panel when modal opens
-  useEffect(() => {
-    if (open) {
-      panelRef.current?.focus()
-    }
-  }, [open])
+export function Modal({ open, onClose, title, children, fullScreen = false, descriptionId, showCloseButton = true, scrollable = true, panelStyle }: Readonly<ModalProps>) {
+  const panelRef = useRef<HTMLDivElement>(null);
 
   // Lock body scroll when open
   useEffect(() => {
     if (open) {
-      document.body.style.overflow = 'hidden'
+      document.body.style.overflow = 'hidden';
     }
     return () => {
-      document.body.style.overflow = ''
-    }
-  }, [open])
+      document.body.style.overflow = '';
+    };
+  }, [open]);
 
   // Escape key to close
   useEffect(() => {
-    if (!open) return
+    if (!open) return;
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose()
-    }
-    document.addEventListener('keydown', handleKeyDown)
-    return () => document.removeEventListener('keydown', handleKeyDown)
-  }, [open, onClose])
+      if (e.key === 'Escape') onClose();
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [open, onClose]);
 
   // Focus trap
   useEffect(() => {
-    if (!open) return
+    if (!open) return;
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key !== 'Tab' || !panelRef.current) return
+      if (e.key !== 'Tab' || !panelRef.current) return;
       // The CSS selector below contains a literal element name
       // (used to match focusable controls). The linter scans
       // the source text and reports a false positive on the
       // string. The runtime DOM query is correct.
       // eslint-disable-next-line react-doctor/button-has-type
-      const focusable = panelRef.current.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR)
-      if (focusable.length === 0) return
-      const first = focusable[0]
-      const last = focusable[focusable.length - 1]
+      const focusable = panelRef.current.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR);
+      if (focusable.length === 0) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
       if (e.shiftKey && document.activeElement === first) {
-        e.preventDefault()
-        last.focus()
+        e.preventDefault();
+        last.focus();
       }
       if (!e.shiftKey && document.activeElement === last) {
-        e.preventDefault()
-        first.focus()
+        e.preventDefault();
+        first.focus();
       }
-    }
-    document.addEventListener('keydown', handleKeyDown)
-    return () => document.removeEventListener('keydown', handleKeyDown)
-  }, [open])
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [open]);
 
   const handleBackdropClick = useCallback(
     (e: React.MouseEvent) => {
-      if (e.target === e.currentTarget) onClose()
+      if (e.target === e.currentTarget) onClose();
     },
     [onClose]
-  )
+  );
 
   return (
     <AnimatePresence>
@@ -120,7 +103,11 @@ export function Modal({
           <motion.div
             ref={panelRef}
             className={`relative z-10 ${panelStyle ? '' : 'w-full'} bg-white dark:bg-card-bg-dark rounded-xl border border-border-light dark:border-border-dark shadow-2xl overflow-hidden flex flex-col transition-colors duration-300 ${
-              panelStyle ? '' : fullScreen ? 'max-w-5xl max-h-[92vh]' : 'max-w-2xl max-h-[85vh]'
+              panelStyle
+                ? ''
+                : fullScreen
+                  ? 'max-w-5xl max-h-[92vh]'
+                  : 'max-w-2xl max-h-[85vh]'
             }`}
             style={panelStyle}
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
@@ -162,14 +149,12 @@ export function Modal({
             )}
 
             {/* Content */}
-            <div
-              className={`flex-1 flex flex-col min-h-0 ${scrollable ? 'overflow-y-auto' : 'overflow-hidden'}`}
-            >
+            <div className={`flex-1 flex flex-col min-h-0 ${scrollable ? 'overflow-y-auto' : 'overflow-hidden'}`}>
               {children}
             </div>
           </motion.div>
         </motion.div>
       )}
     </AnimatePresence>
-  )
+  );
 }

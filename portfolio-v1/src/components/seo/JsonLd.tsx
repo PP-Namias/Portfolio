@@ -1,18 +1,9 @@
-import { type JSX } from 'react'
+import { type JSX } from 'react';
 
 type JsonLdProps = {
-  data: Record<string, unknown> | null | undefined
-  id?: string
-}
-
-function escapeHtml(str: string): string {
-  return str
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#039;')
-}
+  data: Record<string, unknown> | null | undefined;
+  id?: string;
+};
 
 /**
  * Render a JSON-LD `<script>` tag for structured data.
@@ -45,9 +36,7 @@ function escapeHtml(str: string): string {
  * `react-doctor/no-danger`).
  */
 export function JsonLd({ data, id }: JsonLdProps): JSX.Element | null {
-  if (!data) return null
-  const jsonStr = JSON.stringify(data)
-  const safeJson = escapeHtml(jsonStr)
+  if (!data) return null;
   return (
     <script
       id={id}
@@ -58,7 +47,7 @@ export function JsonLd({ data, id }: JsonLdProps): JSX.Element | null {
       // its rules under its own namespace and aliases them in
       // doctor.config.json).
       // eslint-disable-next-line react-doctor/no-danger
-      dangerouslySetInnerHTML={{ __html: safeJson }}
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }}
     />
-  )
+  );
 }

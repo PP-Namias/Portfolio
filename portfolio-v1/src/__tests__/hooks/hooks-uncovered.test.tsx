@@ -13,8 +13,27 @@ vi.mock('next-themes', () => ({
   }),
 }));
 
+import { useCarousel } from '@/hooks/useCarousel';
 import { useTheme } from '@/hooks/useTheme';
 import { AccentColorProvider, useAccentColor, ACCENT_SCHEMES } from '@/hooks/useAccentColor';
+
+function CarouselHarness() {
+  const { currentIndex, goNext, goPrev, goTo, setIsHovered } = useCarousel({
+    totalItems: 3,
+    autoAdvanceInterval: 50,
+  });
+
+  return (
+    <div>
+      <span data-testid="index">{currentIndex}</span>
+      <button onClick={goNext}>next</button>
+      <button onClick={goPrev}>prev</button>
+      <button onClick={() => goTo(2)}>goto2</button>
+      <button onClick={() => setIsHovered(true)}>hover-on</button>
+      <button onClick={() => setIsHovered(false)}>hover-off</button>
+    </div>
+  );
+}
 
 function ThemeHarness() {
   const { mounted, isDark, toggleTheme } = useTheme();
@@ -42,6 +61,7 @@ function AccentHarness() {
 describe('uncovered hooks', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    vi.useFakeTimers();
     localStorage.clear();
     document.documentElement.style.removeProperty('--accent');
     document.documentElement.style.removeProperty('--accent-hover');
@@ -52,6 +72,44 @@ describe('uncovered hooks', () => {
   afterEach(() => {
     vi.clearAllTimers();
     vi.useRealTimers();
+  });
+
+  it('useCarousel supports manual navigation and wrap-around', () => {
+    render(<CarouselHarness />);
+
+    expect(screen.getByTestId('index')).toHaveTextContent('0');
+    fireEvent.click(screen.getByText('next'));
+    expect(screen.getByTestId('index')).toHaveTextContent('1');
+
+    fireEvent.click(screen.getByText('goto2'));
+    expect(screen.getByTestId('index')).toHaveTextContent('2');
+
+    fireEvent.click(screen.getByText('next'));
+    expect(screen.getByTestId('index')).toHaveTextContent('0');
+
+    fireEvent.click(screen.getByText('prev'));
+    expect(screen.getByTestId('index')).toHaveTextContent('2');
+  });
+
+  it('useCarousel auto-advances and pauses when hovered', () => {
+    render(<CarouselHarness />);
+
+    act(() => {
+      vi.advanceTimersByTime(60);
+    });
+    expect(screen.getByTestId('index')).toHaveTextContent('1');
+
+    fireEvent.click(screen.getByText('hover-on'));
+    act(() => {
+      vi.advanceTimersByTime(120);
+    });
+    expect(screen.getByTestId('index')).toHaveTextContent('1');
+
+    fireEvent.click(screen.getByText('hover-off'));
+    act(() => {
+      vi.advanceTimersByTime(60);
+    });
+    expect(screen.getByTestId('index')).toHaveTextContent('2');
   });
 
   it('useTheme exposes mounted flag and toggles theme target', async () => {

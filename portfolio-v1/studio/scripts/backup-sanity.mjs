@@ -1,4 +1,3 @@
-/* global process, console */
 // scripts/backup-sanity.mjs
 // Exports all documents from Sanity using GROQ queries
 

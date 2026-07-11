@@ -1,0 +1,33 @@
+title = "Namias Portfolio Gitleaks Config"
+
+# Baseline rules from the gitleaks/gitleaks-action default ruleset.
+# We intentionally do NOT add per-rule overrides; we want the strictest
+# possible scan and we will allowlist false positives explicitly.
+
+# Scan the entire git history, not just HEAD.
+# (Default behavior of `gitleaks detect --source .`)
+
+[extend]
+# Extend the default ruleset. The Gitleaks action automatically
+# bundles the default ruleset; this is a no-op in modern Gitleaks
+# but kept for documentation.
+
+# Allowlist for this repo's own false-positive patterns.
+# Keep this list short. Every entry MUST have a written reason.
+
+[allowlist]
+  description = "Repo-specific false-positive allowlist"
+  paths = [
+    # Fixture files used to test the Gitleaks workflow. These contain
+    # fake secrets on purpose. The CI step is gated on a branch name
+    # that does not include "gitleaks-test" so these never reach main.
+    '''tests/fixtures/gitleaks/.*\.txt$''',
+  ]
+  regexes = [
+    # Example placeholders used in markdown documentation.
+    '''EXAMPLE_API_KEY''',
+    '''EXAMPLE_TOKEN''',
+    '''<YOUR_(API_KEY|TOKEN|SECRET)>''',
+    # The Sanity studio uses a fake project id in its local dev config.
+    '''projectId\s*=\s*["']development["']''',
+  ]

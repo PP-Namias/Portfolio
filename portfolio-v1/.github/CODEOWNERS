@@ -1,0 +1,12 @@
+# Default ownership
+* @PP-Namias
+
+# CI / workflow ownership
+.github/workflows/* @PP-Namias
+
+# App code ownership
+src/app/** @PP-Namias
+src/components/** @PP-Namias
+src/hooks/** @PP-Namias
+src/lib/** @PP-Namias
+src/data/** @PP-Namias

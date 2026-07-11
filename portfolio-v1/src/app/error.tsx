@@ -1,22 +1,20 @@
-'use client'
+'use client';
 
-import { useEffect } from 'react'
-import { motion } from 'framer-motion'
-import { RefreshCw, Home, AlertTriangle } from 'lucide-react'
-import Link from 'next/link'
-import * as Sentry from '@sentry/nextjs'
+import { useEffect } from 'react';
+import { motion } from 'framer-motion';
+import { RefreshCw, Home, AlertTriangle } from 'lucide-react';
+import Link from 'next/link';
 
 export default function Error({
   error,
   reset,
 }: {
-  error: Error & { digest?: string }
-  reset: () => void
+  error: Error & { digest?: string };
+  reset: () => void;
 }) {
   useEffect(() => {
-    if (process.env.NODE_ENV !== 'test') console.error(error)
-    Sentry.captureException(error)
-  }, [error])
+    if (process.env.NODE_ENV !== 'test') console.error(error);
+  }, [error]);
 
   return (
     <main className="flex flex-col items-center justify-center min-h-screen text-center px-4 py-16">
@@ -74,5 +72,5 @@ export default function Error({
         </Link>
       </motion.div>
     </main>
-  )
+  );
 }

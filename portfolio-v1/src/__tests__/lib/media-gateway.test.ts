@@ -1,180 +1,92 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
 import {
-  getSanityAssetKind,
-  decodeGatewayTarget,
-  createMediaGatewaySignature,
-  verifyMediaGatewaySignature,
   buildMediaGatewayUrl,
-} from '@/lib/media-gateway';
-import {
-  normalizeGatewayWidth,
-  normalizeGatewayQuality,
-  isSanityCdnUrl,
+  decodeGatewayTarget,
   encodeGatewayTarget,
-} from '@/lib/media-constants';
+  isSanityCdnUrl,
+  verifyMediaGatewaySignature,
+} from '@/lib/media-gateway';
 
-describe('media-constants', () => {
-  describe('normalizeGatewayWidth', () => {
-    it('returns default for undefined', () => {
-      expect(normalizeGatewayWidth(undefined)).toBe(1200);
-    });
-    it('parses valid width', () => {
-      expect(normalizeGatewayWidth('800')).toBe(800);
-    });
-    it('clamps to min 16', () => {
-      expect(normalizeGatewayWidth('1')).toBe(16);
-    });
-    it('clamps to max 4096', () => {
-      expect(normalizeGatewayWidth('9999')).toBe(4096);
-    });
+describe('media gateway helpers', () => {
+  beforeEach(() => {
+    delete process.env.SANITY_MEDIA_GATEWAY_SECRET;
   });
 
-  describe('normalizeGatewayQuality', () => {
-    it('returns default for undefined', () => {
-      expect(normalizeGatewayQuality(undefined)).toBe(85);
-    });
-    it('parses valid quality', () => {
-      expect(normalizeGatewayQuality('50')).toBe(50);
-    });
-    it('clamps to max 100', () => {
-      expect(normalizeGatewayQuality('200')).toBe(100);
-    });
+  it('encodes and decodes sanity asset targets safely', () => {
+    const target = 'https://cdn.sanity.io/images/project/production/image-800x600.jpg?w=800';
+    const encoded = encodeGatewayTarget(target);
+
+    expect(decodeGatewayTarget(encoded)).toBe(target);
+    expect(isSanityCdnUrl(target)).toBe(false);
+    expect(isSanityCdnUrl('https://cdn.sanity.io/images/project/production/image-800x600.jpg')).toBe(true);
   });
 
-  describe('isSanityCdnUrl', () => {
-    it('returns true for valid CDN image URL', () => {
-      expect(isSanityCdnUrl('https://cdn.sanity.io/images/proj-id/image.jpg')).toBe(true);
+  it('builds a same-origin gateway url for sanity assets', () => {
+    process.env.SANITY_MEDIA_GATEWAY_SECRET = 'unit-test-media-secret';
+
+    const url = buildMediaGatewayUrl('https://cdn.sanity.io/images/project/production/image-800x600.jpg', {
+      width: 320,
+      quality: 70,
+      sign: true,
     });
-    it('returns true for valid CDN file URL', () => {
-      expect(isSanityCdnUrl('https://cdn.sanity.io/files/proj-id/file.pdf')).toBe(true);
-    });
-    it('returns false for non-CDN URL', () => {
-      expect(isSanityCdnUrl('https://example.com/img.jpg')).toBe(false);
-    });
-    it('returns false for URL with query params', () => {
-      expect(isSanityCdnUrl('https://cdn.sanity.io/images/proj-id/img.jpg?w=100')).toBe(false);
-    });
-    it('returns false for invalid URL', () => {
-      expect(isSanityCdnUrl('not-a-url')).toBe(false);
-    });
+
+    expect(url).toContain('/api/media/sanity/');
+    expect(url).toContain('w=320');
+    expect(url).toContain('q=70');
+    expect(url).toContain('exp=');
+    expect(url).toContain('sig=');
   });
 
-  describe('encodeGatewayTarget', () => {
-    it('encodes URL to base64url', () => {
-      const encoded = encodeGatewayTarget('https://cdn.sanity.io/images/proj/img.jpg');
-      expect(typeof encoded).toBe('string');
-      expect(encoded.length).toBeGreaterThan(0);
-    });
+  it('returns an empty string for unsupported remote urls', () => {
+    expect(buildMediaGatewayUrl('https://example.com/image.jpg')).toBe('');
   });
 });
 
-describe('media-gateway', () => {
+describe('verifyMediaGatewaySignature', () => {
+  const secret = 'test-gateway-secret';
+
   beforeEach(() => {
-    vi.unstubAllGlobals();
+    process.env.SANITY_MEDIA_GATEWAY_SECRET = secret;
   });
 
-  describe('getSanityAssetKind', () => {
-    it('returns image for /images/ path', () => {
-      expect(getSanityAssetKind('https://cdn.sanity.io/images/proj/img.jpg')).toBe('image');
-    });
-    it('returns file for /files/ path', () => {
-      expect(getSanityAssetKind('https://cdn.sanity.io/files/proj/file.pdf')).toBe('file');
-    });
-    it('returns unknown for non-CDN URL', () => {
-      expect(getSanityAssetKind('https://example.com/img.jpg')).toBe('unknown');
-    });
-    it('returns unknown for invalid URL', () => {
-      expect(getSanityAssetKind('not-a-url')).toBe('unknown');
-    });
+  it('returns valid for a freshly created signature', () => {
+    const targetUrl = 'https://cdn.sanity.io/images/proj/prod/img.jpg';
+    const now = Math.floor(Date.now() / 1000);
+    const sig = buildMediaGatewayUrl(targetUrl, { width: 320, quality: 85, sign: true });
+    const exp = Number.parseInt(new URL(sig, 'http://localhost').searchParams.get('exp') ?? '0', 10);
+    const sigParam = new URL(sig, 'http://localhost').searchParams.get('sig');
+
+    const result = verifyMediaGatewaySignature({ targetUrl, width: 320, quality: 85, expiresAt: exp, signature: sigParam });
+
+    expect(result.valid).toBe(true);
+    expect(result.expired).toBe(false);
   });
 
-  describe('decodeGatewayTarget', () => {
-    it('decodes base64url encoded string', () => {
-      const original = 'https://cdn.sanity.io/images/proj/img.jpg';
-      const encoded = encodeGatewayTarget(original);
-      expect(decodeGatewayTarget(encoded)).toBe(original);
-    });
-    it('returns empty string for invalid base64', () => {
-      expect(decodeGatewayTarget('')).toBe('');
-    });
+  it('returns expired=true for a signature past TTL but within grace period', () => {
+    const targetUrl = 'https://cdn.sanity.io/images/proj/prod/img.jpg';
+    const pastExpiry = Math.floor(Date.now() / 1000) - 1800;
+
+    const result = verifyMediaGatewaySignature({ targetUrl, width: 320, quality: 85, expiresAt: pastExpiry, signature: 'fake-sig' });
+
+    expect(result.valid).toBe(false);
+    expect(result.expired).toBe(true);
   });
 
-  describe('createMediaGatewaySignature', () => {
-    it('returns null when no secret', () => {
-      vi.stubEnv('SANITY_MEDIA_GATEWAY_SECRET', '');
-      expect(createMediaGatewaySignature({ targetUrl: 'https://cdn.sanity.io/images/proj/img.jpg' })).toBeNull();
-    });
+  it('returns expired=true for a signature far past TTL', () => {
+    const targetUrl = 'https://cdn.sanity.io/images/proj/prod/img.jpg';
+    const farPast = Math.floor(Date.now() / 1000) - 7200;
 
-    it('creates signature with secret', () => {
-      vi.stubEnv('SANITY_MEDIA_GATEWAY_SECRET', 'test-secret');
-      const result = createMediaGatewaySignature({ targetUrl: 'https://cdn.sanity.io/images/proj/img.jpg' });
-      expect(result).not.toBeNull();
-      expect(result?.exp).toBeDefined();
-      expect(result?.sig).toBeDefined();
-    });
+    const result = verifyMediaGatewaySignature({ targetUrl, width: 320, quality: 85, expiresAt: farPast, signature: 'fake-sig' });
 
-    it('uses provided expiresAt', () => {
-      vi.stubEnv('SANITY_MEDIA_GATEWAY_SECRET', 'test-secret');
-      const result = createMediaGatewaySignature({
-        targetUrl: 'https://cdn.sanity.io/images/proj/img.jpg',
-        expiresAt: 12345,
-      });
-      expect(result?.exp).toBe(12345);
-    });
+    expect(result.valid).toBe(false);
+    expect(result.expired).toBe(true);
   });
 
-  describe('verifyMediaGatewaySignature', () => {
-    it('returns invalid when no secret', () => {
-      vi.stubEnv('SANITY_MEDIA_GATEWAY_SECRET', '');
-      expect(verifyMediaGatewaySignature({ targetUrl: 'url', signature: 'sig', expiresAt: 999 })).toEqual({ valid: false, expired: false });
-    });
+  it('returns false when secret is missing', () => {
+    delete process.env.SANITY_MEDIA_GATEWAY_SECRET;
+    const result = verifyMediaGatewaySignature({ targetUrl: 'https://cdn.sanity.io/images/proj/prod/img.jpg', expiresAt: 9999999999, signature: 'sig' });
 
-    it('returns invalid when no signature', () => {
-      vi.stubEnv('SANITY_MEDIA_GATEWAY_SECRET', 'test-secret');
-      expect(verifyMediaGatewaySignature({ targetUrl: 'url' })).toEqual({ valid: false, expired: false });
-    });
-
-    it('returns invalid when expired beyond grace', () => {
-      vi.stubEnv('SANITY_MEDIA_GATEWAY_SECRET', 'test-secret');
-      const past = Math.floor(Date.now() / 1000) - 100000;
-      expect(verifyMediaGatewaySignature({ targetUrl: 'url', signature: 'bad', expiresAt: past })).toEqual({ valid: false, expired: true });
-    });
-
-    it('validates correct signature', () => {
-      vi.stubEnv('SANITY_MEDIA_GATEWAY_SECRET', 'test-secret');
-      const targetUrl = 'https://cdn.sanity.io/images/proj/img.jpg';
-      const exp = Math.floor(Date.now() / 1000) + 3600;
-      const sig = createMediaGatewaySignature({ targetUrl, expiresAt: exp });
-      expect(verifyMediaGatewaySignature({ targetUrl, signature: sig?.sig, expiresAt: exp })).toEqual({ valid: true, expired: false });
-    });
-  });
-
-  describe('buildMediaGatewayUrl', () => {
-    it('returns empty for null/empty URL', () => {
-      expect(buildMediaGatewayUrl(null)).toBe('');
-      expect(buildMediaGatewayUrl('')).toBe('');
-    });
-
-    it('returns relative path as-is', () => {
-      expect(buildMediaGatewayUrl('/images/local.jpg')).toBe('/images/local.jpg');
-    });
-
-    it('returns empty for non-Sanity URL', () => {
-      expect(buildMediaGatewayUrl('https://example.com/img.jpg')).toBe('');
-    });
-
-    it('builds URL for valid Sanity CDN URL', () => {
-      const url = buildMediaGatewayUrl('https://cdn.sanity.io/images/proj/img.jpg');
-      expect(url).toContain('/api/media/sanity/');
-      expect(url).toContain('w=');
-      expect(url).toContain('q=');
-    });
-
-    it('includes signature when sign=true', () => {
-      vi.stubEnv('SANITY_MEDIA_GATEWAY_SECRET', 'test-secret');
-      const url = buildMediaGatewayUrl('https://cdn.sanity.io/images/proj/img.jpg', { sign: true });
-      expect(url).toContain('exp=');
-      expect(url).toContain('sig=');
-    });
+    expect(result.valid).toBe(false);
+    expect(result.expired).toBe(false);
   });
 });

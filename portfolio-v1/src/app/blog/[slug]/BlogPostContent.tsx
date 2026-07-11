@@ -4,7 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import Image from '@/components/ui/OptimizedImage';
 import { motion } from 'framer-motion';
-import ReactMarkdown, { type Components } from 'react-markdown';
+import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeHighlight from 'rehype-highlight';
 import { ArrowLeft, Clock, Calendar, ChevronLeft, ChevronRight } from 'lucide-react';
@@ -14,64 +14,64 @@ import { ReadingProgress } from '@/components/ui/ReadingProgress';
 import { formatDateUtc } from '@/lib/date';
 import type { BlogPost } from '@/types';
 
-const markdownComponents: Components = {
-  h2: ({ children, ...props }) => (
-    <h2 className="text-lg font-semibold text-text-primary-light dark:text-text-primary-dark mt-8 mb-3" {...props}>
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- react-markdown Components type is overly strict for our custom components
+const markdownComponents: any = {
+  h2: ({ children }: { children: React.ReactNode }) => (
+    <h2 className="text-lg font-semibold text-text-primary-light dark:text-text-primary-dark mt-8 mb-3">
       {children}
     </h2>
   ),
-  h3: ({ children, ...props }) => (
-    <h3 className="text-base font-semibold text-text-primary-light dark:text-text-primary-dark mt-6 mb-2" {...props}>
+  h3: ({ children }: { children: React.ReactNode }) => (
+    <h3 className="text-base font-semibold text-text-primary-light dark:text-text-primary-dark mt-6 mb-2">
       {children}
     </h3>
   ),
-  p: ({ children, ...props }) => (
-    <p className="text-sm text-text-secondary-light dark:text-text-secondary-dark leading-relaxed my-3" {...props}>
+  p: ({ children }: { children: React.ReactNode }) => (
+    <p className="text-sm text-text-secondary-light dark:text-text-secondary-dark leading-relaxed my-3">
       {children}
     </p>
   ),
-  ul: ({ children, ...props }) => (
-    <ul className="my-3 space-y-1.5 pl-5 list-disc" {...props}>
+  ul: ({ children }: { children: React.ReactNode }) => (
+    <ul className="my-3 space-y-1.5 pl-5 list-disc">
       {children}
     </ul>
   ),
-  ol: ({ children, ...props }) => (
-    <ol className="my-3 space-y-1.5 pl-5 list-decimal" {...props}>
+  ol: ({ children }: { children: React.ReactNode }) => (
+    <ol className="my-3 space-y-1.5 pl-5 list-decimal">
       {children}
     </ol>
   ),
-  strong: ({ children, ...props }) => (
-    <strong className="font-semibold text-text-primary-light dark:text-text-primary-dark" {...props}>
+  strong: ({ children }: { children: React.ReactNode }) => (
+    <strong className="font-semibold text-text-primary-light dark:text-text-primary-dark">
       {children}
     </strong>
   ),
-  a: ({ href, children, ...props }) => {
+  a: ({ href, children }: { href?: string; children: React.ReactNode }) => {
     const isExternal = href?.startsWith('http');
     return (
       <a
         href={href}
         {...(isExternal ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
         className="text-accent-pink hover:underline"
-        {...props}
       >
         {children}
       </a>
     );
   },
-  code: ({ className, children, ...props }) => {
+  code: ({ className, children }: { className?: string; children: React.ReactNode }) => {
     const isBlock = className?.includes('language-');
     if (isBlock) {
-      return <code className="text-xs text-text-secondary-light dark:text-text-secondary-dark" {...props}>{children}</code>;
+      return <code className="text-xs text-text-secondary-light dark:text-text-secondary-dark">{children}</code>;
     }
-    return <code className="text-accent-pink bg-surface-light dark:bg-surface-dark px-1.5 py-0.5 rounded text-xs" {...props}>{children}</code>;
+    return <code className="text-accent-pink bg-surface-light dark:bg-surface-dark px-1.5 py-0.5 rounded text-xs">{children}</code>;
   },
-  pre: ({ children, ...props }) => (
+  pre: ({ children }: { children: React.ReactNode }) => (
     <pre className="bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark rounded-lg p-4 my-4 overflow-x-auto">
       {children}
     </pre>
   ),
-  blockquote: ({ children, ...props }) => (
-    <blockquote className="border-l-2 border-accent-pink pl-4 my-4 italic text-text-muted-light dark:text-text-muted-dark" {...props}>
+  blockquote: ({ children }: { children: React.ReactNode }) => (
+    <blockquote className="border-l-2 border-accent-pink pl-4 my-4 italic text-text-muted-light dark:text-text-muted-dark">
       {children}
     </blockquote>
   ),

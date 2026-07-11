@@ -1,0 +1,47 @@
+'use client';
+
+
+import { motion } from 'framer-motion';
+import { ExternalLink } from 'lucide-react';
+import { useCmsContent } from '@/hooks/useCmsContent';
+import { formatDateUtc } from '@/lib/date';
+
+export function MembershipsSection() {
+  const { memberships } = useCmsContent();
+  return (
+    <motion.section
+      className=""
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '-50px' }}
+      transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
+    >
+      <h2 className="text-lg font-semibold text-text-primary-light dark:text-text-primary-dark mb-4">
+        Memberships
+      </h2>
+      <div className="space-y-2.5">
+        {memberships.map((membership, index) => (
+          <motion.a
+            key={membership.name}
+            href={membership.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-start gap-2 group text-sm text-text-secondary-light dark:text-text-secondary-dark hover:text-accent-pink dark:hover:text-accent-pink transition-colors duration-200"
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: index * 0.1, duration: 0.3 }}
+          >
+            <ExternalLink className="h-3.5 w-3.5 mt-0.5 flex-shrink-0 opacity-60 group-hover:opacity-100 transition-opacity" aria-hidden="true" />
+            <div>
+              <span className="leading-snug">{membership.name}</span>
+              <p className="text-xs text-text-muted-light dark:text-text-muted-dark mt-0.5">
+                Since {formatDateUtc(membership.joinedAt, { month: 'short', year: 'numeric' })}
+              </p>
+            </div>
+          </motion.a>
+        ))}
+      </div>
+    </motion.section>
+  );
+}

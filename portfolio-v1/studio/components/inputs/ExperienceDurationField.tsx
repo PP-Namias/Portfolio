@@ -1,10 +1,10 @@
 import React from 'react'
-import type {StringInputProps} from 'sanity'
+import {set, type StringInputProps} from 'sanity'
 
 import {formatDuration, parseDateLike} from '../../utils/text'
 
 export function ExperienceDurationField(props: StringInputProps) {
-  const {value} = props
+  const {value, onChange} = props
   const document = (props as unknown as {document?: any}).document
   const startDate = document?.startDate ?? null
   const endDate = document?.endDate ?? null
@@ -46,6 +46,7 @@ export function ExperienceDurationField(props: StringInputProps) {
         aria-label="Computed duration (read-only)"
         readOnly
         value={computed}
+        onChange={(event) => onChange(set(event.target.value))}
         style={{
           width: '100%',
           padding: '0.5rem 0.75rem',

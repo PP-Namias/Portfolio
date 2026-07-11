@@ -1,148 +1,114 @@
-'use client'
+'use client';
 
-import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react'
-import Image from '@/components/ui/OptimizedImage'
-import { motion, AnimatePresence } from 'framer-motion'
-import { ChevronLeft, ChevronRight, X, ChevronDown, ChevronUp } from 'lucide-react'
-import { useCmsContent } from '@/hooks/useCmsContent'
-import { resolveContentImageSrc } from '@/lib/media'
-import { formatDateUtc } from '@/lib/date'
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import Image from '@/components/ui/OptimizedImage';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ChevronLeft, ChevronRight, X, ChevronDown, ChevronUp } from 'lucide-react';
+import { useCmsContent } from '@/hooks/useCmsContent';
+import { resolveContentImageSrc } from '@/lib/media';
+import { formatDateUtc } from '@/lib/date';
 
-const INITIAL_COUNT = 9
-
-const FOCUSABLE_SELECTOR =
-  'a[href], button:not([disabled]), input:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+const INITIAL_COUNT = 9;
 
 // Assigns span classes for visual variety — only the first image gets 2x2, rest are 1x1
 // This avoids gaps in the dense grid while still giving a hero treatment
 function getSpanClass(index: number): string {
-  if (index === 0) return 'col-span-2 row-span-2'
-  return ''
+  if (index === 0) return 'col-span-2 row-span-2';
+  return '';
 }
 
 export function GallerySection() {
-  const { galleryImages } = useCmsContent()
-  const [activeTag, setActiveTag] = useState('All')
-  const [expanded, setExpanded] = useState(false)
-  const [selectedIndex, setSelectedIndex] = useState<number | null>(null)
-  const lightboxRef = useRef<HTMLDivElement>(null)
+  const { galleryImages } = useCmsContent();
+  const [activeTag, setActiveTag] = useState('All');
+  const [expanded, setExpanded] = useState(false);
+  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
 
   const filterTags = useMemo(() => {
-    const tagCounts = new Map<string, number>()
+    const tagCounts = new Map<string, number>();
 
     for (const image of galleryImages) {
       for (const tag of image.tags) {
-        if (/^\d{4}$/.test(tag)) continue
-        tagCounts.set(tag, (tagCounts.get(tag) ?? 0) + 1)
+        if (/^\d{4}$/.test(tag)) continue;
+        tagCounts.set(tag, (tagCounts.get(tag) ?? 0) + 1);
       }
     }
 
     const top = Array.from(tagCounts.entries())
       .sort((a, b) => b[1] - a[1])
       .slice(0, 6)
-      .map(([tag]) => tag)
+      .map(([tag]) => tag);
 
-    return ['All', ...top]
-  }, [galleryImages])
+    return ['All', ...top];
+  }, [galleryImages]);
 
   const filtered = useMemo(() => {
     if (activeTag === 'All') {
-      return galleryImages
+      return galleryImages;
     }
 
-    return galleryImages.filter((image) => image.tags.includes(activeTag))
-  }, [activeTag, galleryImages])
+    return galleryImages.filter((image) => image.tags.includes(activeTag));
+  }, [activeTag, galleryImages]);
 
-  const visibleImages = expanded ? filtered : filtered.slice(0, INITIAL_COUNT)
-  const hasMore = filtered.length > INITIAL_COUNT
+  const visibleImages = expanded ? filtered : filtered.slice(0, INITIAL_COUNT);
+  const hasMore = filtered.length > INITIAL_COUNT;
 
   // Reset expansion when filter changes
   useEffect(() => {
-    setExpanded(false)
-  }, [activeTag])
+    setExpanded(false);
+  }, [activeTag]);
 
   // Lightbox navigation
   const goToNext = useCallback(() => {
     if (selectedIndex === null) {
-      return
+      return;
     }
 
     setSelectedIndex((prev) => {
       if (prev === null) {
-        return 0
+        return 0;
       }
 
-      return prev < filtered.length - 1 ? prev + 1 : 0
-    })
-  }, [selectedIndex, filtered.length])
+      return prev < filtered.length - 1 ? prev + 1 : 0;
+    });
+  }, [selectedIndex, filtered.length]);
 
   const goToPrev = useCallback(() => {
     if (selectedIndex === null) {
-      return
+      return;
     }
 
     setSelectedIndex((prev) => {
       if (prev === null) {
-        return filtered.length - 1
+        return filtered.length - 1;
       }
 
-      return prev > 0 ? prev - 1 : filtered.length - 1
-    })
-  }, [selectedIndex, filtered.length])
+      return prev > 0 ? prev - 1 : filtered.length - 1;
+    });
+  }, [selectedIndex, filtered.length]);
 
   // Keyboard navigation for lightbox
   useEffect(() => {
-    if (selectedIndex === null) return
+    if (selectedIndex === null) return;
     const handleKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setSelectedIndex(null)
-      if (e.key === 'ArrowRight') goToNext()
-      if (e.key === 'ArrowLeft') goToPrev()
-    }
-    document.addEventListener('keydown', handleKey)
-    return () => document.removeEventListener('keydown', handleKey)
-  }, [selectedIndex, goToNext, goToPrev])
+      if (e.key === 'Escape') setSelectedIndex(null);
+      if (e.key === 'ArrowRight') goToNext();
+      if (e.key === 'ArrowLeft') goToPrev();
+    };
+    document.addEventListener('keydown', handleKey);
+    return () => document.removeEventListener('keydown', handleKey);
+  }, [selectedIndex, goToNext, goToPrev]);
 
   // Lock body scroll when lightbox is open
   useEffect(() => {
     if (selectedIndex === null) {
-      document.body.style.overflow = ''
+      document.body.style.overflow = '';
     } else {
-      document.body.style.overflow = 'hidden'
+      document.body.style.overflow = 'hidden';
     }
-    return () => {
-      document.body.style.overflow = ''
-    }
-  }, [selectedIndex])
+    return () => { document.body.style.overflow = ''; };
+  }, [selectedIndex]);
 
-  // Focus lightbox when opened
-  useEffect(() => {
-    if (selectedIndex === null) return
-    lightboxRef.current?.focus()
-  }, [selectedIndex])
-
-  // Focus trap for lightbox
-  useEffect(() => {
-    if (selectedIndex === null) return
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key !== 'Tab' || !lightboxRef.current) return
-      const focusable = lightboxRef.current.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR)
-      if (focusable.length === 0) return
-      const first = focusable[0]
-      const last = focusable[focusable.length - 1]
-      if (e.shiftKey && document.activeElement === first) {
-        e.preventDefault()
-        last.focus()
-      }
-      if (!e.shiftKey && document.activeElement === last) {
-        e.preventDefault()
-        first.focus()
-      }
-    }
-    document.addEventListener('keydown', handleKeyDown)
-    return () => document.removeEventListener('keydown', handleKeyDown)
-  }, [selectedIndex])
-
-  const selectedImage = selectedIndex === null ? null : filtered[selectedIndex]
+  const selectedImage = selectedIndex === null ? null : filtered[selectedIndex];
 
   return (
     <motion.section
@@ -153,11 +119,11 @@ export function GallerySection() {
       transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
     >
       {/* Header */}
-      <h2
-        id="gallery-heading"
-        className="text-lg font-semibold text-text-primary-light dark:text-text-primary-dark mb-4"
-      >
-        Gallery
+      <h2 id="gallery-heading" className="text-lg font-semibold text-text-primary-light dark:text-text-primary-dark mb-4">
+        Gallery{' '}
+        <span className="text-xs font-medium px-1.5 py-0.5 rounded-md bg-accent-pink/10 text-accent-pink ml-2 align-middle">
+          {filtered.length}
+        </span>
       </h2>
 
       {/* Tag filter */}
@@ -180,14 +146,11 @@ export function GallerySection() {
       </div>
 
       {/* Masonry-style grid */}
-      <div
-        id="gallery-list"
-        className="grid grid-cols-2 gap-2 auto-rows-[150px] sm:grid-cols-3 sm:auto-rows-[170px] md:grid-cols-4 [grid-auto-flow:dense]"
-      >
+      <div className="grid grid-cols-2 gap-2 auto-rows-[150px] sm:grid-cols-3 sm:auto-rows-[170px] md:grid-cols-4 [grid-auto-flow:dense]">
         <AnimatePresence mode="popLayout">
           {visibleImages.map((image, index) => {
-            const globalIndex = filtered.indexOf(image)
-            const spanClass = getSpanClass(index)
+            const globalIndex = filtered.indexOf(image);
+            const spanClass = getSpanClass(index);
             return (
               <motion.button
                 key={image.media}
@@ -220,7 +183,7 @@ export function GallerySection() {
                   )}
                 </div>
               </motion.button>
-            )
+            );
           })}
         </AnimatePresence>
       </div>
@@ -237,18 +200,12 @@ export function GallerySection() {
             type="button"
             onClick={() => setExpanded((prev) => !prev)}
             aria-expanded={expanded}
-            aria-controls="gallery-list"
             className="flex items-center gap-1 text-xs font-medium text-text-muted-light dark:text-text-muted-dark hover:text-accent-pink dark:hover:text-accent-pink transition-colors"
           >
             {expanded ? (
-              <>
-                Show Less <ChevronUp className="h-3.5 w-3.5" aria-hidden="true" />
-              </>
+              <>Show Less <ChevronUp className="h-3.5 w-3.5" aria-hidden="true" /></>
             ) : (
-              <>
-                View all {filtered.length} photos{' '}
-                <ChevronDown className="h-3.5 w-3.5" aria-hidden="true" />
-              </>
+              <>View all {filtered.length} photos <ChevronDown className="h-3.5 w-3.5" aria-hidden="true" /></>
             )}
           </button>
         </motion.div>
@@ -258,8 +215,6 @@ export function GallerySection() {
       <AnimatePresence>
         {selectedImage && selectedIndex !== null && (
           <motion.div
-            ref={lightboxRef}
-            tabIndex={-1}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -288,10 +243,7 @@ export function GallerySection() {
             {/* Previous button */}
             <button
               type="button"
-              onClick={(e) => {
-                e.stopPropagation()
-                goToPrev()
-              }}
+              onClick={(e) => { e.stopPropagation(); goToPrev(); }}
               className="absolute left-2 sm:left-4 z-10 p-2 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors"
               aria-label="Previous image"
             >
@@ -301,10 +253,7 @@ export function GallerySection() {
             {/* Next button */}
             <button
               type="button"
-              onClick={(e) => {
-                e.stopPropagation()
-                goToNext()
-              }}
+              onClick={(e) => { e.stopPropagation(); goToNext(); }}
               className="absolute right-2 sm:right-4 z-10 p-2 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors"
               aria-label="Next image"
             >
@@ -331,14 +280,12 @@ export function GallerySection() {
                 className="w-full h-auto max-h-[80vh] object-contain rounded-lg"
               />
               <div className="text-center mt-4">
-                <p className="text-sm font-medium text-white/90">{selectedImage.title}</p>
+                <p className="text-sm font-medium text-white/90">
+                  {selectedImage.title}
+                </p>
                 {selectedImage.createdAt && (
                   <p className="text-xs text-white/50 mt-1">
-                    {formatDateUtc(selectedImage.createdAt, {
-                      month: 'long',
-                      day: 'numeric',
-                      year: 'numeric',
-                    })}
+                    {formatDateUtc(selectedImage.createdAt, { month: 'long', day: 'numeric', year: 'numeric' })}
                   </p>
                 )}
               </div>
@@ -347,5 +294,6 @@ export function GallerySection() {
         )}
       </AnimatePresence>
     </motion.section>
-  )
+  );
 }
+

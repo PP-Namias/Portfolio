@@ -1,30 +1,30 @@
-import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
-import { draftMode } from 'next/headers'
-import { VisualEditing } from 'next-sanity'
-import { Providers } from './providers'
-import { fallbackCmsContent } from '@/lib/cms-content.shared'
-import { FloatingHubWithBoundary } from '@/components/ui/FloatingHub'
-import { ScrollToTop } from '@/components/ui/ScrollToTop'
-import { Analytics } from '@/components/ui/Analytics'
-import { MagicCursor } from '@/components/ui/MagicCursor'
-import { JsonLd } from '@/components/seo/JsonLd'
-import { getCmsContent } from '@/lib/cms-content.server'
-import { IS_MAGIC_CURSOR_VISIBLE } from '@/lib/features'
-import { SITE_URL, SITE_NAME, SITE_DESCRIPTION } from '@/lib/site-config'
-import './globals.css'
+import type { Metadata } from 'next';
+import { Inter } from 'next/font/google';
+import { draftMode } from 'next/headers';
+import { VisualEditing } from 'next-sanity';
+import { Providers } from './providers';
+import { fallbackCmsContent } from '@/lib/cms-content.shared';
+import { FloatingHubWithBoundary } from '@/components/ui/FloatingHub';
+import { ScrollToTop } from '@/components/ui/ScrollToTop';
+import { Analytics } from '@/components/ui/Analytics';
+import { MagicCursor } from '@/components/ui/MagicCursor';
+import { JsonLd } from '@/components/seo/JsonLd';
+import { getCmsContent } from '@/lib/cms-content.server';
+import { IS_MAGIC_CURSOR_VISIBLE } from '@/lib/features';
+import { SITE_URL, SITE_NAME, SITE_DESCRIPTION } from '@/lib/site-config';
+import './globals.css';
 
 const inter = Inter({
   subsets: ['latin'],
   display: 'swap',
   variable: '--font-inter',
-})
+});
 
-const fallbackSeo = fallbackCmsContent.seoSettings
+const fallbackSeo = fallbackCmsContent.seoSettings;
 
 export async function generateMetadata(): Promise<Metadata> {
-  const cmsContent = await getCmsContent()
-  const seo = cmsContent.seoSettings || fallbackSeo
+  const cmsContent = await getCmsContent();
+  const seo = cmsContent.seoSettings || fallbackSeo;
 
   return {
     title: seo.siteTitle,
@@ -54,7 +54,7 @@ export async function generateMetadata(): Promise<Metadata> {
       icon: '/favicon.svg',
       apple: '/apple-touch-icon.svg',
     },
-  }
+  };
 }
 
 const jsonLd = {
@@ -92,27 +92,19 @@ const jsonLd = {
         'https://x.com/PP_Namias',
         'https://www.facebook.com/profile.php?id=100093808752066',
       ],
-      knowsAbout: [
-        'React',
-        'TypeScript',
-        'Node.js',
-        'Next.js',
-        'Python',
-        'AI Automation',
-        'Prompt Engineering',
-      ],
+      knowsAbout: ['React', 'TypeScript', 'Node.js', 'Next.js', 'Python', 'AI Automation', 'Prompt Engineering'],
     },
   ],
-}
+};
 
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   // In test environments (Vitest) return a synchronous layout using the
   // fallback CMS content so unit tests can import and render the layout
   // without awaiting async data fetches.
-  const isTest = process.env.VITEST === 'true' || process.env.NODE_ENV === 'test'
+  const isTest = process.env.VITEST === 'true' || process.env.NODE_ENV === 'test';
 
   if (isTest) {
-    const cmsContent = fallbackCmsContent
+    const cmsContent = fallbackCmsContent;
 
     return (
       <html lang="en" suppressHydrationWarning className={inter.variable}>
@@ -142,30 +134,27 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
           </Providers>
         </body>
       </html>
-    )
+    );
   }
 
   // Non-test runtime: fetch CMS content and check draft-mode status so the
   // Presentation tool iframe can handshake with the marketing site and
   // trigger refetches on save.
-  const [cmsContent, isDraftMode] = await Promise.all([
-    getCmsContent(),
-    draftMode().then((d) => d.isEnabled),
-  ])
+  const [cmsContent, isDraftMode] = await Promise.all([getCmsContent(), draftMode().then((d) => d.isEnabled)]);
 
   return (
-    <html lang="en" suppressHydrationWarning className={inter.variable}>
-      <head>
-        <link rel="dns-prefetch" href="https://cdn.sanity.io" />
-        <link rel="preconnect" href="https://cdn.sanity.io" />
-        <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link rel="dns-prefetch" href="https://cloud.umami.is" />
-        <link rel="preconnect" href="https://cloud.umami.is" />
-        <JsonLd data={jsonLd} id="layout-jsonld-runtime" />
-        <Analytics />
-      </head>
+      <html lang="en" suppressHydrationWarning className={inter.variable}>
+        <head>
+          <link rel="dns-prefetch" href="https://cdn.sanity.io" />
+          <link rel="preconnect" href="https://cdn.sanity.io" />
+          <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+          <link rel="preconnect" href="https://fonts.googleapis.com" />
+          <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+          <link rel="dns-prefetch" href="https://cloud.umami.is" />
+          <link rel="preconnect" href="https://cloud.umami.is" />
+          <JsonLd data={jsonLd} id="layout-jsonld-runtime" />
+          <Analytics />
+        </head>
       <body className="bg-background-light dark:bg-background-dark text-text-primary-light dark:text-text-primary-dark min-h-screen font-sans antialiased">
         <a
           href="#main-content"
@@ -173,7 +162,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
         >
           Skip to main content
         </a>
-        <Providers cmsContent={cmsContent}>
+        <Providers cmsContent={cmsContent} isDraftMode={isDraftMode}>
           {IS_MAGIC_CURSOR_VISIBLE ? <MagicCursor /> : null}
           {children}
           <FloatingHubWithBoundary />
@@ -182,5 +171,5 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
         </Providers>
       </body>
     </html>
-  )
+  );
 }

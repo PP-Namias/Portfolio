@@ -1,94 +1,46 @@
-'use client'
+'use client';
 
-import React, { useState, useEffect, useMemo, useRef } from 'react'
-import Image from '@/components/ui/OptimizedImage'
-import { motion, AnimatePresence } from 'framer-motion'
-import { X, ChevronDown, ChevronUp } from 'lucide-react'
-import { useCmsContent } from '@/hooks/useCmsContent'
-import { resolveContentImageSrc } from '@/lib/media'
+import React, { useState, useEffect, useMemo } from 'react';
+import Image from '@/components/ui/OptimizedImage';
+import { motion, AnimatePresence } from 'framer-motion';
+import { X, ChevronDown, ChevronUp } from 'lucide-react';
+import { useCmsContent } from '@/hooks/useCmsContent';
+import { resolveContentImageSrc } from '@/lib/media';
 
-const INITIAL_COUNT = 6
+const INITIAL_COUNT = 6;
 
 function getCertificationImageSrc(cert: { image: string; imageUrl?: string }): string {
-  if (cert.image) return cert.image
-  return resolveContentImageSrc(cert.imageUrl, { folder: 'certifications' })
+  if (cert.image) return cert.image;
+  return resolveContentImageSrc(cert.imageUrl, { folder: 'certifications' });
 }
 
-const FOCUSABLE_SELECTOR =
-  'a[href], button:not([disabled]), input:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
-
 export function CertificationsSection() {
-  const { certifications } = useCmsContent()
-  const [selectedCert, setSelectedCert] = useState<{
-    image: string
-    imageUrl?: string
-    title: string
-  } | null>(null)
-  const [activeIssuer, setActiveIssuer] = useState('All')
-  const [expanded, setExpanded] = useState(false)
-  const lightboxRef = useRef<HTMLDivElement>(null)
+  const { certifications } = useCmsContent();
+  const [selectedCert, setSelectedCert] = useState<{ image: string; imageUrl?: string; title: string } | null>(null);
+  const [activeIssuer, setActiveIssuer] = useState('All');
+  const [expanded, setExpanded] = useState(false);
 
-  const issuers = ['All', ...Array.from(new Set(certifications.map((c) => c.issuer)))]
+  const issuers = ['All', ...Array.from(new Set(certifications.map((c) => c.issuer)))];
 
   const filtered = useMemo(
-    () =>
-      activeIssuer === 'All'
-        ? certifications
-        : certifications.filter((c) => c.issuer === activeIssuer),
+    () => activeIssuer === 'All' ? certifications : certifications.filter((c) => c.issuer === activeIssuer),
     [activeIssuer, certifications]
-  )
+  );
 
-  const visibleCerts = expanded ? filtered : filtered.slice(0, INITIAL_COUNT)
-  const hasMore = filtered.length > INITIAL_COUNT
+  const visibleCerts = expanded ? filtered : filtered.slice(0, INITIAL_COUNT);
+  const hasMore = filtered.length > INITIAL_COUNT;
 
   useEffect(() => {
-    setExpanded(false)
-  }, [activeIssuer])
+    setExpanded(false);
+  }, [activeIssuer]);
 
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setSelectedCert(null)
-    }
-    if (selectedCert) document.addEventListener('keydown', handleEscape)
-    return () => document.removeEventListener('keydown', handleEscape)
-  }, [selectedCert])
-
-  useEffect(() => {
-    if (selectedCert === null) return
-    lightboxRef.current?.focus()
-  }, [selectedCert])
-
-  useEffect(() => {
-    if (selectedCert === null) {
-      document.body.style.overflow = ''
-    } else {
-      document.body.style.overflow = 'hidden'
-    }
-    return () => {
-      document.body.style.overflow = ''
-    }
-  }, [selectedCert])
-
-  useEffect(() => {
-    if (selectedCert === null) return
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key !== 'Tab' || !lightboxRef.current) return
-      const focusable = lightboxRef.current.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR)
-      if (focusable.length === 0) return
-      const first = focusable[0]
-      const last = focusable[focusable.length - 1]
-      if (e.shiftKey && document.activeElement === first) {
-        e.preventDefault()
-        last.focus()
-      }
-      if (!e.shiftKey && document.activeElement === last) {
-        e.preventDefault()
-        first.focus()
-      }
-    }
-    document.addEventListener('keydown', handleKeyDown)
-    return () => document.removeEventListener('keydown', handleKeyDown)
-  }, [selectedCert])
+      if (e.key === 'Escape') setSelectedCert(null);
+    };
+    if (selectedCert) document.addEventListener('keydown', handleEscape);
+    return () => document.removeEventListener('keydown', handleEscape);
+  }, [selectedCert]);
 
   return (
     <motion.section
@@ -98,11 +50,11 @@ export function CertificationsSection() {
       viewport={{ once: true, margin: '-50px' }}
       transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
     >
-      <h2
-        id="certifications-heading"
-        className="text-lg font-semibold text-text-primary-light dark:text-text-primary-dark mb-4"
-      >
-        Certifications
+      <h2 id="certifications-heading" className="text-lg font-semibold text-text-primary-light dark:text-text-primary-dark mb-4">
+        Certifications{' '}
+        <span className="text-xs font-medium px-1.5 py-0.5 rounded-md bg-accent-pink/10 text-accent-pink ml-2 align-middle">
+          {certifications.length}
+        </span>
       </h2>
 
       {/* Issuer filter tabs */}
@@ -123,7 +75,7 @@ export function CertificationsSection() {
         ))}
       </div>
 
-      <div id="certifications-list" className="grid grid-cols-2 gap-2">
+      <div className="grid grid-cols-2 gap-2">
         {visibleCerts.map((cert, index) => (
           <motion.button
             type="button"
@@ -133,9 +85,7 @@ export function CertificationsSection() {
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
             transition={{ delay: index * 0.03, duration: 0.3 }}
-            onClick={() =>
-              setSelectedCert({ image: cert.image, imageUrl: cert.imageUrl, title: cert.title })
-            }
+            onClick={() => setSelectedCert({ image: cert.image, imageUrl: cert.imageUrl, title: cert.title })}
           >
             <div className="aspect-[4/3] relative">
               {getCertificationImageSrc(cert) ? (
@@ -157,10 +107,12 @@ export function CertificationsSection() {
                 <p className="text-[11px] font-medium text-white leading-tight line-clamp-2">
                   {cert.title}
                 </p>
-                <p className="text-[11px] text-white/70 mt-0.5">{cert.issuer}</p>
+                <p className="text-[11px] text-white/70 mt-0.5">
+                  {cert.issuer}
+                </p>
               </div>
             </div>
-          </motion.button>
+            </motion.button>
         ))}
       </div>
 
@@ -170,17 +122,12 @@ export function CertificationsSection() {
           type="button"
           onClick={() => setExpanded((prev) => !prev)}
           aria-expanded={expanded}
-          aria-controls="certifications-list"
           className="flex items-center gap-1 mx-auto mt-3 text-xs font-medium text-text-muted-light dark:text-text-muted-dark hover:text-accent-pink dark:hover:text-accent-pink transition-colors"
         >
           {expanded ? (
-            <>
-              Show less <ChevronUp className="h-3.5 w-3.5" />
-            </>
+            <>Show less <ChevronUp className="h-3.5 w-3.5" /></>
           ) : (
-            <>
-              View all {filtered.length} certs <ChevronDown className="h-3.5 w-3.5" />
-            </>
+            <>View all {filtered.length} certs <ChevronDown className="h-3.5 w-3.5" /></>
           )}
         </button>
       )}
@@ -189,8 +136,6 @@ export function CertificationsSection() {
       <AnimatePresence>
         {selectedCert && (
           <motion.div
-            ref={lightboxRef}
-            tabIndex={-1}
             className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4"
             role="dialog"
             aria-modal="true"
@@ -238,5 +183,6 @@ export function CertificationsSection() {
         )}
       </AnimatePresence>
     </motion.section>
-  )
+  );
 }
+

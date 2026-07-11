@@ -39,7 +39,7 @@ const QUICK_ACTIONS: QuickAction[] = [
     type: 'certification',
     tone: '#22c55e',
     initialValues: {
-      issuedAt: new Date().toISOString(),
+      issueDate: new Date().toISOString(),
     },
   },
   {
@@ -96,17 +96,9 @@ export function Welcome() {
         The portfolio is a content surface. <br />
         This is the cockpit.
       </h1>
-      <p
-        style={{
-          marginTop: 16,
-          maxWidth: 540,
-          color: 'rgba(245,245,247,0.7)',
-          fontSize: 16,
-          lineHeight: 1.6,
-        }}
-      >
-        Real-time preview, visual editing on the live site, smart workflows, AI assist, and
-        scheduled publishing. Built to show editorial craft.
+      <p style={{marginTop: 16, maxWidth: 540, color: 'rgba(245,245,247,0.7)', fontSize: 16, lineHeight: 1.6}}>
+        Real-time preview, visual editing on the live site, smart workflows, AI assist,
+        and scheduled publishing. Built to show editorial craft.
       </p>
 
       <div
@@ -178,9 +170,7 @@ export function Welcome() {
           border: '1px solid rgba(255,255,255,0.08)',
         }}
       >
-        <span style={{fontSize: 12, color: 'rgba(245,245,247,0.7)'}}>
-          Want to see it in action?
-        </span>
+        <span style={{fontSize: 12, color: 'rgba(245,245,247,0.7)'}}>Want to see it in action?</span>
         <button
           type="button"
           onClick={() => {

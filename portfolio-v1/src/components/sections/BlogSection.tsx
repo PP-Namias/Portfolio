@@ -1,32 +1,32 @@
-'use client'
+'use client';
 
-import React, { useMemo } from 'react'
-import Link from 'next/link'
-import Image from '@/components/ui/OptimizedImage'
-import { motion } from 'framer-motion'
-import { ArrowRight, Calendar, Clock } from 'lucide-react'
-import { useCmsContent } from '@/hooks/useCmsContent'
-import { resolveContentImageSrc } from '@/lib/media'
-import { formatDateUtc } from '@/lib/date'
-import { IS_BLOG_VISIBLE } from '@/lib/features'
-import type { BlogPost } from '@/types'
+import React, { useMemo } from 'react';
+import Link from 'next/link';
+import Image from '@/components/ui/OptimizedImage';
+import { motion } from 'framer-motion';
+import { ArrowRight, Calendar, Clock } from 'lucide-react';
+import { useCmsContent } from '@/hooks/useCmsContent';
+import { resolveContentImageSrc } from '@/lib/media';
+import { formatDateUtc } from '@/lib/date';
+import { IS_BLOG_VISIBLE } from '@/lib/features';
+import type { BlogPost } from '@/types';
 
-const LATEST_COUNT = 3
-const VISIBLE_TAGS = 2
-const COVER_SIZE = 96
-const EXCERPT_LINES = 2
+const LATEST_COUNT = 3;
+const VISIBLE_TAGS = 2;
+const COVER_SIZE = 96;
+const EXCERPT_LINES = 2;
 
 function sortByDateDesc(posts: BlogPost[]): BlogPost[] {
-  return [...posts].sort((a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : 0))
+  return [...posts].sort((a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : 0));
 }
 
 interface PostRowProps {
-  post: BlogPost
-  index: number
+  post: BlogPost;
+  index: number;
 }
 
 function PostRow({ post, index }: PostRowProps) {
-  const coverSrc = resolveContentImageSrc(post.coverImage, { folder: 'blog' })
+  const coverSrc = resolveContentImageSrc(post.coverImage, { folder: 'blog' });
 
   return (
     <motion.article
@@ -96,15 +96,18 @@ function PostRow({ post, index }: PostRowProps) {
         </span>
       </Link>
     </motion.article>
-  )
+  );
 }
 
 export function BlogSection() {
-  const { blogPosts } = useCmsContent()
+  const { blogPosts } = useCmsContent();
 
-  const latest = useMemo(() => sortByDateDesc(blogPosts).slice(0, LATEST_COUNT), [blogPosts])
+  const latest = useMemo(
+    () => sortByDateDesc(blogPosts).slice(0, LATEST_COUNT),
+    [blogPosts]
+  );
 
-  if (!IS_BLOG_VISIBLE) return null
+  if (!IS_BLOG_VISIBLE) return null;
 
   return (
     <motion.section
@@ -119,7 +122,10 @@ export function BlogSection() {
           id="home-blog-heading"
           className="text-lg font-semibold text-text-primary-light dark:text-text-primary-dark"
         >
-          Blog
+          Blog{' '}
+          <span className="text-xs font-medium px-1.5 py-0.5 rounded-md bg-accent-pink/10 text-accent-pink ml-2 align-middle">
+            {blogPosts.length}
+          </span>
         </h2>
 
         {blogPosts.length > 0 && (
@@ -155,5 +161,6 @@ export function BlogSection() {
         </div>
       )}
     </motion.section>
-  )
+  );
 }
+

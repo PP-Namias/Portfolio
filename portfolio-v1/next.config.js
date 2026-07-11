@@ -19,11 +19,11 @@ const isWindows = process.platform === 'win32';
 
 const contentSecurityPolicy = `
   default-src 'self';
-  script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ''}${umamiScriptOrigin ? ` ${umamiScriptOrigin}` : ''} https://cal.com https://*.cal.com https://browser.sentry-cdn.com;
+  script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ''}${umamiScriptOrigin ? ` ${umamiScriptOrigin}` : ''} https://cal.com https://*.cal.com;
   style-src 'self' 'unsafe-inline'; /* required by Next.js hydration */
   img-src 'self' data: blob: https:;
   font-src 'self' data: https:;
-  connect-src ${connectSrc} https://namias-cms.sanity.studio https://*.sanity.studio https://*.api.sanity.io https://cal.com https://*.cal.com https://*.sentry.io;
+  connect-src ${connectSrc} https://namias-cms.sanity.studio https://*.sanity.studio https://*.api.sanity.io https://cal.com https://*.cal.com;
   frame-src 'self' https://cal.com https://*.cal.com https://cdn.sanity.io https://namias-cms.sanity.studio https://*.sanity.studio;
   object-src 'none';
   base-uri 'self';
@@ -55,7 +55,7 @@ const securityHeaders = [
   },
   {
     key: 'X-XSS-Protection',
-    value: '0',
+    value: '1; mode=block',
   },
   {
     key: 'Referrer-Policy',
@@ -99,7 +99,6 @@ const nextConfig = {
     remotePatterns: [
       { protocol: 'https', hostname: 'cdn.sanity.io' },
       { protocol: 'https', hostname: '**.sanity.io' },
-      { protocol: 'https', hostname: 'ghchart.rshah.org' },
     ],
     localPatterns: [
       {pathname: '/api/media/sanity/**'},

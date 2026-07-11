@@ -1,78 +1,65 @@
-'use client'
+'use client';
 
-import * as React from 'react'
-import { Slot } from '@radix-ui/react-slot'
-import { cva, type VariantProps } from 'class-variance-authority'
+import React from 'react';
+import Link from 'next/link';
+import { cn } from '@/lib/utils';
 
-import { cn } from '@/lib/utils'
-
-const buttonVariants = cva(
-  'inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50',
-  {
-    variants: {
-      variant: {
-        default: 'bg-primary text-primary-foreground hover:bg-primary/90',
-        primary:
-          'bg-accent-pink text-white hover:bg-accent-pink-hover shadow-lg shadow-accent-pink/25 hover:shadow-xl hover:shadow-accent-pink/30 transition-shadow',
-        destructive: 'bg-destructive text-destructive-foreground hover:bg-destructive/90',
-        outline: 'border border-input bg-background hover:bg-accent hover:text-accent-foreground',
-        secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/80',
-        ghost: 'hover:bg-accent hover:text-accent-foreground',
-        link: 'text-primary underline-offset-4 hover:underline',
-      },
-      size: {
-        default: 'h-10 px-4 py-2',
-        sm: 'h-9 rounded-md px-3',
-        lg: 'h-11 rounded-md px-8',
-        icon: 'h-10 w-10',
-      },
-    },
-    defaultVariants: {
-      variant: 'default',
-      size: 'default',
-    },
-  }
-)
-
-export interface ButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement>, VariantProps<typeof buttonVariants> {
-  asChild?: boolean
-  internal?: boolean
-  href?: string
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  variant?: 'primary' | 'ghost' | 'outline';
+  size?: 'sm' | 'md' | 'lg';
+  href?: string;
+  internal?: boolean;
+  children: React.ReactNode;
 }
 
-const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, asChild = false, internal = false, href, ...props }, ref) => {
-    if (href && internal) {
-      return (
-        <a
-          href={href}
-          className={cn(buttonVariants({ variant, size, className }))}
-          ref={ref as React.Ref<HTMLAnchorElement>}
-          {...(props as React.AnchorHTMLAttributes<HTMLAnchorElement>)}
-        />
-      )
-    }
+export function Button({
+  variant = 'primary',
+  size = 'md',
+  href,
+  internal = false,
+  children,
+  className,
+  ...props
+}: ButtonProps) {
+  const baseStyles =
+    'inline-flex items-center justify-center gap-2 rounded-lg font-medium transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-pink focus-visible:ring-offset-2 dark:focus-visible:ring-offset-background-dark';
 
-    if (href) {
-      return (
-        <a
-          href={href}
-          className={cn(buttonVariants({ variant, size, className }))}
-          ref={ref as React.Ref<HTMLAnchorElement>}
-          target="_blank"
-          rel="noopener noreferrer"
-          {...(props as React.AnchorHTMLAttributes<HTMLAnchorElement>)}
-        />
-      )
-    }
+  const variants = {
+    primary:
+      'bg-accent-pink text-white hover:bg-accent-pink-hover active:bg-accent-pink-hover shadow-sm',
+    ghost:
+      'text-text-primary-light dark:text-text-primary-dark bg-surface-light/50 dark:bg-card-bg-dark/50 hover:bg-surface-light dark:hover:bg-card-bg-dark',
+    outline:
+      'border border-border-light dark:border-border-dark text-text-primary-light dark:text-text-primary-dark hover:border-accent-pink hover:text-accent-pink dark:hover:border-accent-pink dark:hover:text-accent-pink',
+  };
 
-    const Comp = asChild ? Slot : 'button'
+  const sizes = {
+    sm: 'px-3 py-1.5 text-sm',
+    md: 'px-4 py-2 text-sm',
+    lg: 'px-6 py-3 text-base',
+  };
+
+  const classes = cn(baseStyles, variants[variant], sizes[size], className);
+
+  if (href && internal) {
     return (
-      <Comp className={cn(buttonVariants({ variant, size, className }))} ref={ref} {...props} />
-    )
+      <Link href={href} className={classes}>
+        {children}
+      </Link>
+    );
   }
-)
-Button.displayName = 'Button'
 
-export { Button, buttonVariants }
+  if (href) {
+    return (
+      <a href={href} className={classes} target="_blank" rel="noopener noreferrer">
+        {children}
+      </a>
+    );
+  }
+
+  return (
+    <button type="button" className={classes} {...props}>
+      {children}
+    </button>
+  );
+}

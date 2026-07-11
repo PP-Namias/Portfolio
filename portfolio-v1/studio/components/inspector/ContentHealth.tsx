@@ -4,6 +4,7 @@ import {useFormValue} from 'sanity'
 type Doc = Record<string, unknown>
 
 const WORD_RANGES: Record<string, {min: number; max: number; label: string}> = {
+  heroSection: {min: 30, max: 90, label: 'Headline length'},
   aboutSection: {min: 60, max: 600, label: 'About body length'},
   project: {min: 60, max: 320, label: 'Summary length'},
   certification: {min: 20, max: 200, label: 'Title + description length'},
@@ -16,24 +17,10 @@ function wordCount(value: unknown): number {
   }
   if (Array.isArray(value)) {
     return value.reduce<number>((acc, block) => {
-      if (
-        block &&
-        typeof block === 'object' &&
-        Array.isArray((block as {children?: unknown[]}).children)
-      ) {
+      if (block && typeof block === 'object' && Array.isArray((block as {children?: unknown[]}).children)) {
         for (const child of (block as {children: unknown[]}).children) {
-          if (
-            child &&
-            typeof child === 'object' &&
-            typeof (child as {text?: unknown}).text === 'string'
-          ) {
-            return (
-              acc +
-              String((child as {text: string}).text)
-                .trim()
-                .split(/\s+/)
-                .filter(Boolean).length
-            )
+          if (child && typeof child === 'object' && typeof (child as {text?: unknown}).text === 'string') {
+            return acc + String((child as {text: string}).text).trim().split(/\s+/).filter(Boolean).length
           }
         }
       }
@@ -121,20 +108,14 @@ export function ContentHealth() {
       setAgeDays(null)
       return
     }
-    setAgeDays(Math.floor((Date.now() - new Date(lastEdited).getTime()) / (1000 * 60 * 60 * 24)))
+    setAgeDays(
+      Math.floor((Date.now() - new Date(lastEdited).getTime()) / (1000 * 60 * 60 * 24)),
+    )
   }, [lastEdited])
 
   return (
     <div style={{padding: 16, display: 'flex', flexDirection: 'column', gap: 12, fontSize: 13}}>
-      <div
-        style={{
-          fontSize: 11,
-          fontWeight: 600,
-          color: 'rgba(0,0,0,0.55)',
-          textTransform: 'uppercase',
-          letterSpacing: 0.5,
-        }}
-      >
+      <div style={{fontSize: 11, fontWeight: 600, color: 'rgba(0,0,0,0.55)', textTransform: 'uppercase', letterSpacing: 0.5}}>
         Content health
       </div>
 
@@ -151,49 +132,27 @@ export function ContentHealth() {
         label="Images without alt text"
         value={`${altMetric.missing}`}
         status={altMetric.missing === 0 ? 'ok' : 'error'}
-        hint={
-          altMetric.missing === 0
-            ? 'All images have descriptive alt text.'
-            : 'Add alt text to each image for accessibility.'
-        }
+        hint={altMetric.missing === 0 ? 'All images have descriptive alt text.' : 'Add alt text to each image for accessibility.'}
       />
 
       <Stat
         label="References"
         value={`${refMetric.total - refMetric.broken}/${refMetric.total} healthy`}
         status={refMetric.broken === 0 ? 'ok' : 'error'}
-        hint={
-          refMetric.broken === 0
-            ? 'All references resolve.'
-            : `${refMetric.broken} reference(s) cannot be resolved.`
-        }
+        hint={refMetric.broken === 0 ? 'All references resolve.' : `${refMetric.broken} reference(s) cannot be resolved.`}
       />
 
       <Stat
         label="Last edited"
         value={ageDays == null ? 'Never' : `${ageDays} day${ageDays === 1 ? '' : 's'} ago`}
         status={ageDays == null ? 'warn' : ageDays > 30 ? 'warn' : 'ok'}
-        hint={
-          ageDays != null && ageDays > 30
-            ? 'Consider a refresh to keep content current.'
-            : 'Recently edited.'
-        }
+        hint={ageDays != null && ageDays > 30 ? 'Consider a refresh to keep content current.' : 'Recently edited.'}
       />
     </div>
   )
 }
 
-function Stat({
-  label,
-  value,
-  status,
-  hint,
-}: {
-  label: string
-  value: string
-  status: 'ok' | 'warn' | 'error'
-  hint?: string
-}) {
+function Stat({label, value, status, hint}: {label: string; value: string; status: 'ok' | 'warn' | 'error'; hint?: string}) {
   const palette: Record<typeof status, {bg: string; color: string; icon: string}> = {
     ok: {bg: 'rgba(34,197,94,0.12)', color: '#166534', icon: '✓'},
     warn: {bg: 'rgba(245,158,11,0.12)', color: '#92400e', icon: '!'},
@@ -204,9 +163,7 @@ function Stat({
     <div style={{padding: 12, borderRadius: 10, background: p.bg, color: p.color}}>
       <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
         <span style={{fontWeight: 600}}>{label}</span>
-        <span style={{fontSize: 16}}>
-          {p.icon} {value}
-        </span>
+        <span style={{fontSize: 16}}>{p.icon} {value}</span>
       </div>
       {hint ? <div style={{fontSize: 12, marginTop: 4, opacity: 0.85}}>{hint}</div> : null}
     </div>

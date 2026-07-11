@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'v5';
+const CACHE_VERSION = 'v4';
 const STATIC_CACHE = `portfolio-static-${CACHE_VERSION}`;
 const API_CACHE = `portfolio-api-${CACHE_VERSION}`;
 const CMS_CACHE = `portfolio-cms-${CACHE_VERSION}`;

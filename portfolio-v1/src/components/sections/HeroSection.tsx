@@ -1,25 +1,31 @@
-'use client'
+'use client';
 
-import React, { useState, useEffect, useRef, useCallback } from 'react'
-import Image from '@/components/ui/OptimizedImage'
-import { motion, AnimatePresence, useMotionValue, useSpring } from 'framer-motion'
-import { MapPin, Mail, Download, Calendar } from 'lucide-react'
-import { FaGithub, FaLinkedinIn, FaXTwitter } from 'react-icons/fa6'
-import { Button } from '@/components/ui/button'
-import { VerifiedBadge } from '@/components/ui/VerifiedBadge'
-import { ThemeToggle } from '@/components/ui/ThemeToggle'
-import { ColorSchemePicker } from '@/components/ui/ColorSchemePicker'
-import { HackedText } from '@/components/ui/hacked-text'
-import { useModal } from '@/hooks/useModal'
-import { useCmsContent } from '@/hooks/useCmsContent'
-import { sanityField } from '@/utils/sanity-data-attribute'
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import Image from '@/components/ui/OptimizedImage';
+import { motion, AnimatePresence, useMotionValue, useSpring } from 'framer-motion';
+import {
+  MapPin,
+  Mail,
+  Download,
+  Calendar,
+} from 'lucide-react';
+import { FaGithub, FaLinkedinIn, FaXTwitter } from 'react-icons/fa6';
+import { Button } from '@/components/ui/Button';
+import { VerifiedBadge } from '@/components/ui/VerifiedBadge';
+import { ThemeToggle } from '@/components/ui/ThemeToggle';
+import { ColorSchemePicker } from '@/components/ui/ColorSchemePicker';
+import { HackedText } from '@/components/ui/hacked-text';
+import { useModal } from '@/hooks/useModal';
+import { useCmsContent } from '@/hooks/useCmsContent';
+import { IS_BLOG_VISIBLE } from '@/lib/features';
+import { sanityField } from '@/utils/sanity-data-attribute';
 
 const socialIconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   github: FaGithub,
   linkedin: FaLinkedinIn,
   x: FaXTwitter,
   twitter: FaXTwitter,
-}
+};
 
 /* Staggered entrance variants */
 const containerVariants = {
@@ -28,7 +34,7 @@ const containerVariants = {
     opacity: 1,
     transition: { staggerChildren: 0.07, delayChildren: 0.1 },
   },
-}
+};
 
 const itemVariants = {
   hidden: { opacity: 0, y: 14 },
@@ -37,7 +43,7 @@ const itemVariants = {
     y: 0,
     transition: { type: 'spring', stiffness: 300, damping: 24 },
   },
-}
+};
 
 const photoVariants = {
   hidden: { opacity: 0, scale: 0.85 },
@@ -46,65 +52,63 @@ const photoVariants = {
     scale: 1,
     transition: { type: 'spring', stiffness: 200, damping: 20, delay: 0.05 },
   },
-}
+};
 
 export function HeroSection() {
-  const { profile, socialLinks, hero } = useCmsContent()
-  const roles = hero.roles.length > 0 ? hero.roles : [profile.title]
-  const mainProfileImage = hero.profileImageUrl
-  const [roleIndex, setRoleIndex] = useState(0)
-  const [activeProfileImage, setActiveProfileImage] = useState(mainProfileImage)
-  const { openModal } = useModal()
-  const photoRef = useRef<HTMLDivElement>(null)
+  const { profile, socialLinks, hero } = useCmsContent();
+  const roles = hero.roles.length > 0 ? hero.roles : [profile.title];
+  const mainProfileImage = hero.profileImageUrl;
+  const [roleIndex, setRoleIndex] = useState(0);
+  const [activeProfileImage, setActiveProfileImage] = useState(mainProfileImage);
+  const { openModal } = useModal();
+  const photoRef = useRef<HTMLDivElement>(null);
 
   /* 3D tilt motion values */
-  const rotateX = useMotionValue(0)
-  const rotateY = useMotionValue(0)
-  const smoothRotateX = useSpring(rotateX, { stiffness: 200, damping: 20 })
-  const smoothRotateY = useSpring(rotateY, { stiffness: 200, damping: 20 })
+  const rotateX = useMotionValue(0);
+  const rotateY = useMotionValue(0);
+  const smoothRotateX = useSpring(rotateX, { stiffness: 200, damping: 20 });
+  const smoothRotateY = useSpring(rotateY, { stiffness: 200, damping: 20 });
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setRoleIndex((prev) => (prev + 1) % roles.length)
-    }, 3000)
-    return () => clearInterval(interval)
-  }, [roles.length])
+      setRoleIndex((prev) => (prev + 1) % roles.length);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, [roles.length]);
 
   const displayedSocials = socialLinks.filter((s) =>
     ['github', 'linkedin', 'twitter', 'x'].includes(s.name)
-  )
+  );
 
   const handlePhotoMouseMove = useCallback(
     (e: React.MouseEvent<HTMLDivElement>) => {
-      const el = photoRef.current
-      if (!el) return
-      const rect = el.getBoundingClientRect()
-      const x = (e.clientX - rect.left) / rect.width - 0.5
-      const y = (e.clientY - rect.top) / rect.height - 0.5
-      rotateY.set(x * 16)
-      rotateX.set(y * -16)
+      const el = photoRef.current;
+      if (!el) return;
+      const rect = el.getBoundingClientRect();
+      const x = (e.clientX - rect.left) / rect.width - 0.5;
+      const y = (e.clientY - rect.top) / rect.height - 0.5;
+      rotateY.set(x * 16);
+      rotateX.set(y * -16);
     },
     [rotateX, rotateY]
-  )
+  );
 
   const handlePhotoMouseEnter = useCallback(() => {
-    setActiveProfileImage((currentImage) =>
-      currentImage === mainProfileImage ? currentImage : mainProfileImage
-    )
-  }, [mainProfileImage])
+    setActiveProfileImage((currentImage) => (currentImage === mainProfileImage ? currentImage : mainProfileImage));
+  }, [mainProfileImage]);
 
   const handlePhotoMouseLeave = useCallback(() => {
-    rotateX.set(0)
-    rotateY.set(0)
-    setActiveProfileImage(mainProfileImage)
-  }, [mainProfileImage, rotateX, rotateY])
+    rotateX.set(0);
+    rotateY.set(0);
+    setActiveProfileImage(mainProfileImage);
+  }, [mainProfileImage, rotateX, rotateY]);
 
   const initials = profile.name
     .split(' ')
     .map((n) => n[0])
     .join('')
     .slice(0, 2)
-    .toUpperCase()
+    .toUpperCase();
 
   return (
     <motion.section
@@ -114,6 +118,7 @@ export function HeroSection() {
       initial="hidden"
       animate="visible"
     >
+
       {/* Controls — top-right corner */}
       <motion.div
         className="mb-4 flex w-full items-center justify-end gap-2 md:absolute md:right-0 md:top-1 md:z-10 md:mb-0 md:w-auto"
@@ -169,14 +174,14 @@ export function HeroSection() {
         </motion.div>
 
         {/* Identity + Actions */}
-        <div className="flex-1 min-w-0 space-y-4 sm:space-y-5">
+          <div className="flex-1 min-w-0 space-y-4 sm:space-y-5">
           {/* Name + Role block */}
           <div>
             <motion.h1
               id="hero-heading"
               className="text-[1.7rem] sm:text-[2.05rem] font-bold text-text-primary-light dark:text-text-primary-dark inline-flex items-center flex-wrap justify-center sm:justify-start leading-[1.15] tracking-tight"
               variants={itemVariants}
-              {...sanityField({ id: 'profile', type: 'profile' }, 'fullName')}
+              {...sanityField({id: 'profile', type: 'profile'}, 'fullName')}
             >
               <HackedText
                 text={profile.name}
@@ -189,14 +194,12 @@ export function HeroSection() {
               <AnimatePresence mode="wait">
                 <motion.p
                   key={roleIndex}
-                  aria-live="polite"
-                  aria-atomic="true"
                   className="text-[15px] sm:text-base font-semibold text-accent-pink"
                   initial={{ opacity: 0, y: 12, filter: 'blur(4px)' }}
                   animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
                   exit={{ opacity: 0, y: -12, filter: 'blur(4px)' }}
                   transition={{ duration: 0.35 }}
-                  {...sanityField({ id: 'profile', type: 'profile' }, 'heroRoles', roleIndex)}
+                  {...sanityField({id: 'profile', type: 'profile'}, 'heroRoles', roleIndex)}
                 >
                   {roles[roleIndex]}
                 </motion.p>
@@ -214,10 +217,18 @@ export function HeroSection() {
               <span>{profile.location}</span>
             </div>
             <span className="text-border-light dark:text-border-dark">·</span>
+            <span className="inline-flex items-center gap-1.5 text-green-600 dark:text-green-400">
+              <span className="relative flex h-1.5 w-1.5">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75" />
+                <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-green-500" />
+              </span>
+              {hero.availabilityLabel || 'Available'}
+            </span>
+            <span className="text-border-light dark:text-border-dark">·</span>
             <div className="flex items-center gap-1">
               {displayedSocials.map((link, i) => {
-                const Icon = socialIconMap[link.name]
-                if (!Icon) return null
+                const Icon = socialIconMap[link.name];
+                if (!Icon) return null;
                 return (
                   <motion.a
                     key={link.name}
@@ -228,18 +239,28 @@ export function HeroSection() {
                     aria-label={link.label}
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    transition={{
-                      delay: 0.5 + i * 0.04,
-                      type: 'spring',
-                      stiffness: 300,
-                      damping: 20,
-                    }}
+                    transition={{ delay: 0.5 + i * 0.04, type: 'spring', stiffness: 300, damping: 20 }}
                     whileHover={{ y: -1 }}
                   >
                     <Icon className="h-3.5 w-3.5" aria-hidden="true" />
                   </motion.a>
-                )
+                );
               })}
+              {IS_BLOG_VISIBLE && (
+                <>
+                  <span className="mx-0.5 h-3.5 w-px bg-border-light dark:bg-border-dark" />
+                  <motion.a
+                    href="/blog"
+                    className="h-7 rounded px-1.5 flex items-center text-[12px] font-medium text-text-muted-light dark:text-text-muted-dark hover:text-accent-pink transition-colors"
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.68, type: 'spring', stiffness: 300, damping: 20 }}
+                    whileHover={{ y: -1 }}
+                  >
+                    Blog
+                  </motion.a>
+                </>
+              )}
             </div>
           </motion.div>
 
@@ -277,5 +298,6 @@ export function HeroSection() {
         </div>
       </div>
     </motion.section>
-  )
+  );
 }
+

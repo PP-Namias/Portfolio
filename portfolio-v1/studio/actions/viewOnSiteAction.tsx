@@ -8,7 +8,13 @@ type ViewOnSite = {
   publishedSlug?: string
 }
 
-const HOMEPAGE_TYPES = new Set(['aboutSection', 'techStack', 'profile', 'siteSettings'])
+const HOMEPAGE_TYPES = new Set([
+  'heroSection',
+  'aboutSection',
+  'techStack',
+  'profile',
+  'siteSettings',
+])
 
 const TYPE_PATHS: Record<string, (slug?: string) => string> = {
   post: (slug) => (slug ? `/blog/${slug}` : '/blog'),

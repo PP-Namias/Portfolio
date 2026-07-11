@@ -57,7 +57,6 @@ const config = [
       'coverage/**',
       'src/app/api/sanity/webhook/route.ts',
       'src/components/ui/HubMenu.tsx',
-      'src/components/charts/**',
       'studio/node_modules/**',
       'studio/.sanity/**',
       'studio/dist/**',
@@ -66,12 +65,6 @@ const config = [
   {
     rules: {
       'react-hooks/set-state-in-effect': 'off',
-    },
-  },
-  {
-    files: ['studio/**'],
-    rules: {
-      '@next/next/no-img-element': 'off',
     },
   },
 ];

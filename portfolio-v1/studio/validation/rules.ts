@@ -16,34 +16,40 @@ export const headlineLength: ValidatorFactory = (options = {}) => {
 }
 
 export const httpsOnly: RuleFactory = (rule: Rule) =>
-  rule.uri({scheme: ['https']}).warning('Live URLs should use https:// for security and SEO.')
+  rule
+    .uri({scheme: ['https']})
+    .warning('Live URLs should use https:// for security and SEO.')
 
-export const dateOrder = (earlierField: string) => (rule: any) =>
-  rule.custom((value: unknown, context: ValidationContext) => {
-    const document = context.document as Record<string, unknown> | undefined
-    const earlier = document?.[earlierField]
-    if (typeof earlier === 'string' && typeof value === 'string') {
-      if (new Date(earlier) > new Date(value)) {
-        return 'Issue date must be before expiry.'
+export const dateOrder =
+  (earlierField: string) =>
+  (rule: any) =>
+    rule.custom((value: unknown, context: ValidationContext) => {
+      const document = context.document as Record<string, unknown> | undefined
+      const earlier = document?.[earlierField]
+      if (typeof earlier === 'string' && typeof value === 'string') {
+        if (new Date(earlier) > new Date(value)) {
+          return 'Issue date must be before expiry.'
+        }
       }
-    }
-    return true
-  })
+      return true
+    })
 
 export const uniqueSlug: RuleFactory = (rule: Rule) =>
-  rule.required().custom(async (value: unknown) => {
-    if (!value || typeof value !== 'object') {
-      return 'Slug is required.'
-    }
-    const slug = (value as {current?: string}).current
-    if (!slug) {
-      return 'Slug cannot be empty.'
-    }
-    if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) {
-      return 'Use lowercase letters, numbers, and hyphens only.'
-    }
-    return true
-  })
+  rule
+    .required()
+    .custom(async (value: unknown) => {
+      if (!value || typeof value !== 'object') {
+        return 'Slug is required.'
+      }
+      const slug = (value as {current?: string}).current
+      if (!slug) {
+        return 'Slug cannot be empty.'
+      }
+      if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) {
+        return 'Use lowercase letters, numbers, and hyphens only.'
+      }
+      return true
+    })
 
 export const requireAltText: RuleFactory = (rule: Rule) =>
   rule
@@ -80,7 +86,10 @@ export const summaryLength: ValidatorFactory = (options = {}) => {
 // ─── New validation rules for EPIC-D ─────────────────────────
 
 export const seoTitleLength: RuleFactory = (rule: Rule) =>
-  rule.min(30).max(60).warning('SEO title should be 30-60 characters for optimal search display.')
+  rule
+    .min(30)
+    .max(60)
+    .warning('SEO title should be 30-60 characters for optimal search display.')
 
 export const seoDescriptionLength: RuleFactory = (rule: Rule) =>
   rule
@@ -168,9 +177,9 @@ export const expiryAfterIssue: RuleFactory = (rule: Rule) =>
   rule.custom((value: unknown, context: ValidationContext) => {
     if (!value) return true
     const document = context.document as Record<string, unknown> | undefined
-    const issuedAt = document?.issuedAt as string | undefined
-    if (!issuedAt) return true
-    if (new Date(value as string) < new Date(issuedAt)) {
+    const issueDate = document?.issueDate as string | undefined
+    if (!issueDate) return true
+    if (new Date(value as string) < new Date(issueDate)) {
       return 'Expiry date must be after issue date'
     }
     return true

@@ -1,10 +1,10 @@
 import React from 'react'
-import type {StringInputProps} from 'sanity'
+import {set, type StringInputProps} from 'sanity'
 
 import {countPortableTextWords, estimateReadingTime} from '../../utils/text'
 
 export function ReadingTimeField(props: StringInputProps) {
-  const {value} = props
+  const {value, onChange} = props
   const document = (props as unknown as {document?: any}).document
   const body = document?.body ?? null
   const words = countPortableTextWords(body)
@@ -44,6 +44,7 @@ export function ReadingTimeField(props: StringInputProps) {
         aria-label="Computed reading time (read-only)"
         readOnly
         value={(value as string) || computed}
+        onChange={(event) => onChange(set(event.target.value))}
         style={{
           width: '100%',
           padding: '0.5rem 0.75rem',

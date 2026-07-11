@@ -1,39 +1,15 @@
 import React from 'react'
 import {Box, Card, Flex, Heading, Stack, Text, Badge} from '@sanity/ui'
-import {LaunchIcon, EyeOpenIcon, DocumentsIcon, CogIcon, ClockIcon} from '@sanity/icons'
+import {LaunchIcon, EditIcon, EyeOpenIcon, DocumentsIcon, CogIcon, ClockIcon} from '@sanity/icons'
 import {getStudioEnvSnapshot} from '../env'
 
 const QUICK_LAUNCH = [
-  {
-    id: 'profileSingleton',
-    title: 'Hero & Profile',
-    subtitle: 'Name, title, roles',
-    type: 'profile',
-    icon: '👤',
-  },
-  {
-    id: 'aboutSectionSingleton',
-    title: 'About Section',
-    subtitle: 'Bio, education',
-    type: 'aboutSection',
-    icon: '📝',
-  },
-  {
-    id: 'siteSettingsSingleton',
-    title: 'Site Settings',
-    subtitle: 'Title, og, robots',
-    type: 'siteSettings',
-    icon: '⚙️',
-  },
+  {id: 'profileSingleton', title: 'Hero & Profile', subtitle: 'Name, title, roles', type: 'profile', icon: '👤'},
+  {id: 'aboutSectionSingleton', title: 'About Section', subtitle: 'Bio, education', type: 'aboutSection', icon: '📝'},
+  {id: 'siteSettingsSingleton', title: 'Site Settings', subtitle: 'Title, og, robots', type: 'siteSettings', icon: '⚙️'},
   {id: 'post', title: 'Posts', subtitle: 'Blog content', type: 'post', icon: '📰'},
   {id: 'project', title: 'Projects', subtitle: 'Portfolio items', type: 'project', icon: '🚀'},
-  {
-    id: 'certification',
-    title: 'Certifications',
-    subtitle: 'Credentials',
-    type: 'certification',
-    icon: '🏅',
-  },
+  {id: 'certification', title: 'Certifications', subtitle: 'Credentials', type: 'certification', icon: '🏅'},
 ] as const
 
 const RECENT_DOCS = [
@@ -86,8 +62,8 @@ export function PresentationNavigator(_props: unknown) {
         </div>
         <Heading size={3}>Edit on the live site</Heading>
         <Text size={1} muted>
-          Pick a document below, then click any element in the live preview on the right to jump to
-          that field. Your edits are visible within ~500ms.
+          Pick a document below, then click any element in the live preview
+          on the right to jump to that field. Your edits are visible within ~500ms.
         </Text>
       </Stack>
 
