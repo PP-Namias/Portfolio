@@ -1,10 +1,11 @@
 allowBuilds:
   core-js: false
-  esbuild: set this to true or false
+  esbuild: true
   msw: false
   protobufjs: false
   puppeteer: false
   sharp: false
+  workerd: set this to true or false
 minimumReleaseAge: 1440
 minimumReleaseAgeExclude:
   - shadcn
