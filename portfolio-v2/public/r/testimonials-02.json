@@ -6,8 +6,8 @@
   "description": "A testimonials section with a lined layout.",
   "registryDependencies": [
     "https://www.kibo-ui.com/r/marquee.json",
-    "https://chanhdai.com/r/style.json",
-    "https://chanhdai.com/r/testimonial.json"
+    "https://namias.tech/r/style.json",
+    "https://namias.tech/r/testimonial.json"
   ],
   "files": [
     {
