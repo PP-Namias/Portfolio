@@ -1,0 +1,25 @@
+[
+  {
+    "id": "ucc",
+    "school": "University of Caloocan City",
+    "degree": "Bachelor of Science",
+    "fieldOfStudy": "Computer Science",
+    "period": {
+      "start": "08.2022",
+      "end": "04.2026"
+    },
+    "description": "- Graduated Cum Laude with a BS in Computer Science, Batch 2026\n- Competitions: DevKada Hackathon (May 2026), DICT Hack4Gov Regional (Nov 2025)\n- Head of Technical Committee, BS Computer Science Council (Jun 2025 – Apr 2026)\n  Built a digital platform enabling thesis project showcases, fostering student collaboration and academic visibility.\n- Program Committee, BS Computer Science Council (Jun 2024 – Apr 2025)\n  Organized technical workshops exploring GitHub and Visual Studio Code workflows, impacting over 1,000 students.",
+    "skills": [
+      "Data Structures",
+      "Algorithms",
+      "Competitive Programming",
+      "React",
+      "TypeScript",
+      "Python",
+      "Java",
+      "Node.js",
+      "PostgreSQL",
+      "Docker"
+    ]
+  }
+]
