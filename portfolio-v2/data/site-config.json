@@ -1,0 +1,40 @@
+{
+  "name": "PP Namias",
+  "url": "https://namias.tech",
+  "ogImage": "https://namias.tech/og",
+  "description": "Full-Stack Engineer & AI Solutions Developer. Building scalable enterprise applications.",
+  "keywords": [
+    "pp-namias",
+    "jhon keneth namias",
+    "jhon keneth ryan namias",
+    "namias",
+    "full-stack engineer",
+    "ai solutions developer",
+    "react developer",
+    "typescript",
+    "node.js",
+    "python"
+  ],
+  "license": {
+    "name": "MIT License",
+    "url": "https://github.com/PP-Namias/Portfolio/blob/main/LICENSE"
+  },
+  "metaThemeColors": {
+    "light": "#ffffff",
+    "dark": "#09090b"
+  },
+  "mainNav": [
+    { "title": "Components", "href": "/components" },
+    { "title": "Blocks", "href": "/blocks" },
+    { "title": "Blog", "href": "/blog" },
+    { "title": "Sponsors", "href": "/sponsors" }
+  ],
+  "xHandle": "@PP_Namias",
+  "githubUsername": "PP-Namias",
+  "sourceCodeRepo": "PP-Namias/Portfolio",
+  "sourceCodeUrl": "https://github.com/PP-Namias/Portfolio",
+  "sponsorshipUrl": "https://github.com/sponsors/PP-Namias",
+  "utmParams": {
+    "utm_source": "namias.tech"
+  }
+}
