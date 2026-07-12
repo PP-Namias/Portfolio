@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: portfolio-config
+  namespace: namias
+  labels:
+    app.kubernetes.io/name: portfolio
+    app.kubernetes.io/component: config
+data:
+  NODE_ENV: "production"
+  NEXT_TELEMETRY_DISABLED: "1"
+  HOSTNAME: "0.0.0.0"
+  PORT: "3000"
+  NEXT_PUBLIC_APP_URL: "https://namias.tech"
+  NEXT_PUBLIC_SANITY_PROJECT_ID: "nl0qw78w"
+  NEXT_PUBLIC_SANITY_DATASET: "production"
+  NEXT_PUBLIC_REGISTRY_NAMESPACE: "@pp-namias"
+  NEXT_PUBLIC_REGISTRY_NAMESPACE_URL: "https://namias.tech/r/{name}.json"
+  GITHUB_CONTRIBUTIONS_API_URL: "https://github-contributions-api.jogruber.de"
