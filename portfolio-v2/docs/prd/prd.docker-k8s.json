@@ -1,0 +1,344 @@
+{
+  "project": "Namias Portfolio V2 - Docker & Kubernetes Deployment",
+  "codeName": "docker-k8s-deployment",
+  "version": "1.0.0",
+  "owner": "Jhon Keneth Ryan Namias (PP Namias)",
+  "contact": "pp.namias@gmail.com",
+  "lastUpdated": "2026-07-12",
+  "branch": "feature/docker-k8s-deployment",
+  "links": {
+    "marketing": "https://namias.tech",
+    "repo": "https://github.com/PP-Namias/Portfolio",
+    "docs": "https://kubernetes.io/docs/home/"
+  },
+  "summary": "Containerize the Next.js 16 portfolio application with Docker and deploy to Kubernetes with production-grade configuration including health checks, autoscaling, ingress with TLS, and CI/CD pipeline automation.",
+  "narrative": "The portfolio currently runs on Cloudflare Workers via OpenNext adapter. While this provides excellent edge performance, containerizing with Docker and deploying to Kubernetes offers greater flexibility: custom runtime configurations, persistent caching, easier debugging, multi-environment support (staging/production), and the ability to run the full Node.js Next.js server with all features (API routes, ISR, middleware) without edge limitations. The Docker image will use multi-stage builds for minimal size, and Kubernetes manifests will follow production best practices with resource limits, health probes, horizontal pod autoscaling, and TLS-encrypted ingress.",
+  "principles": [
+    "Multi-stage Docker builds for minimal image size and security",
+    "Production-ready Kubernetes manifests with resource limits and health checks",
+    "Environment-driven configuration (no hardcoded secrets)",
+    "Horizontal Pod Autoscaling for traffic spikes",
+    "TLS-terminated Ingress with cert-manager",
+    "CI/CD pipeline for automated image builds and deployments",
+    "Staging and production environment separation",
+    "Health checks (liveness, readiness, startup) for reliability",
+    "Non-root container user for security",
+    "Pinned image tags for reproducibility"
+  ],
+  "personas": [
+    {
+      "id": "P-OWNER",
+      "label": "PP Namias (owner)",
+      "goals": [
+        "Deploy portfolio to Kubernetes for full control",
+        "Have staging environment for testing before production",
+        "Automate deployments via CI/CD",
+        "Monitor application health and performance"
+      ],
+      "painPointsToday": [
+        "Limited control over Cloudflare Workers runtime",
+        "No staging environment for pre-production testing",
+        "Manual deployment process",
+        "No visibility into runtime metrics"
+      ]
+    },
+    {
+      "id": "P-OPERATOR",
+      "label": "DevOps / Infrastructure",
+      "goals": [
+        "Simple, reproducible Docker builds",
+        "Declarative Kubernetes configuration",
+        "Automated CI/CD pipeline",
+        "Easy rollback on failures"
+      ],
+      "painPointsToday": [
+        "No containerization",
+        "No Kubernetes manifests",
+        "No automated deployment pipeline for K8s",
+        "No health check configuration"
+      ]
+    },
+    {
+      "id": "P-CONTRIBUTOR",
+      "label": "Developer / OpenCode",
+      "goals": [
+        "Run the same stack locally as production",
+        "Quick feedback loop with docker-compose",
+        "Clear deployment documentation"
+      ],
+      "painPointsToday": [
+        "Local dev uses different runtime than production",
+        "No Docker-based local development",
+        "Unclear deployment process"
+      ]
+    }
+  ],
+  "successMetrics": {
+    "primary": [
+      "Docker image builds successfully under 200MB (compressed)",
+      "Application runs in Kubernetes with all routes functional",
+      "Health checks pass (liveness, readiness, startup)",
+      "HPA scales pods between 2-10 based on CPU",
+      "Ingress serves HTTPS with valid TLS certificate",
+      "CI/CD pipeline builds and pushes image on merge to main",
+      "Staging environment mirrors production configuration"
+    ],
+    "secondary": [
+      "Docker-compose provides one-command local development",
+      "Zero-downtime deployments via rolling update strategy",
+      "Resource limits prevent OOM and CPU throttling",
+      "Pod disruption budget ensures availability during node maintenance",
+      "Image scanning passes with no critical vulnerabilities"
+    ]
+  },
+  "epics": [
+    {
+      "id": "EPIC-1",
+      "title": "Docker Containerization",
+      "status": "planned",
+      "summary": "Create optimized multi-stage Dockerfile and docker-compose for local development and production builds.",
+      "value": "high",
+      "complexity": "medium",
+      "stories": [
+        {
+          "id": "S-1.1",
+          "title": "Create multi-stage Dockerfile",
+          "done": false,
+          "details": "Build stage with pnpm + Bun for registry build, production stage with Node.js 24-alpine. Copy only necessary artifacts (.next/standalone, public, static). Run as non-root user. Expose port 3000.",
+          "files": ["portfolio-v2/Dockerfile"]
+        },
+        {
+          "id": "S-1.2",
+          "title": "Create .dockerignore",
+          "done": false,
+          "details": "Exclude node_modules, .next, .git, tests, docs, and dev files from Docker context to minimize build context size.",
+          "files": ["portfolio-v2/.dockerignore"]
+        },
+        {
+          "id": "S-1.3",
+          "title": "Create docker-compose.yml for local dev",
+          "done": false,
+          "details": "Single-command local development with docker-compose. Mount source code for hot reload, expose port 3000, pass env vars from .env.local.",
+          "files": ["portfolio-v2/docker-compose.yml"]
+        },
+        {
+          "id": "S-1.4",
+          "title": "Create Docker build script",
+          "done": false,
+          "details": "Shell script for building, tagging, and pushing Docker images. Supports version tags and latest tag.",
+          "files": ["portfolio-v2/scripts/docker-build.sh"]
+        }
+      ]
+    },
+    {
+      "id": "EPIC-2",
+      "title": "Kubernetes Manifests",
+      "status": "planned",
+      "summary": "Create production-grade Kubernetes manifests for deployment, service, ingress, configmap, secrets, HPA, and PDB.",
+      "value": "high",
+      "complexity": "high",
+      "stories": [
+        {
+          "id": "S-2.1",
+          "title": "Create Namespace and ConfigMap",
+          "done": false,
+          "details": "Define 'namias' namespace. Create ConfigMap for non-sensitive environment variables (NEXT_PUBLIC_*, NODE_ENV, etc.).",
+          "files": ["portfolio-v2/k8s/namespace.yaml", "portfolio-v2/k8s/configmap.yaml"]
+        },
+        {
+          "id": "S-2.2",
+          "title": "Create Secrets manifest",
+          "done": false,
+          "details": "Template for Kubernetes Secret with base64-encoded sensitive vars (API tokens, secrets). Include instructions for sealed-secrets or external-secrets.",
+          "files": ["portfolio-v2/k8s/secret.yaml"]
+        },
+        {
+          "id": "S-2.3",
+          "title": "Create Deployment manifest",
+          "done": false,
+          "details": "Deployment with 2 replicas, resource requests/limits (128Mi-256Mi memory, 100m-500m CPU), liveness probe (/api/health), readiness probe (/api/health), startup probe, rolling update strategy (maxSurge: 1, maxUnavailable: 0).",
+          "files": ["portfolio-v2/k8s/deployment.yaml"]
+        },
+        {
+          "id": "S-2.4",
+          "title": "Create Service manifest",
+          "done": false,
+          "details": "ClusterIP service exposing port 80 -> 3000. Internal traffic routing.",
+          "files": ["portfolio-v2/k8s/service.yaml"]
+        },
+        {
+          "id": "S-2.5",
+          "title": "Create Ingress manifest with TLS",
+          "done": false,
+          "details": "Nginx Ingress with TLS termination via cert-manager. Host: namias.tech. Redirect HTTP -> HTTPS. Proxy headers for Next.js.",
+          "files": ["portfolio-v2/k8s/ingress.yaml"]
+        },
+        {
+          "id": "S-2.6",
+          "title": "Create HorizontalPodAutoscaler",
+          "done": false,
+          "details": "HPA scaling 2-10 pods based on CPU (target 70%) and memory (target 80%). Scale-down stabilization window 300s.",
+          "files": ["portfolio-v2/k8s/hpa.yaml"]
+        },
+        {
+          "id": "S-2.7",
+          "title": "Create PodDisruptionBudget",
+          "done": false,
+          "details": "PDB ensuring at least 1 pod is always available during voluntary disruptions (node maintenance, upgrades).",
+          "files": ["portfolio-v2/k8s/pdb.yaml"]
+        }
+      ]
+    },
+    {
+      "id": "EPIC-3",
+      "title": "Health Check API Endpoint",
+      "status": "planned",
+      "summary": "Create a /api/health endpoint for Kubernetes liveness and readiness probes.",
+      "value": "high",
+      "complexity": "low",
+      "stories": [
+        {
+          "id": "S-3.1",
+          "title": "Create health check API route",
+          "done": false,
+          "details": "GET /api/health returns { status: 'ok', timestamp, version }. Readiness check verifies Sanity connectivity. Liveness check is lightweight.",
+          "files": ["portfolio-v2/src/app/api/health/route.ts"]
+        }
+      ]
+    },
+    {
+      "id": "EPIC-4",
+      "title": "CI/CD Pipeline for Docker & K8s",
+      "status": "planned",
+      "summary": "GitHub Actions workflow for building Docker images, pushing to registry, and deploying to Kubernetes.",
+      "value": "high",
+      "complexity": "medium",
+      "stories": [
+        {
+          "id": "S-4.1",
+          "title": "Create Docker build & push workflow",
+          "done": false,
+          "details": "GitHub Actions workflow that builds Docker image on push to main, pushes to GitHub Container Registry (ghcr.io) with SHA and latest tags.",
+          "files": [".github/workflows/docker-build.yml"]
+        },
+        {
+          "id": "S-4.2",
+          "title": "Create Kubernetes deploy workflow",
+          "done": false,
+          "details": "GitHub Actions workflow that applies K8s manifests after image is built. Supports staging and production environments via manual approval.",
+          "files": [".github/workflows/k8s-deploy.yml"]
+        },
+        {
+          "id": "S-4.3",
+          "title": "Create image scanning workflow",
+          "done": false,
+          "details": "Trivy scan on built Docker image. Fail on critical/high vulnerabilities. Upload results as artifacts.",
+          "files": [".github/workflows/docker-scan.yml"]
+        }
+      ]
+    },
+    {
+      "id": "EPIC-5",
+      "title": "Documentation & Scripts",
+      "status": "planned",
+      "summary": "Comprehensive documentation for Docker and Kubernetes deployment procedures.",
+      "value": "medium",
+      "complexity": "low",
+      "stories": [
+        {
+          "id": "S-5.1",
+          "title": "Create deployment documentation",
+          "done": false,
+          "details": "Step-by-step guide for: local development with Docker, building images, deploying to K8s, troubleshooting, and rollback procedures.",
+          "files": ["portfolio-v2/docs/deployment/docker-k8s.md"]
+        },
+        {
+          "id": "S-5.2",
+          "title": "Create Makefile for common operations",
+          "done": false,
+          "details": "Makefile targets: build, push, deploy-staging, deploy-prod, status, logs, port-forward, clean.",
+          "files": ["portfolio-v2/Makefile"]
+        }
+      ]
+    }
+  ],
+  "phases": [
+    { "id": "PHASE-1", "label": "Docker Containerization", "epics": ["EPIC-1"], "status": "planned" },
+    { "id": "PHASE-2", "label": "Kubernetes Manifests", "epics": ["EPIC-2", "EPIC-3"], "status": "planned" },
+    { "id": "PHASE-3", "label": "CI/CD Pipeline", "epics": ["EPIC-4"], "status": "planned" },
+    { "id": "PHASE-4", "label": "Documentation & Polish", "epics": ["EPIC-5"], "status": "planned" }
+  ],
+  "architecture": {
+    "docker": {
+      "baseImage": "node:24-alpine",
+      "buildStages": ["deps", "builder", "runner"],
+      "finalImageSize": "<200MB",
+      "nonRoot": true,
+      "port": 3000,
+      "healthEndpoint": "/api/health"
+    },
+    "kubernetes": {
+      "namespace": "namias",
+      "replicas": { "min": 2, "max": 10 },
+      "resources": {
+        "requests": { "memory": "128Mi", "cpu": "100m" },
+        "limits": { "memory": "256Mi", "cpu": "500m" }
+      },
+      "probes": {
+        "liveness": { "path": "/api/health", "initialDelaySeconds": 10, "periodSeconds": 30 },
+        "readiness": { "path": "/api/health", "initialDelaySeconds": 5, "periodSeconds": 10 },
+        "startup": { "path": "/api/health", "initialDelaySeconds": 5, "periodSeconds": 5, "failureThreshold": 30 }
+      },
+      "autoscaling": {
+        "minReplicas": 2,
+        "maxReplicas": 10,
+        "targetCPUUtilizationPercentage": 70,
+        "targetMemoryUtilizationPercentage": 80
+      },
+      "ingress": {
+        "className": "nginx",
+        "tls": true,
+        "certManager": true,
+        "host": "namias.tech"
+      }
+    }
+  },
+  "files": {
+    "created": [
+      "portfolio-v2/Dockerfile",
+      "portfolio-v2/.dockerignore",
+      "portfolio-v2/docker-compose.yml",
+      "portfolio-v2/scripts/docker-build.sh",
+      "portfolio-v2/k8s/namespace.yaml",
+      "portfolio-v2/k8s/configmap.yaml",
+      "portfolio-v2/k8s/secret.yaml",
+      "portfolio-v2/k8s/deployment.yaml",
+      "portfolio-v2/k8s/service.yaml",
+      "portfolio-v2/k8s/ingress.yaml",
+      "portfolio-v2/k8s/hpa.yaml",
+      "portfolio-v2/k8s/pdb.yaml",
+      "portfolio-v2/src/app/api/health/route.ts",
+      "portfolio-v2/Makefile",
+      "portfolio-v2/docs/deployment/docker-k8s.md",
+      ".github/workflows/docker-build.yml",
+      ".github/workflows/k8s-deploy.yml",
+      ".github/workflows/docker-scan.yml"
+    ],
+    "modified": [
+      "portfolio-v2/next.config.ts"
+    ]
+  },
+  "prerequisites": [
+    "Docker Desktop or Docker Engine installed",
+    "kubectl configured with cluster access",
+    "Helm 3.x (for cert-manager if not installed)",
+    "GitHub Container Registry (ghcr.io) access",
+    "Domain: namias.tech with DNS management",
+    "cert-manager installed in cluster for TLS"
+  ],
+  "rollbackPlan": [
+    "kubectl rollout undo deployment/namias-portfolio -n namias",
+    "Revert to previous image tag in deployment manifest",
+    "Apply previous K8s manifests from git history"
+  ]
+}
