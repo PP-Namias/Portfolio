@@ -1,0 +1,170 @@
+services:
+  portfolio-v1:
+    build:
+      context: ./portfolio-v1
+      dockerfile: Dockerfile
+      target: runner
+    ports:
+      - "3001:3000"
+    env_file:
+      - .env.docker
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_SITE_URL=http://localhost:3001
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    restart: unless-stopped
+    read_only: true
+    tmpfs:
+      - /app/.next/cache
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - namias
+
+  portfolio-v2:
+    build:
+      context: ./portfolio-v2
+      dockerfile: Dockerfile
+      target: runner
+    ports:
+      - "3002:3000"
+    env_file:
+      - .env.docker
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_APP_URL=http://localhost:3002
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    restart: unless-stopped
+    read_only: true
+    tmpfs:
+      - /app/.next/cache
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - namias
+
+  sanity-studio:
+    build:
+      context: ./portfolio-v1/studio
+      dockerfile: Dockerfile
+      target: runner
+    ports:
+      - "3333:3333"
+    env_file:
+      - .env.docker
+    environment:
+      - NODE_ENV=production
+      - PORT=3333
+      - SANITY_STUDIO_PROJECT_ID=${NEXT_PUBLIC_SANITY_PROJECT_ID}
+      - SANITY_STUDIO_DATASET=${NEXT_PUBLIC_SANITY_DATASET}
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3333"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - namias
+
+  # Development mode services (optional, use with: docker-compose --profile dev up)
+  portfolio-v1-dev:
+    profiles: ["dev"]
+    build:
+      context: ./portfolio-v1
+      dockerfile: Dockerfile
+      target: deps
+    ports:
+      - "3001:3000"
+    volumes:
+      - ./portfolio-v1:/app
+      - /app/node_modules
+      - /app/.next
+    env_file:
+      - .env.docker
+    environment:
+      - NODE_ENV=development
+      - NEXT_PUBLIC_SITE_URL=http://localhost:3001
+    command: npm run dev
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    restart: unless-stopped
+    networks:
+      - namias
+
+  portfolio-v2-dev:
+    profiles: ["dev"]
+    build:
+      context: ./portfolio-v2
+      dockerfile: Dockerfile
+      target: deps
+    ports:
+      - "3002:3000"
+    volumes:
+      - ./portfolio-v2:/app
+      - /app/node_modules
+      - /app/.next
+    env_file:
+      - .env.docker
+    environment:
+      - NODE_ENV=development
+      - NEXT_PUBLIC_APP_URL=http://localhost:3002
+    command: pnpm dev
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    restart: unless-stopped
+    networks:
+      - namias
+
+  sanity-studio-dev:
+    profiles: ["dev"]
+    build:
+      context: ./portfolio-v1/studio
+      dockerfile: Dockerfile
+      target: deps
+    ports:
+      - "3333:3333"
+    volumes:
+      - ./portfolio-v1/studio:/app
+      - /app/node_modules
+    env_file:
+      - .env.docker
+    environment:
+      - NODE_ENV=development
+      - PORT=3333
+      - SANITY_STUDIO_PROJECT_ID=${NEXT_PUBLIC_SANITY_PROJECT_ID}
+      - SANITY_STUDIO_DATASET=${NEXT_PUBLIC_SANITY_DATASET}
+    command: npm run dev
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3333"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    restart: unless-stopped
+    networks:
+      - namias
+
+networks:
+  namias:
+    driver: bridge
