@@ -2,6 +2,32 @@
 
 Run Portfolio V1, Portfolio V2, and Sanity CMS Studio as separate Docker containers.
 
+## Service Independence
+
+**Each service runs completely independently.** If one service crashes or is stopped, the others continue running without any interruption.
+
+| Feature | Description |
+|---------|-------------|
+| **Isolated Networks** | Each service has its own Docker network |
+| **No Dependencies** | No `depends_on` between services |
+| **Auto-Recovery** | `restart: always` policy restarts crashed services |
+| **Resource Limits** | CPU and memory limits prevent starvation |
+| **Proper Signals** | `init: true` for clean shutdown handling |
+
+```
+┌─────────────────────────────────────────────────────────┐
+│                    Fault Isolation                        │
+│                                                          │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐  │
+│  │ Portfolio V1 │  │ Portfolio V2 │  │ Sanity Studio│  │
+│  │  :3001       │  │  :3002       │  │  :3333       │  │
+│  │  v1-network  │  │  v2-network  │  │  studio-net  │  │
+│  └──────────────┘  └──────────────┘  └──────────────┘  │
+│         ✗               ✓                  ✓            │
+│      (crashed)      (still running)   (still running)  │
+└─────────────────────────────────────────────────────────┘
+```
+
 ## Prerequisites
 
 - Docker Desktop or Docker Engine 24+
@@ -25,11 +51,11 @@ make up
 
 ## Services
 
-| Service | Description | Port | Stack |
-|---------|-------------|------|-------|
-| **portfolio-v1** | Legacy portfolio | 3001 | Next.js 16 + React 18 |
-| **portfolio-v2** | Current portfolio | 3002 | Next.js 16 + React 19 |
-| **sanity-studio** | CMS Studio | 3333 | Sanity v4 |
+| Service | Description | Port | Stack | Network |
+|---------|-------------|------|-------|---------|
+| **portfolio-v1** | Legacy portfolio | 3001 | Next.js 16 + React 18 | v1-network |
+| **portfolio-v2** | Current portfolio | 3002 | Next.js 16 + React 19 | v2-network |
+| **sanity-studio** | CMS Studio | 3333 | Sanity v4 | studio-network |
 
 ## Commands
 
@@ -42,7 +68,7 @@ make up
 # All services (development with hot reload)
 make up-dev
 
-# Individual services
+# Individual services (each runs independently)
 make up-v1        # Portfolio V1 only
 make up-v2        # Portfolio V2 only
 make up-studio    # Sanity Studio only
