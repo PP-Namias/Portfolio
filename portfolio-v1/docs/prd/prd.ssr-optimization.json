@@ -1,0 +1,694 @@
+{
+  "project": "Namias Portfolio v1 - Server-Side Rendering Optimization",
+  "codeName": "ssr-optimization",
+  "version": "1.0.0",
+  "owner": "Jhon Keneth Ryan Namias (PP Namias)",
+  "contact": "pp.namias@gmail.com",
+  "lastUpdated": "2026-07-12",
+  "branch": "feature/ssr-optimization",
+  "links": {
+    "marketing": "https://namias.tech",
+    "studio": "https://namias-cms.sanity.studio",
+    "repo": "https://github.com/PP-Namias/Portfolio"
+  },
+  "summary": "Transform the portfolio v1 homepage from a monolithic SSR pattern (all 11 Sanity queries must complete before any HTML is sent) into a streaming SSR architecture with per-section data fetching, React Suspense boundaries, and progressive rendering. The goal is sub-second First Contentful Paint (FCP) and Largest Contentful Paint (LCP) even on slow 3G connections by sending the HTML shell immediately and streaming section content as each Sanity query resolves independently.",
+  "narrative": "Today the homepage follows a waterfall pattern: the root layout calls getCmsContent() which issues 11 parallel GROQ queries via Promise.all(), but the server cannot send ANY HTML until ALL 11 queries complete. On a slow connection this means the user sees a blank screen for 2-5+ seconds while the server waits for Sanity. After the HTML arrives, the browser must also download and execute all client-side JavaScript before any content renders. This PRD restructures the architecture so: (1) the server sends an HTML shell with the navigation, hero skeleton, and critical CSS immediately, (2) each section component fetches its own data independently via server components, (3) React Suspense streams section HTML as each query resolves, (4) below-the-fold sections are deferred until they enter the viewport, and (5) the client hydrates only the interactive parts. The result is a site that feels instant on even the slowest connections because content appears progressively rather than all-at-once after a long wait.",
+  "principles": [
+    "Progressive rendering — send the HTML shell immediately, stream section content as data arrives",
+    "Per-section data independence — each section fetches only the data it needs, no monolithic payload",
+    "Zero regressions — existing functionality, feature flags, draft mode, and fallback content must work identically",
+    "Backward compatible — the architecture change is invisible to the CMS, Sanity schemas, and existing tests",
+    "Measure everything — track FCP, LCP, TTFB, and Streaming SSR metrics before and after",
+    "One slice per commit — each epic ships independently with lint, typecheck, and vitest passing"
+  ],
+  "personas": [
+    {
+      "id": "P-VISITOR-SLOW",
+      "label": "Site visitor on slow 3G",
+      "goals": ["See content within 1 second of navigating", "Read the hero section immediately", "Scroll to projects/experience without waiting for gallery/blog to load"],
+      "painPointsToday": ["Blank screen for 2-5 seconds while server fetches all Sanity data", "Entire page appears at once after long delay", "Gallery and blog sections block hero from rendering"]
+    },
+    {
+      "id": "P-VISITOR-FAST",
+      "label": "Site visitor on broadband",
+      "goals": ["Instant page transitions", "No layout shift as sections load", "Smooth scroll experience"],
+      "painPointsToday": ["Small delay even on fast connections due to monolithic fetch", "Layout shift when client-side JS hydrates"]
+    },
+    {
+      "id": "P-OWNER",
+      "label": "PP Namias (owner)",
+      "goals": ["Portfolio loads fast on mobile in Philippines (often slow 3G)", "Lighthouse performance score 90+", "No visual changes to the existing design"],
+      "painPointsToday": ["Lighthouse performance score may suffer from TTFB bottleneck", "Mobile visitors on slow connections may bounce"]
+    },
+    {
+      "id": "P-AGENT",
+      "label": "OpenCode / future coding agent",
+      "goals": ["Understand the streaming SSR architecture", "Know which server component fetches which data", "Extend sections without breaking the streaming pattern"],
+      "painPointsToday": ["Current monolithic fetch pattern is unclear for new section development", "No documentation of the data flow architecture"]
+    }
+  ],
+  "currentArchitectureAnalysis": {
+    "bottleneck": "The root layout (src/app/layout.tsx:143) calls getCmsContent() which issues 11 GROQ queries via Promise.all(). Even though queries run in parallel, the server cannot send HTML until ALL complete. This creates a waterfall where the slowest query (typically gallery or projects with large payloads) determines the TTFB.",
+    "dataFlow": [
+      "1. Root layout (server) calls getCmsContent()",
+      "2. getCmsContent() runs 11 GROQ queries via Promise.all()",
+      "3. Server waits for ALL queries to resolve",
+      "4. Server passes entire CmsContent object to CmsContentProvider (React context)",
+      "5. All 10+ section components are 'use client' and read from context",
+      "6. Server renders all sections, sends complete HTML",
+      "7. Browser downloads JS, hydrates, sections become interactive"
+    ],
+    "problems": [
+      "Server blocked on slowest query (gallery: 11 items with image metadata)",
+      "No streaming — HTML sent only after full payload is ready",
+      "All sections are 'use client' — no server component rendering for static content",
+      "Hero section (above-the-fold) blocked by below-the-fold sections (gallery, blog, certifications)",
+      "Monolithic context provider means any section re-render triggers full context update"
+    ],
+    "currentMetrics": {
+      "estimatedTTFB": "2-5s on 3G (11 queries serialized through cache layers)",
+      "estimatedFCP": "3-6s on 3G (must wait for HTML + JS hydration)",
+      "estimatedLCP": "4-8s on 3G (hero image + text in client component)",
+      "htmlSize": "~50KB gzipped (all sections rendered server-side but blocked by data)"
+    }
+  },
+  "targetArchitecture": {
+    "overview": "Streaming SSR with per-section server components and React Suspense boundaries",
+    "dataFlow": [
+      "1. Root layout (server) sends HTML shell immediately (nav, meta, critical CSS)",
+      "2. Each section is wrapped in <Suspense> with a lightweight skeleton fallback",
+      "3. Each section has its own server component that fetches ONLY its data",
+      "4. Server streams section HTML as each query resolves independently",
+      "5. Hero section resolves first (profile query is fastest), user sees content in <1s",
+      "6. Below-the-fold sections stream in as their queries complete",
+      "7. Client hydrates interactive parts (animations, tabs, scroll) progressively"
+    ],
+    "keyChanges": [
+      "Replace monolithic getCmsContent() with per-section fetch functions",
+      "Convert section wrappers from 'use client' to server components with Suspense",
+      "Move data fetching from layout to individual section server components",
+      "Add streaming fallback skeletons for each section",
+      "Implement progressive hydration for below-the-fold content"
+    ]
+  },
+  "successMetrics": {
+    "primary": [
+      "FCP < 1.5s on simulated 3G (currently 3-6s)",
+      "LCP < 2.5s on simulated 3G (currently 4-8s)",
+      "TTFB < 800ms on simulated 3G (currently 2-5s)",
+      "Total Blocking Time (TBT) < 200ms on mobile",
+      "Lighthouse Performance score >= 90 (mobile)",
+      "Zero layout shift from streaming (CLS < 0.1)",
+      "HTML shell (without section content) delivered in < 200ms"
+    ],
+    "secondary": [
+      "Each section independently fetchable and streamable",
+      "Existing feature flags (IS_BLOG_VISIBLE, IS_PROJECTS_REVAMP_ENABLED) still work",
+      "Draft mode still works with preview content",
+      "Fallback content still renders when Sanity is unavailable",
+      "react-doctor score stays at 100/100",
+      "All existing vitest tests pass",
+      "No new console errors or hydration warnings"
+    ]
+  },
+  "nonGoals": [
+    "Migrate to a different CMS (keep Sanity)",
+    "Change the visual design or layout of any section",
+    "Add new sections or remove existing ones",
+    "Implement client-side data fetching (SWR/React Query) for section data",
+    "Change the Sanity schema or GROQ queries",
+    "Implement Edge Runtime (keep Node.js runtime for now)",
+    "Add Partial Prerendering (PPR) — requires Next.js 14+ experimental flag, defer to future PRD",
+    "Implement ISR changes for blog/projects pages (separate PRD)"
+  ],
+  "designDecisions": [
+    {
+      "id": "DD-1",
+      "topic": "Data fetching strategy",
+      "choice": "Per-section server components with individual Sanity queries, replacing the monolithic getCmsContent() call.",
+      "rationale": "Each section owns its data dependency. The Hero section only waits for the profile query (~200ms), not the gallery query (~800ms). This is the core optimization that enables streaming.",
+      "alternativesConsidered": [
+        "Keep monolithic fetch but add Suspense (rejected: still blocked on slowest query)",
+        "Move to ISR with short revalidation (rejected: adds staleness, doesn't solve TTFB)",
+        "Use Edge Runtime (rejected: Sanity SDK may not work on edge, premature optimization)"
+      ]
+    },
+    {
+      "id": "DD-2",
+      "topic": "Suspense fallback design",
+      "choice": "Lightweight CSS-only skeleton loaders that match each section's layout. No JavaScript, no animation, just static HTML that streams immediately.",
+      "rationale": "Skeleton loaders are part of the HTML shell, so they appear instantly. When the section data resolves, the real content replaces the skeleton via streaming. This avoids layout shift because skeletons match the final dimensions.",
+      "alternativesConsidered": [
+        "Spinner/loaders (rejected: causes layout shift, adds visual noise)",
+        "Empty space (rejected: poor UX, user sees blank areas)",
+        "Client-side loading states (rejected: defeats purpose of SSR streaming)"
+      ]
+    },
+    {
+      "id": "DD-3",
+      "topic": "Section component architecture",
+      "choice": "Each section gets a ServerComponent wrapper that fetches data and a ClientComponent for interactivity. The ServerComponent handles data + Suspense, the ClientComponent handles animations + user interaction.",
+      "rationale": "Clean separation: server components handle data fetching and initial render, client components handle Framer Motion animations, scroll effects, and user interactions. This is the recommended Next.js App Router pattern.",
+      "alternativesConsidered": [
+        "Keep all sections as 'use client' with useEffect data fetching (rejected: no SSR, poor SEO)",
+        "Make everything server components (rejected: sections need animations and interactivity)"
+      ]
+    },
+    {
+      "id": "DD-4",
+      "topic": "Hero section priority",
+      "choice": "Hero section does NOT use Suspense — it renders synchronously in the layout with the fastest query (profile). This ensures the above-the-fold content is always in the initial HTML.",
+      "rationale": "The hero is the most critical section for LCP. Making it synchronous ensures it's always in the initial HTML payload. The profile query is the fastest (~200ms) and smallest (~2KB), so the blocking cost is minimal.",
+      "alternativesConsidered": [
+        "Wrap Hero in Suspense too (rejected: adds unnecessary delay to above-the-fold content)",
+        "Use static generation for Hero (rejected: needs fresh CMS data for draft mode)"
+      ]
+    },
+    {
+      "id": "DD-5",
+      "topic": "CmsContent backward compatibility",
+      "choice": "Keep the CmsContentProvider and useCmsContent() hook working, but have it read from a shared cache that per-section server components populate. Existing client components continue to work unchanged during the migration.",
+      "rationale": "This allows incremental migration: sections can be converted one at a time from context-consuming client components to server-component-wrapped sections. No big-bang rewrite needed.",
+      "alternativesConsidered": [
+        "Remove CmsContentProvider entirely (rejected: requires rewriting all sections at once)",
+        "Keep monolithic fetch for context, add streaming for new sections only (rejected: doesn't solve the core problem)"
+      ]
+    },
+    {
+      "id": "DD-6",
+      "topic": "Cache integration",
+      "choice": "Per-section queries use the same getOrFetch() cache layer (L1 in-memory + L2 Upstash Redis) as the current monolithic query. Cache keys are scoped to each query.",
+      "rationale": "Preserves the existing 3-layer caching strategy. Per-section queries are smaller and more focused, so cache hit rates may improve (e.g., profile changes rarely, so its cache entry stays warm longer)."
+    }
+  ],
+  "epics": [
+    {
+      "id": "EPIC-1",
+      "title": "Per-section data fetchers",
+      "status": "planned",
+      "summary": "Create individual server-side data fetch functions for each homepage section, extracting queries from the monolithic getCmsContent() into focused, independently callable functions.",
+      "value": "critical",
+      "complexity": "medium",
+      "stories": [
+        {
+          "id": "S-1.1",
+          "title": "Create fetchHeroData() server fetcher",
+          "done": false,
+          "details": "Extract the profile query from getCmsContent() into a standalone fetchHeroData() function in src/lib/sections/hero.server.ts. Returns { profile, hero, socialLinks }. Uses the same querySanity() cache layer. Must work with draftMode().",
+          "files": ["src/lib/sections/hero.server.ts"]
+        },
+        {
+          "id": "S-1.2",
+          "title": "Create fetchAboutData() server fetcher",
+          "done": false,
+          "details": "Extract the aboutSection query into fetchAboutData() in src/lib/sections/about.server.ts. Returns { about }. Uses the same cache layer.",
+          "files": ["src/lib/sections/about.server.ts"]
+        },
+        {
+          "id": "S-1.3",
+          "title": "Create fetchTechStackData() server fetcher",
+          "done": false,
+          "details": "Extract the techStack query into fetchTechStackData() in src/lib/sections/tech-stack.server.ts. Returns { technologies, techCategories }.",
+          "files": ["src/lib/sections/tech-stack.server.ts"]
+        },
+        {
+          "id": "S-1.4",
+          "title": "Create fetchProjectsData() server fetcher",
+          "done": false,
+          "details": "Extract the project query into fetchProjectsData() in src/lib/sections/projects.server.ts. Returns { projects }. Handles deduplication logic.",
+          "files": ["src/lib/sections/projects.server.ts"]
+        },
+        {
+          "id": "S-1.5",
+          "title": "Create fetchExperienceData() server fetcher",
+          "done": false,
+          "details": "Extract the experience query into fetchExperienceData() in src/lib/sections/experience.server.ts. Returns { experiences }.",
+          "files": ["src/lib/sections/experience.server.ts"]
+        },
+        {
+          "id": "S-1.6",
+          "title": "Create fetchConnectData() server fetcher",
+          "done": false,
+          "details": "Extract the siteSettings + socialLinks query into fetchConnectData() in src/lib/sections/connect.server.ts. Returns { siteSettings, socialLinks }.",
+          "files": ["src/lib/sections/connect.server.ts"]
+        },
+        {
+          "id": "S-1.7",
+          "title": "Create fetchBlogData() server fetcher",
+          "done": false,
+          "details": "Extract the blog query into fetchBlogData() in src/lib/sections/blog.server.ts. Returns { blogPosts }. Gated by IS_BLOG_VISIBLE.",
+          "files": ["src/lib/sections/blog.server.ts"]
+        },
+        {
+          "id": "S-1.8",
+          "title": "Create fetchCertificationsData() server fetcher",
+          "done": false,
+          "details": "Extract the certification query into fetchCertificationsData() in src/lib/sections/certifications.server.ts. Returns { certifications }.",
+          "files": ["src/lib/sections/certifications.server.ts"]
+        },
+        {
+          "id": "S-1.9",
+          "title": "Create fetchGalleryData() server fetcher",
+          "done": false,
+          "details": "Extract the gallery query into fetchGalleryData() in src/lib/sections/gallery.server.ts. Returns { galleryImages }.",
+          "files": ["src/lib/sections/gallery.server.ts"]
+        },
+        {
+          "id": "S-1.10",
+          "title": "Create shared cache utility for section fetchers",
+          "done": false,
+          "details": "Create src/lib/sections/shared.ts with a helper that wraps each fetcher in React cache() for request-level deduplication. Each fetcher calls querySanity() which already has L1+L2 caching.",
+          "files": ["src/lib/sections/shared.ts"]
+        }
+      ]
+    },
+    {
+      "id": "EPIC-2",
+      "title": "Server component section wrappers",
+      "status": "planned",
+      "summary": "Create server component wrappers for each section that fetch data and render the existing client components inside Suspense boundaries with skeleton fallbacks.",
+      "value": "critical",
+      "complexity": "high",
+      "stories": [
+        {
+          "id": "S-2.1",
+          "title": "Create HeroSection server wrapper",
+          "done": false,
+          "details": "Create src/components/sections/HeroSection.server.tsx. This is a server component that calls fetchHeroData() and passes the result to the existing HeroSection client component. No Suspense needed (hero is synchronous for LCP).",
+          "files": ["src/components/sections/HeroSection.server.tsx"]
+        },
+        {
+          "id": "S-2.2",
+          "title": "Create AboutSection server wrapper with Suspense",
+          "done": false,
+          "details": "Create src/components/sections/AboutSection.server.tsx. Server component that wraps the existing AboutSection in <Suspense fallback={<AboutSkeleton />}> and calls fetchAboutData() inside.",
+          "files": ["src/components/sections/AboutSection.server.tsx", "src/components/sections/skeletons/AboutSkeleton.tsx"]
+        },
+        {
+          "id": "S-2.3",
+          "title": "Create TechStackSection server wrapper with Suspense",
+          "done": false,
+          "details": "Create src/components/sections/TechStackSection.server.tsx with TechStackSkeleton fallback.",
+          "files": ["src/components/sections/TechStackSection.server.tsx", "src/components/sections/skeletons/TechStackSkeleton.tsx"]
+        },
+        {
+          "id": "S-2.4",
+          "title": "Create ProjectsSection server wrapper with Suspense",
+          "done": false,
+          "details": "Create src/components/sections/ProjectsSection.server.tsx with ProjectsSkeleton fallback. Must respect IS_PROJECTS_REVAMP_ENABLED flag.",
+          "files": ["src/components/sections/ProjectsSection.server.tsx", "src/components/sections/skeletons/ProjectsSkeleton.tsx"]
+        },
+        {
+          "id": "S-2.5",
+          "title": "Create ExperienceTimeline server wrapper with Suspense",
+          "done": false,
+          "details": "Create src/components/sections/ExperienceTimeline.server.tsx with ExperienceSkeleton fallback.",
+          "files": ["src/components/sections/ExperienceTimeline.server.tsx", "src/components/sections/skeletons/ExperienceSkeleton.tsx"]
+        },
+        {
+          "id": "S-2.6",
+          "title": "Create ConnectSection server wrapper with Suspense",
+          "done": false,
+          "details": "Create src/components/sections/ConnectSection.server.tsx with ConnectSkeleton fallback.",
+          "files": ["src/components/sections/ConnectSection.server.tsx", "src/components/sections/skeletons/ConnectSkeleton.tsx"]
+        },
+        {
+          "id": "S-2.7",
+          "title": "Create BlogSection server wrapper with Suspense",
+          "done": false,
+          "details": "Create src/components/sections/BlogSection.server.tsx with BlogSkeleton fallback. Gated by IS_BLOG_VISIBLE.",
+          "files": ["src/components/sections/BlogSection.server.tsx", "src/components/sections/skeletons/BlogSkeleton.tsx"]
+        },
+        {
+          "id": "S-2.8",
+          "title": "Create CertificationsSection server wrapper with Suspense",
+          "done": false,
+          "details": "Create src/components/sections/CertificationsSection.server.tsx with CertificationsSkeleton fallback.",
+          "files": ["src/components/sections/CertificationsSection.server.tsx", "src/components/sections/skeletons/CertificationsSkeleton.tsx"]
+        },
+        {
+          "id": "S-2.9",
+          "title": "Create GallerySection server wrapper with Suspense",
+          "done": false,
+          "details": "Create src/components/sections/GallerySection.server.tsx with GallerySkeleton fallback.",
+          "files": ["src/components/sections/GallerySection.server.tsx", "src/components/sections/skeletons/GallerySkeleton.tsx"]
+        }
+      ]
+    },
+    {
+      "id": "EPIC-3",
+      "title": "Homepage streaming architecture",
+      "status": "planned",
+      "summary": "Rewrite the homepage and root layout to use streaming SSR with per-section Suspense boundaries, replacing the monolithic CmsContentProvider pattern.",
+      "value": "critical",
+      "complexity": "high",
+      "stories": [
+        {
+          "id": "S-3.1",
+          "title": "Create new streaming HomeContent server component",
+          "done": false,
+          "details": "Create src/components/sections/HomeContentStreaming.tsx as a server component. Import all section server wrappers. Wrap each in Suspense with appropriate fallbacks. Hero is synchronous (no Suspense). Below-the-fold sections (blog, certifications, gallery) use Suspense with skeleton fallbacks.",
+          "files": ["src/components/sections/HomeContentStreaming.tsx"]
+        },
+        {
+          "id": "S-3.2",
+          "title": "Create skeleton components for all sections",
+          "done": false,
+          "details": "Create src/components/sections/skeletons/ directory with skeleton components for each section. Skeletons are pure CSS (Tailwind classes), no JavaScript, no animation. They match the approximate layout of each section to prevent CLS.",
+          "files": ["src/components/sections/skeletons/*.tsx"]
+        },
+        {
+          "id": "S-3.3",
+          "title": "Update root layout to use streaming",
+          "done": false,
+          "details": "Modify src/app/layout.tsx to remove the monolithic getCmsContent() call from the layout. Move it to the page level or remove it entirely (replaced by per-section fetchers). Keep the CmsContentProvider for backward compatibility during migration, but populate it from a lighter-weight source.",
+          "files": ["src/app/layout.tsx"]
+        },
+        {
+          "id": "S-3.4",
+          "title": "Update page.tsx to use streaming HomeContent",
+          "done": false,
+          "details": "Modify src/app/page.tsx to render HomeContentStreaming instead of the current HomeContent. Keep the old HomeContent as a fallback during migration.",
+          "files": ["src/app/page.tsx"]
+        },
+        {
+          "id": "S-3.5",
+          "title": "Implement progressive hydration for below-the-fold sections",
+          "done": false,
+          "details": "Add 'use client' boundary markers for sections that need interactivity (tabs, animations, scroll effects). Use React.lazy() or dynamic imports for below-the-fold client components to reduce initial JS bundle.",
+          "files": ["src/components/sections/HomeContentStreaming.tsx"]
+        },
+        {
+          "id": "S-3.6",
+          "title": "Add streaming performance monitoring",
+          "done": false,
+          "details": "Add server-side timing headers (Server-Timing API) to measure per-section fetch duration. Log streaming metrics in development. Add a /api/performance/streaming endpoint for monitoring.",
+          "files": ["src/lib/streaming-metrics.ts", "src/app/api/performance/streaming/route.ts"]
+        }
+      ]
+    },
+    {
+      "id": "EPIC-4",
+      "title": "Critical CSS and resource optimization",
+      "status": "planned",
+      "summary": "Optimize above-the-fold rendering by inlining critical CSS, deferring non-critical resources, and optimizing font loading for the hero section.",
+      "value": "high",
+      "complexity": "medium",
+      "stories": [
+        {
+          "id": "S-4.1",
+          "title": "Inline critical CSS for hero section",
+          "done": false,
+          "details": "Extract the CSS needed for the hero section (navigation, hero card, profile image, name, title) and inline it in the <head> as a <style> tag. This eliminates a render-blocking CSS request for above-the-fold content.",
+          "files": ["src/app/layout.tsx", "scripts/extract-critical-css.js"]
+        },
+        {
+          "id": "S-4.2",
+          "title": "Optimize font loading with font-display: optional",
+          "done": false,
+          "details": "Change Inter font from display: 'swap' to display: 'optional' for the initial render. Use font-display: swap only for the body text. This prevents FOIT (Flash of Invisible Text) on slow connections.",
+          "files": ["src/app/layout.tsx"]
+        },
+        {
+          "id": "S-4.3",
+          "title": "Add preload hints for critical resources",
+          "done": false,
+          "details": "Add <link rel='preload'> for the hero profile image, critical CSS, and the Inter font woff2 file. Add <link rel='preconnect'> for the Sanity CDN origin.",
+          "files": ["src/app/layout.tsx"]
+        },
+        {
+          "id": "S-4.4",
+          "title": "Defer non-critical scripts",
+          "done": false,
+          "details": "Move Umami analytics, service worker registration, and Lenis smooth scroll to after the first paint. Use next/script with strategy='afterInteractive' for analytics and strategy='lazyOnload' for Lenis.",
+          "files": ["src/app/layout.tsx", "src/components/ui/Analytics.tsx", "src/app/providers.tsx"]
+        },
+        {
+          "id": "S-4.5",
+          "title": "Optimize image loading priority",
+          "done": false,
+          "details": "Ensure the hero profile image uses priority={true} and fetchPriority='high'. Add loading='lazy' to all below-the-fold images. Set explicit width/height on all images to prevent CLS.",
+          "files": ["src/components/sections/HeroSection.tsx", "src/components/ui/OptimizedImage.tsx"]
+        }
+      ]
+    },
+    {
+      "id": "EPIC-5",
+      "title": "Edge rendering optimization",
+      "status": "planned",
+      "summary": "Optimize the Cloudflare Workers deployment for streaming SSR by ensuring the OpenNext adapter supports streaming and configuring appropriate cache headers for the HTML shell.",
+      "value": "medium",
+      "complexity": "medium",
+      "stories": [
+        {
+          "id": "S-5.1",
+          "title": "Verify OpenNext streaming support",
+          "done": false,
+          "details": "Test that the OpenNext Cloudflare adapter supports React 18 streaming SSR (Transfer-Encoding: chunked). If not, document the limitation and plan a workaround.",
+          "files": ["open-next.config.ts"]
+        },
+        {
+          "id": "S-5.2",
+          "title": "Configure edge cache headers for HTML",
+          "done": false,
+          "details": "Set Cache-Control: public, max-age=0, s-maxage=60, stale-while-revalidate=300 for the homepage HTML. This allows Cloudflare edge to cache the initial HTML shell for 60 seconds while streaming fresh section content.",
+          "files": ["next.config.js"]
+        },
+        {
+          "id": "S-5.3",
+          "title": "Test streaming on Cloudflare Workers",
+          "done": false,
+          "details": "Deploy the streaming architecture to Cloudflare Workers staging. Verify that chunked transfer encoding works end-to-end. Measure TTFB and FCP on the deployed environment.",
+          "files": []
+        }
+      ]
+    },
+    {
+      "id": "EPIC-6",
+      "title": "Migration and backward compatibility",
+      "status": "planned",
+      "summary": "Ensure the migration is incremental and backward-compatible. Keep the old CmsContentProvider working during migration so sections can be converted one at a time.",
+      "value": "high",
+      "complexity": "medium",
+      "stories": [
+        {
+          "id": "S-6.1",
+          "title": "Create feature flag for streaming architecture",
+          "done": false,
+          "details": "Add IS_STREAMING_SSR_ENABLED flag to src/lib/features.ts. When false, use the old monolithic architecture. When true, use the new streaming architecture. This allows safe rollout and quick rollback.",
+          "files": ["src/lib/features.ts"]
+        },
+        {
+          "id": "S-6.2",
+          "title": "Maintain CmsContentProvider backward compatibility",
+          "done": false,
+          "details": "During migration, populate CmsContentProvider from the per-section fetchers so existing client components that use useCmsContent() continue to work. After all sections are migrated, deprecate the monolithic getCmsContent() call from the layout.",
+          "files": ["src/app/providers.tsx", "src/hooks/useCmsContent.tsx"]
+        },
+        {
+          "id": "S-6.3",
+          "title": "Keep fallback content working",
+          "done": false,
+          "details": "Each per-section fetcher must fall back to the corresponding fallback data from cms-content.shared.ts when Sanity is unavailable. This preserves the existing resilience pattern.",
+          "files": ["src/lib/sections/*.server.ts"]
+        },
+        {
+          "id": "S-6.4",
+          "title": "Keep draft mode working",
+          "done": false,
+          "details": "Each per-section fetcher must check draftMode() and use the preview client when enabled. The streaming architecture must not break the Sanity Presentation tool integration.",
+          "files": ["src/lib/sections/*.server.ts"]
+        }
+      ]
+    },
+    {
+      "id": "EPIC-7",
+      "title": "Testing and verification",
+      "status": "planned",
+      "summary": "Comprehensive testing of the streaming SSR architecture including unit tests, integration tests, performance tests, and visual regression tests.",
+      "value": "high",
+      "complexity": "medium",
+      "stories": [
+        {
+          "id": "S-7.1",
+          "title": "Add unit tests for per-section fetchers",
+          "done": false,
+          "details": "Test each fetchHeroData(), fetchAboutData(), etc. function in isolation. Mock the Sanity client. Verify they return the correct shape and fall back to fallback data on error.",
+          "files": ["src/__tests__/lib/sections/*.test.ts"]
+        },
+        {
+          "id": "S-7.2",
+          "title": "Add integration tests for streaming SSR",
+          "done": false,
+          "details": "Test that the homepage renders with streaming SSR. Verify that Suspense boundaries produce the correct HTML structure. Verify that skeleton fallbacks appear in the initial HTML.",
+          "files": ["src/__tests__/app/streaming-ssr.test.tsx"]
+        },
+        {
+          "id": "S-7.3",
+          "title": "Add performance regression tests",
+          "done": false,
+          "details": "Create a performance test that measures TTFB and HTML size for the homepage. Set thresholds: TTFB < 1000ms, HTML shell < 20KB, total HTML < 80KB.",
+          "files": ["src/__tests__/performance/streaming.test.ts"]
+        },
+        {
+          "id": "S-7.4",
+          "title": "Verify all existing tests still pass",
+          "done": false,
+          "details": "Run the full test suite (npm run test -- --run) and verify all existing tests pass. Fix any failures caused by the architecture change.",
+          "files": []
+        },
+        {
+          "id": "S-7.5",
+          "title": "Run react-doctor and fix any findings",
+          "done": false,
+          "details": "Run npm run doctor. Score must stay at 100/100. If the streaming architecture introduces new findings, fix them in the same PR.",
+          "files": []
+        },
+        {
+          "id": "S-7.6",
+          "title": "Visual regression test with Playwright",
+          "done": false,
+          "details": "Take screenshots of the homepage with the streaming architecture and compare against the current version. Verify no visual differences in the final rendered state.",
+          "files": ["tests/visual/streaming.spec.ts"]
+        }
+      ]
+    }
+  ],
+  "phases": [
+    { "id": "PHASE-1", "label": "Per-section fetchers", "epics": ["EPIC-1"], "status": "planned", "dependsOn": [] },
+    { "id": "PHASE-2", "label": "Server component wrappers", "epics": ["EPIC-2"], "status": "planned", "dependsOn": ["PHASE-1"] },
+    { "id": "PHASE-3", "label": "Streaming architecture", "epics": ["EPIC-3"], "status": "planned", "dependsOn": ["PHASE-2"] },
+    { "id": "PHASE-4", "label": "Resource optimization", "epics": ["EPIC-4"], "status": "planned", "dependsOn": ["PHASE-3"] },
+    { "id": "PHASE-5", "label": "Edge optimization", "epics": ["EPIC-5"], "status": "planned", "dependsOn": ["PHASE-3"] },
+    { "id": "PHASE-6", "label": "Migration safety", "epics": ["EPIC-6"], "status": "planned", "dependsOn": ["PHASE-3"] },
+    { "id": "PHASE-7", "label": "Testing & verification", "epics": ["EPIC-7"], "status": "planned", "dependsOn": ["PHASE-4", "PHASE-5", "PHASE-6"] }
+  ],
+  "sectionDataMapping": {
+    "hero": {
+      "fetcher": "fetchHeroData()",
+      "queries": ["profile (single doc)"],
+      "estimatedFetchTime": "200ms",
+      "suspense": false,
+      "priority": "critical",
+      "aboveFold": true
+    },
+    "about": {
+      "fetcher": "fetchAboutData()",
+      "queries": ["aboutSection (single doc)"],
+      "estimatedFetchTime": "150ms",
+      "suspense": true,
+      "priority": "high",
+      "aboveFold": true
+    },
+    "techStack": {
+      "fetcher": "fetchTechStackData()",
+      "queries": ["techStack (single doc with array)"],
+      "estimatedFetchTime": "300ms",
+      "suspense": true,
+      "priority": "medium",
+      "aboveFold": false
+    },
+    "projects": {
+      "fetcher": "fetchProjectsData()",
+      "queries": ["project (multiple docs with images)"],
+      "estimatedFetchTime": "500ms",
+      "suspense": true,
+      "priority": "high",
+      "aboveFold": false
+    },
+    "experience": {
+      "fetcher": "fetchExperienceData()",
+      "queries": ["experience (multiple docs)"],
+      "estimatedFetchTime": "250ms",
+      "suspense": true,
+      "priority": "high",
+      "aboveFold": false
+    },
+    "connect": {
+      "fetcher": "fetchConnectData()",
+      "queries": ["siteSettings (single doc)", "socialLinks (from profile)"],
+      "estimatedFetchTime": "200ms",
+      "suspense": true,
+      "priority": "medium",
+      "aboveFold": false
+    },
+    "blog": {
+      "fetcher": "fetchBlogData()",
+      "queries": ["post (multiple docs with images)"],
+      "estimatedFetchTime": "400ms",
+      "suspense": true,
+      "priority": "low",
+      "aboveFold": false
+    },
+    "certifications": {
+      "fetcher": "fetchCertificationsData()",
+      "queries": ["certification (multiple docs with images)"],
+      "estimatedFetchTime": "350ms",
+      "suspense": true,
+      "priority": "low",
+      "aboveFold": false
+    },
+    "gallery": {
+      "fetcher": "fetchGalleryData()",
+      "queries": ["galleryImage (multiple docs with images)"],
+      "estimatedFetchTime": "800ms",
+      "suspense": true,
+      "priority": "low",
+      "aboveFold": false
+    }
+  },
+  "estimatedPerformanceImprovement": {
+    "current": {
+      "TTFB_3G": "2-5s (all 11 queries must complete)",
+      "FCP_3G": "3-6s (HTML + JS hydration)",
+      "LCP_3G": "4-8s (hero image + text)",
+      "streamingHTML": false
+    },
+    "target": {
+      "TTFB_3G": "< 800ms (HTML shell streams immediately)",
+      "FCP_3G": "< 1.5s (hero renders from synchronous profile query)",
+      "LCP_3G": "< 2.5s (hero image preloaded, profile query fast)",
+      "streamingHTML": true
+    },
+    "improvement": {
+      "TTFB": "60-84% faster",
+      "FCP": "50-75% faster",
+      "LCP": "40-69% faster"
+    }
+  },
+  "riskMitigation": [
+    {
+      "risk": "Streaming SSR not supported by OpenNext Cloudflare adapter",
+      "mitigation": "Test early in PHASE-5. Fallback: use ISR with short revalidation (30s) instead of streaming.",
+      "severity": "high"
+    },
+    {
+      "risk": "Per-section fetchers increase total Sanity API calls (11 queries x 2 = 22 on cache miss)",
+      "mitigation": "The existing L1+L2 cache layers prevent duplicate calls. React cache() deduplicates within a single request. Monitor cache hit rates.",
+      "severity": "medium"
+    },
+    {
+      "risk": "Skeleton loaders cause layout shift if dimensions don't match final content",
+      "mitigation": "Use fixed-height skeletons with aspect-ratio matching the final content. Test with CLS measurement tools.",
+      "severity": "medium"
+    },
+    {
+      "risk": "Draft mode breaks with per-section fetchers",
+      "mitigation": "Each fetcher independently checks draftMode(). Test with Sanity Presentation tool before merging.",
+      "severity": "high"
+    },
+    {
+      "risk": "Breaking existing tests during architecture migration",
+      "mitigation": "Feature flag IS_STREAMING_SSR_ENABLED allows instant rollback. Run full test suite after each epic.",
+      "severity": "medium"
+    }
+  ],
+  "ownerSetupGuide": [
+    "The streaming SSR architecture is transparent to the CMS — no Sanity schema changes needed.",
+    "Monitor the new Server-Timing headers in browser DevTools Network tab to see per-section fetch times.",
+    "Use the /api/performance/streaming endpoint to check streaming metrics in production.",
+    "The IS_STREAMING_SSR_ENABLED feature flag controls the new architecture. Set to false to revert instantly.",
+    "After deployment, run Lighthouse on mobile (simulated 3G) to verify the performance improvements.",
+    "The per-section fetchers use the same cache layers as before, so cache invalidation via webhook still works."
+  ]
+}

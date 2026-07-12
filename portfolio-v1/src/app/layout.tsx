@@ -10,8 +10,9 @@ import { Analytics } from '@/components/ui/Analytics';
 import { MagicCursor } from '@/components/ui/MagicCursor';
 import { JsonLd } from '@/components/seo/JsonLd';
 import { getCmsContent } from '@/lib/cms-content.server';
-import { IS_MAGIC_CURSOR_VISIBLE } from '@/lib/features';
+import { IS_MAGIC_CURSOR_VISIBLE, IS_STREAMING_SSR_ENABLED } from '@/lib/features';
 import { SITE_URL, SITE_NAME, SITE_DESCRIPTION } from '@/lib/site-config';
+import { fetchSeoData } from '@/lib/sections/seo.server';
 import './globals.css';
 
 const inter = Inter({
@@ -23,8 +24,9 @@ const inter = Inter({
 const fallbackSeo = fallbackCmsContent.seoSettings;
 
 export async function generateMetadata(): Promise<Metadata> {
-  const cmsContent = await getCmsContent();
-  const seo = cmsContent.seoSettings || fallbackSeo;
+  const seo = IS_STREAMING_SSR_ENABLED
+    ? await fetchSeoData()
+    : (await getCmsContent()).seoSettings || fallbackSeo;
 
   return {
     title: seo.siteTitle,
@@ -98,9 +100,6 @@ const jsonLd = {
 };
 
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  // In test environments (Vitest) return a synchronous layout using the
-  // fallback CMS content so unit tests can import and render the layout
-  // without awaiting async data fetches.
   const isTest = process.env.VITEST === 'true' || process.env.NODE_ENV === 'test';
 
   if (isTest) {
@@ -137,10 +136,58 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
     );
   }
 
-  // Non-test runtime: fetch CMS content and check draft-mode status so the
-  // Presentation tool iframe can handshake with the marketing site and
-  // trigger refetches on save.
-  const [cmsContent, isDraftMode] = await Promise.all([getCmsContent(), draftMode().then((d) => d.isEnabled)]);
+  const isDraftMode = await draftMode().then((d) => d.isEnabled);
+
+  if (IS_STREAMING_SSR_ENABLED) {
+    const [seoData] = await Promise.all([fetchSeoData()]);
+
+    const streamingCmsContent = {
+      ...fallbackCmsContent,
+      seoSettings: {
+        ...fallbackCmsContent.seoSettings,
+        siteTitle: seoData.siteTitle,
+        siteDescription: seoData.siteDescription,
+        canonicalUrl: seoData.canonicalUrl,
+        ogImageUrl: seoData.ogImageUrl,
+        twitterImageUrl: seoData.twitterImageUrl,
+        noindex: seoData.noindex,
+        nofollow: seoData.nofollow,
+      },
+    };
+
+    return (
+      <html lang="en" suppressHydrationWarning className={inter.variable}>
+        <head>
+          <link rel="dns-prefetch" href="https://cdn.sanity.io" />
+          <link rel="preconnect" href="https://cdn.sanity.io" />
+          <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+          <link rel="preconnect" href="https://fonts.googleapis.com" />
+          <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+          <link rel="dns-prefetch" href="https://cloud.umami.is" />
+          <link rel="preconnect" href="https://cloud.umami.is" />
+          <JsonLd data={jsonLd} id="layout-jsonld-streaming" />
+          <Analytics />
+        </head>
+        <body className="bg-background-light dark:bg-background-dark text-text-primary-light dark:text-text-primary-dark min-h-screen font-sans antialiased">
+          <a
+            href="#main-content"
+            className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:rounded-lg focus:bg-accent-pink focus:text-white focus:text-sm focus:font-medium focus:outline-none"
+          >
+            Skip to main content
+          </a>
+          <Providers cmsContent={streamingCmsContent} isDraftMode={isDraftMode}>
+            {IS_MAGIC_CURSOR_VISIBLE ? <MagicCursor /> : null}
+            {children}
+            <FloatingHubWithBoundary />
+            <ScrollToTop />
+            {isDraftMode ? <VisualEditing /> : null}
+          </Providers>
+        </body>
+      </html>
+    );
+  }
+
+  const cmsContent = await getCmsContent();
 
   return (
       <html lang="en" suppressHydrationWarning className={inter.variable}>

@@ -71,6 +71,22 @@ vi.mock('@/components/sections/ExperienceTimeline', () => ({ ExperienceTimeline:
 vi.mock('@/components/sections/ConnectSection', () => ({ ConnectSection: () => <div>ConnectSection</div> }));
 vi.mock('@/components/sections/GallerySection', () => ({ GallerySection: () => <div>GallerySection</div> }));
 vi.mock('@/components/layout/Footer', () => ({ Footer: () => <div>FooterSection</div> }));
+vi.mock('@/components/sections/HomeContentStreaming', () => ({
+  HomeContentStreaming: () => (
+    <div>
+      <div>HeroSection</div>
+      <div>AboutSection</div>
+      <div>TechStackSection</div>
+      <div>ProjectsSectionRevamped</div>
+      <div>ExperienceTimeline</div>
+      <div>ConnectSection</div>
+      <div>BlogSection</div>
+      <div>CertificationsSection</div>
+      <div>GallerySection</div>
+      <div>FooterSection</div>
+    </div>
+  ),
+}));
 vi.mock('@/components/ui/Card', () => ({
   Card: ({ children, className }: { children: React.ReactNode; className?: string }) => (
     <div data-testid="card" className={className}>{children}</div>

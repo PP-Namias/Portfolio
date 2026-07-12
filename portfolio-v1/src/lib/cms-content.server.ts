@@ -82,7 +82,7 @@ async function pickClient() {
 const CACHE_TTL_MS = Number(process.env.CACHE_TTL_DEFAULT) || 300_000;
 const CACHE_STALE_MS = Number(process.env.CACHE_TTL_STALE) || 60_000;
 
-const CONTENT_TAGS: Record<string, string[]> = {
+export const CONTENT_TAGS: Record<string, string[]> = {
   profile: ['cms:profile'],
   aboutSection: ['cms:about'],
   techStack: ['cms:technology'],
@@ -96,7 +96,7 @@ const CONTENT_TAGS: Record<string, string[]> = {
   siteSettings: ['cms:settings'],
 };
 
-async function querySanity<T>(query: string, options?: { tags?: string[] }): Promise<T | null> {
+export async function querySanity<T>(query: string, options?: { tags?: string[] }): Promise<T | null> {
   const projectId = getProjectId();
   if (!projectId) return null;
 
