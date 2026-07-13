@@ -1,4 +1,4 @@
-# AI agent guidelines for PP Namias portfolio
+# AI agent guidelines for chanhdai.com
 
 Next.js 16 (App Router) portfolio, blog, and shadcn registry website.
 
@@ -73,38 +73,3 @@ pnpm registry:build     # Build shadcn registry (Bun script + shadcn build)
 pnpm registry:validate  # Validate generated registry.json
 pnpm icons:build        # Build registry icons
 ```
-
-## Playwright MCP automation
-
-Automated browser testing using Playwright with MCP integration.
-
-**Config**: `opencode.json` (MCP server), `playwright.config.ts` (runner)
-
-**Test suites**: `tests/playwright/`
-
-| Suite | File | Purpose |
-| --- | --- | --- |
-| Route health | `routes.spec.ts` | Static + API route checks |
-| Dynamic routes | `dynamic-routes.spec.ts` | `/projects/[slug]`, `/blog/[slug]` |
-| API routes | `api-routes.spec.ts` | JSON endpoints |
-| Visual regression | `visual-regression.spec.ts` | Homepage snapshots |
-| Component visual | `component-visual.spec.ts` | Hero, projects, certs sections |
-| Theme visual | `theme-visual.spec.ts` | Dark/light mode screenshots |
-| Accessibility | `accessibility.spec.ts` | WCAG, ARIA, lang, heading order |
-| Keyboard nav | `keyboard-navigation.spec.ts` | Tab order, focus, Escape |
-| Color contrast | `color-contrast.spec.ts` | Text/link/button contrast |
-| Screenshots | `screenshots.spec.ts` | Full-page captures |
-| Responsive | `responsive-screenshots.spec.ts` | 6 viewports x 4 routes |
-| OG images | `og-screenshots.spec.ts` | OpenGraph image capture |
-| Performance | `performance.spec.ts` | Core Web Vitals, TBT |
-| Network perf | `network-performance.spec.ts` | Load time, DOM size, CLS |
-| SEO meta | `seo-meta.spec.ts` | Title, description, OG tags |
-| Structured data | `structured-data.spec.ts` | JSON-LD, meta tags |
-| Sitemap | `sitemap-robots.spec.ts` | sitemap.xml, robots.txt |
-| Command menu | `command-menu.spec.ts` | Search, navigation |
-| Theme toggle | `theme-toggle.spec.ts` | Dark mode toggle, persistence |
-| Navigation | `navigation.spec.ts` | Header, footer, command menu |
-
-**CI**: `.github/workflows/playwright.yml` (matrix: chromium/firefox/webkit)
-**Report**: `.github/workflows/playwright-report.yml` (auto-deploys to GitHub Pages)
-**Skill**: `.agents/skills/playwright-mcp/SKILL.md`
