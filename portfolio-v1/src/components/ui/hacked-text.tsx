@@ -65,6 +65,7 @@ export const HackedText = ({ text, className, charset = LETTERS }: HackedTextPro
       className={cn("cursor-default", className)}
       data-value={text}
       onMouseOver={runHack}
+      onFocus={runHack}
       aria-label={text}
     >
       {displayText}

@@ -95,6 +95,9 @@ export function Modal({ open, onClose, title, children, fullScreen = false, desc
           exit={{ opacity: 0 }}
           transition={{ duration: 0.2 }}
           onClick={handleBackdropClick}
+          onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') onClose(); }}
+          role="button"
+          tabIndex={-1}
         >
           {/* Backdrop */}
           <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
