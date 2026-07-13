@@ -8,6 +8,8 @@ import React, {
   useContext,
   useRef,
   useEffect,
+  useMemo,
+  useCallback,
 } from 'react';
 
 const MouseEnterContext = createContext<
@@ -45,8 +47,10 @@ export const CardContainer = ({
     containerRef.current.style.transform = `rotateY(0deg) rotateX(0deg)`;
   };
 
+  const contextValue: [boolean, React.Dispatch<React.SetStateAction<boolean>>] = useMemo(() => [isMouseEntered, setIsMouseEntered], [isMouseEntered]);
+
   return (
-    <MouseEnterContext.Provider value={[isMouseEntered, setIsMouseEntered]}>
+    <MouseEnterContext.Provider value={contextValue}>
       <div
         className={cn('flex items-center justify-center', containerClassName)}
         style={{perspective: '1000px'}}
@@ -114,19 +118,18 @@ export const CardItem = ({
   const ref = useRef<HTMLDivElement>(null);
   const [isMouseEntered] = useMouseEnter();
 
-  const handleAnimations = () => {
+  const handleAnimations = useCallback(() => {
     if (!ref.current) return;
     if (isMouseEntered) {
       ref.current.style.transform = `translateX(${translateX}px) translateY(${translateY}px) translateZ(${translateZ}px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) rotateZ(${rotateZ}deg)`;
     } else {
       ref.current.style.transform = `translateX(0px) translateY(0px) translateZ(0px) rotateX(0deg) rotateY(0deg) rotateZ(0deg)`;
     }
-  };
+  }, [isMouseEntered, translateX, translateY, translateZ, rotateX, rotateY, rotateZ]);
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentionally re-runs on hover state only
   useEffect(() => {
     handleAnimations();
-  }, [isMouseEntered]);
+  }, [handleAnimations]);
 
   return (
     <Tag
