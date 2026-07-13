@@ -4,9 +4,9 @@ import { getBlogPosts, getComponentDocs } from "@/features/doc/data/documents"
 const allComponents = getComponentDocs()
 const allPosts = getBlogPosts()
 
-const content = `# namias.tech
+const content = `# chanhdai.com
 
-> A pixel-perfect dev portfolio and shadcn registry showcasing my work as a Full Stack Engineer & AI Automation Specialist.
+> A pixel-perfect dev portfolio and shadcn registry showcasing my work as a Design Engineer.
 
 - [About](${SITE_INFO.url}/about.md): A quick intro to me, my tech stack, and how to connect.
 - [Experience](${SITE_INFO.url}/experience.md): Highlights from my career and key roles I've taken on.
