@@ -22,7 +22,7 @@
     "hooks": "@/hooks"
   },
   "registries": {
-    "@pp-namias": "https://namias.tech/r/{name}.json",
+    "@ncdai": "https://chanhdai.com/r/{name}.json",
     "@shadcncraft": {
       "url": "https://shadcncraft.com/r/{style}/{name}",
       "headers": {
