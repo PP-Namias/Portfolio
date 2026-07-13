@@ -19,8 +19,8 @@ export interface LogoDef {
   rowOffset?: number
 }
 
-const namias: LogoDef = {
-  name: "PP Namias",
+const chanhdai: LogoDef = {
+  name: "ChanhDai",
   brickWidth: 80,
   rowScale: 3,
   colOffset: 1,
@@ -66,7 +66,7 @@ const vercel: LogoDef = {
   ],
 }
 
-export const LOGOS: LogoDef[] = [namias, eve, vercel]
+export const LOGOS: LogoDef[] = [chanhdai, eve, vercel]
 
 export function getLogoIndex(name?: string | null): number {
   if (!name) return 0
