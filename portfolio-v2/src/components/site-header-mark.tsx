@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react"
 import { usePathname } from "next/navigation"
 import { useMotionValueEvent, useScroll } from "motion/react"
 
-import { NamiasMark } from "./namias-mark"
+import { ChanhDaiMark } from "./chanhdai-mark"
 
 const calcDistance = (el: HTMLElement) => {
   const rect = el.getBoundingClientRect()
@@ -13,7 +13,7 @@ const calcDistance = (el: HTMLElement) => {
   return scrollTop + rect.top + rect.height - headerHeight
 }
 
-function NamiasMarkMotion() {
+function ChanhDaiMarkMotion() {
   const { scrollY } = useScroll()
   const [visible, setVisible] = useState(false)
   const distanceRef = useRef(160)
@@ -40,7 +40,7 @@ function NamiasMarkMotion() {
 
   return (
     <div data-visible={visible} className="group/mark-motion flex">
-      <NamiasMark className="-translate-y-1 opacity-0 transition-[opacity,translate] duration-300 group-data-[visible=true]/mark-motion:translate-y-0 group-data-[visible=true]/mark-motion:opacity-100" />
+      <ChanhDaiMark className="-translate-y-1 opacity-0 transition-[opacity,translate] duration-300 group-data-[visible=true]/mark-motion:translate-y-0 group-data-[visible=true]/mark-motion:opacity-100" />
     </div>
   )
 }
@@ -48,5 +48,5 @@ function NamiasMarkMotion() {
 export function SiteHeaderMark() {
   const pathname = usePathname()
   const isHome = ["/", "/index"].includes(pathname)
-  return isHome ? <NamiasMarkMotion /> : <NamiasMark />
+  return isHome ? <ChanhDaiMarkMotion /> : <ChanhDaiMark />
 }

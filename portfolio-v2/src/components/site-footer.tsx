@@ -55,8 +55,17 @@ export function SiteFooter() {
             <dt>Analytics</dt>
             <dd>
               <ul>
-                <li>OpenPanel</li>
-                <li>PostHog</li>
+                <li>
+                  <a
+                    className="link-underline"
+                    href="https://openpanel.dev?utm_source=chanhdai.com&utm_medium=referral&utm_campaign=footer"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    OpenPanel
+                  </a>
+                </li>
+                <li>Google Analytics</li>
               </ul>
             </dd>
           </Item>
