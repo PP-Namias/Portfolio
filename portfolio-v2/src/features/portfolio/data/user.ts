@@ -1,76 +1,66 @@
 import type { User } from "@/features/portfolio/types/user"
 
 export const USER: User = {
-  firstName: "Jhon Keneth",
-  lastName: "Ryan B. Namias",
-  displayName: "PP Namias",
-  username: "PP-Namias",
+  firstName: "Chánh Đại",
+  lastName: "Nguyễn",
+  displayName: "Chánh Đại",
+  username: "ncdai",
   gender: "male",
   pronouns: "he/him",
   bio: "Creating with code. Small details matter.",
   flipSentences: [
-    "Full-Stack Engineer & AI Solutions Developer",
-    "Building scalable enterprise applications",
-    "React, TypeScript, Python, Node.js",
-    "University of Caloocan City, Batch 2026",
+    "Creating with code. Small details matter.",
+    "Design Engineer.",
+    "Open source contributor.",
+    "I own a vintage iPhone.",
   ],
-  address: "Manila, Philippines",
-  phoneNumberB64: "KzYzOTI3MjUzMzk2OQ==", // base64 of +639272533969
-  emailB64: "cHAubmFtaWFzQGdtYWlsLmNvbQ==", // base64 of pp.namias@gmail.com
-  website: "https://namias.tech",
-  jobTitle: "Full-Stack Engineer",
+  address: "Ho Chi Minh City, Viet Nam",
+  phoneNumberB64: "Kzg0Nzc3ODg4MTQ4", // E.164 format, base64 encoded (https://t.io.vn/base64-string-converter)
+  emailB64: "ZGFpQGNoYW5oZGFpLmNvbQ==", // base64 encoded
+  website: "https://chanhdai.com",
+  jobTitle: "Design Engineer",
   jobs: [
     {
-      title: "Software Engineering Intern",
-      company: "Aeternitas Chapels & Columbarium",
-      website: "",
-      experienceId: "aeternitas",
+      title: "Design Engineer",
+      company: "shadcncraft",
+      website: "https://shadcncraft.com?atp=ncdai",
+      experienceId: "shadcncraft",
     },
     {
-      title: "AI Solutions Developer / Automation Specialist",
-      company: "Wilshire Financial Network",
-      website: "",
-      experienceId: "wilshire-financial",
-    },
-    {
-      title: "Fullstack Developer",
-      company: "Jimirene Maternity Clinic",
-      website: "",
-      experienceId: "jimirene",
-    },
-    {
-      title: "Software Developer",
-      company: "J5 Pharmacy",
-      website: "",
-      experienceId: "j5-pharmacy",
+      title: "Founder",
+      company: "Quaric",
+      website: "https://quaric.com",
+      experienceId: "quaric",
     },
   ],
-  about: `I'm Jhon Keneth Ryan Namias (call me Namias) — a Full-Stack Engineer & AI Solutions Developer with a strong track record of designing, developing, and deploying scalable enterprise applications.
+  about: `I’m Chánh Đại (call me Dai) — a Design Engineer with 5+ years of experience, known for pixel-perfect execution and an obsessive attention to detail.
 
-Expertise in building intuitive user experiences and secure backend APIs utilizing React, TypeScript, and Python. Proven ability to integrate LLMs and AI agents into business workflows to automate operations, reduce costs, and enforce enterprise-grade security standards.
+Passionate about exploring new technologies and turning ideas into reality through polished, thoughtfully crafted projects.
 
-Graduated Cum Laude with a BS in Computer Science from the University of Caloocan City (Batch 2026). Delivered 5+ live applications serving over 1,000 concurrent users, including an enterprise HRIS for 500+ employees and 8 deployed AI chatbot systems.`,
-  avatar: "https://github.com/PP-Namias.png",
+Creator of [chanhdai.com](https://github.com/ncdai/chanhdai.com) (2k stars), [React Wheel Picker](https://react-wheel-picker.chanhdai.com) (30k+ weekly downloads, ▲Vercel OSS Program), and [ZaDark](https://zadark.com) (80k+ downloads, 30k+ users) — peak metrics.
+`,
+  avatar: "https://assets.chanhdai.com/images/chanhdai-avatar-ghibli.webp",
   avatarVariants: {
-    lightOff: "https://github.com/PP-Namias.png",
-    lightOn: "https://github.com/PP-Namias.png",
-    darkOff: "https://github.com/PP-Namias.png",
-    darkOn: "https://github.com/PP-Namias.png",
+    lightOff: "https://assets.chanhdai.com/images/avatar-light-off.webp",
+    lightOn: "https://assets.chanhdai.com/images/avatar-light-on.webp",
+    darkOff: "https://assets.chanhdai.com/images/avatar-dark-off.webp",
+    darkOn: "https://assets.chanhdai.com/images/avatar-dark-on.webp",
   },
-  ogImage: "https://namias.tech/og",
-  namePronunciationUrl: "",
-  timeZone: "Asia/Manila",
+  ogImage:
+    "https://assets.chanhdai.com/images/screenshot-og-image-dark.png?t=1778602757",
+  namePronunciationUrl: "https://assets.chanhdai.com/audio/chanhdai.mp3",
+  timeZone: "Asia/Ho_Chi_Minh",
   keywords: [
-    "pp-namias",
-    "jhon keneth namias",
-    "jhon keneth ryan namias",
-    "namias",
-    "full-stack engineer",
-    "ai solutions developer",
-    "react developer",
-    "typescript",
-    "node.js",
-    "python",
+    "ncdai",
+    "nguyenchanhdai",
+    "nguyen chanh dai",
+    "chanhdai",
+    "chanh dai",
+    "iamncdai",
+    "quaric",
+    "zadark",
+    "nguyễn chánh đại",
+    "chánh đại",
   ],
-  dateCreated: "2024-01-01",
+  dateCreated: "2023-10-20", // YYYY-MM-DD
 }

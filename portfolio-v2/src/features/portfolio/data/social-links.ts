@@ -8,37 +8,37 @@ import type { SocialProfile } from "@/features/portfolio/types/social-links"
 export const SOCIAL = {
   x: {
     title: "X",
-    handle: "@PP_Namias",
-    href: "https://x.com/PP_Namias",
+    handle: "@iamncdai",
+    href: "https://x.com/iamncdai",
     sameAs: true,
   },
   github: {
     title: "GitHub",
-    handle: "PP-Namias",
-    href: "https://github.com/PP-Namias",
+    handle: "ncdai",
+    href: "https://github.com/ncdai",
     sameAs: true,
   },
   linkedin: {
     title: "LinkedIn",
-    handle: "pp-namias",
-    href: "https://linkedin.com/in/pp-namias/",
+    handle: "ncdai",
+    href: "https://linkedin.com/in/ncdai",
+    sameAs: true,
+  },
+  dailydotdev: {
+    title: "daily.dev",
+    handle: "@ncdai",
+    href: "https://app.daily.dev/ncdai",
     sameAs: true,
   },
   discord: {
     title: "Discord",
-    handle: "pp-namias",
-    href: "https://discord.com/users/683914336376455200",
+    handle: "ncdai",
+    href: "https://discord.com/users/1186630645443739651",
   },
   youtube: {
     title: "YouTube",
-    handle: "@pp_namias",
-    href: "https://www.youtube.com/@pp_namias",
-    sameAs: true,
-  },
-  instagram: {
-    title: "Instagram",
-    handle: "@pp_namias",
-    href: "https://www.instagram.com/pp_namias/",
+    handle: "@ncdai",
+    href: "https://www.youtube.com/@ncdai",
     sameAs: true,
   },
 } satisfies Record<string, SocialProfile>
