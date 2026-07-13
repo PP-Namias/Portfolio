@@ -5,8 +5,8 @@
   "author": "ncdai <dai@chanhdai.com>",
   "description": "A work experience section with a lined layout.",
   "registryDependencies": [
-    "https://namias.tech/r/style.json",
-    "https://namias.tech/r/work-experience.json"
+    "https://chanhdai.com/r/style.json",
+    "https://chanhdai.com/r/work-experience.json"
   ],
   "files": [
     {

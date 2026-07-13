@@ -11,8 +11,8 @@
   "registryDependencies": [
     "collapsible",
     "separator",
-    "https://namias.tech/r/chevrons-up-down-icon.json",
-    "https://namias.tech/r/typography.json"
+    "https://chanhdai.com/r/chevrons-up-down-icon.json",
+    "https://chanhdai.com/r/typography.json"
   ],
   "files": [
     {
@@ -22,7 +22,7 @@
       "target": "@components/work-experience.tsx"
     }
   ],
-  "docs": "https://namias.tech/components/work-experience-component",
+  "docs": "https://chanhdai.com/components/work-experience-component",
   "categories": [
     "marketing"
   ],

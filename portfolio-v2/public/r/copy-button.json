@@ -11,7 +11,7 @@
   ],
   "registryDependencies": [
     "button",
-    "https://namias.tech/r/icon-swap.json"
+    "https://chanhdai.com/r/icon-swap.json"
   ],
   "files": [
     {
@@ -27,7 +27,7 @@
       "target": "@hooks/use-copy-to-clipboard.ts"
     }
   ],
-  "docs": "https://namias.tech/components/copy-button",
+  "docs": "https://chanhdai.com/components/copy-button",
   "categories": [
     "utilities"
   ],

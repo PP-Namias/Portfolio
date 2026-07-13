@@ -14,7 +14,7 @@
           "target": "@lib/haptic.ts"
         }
       ],
-      "docs": "https://namias.tech/components/haptic-feedback",
+      "docs": "https://chanhdai.com/components/haptic-feedback",
       "categories": [
         "utilities"
       ],
@@ -73,7 +73,7 @@
           "target": "@components/theme-switcher.tsx"
         }
       ],
-      "docs": "https://namias.tech/components/theme-switcher",
+      "docs": "https://chanhdai.com/components/theme-switcher",
       "categories": [
         "controls"
       ],
@@ -94,7 +94,7 @@
           "target": "@components/text-flip.tsx"
         }
       ],
-      "docs": "https://namias.tech/components/text-flip",
+      "docs": "https://chanhdai.com/components/text-flip",
       "categories": [
         "text-effects"
       ],
@@ -115,7 +115,7 @@
           "target": "@components/apple-hello-effect-english.tsx"
         }
       ],
-      "docs": "https://namias.tech/components/apple-hello-effect",
+      "docs": "https://chanhdai.com/components/apple-hello-effect",
       "categories": [
         "text-effects"
       ],
@@ -136,7 +136,7 @@
           "target": "@components/apple-hello-effect-hindi.tsx"
         }
       ],
-      "docs": "https://namias.tech/components/apple-hello-effect",
+      "docs": "https://chanhdai.com/components/apple-hello-effect",
       "categories": [
         "text-effects"
       ],
@@ -157,7 +157,7 @@
           "target": "@components/apple-hello-effect-spanish.tsx"
         }
       ],
-      "docs": "https://namias.tech/components/apple-hello-effect",
+      "docs": "https://chanhdai.com/components/apple-hello-effect",
       "categories": [
         "text-effects"
       ],
@@ -178,7 +178,7 @@
           "target": "@components/apple-hello-effect-vietnamese.tsx"
         }
       ],
-      "docs": "https://namias.tech/components/apple-hello-effect",
+      "docs": "https://chanhdai.com/components/apple-hello-effect",
       "categories": [
         "text-effects"
       ],
@@ -199,7 +199,7 @@
           "target": "@components/wheel-picker.tsx"
         }
       ],
-      "docs": "https://namias.tech/components/react-wheel-picker",
+      "docs": "https://chanhdai.com/components/react-wheel-picker",
       "categories": [
         "controls"
       ],
@@ -219,7 +219,7 @@
           "target": "@components/chevrons-up-down-icon.tsx"
         }
       ],
-      "docs": "https://namias.tech/components/chevrons-up-down-icon",
+      "docs": "https://chanhdai.com/components/chevrons-up-down-icon",
       "categories": [
         "effects"
       ],
@@ -272,8 +272,8 @@
       "registryDependencies": [
         "collapsible",
         "separator",
-        "https://namias.tech/r/chevrons-up-down-icon.json",
-        "https://namias.tech/r/typography.json"
+        "https://chanhdai.com/r/chevrons-up-down-icon.json",
+        "https://chanhdai.com/r/typography.json"
       ],
       "files": [
         {
@@ -282,7 +282,7 @@
           "target": "@components/work-experience.tsx"
         }
       ],
-      "docs": "https://namias.tech/components/work-experience-component",
+      "docs": "https://chanhdai.com/components/work-experience-component",
       "categories": [
         "marketing"
       ],
@@ -303,7 +303,7 @@
           "target": "@components/shimmering-text.tsx"
         }
       ],
-      "docs": "https://namias.tech/components/shimmering-text",
+      "docs": "https://chanhdai.com/components/shimmering-text",
       "categories": [
         "text-effects"
       ],
@@ -318,7 +318,7 @@
         "motion"
       ],
       "registryDependencies": [
-        "https://namias.tech/r/shimmering-text.json"
+        "https://chanhdai.com/r/shimmering-text.json"
       ],
       "files": [
         {
@@ -327,7 +327,7 @@
           "target": "@components/slide-to-unlock.tsx"
         }
       ],
-      "docs": "https://namias.tech/components/slide-to-unlock",
+      "docs": "https://chanhdai.com/components/slide-to-unlock",
       "categories": [
         "controls"
       ],
@@ -340,9 +340,9 @@
       "description": "Scrolling marquee to showcase user testimonials.",
       "registryDependencies": [
         "@kibo-ui/marquee",
-        "https://namias.tech/r/testimonial.json"
+        "https://chanhdai.com/r/testimonial.json"
       ],
-      "docs": "https://namias.tech/components/testimonials-marquee",
+      "docs": "https://chanhdai.com/components/testimonials-marquee",
       "categories": [
         "marketing"
       ],
@@ -361,7 +361,7 @@
           "target": "@components/testimonial.tsx"
         }
       ],
-      "docs": "https://namias.tech/components/testimonial",
+      "docs": "https://chanhdai.com/components/testimonial",
       "categories": [
         "marketing"
       ],
@@ -383,7 +383,7 @@
           "target": "@components/github-stars.tsx"
         }
       ],
-      "docs": "https://namias.tech/components/github-stars",
+      "docs": "https://chanhdai.com/components/github-stars",
       "categories": [
         "data-display"
       ],
@@ -475,7 +475,7 @@
           "animation-fill-mode": "both"
         }
       },
-      "docs": "https://namias.tech/components/scroll-fade-effect",
+      "docs": "https://chanhdai.com/components/scroll-fade-effect",
       "categories": [
         "effects"
       ],
@@ -499,7 +499,7 @@
           "target": "@components/consent-manager.tsx"
         }
       ],
-      "docs": "https://namias.tech/components/consent-manager",
+      "docs": "https://chanhdai.com/components/consent-manager",
       "categories": [
         "utilities"
       ],
@@ -517,7 +517,7 @@
       ],
       "registryDependencies": [
         "button",
-        "https://namias.tech/r/icon-swap.json"
+        "https://chanhdai.com/r/icon-swap.json"
       ],
       "files": [
         {
@@ -531,7 +531,7 @@
           "target": "@hooks/use-copy-to-clipboard.ts"
         }
       ],
-      "docs": "https://namias.tech/components/copy-button",
+      "docs": "https://chanhdai.com/components/copy-button",
       "categories": [
         "utilities"
       ],
@@ -548,8 +548,8 @@
         "jotai"
       ],
       "registryDependencies": [
-        "https://namias.tech/r/icon-swap.json",
-        "https://namias.tech/r/copy-button.json"
+        "https://chanhdai.com/r/icon-swap.json",
+        "https://chanhdai.com/r/copy-button.json"
       ],
       "files": [
         {
@@ -577,7 +577,7 @@
           "code-foreground": "oklch(0.985 0 0)"
         }
       },
-      "docs": "https://namias.tech/components/code-block-command",
+      "docs": "https://chanhdai.com/components/code-block-command",
       "categories": [
         "data-display"
       ],
@@ -589,7 +589,7 @@
       "title": "Testimonial Spotlight",
       "description": "Testimonial card with spotlight effect on hover.",
       "registryDependencies": [
-        "https://namias.tech/r/testimonial.json"
+        "https://chanhdai.com/r/testimonial.json"
       ],
       "files": [
         {
@@ -598,7 +598,7 @@
           "target": "@components/testimonial-spotlight.tsx"
         }
       ],
-      "docs": "https://namias.tech/components/testimonial-spotlight",
+      "docs": "https://chanhdai.com/components/testimonial-spotlight",
       "categories": [
         "marketing"
       ],
@@ -633,7 +633,7 @@
           "target": "@components/middle-truncation.tsx"
         }
       ],
-      "docs": "https://namias.tech/components/middle-truncation",
+      "docs": "https://chanhdai.com/components/middle-truncation",
       "categories": [
         "typography"
       ],
@@ -667,7 +667,7 @@
           }
         }
       },
-      "docs": "https://namias.tech/components/twemoji",
+      "docs": "https://chanhdai.com/components/twemoji",
       "categories": [
         "typography"
       ],
@@ -682,7 +682,7 @@
         "motion"
       ],
       "registryDependencies": [
-        "https://namias.tech/r/use-controllable-state.json"
+        "https://chanhdai.com/r/use-controllable-state.json"
       ],
       "files": [
         {
@@ -691,7 +691,7 @@
           "target": "@components/elastic-slider.tsx"
         }
       ],
-      "docs": "https://namias.tech/components/elastic-slider",
+      "docs": "https://chanhdai.com/components/elastic-slider",
       "categories": [
         "controls"
       ],
@@ -729,7 +729,7 @@
       "registryDependencies": [
         "tooltip",
         "spinner",
-        "https://namias.tech/r/contribution-graph.json"
+        "https://chanhdai.com/r/contribution-graph.json"
       ],
       "files": [
         {
@@ -748,7 +748,7 @@
           "@apply underline decoration-current/30 decoration-1 underline-offset-3 transition-colors hover:decoration-current": {}
         }
       },
-      "docs": "https://namias.tech/components/github-contributions",
+      "docs": "https://chanhdai.com/components/github-contributions",
       "categories": [
         "data-display"
       ],
@@ -770,7 +770,7 @@
           "target": "@components/toc-minimap.tsx"
         }
       ],
-      "docs": "https://namias.tech/components/toc-minimap",
+      "docs": "https://chanhdai.com/components/toc-minimap",
       "categories": [
         "navigation"
       ],
@@ -791,7 +791,7 @@
           "target": "@components/fluid-gradient-text.tsx"
         }
       ],
-      "docs": "https://namias.tech/components/fluid-gradient-text",
+      "docs": "https://chanhdai.com/components/fluid-gradient-text",
       "categories": [
         "text-effects"
       ],
@@ -816,7 +816,7 @@
           "target": "@components/brand-assets-menu.tsx"
         }
       ],
-      "docs": "https://namias.tech/components/brand-assets-menu",
+      "docs": "https://chanhdai.com/components/brand-assets-menu",
       "categories": [
         "menus"
       ],
@@ -837,7 +837,7 @@
           "target": "@components/icon-swap.tsx"
         }
       ],
-      "docs": "https://namias.tech/components/icon-swap",
+      "docs": "https://chanhdai.com/components/icon-swap",
       "categories": [
         "effects"
       ],
@@ -855,7 +855,7 @@
           "target": "@components/dot-grid-spotlight.tsx"
         }
       ],
-      "docs": "https://namias.tech/components/dot-grid-spotlight",
+      "docs": "https://chanhdai.com/components/dot-grid-spotlight",
       "categories": [
         "effects"
       ],
@@ -885,7 +885,7 @@
           }
         }
       },
-      "docs": "https://namias.tech/components/spinning-circular-text",
+      "docs": "https://chanhdai.com/components/spinning-circular-text",
       "categories": [
         "text-effects"
       ],
@@ -906,7 +906,7 @@
           "target": "@components/mobius-loop-icon.tsx"
         }
       ],
-      "docs": "https://namias.tech/components/mobius-loop-icon",
+      "docs": "https://chanhdai.com/components/mobius-loop-icon",
       "categories": [
         "effects"
       ],
@@ -927,7 +927,7 @@
           "target": "@components/logos-carousel.tsx"
         }
       ],
-      "docs": "https://namias.tech/components/logos-carousel",
+      "docs": "https://chanhdai.com/components/logos-carousel",
       "categories": [
         "marketing"
       ],
@@ -945,7 +945,7 @@
           "target": "@components/testimonial-2.tsx"
         }
       ],
-      "docs": "https://namias.tech/components/testimonial-2",
+      "docs": "https://chanhdai.com/components/testimonial-2",
       "categories": [
         "marketing"
       ],
@@ -966,7 +966,7 @@
           "target": "@components/line-nav.tsx"
         }
       ],
-      "docs": "https://namias.tech/components/line-nav",
+      "docs": "https://chanhdai.com/components/line-nav",
       "categories": [
         "navigation"
       ],
@@ -989,7 +989,7 @@
           "target": "@components/share-menu.tsx"
         }
       ],
-      "docs": "https://namias.tech/components/share-menu",
+      "docs": "https://chanhdai.com/components/share-menu",
       "categories": [
         "menus"
       ],
@@ -1013,7 +1013,7 @@
           "target": "@components/spotlight-logo.tsx"
         }
       ],
-      "docs": "https://namias.tech/components/spotlight-logo",
+      "docs": "https://chanhdai.com/components/spotlight-logo",
       "categories": [
         "effects"
       ],
@@ -1058,7 +1058,7 @@
       "description": "A hero section with a golden spiral background.",
       "registryDependencies": [
         "button",
-        "https://namias.tech/r/style.json"
+        "https://chanhdai.com/r/style.json"
       ],
       "files": [
         {
@@ -1121,7 +1121,7 @@
       ],
       "registryDependencies": [
         "button",
-        "https://namias.tech/r/style.json"
+        "https://chanhdai.com/r/style.json"
       ],
       "files": [
         {
@@ -1150,7 +1150,7 @@
       "description": "A testimonials section with dual marquees.",
       "registryDependencies": [
         "https://www.kibo-ui.com/r/marquee.json",
-        "https://namias.tech/r/testimonial-spotlight.json"
+        "https://chanhdai.com/r/testimonial-spotlight.json"
       ],
       "files": [
         {
@@ -1180,8 +1180,8 @@
       "description": "A testimonials section with a lined layout.",
       "registryDependencies": [
         "https://www.kibo-ui.com/r/marquee.json",
-        "https://namias.tech/r/style.json",
-        "https://namias.tech/r/testimonial.json"
+        "https://chanhdai.com/r/style.json",
+        "https://chanhdai.com/r/testimonial.json"
       ],
       "files": [
         {
@@ -1210,8 +1210,8 @@
       "title": "Experience 01",
       "description": "A work experience section with a lined layout.",
       "registryDependencies": [
-        "https://namias.tech/r/style.json",
-        "https://namias.tech/r/work-experience.json"
+        "https://chanhdai.com/r/style.json",
+        "https://chanhdai.com/r/work-experience.json"
       ],
       "files": [
         {
@@ -1234,7 +1234,7 @@
       "title": "Team 01",
       "description": "A team section with glowing cards.",
       "registryDependencies": [
-        "https://namias.tech/r/glow-card-grid.json"
+        "https://chanhdai.com/r/glow-card-grid.json"
       ],
       "files": [
         {
@@ -1262,7 +1262,7 @@
       ],
       "registryDependencies": [
         "@bklit/line-chart",
-        "https://namias.tech/r/style.json"
+        "https://chanhdai.com/r/style.json"
       ],
       "files": [
         {
@@ -1291,7 +1291,7 @@
       "title": "Social Links 01",
       "description": "A social links section with a lined grid layout.",
       "registryDependencies": [
-        "https://namias.tech/r/style.json"
+        "https://chanhdai.com/r/style.json"
       ],
       "files": [
         {
@@ -1315,7 +1315,7 @@
       "title": "Social Proof 01",
       "description": "A social proof section with a logos carousel.",
       "registryDependencies": [
-        "https://namias.tech/r/logos-carousel.json"
+        "https://chanhdai.com/r/logos-carousel.json"
       ],
       "files": [
         {
@@ -1382,7 +1382,7 @@
           }
         }
       },
-      "docs": "https://namias.tech/components/theme-toggle-effect",
+      "docs": "https://chanhdai.com/components/theme-toggle-effect",
       "categories": [
         "effects"
       ],
@@ -1419,7 +1419,7 @@
           }
         }
       },
-      "docs": "https://namias.tech/components/theme-toggle-effect",
+      "docs": "https://chanhdai.com/components/theme-toggle-effect",
       "categories": [
         "effects"
       ],
@@ -1456,7 +1456,7 @@
           }
         }
       },
-      "docs": "https://namias.tech/components/theme-toggle-effect",
+      "docs": "https://chanhdai.com/components/theme-toggle-effect",
       "categories": [
         "effects"
       ],
@@ -1497,7 +1497,7 @@
           }
         }
       },
-      "docs": "https://namias.tech/components/theme-toggle-effect",
+      "docs": "https://chanhdai.com/components/theme-toggle-effect",
       "categories": [
         "effects"
       ],
@@ -1537,7 +1537,7 @@
           }
         }
       },
-      "docs": "https://namias.tech/components/theme-toggle-effect",
+      "docs": "https://chanhdai.com/components/theme-toggle-effect",
       "categories": [
         "effects"
       ],
@@ -1589,7 +1589,7 @@
           }
         }
       },
-      "docs": "https://namias.tech/components/theme-toggle-effect",
+      "docs": "https://chanhdai.com/components/theme-toggle-effect",
       "categories": [
         "effects"
       ],
@@ -1628,7 +1628,7 @@
           }
         }
       },
-      "docs": "https://namias.tech/components/theme-toggle-effect",
+      "docs": "https://chanhdai.com/components/theme-toggle-effect",
       "categories": [
         "effects"
       ],

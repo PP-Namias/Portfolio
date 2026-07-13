@@ -5,7 +5,7 @@
   "author": "ncdai <dai@chanhdai.com>",
   "description": "A social links section with a lined grid layout.",
   "registryDependencies": [
-    "https://namias.tech/r/style.json"
+    "https://chanhdai.com/r/style.json"
   ],
   "files": [
     {

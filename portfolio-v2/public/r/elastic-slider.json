@@ -8,7 +8,7 @@
     "motion"
   ],
   "registryDependencies": [
-    "https://namias.tech/r/use-controllable-state.json"
+    "https://chanhdai.com/r/use-controllable-state.json"
   ],
   "files": [
     {
@@ -18,7 +18,7 @@
       "target": "@components/elastic-slider.tsx"
     }
   ],
-  "docs": "https://namias.tech/components/elastic-slider",
+  "docs": "https://chanhdai.com/components/elastic-slider",
   "categories": [
     "controls"
   ],

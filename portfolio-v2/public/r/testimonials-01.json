@@ -6,7 +6,7 @@
   "description": "A testimonials section with dual marquees.",
   "registryDependencies": [
     "https://www.kibo-ui.com/r/marquee.json",
-    "https://namias.tech/r/testimonial-spotlight.json"
+    "https://chanhdai.com/r/testimonial-spotlight.json"
   ],
   "files": [
     {
