@@ -17,7 +17,7 @@ export const components: Registry["items"] = [
       },
     ],
     categories: ["controls"],
-    docs: "https://namias.tech/components/theme-switcher",
+    docs: "https://chanhdai.com/components/theme-switcher",
   },
   {
     name: "text-flip",
@@ -34,7 +34,7 @@ export const components: Registry["items"] = [
       },
     ],
     categories: ["text-effects"],
-    docs: "https://namias.tech/components/text-flip",
+    docs: "https://chanhdai.com/components/text-flip",
   },
   {
     name: "apple-hello-effect",
@@ -50,7 +50,7 @@ export const components: Registry["items"] = [
       },
     ],
     categories: ["text-effects"],
-    docs: "https://namias.tech/components/apple-hello-effect",
+    docs: "https://chanhdai.com/components/apple-hello-effect",
   },
   {
     name: "apple-hello-effect-hindi",
@@ -66,7 +66,7 @@ export const components: Registry["items"] = [
       },
     ],
     categories: ["text-effects"],
-    docs: "https://namias.tech/components/apple-hello-effect",
+    docs: "https://chanhdai.com/components/apple-hello-effect",
   },
   {
     name: "apple-hello-effect-spanish",
@@ -82,7 +82,7 @@ export const components: Registry["items"] = [
       },
     ],
     categories: ["text-effects"],
-    docs: "https://namias.tech/components/apple-hello-effect",
+    docs: "https://chanhdai.com/components/apple-hello-effect",
   },
   {
     name: "apple-hello-effect-vietnamese",
@@ -98,7 +98,7 @@ export const components: Registry["items"] = [
       },
     ],
     categories: ["text-effects"],
-    docs: "https://namias.tech/components/apple-hello-effect",
+    docs: "https://chanhdai.com/components/apple-hello-effect",
   },
   {
     name: "wheel-picker",
@@ -115,7 +115,7 @@ export const components: Registry["items"] = [
       },
     ],
     categories: ["controls"],
-    docs: "https://namias.tech/components/react-wheel-picker",
+    docs: "https://chanhdai.com/components/react-wheel-picker",
   },
   {
     name: "chevrons-up-down-icon",
@@ -131,7 +131,7 @@ export const components: Registry["items"] = [
       },
     ],
     categories: ["effects"],
-    docs: "https://namias.tech/components/chevrons-up-down-icon",
+    docs: "https://chanhdai.com/components/chevrons-up-down-icon",
   },
   {
     name: "typography",
@@ -154,7 +154,7 @@ export const components: Registry["items"] = [
         "@apply underline decoration-current/30 decoration-1 underline-offset-3 transition-colors hover:decoration-current":
           {},
       },
-      "@utility prose-namias": {
+      "@utility prose-ncdai": {
         "@apply prose-headings:font-medium prose-headings:tracking-tight prose-headings:text-pretty md:prose-headings:text-balance":
           {},
         "@apply prose-a:font-normal prose-a:wrap-break-word prose-a:text-foreground prose-a:link-underline":
@@ -189,7 +189,7 @@ export const components: Registry["items"] = [
       },
     ],
     categories: ["marketing"],
-    docs: "https://namias.tech/components/work-experience-component",
+    docs: "https://chanhdai.com/components/work-experience-component",
   },
   {
     name: "shimmering-text",
@@ -205,7 +205,7 @@ export const components: Registry["items"] = [
       },
     ],
     categories: ["text-effects"],
-    docs: "https://namias.tech/components/shimmering-text",
+    docs: "https://chanhdai.com/components/shimmering-text",
   },
   {
     name: "slide-to-unlock",
@@ -223,7 +223,7 @@ export const components: Registry["items"] = [
       },
     ],
     categories: ["controls"],
-    docs: "https://namias.tech/components/slide-to-unlock",
+    docs: "https://chanhdai.com/components/slide-to-unlock",
   },
   {
     name: "testimonials-marquee",
@@ -235,7 +235,7 @@ export const components: Registry["items"] = [
       getRegistryItemUrl("testimonial"),
     ],
     categories: ["marketing"],
-    docs: "https://namias.tech/components/testimonials-marquee",
+    docs: "https://chanhdai.com/components/testimonials-marquee",
   },
   {
     name: "testimonial",
@@ -251,7 +251,7 @@ export const components: Registry["items"] = [
       },
     ],
     categories: ["marketing"],
-    docs: "https://namias.tech/components/testimonial",
+    docs: "https://chanhdai.com/components/testimonial",
   },
   {
     name: "github-stars",
@@ -268,7 +268,7 @@ export const components: Registry["items"] = [
       },
     ],
     categories: ["data-display"],
-    docs: "https://namias.tech/components/github-stars",
+    docs: "https://chanhdai.com/components/github-stars",
   },
   {
     name: "scroll-fade-effect",
@@ -366,7 +366,7 @@ export const components: Registry["items"] = [
       },
     },
     categories: ["effects"],
-    docs: "https://namias.tech/components/scroll-fade-effect",
+    docs: "https://chanhdai.com/components/scroll-fade-effect",
   },
   {
     name: "consent-manager",
@@ -384,7 +384,7 @@ export const components: Registry["items"] = [
       },
     ],
     categories: ["utilities"],
-    docs: "https://namias.tech/components/consent-manager",
+    docs: "https://chanhdai.com/components/consent-manager",
   },
   {
     name: "copy-button",
@@ -407,7 +407,7 @@ export const components: Registry["items"] = [
       },
     ],
     categories: ["utilities"],
-    docs: "https://namias.tech/components/copy-button",
+    docs: "https://chanhdai.com/components/copy-button",
   },
   {
     name: "code-block-command",
@@ -447,7 +447,7 @@ export const components: Registry["items"] = [
       },
     },
     categories: ["data-display"],
-    docs: "https://namias.tech/components/code-block-command",
+    docs: "https://chanhdai.com/components/code-block-command",
   },
   {
     name: "testimonial-spotlight",
@@ -463,7 +463,7 @@ export const components: Registry["items"] = [
       },
     ],
     categories: ["marketing"],
-    docs: "https://namias.tech/components/testimonial-spotlight",
+    docs: "https://chanhdai.com/components/testimonial-spotlight",
   },
   {
     name: "glow-card-grid",
@@ -492,7 +492,7 @@ export const components: Registry["items"] = [
       },
     ],
     categories: ["typography"],
-    docs: "https://namias.tech/components/middle-truncation",
+    docs: "https://chanhdai.com/components/middle-truncation",
   },
   {
     name: "twemoji",
@@ -523,7 +523,7 @@ export const components: Registry["items"] = [
       },
     },
     categories: ["typography"],
-    docs: "https://namias.tech/components/twemoji",
+    docs: "https://chanhdai.com/components/twemoji",
   },
   {
     name: "elastic-slider",
@@ -541,7 +541,7 @@ export const components: Registry["items"] = [
       },
     ],
     categories: ["controls"],
-    docs: "https://namias.tech/components/elastic-slider",
+    docs: "https://chanhdai.com/components/elastic-slider",
   },
   {
     name: "contribution-graph",
@@ -591,7 +591,7 @@ export const components: Registry["items"] = [
       },
     },
     categories: ["data-display"],
-    docs: "https://namias.tech/components/github-contributions",
+    docs: "https://chanhdai.com/components/github-contributions",
   },
   {
     name: "toc-minimap",
@@ -608,7 +608,7 @@ export const components: Registry["items"] = [
       },
     ],
     categories: ["navigation"],
-    docs: "https://namias.tech/components/toc-minimap",
+    docs: "https://chanhdai.com/components/toc-minimap",
   },
   {
     name: "fluid-gradient-text",
@@ -625,7 +625,7 @@ export const components: Registry["items"] = [
       },
     ],
     categories: ["text-effects"],
-    docs: "https://namias.tech/components/fluid-gradient-text",
+    docs: "https://chanhdai.com/components/fluid-gradient-text",
   },
   {
     name: "brand-assets-menu",
@@ -642,7 +642,7 @@ export const components: Registry["items"] = [
       },
     ],
     categories: ["menus"],
-    docs: "https://namias.tech/components/brand-assets-menu",
+    docs: "https://chanhdai.com/components/brand-assets-menu",
   },
   {
     name: "icon-swap",
@@ -658,7 +658,7 @@ export const components: Registry["items"] = [
       },
     ],
     categories: ["effects"],
-    docs: "https://namias.tech/components/icon-swap",
+    docs: "https://chanhdai.com/components/icon-swap",
   },
   {
     name: "dot-grid-spotlight",
@@ -674,7 +674,7 @@ export const components: Registry["items"] = [
       },
     ],
     categories: ["effects"],
-    docs: "https://namias.tech/components/dot-grid-spotlight",
+    docs: "https://chanhdai.com/components/dot-grid-spotlight",
   },
   {
     name: "spinning-circular-text",
@@ -703,7 +703,7 @@ export const components: Registry["items"] = [
       },
     },
     categories: ["text-effects"],
-    docs: "https://namias.tech/components/spinning-circular-text",
+    docs: "https://chanhdai.com/components/spinning-circular-text",
   },
   {
     name: "mobius-loop-icon",
@@ -720,7 +720,7 @@ export const components: Registry["items"] = [
       },
     ],
     categories: ["effects"],
-    docs: "https://namias.tech/components/mobius-loop-icon",
+    docs: "https://chanhdai.com/components/mobius-loop-icon",
   },
   {
     name: "logos-carousel",
@@ -736,7 +736,7 @@ export const components: Registry["items"] = [
       },
     ],
     categories: ["marketing"],
-    docs: "https://namias.tech/components/logos-carousel",
+    docs: "https://chanhdai.com/components/logos-carousel",
   },
   {
     name: "testimonial-2",
@@ -752,7 +752,7 @@ export const components: Registry["items"] = [
       },
     ],
     categories: ["marketing"],
-    docs: "https://namias.tech/components/testimonial-2",
+    docs: "https://chanhdai.com/components/testimonial-2",
   },
   {
     name: "line-nav",
@@ -769,7 +769,7 @@ export const components: Registry["items"] = [
       },
     ],
     categories: ["navigation"],
-    docs: "https://namias.tech/components/line-nav",
+    docs: "https://chanhdai.com/components/line-nav",
   },
   {
     name: "share-menu",
@@ -786,7 +786,7 @@ export const components: Registry["items"] = [
       },
     ],
     categories: ["menus"],
-    docs: "https://namias.tech/components/share-menu",
+    docs: "https://chanhdai.com/components/share-menu",
   },
   {
     name: "spotlight-logo",
@@ -804,6 +804,6 @@ export const components: Registry["items"] = [
       },
     ],
     categories: ["effects"],
-    docs: "https://namias.tech/components/spotlight-logo",
+    docs: "https://chanhdai.com/components/spotlight-logo",
   },
 ]

@@ -8,8 +8,8 @@ import { lib } from "./lib/_registry"
 import { styles } from "./styles/_registry"
 
 export const registry = {
-  name: "pp-namias",
-  homepage: "https://namias.tech/components",
+  name: "ncdai",
+  homepage: "https://chanhdai.com/components",
   items: [
     ...lib,
     ...hook,
