@@ -17,8 +17,9 @@ import './globals.css';
 
 const inter = Inter({
   subsets: ['latin'],
-  display: 'swap',
+  display: 'optional',
   variable: '--font-inter',
+  fallback: ['system-ui', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
 });
 
 const fallbackSeo = fallbackCmsContent.seoSettings;
@@ -115,6 +116,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
           <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
           <link rel="dns-prefetch" href="https://cloud.umami.is" />
           <link rel="preconnect" href="https://cloud.umami.is" />
+          <style>{`body{font-family:system-ui,Segoe UI,Roboto,Helvetica Neue,Arial,sans-serif;}a:focus-visible{outline:2px solid #db2777;outline-offset:2px;border-radius:8px;}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border-width:0;}`}</style>
           <JsonLd data={jsonLd} id="layout-jsonld-test" />
           <Analytics />
         </head>
@@ -165,6 +167,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
           <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
           <link rel="dns-prefetch" href="https://cloud.umami.is" />
           <link rel="preconnect" href="https://cloud.umami.is" />
+          <style>{`body{font-family:system-ui,Segoe UI,Roboto,Helvetica Neue,Arial,sans-serif;}.font-inter{font-family:var(--font-inter),system-ui,Segoe UI,Roboto,Helvetica Neue,Arial,sans-serif;}a:focus-visible{outline:2px solid #db2777;outline-offset:2px;border-radius:8px;}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border-width:0;}`}</style>
           <JsonLd data={jsonLd} id="layout-jsonld-streaming" />
           <Analytics />
         </head>
@@ -199,6 +202,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
           <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
           <link rel="dns-prefetch" href="https://cloud.umami.is" />
           <link rel="preconnect" href="https://cloud.umami.is" />
+          <style>{`body{font-family:system-ui,Segoe UI,Roboto,Helvetica Neue,Arial,sans-serif;}a:focus-visible{outline:2px solid #db2777;outline-offset:2px;border-radius:8px;}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border-width:0;}`}</style>
           <JsonLd data={jsonLd} id="layout-jsonld-runtime" />
           <Analytics />
         </head>

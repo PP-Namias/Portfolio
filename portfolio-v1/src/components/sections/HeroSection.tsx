@@ -160,6 +160,7 @@ export function HeroSection() {
                         sizes="(max-width: 640px) 160px, 160px"
                         className="object-cover"
                         priority
+                        fetchPriority="high"
                       />
                     ) : (
                       <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-accent-pink/20 to-accent-pink/40 text-2xl font-bold text-accent-pink">

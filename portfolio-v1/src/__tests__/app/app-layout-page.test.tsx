@@ -43,8 +43,8 @@ vi.mock('next-themes', () => ({
   }),
 }));
 
-vi.mock('lenis/react', () => ({
-  ReactLenis: ({ children }: { children: React.ReactNode }) => <div data-testid="lenis-root">{children}</div>,
+vi.mock('@/components/ui/LenisProvider', () => ({
+  LenisProvider: ({ children }: { children: React.ReactNode }) => <div data-testid="lenis-root">{children}</div>,
 }));
 
 vi.mock('@/components/ui/FloatingHub', () => ({

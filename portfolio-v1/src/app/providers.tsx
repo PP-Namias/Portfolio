@@ -1,12 +1,12 @@
 'use client';
 
 import { ThemeProvider } from 'next-themes';
-import { ReactLenis } from 'lenis/react';
 import { AccentColorProvider } from '@/hooks/useAccentColor';
 import { ModalProvider } from '@/hooks/useModal';
 import { CmsContentProvider } from '@/hooks/useCmsContent';
 import type { CmsContent } from '@/lib/cms-content.shared';
 import { SwrConfigProvider } from '@/lib/swr-config';
+import { LenisProvider } from '@/components/ui/LenisProvider';
 import { SITE_URL } from '@/lib/site-config';
 import { useEffect } from 'react';
 
@@ -19,9 +19,12 @@ interface ProvidersProps {
 function useServiceWorker() {
   useEffect(() => {
     if ('serviceWorker' in navigator && process.env.NODE_ENV === 'production') {
-      navigator.serviceWorker.register('/sw.js').catch(() => {
-        // Non-critical — proceed without service worker
-      });
+      const register = () => navigator.serviceWorker.register('/sw.js').catch(() => {});
+      if ('requestIdleCallback' in window) {
+        requestIdleCallback(register, { timeout: 3000 });
+      } else {
+        setTimeout(register, 2000);
+      }
     }
   }, []);
 }
@@ -84,18 +87,9 @@ export function Providers({ children, cmsContent }: ProvidersProps) {
         <CmsContentProvider value={resolvedCmsContent}>
           <ModalProvider>
             <SwrConfigProvider>
-              <ReactLenis
-                root
-                options={{
-                  lerp: 0.12,
-                  duration: 1.2,
-                  smoothWheel: true,
-                  touchMultiplier: 1.5,
-                  wheelMultiplier: 1,
-                }}
-              >
+              <LenisProvider>
                 {children}
-              </ReactLenis>
+              </LenisProvider>
             </SwrConfigProvider>
           </ModalProvider>
         </CmsContentProvider>
