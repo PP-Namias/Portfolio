@@ -1,7 +1,8 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Head from 'next/head';
+import useSWR from 'swr';
 
 interface CanaryToken {
   id: string;
@@ -36,27 +37,15 @@ interface CanaryStats {
   recentTriggers: CanaryTrigger[];
 }
 
+const fetcher = (url: string) => fetch(url).then((r) => r.json());
+
 export default function CanaryDashboard() {
-  const [stats, setStats] = useState<CanaryStats | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [testResult, setTestResult] = useState<string | null>(null);
-
-  useEffect(() => {
-    fetchStats();
-  }, []);
-
-  async function fetchStats() {
-    try {
-      const response = await fetch('/api/canary/stats');
-      const data = await response.json();
-      setStats(data);
-      setLoading(false);
-    } catch (err) {
-      setError('Failed to fetch canary stats');
-      setLoading(false);
-    }
-  }
+  const { data: stats, error, isLoading, mutate } = useSWR<CanaryStats>(
+    '/api/canary/stats',
+    fetcher,
+    { revalidateOnFocus: false },
+  );
 
   async function sendTestAlert() {
     try {
@@ -64,12 +53,12 @@ export default function CanaryDashboard() {
       const response = await fetch('/api/canary/test', { method: 'POST' });
       const data = await response.json();
       setTestResult(data.message);
-    } catch (err) {
+    } catch {
       setTestResult('Failed to send test alert');
     }
   }
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="min-h-screen bg-gray-900 text-white p-8">
         <div className="max-w-6xl mx-auto">
@@ -79,11 +68,11 @@ export default function CanaryDashboard() {
     );
   }
 
-  if (error) {
+  if (error && !stats) {
     return (
       <div className="min-h-screen bg-gray-900 text-white p-8">
         <div className="max-w-6xl mx-auto">
-          <h1 className="text-3xl font-bold mb-8 text-red-500">Error: {error}</h1>
+          <h1 className="text-3xl font-bold mb-8 text-red-500">Error: Failed to fetch canary stats</h1>
         </div>
       </div>
     );
@@ -100,12 +89,14 @@ export default function CanaryDashboard() {
           <h1 className="text-3xl font-bold">Canary Token Dashboard</h1>
           <div className="flex gap-4">
             <button
-              onClick={fetchStats}
+              type="button"
+              onClick={() => mutate()}
               className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded"
             >
               Refresh
             </button>
             <button
+              type="button"
               onClick={sendTestAlert}
               className="bg-yellow-600 hover:bg-yellow-700 px-4 py-2 rounded"
             >
@@ -168,7 +159,7 @@ export default function CanaryDashboard() {
                         </div>
                         <div className="text-xs text-gray-500">
                           {token.lastTriggered
-                            ? new Date(token.lastTriggered).toLocaleString()
+                            ? new Date(token.lastTriggered).toLocaleString('en-US', { timeZone: 'UTC' })
                             : 'Never'}
                         </div>
                       </div>
@@ -193,7 +184,7 @@ export default function CanaryDashboard() {
                         <div className="flex justify-between">
                           <div className="font-semibold">{trigger.tokenName}</div>
                           <div className="text-sm text-gray-400">
-                            {new Date(trigger.timestamp).toLocaleString()}
+                            {new Date(trigger.timestamp).toLocaleString('en-US', { timeZone: 'UTC' })}
                           </div>
                         </div>
                         <div className="text-sm text-gray-400 mt-1">
