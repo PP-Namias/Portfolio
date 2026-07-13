@@ -2,6 +2,7 @@ import "@/styles/globals.css"
 
 import type { Metadata, Viewport } from "next"
 import Script from "next/script"
+import { GoogleTagManager } from "@next/third-parties/google"
 import { NuqsAdapter } from "nuqs/adapters/next/app"
 import type { WebSite, WithContext } from "schema-dts"
 
@@ -48,11 +49,11 @@ export const metadata: Metadata = {
   keywords: SITE_INFO.keywords,
   authors: [
     {
-      name: "PP Namias",
+      name: "ncdai",
       url: SITE_INFO.url,
     },
   ],
-  creator: "PP Namias",
+  creator: "ncdai",
   openGraph: {
     siteName: SITE_INFO.name,
     url: "/",
@@ -80,24 +81,24 @@ export const metadata: Metadata = {
   icons: {
     icon: [
       {
-        url: "https://namias.tech/images/favicon.ico",
+        url: "https://assets.chanhdai.com/images/favicon.ico",
         sizes: "32x32",
       },
       {
-        url: "https://namias.tech/images/favicon.svg",
+        url: "https://assets.chanhdai.com/images/favicon.svg",
         sizes: "any",
         type: "image/svg+xml",
         media: "(prefers-color-scheme: light)",
       },
       {
-        url: "https://namias.tech/images/favicon-dark.svg",
+        url: "https://assets.chanhdai.com/images/favicon-dark.svg",
         sizes: "any",
         type: "image/svg+xml",
         media: "(prefers-color-scheme: dark)",
       },
     ],
     apple: {
-      url: "https://namias.tech/images/apple-touch-icon.png",
+      url: "https://assets.chanhdai.com/images/apple-touch-icon.png",
       type: "image/png",
       sizes: "180x180",
     },
@@ -110,6 +111,8 @@ export const viewport: Viewport = {
   viewportFit: "cover",
   themeColor: META_THEME_COLORS.light,
 }
+
+const ADSENSE_CLIENT = process.env.NEXT_PUBLIC_ADSENSE_CLIENT
 
 export default function RootLayout({
   children,
@@ -140,7 +143,19 @@ export default function RootLayout({
           }}
         />
         <JsonLdScript data={getWebSiteJsonLd()} />
+        {ADSENSE_CLIENT && (
+          <Script
+            async
+            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT}`}
+            crossOrigin="anonymous"
+            strategy="afterInteractive"
+          />
+        )}
       </head>
+
+      {process.env.NEXT_PUBLIC_GTM_ID && (
+        <GoogleTagManager gtmId={process.env.NEXT_PUBLIC_GTM_ID} />
+      )}
 
       <body>
         <Providers>
