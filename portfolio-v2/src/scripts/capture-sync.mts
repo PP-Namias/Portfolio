@@ -2,7 +2,7 @@ import path from "node:path"
 
 import { getR2ClientFromEnv, syncDirToR2 } from "./lib/r2.mts"
 
-const screenshotsDir = path.join(process.cwd(), ".namias/screenshots")
+const screenshotsDir = path.join(process.cwd(), ".ncdai/screenshots")
 
 async function main() {
   const client = getR2ClientFromEnv()

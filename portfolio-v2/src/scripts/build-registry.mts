@@ -97,14 +97,14 @@ export const Index: Record<string, any> = {`
   const registryJSON = JSON.stringify(
     {
       $schema: "https://ui.shadcn.com/schema/registry.json",
-      name: "pp-namias",
-      homepage: "https://namias.tech/components",
+      name: "ncdai",
+      homepage: "https://chanhdai.com/components",
       items: registry.items
         .filter((item) => item.type !== "registry:example")
         .map((item) => {
           return {
             ...item,
-            author: item.author ?? "PP Namias <pp@namias.tech>",
+            author: item.author ?? "ncdai <dai@chanhdai.com>",
             files:
               item.files?.map((file) => {
                 if (file.path.startsWith("src/")) {
