@@ -47,7 +47,7 @@ export function JsonLd({ data, id }: JsonLdProps): JSX.Element | null {
       // its rules under its own namespace and aliases them in
       // doctor.config.json).
       // eslint-disable-next-line react-doctor/no-danger
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }}
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(data).replace(/</g, '\\u003C').replace(/>/g, '\\u003E').replace(/&/g, '\\u0026') }}
     />
   );
 }
