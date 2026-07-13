@@ -12,10 +12,10 @@ import {
   ContextMenuItem,
   ContextMenuSeparator,
   ContextMenuTrigger,
-} from "@/components/ui/context-menu"
+} from "@/components/base/ui/context-menu"
 
-import { NamiasMark, getMarkSVG } from "./namias-mark"
-import { getWordmarkSVG } from "./namias-wordmark"
+import { ChanhDaiMark, getMarkSVG } from "./chanhdai-mark"
+import { getWordmarkSVG } from "./chanhdai-wordmark"
 
 export function BrandContextMenu({ children }: { children: React.ReactNode }) {
   const { success } = useTiks()
@@ -32,7 +32,7 @@ export function BrandContextMenu({ children }: { children: React.ReactNode }) {
             success()
           }}
         >
-          <NamiasMark />
+          <ChanhDaiMark />
           Copy Mark as SVG
         </ContextMenuItem>
 
@@ -49,19 +49,23 @@ export function BrandContextMenu({ children }: { children: React.ReactNode }) {
 
         <ContextMenuSeparator />
 
-        <ContextMenuItem asChild>
-          <Link href="/blog/pp-namias-brand">
-            <SquareDashed />
-            Brand Guidelines
-          </Link>
-        </ContextMenuItem>
+        <ContextMenuItem
+          render={
+            <Link href="/blog/chanhdai-brand">
+              <SquareDashed />
+              Brand Guidelines
+            </Link>
+          }
+        />
 
-        <ContextMenuItem asChild>
-          <a href="https://namias.tech/pp-namias-brand.zip" download>
-            <Download />
-            Download Brand Assets
-          </a>
-        </ContextMenuItem>
+        <ContextMenuItem
+          render={
+            <a href="https://assets.chanhdai.com/chanhdai-brand.zip" download>
+              <Download />
+              Download Brand Assets
+            </a>
+          }
+        />
       </ContextMenuContent>
     </ContextMenu>
   )

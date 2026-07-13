@@ -46,8 +46,8 @@ import type { DocPreview } from "@/features/doc/types/document"
 import { SOCIAL_ICONS } from "@/features/portfolio/components/social-link-icons"
 import { SOCIAL_LINKS } from "@/features/portfolio/data/social-links"
 
-import { NamiasMark, getMarkSVG } from "./namias-mark"
-import { getWordmarkSVG } from "./namias-wordmark"
+import { ChanhDaiMark, getMarkSVG } from "./chanhdai-mark"
+import { getWordmarkSVG } from "./chanhdai-wordmark"
 import {
   FavouriteIcon,
   GridViewIcon,
@@ -82,7 +82,7 @@ const MENU_LINKS: CommandLinkItem[] = [
     title: "Home",
     href: "/",
     kind: "page",
-    icon: <NamiasMark />,
+    icon: <ChanhDaiMark />,
     shortcut: "GH",
   },
   {
@@ -462,7 +462,7 @@ export function CommandMenu({
                   handleCopyText(getMarkSVG(), "Mark as SVG copied")
                 }}
               >
-                <NamiasMark />
+                <ChanhDaiMark />
                 Copy Mark as SVG
               </CommandMenuItem>
 
@@ -480,7 +480,7 @@ export function CommandMenu({
                 onHighlight={() => {
                   setSelectedCommandKind("link")
                 }}
-                onSelect={() => handleOpenLink("/blog/pp-namias-brand")}
+                onSelect={() => handleOpenLink("/blog/chanhdai-brand")}
               >
                 <SquareDashedIcon />
                 Brand Guidelines
@@ -488,7 +488,7 @@ export function CommandMenu({
 
               <CommandMenuItem onHighlight={handleCommandHighlight} asChild>
                 <a
-                  href="https://namias.tech/pp-namias-brand.zip"
+                  href="https://assets.chanhdai.com/chanhdai-brand.zip"
                   download
                 >
                   <DownloadIcon />
@@ -692,7 +692,7 @@ function CommandMenuFooter({
       <div className="flex h-10" />
 
       <div className="absolute inset-x-0 bottom-0 flex h-10 items-center justify-between gap-2 rounded-b-2xl px-4 text-xs font-medium">
-        <NamiasMark className="size-6 text-muted-foreground" />
+        <ChanhDaiMark className="size-6 text-muted-foreground" />
 
         <div className="flex items-center gap-2 max-sm:hidden">
           <span>{ENTER_ACTION_LABELS[selectedCommandKind ?? "page"]}</span>
