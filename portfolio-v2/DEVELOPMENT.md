@@ -15,8 +15,8 @@ Ensure you have the following installed:
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/PP-Namias/Portfolio.git portfolio-v2
-cd portfolio-v2
+git clone https://github.com/ncdai/chanhdai.com.git minimal-dev-portfolio
+cd minimal-dev-portfolio
 ```
 
 ### 2. Install portless
@@ -49,7 +49,7 @@ Then, update the necessary environment variables inside `.env.local`.
 pnpm dev
 ```
 
-The application should now be available at https://namias.localhost
+The application should now be available at https://ncdai.localhost
 
 ## Building for Production
 
@@ -81,7 +81,7 @@ This project utilizes **shadcn Registry**, which allows you to manage and distri
 
 ### Using registry in other React projects
 
-If you're working on a different React project and want to reuse the custom components from this repository, visit [namias.tech/components](https://namias.tech/components) for installation instructions and component documentation.
+If you're working on a different React project and want to reuse the custom components from this repository, visit [chanhdai.com/components](https://chanhdai.com/components) for installation instructions and component documentation.
 
 > Note: These components are compatible with [Tailwind CSS v4](https://tailwindcss.com/blog/tailwindcss-v4) and [React 19](https://react.dev/blog/2024/12/05/react-19).
 
@@ -106,7 +106,7 @@ When running the `npx shadcn add <registry-url>` command, the selected component
 The site screenshots are captured locally, then published to Cloudflare R2.
 
 ```bash
-pnpm capture       # Capture screenshots into .namias/screenshots
+pnpm capture       # Capture screenshots into .ncdai/screenshots
 pnpm capture:sync  # Upload the folder to Cloudflare R2
 ```
 
