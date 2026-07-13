@@ -149,6 +149,6 @@ function toJsx(hast: Nodes) {
     jsxs: runtime.jsxs as Jsx,
     components: {
       ...mdxCodeBlockComponents,
-    } as Record<string, React.ComponentType<unknown>>,
+    },
   })
 }
