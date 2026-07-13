@@ -1,0 +1,845 @@
+{
+  "id": "PRD-DEV-BRANCH-COMMITS",
+  "title": "Dev Branch — 340 Changes in 45 Atomic Commits",
+  "version": "1.0.0",
+  "status": "in-progress",
+  "created": "2026-07-13",
+  "description": "Commit all 340 staged/unstaged/untracked changes on the dev branch in granular conventional-commit format. Each commit is a logical atomic slice covering one concern across related files.",
+
+  "goals": [
+    "Leave zero uncommitted changes on the dev branch",
+    "Each commit is a focused, logical change with a meaningful message",
+    "Follow conventional commit format: type(scope): subject",
+    "Preserve history granularity for audit and review"
+  ],
+
+  "stats": {
+    "totalChanges": 340,
+    "deletions": 166,
+    "modifications": 148,
+    "untracked": 25,
+    "staged": 1,
+    "totalCommits": 45,
+    "filesChanged": 314
+  },
+
+  "epics": [
+    {
+      "id": "EPIC-DELETE-SANITY",
+      "title": "Delete Sanity CMS (schemas, lib, config, seed)",
+      "fileCount": 55,
+      "stories": [
+        {
+          "id": "S-DEL-SANITY-1",
+          "title": "Delete Sanity schema definitions (15 files)",
+          "files": [
+            "portfolio-v2/src/sanity/schemas/award.ts",
+            "portfolio-v2/src/sanity/schemas/blockContent.ts",
+            "portfolio-v2/src/sanity/schemas/bookmark.ts",
+            "portfolio-v2/src/sanity/schemas/category.ts",
+            "portfolio-v2/src/sanity/schemas/certification.ts",
+            "portfolio-v2/src/sanity/schemas/education.ts",
+            "portfolio-v2/src/sanity/schemas/experience.ts",
+            "portfolio-v2/src/sanity/schemas/index.ts",
+            "portfolio-v2/src/sanity/schemas/post.ts",
+            "portfolio-v2/src/sanity/schemas/profile.ts",
+            "portfolio-v2/src/sanity/schemas/project.ts",
+            "portfolio-v2/src/sanity/schemas/siteSettings.ts",
+            "portfolio-v2/src/sanity/schemas/socialLink.ts",
+            "portfolio-v2/src/sanity/schemas/techStack.ts",
+            "portfolio-v2/src/sanity/schemas/testimonial.ts"
+          ],
+          "commitMessage": "feat(portfolio-v2): remove Sanity CMS schema definitions"
+        },
+        {
+          "id": "S-DEL-SANITY-2",
+          "title": "Delete Sanity lib utility files (8 files)",
+          "files": [
+            "portfolio-v2/src/sanity/lib/client.ts",
+            "portfolio-v2/src/sanity/lib/fallback.ts",
+            "portfolio-v2/src/sanity/lib/fetch.ts",
+            "portfolio-v2/src/sanity/lib/image.ts",
+            "portfolio-v2/src/sanity/lib/live.tsx",
+            "portfolio-v2/src/sanity/lib/provider.tsx",
+            "portfolio-v2/src/sanity/lib/queries.ts",
+            "portfolio-v2/src/sanity/lib/use-sanity-query.ts"
+          ],
+          "commitMessage": "feat(portfolio-v2): remove Sanity CMS lib utilities"
+        },
+        {
+          "id": "S-DEL-SANITY-3",
+          "title": "Delete Sanity data fetchers (12 files)",
+          "files": [
+            "portfolio-v2/src/sanity/lib/get-awards.ts",
+            "portfolio-v2/src/sanity/lib/get-bookmarks.ts",
+            "portfolio-v2/src/sanity/lib/get-certifications.ts",
+            "portfolio-v2/src/sanity/lib/get-cms-content.ts",
+            "portfolio-v2/src/sanity/lib/get-education.ts",
+            "portfolio-v2/src/sanity/lib/get-experiences.ts",
+            "portfolio-v2/src/sanity/lib/get-posts.ts",
+            "portfolio-v2/src/sanity/lib/get-profile.ts",
+            "portfolio-v2/src/sanity/lib/get-projects.ts",
+            "portfolio-v2/src/sanity/lib/get-site-settings.ts",
+            "portfolio-v2/src/sanity/lib/get-social-links.ts",
+            "portfolio-v2/src/sanity/lib/get-tech-stack.ts",
+            "portfolio-v2/src/sanity/lib/get-testimonials.ts"
+          ],
+          "commitMessage": "feat(portfolio-v2): remove Sanity CMS data fetchers"
+        },
+        {
+          "id": "S-DEL-SANITY-4",
+          "title": "Delete Sanity config, CLI, and seed script",
+          "files": [
+            "portfolio-v2/src/sanity/sanity.cli.ts",
+            "portfolio-v2/src/sanity/sanity.config.ts",
+            "portfolio-v2/src/sanity/scripts/seed.ts"
+          ],
+          "commitMessage": "feat(portfolio-v2): remove Sanity CMS config and seed script"
+        }
+      ]
+    },
+    {
+      "id": "EPIC-DELETE-DATA",
+      "title": "Delete static JSON data files",
+      "fileCount": 17,
+      "stories": [
+        {
+          "id": "S-DEL-DATA-1",
+          "title": "Delete static JSON data files (17 files)",
+          "files": [
+            "portfolio-v2/data/awards.json",
+            "portfolio-v2/data/blog.json",
+            "portfolio-v2/data/bookmarks.json",
+            "portfolio-v2/data/certifications.json",
+            "portfolio-v2/data/components.json",
+            "portfolio-v2/data/education.json",
+            "portfolio-v2/data/experiences.json",
+            "portfolio-v2/data/footer.json",
+            "portfolio-v2/data/index.ts",
+            "portfolio-v2/data/insights.json",
+            "portfolio-v2/data/projects.json",
+            "portfolio-v2/data/site-config.json",
+            "portfolio-v2/data/social-links.json",
+            "portfolio-v2/data/tech-stack.json",
+            "portfolio-v2/data/testimonials.json",
+            "portfolio-v2/data/user.json"
+          ],
+          "commitMessage": "feat(portfolio-v2): remove static JSON data directory"
+        }
+      ]
+    },
+    {
+      "id": "EPIC-DELETE-DOCKER",
+      "title": "Delete Docker and Kubernetes infrastructure",
+      "fileCount": 12,
+      "stories": [
+        {
+          "id": "S-DEL-DOCKER-1",
+          "title": "Delete Docker-related files (Dockerfile, docker-compose, scripts, docs)",
+          "files": [
+            "portfolio-v2/Dockerfile",
+            "portfolio-v2/Makefile",
+            "portfolio-v2/docker-compose.yml",
+            "portfolio-v2/scripts/docker-build.sh",
+            "portfolio-v2/.dockerignore",
+            "portfolio-v2/docs/deployment/docker-k8s.md",
+            "portfolio-v2/docs/prd/prd.docker-k8s.json"
+          ],
+          "commitMessage": "feat(portfolio-v2): remove Docker infrastructure files"
+        },
+        {
+          "id": "S-DEL-DOCKER-2",
+          "title": "Delete Kubernetes manifests (8 files)",
+          "files": [
+            "portfolio-v2/k8s/configmap.yaml",
+            "portfolio-v2/k8s/deployment.yaml",
+            "portfolio-v2/k8s/hpa.yaml",
+            "portfolio-v2/k8s/ingress.yaml",
+            "portfolio-v2/k8s/namespace.yaml",
+            "portfolio-v2/k8s/pdb.yaml",
+            "portfolio-v2/k8s/secret.yaml",
+            "portfolio-v2/k8s/service.yaml"
+          ],
+          "commitMessage": "feat(portfolio-v2): remove Kubernetes deployment manifests"
+        }
+      ]
+    },
+    {
+      "id": "EPIC-DELETE-PLAYWRIGHT",
+      "title": "Delete Playwright tests, results, and screenshots",
+      "fileCount": 62,
+      "stories": [
+        {
+          "id": "S-DEL-PW-1",
+          "title": "Delete Playwright test specs (17 files)",
+          "files": [
+            "portfolio-v2/playwright.config.ts",
+            "portfolio-v2/tests/playwright/README.md",
+            "portfolio-v2/tests/playwright/accessibility.spec.ts",
+            "portfolio-v2/tests/playwright/api-routes.spec.ts",
+            "portfolio-v2/tests/playwright/color-contrast.spec.ts",
+            "portfolio-v2/tests/playwright/command-menu.spec.ts",
+            "portfolio-v2/tests/playwright/component-visual.spec.ts",
+            "portfolio-v2/tests/playwright/dynamic-routes.spec.ts",
+            "portfolio-v2/tests/playwright/keyboard-navigation.spec.ts",
+            "portfolio-v2/tests/playwright/navigation.spec.ts",
+            "portfolio-v2/tests/playwright/network-performance.spec.ts",
+            "portfolio-v2/tests/playwright/og-screenshots.spec.ts",
+            "portfolio-v2/tests/playwright/performance.spec.ts",
+            "portfolio-v2/tests/playwright/responsive-screenshots.spec.ts",
+            "portfolio-v2/tests/playwright/routes.spec.ts",
+            "portfolio-v2/tests/playwright/screenshots.spec.ts",
+            "portfolio-v2/tests/playwright/seo-meta.spec.ts",
+            "portfolio-v2/tests/playwright/sitemap-robots.spec.ts",
+            "portfolio-v2/tests/playwright/structured-data.spec.ts",
+            "portfolio-v2/tests/playwright/theme-toggle.spec.ts",
+            "portfolio-v2/tests/playwright/theme-visual.spec.ts",
+            "portfolio-v2/tests/playwright/visual-regression.spec.ts"
+          ],
+          "commitMessage": "feat(portfolio-v2): remove Playwright test specs"
+        },
+        {
+          "id": "S-DEL-PW-2",
+          "title": "Delete Playwright visual snapshots (3 files)",
+          "files": [
+            "portfolio-v2/tests/playwright/component-visual.spec.ts-snapshots/experience-section-chromium-win32.png",
+            "portfolio-v2/tests/playwright/component-visual.spec.ts-snapshots/hero-section-chromium-win32.png",
+            "portfolio-v2/tests/playwright/component-visual.spec.ts-snapshots/projects-section-chromium-win32.png"
+          ],
+          "commitMessage": "feat(portfolio-v2): remove Playwright visual snapshots"
+        },
+        {
+          "id": "S-DEL-PW-3",
+          "title": "Delete Playwright test result artifacts (17 files)",
+          "files": [
+            "portfolio-v2/test-results/dynamic-routes-Block-Route-458f0-d-marketing-blocks-category-chromium/error-context.md",
+            "portfolio-v2/test-results/dynamic-routes-Block-Routes-should-load-blocks-list-page-chromium/error-context.md",
+            "portfolio-v2/test-results/dynamic-routes-Block-Routes-should-load-blocks-list-page-chromium/test-failed-1.png",
+            "portfolio-v2/test-results/dynamic-routes-Blog-Dynami-a7aa3--blog-post-with-MDX-content-chromium/error-context.md",
+            "portfolio-v2/test-results/dynamic-routes-Blog-Dynami-a7aa3--blog-post-with-MDX-content-chromium/test-failed-1.png",
+            "portfolio-v2/test-results/dynamic-routes-Component-D-b9297-d-display-component-preview-chromium/error-context.md",
+            "portfolio-v2/test-results/dynamic-routes-Component-D-b9297-d-display-component-preview-chromium/test-failed-1.png",
+            "portfolio-v2/test-results/network-performance-Networ-8569f-e-within-performance-budget-chromium/error-context.md",
+            "portfolio-v2/test-results/network-performance-Networ-8569f-e-within-performance-budget-chromium/test-failed-1.png",
+            "portfolio-v2/test-results/network-performance-Networ-f4cf7-should-track-response-sizes-chromium/error-context.md",
+            "portfolio-v2/test-results/network-performance-Networ-f7c38-ould-track-network-requests-chromium/error-context.md",
+            "portfolio-v2/test-results/network-performance-Networ-f7c38-ould-track-network-requests-chromium/test-failed-1.png",
+            "portfolio-v2/test-results/network-performance-Networ-f9bd4-ld-have-reasonable-DOM-size-chromium/error-context.md",
+            "portfolio-v2/test-results/network-performance-Networ-f9bd4-ld-have-reasonable-DOM-size-chromium/test-failed-1.png",
+            "portfolio-v2/test-results/performance-Performance----32777-hould-not-have-layout-shift-chromium/error-context.md",
+            "portfolio-v2/test-results/performance-Performance----4be50-e-render-blocking-resources-chromium/error-context.md",
+            "portfolio-v2/test-results/performance-Performance----4f26e-d-within-performance-budget-chromium/error-context.md",
+            "portfolio-v2/test-results/performance-Performance----b42a9-fast-First-Contentful-Paint-chromium/error-context.md"
+          ],
+          "commitMessage": "feat(portfolio-v2): remove Playwright test result artifacts"
+        },
+        {
+          "id": "S-DEL-PW-4",
+          "title": "Delete Playwright screenshots (40 files)",
+          "files": [
+            "portfolio-v2/tests/playwright/reports/index.html",
+            "portfolio-v2/tests/playwright/screenshots/blog.png",
+            "portfolio-v2/tests/playwright/screenshots/components.png",
+            "portfolio-v2/tests/playwright/screenshots/game.png",
+            "portfolio-v2/tests/playwright/screenshots/homepage-desktop.png",
+            "portfolio-v2/tests/playwright/screenshots/homepage-mobile.png",
+            "portfolio-v2/tests/playwright/screenshots/homepage-tablet.png",
+            "portfolio-v2/tests/playwright/screenshots/homepage.png",
+            "portfolio-v2/tests/playwright/screenshots/og/domain-og.png",
+            "portfolio-v2/tests/playwright/screenshots/og/homepage-og.png",
+            "portfolio-v2/tests/playwright/screenshots/og/simple-og.png",
+            "portfolio-v2/tests/playwright/screenshots/responsive/blog-desktop.png",
+            "portfolio-v2/tests/playwright/screenshots/responsive/blog-laptop.png",
+            "portfolio-v2/tests/playwright/screenshots/responsive/blog-mobile-l.png",
+            "portfolio-v2/tests/playwright/screenshots/responsive/blog-mobile-m.png",
+            "portfolio-v2/tests/playwright/screenshots/responsive/blog-mobile-s.png",
+            "portfolio-v2/tests/playwright/screenshots/responsive/blog-tablet.png",
+            "portfolio-v2/tests/playwright/screenshots/responsive/components-desktop.png",
+            "portfolio-v2/tests/playwright/screenshots/responsive/components-laptop.png",
+            "portfolio-v2/tests/playwright/screenshots/responsive/components-mobile-l.png",
+            "portfolio-v2/tests/playwright/screenshots/responsive/components-mobile-m.png",
+            "portfolio-v2/tests/playwright/screenshots/responsive/components-mobile-s.png",
+            "portfolio-v2/tests/playwright/screenshots/responsive/components-tablet.png",
+            "portfolio-v2/tests/playwright/screenshots/responsive/homepage-desktop.png",
+            "portfolio-v2/tests/playwright/screenshots/responsive/homepage-laptop.png",
+            "portfolio-v2/tests/playwright/screenshots/responsive/homepage-mobile-l.png",
+            "portfolio-v2/tests/playwright/screenshots/responsive/homepage-mobile-m.png",
+            "portfolio-v2/tests/playwright/screenshots/responsive/homepage-mobile-s.png",
+            "portfolio-v2/tests/playwright/screenshots/responsive/homepage-tablet.png",
+            "portfolio-v2/tests/playwright/screenshots/responsive/testimonials-desktop.png",
+            "portfolio-v2/tests/playwright/screenshots/responsive/testimonials-laptop.png",
+            "portfolio-v2/tests/playwright/screenshots/responsive/testimonials-mobile-l.png",
+            "portfolio-v2/tests/playwright/screenshots/responsive/testimonials-mobile-m.png",
+            "portfolio-v2/tests/playwright/screenshots/responsive/testimonials-mobile-s.png",
+            "portfolio-v2/tests/playwright/screenshots/responsive/testimonials-tablet.png",
+            "portfolio-v2/tests/playwright/screenshots/sponsors.png",
+            "portfolio-v2/tests/playwright/screenshots/studio.png",
+            "portfolio-v2/tests/playwright/screenshots/testimonials.png"
+          ],
+          "commitMessage": "feat(portfolio-v2): remove Playwright screenshots and reports"
+        }
+      ]
+    },
+    {
+      "id": "EPIC-DELETE-APP",
+      "title": "Delete Studio, API routes, and legacy components",
+      "fileCount": 12,
+      "stories": [
+        {
+          "id": "S-DEL-APP-1",
+          "title": "Delete studio layout and page",
+          "files": [
+            "portfolio-v2/src/app/(studio)/layout.tsx",
+            "portfolio-v2/src/app/(studio)/studio/[[...tool]]/page.tsx"
+          ],
+          "commitMessage": "feat(portfolio-v2): remove Sanity Studio route and layout"
+        },
+        {
+          "id": "S-DEL-APP-2",
+          "title": "Delete API draft-mode, health, and sanity routes",
+          "files": [
+            "portfolio-v2/src/app/api/draft-mode/disable/route.ts",
+            "portfolio-v2/src/app/api/draft-mode/enable/route.ts",
+            "portfolio-v2/src/app/api/health/route.ts",
+            "portfolio-v2/src/app/api/sanity/data/route.ts",
+            "portfolio-v2/src/app/api/sanity/webhook/route.ts"
+          ],
+          "commitMessage": "feat(portfolio-v2): remove draft-mode, health, and Sanity API routes"
+        },
+        {
+          "id": "S-DEL-APP-3",
+          "title": "Delete legacy components and utilities",
+          "files": [
+            "portfolio-v2/src/components/namias-mark.tsx",
+            "portfolio-v2/src/components/namias-wordmark.tsx",
+            "portfolio-v2/src/features/portfolio/components/namias-mark-isometric.tsx",
+            "portfolio-v2/src/components/consent-manager-client.tsx",
+            "portfolio-v2/src/instrumentation-client.ts"
+          ],
+          "commitMessage": "feat(portfolio-v2): remove legacy namias-brand and consent components"
+        },
+        {
+          "id": "S-DEL-APP-4",
+          "title": "Delete https-fetch utility",
+          "files": [
+            "portfolio-v2/src/lib/https-fetch.ts"
+          ],
+          "commitMessage": "feat(portfolio-v2): remove https-fetch lib utility"
+        },
+        {
+          "id": "S-DEL-APP-5",
+          "title": "Delete OpenNext and Wrangler Cloudflare configs",
+          "files": [
+            "portfolio-v2/open-next.config.ts",
+            "portfolio-v2/wrangler.jsonc"
+          ],
+          "commitMessage": "feat(portfolio-v2): remove OpenNext and Wrangler Cloudflare configs"
+        },
+        {
+          "id": "S-DEL-APP-6",
+          "title": "Delete pnpm-workspace.yaml",
+          "files": [
+            "portfolio-v2/pnpm-workspace.yaml"
+          ],
+          "commitMessage": "feat(portfolio-v2): remove pnpm-workspace.yaml"
+        }
+      ]
+    },
+    {
+      "id": "EPIC-CONFIG-UPDATES",
+      "title": "Root configuration file updates",
+      "fileCount": 7,
+      "stories": [
+        {
+          "id": "S-CONFIG-1",
+          "title": "Update .env.example and .gitignore",
+          "files": [
+            "portfolio-v2/.env.example",
+            "portfolio-v2/.gitignore"
+          ],
+          "commitMessage": "chore(portfolio-v2): update .env.example and .gitignore"
+        },
+        {
+          "id": "S-CONFIG-2",
+          "title": "Update .github configs (FUNDING, dependabot)",
+          "files": [
+            "portfolio-v2/.github/FUNDING.yml",
+            "portfolio-v2/.github/dependabot.yml"
+          ],
+          "commitMessage": "chore(portfolio-v2): update GitHub FUNDING and dependabot configs"
+        },
+        {
+          "id": "S-CONFIG-3",
+          "title": "Update .mcp.json, components.json, portless.json",
+          "files": [
+            "portfolio-v2/.mcp.json",
+            "portfolio-v2/components.json",
+            "portfolio-v2/portless.json"
+          ],
+          "commitMessage": "chore(portfolio-v2): update MCP, components, and portless configs"
+        },
+        {
+          "id": "S-CONFIG-4",
+          "title": "Update next.config.ts",
+          "files": [
+            "portfolio-v2/next.config.ts"
+          ],
+          "commitMessage": "chore(portfolio-v2): update Next.js configuration"
+        },
+        {
+          "id": "S-CONFIG-5",
+          "title": "Update package.json",
+          "files": [
+            "portfolio-v2/package.json"
+          ],
+          "commitMessage": "chore(portfolio-v2): update package.json dependencies and scripts"
+        },
+        {
+          "id": "S-CONFIG-6",
+          "title": "Update pnpm-lock.yaml",
+          "files": [
+            "portfolio-v2/pnpm-lock.yaml"
+          ],
+          "commitMessage": "chore(portfolio-v2): update pnpm lockfile"
+        },
+        {
+          "id": "S-CONFIG-7",
+          "title": "Update registry.json",
+          "files": [
+            "portfolio-v2/registry.json"
+          ],
+          "commitMessage": "chore(portfolio-v2): update top-level registry.json"
+        }
+      ]
+    },
+    {
+      "id": "EPIC-DOC-UPDATES",
+      "title": "Documentation updates",
+      "fileCount": 5,
+      "stories": [
+        {
+          "id": "S-DOC-1",
+          "title": "Update AGENTS.md",
+          "files": [
+            "portfolio-v2/AGENTS.md"
+          ],
+          "commitMessage": "docs(portfolio-v2): update AGENTS.md with agent guide"
+        },
+        {
+          "id": "S-DOC-2",
+          "title": "Update README, CODE_OF_CONDUCT, DEVELOPMENT",
+          "files": [
+            "portfolio-v2/README.md",
+            "portfolio-v2/CODE_OF_CONDUCT.md",
+            "portfolio-v2/DEVELOPMENT.md"
+          ],
+          "commitMessage": "docs(portfolio-v2): update README, CODE_OF_CONDUCT, and DEVELOPMENT docs"
+        },
+        {
+          "id": "S-DOC-3",
+          "title": "Update plans/README.md",
+          "files": [
+            "portfolio-v2/plans/README.md"
+          ],
+          "commitMessage": "docs(portfolio-v2): update plans README"
+        }
+      ]
+    },
+    {
+      "id": "EPIC-SRC-APP",
+      "title": "Source app/ page and layout updates",
+      "fileCount": 13,
+      "stories": [
+        {
+          "id": "S-APP-1",
+          "title": "Update root layout.tsx and game/page.tsx",
+          "files": [
+            "portfolio-v2/src/app/layout.tsx",
+            "portfolio-v2/src/app/game/page.tsx"
+          ],
+          "commitMessage": "feat(portfolio-v2): update root layout and game page"
+        },
+        {
+          "id": "S-APP-2",
+          "title": "Update manifest.webmanifest",
+          "files": [
+            "portfolio-v2/src/app/manifest.webmanifest"
+          ],
+          "commitMessage": "chore(portfolio-v2): update PWA manifest"
+        },
+        {
+          "id": "S-APP-3",
+          "title": "Update OG routes (domain, simple, page)",
+          "files": [
+            "portfolio-v2/src/app/og/domain/route.tsx",
+            "portfolio-v2/src/app/og/page.tsx",
+            "portfolio-v2/src/app/og/simple/route.tsx"
+          ],
+          "commitMessage": "feat(portfolio-v2): update OG image route handlers"
+        },
+        {
+          "id": "S-APP-4",
+          "title": "Update app docs pages (blog, components slugs)",
+          "files": [
+            "portfolio-v2/src/app/(app)/(docs)/blog/[slug]/page.tsx",
+            "portfolio-v2/src/app/(app)/(docs)/components/[slug]/page.tsx",
+            "portfolio-v2/src/app/(app)/(pages)/components/page.tsx"
+          ],
+          "commitMessage": "feat(portfolio-v2): update blog and component detail pages"
+        },
+        {
+          "id": "S-APP-5",
+          "title": "Update blocks browser page",
+          "files": [
+            "portfolio-v2/src/app/(app)/(blocks)/blocks/(view)/[category]/[name]/page.tsx",
+            "portfolio-v2/src/app/(preview)/components/block-viewer.tsx"
+          ],
+          "commitMessage": "feat(portfolio-v2): update blocks browser and preview"
+        },
+        {
+          "id": "S-APP-6",
+          "title": "Update LLMS text routes",
+          "files": [
+            "portfolio-v2/src/app/(llms)/llms-full.txt/route.ts",
+            "portfolio-v2/src/app/(llms)/llms.txt/route.ts"
+          ],
+          "commitMessage": "feat(portfolio-v2): update LLMs text generation routes"
+        },
+        {
+          "id": "S-APP-7",
+          "title": "Update RSS feed routes",
+          "files": [
+            "portfolio-v2/src/app/(rss)/blocks/rss/route.ts",
+            "portfolio-v2/src/app/(rss)/blog/rss/route.ts",
+            "portfolio-v2/src/app/(rss)/components/rss/route.ts"
+          ],
+          "commitMessage": "feat(portfolio-v2): update RSS feed routes for blocks, blog, components"
+        }
+      ]
+    },
+    {
+      "id": "EPIC-COMPONENTS",
+      "title": "Shared component updates",
+      "fileCount": 17,
+      "stories": [
+        {
+          "id": "S-COMP-1",
+          "title": "Update brand-context-menu and command-menu",
+          "files": [
+            "portfolio-v2/src/components/brand-context-menu.tsx",
+            "portfolio-v2/src/components/command-menu.tsx"
+          ],
+          "commitMessage": "feat(portfolio-v2): update brand context menu and command menu"
+        },
+        {
+          "id": "S-COMP-2",
+          "title": "Update code-collapsible-wrapper and mdx components",
+          "files": [
+            "portfolio-v2/src/components/code-collapsible-wrapper.tsx",
+            "portfolio-v2/src/components/code-collapsible-wrapper.tsx",
+            "portfolio-v2/src/components/mdx.tsx",
+            "portfolio-v2/src/components/component-preview.tsx"
+          ],
+          "commitMessage": "feat(portfolio-v2): update code collapsible, MDX, and component preview"
+        },
+        {
+          "id": "S-COMP-3",
+          "title": "Update site navigation components",
+          "files": [
+            "portfolio-v2/src/components/nav-mobile.tsx",
+            "portfolio-v2/src/components/nav-item-github.tsx",
+            "portfolio-v2/src/components/site-header.tsx",
+            "portfolio-v2/src/components/site-header-mark.tsx",
+            "portfolio-v2/src/components/site-footer.tsx",
+            "portfolio-v2/src/components/site-bottom-nav.tsx"
+          ],
+          "commitMessage": "feat(portfolio-v2): update site navigation and header components"
+        },
+        {
+          "id": "S-COMP-4",
+          "title": "Update daikanoid game components",
+          "files": [
+            "portfolio-v2/src/components/daikanoid/constants.ts",
+            "portfolio-v2/src/components/daikanoid/logos.ts"
+          ],
+          "commitMessage": "feat(portfolio-v2): update daikanoid game constants and logos"
+        },
+        {
+          "id": "S-COMP-5",
+          "title": "Update github-stars, icons, v0-open-button, collapsible, typography",
+          "files": [
+            "portfolio-v2/src/components/github-stars.tsx",
+            "portfolio-v2/src/components/icons.tsx",
+            "portfolio-v2/src/components/v0-open-button.tsx",
+            "portfolio-v2/src/components/collapsible-animated.tsx",
+            "portfolio-v2/src/components/ui/typography.tsx"
+          ],
+          "commitMessage": "feat(portfolio-v2): update github-stars, icons, and UI components"
+        }
+      ]
+    },
+    {
+      "id": "EPIC-FEATURES",
+      "title": "Feature and portfolio data updates",
+      "fileCount": 17,
+      "stories": [
+        {
+          "id": "S-FEAT-1",
+          "title": "Update portfolio data files (7 files)",
+          "files": [
+            "portfolio-v2/src/features/portfolio/data/awards.tsx",
+            "portfolio-v2/src/features/portfolio/data/education.ts",
+            "portfolio-v2/src/features/portfolio/data/experiences.tsx",
+            "portfolio-v2/src/features/portfolio/data/github-contributions.ts",
+            "portfolio-v2/src/features/portfolio/data/projects.ts",
+            "portfolio-v2/src/features/portfolio/data/social-links.ts",
+            "portfolio-v2/src/features/portfolio/data/user.ts"
+          ],
+          "commitMessage": "feat(portfolio-v2): update portfolio static data sources"
+        },
+        {
+          "id": "S-FEAT-2",
+          "title": "Update portfolio components (awards, bookmarks, certs, etc.)",
+          "files": [
+            "portfolio-v2/src/features/portfolio/components/awards/award-item.tsx",
+            "portfolio-v2/src/features/portfolio/components/bookmarks/bookmark-item.tsx",
+            "portfolio-v2/src/features/portfolio/components/brand.tsx",
+            "portfolio-v2/src/features/portfolio/components/certifications/certification-item.tsx",
+            "portfolio-v2/src/features/portfolio/components/education/education-item.tsx",
+            "portfolio-v2/src/features/portfolio/components/experiences/experience-position-item.tsx",
+            "portfolio-v2/src/features/portfolio/components/hello.tsx",
+            "portfolio-v2/src/features/portfolio/components/projects/project-item.tsx",
+            "portfolio-v2/src/features/portfolio/components/social-link-icons.tsx"
+          ],
+          "commitMessage": "feat(portfolio-v2): update portfolio display components"
+        },
+        {
+          "id": "S-FEAT-3",
+          "title": "Update profile cover, header, and activity mosaic",
+          "files": [
+            "portfolio-v2/src/features/portfolio/components/profile-cover.tsx",
+            "portfolio-v2/src/features/portfolio/components/profile-header.tsx",
+            "portfolio-v2/src/features/portfolio/components/profile-activity-mosaic-cover/index.tsx"
+          ],
+          "commitMessage": "feat(portfolio-v2): update profile cover and header components"
+        },
+        {
+          "id": "S-FEAT-4",
+          "title": "Update doc feature components",
+          "files": [
+            "portfolio-v2/src/features/doc/components/auto-type-table/auto-type-table.tsx",
+            "portfolio-v2/src/features/doc/components/component-icon.tsx",
+            "portfolio-v2/src/features/doc/components/doc-page-actions.tsx",
+            "portfolio-v2/src/features/doc/components/doc-share-menu.tsx",
+            "portfolio-v2/src/features/doc/components/type-table.tsx",
+            "portfolio-v2/src/features/doc/content/components/work-experience-component.mdx",
+            "portfolio-v2/src/features/doc/content/props.ts"
+          ],
+          "commitMessage": "feat(portfolio-v2): update doc feature components"
+        }
+      ]
+    },
+    {
+      "id": "EPIC-LIBS",
+      "title": "Library and utility updates",
+      "fileCount": 7,
+      "stories": [
+        {
+          "id": "S-LIB-1",
+          "title": "Update core lib files (blocks, events, openpanel)",
+          "files": [
+            "portfolio-v2/src/lib/blocks.ts",
+            "portfolio-v2/src/lib/events.ts",
+            "portfolio-v2/src/lib/openpanel.ts"
+          ],
+          "commitMessage": "feat(portfolio-v2): update core library modules"
+        },
+        {
+          "id": "S-LIB-2",
+          "title": "Update config files (registry, site)",
+          "files": [
+            "portfolio-v2/src/config/registry.ts",
+            "portfolio-v2/src/config/site.ts"
+          ],
+          "commitMessage": "feat(portfolio-v2): update config registry and site config"
+        },
+        {
+          "id": "S-LIB-3",
+          "title": "Update utils and scripts",
+          "files": [
+            "portfolio-v2/src/utils/string.ts",
+            "portfolio-v2/src/styles/globals.css",
+            "portfolio-v2/src/scripts/build-registry.mts",
+            "portfolio-v2/src/scripts/capture-sync.mts",
+            "portfolio-v2/src/scripts/capture.mts"
+          ],
+          "commitMessage": "feat(portfolio-v2): update utils, styles, and build scripts"
+        }
+      ]
+    },
+    {
+      "id": "EPIC-REGISTRY",
+      "title": "Registry updates",
+      "fileCount": 11,
+      "stories": [
+        {
+          "id": "S-REG-1",
+          "title": "Update registry indexes (components, lib, styles, index)",
+          "files": [
+            "portfolio-v2/src/registry/components/_registry.ts",
+            "portfolio-v2/src/registry/lib/_registry.ts",
+            "portfolio-v2/src/registry/styles/_registry.ts",
+            "portfolio-v2/src/registry/index.ts"
+          ],
+          "commitMessage": "feat(portfolio-v2): update registry component, lib, and style registries"
+        },
+        {
+          "id": "S-REG-2",
+          "title": "Update registry examples and transformed files",
+          "files": [
+            "portfolio-v2/src/registry/examples/github-stars-demo.tsx",
+            "portfolio-v2/src/registry/components/github-contributions/lib/get-cached-contributions.ts",
+            "portfolio-v2/src/registry/components/work-experience/work-experience.tsx",
+            "portfolio-v2/src/registry/transformed/components/github-contributions/lib/get-cached-contributions.ts",
+            "portfolio-v2/src/registry/transformed/components/work-experience/work-experience.tsx"
+          ],
+          "commitMessage": "feat(portfolio-v2): update registry examples and transformed components"
+        },
+        {
+          "id": "S-REG-3",
+          "title": "Update public registry JSON files (52 files)",
+          "files": [
+            "portfolio-v2/public/r/apple-hello-effect-hindi.json",
+            "portfolio-v2/public/r/apple-hello-effect-spanish.json",
+            "portfolio-v2/public/r/apple-hello-effect-vietnamese.json",
+            "portfolio-v2/public/r/apple-hello-effect.json",
+            "portfolio-v2/public/r/blog-02.json",
+            "portfolio-v2/public/r/brand-assets-menu.json",
+            "portfolio-v2/public/r/chevrons-up-down-icon.json",
+            "portfolio-v2/public/r/code-block-command.json",
+            "portfolio-v2/public/r/consent-manager.json",
+            "portfolio-v2/public/r/copy-button.json",
+            "portfolio-v2/public/r/dot-grid-spotlight.json",
+            "portfolio-v2/public/r/elastic-slider.json",
+            "portfolio-v2/public/r/experience-01.json",
+            "portfolio-v2/public/r/fluid-gradient-text.json",
+            "portfolio-v2/public/r/github-contributions.json",
+            "portfolio-v2/public/r/github-stars.json",
+            "portfolio-v2/public/r/haptic.json",
+            "portfolio-v2/public/r/hero-01.json",
+            "portfolio-v2/public/r/icon-swap.json",
+            "portfolio-v2/public/r/line-nav.json",
+            "portfolio-v2/public/r/logos-carousel.json",
+            "portfolio-v2/public/r/metrics-01.json",
+            "portfolio-v2/public/r/middle-truncation.json",
+            "portfolio-v2/public/r/mobius-loop-icon.json",
+            "portfolio-v2/public/r/registry.json",
+            "portfolio-v2/public/r/scroll-fade-effect.json",
+            "portfolio-v2/public/r/share-menu.json",
+            "portfolio-v2/public/r/shimmering-text.json",
+            "portfolio-v2/public/r/slide-to-unlock.json",
+            "portfolio-v2/public/r/social-links-01.json",
+            "portfolio-v2/public/r/social-proof-01.json",
+            "portfolio-v2/public/r/spinning-circular-text.json",
+            "portfolio-v2/public/r/spotlight-logo.json",
+            "portfolio-v2/public/r/team-01.json",
+            "portfolio-v2/public/r/testimonial-2.json",
+            "portfolio-v2/public/r/testimonial-spotlight.json",
+            "portfolio-v2/public/r/testimonial.json",
+            "portfolio-v2/public/r/testimonials-01.json",
+            "portfolio-v2/public/r/testimonials-02.json",
+            "portfolio-v2/public/r/testimonials-marquee.json",
+            "portfolio-v2/public/r/text-flip.json",
+            "portfolio-v2/public/r/theme-switcher.json",
+            "portfolio-v2/public/r/theme-toggle-effect-circle-blur-top-left.json",
+            "portfolio-v2/public/r/theme-toggle-effect-circle-blur.json",
+            "portfolio-v2/public/r/theme-toggle-effect-circle.json",
+            "portfolio-v2/public/r/theme-toggle-effect-polygon-gradient.json",
+            "portfolio-v2/public/r/theme-toggle-effect-polygon.json",
+            "portfolio-v2/public/r/theme-toggle-effect-triangle-blur.json",
+            "portfolio-v2/public/r/theme-toggle-effect-triangle.json",
+            "portfolio-v2/public/r/toc-minimap.json",
+            "portfolio-v2/public/r/twemoji.json",
+            "portfolio-v2/public/r/wheel-picker.json",
+            "portfolio-v2/public/r/work-experience.json"
+          ],
+          "commitMessage": "feat(portfolio-v2): update public registry JSON metadata files"
+        }
+      ]
+    },
+    {
+      "id": "EPIC-NEW-FILES",
+      "title": "New untracked files",
+      "fileCount": 25,
+      "stories": [
+        {
+          "id": "S-NEW-1",
+          "title": "Add new plan documents (007-011)",
+          "files": [
+            "portfolio-v2/plans/007-wire-consent-gating.md",
+            "portfolio-v2/plans/008-dependency-hygiene.md",
+            "portfolio-v2/plans/009-blocks-lib-fixes.md",
+            "portfolio-v2/plans/010-og-route-hardening.md",
+            "portfolio-v2/plans/011-registry-transform-tests.md"
+          ],
+          "commitMessage": "docs(portfolio-v2): add plans 007-011 for consent gating, deps, blocks, OG, and registry"
+        },
+        {
+          "id": "S-NEW-2",
+          "title": "Add new Base UI components (10 files)",
+          "files": [
+            "portfolio-v2/src/components/base/ui/button-group.tsx",
+            "portfolio-v2/src/components/base/ui/context-menu.tsx",
+            "portfolio-v2/src/components/base/ui/dropdown-menu.tsx",
+            "portfolio-v2/src/components/base/ui/form.tsx",
+            "portfolio-v2/src/components/base/ui/label.tsx",
+            "portfolio-v2/src/components/base/ui/scroll-area.tsx",
+            "portfolio-v2/src/components/base/ui/select.tsx",
+            "portfolio-v2/src/components/base/ui/separator.tsx",
+            "portfolio-v2/src/components/base/ui/sheet.tsx",
+            "portfolio-v2/src/components/base/ui/sidebar.tsx",
+            "portfolio-v2/src/components/base/ui/typography.tsx"
+          ],
+          "commitMessage": "feat(portfolio-v2): add base UI components (button-group, context-menu, dropdown, form, label, scroll-area, select, separator, sheet, sidebar, typography)"
+        },
+        {
+          "id": "S-NEW-3",
+          "title": "Add new chanhdai brand components",
+          "files": [
+            "portfolio-v2/src/components/chanhdai-mark.tsx",
+            "portfolio-v2/src/components/chanhdai-wordmark.tsx",
+            "portfolio-v2/src/features/portfolio/components/chanhdai-mark-isometric.tsx"
+          ],
+          "commitMessage": "feat(portfolio-v2): add chanhdai brand mark, wordmark, and isometric components"
+        },
+        {
+          "id": "S-NEW-4",
+          "title": "Add ad-unit and OG params components",
+          "files": [
+            "portfolio-v2/src/components/ad-unit.tsx",
+            "portfolio-v2/src/app/og/params.ts",
+            "portfolio-v2/src/app/og/params.test.ts"
+          ],
+          "commitMessage": "feat(portfolio-v2): add ad-unit component and OG params with tests"
+        },
+        {
+          "id": "S-NEW-5",
+          "title": "Add new test files (blocks, string utils)",
+          "files": [
+            "portfolio-v2/src/lib/blocks.test.ts",
+            "portfolio-v2/src/utils/string.test.ts"
+          ],
+          "commitMessage": "feat(portfolio-v2): add unit tests for blocks lib and string utils"
+        },
+        {
+          "id": "S-NEW-6",
+          "title": "Add .migration directory",
+          "files": [
+            "portfolio-v2/.migration/"
+          ],
+          "commitMessage": "chore(portfolio-v2): add .migration directory"
+        }
+      ]
+    }
+  ]
+}
