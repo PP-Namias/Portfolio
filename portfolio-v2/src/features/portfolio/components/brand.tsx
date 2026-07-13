@@ -1,7 +1,7 @@
 import dynamic from "next/dynamic"
 
-import { NamiasMark } from "@/components/namias-mark"
-import { NamiasWordmark } from "@/components/namias-wordmark"
+import { ChanhDaiMark } from "@/components/chanhdai-mark"
+import { ChanhDaiWordmark } from "@/components/chanhdai-wordmark"
 
 import { Panel, PanelHeader, PanelTitle } from "./panel"
 
@@ -25,7 +25,7 @@ export function Brand() {
           </div>
 
           <div className="screen-line-bottom flex items-center justify-center pr-8 after:z-1">
-            <NamiasMark className="h-8 w-auto sm:h-12" />
+            <ChanhDaiMark className="h-8 w-auto sm:h-12" />
           </div>
 
           <div className="flex h-28 items-center justify-center border-r border-dashed border-line bg-background">
@@ -35,7 +35,7 @@ export function Brand() {
           </div>
 
           <div className="screen-line-bottom flex items-center justify-center pr-8 after:z-1">
-            <NamiasWordmark className="h-6 w-auto sm:h-10" />
+            <ChanhDaiWordmark className="h-6 w-auto sm:h-10" />
           </div>
         </div>
       </BrandContextMenu>
