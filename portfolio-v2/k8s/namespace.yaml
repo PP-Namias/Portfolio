@@ -1,8 +1,0 @@
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: namias
-  labels:
-    app.kubernetes.io/name: portfolio
-    app.kubernetes.io/part-of: namias-portfolio
-    app.kubernetes.io/managed-by: kubectl
