@@ -120,8 +120,8 @@ export const TimelineItem = React.memo(function TimelineItem({ item, index, isLa
                 )}
                 {item.highlights.length > 0 && (
                   <ul className="space-y-0.5">
-                    {item.highlights.map((highlight, i) => (
-                      <li key={`${highlight}-${i}`} className="text-xs text-text-muted-light dark:text-text-muted-dark flex gap-1.5">
+                    {item.highlights.map((highlight) => (
+                      <li key={highlight} className="text-xs text-text-muted-light dark:text-text-muted-dark flex gap-1.5">
                         <span className="text-accent-pink mt-0.5">•</span>
                         <span>{highlight}</span>
                       </li>
@@ -132,8 +132,8 @@ export const TimelineItem = React.memo(function TimelineItem({ item, index, isLa
                   <div>
                     <p className="text-xs font-medium text-text-secondary-light dark:text-text-secondary-dark uppercase tracking-wider mb-0.5">Achievements</p>
                     <ul className="space-y-0.5">
-                      {item.achievements.map((achievement, i) => (
-                        <li key={`${achievement}-${i}`} className="text-xs text-text-muted-light dark:text-text-muted-dark flex gap-1.5">
+                      {item.achievements.map((achievement) => (
+                        <li key={achievement} className="text-xs text-text-muted-light dark:text-text-muted-dark flex gap-1.5">
                           <span className="text-accent-pink mt-0.5">★</span>
                           <span>{achievement}</span>
                         </li>

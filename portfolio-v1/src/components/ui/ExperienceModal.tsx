@@ -160,9 +160,9 @@ export function ExperienceModal({ open, onClose }: Readonly<ExperienceModalProps
                       : 'grid grid-cols-2 gap-3'
                   }
                 >
-                  {images.map((src, i) => (
+                  {images.map((src) => (
                     <Image
-                      key={`${src}-${i}`}
+                      key={src}
                       src={resolveContentImageSrc(src, { folder: 'experience' })}
                       alt={`${exp.company} — ${exp.position}`}
                       width={500}
