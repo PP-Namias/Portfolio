@@ -79,6 +79,7 @@ export function SeoPreview() {
 
   return (
     <div style={{padding: 16, display: 'flex', flexDirection: 'column', gap: 16, fontSize: 13}}>
+      {/* Google SERP Preview */}
       <div>
         <div style={{fontSize: 11, fontWeight: 600, color: 'rgba(0,0,0,0.55)', marginBottom: 6, textTransform: 'uppercase', letterSpacing: 0.5}}>
           Google SERP preview
@@ -94,23 +95,55 @@ export function SeoPreview() {
         </div>
       </div>
 
+      {/* Twitter Card Preview */}
       <div>
         <div style={{fontSize: 11, fontWeight: 600, color: 'rgba(0,0,0,0.55)', marginBottom: 6, textTransform: 'uppercase', letterSpacing: 0.5}}>
-          Social card preview (1200x630)
+          Twitter / X card preview
         </div>
-        <div style={{aspectRatio: '1200/630', background: '#0d0d0f', borderRadius: 10, overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', textAlign: 'center', padding: 24}}>
-          {imageUrl ? (
-            // eslint-disable-next-line @next/next/no-img-element -- Studio preview only, not a production page
-            <img src={imageUrl} alt="" style={{width: '100%', height: '100%', objectFit: 'cover'}} />
-          ) : (
-            <div>
-              <div style={{fontSize: 22, fontWeight: 700}}>{trim(seo.title, 80) || 'Untitled'}</div>
-              <div style={{fontSize: 14, opacity: 0.7, marginTop: 8}}>{trim(seo.description, 140) || 'No description'}</div>
-            </div>
+        <div style={{border: '1px solid rgba(0,0,0,0.08)', borderRadius: 10, overflow: 'hidden', background: '#fff'}}>
+          {imageUrl && (
+            // eslint-disable-next-line @next/next/no-img-element -- Studio preview only
+            <img src={imageUrl} alt="" style={{width: '100%', height: 180, objectFit: 'cover'}} />
           )}
+          <div style={{padding: 12}}>
+            <div style={{fontSize: 14, fontWeight: 600, color: '#0f1419', lineHeight: 1.3}}>
+              {trim(seo.title, 70) || 'Untitled'}
+            </div>
+            <div style={{fontSize: 13, color: '#536471', lineHeight: 1.4, marginTop: 4}}>
+              {trim(seo.description, 200) || 'No description'}
+            </div>
+            <div style={{fontSize: 12, color: '#536471', marginTop: 8}}>
+              {seo.siteUrl}
+            </div>
+          </div>
         </div>
       </div>
 
+      {/* Open Graph Preview */}
+      <div>
+        <div style={{fontSize: 11, fontWeight: 600, color: 'rgba(0,0,0,0.55)', marginBottom: 6, textTransform: 'uppercase', letterSpacing: 0.5}}>
+          Open Graph preview
+        </div>
+        <div style={{border: '1px solid rgba(0,0,0,0.08)', borderRadius: 10, overflow: 'hidden', background: '#f0f0f0'}}>
+          {imageUrl && (
+            // eslint-disable-next-line @next/next/no-img-element -- Studio preview only
+            <img src={imageUrl} alt="" style={{width: '100%', height: 200, objectFit: 'cover'}} />
+          )}
+          <div style={{padding: 12, background: '#e8e8e8'}}>
+            <div style={{fontSize: 12, color: '#666', textTransform: 'uppercase', letterSpacing: 0.5}}>
+              {seo.siteUrl}
+            </div>
+            <div style={{fontSize: 16, fontWeight: 600, color: '#1a1a1a', lineHeight: 1.3, marginTop: 4}}>
+              {trim(seo.title, 95) || 'Untitled'}
+            </div>
+            <div style={{fontSize: 14, color: '#666', lineHeight: 1.4, marginTop: 4}}>
+              {trim(seo.description, 200) || 'No description'}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Health Issues */}
       <div>
         <div style={{fontSize: 11, fontWeight: 600, color: 'rgba(0,0,0,0.55)', marginBottom: 6, textTransform: 'uppercase', letterSpacing: 0.5}}>
           Health
