@@ -2,8 +2,7 @@ import {defineConfig} from 'sanity'
 import {presentationTool} from 'sanity/presentation'
 import {structureTool} from 'sanity/structure'
 import {visionTool} from '@sanity/vision'
-import {assist, languageAssist} from '@sanity/assist'
-import {assistInstructions} from './ai/assist-config'
+import {assist} from '@sanity/assist'
 import {schemaTypes} from './schemaTypes'
 import {createPublishAndRefreshAction} from './actions/publishAndRefreshAction'
 import {perspectiveSwitcherAction} from './actions/perspectiveSwitcher'
@@ -65,11 +64,7 @@ export default defineConfig({
       },
     }),
     visionTool(),
-    assist({
-      assist: {
-        language: assistInstructions,
-      },
-    }),
+    assist(),
     savedQueriesToolPlugin(),
   ],
 
