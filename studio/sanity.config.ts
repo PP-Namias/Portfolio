@@ -33,7 +33,7 @@ const dataset = requireStudioEnv('SANITY_STUDIO_DATASET', 'NEXT_PUBLIC_SANITY_DA
 
 export default defineConfig({
   name: 'default',
-  title: 'Namias CMS | Interview Studio',
+  title: 'Namias CMS',
 
   projectId,
   dataset,
