@@ -1,16 +1,17 @@
 {
-  "name": "namias-portfolio-cms-studio",
+  "name": "namias-cms-studio",
   "private": true,
   "version": "1.0.0",
   "main": "package.json",
   "license": "MIT",
   "scripts": {
-    "dev": "node ./scripts/run-with-root-env.mjs sanity dev",
-    "start": "node ./scripts/run-with-root-env.mjs sanity start",
+    "dev": "sanity dev",
+    "start": "sanity start",
     "lint": "eslint .",
-    "build": "node ./scripts/run-with-root-env.mjs sanity build",
-    "deploy": "node ./scripts/run-with-root-env.mjs sanity deploy",
-    "deploy-graphql": "node ./scripts/run-with-root-env.mjs sanity graphql deploy"
+    "build": "sanity build",
+    "deploy": "sanity deploy",
+    "deploy-graphql": "sanity graphql deploy",
+    "typecheck": "tsc --noEmit"
   },
   "keywords": [
     "sanity"
