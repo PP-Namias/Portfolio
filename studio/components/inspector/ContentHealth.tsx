@@ -7,8 +7,19 @@ const WORD_RANGES: Record<string, {min: number; max: number; label: string}> = {
   heroSection: {min: 30, max: 90, label: 'Headline length'},
   aboutSection: {min: 60, max: 600, label: 'About body length'},
   project: {min: 60, max: 320, label: 'Summary length'},
+  experience: {min: 100, max: 500, label: 'Description length'},
   certification: {min: 20, max: 200, label: 'Title + description length'},
   post: {min: 200, max: 4000, label: 'Body length'},
+  profile: {min: 50, max: 300, label: 'Summary length'},
+}
+
+const REQUIRED_FIELDS: Record<string, string[]> = {
+  profile: ['fullName', 'title', 'email'],
+  project: ['title', 'slug', 'summary'],
+  experience: ['role', 'company', 'startDate'],
+  certification: ['title', 'issuer'],
+  post: ['title', 'slug', 'body'],
+  category: ['title', 'slug'],
 }
 
 function wordCount(value: unknown): number {
@@ -63,11 +74,31 @@ function getReferenceTypes(value: unknown): {broken: number; total: number} {
   return {broken, total}
 }
 
+function calculateCompleteness(values: Doc, typeName: string): {score: number; missing: string[]} {
+  const required = REQUIRED_FIELDS[typeName] || []
+  const missing: string[] = []
+  let filled = 0
+
+  for (const field of required) {
+    const value = values[field]
+    if (value !== undefined && value !== null && value !== '') {
+      filled++
+    } else {
+      missing.push(field)
+    }
+  }
+
+  const score = required.length > 0 ? Math.round((filled / required.length) * 100) : 100
+  return {score, missing}
+}
+
 export function ContentHealth() {
   const rawFormValues = useFormValue([])
   const rawValues = useMemo(() => rawFormValues || {}, [rawFormValues])
   const values = useMemo(() => rawValues as Doc, [rawValues])
   const typeName = (values._type as string) || 'unknown'
+
+  const completeness = useMemo(() => calculateCompleteness(values, typeName), [typeName, values])
 
   const wordMetric = useMemo(() => {
     const range = WORD_RANGES[typeName as keyof typeof WORD_RANGES]
@@ -113,10 +144,26 @@ export function ContentHealth() {
     )
   }, [lastEdited])
 
+  const scoreColor = completeness.score >= 80 ? '#166534' : completeness.score >= 50 ? '#92400e' : '#991b1b'
+  const scoreBg = completeness.score >= 80 ? 'rgba(34,197,94,0.12)' : completeness.score >= 50 ? 'rgba(245,158,11,0.12)' : 'rgba(239,68,68,0.12)'
+
   return (
     <div style={{padding: 16, display: 'flex', flexDirection: 'column', gap: 12, fontSize: 13}}>
       <div style={{fontSize: 11, fontWeight: 600, color: 'rgba(0,0,0,0.55)', textTransform: 'uppercase', letterSpacing: 0.5}}>
         Content health
+      </div>
+
+      {/* Completeness Score */}
+      <div style={{padding: 16, borderRadius: 10, background: scoreBg, color: scoreColor}}>
+        <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8}}>
+          <span style={{fontWeight: 600}}>Completeness</span>
+          <span style={{fontSize: 24, fontWeight: 700}}>{completeness.score}%</span>
+        </div>
+        {completeness.missing.length > 0 && (
+          <div style={{fontSize: 12, opacity: 0.85}}>
+            Missing: {completeness.missing.join(', ')}
+          </div>
+        )}
       </div>
 
       {wordMetric ? (
