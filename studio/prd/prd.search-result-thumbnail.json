@@ -1,0 +1,275 @@
+{
+  "$schema": "https://json.schemastore.org/prd.json",
+  "id": "prd-search-result-thumbnail",
+  "title": "Search Result Thumbnail & Rich Snippet Image",
+  "version": "1.0.0",
+  "status": "planning",
+  "author": "Namias",
+  "created": "2026-06-13",
+  "description": "Add Search Result Thumbnails (image in rich snippets) to improve Click-Through Rate (CTR) in Google search results. When users search for 'Keneth Namias' or the portfolio website, Google will display a thumbnail image next to the search result, making it more visually appealing and credible.",
+  "problemStatement": "Currently, search results for 'Keneth Namias' or the portfolio website show text-only results without images. This results in lower CTR compared to results that include thumbnails. Search Result Thumbnails catch the user's eye and make the result look more credible.",
+  "goals": [
+    "Display thumbnail images in Google search results for portfolio-related queries",
+    "Improve Click-Through Rate (CTR) from search results",
+    "Ensure images meet Google's recommended dimensions (1200x630px minimum)",
+    "Maintain consistent branding across search results and social previews",
+    "Support different images for different content types (person, projects, blog posts)"
+  ],
+  "nonGoals": [
+    "Changes to Google's search algorithm or ranking",
+    "Real-time image updates in search results (Google caches these)",
+    "Support for all possible rich result types (focus on Person, Article, CreativeWork)"
+  ],
+  "userStories": [
+    {
+      "id": "US-001",
+      "title": "Person Search Thumbnail",
+      "description": "When someone searches for 'Keneth Namias' on Google, they see a professional headshot/thumbnail next to the search result",
+      "acceptanceCriteria": [
+        "Person JSON-LD schema includes image property",
+        "og:image meta tag is set on all pages",
+        "twitter:image meta tag is set on all pages",
+        "Image is at least 1200x630 pixels"
+      ]
+    },
+    {
+      "id": "US-002",
+      "title": "Project Search Thumbnail",
+      "description": "When someone searches for a specific project (e.g., 'PP Namias Portfolio'), they see the project's thumbnail in search results",
+      "acceptanceCriteria": [
+        "Project pages include CreativeWork/SoftwareApplication schema with image",
+        "Each project can have its own SEO preview image",
+        "Fallback to default portfolio image if no project image set"
+      ]
+    },
+    {
+      "id": "US-003",
+      "title": "Blog Post Search Thumbnail",
+      "description": "When someone searches for a blog post title, they see the post's featured image in search results",
+      "acceptanceCriteria": [
+        "Blog post pages include Article schema with image",
+        "Each blog post can have its own featured image for SEO",
+        "Image appears in Google's image search results for the post"
+      ]
+    },
+    {
+      "id": "US-004",
+      "title": "SEO Image Management in Sanity",
+      "description": "Content creators can upload and manage SEO preview images for each content type in Sanity Studio",
+      "acceptanceCriteria": [
+        "Profile singleton has a dedicated 'SEO Image' field",
+        "Project documents have an 'SEO Preview Image' field",
+        "Blog posts have a 'Featured Image' field for SEO",
+        "Image upload validates minimum dimensions (1200x630)",
+        "Image preview shows how it will appear in search results"
+      ]
+    },
+    {
+      "id": "US-005",
+      "title": "Structured Data Validation",
+      "description": "Ensure all structured data (JSON-LD) is valid and passes Google's Rich Results Test",
+      "acceptanceCriteria": [
+        "Person schema validates with Google's Rich Results Test",
+        "Article schema validates for blog posts",
+        "CreativeWork schema validates for projects",
+        "No structured data errors in Google Search Console"
+      ]
+    }
+  ],
+  "epics": [
+    {
+      "id": "EPIC-A",
+      "title": "SEO Image Schema & Sanity Fields",
+      "description": "Add SEO image fields to Sanity schemas (Profile, Project, Post) with validation",
+      "slices": [
+        {
+          "id": "A-1",
+          "title": "Add seoImage field to Profile singleton",
+          "description": "Add a dedicated image field for SEO/social preview in the profile singleton schema",
+          "files": ["studio/schemaTypes/singletons/profile.ts"]
+        },
+        {
+          "id": "A-2",
+          "title": "Add seoImage field to Project schema",
+          "description": "Add SEO preview image field to project documents with fallback logic",
+          "files": ["studio/schemaTypes/documents/project.ts"]
+        },
+        {
+          "id": "A-3",
+          "title": "Add featuredImage field to Post schema",
+          "description": "Add featured image field for blog posts that doubles as SEO image",
+          "files": ["studio/schemaTypes/documents/post.ts"]
+        },
+        {
+          "id": "A-4",
+          "title": "Add image dimension validation",
+          "description": "Create custom validation to ensure uploaded SEO images are at least 1200x630 pixels",
+          "files": ["studio/validation/seoImageValidation.ts"]
+        }
+      ]
+    },
+    {
+      "id": "EPIC-B",
+      "title": "JSON-LD Structured Data",
+      "description": "Implement JSON-LD structured data with image properties for Person, Article, and CreativeWork schemas",
+      "slices": [
+        {
+          "id": "B-1",
+          "title": "Enhance Person JSON-LD with image",
+          "description": "Update the Person JSON-LD component to include the profile SEO image",
+          "files": ["src/components/seo/PersonJsonLd.tsx"]
+        },
+        {
+          "id": "B-2",
+          "title": "Create Article JSON-LD component",
+          "description": "Build JSON-LD component for blog posts with Article schema and image",
+          "files": ["src/components/seo/ArticleJsonLd.tsx"]
+        },
+        {
+          "id": "B-3",
+          "title": "Create CreativeWork JSON-LD component",
+          "description": "Build JSON-LD component for projects with CreativeWork schema and image",
+          "files": ["src/components/seo/CreativeWorkJsonLd.tsx"]
+        },
+        {
+          "id": "B-4",
+          "title": "Add image object structure",
+          "description": "Ensure all JSON-LD images use proper ImageObject structure with url, width, height, and alt",
+          "files": ["src/components/seo/types.ts"]
+        }
+      ]
+    },
+    {
+      "id": "EPIC-C",
+      "title": "Meta Tags & Open Graph",
+      "description": "Ensure og:image and twitter:image meta tags are properly set across all pages",
+      "slices": [
+        {
+          "id": "C-1",
+          "title": "Update generateMetadata for og:image",
+          "description": "Ensure all page generateMetadata functions include og:image with SEO image",
+          "files": ["src/app/layout.tsx", "src/app/page.tsx", "src/app/projects/[slug]/page.tsx"]
+        },
+        {
+          "id": "C-2",
+          "title": "Add twitter:image meta tags",
+          "description": "Add Twitter Card meta tags with images for all pages",
+          "files": ["src/app/layout.tsx"]
+        },
+        {
+          "id": "C-3",
+          "title": "Create SEO image helper utility",
+          "description": "Build utility function to resolve SEO image URL with fallback to default",
+          "files": ["src/lib/seo-image.ts"]
+        }
+      ]
+    },
+    {
+      "id": "EPIC-D",
+      "title": "Google Rich Results Testing",
+      "description": "Validate structured data passes Google's Rich Results Test and document testing process",
+      "slices": [
+        {
+          "id": "D-1",
+          "title": "Test Person schema",
+          "description": "Validate Person JSON-LD with Google's Rich Results Test tool",
+          "files": ["docs/seo/google-rich-results-test.md"]
+        },
+        {
+          "id": "D-2",
+          "title": "Test Article schema",
+          "description": "Validate Article JSON-LD for blog posts with Google's Rich Results Test tool",
+          "files": ["docs/seo/google-rich-results-test.md"]
+        },
+        {
+          "id": "D-3",
+          "title": "Document image requirements",
+          "description": "Document Google's image requirements for rich snippets (dimensions, format, accessibility)",
+          "files": ["docs/seo/image-requirements.md"]
+        }
+      ]
+    }
+  ],
+  "technicalRequirements": [
+    "JSON-LD structured data must validate with Google's Rich Results Test",
+    "Images must be at least 1200x630 pixels (Google recommendation)",
+    "Images must be accessible via public URL (no auth required)",
+    "og:image and twitter:image meta tags must be present on all pages",
+    "Image alt text must be descriptive for accessibility",
+    "Images should use WebP format with JPEG fallback for compatibility"
+  ],
+  "googleRequirements": {
+    "personSchema": {
+      "type": "Person",
+      "required": ["name", "url", "image"],
+      "image": {
+        "type": "ImageObject",
+        "properties": ["url", "width", "height", "alt"],
+        "minimumDimensions": "1200x630"
+      }
+    },
+    "articleSchema": {
+      "type": "Article",
+      "required": ["headline", "image", "datePublished", "author"],
+      "image": {
+        "type": "ImageObject",
+        "properties": ["url", "width", "height", "alt"],
+        "minimumDimensions": "1200x630"
+      }
+    },
+    "creativeWorkSchema": {
+      "type": "CreativeWork",
+      "required": ["name", "url", "image"],
+      "image": {
+        "type": "ImageObject",
+        "properties": ["url", "width", "height", "alt"],
+        "minimumDimensions": "1200x630"
+      }
+    }
+  },
+  "imageSpecifications": {
+    "dimensions": {
+      "minimum": "1200x630",
+      "recommended": "1200x630",
+      "aspectRatio": "1.91:1"
+    },
+    "formats": ["WebP", "JPEG", "PNG"],
+    "maxFileSize": "5MB",
+    "altText": "Required for accessibility and SEO",
+    "naming": "Use descriptive filenames (e.g., 'keneth-namias-profile.jpg')"
+  },
+  "dependencies": [
+    "Sanity Studio (existing)",
+    "Next.js Metadata API (existing)",
+    "Google Rich Results Test tool (external)",
+    "Google Search Console (external, for monitoring)"
+  ],
+  "risks": [
+    {
+      "risk": "Google may not display thumbnail even with valid schema",
+      "mitigation": "Ensure images meet all Google guidelines; monitor Google Search Console"
+    },
+    {
+      "risk": "Cached images may be outdated",
+      "mitigation": "Use versioned image URLs; request re-indexing after major changes"
+    },
+    {
+      "risk": "Large images may slow page load",
+      "mitigation": "Use Next.js Image component with proper sizing; implement lazy loading"
+    }
+  ],
+  "successMetrics": [
+    "Google Rich Results Test passes for all schema types",
+    "og:image and twitter:image meta tags present on all pages",
+    "Images meet minimum 1200x630 dimension requirement",
+    "No structured data errors in Google Search Console",
+    "CTR improvement visible in Google Search Console (after 2-4 weeks)"
+  ],
+  "timeline": {
+    "planning": "1-2 days",
+    "implementation": "2-3 days",
+    "testing": "1 day",
+    "deployment": "1 day",
+    "monitoring": "2-4 weeks post-deployment"
+  }
+}
