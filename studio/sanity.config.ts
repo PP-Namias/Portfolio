@@ -38,7 +38,7 @@ export default defineConfig({
   projectId,
   dataset,
 
-  theme: studioTheme,
+  theme: studioTheme as any,
 
   plugins: [
     structureTool({
