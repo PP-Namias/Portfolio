@@ -153,9 +153,12 @@ vite.config.ts.timestamp-*
 docs/security/pentestagent/loot/
 docs/security/pentestagent/knowledge/
 
-# Sanity backups
-portfolio-v1/studio/data_downloads/*
-!portfolio-v1/studio/data_downloads/README.md
+# Sanity studio
+studio/node_modules/
+studio/.sanity/
+studio/data_downloads/
+studio/data/exports/
+studio/dist/
 
 # Husky internal directory
 .husky/_
