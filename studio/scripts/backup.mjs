@@ -1,5 +1,8 @@
 #!/usr/bin/env node
 
+/* eslint-disable no-undef */
+/* eslint-disable no-console */
+
 /**
  * Backup all Sanity content to JSON files.
  * 

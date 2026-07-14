@@ -102,7 +102,6 @@ export function SeoPreview() {
         </div>
         <div style={{border: '1px solid rgba(0,0,0,0.08)', borderRadius: 10, overflow: 'hidden', background: '#fff'}}>
           {imageUrl && (
-            // eslint-disable-next-line @next/next/no-img-element -- Studio preview only
             <img src={imageUrl} alt="" style={{width: '100%', height: 180, objectFit: 'cover'}} />
           )}
           <div style={{padding: 12}}>
@@ -126,7 +125,6 @@ export function SeoPreview() {
         </div>
         <div style={{border: '1px solid rgba(0,0,0,0.08)', borderRadius: 10, overflow: 'hidden', background: '#f0f0f0'}}>
           {imageUrl && (
-            // eslint-disable-next-line @next/next/no-img-element -- Studio preview only
             <img src={imageUrl} alt="" style={{width: '100%', height: 200, objectFit: 'cover'}} />
           )}
           <div style={{padding: 12, background: '#e8e8e8'}}>
