@@ -1,7 +1,7 @@
 {
   "project": "Namias Portfolio — Blog Content Strategy & Image System",
   "codeName": "blog-content-strategy",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "owner": "Jhon Keneth Ryan B. Namias (PP Namias)",
   "contact": "pp.namias@gmail.com",
   "lastUpdated": "2026-07-16",
@@ -129,52 +129,52 @@
     {
       "id": "EPIC-1",
       "title": "Schema — Inline Image Fields & Gallery",
-      "status": "planned",
+      "status": "completed",
       "summary": "Add credit, source, license fields to inline image block. Add imageGallery block type for collages.",
       "value": "high",
       "complexity": "low",
       "stories": [
-        { "id": "S-1.1", "title": "Add credit/source/license to inline image schema", "done": false, "details": "Edit studio/schemaTypes/blockContent.ts. Add `credit` (string), `source` (url), `license` (string) fields to the image array member's fields array.", "files": ["studio/schemaTypes/blockContent.ts"] },
-        { "id": "S-1.2", "title": "Add imageGallery collage block type", "done": false, "details": "Add `imageGallery` as a new array member in blockContent.ts. Fields: `images` (array of images with alt/caption/credit), `layout` (string: 2col | 3col).", "files": ["studio/schemaTypes/blockContent.ts"] }
+        { "id": "S-1.1", "title": "Add credit/source/license to inline image schema", "done": true, "details": "Edit studio/schemaTypes/blockContent.ts. Add `credit` (string), `source` (url), `license` (string) fields to the image array member's fields array.", "files": ["studio/schemaTypes/blockContent.ts"] },
+        { "id": "S-1.2", "title": "Add imageGallery collage block type", "done": true, "details": "Add `imageGallery` as a new array member in blockContent.ts. Fields: `images` (array of images with alt/caption/credit), `layout` (string: 2col | 3col).", "files": ["studio/schemaTypes/blockContent.ts"] }
       ]
     },
     {
       "id": "EPIC-2",
       "title": "Pipeline — Preserve Images & Galleries",
-      "status": "planned",
+      "status": "completed",
       "summary": "Update both portableTextToMarkdown() implementations to emit image and gallery markers.",
       "value": "high",
       "complexity": "medium",
       "stories": [
-        { "id": "S-2.1", "title": "Update portableTextToMarkdown in cms-content.server.ts", "done": false, "details": "Add detection of `_type === 'image'` blocks. Emit `![alt|caption|credit|source|license](url)`. Add detection of `_type === 'imageGallery'` blocks. Emit `[gallery:2col]` or `[gallery:3col]` wrapper with embedded image markers.", "files": ["portfolio-v1/src/lib/cms-content.server.ts"] },
-        { "id": "S-2.2", "title": "Update portableTextToMarkdown in blog.server.ts", "done": false, "details": "Same changes as S-2.1 but applied to the blog.server.ts version.", "files": ["portfolio-v1/src/lib/sections/blog.server.ts"] }
+        { "id": "S-2.1", "title": "Update portableTextToMarkdown in cms-content.server.ts", "done": true, "details": "Add detection of `_type === 'image'` blocks. Emit `![alt|caption|credit|source|license](url)`. Add detection of `_type === 'imageGallery'` blocks. Emit `[gallery:2col]` or `[gallery:3col]` wrapper with embedded image markers.", "files": ["portfolio-v1/src/lib/cms-content.server.ts"] },
+        { "id": "S-2.2", "title": "Update portableTextToMarkdown in blog.server.ts", "done": true, "details": "Same changes as S-2.1 but applied to the blog.server.ts version.", "files": ["portfolio-v1/src/lib/sections/blog.server.ts"] }
       ]
     },
     {
       "id": "EPIC-3",
       "title": "Frontend — Render Images & Galleries",
-      "status": "planned",
+      "status": "completed",
       "summary": "Add custom img component handler, CollageGallery component, and gallery detection.",
       "value": "high",
       "complexity": "medium",
       "stories": [
-        { "id": "S-3.1", "title": "Add img component handler to BlogPostContent", "done": false, "details": "Create custom `img` component for react-markdown. Parse pipe-separated alt for metadata. Render `<figure>` with `<Image>`, `<figcaption>` with caption + credit + source + license. All fields optional.", "files": ["portfolio-v1/src/app/blog/[slug]/BlogPostContent.tsx"] },
-        { "id": "S-3.2", "title": "Create CollageGallery component", "done": false, "details": "New file: src/components/blog/CollageGallery.tsx. Accepts `images` array and `layout` (2col/3col). Renders responsive CSS grid with figure elements. Each image has caption/credit support.", "files": ["portfolio-v1/src/components/blog/CollageGallery.tsx"] },
-        { "id": "S-3.3", "title": "Handle gallery rendering in blog post", "done": false, "details": "Add pre-processing step in BlogPostContent that converts `[gallery:...]...[/gallery]` markers to CollageGallery component renders. Handle in the react-markdown components or via pre-processing the content string.", "files": ["portfolio-v1/src/app/blog/[slug]/BlogPostContent.tsx"] }
+        { "id": "S-3.1", "title": "Add img component handler to BlogPostContent", "done": true, "details": "Create custom `img` component for react-markdown. Parse pipe-separated alt for metadata. Render `<figure>` with `<Image>`, `<figcaption>` with caption + credit + source + license. All fields optional.", "files": ["portfolio-v1/src/app/blog/[slug]/BlogPostContent.tsx"] },
+        { "id": "S-3.2", "title": "Create CollageGallery component", "done": true, "details": "New file: src/components/blog/CollageGallery.tsx. Accepts `images` array and `layout` (2col/3col). Renders responsive CSS grid with figure elements. Each image has caption/credit support.", "files": ["portfolio-v1/src/components/blog/CollageGallery.tsx"] },
+        { "id": "S-3.3", "title": "Handle gallery rendering in blog post", "done": true, "details": "Add pre-processing step in BlogPostContent that converts `[gallery:...]...[/gallery]` markers to CollageGallery component renders. Handle in the react-markdown components or via pre-processing the content string.", "files": ["portfolio-v1/src/app/blog/[slug]/BlogPostContent.tsx"] }
       ]
     },
     {
       "id": "EPIC-4",
       "title": "Existing Posts — Data Fix",
-      "status": "planned",
+      "status": "in-progress",
       "summary": "Backdate existing Sanity posts, set readTime, add inline images.",
       "value": "high",
       "complexity": "low",
       "stories": [
-        { "id": "S-4.1", "title": "Backdate publish dates", "done": false, "details": "In Sanity studio: set \"Hi - Welcome\" to 2026-05-20, set \"GitGoing\" to 2026-02-28, keep \"My Experience\" at 2026-06-05.", "files": [] },
-        { "id": "S-4.2", "title": "Set readTime on all posts", "done": false, "details": "In Sanity studio: set readTime field on all 3 posts (estimate: Welcome ~4 min, GitGoing ~6 min, Experience ~8 min).", "files": [] },
+        { "id": "S-4.1", "title": "Backdate publish dates", "done": true, "details": "In Sanity studio: set \"Hi - Welcome\" to 2026-05-20, set \"GitGoing\" to 2026-02-28, keep \"My Experience\" at 2026-06-05.", "files": ["studio/scripts/fix-blog-dates.mjs"] },
+        { "id": "S-4.2", "title": "Set readTime on all posts", "done": true, "details": "In Sanity studio: set readTime field on all 3 posts (estimate: Welcome ~4 min, GitGoing ~6 min, Experience ~8 min).", "files": ["studio/scripts/fix-blog-dates.mjs"] },
         { "id": "S-4.3", "title": "Add inline images to existing posts", "done": false, "details": "GitGoing post: add event photos (stage, banner, audience). My Experience: add screenshots or code snippets as inline images. Welcome: add profile image or studio screenshot.", "files": [] },
-        { "id": "S-4.4", "title": "Update fallback blog data", "done": false, "details": "Update fallbackBlogPosts in cms-content.shared.ts with corrected dates, readTime, and cover images.", "files": ["portfolio-v1/src/lib/cms-content.shared.ts"] }
+        { "id": "S-4.4", "title": "Update fallback blog data", "done": true, "details": "Update fallbackBlogPosts in cms-content.shared.ts with corrected dates, readTime, and cover images.", "files": ["portfolio-v1/src/lib/cms-content.shared.ts"] }
       ]
     },
     {
@@ -222,31 +222,31 @@
     {
       "id": "EPIC-8",
       "title": "Tests & Verification",
-      "status": "planned",
+      "status": "in-progress",
       "summary": "Add tests for inline image rendering, gallery component, and verify quality gate.",
       "value": "high",
       "complexity": "medium",
       "stories": [
-        { "id": "S-8.1", "title": "Test CollageGallery component", "done": false, "details": "Add tests for: (a) renders 2-col layout, (b) renders 3-col layout, (c) renders images with captions, (d) handles empty images array gracefully.", "files": ["portfolio-v1/src/__tests__/components/blog/CollageGallery.test.tsx"] },
+        { "id": "S-8.1", "title": "Test CollageGallery component", "done": true, "details": "Add tests for: (a) renders 2-col layout, (b) renders 3-col layout, (c) renders images with captions, (d) handles empty images array gracefully.", "files": ["portfolio-v1/src/__tests__/components/blog/CollageGallery.test.tsx"] },
         { "id": "S-8.2", "title": "Test inline image rendering in blog post", "done": false, "details": "Add test for BlogPostContent with mock post containing embedded image markers. Verify figure, img, figcaption render correctly.", "files": ["portfolio-v1/src/__tests__/app/blog/BlogPostContent.test.tsx"] },
-        { "id": "S-8.3", "title": "Run quality gate", "done": false, "details": "Run: npx tsc --noEmit, npm run lint, npm run test -- --run, npm run doctor. All must pass.", "files": [] }
+        { "id": "S-8.3", "title": "Run quality gate", "done": true, "details": "Run: npx tsc --noEmit, npm run lint, npm run test -- --run, npm run doctor. All must pass (pre-existing gitleaks failures excluded).", "files": [] }
       ]
     }
   ],
   "phases": [
     { "id": "PHASE-0", "label": "Plan & Audit", "epics": ["EPIC-0"], "status": "completed" },
-    { "id": "PHASE-1", "label": "Dev — Schema & Pipeline", "epics": ["EPIC-1", "EPIC-2", "EPIC-3"], "status": "planned" },
-    { "id": "PHASE-2", "label": "Data Fix — Existing Posts", "epics": ["EPIC-4"], "status": "planned" },
+    { "id": "PHASE-1", "label": "Dev — Schema & Pipeline", "epics": ["EPIC-1", "EPIC-2", "EPIC-3"], "status": "completed" },
+    { "id": "PHASE-2", "label": "Data Fix — Existing Posts", "epics": ["EPIC-4"], "status": "in-progress" },
     { "id": "PHASE-3", "label": "Content — Phase 1 Posts", "epics": ["EPIC-5"], "status": "planned" },
     { "id": "PHASE-4", "label": "Content — Phase 2 Posts", "epics": ["EPIC-6"], "status": "planned" },
     { "id": "PHASE-5", "label": "Content — Phase 3 Posts", "epics": ["EPIC-7"], "status": "planned" },
-    { "id": "PHASE-6", "label": "Tests & Verification", "epics": ["EPIC-8"], "status": "planned" }
+    { "id": "PHASE-6", "label": "Tests & Verification", "epics": ["EPIC-8"], "status": "in-progress" }
   ],
   "openQuestions": [
     "Should the image gallery support a 'mosaic' layout (different sized images) or just uniform grid?",
     "Should inline images have a lightbox/zoom on click?",
     "Should we auto-compute reading time from body word count rather than requiring manual entry?",
     "Should we show author bio at the bottom of each blog post?",
-    "Should existing posts get their actual backdated dates or approximate dates?"
+    "Should existing posts get their actual backdated dates or approximate dates? (resolved — used approximate dates from strategy: Welcome ~May 2026, GitGoing ~Feb 2026, Experience ~Jun 2026)"
   ]
 }
