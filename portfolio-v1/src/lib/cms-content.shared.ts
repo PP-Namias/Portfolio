@@ -59,6 +59,20 @@ export interface CmsContent {
 
 export const fallbackBlogPosts: BlogPost[] = [
   {
+    id: 'portfolio-ai-chat-architecture',
+    slug: 'architecture-behind-this-portfolios-ai-chat',
+    title: "Architecture Behind This Portfolio's AI Chat",
+    excerpt: 'How I built the AI chat on this very portfolio — streaming responses, context management, RAG, and edge deployment with Cloudflare Workers.',
+    content: "# Architecture Behind This Portfolio's AI Chat\n\nThe AI chat on this portfolio isn't a simple Q&A bot. It's a carefully architected system that balances streaming performance, context management, and cost efficiency — all deployed at the edge.\n\nThis post breaks down exactly how it works.\n\n## System Architecture\n\n```\nBrowser (React) → Edge Worker (Cloudflare) → OpenAI API GPT-4\n                   ↕\n              Context Manager\n```\n\n## Streaming Architecture\n\nThe most important design decision was streaming. Users see responses appear word by word, creating a natural conversation feel.\n\n### Frontend\n\n```typescript\nasync function consumeStream(response: Response) {\n  const reader = response.body?.getReader();\n  const decoder = new TextDecoder();\n  while (true) {\n    const { done, value } = await reader!.read();\n    if (done) break;\n    const text = decoder.decode(value);\n    setResponse(prev => prev + text);\n  }\n}\n```\n\n### Backend (Edge Worker)\n\nThe edge worker handles streaming with Cloudflare Workers:\n- No cold starts — instant response\n- Global distribution — low latency everywhere\n- Cost-effective — pay per request\n\n## Context Management\n\nThe chat uses a two-level approach:\n1. **Recent history** — last N messages included in every request\n2. **Context window management** — older messages are trimmed when too long\n\n## RAG Integration\n\nThe chat knows about portfolio content through Retrieval-Augmented Generation (RAG):\n1. Vectorizes your question\n2. Searches a vector index of portfolio content\n3. Retrieves the most relevant chunks\n4. Injects them into the prompt context\n\n## Security\n- Input sanitization prevents prompt injection\n- Rate limiting prevents abuse\n- CORS policies restrict access\n- Token limits prevent runaway costs\n\n## Key Metrics\n\n| Metric | Value |\n|--------|-------|\n| Average response time | ~2-3 seconds (streaming) |\n| Context window | ~4000 tokens |\n| Rate limit | 10 messages/minute |\n| Deployment | Cloudflare Workers (edge) |",
+    date: '2026-09-28',
+    readTime: '7 min read',
+    tags: ['ai-chat', 'architecture', 'rag'],
+    coverImage: '',
+    featured: false,
+    metaTitle: "Architecture Behind This Portfolio's AI Chat",
+    metaDescription: 'How I built the AI chat on this portfolio — streaming responses, context management, RAG, and edge deployment with Cloudflare Workers.',
+  },
+  {
     id: 'ai-force-multiplier',
     slug: 'how-i-use-ai-as-a-force-multiplier',
     title: 'How I Use AI as a Force Multiplier',
