@@ -59,6 +59,20 @@ export interface CmsContent {
 
 export const fallbackBlogPosts: BlogPost[] = [
   {
+    id: 'year-in-review-2026',
+    slug: '2026-year-in-review',
+    title: '2026 Year in Review',
+    excerpt: 'Reflecting on a year of building, learning, and growth — projects shipped, lessons learned, and what\'s ahead in 2027.',
+    content: '# 2026 Year in Review\n\n2026 was the year everything clicked.\n\nThis is my annual reflection — what I built, what I learned, and where I\'m heading next.\n\n## By The Numbers\n\n| Metric | Count |\n|--------|-------|\n| GitHub repositories created | 15+ |\n| Blog posts written | 14 (this one included) |\n| Production applications shipped | 3 |\n| AI chatbots deployed | 8+ |\n| CI/CD workflows built | 19 |\n| Tests written | 278+ |\n\n## Projects I\'m Proud Of\n\n### 1. This Portfolio\nThe biggest project of the year. 278 tests, 100/100 react-doctor score, 19 CI/CD workflows, Sanity CMS, AI chat with streaming and RAG.\n\n### 2. AI Chatbot at Wilshire Financial Network\nTaking an AI chatbot from concept to production for a real client.\n\n### 3. Enterprise Automation\nAutomating document processing, HR onboarding, and data synchronization with n8n.\n\n### 4. Blog Content Strategy\nGrowing the blog from 3 posts to 14, spanning the full journey from first line of code to production engineering.\n\n## Lessons Learned\n\n1. **Build in public** — GitHub stars, forks, and client inquiries came from open source projects\n2. **Testing is not optional** — 278 tests caught regressions constantly\n3. **AI is a tool, not a magic wand** — use it as a force multiplier\n4. **Documentation is code** — writing forces deeper understanding\n\n## Looking Ahead to 2027\n\n### Goals\n1. Deeper AI/ML — move beyond API calls to training and fine-tuning\n2. More open source — contribute to projects I use daily\n3. Speaking — more webinars, meetups, and conferences\n4. Mentoring — help other junior developers\n5. Sustain the blog — keep writing consistently\n\n### Tech I\'m Excited About\n- Agentic AI — autonomous agents\n- Edge computing — computation closer to users\n- TypeScript everywhere\n\nIf you\'ve been following this blog: thank you. This journey started with a single Hello World in 2022. Four years later, I\'ve shipped production apps, spoken at webinars, and built a portfolio that proves what I can do.\n\nThe best part? I\'m just getting started.',
+    date: '2026-12-28',
+    readTime: '6 min read',
+    tags: ['reflection', 'year-in-review'],
+    coverImage: '',
+    featured: false,
+    metaTitle: '2026 Year in Review',
+    metaDescription: 'Reflecting on a year of building, learning, and growth — projects shipped, lessons learned, and what\'s ahead in 2027.',
+  },
+  {
     id: 'hiring-managers-junior-dev',
     slug: 'what-hiring-managers-look-for-in-a-junior-dev',
     title: 'What Hiring Managers Look for in a Junior Dev',
