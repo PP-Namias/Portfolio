@@ -260,7 +260,7 @@ For production, use the individual Dockerfiles with your preferred orchestration
 # Build production images
 docker build -t portfolio-v1:latest ./portfolio-v1
 docker build -t portfolio-v2:latest ./portfolio-v2
-docker build -t sanity-studio:latest ./portfolio-v1/studio
+docker build -t sanity-studio:latest ./studio
 
 # Run with docker run
 docker run -d -p 3001:3000 --env-file .env.docker portfolio-v1:latest
