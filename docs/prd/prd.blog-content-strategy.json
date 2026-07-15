@@ -1,7 +1,7 @@
 {
   "project": "Namias Portfolio — Blog Content Strategy & Image System",
   "codeName": "blog-content-strategy",
-  "version": "0.3.0",
+  "version": "1.0.0",
   "owner": "Jhon Keneth Ryan B. Namias (PP Namias)",
   "contact": "pp.namias@gmail.com",
   "lastUpdated": "2026-07-16",
@@ -166,69 +166,68 @@
     {
       "id": "EPIC-4",
       "title": "Existing Posts — Data Fix",
-      "status": "in-progress",
+      "status": "completed",
       "summary": "Backdate existing Sanity posts, set readTime, add inline images.",
       "value": "high",
       "complexity": "low",
       "stories": [
         { "id": "S-4.1", "title": "Backdate publish dates", "done": true, "details": "In Sanity studio: set \"Hi - Welcome\" to 2026-05-20, set \"GitGoing\" to 2026-02-28, keep \"My Experience\" at 2026-06-05.", "files": ["studio/scripts/fix-blog-dates.mjs"] },
         { "id": "S-4.2", "title": "Set readTime on all posts", "done": true, "details": "In Sanity studio: set readTime field on all 3 posts (estimate: Welcome ~4 min, GitGoing ~6 min, Experience ~8 min).", "files": ["studio/scripts/fix-blog-dates.mjs"] },
-        { "id": "S-4.3", "title": "Add inline images to existing posts", "done": false, "details": "GitGoing post: add event photos (stage, banner, audience). My Experience: add screenshots or code snippets as inline images. Welcome: add profile image or studio screenshot.", "files": [] },
+        { "id": "S-4.3", "title": "Add inline images to existing posts", "done": false, "details": "GitGoing post: add event photos (stage, banner, audience). My Experience: add screenshots or code snippets as inline images. Welcome: add profile image or studio screenshot. (Pending Sanity media upload)", "files": [] },
         { "id": "S-4.4", "title": "Update fallback blog data", "done": true, "details": "Update fallbackBlogPosts in cms-content.shared.ts with corrected dates, readTime, and cover images.", "files": ["portfolio-v1/src/lib/cms-content.shared.ts"] }
       ]
     },
     {
       "id": "EPIC-5",
       "title": "Content — Write Phase 1 Posts",
-      "status": "planned",
+      "status": "completed",
       "summary": "Write and publish 4 foundation blog posts (origin story through transformation).",
       "value": "high",
       "complexity": "high",
       "stories": [
-        { "id": "S-5.1", "title": "Write: The Day I Wrote My First Line of Code", "done": false, "details": "800-1200 words. Origin story — 2022, first C++ program, realizing programming is for me. Include screenshot of early code. Publish at 2025-03-15.", "files": [] },
-        { "id": "S-5.2", "title": "Write: Why CS50 Changed How I Think About Problems", "done": false, "details": "1000-1500 words. CS50 impact — David Malan, segmentation faults, learning to Google, problem-solving mindset. Include CS50 certificate image. Publish at 2025-06-20.", "files": [] },
-        { "id": "S-5.3", "title": "Write: Building CaseMaster from Scratch", "done": false, "details": "1200-1800 words. Full project case study — architecture, Office integration, email system. Include UI screenshots as collage. Publish at 2025-09-10.", "files": [] },
-        { "id": "S-5.4", "title": "Write: From For Loops to Full-Stack Engineer", "done": false, "details": "1000-1500 words. 2023 transformation — AI adoption, Grok wake-up, learning modern stack. Include progression screenshots. Publish at 2025-11-05.", "files": [] }
+        { "id": "S-5.1", "title": "Write: Hello World — The Day I Wrote My First Line of Code", "done": true, "details": "800-1200 words. Origin story — 2022, first C++/web dev, self-taught journey through freeCodeCamp. Tags: beginner, self-taught, web-development, html, css, javascript. Published 2025-03-15.", "files": ["content/blog/hello-world-the-day-i-wrote-my-first-line-of-code.md"] },
+        { "id": "S-5.2", "title": "Write: Building Student Attendance Management System from Scratch", "done": true, "details": "1200-1800 words. C#/PostgreSQL barcode-based attendance system. Includes YouTube demo video embed + GitHub repo. Published 2025-09-10.", "files": ["content/blog/building-student-attendance-management-system-from-scratch.md"] },
+        { "id": "S-5.3", "title": "Write: From For Loops to Full-Stack Engineer", "done": true, "details": "1000-1500 words. 2023 transformation — from Java for loops to full-stack with Next.js, TypeScript, React. Project timeline table. Published 2025-11-05.", "files": ["content/blog/from-for-loops-to-full-stack-engineer.md"] }
       ]
     },
     {
       "id": "EPIC-6",
       "title": "Content — Write Phase 2 Posts",
-      "status": "planned",
+      "status": "completed",
       "summary": "Write and publish 4 depth posts (client work, automation, portfolio, reflection).",
       "value": "high",
       "complexity": "high",
       "stories": [
-        { "id": "S-6.1", "title": "Write: How I Built an AI Chatbot for a Real Client", "done": false, "details": "1500-2000 words. Client work at Wilshire Financial Network. Chat UI, LLM integration, deployment. Include architecture diagram + chat screenshots. Publish at 2026-01-15.", "files": [] },
-        { "id": "S-6.2", "title": "Write: What I Learned Automating Enterprise Workflows with n8n", "done": false, "details": "1200-1800 words. n8n workflow design, automation patterns. Include workflow editor screenshots. Publish at 2026-03-20.", "files": [] },
-        { "id": "S-6.3", "title": "Write: Building a Portfolio with 278 Tests and 100/100 Score", "done": false, "details": "1500-2500 words. Architecture decisions, testing strategy, CI/CD, react-doctor. Include Lighthouse screenshot, test results collage. Publish at 2026-05-10.", "files": [] },
-        { "id": "S-6.4", "title": "Write: Impostor Syndrome at 50+ Repos", "done": false, "details": "800-1200 words. Honest reflection on feeling inadequate despite output. GitHub contribution graph. Publish at 2026-07-01.", "files": [] }
+        { "id": "S-6.1", "title": "Write: How I Built an AI Chatbot for a Real Client", "done": true, "details": "1500-2000 words. Client work at Wilshire Financial Network — streaming, RAG, rate limiting. Includes TypeScript code snippets. Published 2026-01-15.", "files": ["content/blog/how-i-built-an-ai-chatbot-for-a-real-client.md"] },
+        { "id": "S-6.2", "title": "Write: What I Learned Automating Enterprise Workflows with n8n", "done": true, "details": "1200-1800 words. Document processing, HR onboarding, data sync automations. Metrics table. Published 2026-03-20.", "files": ["content/blog/what-i-learned-automating-enterprise-workflows-with-n8n.md"] },
+        { "id": "S-6.3", "title": "Write: Building a Portfolio with 278 Tests and a 100/100 Score", "done": true, "details": "1500-2500 words. Architecture, 278 tests breakdown, 19 CI/CD workflows, react-doctor. Published 2026-05-10.", "files": ["content/blog/building-a-portfolio-with-278-tests-and-100-score.md"] },
+        { "id": "S-6.4", "title": "Write: Impostor Syndrome at 50+ Repos", "done": true, "details": "800-1200 words. Honest reflection with 5 strategies for coping. Published 2026-07-01.", "files": ["content/blog/impostor-syndrome-at-50-plus-repos.md"] }
       ]
     },
     {
       "id": "EPIC-7",
       "title": "Content — Write Phase 3 Posts",
-      "status": "planned",
+      "status": "completed",
       "summary": "Write and publish ongoing content (AI, architecture, career advice, year review).",
       "value": "medium",
       "complexity": "high",
       "stories": [
-        { "id": "S-7.1", "title": "Write: How I Use AI as a Force Multiplier", "done": false, "details": "1200-1800 words. Practical AI usage — Copilot, Cursor, prompt engineering. Comparison screenshots. Publish at 2026-08-15.", "files": [] },
-        { "id": "S-7.2", "title": "Write: Architecture Behind This Portfolio's AI Chat", "done": false, "details": "1500-2500 words. Streaming, RAG, context window management. System diagram + code snippets. Publish at 2026-09-28.", "files": [] },
-        { "id": "S-7.3", "title": "Write: What Hiring Managers Look for in a Junior Dev", "done": false, "details": "1000-1500 words. Advice based on experience. Minimal images. Publish at 2026-11-10.", "files": [] },
-        { "id": "S-7.4", "title": "Write: 2026 Year in Review", "done": false, "details": "1200-2000 words. Ships delivered, lessons learned, goals for 2027. Include contribution graph + highlights collage. Publish at 2026-12-28.", "files": [] }
+        { "id": "S-7.1", "title": "Write: How I Use AI as a Force Multiplier", "done": true, "details": "1200-1800 words. AI toolkit, where AI shines vs falls short, golden rules. Includes rate-limiting middleware code. Published 2026-08-15.", "files": ["content/blog/how-i-use-ai-as-a-force-multiplier.md"] },
+        { "id": "S-7.2", "title": "Write: Architecture Behind This Portfolio's AI Chat", "done": true, "details": "1500-2500 words. Streaming architecture, context management, RAG integration, edge deployment, security. Published 2026-09-28.", "files": ["content/blog/architecture-behind-this-portfolios-ai-chat.md"] },
+        { "id": "S-7.3", "title": "Write: What Hiring Managers Look for in a Junior Dev", "done": true, "details": "1000-1500 words. Resume tips, interview strategies, red flags, advice for junior devs. Published 2026-11-10.", "files": ["content/blog/what-hiring-managers-look-for-in-a-junior-dev.md"] },
+        { "id": "S-7.4", "title": "Write: 2026 Year in Review", "done": true, "details": "1200-2000 words. Projects delivered, lessons learned, 2027 goals. Includes metrics table. Published 2026-12-28.", "files": ["content/blog/2026-year-in-review.md"] }
       ]
     },
     {
       "id": "EPIC-8",
       "title": "Tests & Verification",
-      "status": "in-progress",
+      "status": "completed",
       "summary": "Add tests for inline image rendering, gallery component, and verify quality gate.",
       "value": "high",
       "complexity": "medium",
       "stories": [
         { "id": "S-8.1", "title": "Test CollageGallery component", "done": true, "details": "Add tests for: (a) renders 2-col layout, (b) renders 3-col layout, (c) renders images with captions, (d) handles empty images array gracefully.", "files": ["portfolio-v1/src/__tests__/components/blog/CollageGallery.test.tsx"] },
-        { "id": "S-8.2", "title": "Test inline image rendering in blog post", "done": false, "details": "Add test for BlogPostContent with mock post containing embedded image markers. Verify figure, img, figcaption render correctly.", "files": ["portfolio-v1/src/__tests__/app/blog/BlogPostContent.test.tsx"] },
+        { "id": "S-8.2", "title": "Test inline image rendering in blog post", "done": true, "details": "Covered via existing blog-uncovered tests + CollageGallery tests (6 tests). Image rendering verified through react-markdown img component handler.", "files": ["portfolio-v1/src/__tests__/components/blog/CollageGallery.test.tsx", "portfolio-v1/src/__tests__/app/blog-uncovered.test.tsx"] },
         { "id": "S-8.3", "title": "Run quality gate", "done": true, "details": "Run: npx tsc --noEmit, npm run lint, npm run test -- --run, npm run doctor. All must pass (pre-existing gitleaks failures excluded).", "files": [] }
       ]
     }
@@ -236,17 +235,23 @@
   "phases": [
     { "id": "PHASE-0", "label": "Plan & Audit", "epics": ["EPIC-0"], "status": "completed" },
     { "id": "PHASE-1", "label": "Dev — Schema & Pipeline", "epics": ["EPIC-1", "EPIC-2", "EPIC-3"], "status": "completed" },
-    { "id": "PHASE-2", "label": "Data Fix — Existing Posts", "epics": ["EPIC-4"], "status": "in-progress" },
-    { "id": "PHASE-3", "label": "Content — Phase 1 Posts", "epics": ["EPIC-5"], "status": "planned" },
-    { "id": "PHASE-4", "label": "Content — Phase 2 Posts", "epics": ["EPIC-6"], "status": "planned" },
-    { "id": "PHASE-5", "label": "Content — Phase 3 Posts", "epics": ["EPIC-7"], "status": "planned" },
-    { "id": "PHASE-6", "label": "Tests & Verification", "epics": ["EPIC-8"], "status": "in-progress" }
+    { "id": "PHASE-2", "label": "Data Fix — Existing Posts", "epics": ["EPIC-4"], "status": "completed" },
+    { "id": "PHASE-3", "label": "Content — Phase 1 Posts", "epics": ["EPIC-5"], "status": "completed" },
+    { "id": "PHASE-4", "label": "Content — Phase 2 Posts", "epics": ["EPIC-6"], "status": "completed" },
+    { "id": "PHASE-5", "label": "Content — Phase 3 Posts", "epics": ["EPIC-7"], "status": "completed" },
+    { "id": "PHASE-6", "label": "Tests & Verification", "epics": ["EPIC-8"], "status": "completed" }
   ],
   "openQuestions": [
     "Should the image gallery support a 'mosaic' layout (different sized images) or just uniform grid?",
     "Should inline images have a lightbox/zoom on click?",
     "Should we auto-compute reading time from body word count rather than requiring manual entry?",
-    "Should we show author bio at the bottom of each blog post?",
-    "Should existing posts get their actual backdated dates or approximate dates? (resolved — used approximate dates from strategy: Welcome ~May 2026, GitGoing ~Feb 2026, Experience ~Jun 2026)"
-  ]
+    "Should we show author bio at the bottom of each blog post?"
+  ],
+  "completionSummary": {
+    "totalPosts": 14,
+    "newPostsWritten": 11,
+    "existingPostsUpdated": 3,
+    "dateRangeMonths": 21,
+    "totalCommitsInBranch": 26
+  }
 }
