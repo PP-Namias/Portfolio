@@ -1,6 +1,6 @@
-# AI agent guidelines for chanhdai.com
+# AI agent guidelines for PP Namias Portfolio V2
 
-Next.js 16 (App Router) portfolio, blog, and shadcn registry website.
+Next.js 16 (App Router) portfolio and blog website.
 
 **Stack**: TypeScript, React 19, Tailwind CSS v4, shadcn/ui, MDX, Vitest, pnpm (Bun for scripts), Vercel
 
