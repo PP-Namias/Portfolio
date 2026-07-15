@@ -242,7 +242,7 @@ describe('blog route and content coverage', () => {
     expect(screen.getByText('Deep Dive')).toBeInTheDocument();
     expect(screen.getByText('ReadingProgress')).toBeInTheDocument();
     expect(screen.getByText('ThemeToggle')).toBeInTheDocument();
-    expect(screen.getByTestId('markdown')).toHaveTextContent('## Deep');
+    expect(screen.getAllByTestId('markdown')[0]).toHaveTextContent('## Deep');
     expect(screen.getByText('Previous')).toBeInTheDocument();
   });
 

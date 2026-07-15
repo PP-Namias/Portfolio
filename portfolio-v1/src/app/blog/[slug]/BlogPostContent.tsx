@@ -54,7 +54,9 @@ function preprocessContent(content: string): React.ReactNode[] {
       continue;
     }
 
-    nodes.push(line);
+    if (line.trim()) {
+      nodes.push(line);
+    }
     i++;
   }
 
