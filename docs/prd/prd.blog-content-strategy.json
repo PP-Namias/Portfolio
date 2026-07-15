@@ -1,257 +1,134 @@
 {
-  "project": "Namias Portfolio — Blog Content Strategy & Image System",
-  "codeName": "blog-content-strategy",
-  "version": "1.0.0",
-  "owner": "Jhon Keneth Ryan B. Namias (PP Namias)",
-  "contact": "pp.namias@gmail.com",
-  "lastUpdated": "2026-07-16",
-  "branch": "feat/blog-content-strategy",
-  "links": {
-    "marketing": "https://namias.tech",
-    "studio": "https://namias-cms.sanity.studio",
-    "repo": "https://github.com/PP-Namias/Portfolio",
-    "plan": "https://github.com/PP-Namias/Portfolio/blob/main/docs/prd/blog-content-strategy.md"
+  "prd": {
+    "title": "Blog Content Strategy & Expansion",
+    "version": "1.0.0",
+    "status": "draft",
+    "owner": "PP Namias",
+    "created": "2026-07-16",
+    "goal": "Transform the portfolio blog into a visual storytelling engine with inline images, image collages, YouTube embeds, and a foundation for 50+ posts.",
+    "interviewStorytelling": "Each post serves as a talking point for interviews — origin stories, technical milestones, client work, leadership, AI/automation, career growth"
   },
-  "summary": "Expand the portfolio blog from 3 to 12+ posts with a quick inline image system (with credits/captions), image collage support, staggered publishing dates for natural progression, and a content strategy built around interview storytelling.",
-  "narrative": "The portfolio currently has 3 blog posts all published on the same day (June 5, 2026), zero inline images in the body, no collage/gallery support, and thin content. This PRD addresses all of that with a two-track approach: (1) a quick inline image system that preserves Sanity image blocks through the pipeline with credit/caption/source/license metadata, and (2) a simple image collage gallery block type for multi-photo layouts. The content plan adds 9+ new posts spanning from 2025 to 2026, organized by interview storytelling themes. Dates are staggered to show a natural content progression that demonstrates growth, technical depth, and communication skills.",
-  "principles": [
-    "Quick wins first — inline images with credits before complex collage features",
-    "Editor-friendly — authors add images in Sanity with alt/caption/credit, everything renders automatically",
-    "Interview storytelling — every post serves as a talking point for hiring manager conversations",
-    "Natural timeline — staggered dates show content growth over months, not a single day dump",
-    "No comments in code — documentation lives in the PRD and the blog content strategy MD",
-    "Type-safe and tested — tsc, eslint, vitest, and react-doctor stay green"
-  ],
-  "personas": [
-    {
-      "id": "P-OWNER",
-      "label": "PP Namias (owner/author)",
-      "goals": [
-        "Add blog posts with images quickly without fighting the pipeline",
-        "Show event photos, UI screenshots, and diagrams inside blog posts",
-        "Present a professional, natural-looking content timeline to hiring managers",
-        "Use the blog as interview storytelling material"
-      ],
-      "painPointsToday": [
-        "Can't add images inside blog body — they get stripped",
-        "All posts show same publish date — looks fake",
-        "Only 3 posts — not enough to tell a complete story",
-        "No way to show event collages or UI galleries"
-      ]
-    },
-    {
-      "id": "P-VISITOR",
-      "label": "Portfolio visitor (hiring manager)",
-      "goals": [
-        "See a natural blog progression with varied content over time",
-        "Read posts with visual examples — screenshots, diagrams, event photos",
-        "Understand the owner's technical depth and communication through writing",
-        "Get a sense of career growth and passion for the craft"
-      ],
-      "painPointsToday": [
-        "All posts on same date — looks like a one-time push",
-        "Text-only posts with no visual examples are dry",
-        "Hard to gauge real experience from just 3 posts"
-      ]
-    }
-  ],
-  "successMetrics": {
-    "primary": [
-      "Inline images render in blog post body with caption + credit visible",
-      "Image galleries render as responsive CSS grids (2 or 3 columns)",
-      "All 3 existing posts have readTime set and staggered dates (Feb-Jun 2026 spread)",
-      "12+ total blog posts published with dates spanning 2025-03 to 2026-12",
-      "react-doctor score stays 100/100",
-      "vitest stays green"
-    ],
-    "secondary": [
-      "At least 4 posts contain image collages/galleries",
-      "All posts have cover images",
-      "All posts have meaningful tags (not empty)",
-      "BlogSection home card shows multi-month date spread",
-      "No console errors or hydration warnings on blog pages"
+  "currentState": {
+    "totalPosts": 14,
+    "dateRange": "2025-03-15 to 2026-12-28",
+    "postsWithImages": 0,
+    "postsWithGalleries": 0,
+    "postsWithYoutubeEmbeds": 1,
+    "featuredPosts": 2,
+    "existingPosts": [
+      { "slug": "hello-world-the-day-i-wrote-my-first-line-of-code", "title": "Hello World: The Day I Wrote My First Line of Code", "date": "2025-03-15", "tags": ["beginner", "self-taught", "web-development", "html", "css", "javascript"], "featured": false },
+      { "slug": "building-student-attendance-management-system-from-scratch", "title": "Building Student Attendance Management System from Scratch", "date": "2025-09-10", "tags": ["csharp", "postgresql", "desktop", "attendance", "barcode", "project"], "featured": false },
+      { "slug": "from-for-loops-to-full-stack-engineer", "title": "From For Loops to Full-Stack Engineer", "date": "2025-11-05", "tags": ["growth", "fullstack", "journey", "transformation"], "featured": false },
+      { "slug": "how-i-built-an-ai-chatbot-for-a-real-client", "title": "How I Built an AI Chatbot for a Real Client", "date": "2026-01-15", "tags": ["ai", "chatbot", "llm", "client-work"], "featured": false },
+      { "slug": "gitgoing-computer-science-github-webinar", "title": "GitGoing - Computer Science GitHub Webinar!", "date": "2026-02-28", "tags": ["git", "github", "webinar", "speaking", "collaboration", "version-control", "ucc"], "featured": true },
+      { "slug": "what-i-learned-automating-enterprise-workflows-with-n8n", "title": "What I Learned Automating Enterprise Workflows with n8n", "date": "2026-03-20", "tags": ["n8n", "automation", "workflow"], "featured": false },
+      { "slug": "building-a-portfolio-with-278-tests-and-100-score", "title": "Building a Portfolio with 278 Tests and a 100/100 Score", "date": "2026-05-10", "tags": ["nextjs", "testing", "react"], "featured": false },
+      { "slug": "hi-welcome-to-my-blog-portfolio", "title": "Hi - Welcome to my blog-portfolio!", "date": "2026-05-20", "tags": ["intro", "career", "ai", "fullstack", "personal"], "featured": true },
+      { "slug": "my-experience-as-a-developer-in-2026", "title": "My Experience as a Developer in 2026", "date": "2026-06-05", "tags": ["experience", "reflection", "ai", "cs50", "balance", "learning", "developer-journey"], "featured": false },
+      { "slug": "impostor-syndrome-at-50-plus-repos", "title": "Impostor Syndrome at 50+ Repos", "date": "2026-07-01", "tags": ["reflection", "impostor", "career"], "featured": false },
+      { "slug": "how-i-use-ai-as-a-force-multiplier", "title": "How I Use AI as a Force Multiplier", "date": "2026-08-15", "tags": ["ai", "productivity", "balance"], "featured": false },
+      { "slug": "architecture-behind-this-portfolios-ai-chat", "title": "Architecture Behind This Portfolio's AI Chat", "date": "2026-09-28", "tags": ["ai-chat", "architecture", "rag"], "featured": false },
+      { "slug": "what-hiring-managers-look-for-in-a-junior-dev", "title": "What Hiring Managers Look for in a Junior Dev", "date": "2026-11-10", "tags": ["career", "interview", "advice"], "featured": false },
+      { "slug": "2026-year-in-review", "title": "2026 Year in Review", "date": "2026-12-28", "tags": ["reflection", "year-in-review"], "featured": false }
     ]
   },
-  "nonGoals": [
-    "Build a custom rich text editor for the blog (use Sanity Portable Text)",
-    "Add video embeds or social media embeds (out of scope)",
-    "Add a full CMS media library browser inside the blog editor",
-    "Rewrite the blog from scratch — only modify pipeline and components",
-    "Add comments, likes, or social sharing widgets",
-    "Build an RSS feed or newsletter integration"
-  ],
-  "designDecisions": [
-    {
-      "id": "DD-1",
-      "topic": "Inline image metadata format",
-      "choice": "Pipe-separated metadata in alt text: `![alt|caption|credit|source|license](url)`",
-      "rationale": "Minimal pipeline change — standard markdown image syntax with metadata packed into the alt field. Parsed by a custom react-markdown img component. No new syntax or data structures needed."
-    },
-    {
-      "id": "DD-2",
-      "topic": "Image credit display",
-      "choice": "Figcaption below image showing caption + credit italicized + source link + license",
-      "rationale": "Follows semantic HTML (figure/figcaption). Keeps metadata visible but unobtrusive. All fields optional — only render what's filled."
-    },
-    {
-      "id": "DD-3",
-      "topic": "Collage/gallery approach",
-      "choice": "Custom `imageGallery` array member in blockContent schema with layout picker",
-      "rationale": "Sanity-native — editors can add galleries directly in the Portable Text editor. No custom markdown parsing needed for basic case. Falls back to sequential single images if gallery block isn't available."
-    },
-    {
-      "id": "DD-4",
-      "topic": "Post timeline approach",
-      "choice": "Backdate existing posts to realistic dates, schedule new posts with publishedAt field",
-      "rationale": "Uses existing Sanity `publishedAt` + `publishAt` fields. Scheduled-publish function already handles auto-publishing. No new scheduling infrastructure."
-    },
-    {
-      "id": "DD-5",
-      "topic": "Image size strategy",
-      "choice": "All inline images render at 800px max-width, responsive, with object-cover",
-      "rationale": "Consistent look across all posts. Blog layout is max-w-container with readable line lengths — 800px images fit perfectly. Larger images would require clicking to expand (future enhancement)."
-    }
-  ],
   "epics": [
     {
-      "id": "EPIC-0",
-      "title": "Plan & Data Audit",
-      "status": "completed",
-      "summary": "Write the plan, audit existing blog data, inventory Sanity posts.",
-      "value": "high",
-      "complexity": "low",
-      "stories": [
-        { "id": "S-0.1", "title": "Write blog content strategy MD plan", "done": true, "details": "Author docs/prd/blog-content-strategy.md with full inventory, requirements, timeline, and post list.", "files": ["docs/prd/blog-content-strategy.md"] },
-        { "id": "S-0.2", "title": "Query Sanity for all existing blog posts", "done": true, "details": "Run GROQ query to get current posts, their dates, tags, body content, and image references.", "files": [] },
-        { "id": "S-0.3", "title": "Audit portableTextToMarkdown pipeline", "done": true, "details": "Confirm that image blocks are stripped. Check cms-content.server.ts and blog.server.ts for both implementations.", "files": ["portfolio-v1/src/lib/cms-content.server.ts", "portfolio-v1/src/lib/sections/blog.server.ts"] }
-      ]
-    },
-    {
       "id": "EPIC-1",
-      "title": "Schema — Inline Image Fields & Gallery",
+      "title": "Fix Sanity Studio React Error",
       "status": "completed",
-      "summary": "Add credit, source, license fields to inline image block. Add imageGallery block type for collages.",
-      "value": "high",
-      "complexity": "low",
       "stories": [
-        { "id": "S-1.1", "title": "Add credit/source/license to inline image schema", "done": true, "details": "Edit studio/schemaTypes/blockContent.ts. Add `credit` (string), `source` (url), `license` (string) fields to the image array member's fields array.", "files": ["studio/schemaTypes/blockContent.ts"] },
-        { "id": "S-1.2", "title": "Add imageGallery collage block type", "done": true, "details": "Add `imageGallery` as a new array member in blockContent.ts. Fields: `images` (array of images with alt/caption/credit), `layout` (string: 2col | 3col).", "files": ["studio/schemaTypes/blockContent.ts"] }
+        { "id": "STORY-1.1", "title": "Add pnpm overrides for react/react-dom", "status": "done" },
+        { "id": "STORY-1.2", "title": "Add public-hoist-pattern in .npmrc", "status": "done" },
+        { "id": "STORY-1.3", "title": "Add Vite resolve.dedupe in sanity.cli.ts", "status": "done" }
       ]
     },
     {
       "id": "EPIC-2",
-      "title": "Pipeline — Preserve Images & Galleries",
+      "title": "Inline Image System",
       "status": "completed",
-      "summary": "Update both portableTextToMarkdown() implementations to emit image and gallery markers.",
-      "value": "high",
-      "complexity": "medium",
       "stories": [
-        { "id": "S-2.1", "title": "Update portableTextToMarkdown in cms-content.server.ts", "done": true, "details": "Add detection of `_type === 'image'` blocks. Emit `![alt|caption|credit|source|license](url)`. Add detection of `_type === 'imageGallery'` blocks. Emit `[gallery:2col]` or `[gallery:3col]` wrapper with embedded image markers.", "files": ["portfolio-v1/src/lib/cms-content.server.ts"] },
-        { "id": "S-2.2", "title": "Update portableTextToMarkdown in blog.server.ts", "done": true, "details": "Same changes as S-2.1 but applied to the blog.server.ts version.", "files": ["portfolio-v1/src/lib/sections/blog.server.ts"] }
+        { "id": "STORY-2.1", "title": "Schema: credit/source/license fields on inline images", "status": "done" },
+        { "id": "STORY-2.2", "title": "Schema: imageGallery array member", "status": "done" },
+        { "id": "STORY-2.3", "title": "Pipeline: portableTextToMarkdown preserves image blocks", "status": "done" },
+        { "id": "STORY-2.4", "title": "Render: custom img component with metadata parsing", "status": "done" },
+        { "id": "STORY-2.5", "title": "Render: CollageGallery component", "status": "done" }
       ]
     },
     {
       "id": "EPIC-3",
-      "title": "Frontend — Render Images & Galleries",
+      "title": "YouTube Embed Support",
       "status": "completed",
-      "summary": "Add custom img component handler, CollageGallery component, and gallery detection.",
-      "value": "high",
-      "complexity": "medium",
       "stories": [
-        { "id": "S-3.1", "title": "Add img component handler to BlogPostContent", "done": true, "details": "Create custom `img` component for react-markdown. Parse pipe-separated alt for metadata. Render `<figure>` with `<Image>`, `<figcaption>` with caption + credit + source + license. All fields optional.", "files": ["portfolio-v1/src/app/blog/[slug]/BlogPostContent.tsx"] },
-        { "id": "S-3.2", "title": "Create CollageGallery component", "done": true, "details": "New file: src/components/blog/CollageGallery.tsx. Accepts `images` array and `layout` (2col/3col). Renders responsive CSS grid with figure elements. Each image has caption/credit support.", "files": ["portfolio-v1/src/components/blog/CollageGallery.tsx"] },
-        { "id": "S-3.3", "title": "Handle gallery rendering in blog post", "done": true, "details": "Add pre-processing step in BlogPostContent that converts `[gallery:...]...[/gallery]` markers to CollageGallery component renders. Handle in the react-markdown components or via pre-processing the content string.", "files": ["portfolio-v1/src/app/blog/[slug]/BlogPostContent.tsx"] }
+        { "id": "STORY-3.1", "title": "Add YoutubeEmbed component", "status": "done" },
+        { "id": "STORY-3.2", "title": "Add [youtube:] parsing in preprocessContent", "status": "done" },
+        { "id": "STORY-3.3", "title": "Add YouTube embed to Attendance System post", "status": "done" }
       ]
     },
     {
       "id": "EPIC-4",
-      "title": "Existing Posts — Data Fix",
+      "title": "Blog Content — All 14 Posts Live",
       "status": "completed",
-      "summary": "Backdate existing Sanity posts, set readTime, add inline images.",
-      "value": "high",
-      "complexity": "low",
       "stories": [
-        { "id": "S-4.1", "title": "Backdate publish dates", "done": true, "details": "In Sanity studio: set \"Hi - Welcome\" to 2026-05-20, set \"GitGoing\" to 2026-02-28, keep \"My Experience\" at 2026-06-05.", "files": ["studio/scripts/fix-blog-dates.mjs"] },
-        { "id": "S-4.2", "title": "Set readTime on all posts", "done": true, "details": "In Sanity studio: set readTime field on all 3 posts (estimate: Welcome ~4 min, GitGoing ~6 min, Experience ~8 min).", "files": ["studio/scripts/fix-blog-dates.mjs"] },
-        { "id": "S-4.3", "title": "Add inline images to existing posts", "done": false, "details": "GitGoing post: add event photos (stage, banner, audience). My Experience: add screenshots or code snippets as inline images. Welcome: add profile image or studio screenshot. (Pending Sanity media upload)", "files": [] },
-        { "id": "S-4.4", "title": "Update fallback blog data", "done": true, "details": "Update fallbackBlogPosts in cms-content.shared.ts with corrected dates, readTime, and cover images.", "files": ["portfolio-v1/src/lib/cms-content.shared.ts"] }
+        { "id": "STORY-4.1", "title": "Phase 1: Foundation (3 posts)", "status": "done" },
+        { "id": "STORY-4.2", "title": "Phase 2: Depth (4 posts)", "status": "done" },
+        { "id": "STORY-4.3", "title": "Phase 3: Ongoing (4 posts)", "status": "done" },
+        { "id": "STORY-4.4", "title": "Push all posts to Sanity CMS", "status": "done" },
+        { "id": "STORY-4.5", "title": "Staggered dates (2025-03 to 2026-12)", "status": "done" }
       ]
     },
     {
       "id": "EPIC-5",
-      "title": "Content — Write Phase 1 Posts",
-      "status": "completed",
-      "summary": "Write and publish 4 foundation blog posts (origin story through transformation).",
-      "value": "high",
-      "complexity": "high",
+      "title": "Blog Expansion Pipeline",
+      "status": "in-progress",
       "stories": [
-        { "id": "S-5.1", "title": "Write: Hello World — The Day I Wrote My First Line of Code", "done": true, "details": "800-1200 words. Origin story — 2022, first C++/web dev, self-taught journey through freeCodeCamp. Tags: beginner, self-taught, web-development, html, css, javascript. Published 2025-03-15.", "files": ["content/blog/hello-world-the-day-i-wrote-my-first-line-of-code.md"] },
-        { "id": "S-5.2", "title": "Write: Building Student Attendance Management System from Scratch", "done": true, "details": "1200-1800 words. C#/PostgreSQL barcode-based attendance system. Includes YouTube demo video embed + GitHub repo. Published 2025-09-10.", "files": ["content/blog/building-student-attendance-management-system-from-scratch.md"] },
-        { "id": "S-5.3", "title": "Write: From For Loops to Full-Stack Engineer", "done": true, "details": "1000-1500 words. 2023 transformation — from Java for loops to full-stack with Next.js, TypeScript, React. Project timeline table. Published 2025-11-05.", "files": ["content/blog/from-for-loops-to-full-stack-engineer.md"] }
+        { "id": "STORY-5.1", "title": "push-blog-to-sanity.mjs sync script", "status": "done" },
+        { "id": "STORY-5.2", "title": "fetch-blog-data.mjs inspection script", "status": "done" },
+        { "id": "STORY-5.3", "title": "Cover images for all posts", "status": "pending" },
+        { "id": "STORY-5.4", "title": "Category/tag filtering on blog list", "status": "pending" }
       ]
     },
     {
       "id": "EPIC-6",
-      "title": "Content — Write Phase 2 Posts",
-      "status": "completed",
-      "summary": "Write and publish 4 depth posts (client work, automation, portfolio, reflection).",
-      "value": "high",
-      "complexity": "high",
+      "title": "Image Content — Upload via Studio",
+      "status": "pending",
       "stories": [
-        { "id": "S-6.1", "title": "Write: How I Built an AI Chatbot for a Real Client", "done": true, "details": "1500-2000 words. Client work at Wilshire Financial Network — streaming, RAG, rate limiting. Includes TypeScript code snippets. Published 2026-01-15.", "files": ["content/blog/how-i-built-an-ai-chatbot-for-a-real-client.md"] },
-        { "id": "S-6.2", "title": "Write: What I Learned Automating Enterprise Workflows with n8n", "done": true, "details": "1200-1800 words. Document processing, HR onboarding, data sync automations. Metrics table. Published 2026-03-20.", "files": ["content/blog/what-i-learned-automating-enterprise-workflows-with-n8n.md"] },
-        { "id": "S-6.3", "title": "Write: Building a Portfolio with 278 Tests and a 100/100 Score", "done": true, "details": "1500-2500 words. Architecture, 278 tests breakdown, 19 CI/CD workflows, react-doctor. Published 2026-05-10.", "files": ["content/blog/building-a-portfolio-with-278-tests-and-100-score.md"] },
-        { "id": "S-6.4", "title": "Write: Impostor Syndrome at 50+ Repos", "done": true, "details": "800-1200 words. Honest reflection with 5 strategies for coping. Published 2026-07-01.", "files": ["content/blog/impostor-syndrome-at-50-plus-repos.md"] }
+        { "id": "STORY-6.1", "title": "Upload screenshots to Hello World post", "status": "pending" },
+        { "id": "STORY-6.2", "title": "Upload app screenshots to Attendance System post", "status": "pending" },
+        { "id": "STORY-6.3", "title": "Upload event photos to GitGoing post", "status": "pending" },
+        { "id": "STORY-6.4", "title": "Upload diagrams to AI Chatbot post", "status": "pending" },
+        { "id": "STORY-6.5", "title": "Upload workflow screenshots to n8n post", "status": "pending" },
+        { "id": "STORY-6.6", "title": "Upload test results/Lighthouse to Portfolio post", "status": "pending" },
+        { "id": "STORY-6.7", "title": "Upload architecture diagram to AI Chat post", "status": "pending" }
       ]
     },
     {
       "id": "EPIC-7",
-      "title": "Content — Write Phase 3 Posts",
-      "status": "completed",
-      "summary": "Write and publish ongoing content (AI, architecture, career advice, year review).",
-      "value": "medium",
-      "complexity": "high",
+      "title": "Future Blog Features",
+      "status": "planned",
       "stories": [
-        { "id": "S-7.1", "title": "Write: How I Use AI as a Force Multiplier", "done": true, "details": "1200-1800 words. AI toolkit, where AI shines vs falls short, golden rules. Includes rate-limiting middleware code. Published 2026-08-15.", "files": ["content/blog/how-i-use-ai-as-a-force-multiplier.md"] },
-        { "id": "S-7.2", "title": "Write: Architecture Behind This Portfolio's AI Chat", "done": true, "details": "1500-2500 words. Streaming architecture, context management, RAG integration, edge deployment, security. Published 2026-09-28.", "files": ["content/blog/architecture-behind-this-portfolios-ai-chat.md"] },
-        { "id": "S-7.3", "title": "Write: What Hiring Managers Look for in a Junior Dev", "done": true, "details": "1000-1500 words. Resume tips, interview strategies, red flags, advice for junior devs. Published 2026-11-10.", "files": ["content/blog/what-hiring-managers-look-for-in-a-junior-dev.md"] },
-        { "id": "S-7.4", "title": "Write: 2026 Year in Review", "done": true, "details": "1200-2000 words. Projects delivered, lessons learned, 2027 goals. Includes metrics table. Published 2026-12-28.", "files": ["content/blog/2026-year-in-review.md"] }
-      ]
-    },
-    {
-      "id": "EPIC-8",
-      "title": "Tests & Verification",
-      "status": "completed",
-      "summary": "Add tests for inline image rendering, gallery component, and verify quality gate.",
-      "value": "high",
-      "complexity": "medium",
-      "stories": [
-        { "id": "S-8.1", "title": "Test CollageGallery component", "done": true, "details": "Add tests for: (a) renders 2-col layout, (b) renders 3-col layout, (c) renders images with captions, (d) handles empty images array gracefully.", "files": ["portfolio-v1/src/__tests__/components/blog/CollageGallery.test.tsx"] },
-        { "id": "S-8.2", "title": "Test inline image rendering in blog post", "done": true, "details": "Covered via existing blog-uncovered tests + CollageGallery tests (6 tests). Image rendering verified through react-markdown img component handler.", "files": ["portfolio-v1/src/__tests__/components/blog/CollageGallery.test.tsx", "portfolio-v1/src/__tests__/app/blog-uncovered.test.tsx"] },
-        { "id": "S-8.3", "title": "Run quality gate", "done": true, "details": "Run: npx tsc --noEmit, npm run lint, npm run test -- --run, npm run doctor. All must pass (pre-existing gitleaks failures excluded).", "files": [] }
+        { "id": "STORY-7.1", "title": "Related posts at bottom of each post", "status": "planned" },
+        { "id": "STORY-7.2", "title": "Reading progress bar", "status": "done" },
+        { "id": "STORY-7.3", "title": "Social share buttons", "status": "planned" },
+        { "id": "STORY-7.4", "title": "Blog RSS feed", "status": "planned" },
+        { "id": "STORY-7.5", "title": "50+ post pipeline with content calendar", "status": "planned" },
+        { "id": "STORY-7.6", "title": "In-post table of contents", "status": "planned" },
+        { "id": "STORY-7.7", "title": "Estimated read time on blog list cards", "status": "done" }
       ]
     }
   ],
-  "phases": [
-    { "id": "PHASE-0", "label": "Plan & Audit", "epics": ["EPIC-0"], "status": "completed" },
-    { "id": "PHASE-1", "label": "Dev — Schema & Pipeline", "epics": ["EPIC-1", "EPIC-2", "EPIC-3"], "status": "completed" },
-    { "id": "PHASE-2", "label": "Data Fix — Existing Posts", "epics": ["EPIC-4"], "status": "completed" },
-    { "id": "PHASE-3", "label": "Content — Phase 1 Posts", "epics": ["EPIC-5"], "status": "completed" },
-    { "id": "PHASE-4", "label": "Content — Phase 2 Posts", "epics": ["EPIC-6"], "status": "completed" },
-    { "id": "PHASE-5", "label": "Content — Phase 3 Posts", "epics": ["EPIC-7"], "status": "completed" },
-    { "id": "PHASE-6", "label": "Tests & Verification", "epics": ["EPIC-8"], "status": "completed" }
+  "gaps": [
+    { "issue": "Posts with inline images", "current": 0, "target": 14 },
+    { "issue": "Image galleries used", "current": 0, "target": "4+ posts" },
+    { "issue": "Cover images on all posts", "current": 0, "target": 14 },
+    { "issue": "Total blog posts", "current": 14, "target": "50+" }
   ],
-  "openQuestions": [
-    "Should the image gallery support a 'mosaic' layout (different sized images) or just uniform grid?",
-    "Should inline images have a lightbox/zoom on click?",
-    "Should we auto-compute reading time from body word count rather than requiring manual entry?",
-    "Should we show author bio at the bottom of each blog post?"
-  ],
-  "completionSummary": {
-    "totalPosts": 14,
-    "newPostsWritten": 11,
-    "existingPostsUpdated": 3,
-    "dateRangeMonths": 21,
-    "totalCommitsInBranch": 26
+  "timeline": {
+    "phase0": { "what": "Fix existing: React error, schema, pipeline", "status": "done" },
+    "phase1": { "what": "Upload images via Studio for all posts", "status": "pending" },
+    "phase2": { "what": "Cover/OG images for all posts", "status": "pending" },
+    "phase3": { "what": "Category/tag filtering", "status": "pending" },
+    "phase4": { "what": "Social features (share, related posts)", "status": "planned" },
+    "phase5": { "what": "50+ post pipeline", "status": "planned" }
   }
 }
