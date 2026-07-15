@@ -14,8 +14,81 @@ import { ReadingProgress } from '@/components/ui/ReadingProgress';
 import { formatDateUtc } from '@/lib/date';
 import type { BlogPost } from '@/types';
 
+import CollageGallery from '@/components/blog/CollageGallery';
+import type { GalleryImage } from '@/components/blog/CollageGallery';
+
+function parseImageAlt(alt: string): { altText: string; caption: string; credit: string; source: string; license: string } {
+  const parts = alt.split('|');
+  return {
+    altText: parts[0] || '',
+    caption: parts[1] || '',
+    credit: parts[2] || '',
+    source: parts[3] || '',
+    license: parts[4] || '',
+  };
+}
+
+function preprocessContent(content: string): React.ReactNode[] {
+  const nodes: React.ReactNode[] = [];
+  const lines = content.split('\n');
+  let i = 0;
+
+  while (i < lines.length) {
+    const line = lines[i];
+
+    const galleryMatch = line.match(/^\[gallery:(\d?col)\]/);
+    if (galleryMatch) {
+      const layout = galleryMatch[1] as '2col' | '3col';
+      i++;
+      const images: GalleryImage[] = [];
+      while (i < lines.length && !lines[i].startsWith('[/gallery]')) {
+        const imgMatch = lines[i].match(/^!\[([^\]]*)\]\(([^)]+)\)/);
+        if (imgMatch) {
+          const { altText, caption, credit } = parseImageAlt(imgMatch[1]);
+          images.push({ url: imgMatch[2], alt: altText, caption, credit });
+        }
+        i++;
+      }
+      nodes.push(<CollageGallery key={`gallery-${nodes.length}`} images={images} layout={layout} />);
+      i++;
+      continue;
+    }
+
+    nodes.push(line);
+    i++;
+  }
+
+  return nodes;
+}
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any -- react-markdown Components type is overly strict for our custom components
 const markdownComponents: any = {
+  img: ({ src, alt }: { src?: string; alt?: string }) => {
+    const { altText, caption, credit, source, license } = parseImageAlt(alt || '');
+    return (
+      <figure className="my-6 space-y-2">
+        <div className="overflow-hidden rounded-lg border border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark">
+          <Image
+            src={src || ''}
+            alt={altText || ''}
+            width={800}
+            height={450}
+            sizes="(max-width: 768px) 100vw, 800px"
+            unoptimized
+            className="w-full object-cover"
+          />
+        </div>
+        {(caption || credit) && (
+          <figcaption className="text-xs text-text-muted-light dark:text-text-muted-dark leading-relaxed px-1">
+            {caption && <span>{caption}</span>}
+            {credit && <span> — <em>{credit}</em></span>}
+            {source && <span> (<a href={source} target="_blank" rel="noopener noreferrer" className="underline hover:text-accent-pink">source</a>)</span>}
+            {license && <span className="block text-[10px] opacity-70 mt-0.5">{license}</span>}
+          </figcaption>
+        )}
+      </figure>
+    );
+  },
   h2: ({ children }: { children: React.ReactNode }) => (
     <h2 className="text-lg font-semibold text-text-primary-light dark:text-text-primary-dark mt-8 mb-3">
       {children}
@@ -197,13 +270,21 @@ export default function BlogPostContent({ post, allPosts, slug, backLabel }: Rea
 
           {/* Content — rendered with react-markdown */}
           <div className="prose-custom">
-            <ReactMarkdown
-              remarkPlugins={[remarkGfm]}
-              rehypePlugins={[rehypeHighlight]}
-              components={markdownComponents}
-            >
-              {postObj.content}
-            </ReactMarkdown>
+            {preprocessContent(postObj.content).map((node, idx) => {
+              if (typeof node === 'string') {
+                return (
+                  <ReactMarkdown
+                    key={`md-${idx}`}
+                    remarkPlugins={[remarkGfm]}
+                    rehypePlugins={[rehypeHighlight]}
+                    components={markdownComponents}
+                  >
+                    {node}
+                  </ReactMarkdown>
+                );
+              }
+              return <React.Fragment key={`node-${idx}`}>{node}</React.Fragment>;
+            })}
           </div>
         </Card>
 
