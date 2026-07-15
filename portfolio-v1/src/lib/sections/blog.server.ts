@@ -20,6 +20,55 @@ function portableTextToMarkdown(blocks: unknown): string {
       continue;
     }
 
+    const imgBlock = block as {
+      _type?: string;
+      asset?: { url?: string };
+      alt?: string;
+      caption?: string;
+      credit?: string;
+      source?: string;
+      license?: string;
+    };
+
+    if (imgBlock._type === 'image') {
+      const url = imgBlock.asset?.url || '';
+      const alt = imgBlock.alt || '';
+      const caption = imgBlock.caption || '';
+      const credit = imgBlock.credit || '';
+      const source = imgBlock.source || '';
+      const license = imgBlock.license || '';
+      lines.push(`![${alt}|${caption}|${credit}|${source}|${license}](${url})`);
+      lines.push('');
+      continue;
+    }
+
+    const galleryBlock = block as {
+      _type?: string;
+      images?: Array<{
+        asset?: { url?: string };
+        alt?: string;
+        caption?: string;
+        credit?: string;
+      }>;
+      layout?: string;
+    };
+
+    if (galleryBlock._type === 'imageGallery') {
+      const layout = galleryBlock.layout || '2col';
+      const images = galleryBlock.images || [];
+      lines.push(`[gallery:${layout}]`);
+      for (const img of images) {
+        const url = img.asset?.url || '';
+        const alt = img.alt || '';
+        const caption = img.caption || '';
+        const credit = img.credit || '';
+        lines.push(`![${alt}|${caption}|${credit}||](${url})`);
+      }
+      lines.push(`[/gallery]`);
+      lines.push('');
+      continue;
+    }
+
     const candidate = block as {
       style?: string;
       children?: Array<{ text?: string }>;
