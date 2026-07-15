@@ -37,7 +37,7 @@
     },
     "sanity-studio": {
       "description": "Sanity CMS Studio (Sanity v4)",
-      "dockerfile": "portfolio-v1/studio/Dockerfile",
+      "dockerfile": "studio/Dockerfile",
       "port": 3333,
       "packageManager": "npm",
       "nodeVersion": "22",
@@ -86,7 +86,7 @@
       "title": "Sanity Studio Dockerfile",
       "status": "planned",
       "summary": "Create Dockerfile for Sanity Studio with npm, Node 22, and port 3333.",
-      "files": ["portfolio-v1/studio/Dockerfile"]
+      "files": ["studio/Dockerfile"]
     },
     {
       "id": "EPIC-3",
@@ -114,7 +114,7 @@
     "created": [
       "portfolio-v1/Dockerfile",
       "portfolio-v1/.dockerignore",
-      "portfolio-v1/studio/Dockerfile",
+      "studio/Dockerfile",
       "docker-compose.yml",
       ".env.docker.example",
       "Makefile",
