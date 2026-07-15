@@ -59,6 +59,20 @@ export interface CmsContent {
 
 export const fallbackBlogPosts: BlogPost[] = [
   {
+    id: 'impostor-syndrome-50-repos',
+    slug: 'impostor-syndrome-at-50-plus-repos',
+    title: 'Impostor Syndrome at 50+ Repos',
+    excerpt: 'A honest reflection on feeling like a fraud despite 50+ GitHub repositories, production applications, and years of building software.',
+    content: '# Impostor Syndrome at 50+ Repos\n\nI have 50+ GitHub repositories. I\'ve built production applications. I\'ve spoken at webinars. I\'ve deployed AI chatbots for real clients.\n\nAnd sometimes, I still feel like I have no idea what I\'m doing.\n\n## The Numbers\n\nLet me give you the stats that *look* impressive:\n\n- **50+ public repositories** spanning C#, Java, Python, TypeScript, JavaScript\n- **Production applications** serving real users\n- **CI/CD pipelines**, automated testing, security scanning\n- **Client projects** with weekly demos and feedback loops\n- **Open source contributions** with stars and forks\n\nBut here\'s what those numbers don\'t show:\n\n- The nights I spent staring at a bug I couldn\'t solve\n- The times I copied Stack Overflow answers without fully understanding them\n- The moments I felt completely out of my depth on a client call\n- The projects I abandoned because I didn\'t think they were good enough\n\n## What Impostor Syndrome Looks Like for Me\n\nIt\'s not the dramatic "I\'m going to be exposed as a fraud" panic. It\'s quieter than that.\n\nIt\'s opening someone else\'s code and thinking, "Why is theirs so much cleaner than mine?"\n\nIt\'s seeing a job posting that lists 15 requirements and thinking, "I only know 8 of those."\n\nIt\'s pushing code and bracing for someone to tell me it\'s wrong.\n\nIt\'s finishing a project and focusing on what I could have done better instead of what I accomplished.\n\n## The Turning Point\n\nI realized impostor syndrome wasn\'t going away. No matter how many repositories I created, how many projects I shipped, or how much positive feedback I got — that voice was still there.\n\nSo I stopped trying to make it go away. Instead, I learned to work with it.\n\n## Strategies That Help\n\n### 1. Track What You\'ve Actually Done\nI keep a simple log of every project I finish, every problem I solve, and every skill I learn. When impostor syndrome hits, I read through it. The evidence is hard to argue with.\n\n### 2. Talk to Other Developers\nEvery developer I\'ve respected has admitted to feeling the same way. Senior engineers, team leads, people with 20 years of experience — they all have moments of doubt. Knowing I\'m not alone makes a huge difference.\n\n### 3. Focus on Impact, Not Code Quality\nI used to obsess over whether my code was "elegant." Now I focus on whether it works, whether it helps people, and whether I can improve it later. Done is better than perfect.\n\n### 4. Say Yes, Then Figure It Out\nEarly in my career, I\'d decline opportunities I didn\'t feel "ready" for. Now I say yes and figure out the rest later. Most of the time, I\'m more capable than I give myself credit for.\n\n### 5. Teach What You Know\nWriting blog posts, sharing code, helping other developers — teaching forces you to realize how much you actually know. Every post I write reminds me that I have valuable experience to share.\n\n## The Truth About 50+ Repos\n\nMost of those repositories aren\'t masterpieces. Some are experiments that didn\'t work out. Some are projects I started and never finished. Some are code I\'d rewrite completely if I had the chance.\n\nBut every single one taught me something.',
+    date: '2026-07-01',
+    readTime: '4 min read',
+    tags: ['reflection', 'impostor', 'career'],
+    coverImage: '',
+    featured: false,
+    metaTitle: 'Impostor Syndrome at 50+ Repos',
+    metaDescription: 'A honest reflection on feeling like a fraud despite 50+ GitHub repositories, production applications, and years of building software.',
+  },
+  {
     id: 'portfolio-278-tests',
     slug: 'building-a-portfolio-with-278-tests-and-100-score',
     title: 'Building a Portfolio with 278 Tests and a 100/100 Score',
