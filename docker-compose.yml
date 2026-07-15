@@ -84,7 +84,7 @@ services:
   # ═══════════════════════════════════════════════════════════════
   sanity-studio:
     build:
-      context: ./portfolio-v1/studio
+      context: ./studio
       dockerfile: Dockerfile
       target: runner
     container_name: namias-studio
@@ -195,14 +195,14 @@ services:
   sanity-studio-dev:
     profiles: ["dev"]
     build:
-      context: ./portfolio-v1/studio
+      context: ./studio
       dockerfile: Dockerfile
       target: deps
     container_name: namias-studio-dev
     ports:
       - "3333:3333"
     volumes:
-      - ./portfolio-v1/studio:/app
+      - ./studio:/app
       - /app/node_modules
     env_file:
       - .env.docker
