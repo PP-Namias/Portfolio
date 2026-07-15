@@ -4,7 +4,7 @@
 >
 > **Owner:** Jhon Keneth Ryan B. Namias (PP Namias)
 >
-> **Last Updated:** 2026-07-16
+> **Last Updated:** 2026-07-16 (updated Phase 1-3 post list)
 
 ---
 
@@ -295,32 +295,31 @@ Replace both with version that handles:
 
 ## 5. Recommended Blog Posts
 
-### Phase 1: Foundation (4 new posts)
+### Phase 1: Foundation (3 new posts)
 
 | # | Title | Est. Words | Suggested Date | Tags |
 |---|-------|-----------|----|------|
-| 1 | The Day I Wrote My First Line of Code | 800-1200 | 2025-03-15 | c++, learning, origin |
-| 2 | Why CS50 Changed How I Think About Problems | 1000-1500 | 2025-06-20 | cs50, learning, algorithms |
-| 3 | Building CaseMaster: A Case Management System from Scratch | 1200-1800 | 2025-09-10 | project, java, desktop |
-| 4 | From For Loops to Full-Stack: My 2023 Transformation | 1000-1500 | 2025-11-05 | growth, fullstack, journey |
+| 1 | Hello World: The Day I Wrote My First Line of Code | 800-1200 | 2025-03-15 | beginner, self-taught, web-development, html, css, javascript |
+| 2 | Building Student Attendance Management System from Scratch | 1200-1800 | 2025-09-10 | csharp, postgresql, desktop, attendance, barcode, project |
+| 3 | From For Loops to Full-Stack Engineer | 1000-1500 | 2025-11-05 | growth, fullstack, journey, transformation |
 
 ### Phase 2: Depth (4 new posts)
 
 | # | Title | Est. Words | Suggested Date | Tags |
 |---|-------|-----------|----|------|
-| 5 | How I Built an AI Chatbot for a Real Client | 1500-2000 | 2026-01-15 | ai, chatbot, llm, client-work |
-| 6 | What I Learned Automating Enterprise Workflows with n8n | 1200-1800 | 2026-03-20 | n8n, automation, workflow |
-| 7 | Building a Portfolio with 278 Tests and a 100/100 Score | 1500-2500 | 2026-05-10 | nextjs, testing, react |
-| 8 | Impostor Syndrome at 50+ Repos: A 2026 Reflection | 800-1200 | 2026-07-01 | reflection, impostor, career |
+| 4 | How I Built an AI Chatbot for a Real Client | 1500-2000 | 2026-01-15 | ai, chatbot, llm, client-work |
+| 5 | What I Learned Automating Enterprise Workflows with n8n | 1200-1800 | 2026-03-20 | n8n, automation, workflow |
+| 6 | Building a Portfolio with 278 Tests and a 100/100 Score | 1500-2500 | 2026-05-10 | nextjs, testing, react |
+| 7 | Impostor Syndrome at 50+ Repos | 800-1200 | 2026-07-01 | reflection, impostor, career |
 
-### Phase 3: Ongoing
+### Phase 3: Ongoing (4 new posts)
 
 | # | Title | Est. Words | Suggested Date | Tags |
 |---|-------|-----------|----|------|
-| 9 | How I Use AI as a Force Multiplier (Without Losing My Edge) | 1200-1800 | 2026-08-15 | ai, productivity, balance |
-| 10 | The Architecture Behind This Portfolio's AI Chat | 1500-2500 | 2026-09-28 | ai-chat, architecture, rag |
-| 11 | What Hiring Managers Look for in a Junior Dev | 1000-1500 | 2026-11-10 | career, interview, advice |
-| 12 | 2026 Year in Review: Ships, Misses, and Lessons | 1200-2000 | 2026-12-28 | reflection, year-in-review |
+| 8 | How I Use AI as a Force Multiplier | 1200-1800 | 2026-08-15 | ai, productivity, balance |
+| 9 | Architecture Behind This Portfolio's AI Chat | 1500-2500 | 2026-09-28 | ai-chat, architecture, rag |
+| 10 | What Hiring Managers Look for in a Junior Dev | 1000-1500 | 2026-11-10 | career, interview, advice |
+| 11 | 2026 Year in Review | 1200-2000 | 2026-12-28 | reflection, year-in-review |
 
 ---
 
@@ -330,14 +329,12 @@ Replace both with version that handles:
 
 | Post | Images Needed | Type |
 |------|--------------|------|
-| First Line of Code | Screenshot of early code, IDE | Single |
-| CS50 | CS50 certificate, David Malan photo | Single |
-| CaseMaster | App screenshots (2-3), architecture diagram | Collage |
+| Hello World | FreeCodeCamp splash, first code screenshot, IDE | Single |
+| Student Attendance System | App screenshots, barcode scanner UI, dashboard | Collage |
 | For Loops to Full-Stack | Old project screenshots, evolution timeline | Collage |
 | AI Chatbot | Chat UI, architecture diagram, metrics | Collage |
 | n8n Workflows | Workflow editor screenshot, flow diagram | Single + collage |
 | Portfolio Build | Lighthouse score, test results, components | Collage |
-| GitGoing | Stage photos, banner, audience (3+ photos) | Collage |
 | Impostor Syndrome | GitHub contribution graph, stats | Single |
 | AI as Force Multiplier | Comparison screenshots | Single |
 | AI Chat Architecture | System diagram, response comparison | Collage |
@@ -352,9 +349,10 @@ Replace both with version that handles:
 |-------|------|------|
 | **Phase 0** | Fix existing: backdate, readTime, inline images | Week 1 |
 | **Phase 1** | Dev work: schema, pipeline, render components | Weeks 1-2 |
-| **Phase 2** | Write + publish Phase 1 posts (4) | Weeks 3-6 |
+| **Phase 2** | Write + publish Phase 1 posts (3) | Weeks 3-6 |
 | **Phase 3** | Write + publish Phase 2 posts (4) | Weeks 7-10 |
-| **Phase 4** | Ongoing cadence — 1 post every 3-4 weeks | Week 11+ |
+| **Phase 4** | Write + publish Phase 3 posts (4) | Weeks 11-14 |
+| **Phase 5** | Ongoing cadence — 1 post every 3-4 weeks | Week 15+ |
 
 ---
 
@@ -362,10 +360,10 @@ Replace both with version that handles:
 
 | Metric | Current | Target |
 |--------|---------|--------|
-| Total blog posts | 3 | 12+ |
+| Total blog posts | 3 | 14+ (3 existing + 11 new) |
 | Posts with inline images | 0 | All new + backfilled |
 | Posts with image collages | 0 | 4+ |
-| Date spread | Same day | 12+ month range |
+| Date spread | Same day | 21+ month range (2025-03 to 2026-12) |
 | readTime set | 0/3 | 100% |
 | Cover images | 3/3 | 100% |
 
@@ -383,8 +381,13 @@ Replace both with version that handles:
 - [ ] Set `readTime` on existing posts
 - [ ] Add inline images to existing posts
 - [ ] Update fallback data in `cms-content.shared.ts`
-- [ ] Write Phase 1 posts in Sanity studio
+- [ ] Write Phase 1 posts as local MD files
+- [ ] Write Phase 2 posts as local MD files
+- [ ] Write Phase 3 posts as local MD files
+- [ ] Update fallbackBlogPosts in cms-content.shared.ts
+- [ ] Add YouTube embed support to BlogPostContent.tsx
 - [ ] Review and publish
+- [ ] Sync to Sanity CMS
 
 ---
 
