@@ -121,7 +121,7 @@ These routes (`/phpmyadmin-canary`, `/wp-admin-canary`, `/.env-canary`, etc.) ar
 
 ## 5. Sanity Studio Deployment
 
-The Sanity Studio is a sub-project at `portfolio-v1/studio/`.
+The Sanity Studio is a sub-project at `studio/` (root level).
 
 ### Option A: Vercel (same project)
 
@@ -137,7 +137,7 @@ cd studio && npx sanity build
 Deploy studio separately via Sanity:
 
 ```bash
-cd portfolio-v1/studio
+cd studio
 npx sanity deploy
 ```
 
