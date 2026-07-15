@@ -2,8 +2,9 @@
   "id": "PRD-SANITY-STUDIO-ROOT",
   "title": "Root-Level Sanity CMS Studio — Shared Smart CMS",
   "version": "1.0.0",
-  "status": "in-progress",
+  "status": "completed",
   "created": "2026-07-14",
+  "completedAt": "2026-07-14",
   "description": "Extract Sanity Studio from portfolio-v1/studio/ to a root-level studio/ directory. Make it a shared CMS serving both portfolio-v1 and portfolio-v2. Add Sanity Assist (AI-powered) as the primary smart feature. Use pnpm. Create a content lifecycle workflow for ongoing maintenance.",
 
   "context": {
