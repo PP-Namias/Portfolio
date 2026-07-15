@@ -28,6 +28,28 @@ function parseImageAlt(alt: string): { altText: string; caption: string; credit:
   };
 }
 
+function YoutubeEmbed({ videoId, title }: { videoId: string; title?: string }) {
+  return (
+    <div className="my-6" data-testid="youtube-embed">
+      <div className="relative w-full aspect-video overflow-hidden rounded-lg border border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark">
+        <iframe
+          src={`https://www.youtube-nocookie.com/embed/${videoId}`}
+          title={title || 'YouTube video player'}
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowFullScreen
+          className="absolute inset-0 w-full h-full"
+          sandbox="allow-same-origin allow-scripts allow-presentation"
+        />
+      </div>
+      {title && (
+        <p className="text-xs text-text-muted-light dark:text-text-muted-dark text-center mt-1.5">
+          {title}
+        </p>
+      )}
+    </div>
+  );
+}
+
 function preprocessContent(content: string): React.ReactNode[] {
   const nodes: React.ReactNode[] = [];
   const lines = content.split('\n');
@@ -35,6 +57,13 @@ function preprocessContent(content: string): React.ReactNode[] {
 
   while (i < lines.length) {
     const line = lines[i];
+
+    const youtubeMatch = line.match(/^\[youtube:([a-zA-Z0-9_-]+)\](?:\s*"([^"]*)")?$/);
+    if (youtubeMatch) {
+      nodes.push(<YoutubeEmbed key={`yt-${nodes.length}`} videoId={youtubeMatch[1]} title={youtubeMatch[2]} />);
+      i++;
+      continue;
+    }
 
     const galleryMatch = line.match(/^\[gallery:(\d?col)\]/);
     if (galleryMatch) {
