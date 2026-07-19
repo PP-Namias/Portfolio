@@ -4,7 +4,7 @@ slug: 'how-i-built-an-ai-chatbot-for-a-real-client'
 excerpt: 'From concept to production — how I designed, built, and deployed an AI-powered chatbot system for Wilshire Financial Network with streaming, RAG, and real-world impact.'
 featured: false
 publishedAt: '2026-01-15T10:00:00Z'
-published: true
+published: false
 author: 'PP Namias'
 tags: [ ai, chatbot, llm, client-work ]
 readTime: '7 min read'
