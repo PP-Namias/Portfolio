@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { timingSafeEqual } from 'node:crypto';
 import { clearCmsQueryCache } from '@/lib/cms-content.server';
 import { invalidateByTag } from '@/lib/cache';
+import { isVectorStoreConfigured } from '@/lib/rag/vector-store';
 import { SITE_URL } from '@/lib/site-config';
 
 const REVALIDATE_PATHS = ['/', '/blog', '/blog/[slug]', '/projects/[slug]', '/sitemap.xml'] as const;
@@ -120,6 +121,23 @@ export async function POST(request: NextRequest) {
   }
 
   revalidateCmsPaths();
+
+  if (isVectorStoreConfigured() && docType) {
+    const docId = typeof body?._id === 'string' ? body._id : docType;
+    const operation = typeof body?.operation === 'string' ? body.operation : '';
+
+    import('@/lib/rag/indexer').then(({ reindexDocument, deleteDocumentVectors }) => {
+      if (operation === 'delete') {
+        deleteDocumentVectors(docId).catch((err) =>
+          console.warn('[RAG Webhook] Delete vectors failed', err)
+        );
+      } else {
+        reindexDocument(docType, docId).catch((err) =>
+          console.warn('[RAG Webhook] Reindex document failed', err)
+        );
+      }
+    });
+  }
 
   return withCorsHeaders(NextResponse.json({
     revalidated: true,
