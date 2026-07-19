@@ -1,17 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 import { getCmsContent } from '@/lib/cms-content.server';
+import { retrieve, formatContext, isRagConfigured } from '@/lib/rag/retriever';
 
-import { buildFallbackResponse, buildPresetResponse } from './lib/fallbackResponder';
-import {
-  classifyProviderError,
-  generateWithGemini,
-  generateWithOpenAI,
-  getProviderHealth,
-  isMultiProviderEnabled,
-} from './lib/providers';
+import { buildSmartFallback } from './lib/smartFallback';
+import { classifyProviderError, generateWithGemini, generateWithOpenAI, getProviderHealth, isMultiProviderEnabled } from './lib/providers';
 import { buildSystemPrompt } from './lib/promptBuilder';
 import { isRateLimited } from './lib/rateLimiter';
+import { RetrievedChunk } from '@/lib/rag/types';
 import {
   CertificationData,
   ChatDataContext,
@@ -168,7 +164,6 @@ export async function POST(request: NextRequest) {
       memberships: cmsContent.memberships as MembershipData[],
       socials: cmsContent.socialLinks as SocialData[],
     };
-    const systemPrompt = buildSystemPrompt(chatDataContext);
 
     if (await isRateLimited(clientIp)) {
       logEvent('warn', 'chat_rate_limited', {
@@ -203,18 +198,18 @@ export async function POST(request: NextRequest) {
     const { message, history } = parsedRequest;
     fallbackUserMessage = message;
 
-    const presetResponse = buildPresetResponse(message, chatDataContext);
-    if (presetResponse) {
-      logEvent('info', 'chat_preset_response', {
-        requestId,
-        latencyMs: Date.now() - requestStartedAt,
-      });
-
-      return withRequestId(
-        NextResponse.json({ message: presetResponse, preset: true, fallback: false }),
-        requestId
-      );
+    let ragContext = '';
+    let ragChunks: RetrievedChunk[] = [];
+    try {
+      if (isRagConfigured()) {
+        ragChunks = await retrieve(message);
+        ragContext = formatContext(ragChunks);
+      }
+    } catch {
+      // RAG failure is non-fatal — proceed without augmented context
     }
+
+    const systemPrompt = buildSystemPrompt(chatDataContext, ragContext);
 
     const providerAttempts: Array<Record<string, unknown>> = [];
 
@@ -282,7 +277,7 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    const fallbackResponse = buildFallbackResponse(message, chatDataContext);
+    const fallbackResponse = buildSmartFallback(message, chatDataContext, ragChunks);
 
     logEvent('warn', 'chat_fallback_response', {
       requestId,
@@ -308,7 +303,7 @@ export async function POST(request: NextRequest) {
     if (fallbackUserMessage) {
       return withRequestId(
         NextResponse.json({
-          message: buildFallbackResponse(fallbackUserMessage, chatDataContext),
+          message: buildSmartFallback(fallbackUserMessage, chatDataContext),
           fallback: true,
         }),
         requestId
