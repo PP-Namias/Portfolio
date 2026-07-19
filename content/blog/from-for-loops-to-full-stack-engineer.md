@@ -4,7 +4,7 @@ slug: 'from-for-loops-to-full-stack-engineer'
 excerpt: 'How I went from writing basic Java for loops in 2022 to building full-stack applications with modern frameworks, AI integration, and production deployments.'
 featured: false
 publishedAt: '2025-11-05T10:00:00Z'
-published: true
+published: false
 author: 'PP Namias'
 tags: [ growth, fullstack, journey, transformation ]
 readTime: '5 min read'
