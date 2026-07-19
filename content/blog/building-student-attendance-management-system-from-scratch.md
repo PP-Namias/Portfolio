@@ -4,7 +4,7 @@ slug: 'building-student-attendance-management-system-from-scratch'
 excerpt: 'Building a full-featured attendance tracking system with barcode scanning, mobile app, and admin dashboard using C# and PostgreSQL.'
 featured: false
 publishedAt: '2025-09-10T14:00:00Z'
-published: true
+published: false
 author: 'PP Namias'
 tags: [ csharp, postgresql, desktop, attendance, barcode, project ]
 readTime: '6 min read'
