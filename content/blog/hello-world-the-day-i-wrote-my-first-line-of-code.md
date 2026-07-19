@@ -4,7 +4,7 @@ slug: 'hello-world-the-day-i-wrote-my-first-line-of-code'
 excerpt: 'What started as pure curiosity in 2022 turned into a lifelong passion for building software. That first Hello World opened the door to an entirely new world of problem-solving, creativity, and endless possibilities.'
 featured: false
 publishedAt: '2025-03-15T10:00:00Z'
-published: true
+published: false
 author: 'PP Namias'
 tags: [ beginner, self-taught, web-development, html, css, javascript ]
 readTime: '4 min read'
