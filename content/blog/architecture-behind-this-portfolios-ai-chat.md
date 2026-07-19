@@ -4,7 +4,7 @@ slug: 'architecture-behind-this-portfolios-ai-chat'
 excerpt: 'How I built the AI chat on this very portfolio — streaming responses, context management, RAG, and edge deployment with Cloudflare Workers.'
 featured: false
 publishedAt: '2026-09-28T10:00:00Z'
-published: true
+published: false
 author: 'PP Namias'
 tags: [ ai-chat, architecture, rag ]
 readTime: '7 min read'
