@@ -4,7 +4,7 @@ slug: 'building-a-portfolio-with-278-tests-and-100-score'
 excerpt: 'The architecture, testing strategy, and engineering decisions behind a portfolio that ships with 278 tests, 19 CI/CD workflows, and a perfect react-doctor score.'
 featured: false
 publishedAt: '2026-05-10T10:00:00Z'
-published: true
+published: false
 author: 'PP Namias'
 tags: [ nextjs, testing, react ]
 readTime: '8 min read'
