@@ -4,7 +4,7 @@ slug: 'how-i-use-ai-as-a-force-multiplier'
 excerpt: 'Practical AI usage patterns that make me a faster, better developer — without losing the deep understanding that comes from doing the work yourself.'
 featured: false
 publishedAt: '2026-08-15T10:00:00Z'
-published: true
+published: false
 author: 'PP Namias'
 tags: [ ai, productivity, balance ]
 readTime: '5 min read'
