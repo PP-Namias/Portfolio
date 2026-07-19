@@ -4,7 +4,7 @@ slug: '2026-year-in-review'
 excerpt: 'Reflecting on a year of building, learning, and growth — projects shipped, lessons learned, and what\'s ahead in 2027.'
 featured: false
 publishedAt: '2026-12-28T10:00:00Z'
-published: true
+published: false
 author: 'PP Namias'
 tags: [ reflection, year-in-review ]
 readTime: '6 min read'
