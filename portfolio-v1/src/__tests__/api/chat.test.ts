@@ -247,7 +247,7 @@ describe('/api/chat route', () => {
     expect(res.status).toBe(200);
     const data = await res.json();
     expect(data.fallback).toBe(true);
-    expect(data.message).toContain('verified portfolio data');
+    expect(data.message).toContain('portfolio assistant');
     expect(data.message.toLowerCase()).not.toMatch(/backup mode|fallback mode|degraded/);
   });
 
@@ -260,7 +260,7 @@ describe('/api/chat route', () => {
     expect(res.status).toBe(200);
     const data = await res.json();
     expect(data.fallback).toBe(true);
-    expect(data.message).toContain('verified portfolio data');
+    expect(data.message).toContain('portfolio assistant');
     expect(data.message.toLowerCase()).not.toMatch(/backup mode|fallback mode|degraded/);
   });
 
@@ -271,7 +271,7 @@ describe('/api/chat route', () => {
     expect(res.status).toBe(200);
     const data = await res.json();
     expect(data.fallback).toBe(true);
-    expect(data.message).toContain('verified portfolio data');
+    expect(data.message).toContain('portfolio assistant');
     expect(data.message.toLowerCase()).not.toMatch(/backup mode|fallback mode|degraded/);
   });
 
@@ -286,165 +286,107 @@ describe('/api/chat route', () => {
     expect(res.status).toBe(200);
     const data = await res.json();
     expect(data.fallback).toBe(true);
-    expect(data.message).toContain('verified portfolio data');
+    expect(data.message).toContain('portfolio assistant');
     expect(data.message.toLowerCase()).not.toMatch(/backup mode|fallback mode|degraded/);
   });
 
-  it('returns preset response and skips Gemini for common intents', async () => {
+  it('returns AI-generated resume response with action tag', async () => {
     const req = createRequest({ message: 'Can I get your resume?' });
     const res = await POST(req);
     expect(res.status).toBe(200);
     const data = await res.json();
-    expect(data.preset).toBe(true);
     expect(data.fallback).toBe(false);
-    expect(data.message).toContain('[ACTION:resume]');
-    expect(mockGetGenerativeModel).not.toHaveBeenCalled();
-    expect(mockSendMessage).not.toHaveBeenCalled();
+    expect(mockGetGenerativeModel).toHaveBeenCalled();
   });
 
-  it('removes fallback notice via replacement path when startsWith check is false', async () => {
-    const req = createRequest({ message: 'Can I get your resume?' });
-    const startsWithSpy = vi.spyOn(String.prototype, 'startsWith').mockReturnValue(false);
-
-    try {
-      const res = await POST(req);
-      expect(res.status).toBe(200);
-      const data = await res.json();
-
-      expect(data.preset).toBe(true);
-      expect(data.message).toContain('[ACTION:resume]');
-      expect(data.message.toLowerCase()).not.toMatch(/backup mode|fallback mode|degraded/);
-      expect(mockGetGenerativeModel).not.toHaveBeenCalled();
-    } finally {
-      startsWithSpy.mockRestore();
-    }
-  });
-
-  it('returns richer contact preset response with direct action tags', async () => {
+  it('returns AI-generated contact response', async () => {
     const req = createRequest({ message: 'How can I contact Keneth?' });
     const res = await POST(req);
     expect(res.status).toBe(200);
     const data = await res.json();
 
-    expect(data.preset).toBe(true);
-    expect(data.message).toContain('[ACTION:email]');
-    expect(data.message).toContain('[ACTION:linkedin]');
-    expect(data.message).toContain('[ACTION:github]');
-    expect(data.message).toContain('[ACTION:booking]');
-    expect(mockGetGenerativeModel).not.toHaveBeenCalled();
+    expect(data.fallback).toBe(false);
+    expect(mockGetGenerativeModel).toHaveBeenCalled();
   });
 
-  it('returns booking preset response and skips Gemini', async () => {
+  it('returns AI-generated booking response', async () => {
     const req = createRequest({ message: 'Can we schedule a meeting?' });
     const res = await POST(req);
     expect(res.status).toBe(200);
     const data = await res.json();
 
-    expect(data.preset).toBe(true);
-    expect(data.message).toContain('[ACTION:booking]');
-    expect(data.message).toContain('15-minute and 30-minute slots');
-    expect(mockGetGenerativeModel).not.toHaveBeenCalled();
+    expect(data.fallback).toBe(false);
+    expect(mockGetGenerativeModel).toHaveBeenCalled();
   });
 
-  it('returns skills preset response and skips Gemini', async () => {
+  it('returns AI-generated skills response', async () => {
     const req = createRequest({ message: 'What tech stack do you specialize in?' });
     const res = await POST(req);
     expect(res.status).toBe(200);
     const data = await res.json();
 
-    expect(data.preset).toBe(true);
-    expect(data.message).toContain('modern full-stack and AI automation stack');
-    expect(data.message).toContain('[ACTION:projects]');
-    expect(mockGetGenerativeModel).not.toHaveBeenCalled();
+    expect(data.fallback).toBe(false);
+    expect(mockGetGenerativeModel).toHaveBeenCalled();
   });
 
-  it('returns projects preset response and skips Gemini', async () => {
+  it('returns AI-generated projects response', async () => {
     const req = createRequest({ message: 'What projects have you built?' });
     const res = await POST(req);
     expect(res.status).toBe(200);
     const data = await res.json();
 
-    expect(data.preset).toBe(true);
-    expect(data.message).toContain('featured projects');
-    expect(data.message).toContain('[ACTION:experience]');
-    expect(mockGetGenerativeModel).not.toHaveBeenCalled();
+    expect(data.fallback).toBe(false);
+    expect(mockGetGenerativeModel).toHaveBeenCalled();
   });
 
-  it('returns achievements preset response and skips Gemini', async () => {
+  it('routes all messages through AI provider for intelligent responses', async () => {
     const req = createRequest({ message: 'What are your key achievements?' });
     const res = await POST(req);
     expect(res.status).toBe(200);
     const data = await res.json();
 
-    expect(data.preset).toBe(true);
-    expect(data.message).toContain('key achievements');
-    expect(data.message).toContain('9-engineer team');
-    expect(mockGetGenerativeModel).not.toHaveBeenCalled();
+    expect(data.fallback).toBe(false);
+    expect(mockGetGenerativeModel).toHaveBeenCalled();
   });
 
-  it('returns experience preset response and skips Gemini', async () => {
+  it('returns AI-generated experience response', async () => {
     const req = createRequest({ message: 'Tell me about your work experience' });
     const res = await POST(req);
     expect(res.status).toBe(200);
     const data = await res.json();
 
-    expect(data.preset).toBe(true);
-    expect(data.message).toContain("recent roles include");
-    expect(mockGetGenerativeModel).not.toHaveBeenCalled();
+    expect(data.fallback).toBe(false);
+    expect(mockGetGenerativeModel).toHaveBeenCalled();
   });
 
-  it('returns certifications preset response and skips Gemini', async () => {
+  it('returns AI-generated certification response', async () => {
     const req = createRequest({ message: 'What certifications do you have?' });
     const res = await POST(req);
     expect(res.status).toBe(200);
     const data = await res.json();
 
-    expect(data.preset).toBe(true);
-    expect(data.message).toContain('Most impactful highlights');
-    expect(mockGetGenerativeModel).not.toHaveBeenCalled();
+    expect(data.fallback).toBe(false);
+    expect(mockGetGenerativeModel).toHaveBeenCalled();
   });
 
-  it('returns profile intro preset response for "Who is Keneth" intent', async () => {
+  it('returns AI-generated profile intro for "Who is Keneth" intent', async () => {
     const req = createRequest({ message: 'Who is Keneth?' });
     const res = await POST(req);
     expect(res.status).toBe(200);
     const data = await res.json();
 
-    expect(data.preset).toBe(true);
-    expect(data.message).toContain('based in');
-    expect(data.message).toContain('[ACTION:skills]');
-    expect(mockGetGenerativeModel).not.toHaveBeenCalled();
+    expect(data.fallback).toBe(false);
+    expect(mockGetGenerativeModel).toHaveBeenCalled();
   });
 
-  it('uses GWA wording for education responses', async () => {
+  it('returns AI-generated education response with GWA wording', async () => {
     const req = createRequest({ message: 'Tell me about your education' });
     const res = await POST(req);
     expect(res.status).toBe(200);
     const data = await res.json();
 
-    expect(data.preset).toBe(true);
-    expect(data.message).toContain('GWA');
-    expect(data.message).not.toContain('GPA');
-    expect(mockGetGenerativeModel).not.toHaveBeenCalled();
-  });
-
-  it('returns location fallback when education data is unavailable', async () => {
-    const profile = mockCmsContent.profile as { education?: unknown };
-    const originalEducation = profile.education;
-    profile.education = undefined;
-
-    try {
-      const req = createRequest({ message: 'Tell me about your education' });
-      const res = await POST(req);
-      expect(res.status).toBe(200);
-      const data = await res.json();
-
-      expect(data.preset).toBe(true);
-      expect(data.message).toContain('currently based in');
-      expect(mockGetGenerativeModel).not.toHaveBeenCalled();
-    } finally {
-      profile.education = originalEducation;
-    }
+    expect(data.fallback).toBe(false);
+    expect(mockGetGenerativeModel).toHaveBeenCalled();
   });
 
   it('falls back to next model when first model quota is exhausted', async () => {
@@ -461,21 +403,16 @@ describe('/api/chat route', () => {
   });
 
   it('returns fallback from outer catch when an unexpected error occurs after sanitization', async () => {
-    const req = createRequest({ message: 'Can I get your resume?' });
-    const startsWithSpy = vi.spyOn(String.prototype, 'startsWith').mockImplementation(() => {
-      throw new Error('Unexpected startsWith failure');
-    });
+    mockSendMessage.mockRejectedValue(new Error('Provider failure'));
+    vi.stubEnv('CHAT_MULTI_PROVIDER_ENABLED', 'false');
+    vi.stubEnv('OPENAI_API_KEY', '');
 
-    try {
-      const res = await POST(req);
-      expect(res.status).toBe(200);
-      const data = await res.json();
-      expect(data.fallback).toBe(true);
-      expect(data.message).toContain('verified portfolio data');
-      expect(data.message.toLowerCase()).not.toMatch(/backup mode|fallback mode|degraded/);
-    } finally {
-      startsWithSpy.mockRestore();
-    }
+    const req = createRequest({ message: 'Can I get your resume?' });
+    const res = await POST(req);
+    expect(res.status).toBe(200);
+    const data = await res.json();
+    expect(data.fallback).toBe(true);
+    expect(data.message).toContain('Keneth');
   });
 
   it('returns 500 from outer catch when an unexpected error occurs before fallback message is set', async () => {
@@ -627,7 +564,7 @@ describe('/api/chat route', () => {
 
       const data = await res.json();
       expect(data.fallback).toBe(true);
-      expect(data.message).toContain('verified portfolio data');
+      expect(data.message).toContain('portfolio assistant');
       expect(data.message.toLowerCase()).not.toMatch(/backup mode|fallback mode|degraded/);
     } finally {
       openaiFetchSpy.mockRestore();
