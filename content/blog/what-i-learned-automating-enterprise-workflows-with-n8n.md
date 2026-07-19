@@ -4,7 +4,7 @@ slug: 'what-i-learned-automating-enterprise-workflows-with-n8n'
 excerpt: 'How I used n8n to automate complex enterprise workflows — from data synchronization to AI-powered document processing — saving hours of manual work daily.'
 featured: false
 publishedAt: '2026-03-20T10:00:00Z'
-published: true
+published: false
 author: 'PP Namias'
 tags: [ n8n, automation, workflow ]
 readTime: '6 min read'
