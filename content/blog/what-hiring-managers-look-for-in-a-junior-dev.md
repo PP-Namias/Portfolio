@@ -4,7 +4,7 @@ slug: 'what-hiring-managers-look-for-in-a-junior-dev'
 excerpt: 'Insights from experience on what actually matters when applying for junior developer roles — beyond the tech stack checklist.'
 featured: false
 publishedAt: '2026-11-10T10:00:00Z'
-published: true
+published: false
 author: 'PP Namias'
 tags: [ career, interview, advice ]
 readTime: '5 min read'
