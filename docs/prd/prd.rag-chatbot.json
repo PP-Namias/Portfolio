@@ -1,0 +1,213 @@
+{
+  "projectName": "RAG Chatbot – Smart Portfolio AI Assistant",
+  "objectives": [
+    "Enable real-time semantic retrieval from Sanity CMS (20+ document types) to ground AI responses in live portfolio data",
+    "Build a chunking and embedding pipeline that converts CMS documents into vector embeddings stored in Upstash Redis",
+    "Integrate vector search into the existing chat API so retrieved context is injected into the LLM system prompt",
+    "Keep the existing tsundere personality, action tags ([ACTION:resume], [ACTION:booking], [ACTION:email]), and multi-provider fallback (Gemini → OpenAI → rule-based) intact",
+    "Trigger re-embedding of changed documents via the existing Sanity webhook route",
+    "Achieve <500ms average retrieval latency and <3s total response time for 95% of chat queries"
+  ],
+  "architecture": {
+    "dataPipeline": {
+      "source": "Sanity CMS v4 (studio) — 20 document types (profile, project, experience, certification, post, technology, membership, recommendation, galleryImage, etc.)",
+      "fetch": "Existing `getCmsContent()` via `@sanity/client` v7 with GROQ queries, two-layer cache (in-memory L1 + Upstash Redis L2), stale-while-revalidate",
+      "chunking": {
+        "strategy": "Semantic chunking per document type",
+        "chunkSize": 512,
+        "chunkOverlap": 64,
+        "rules": [
+          "Project documents are chunked by field: summary, challenge, solution, result each become one chunk + a combined overview",
+          "Experience documents are chunked by role: company summary + each achievement + technology list",
+          "Blog posts are chunked by paragraph clusters (max 512 tokens per chunk)",
+          "Certification, membership, and technology documents are kept as single chunks",
+          "Profile + education + highlights are embedded as a single profile chunk",
+          "Each chunk is tagged with its source document type, document ID, and chunk index for traceability"
+        ]
+      },
+      "embedding": {
+        "provider": "Google Gemini (via existing `@google/generative-ai` v0.24.1)",
+        "model": "text-embedding-004 (768-dimensional)",
+        "batchSize": 10,
+        "rateLimit": "60 RPM (free tier), 1500 RPM (paid)"
+      },
+      "vectorStore": {
+        "provider": "Upstash Redis (already installed: `@upstash/redis` v1.38.0)",
+        "indexType": "Upstash Vector index with cosine distance",
+        "dimensions": 768,
+        "metadata": {
+          "docId": "string — Sanity document _id",
+          "docType": "string — Sanity document _type",
+          "chunkIndex": "number — position within the document",
+          "chunkText": "string — original chunk text for result display",
+          "updatedAt": "ISO timestamp — for staleness checks"
+        },
+        "ttl": "0 (permanent; re-embedded on content change via webhook)"
+      },
+      "syncStrategy": "On-demand via webhook + periodic full-sync cron (daily). Webhook handler at `POST /api/sanity/webhook` already exists — extend it to call the re-embedding pipeline for the changed document type."
+    },
+    "generationPipeline": {
+      "queryFlow": [
+        "1. User sends message to `POST /api/chat`",
+        "2. Existing rate limiter (10 req/min/IP via Upstash Redis) checked",
+        "3. Intent classifier runs — preset intents bypass LLM (existing behavior)",
+        "4. User query is embedded using Gemini `text-embedding-004`",
+        "5. Vector search on Upstash Vector index: top-k=5, cosine similarity > 0.70 threshold",
+        "6. Retrieved chunks are deduplicated and formatted as context block",
+        "7. Context block is injected into the system prompt via `buildSystemPrompt()` augmentation",
+        "8. Existing multi-provider generation executes (Gemini → OpenAI → fallback)",
+        "9. Response returned with `rag_sources` metadata (optional, for UI display of sources)"
+      ],
+      "promptAugmentation": "Retrieved chunks are inserted as a `=== RETRIEVED CONTEXT ===` section in the system prompt, placed after the profile data and before the response format rules. Each chunk is prefixed with its source type and document title.",
+      "fallbackStrategy": {
+        "noResults": "If vector search returns nothing (empty index or no matches), fall back to the existing prompt-only generation",
+        "lowConfidence": "If top match similarity < 0.70, still include results but prefix with a `(may be relevant)` caveat",
+        "providerFailure": "Existing fallback chain preserved — Gemini → OpenAI → rule-based responses"
+      }
+    },
+    "webhookIntegration": {
+      "existing": "`POST /api/sanity/webhook` — validates secret via timingSafeEqual, invalidates cache tags, clears query cache, revalidates Next.js paths",
+      "extension": "Add `reembedDocument(docType, docId)` call after cache invalidation. The function re-fetches the changed document, re-chunks, re-embeds, and upserts the vector index entries. Non-blocking — runs asynchronously after responding 200 to Sanity"
+    }
+  },
+  "techStack": {
+    "framework": "Next.js 16.2.10 (App Router, Server Components, Route Handlers)",
+    "language": "TypeScript 5.7 (strict mode)",
+    "cms": "Sanity CMS v4 (Studio v4.22.0, Client v7.23.0)",
+    "aiSdk": "@google/generative-ai v0.24.1 (existing) — used for both chat generation and embeddings",
+    "vectorStore": "@upstash/redis v1.38.0 (existing) — Upstash Vector index for storing and querying embeddings",
+    "caching": "Two-layer: in-memory L1 cache + Upstash Redis L2 (existing)",
+    "ui": "React 18.3, Tailwind CSS 3.4, Framer Motion 11.15, Lucide React",
+    "testing": "Vitest 4.1, React Testing Library",
+    "quality": "react-doctor 0.7.3 (100/100 score gate), ESLint 9 flat config",
+    "tooling": "ctx7 0.5.5 (documentation freshness)"
+  },
+  "tasks": [
+    {
+      "id": "T01",
+      "title": "Install vector store dependencies and configure Upstash Vector index",
+      "description": "No new npm packages needed — Upstash Redis is already installed. Create the Upstash Vector index via the Upstash Console (index name: 'portfolio-rag', dimensions: 768, metric: cosine). Add `UPSTASH_VECTOR_URL` and `UPSTASH_VECTOR_TOKEN` to `.env.local`. Create `src/lib/rag/vector-store.ts` with connect, upsert, query, and delete operations wrapping the Upstash Redis REST API.",
+      "status": "pending",
+      "dependencies": [],
+      "estimatedEffort": "1h"
+    },
+    {
+      "id": "T02",
+      "title": "Build the chunking module for all CMS document types",
+      "description": "Create `src/lib/rag/chunker.ts`. Implement `chunkDocument(doc: CmsDocument): Chunk[]` that handles all 20 Sanity types. For projects: split summary/challenge/solution/result into separate chunks. For experience: company summary + each achievement. For blog posts: paragraph clustering at 512-token boundaries. For profile/certifications/technologies/memberships: single chunk per document. Each chunk has {docId, docType, chunkIndex, text, metadata}. Include a `chunkAllCmsContent(cmsContent: CmsContent): Chunk[]` function that iterates all documents at once.",
+      "status": "pending",
+      "dependencies": [],
+      "estimatedEffort": "2h"
+    },
+    {
+      "id": "T03",
+      "title": "Build the embedding service using Gemini text-embedding-004",
+      "description": "Create `src/lib/rag/embedder.ts`. Use the existing `@google/generative-ai` client to call `embedContent()` and `batchEmbedContents()` with the `text-embedding-004` model (768d). Implement `embed(text: string): number[]` for single queries and `embedBatch(chunks: Chunk[]): number[][]` for bulk indexing. Handle API rate limits with the existing retry utility from `providers.ts`. Export `embedQuery(userMessage: string)` used at retrieval time.",
+      "status": "pending",
+      "dependencies": ["T02"],
+      "estimatedEffort": "1.5h"
+    },
+    {
+      "id": "T04",
+      "title": "Create the full indexing pipeline",
+      "description": "Create `src/lib/rag/indexer.ts`. Function `reindexAll()`: fetches all CMS content via `getCmsContent()`, runs `chunkAllCmsContent()`, calls `embedBatch()`, then upserts all vectors into Upstash Vector. Function `reindexDocument(docType, docId)`: fetches a single document via GROQ, chunks it, embeds it, upserts vectors (deletes old vectors for that docId first). Function `deleteDocumentVectors(docId)`: removes all vector entries for a deleted document. All functions include logging and error handling.",
+      "status": "pending",
+      "dependencies": ["T01", "T02", "T03"],
+      "estimatedEffort": "2h"
+    },
+    {
+      "id": "T05",
+      "title": "Build the retrieval service",
+      "description": "Create `src/lib/rag/retriever.ts`. Function `retrieve(query: string, topK?: number): RetrievedChunk[]` — embeds the query, searches Upstash Vector with cosine distance, filters by similarity > 0.70, deduplicates by docId, and returns top-k (default 5) results. Function `formatContext(results: RetrievedChunk[]): string` — formats retrieved chunks into a readable context block prefixed with source type and title. Include empty-handling: if no results or index missing, return empty string.",
+      "status": "pending",
+      "dependencies": ["T01", "T03"],
+      "estimatedEffort": "1.5h"
+    },
+    {
+      "id": "T06",
+      "title": "Integrate RAG retrieval into the existing chat API",
+      "description": "Modify `src/app/api/chat/route.ts`. After the CMS context is loaded and before calling `buildSystemPrompt()`, call `retrieve(userMessage)` and append the formatted context to the system prompt via a new `injectRagContext(systemPrompt, ragContext)` function. Place the RAG context between the profile data and the response format rules. Ensure the injected context does not break the tsundere personality or action tag behavior. Log retrieval stats (latency, source count, similarity scores) per request.",
+      "status": "pending",
+      "dependencies": ["T05"],
+      "estimatedEffort": "2h"
+    },
+    {
+      "id": "T07",
+      "title": "Extend the Sanity webhook to trigger re-embedding",
+      "description": "Modify `src/app/api/sanity/webhook/route.ts`. After the existing cache invalidation, call `reindexDocument(docType, docId)` asynchronously (fire-and-forget with `.catch()` for error isolation). Handle the `delete` operation type by calling `deleteDocumentVectors(docId)`. Return the 200 response immediately without waiting for re-embedding to complete.",
+      "status": "pending",
+      "dependencies": ["T04"],
+      "estimatedEffort": "1h"
+    },
+    {
+      "id": "T08",
+      "title": "Create a RAG admin API for manual reindexing",
+      "description": "Create `GET/POST /api/chat/reindex`. POST triggers `reindexAll()` for a full rebuild (protected by a `REINDEX_SECRET` env var). GET returns index stats: total vector count, per-document-type breakdown, last indexed timestamp, and last error. Use this during initial setup and for debugging.",
+      "status": "pending",
+      "dependencies": ["T04"],
+      "estimatedEffort": "1h"
+    },
+    {
+      "id": "T09",
+      "title": "Build the Chat UI with source citation display",
+      "description": "Create a `src/components/chat/ChatPanel.tsx` component and supporting components. Reuse the existing chat panel structure. Add: streaming response display (use Gemini streaming via `sendMessageStream`), a collapsible 'Sources' section below each response showing which CMS documents were retrieved with links to the relevant page, and a loading state with 'Searching portfolio knowledge...' text during retrieval. Ensure keyboard navigation, focus rings, and reduced-motion support per Vercel Web Interface Guidelines.",
+      "status": "pending",
+      "dependencies": ["T06"],
+      "estimatedEffort": "3h"
+    },
+    {
+      "id": "T10",
+      "title": "Write unit and integration tests",
+      "description": "Write Vitest tests for: chunker (verify correct chunk boundaries for each doc type), embedder (mock Gemini API), vector store (mock Upstash REST), retriever (integration with mocked store), indexer (end-to-end with mocked dependencies), and the augmented chat endpoint. Minimum 85% coverage on rag/ modules. Follow existing test patterns: `SWRConfig` isolation, `vi.mock()` for external APIs.",
+      "status": "pending",
+      "dependencies": ["T01", "T02", "T03", "T04", "T05", "T06"],
+      "estimatedEffort": "3h"
+    },
+    {
+      "id": "T11",
+      "title": "Run quality gate and fix findings",
+      "description": "Run `npm run tsc --noEmit`, `npm run lint`, `npm run doctor:check`, and `npm run test -- --run`. Fix any TypeScript errors, ESLint violations, react-doctor findings, and failing tests. Ensure doctor score remains 100/100 with 0 findings. No new comments in code.",
+      "status": "pending",
+      "dependencies": ["T10"],
+      "estimatedEffort": "1h"
+    },
+    {
+      "id": "T12",
+      "title": "Initial seed and documentation",
+      "description": "Run the initial full reindex via `POST /api/chat/reindex`. Verify retrieval quality by testing 10 representative queries covering projects, experience, skills, certifications, blog posts, and mixed queries. Document the RAG pipeline architecture in `docs/rag/` including the chunking strategy table, vector index schema, retrieval flow diagram, and env var reference. Update `AGENTS.md` if new workflows or skills are relevant.",
+      "status": "pending",
+      "dependencies": ["T08", "T11"],
+      "estimatedEffort": "1.5h"
+    }
+  ],
+  "envVars": {
+    "new": ["UPSTASH_VECTOR_URL", "UPSTASH_VECTOR_TOKEN", "REINDEX_SECRET"],
+    "existing": [
+      "GOOGLE_GEMINI_API_KEY",
+      "OPENAI_API_KEY",
+      "NEXT_PUBLIC_SANITY_PROJECT_ID",
+      "NEXT_PUBLIC_SANITY_DATASET",
+      "SANITY_API_READ_TOKEN",
+      "SANITY_API_WRITE_TOKEN",
+      "SANITY_REVALIDATE_SECRET",
+      "UPSTASH_REDIS_URL",
+      "UPSTASH_REDIS_TOKEN"
+    ]
+  },
+  "nonGoals": [
+    "Do NOT replace the existing provider system or tsundere personality",
+    "Do NOT add a new AI SDK dependency — use the existing @google/generative-ai for both chat and embeddings",
+    "Do NOT build a separate chat page — the RAG chat panel stays as a slide-over/toggle on the portfolio",
+    "Do NOT implement user authentication or chat history persistence",
+    "Do NOT rewrite the existing intent classifier or fallback responder"
+  ],
+  "successMetrics": {
+    "retrievalLatency": "<500ms p95 for vector search",
+    "totalResponseTime": "<3s p95 end-to-end",
+    "retrievalRelevance": ">80% of retrieved chunks are topically relevant (manual eval on 50 test queries)",
+    "providerFallbackRate": "No increase in fallback rate vs existing chat",
+    "coverage": "All 20 CMS document types are indexable and retrievable",
+    "tests": ">85% coverage on src/lib/rag/*, all existing tests continue to pass",
+    "doctorScore": "100/100 with 0 findings"
+  }
+}
