@@ -4,7 +4,7 @@ slug: 'impostor-syndrome-at-50-plus-repos'
 excerpt: 'A honest reflection on feeling like a fraud despite 50+ GitHub repositories, production applications, and years of building software.'
 featured: false
 publishedAt: '2026-07-01T10:00:00Z'
-published: true
+published: false
 author: 'PP Namias'
 tags: [ reflection, impostor, career ]
 readTime: '4 min read'
