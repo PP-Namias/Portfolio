@@ -122,9 +122,10 @@ interface ChatPanelProps {
   onClose: () => void;
   messages: ChatMessageType[];
   setMessages: React.Dispatch<React.SetStateAction<ChatMessageType[]>>;
+  initialThreadId?: string | null;
 }
 
-export function ChatPanel({ onBack, onClose, messages, setMessages }: Readonly<ChatPanelProps>) {
+export function ChatPanel({ onBack, onClose, messages, setMessages, initialThreadId }: Readonly<ChatPanelProps>) {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -132,7 +133,7 @@ export function ChatPanel({ onBack, onClose, messages, setMessages }: Readonly<C
   const [streamingContent, setStreamingContent] = useState('');
   const [currentToolCall, setCurrentToolCall] = useState<string | null>(null);
   const [threadSidebarOpen, setThreadSidebarOpen] = useState(false);
-  const [currentThreadId, setCurrentThreadId] = useState<string | null>(null);
+  const [currentThreadId, setCurrentThreadId] = useState<string | null>(initialThreadId || null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -243,10 +244,29 @@ export function ChatPanel({ onBack, onClose, messages, setMessages }: Readonly<C
   }, []);
 
   useEffect(() => {
-    if (messages.length === 0) {
+    if (initialThreadId) {
+      fetch(`/api/chat/threads/${initialThreadId}`)
+        .then((r) => r.json())
+        .then((data) => {
+          if (data.messages?.length > 0) {
+            const loaded = data.messages.map((m: { id: number; role: string; content: string }) => ({
+              id: m.id.toString(),
+              role: m.role as 'user' | 'assistant',
+              content: m.content,
+              timestamp: new Date(),
+            }));
+            setMessages(loaded);
+          }
+        })
+        .catch(() => {});
+    }
+  }, [initialThreadId, setMessages]);
+
+  useEffect(() => {
+    if (messages.length === 0 && !initialThreadId) {
       setMessages([WELCOME_MESSAGE]);
     }
-  }, [messages.length, setMessages]);
+  }, [messages.length, setMessages, initialThreadId]);
 
   const { mutate: revalidateAvailability } = useSWR<{ status: string }>(
     process.env.NODE_ENV === 'test' ? null : '/api/chat',

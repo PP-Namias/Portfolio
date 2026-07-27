@@ -148,6 +148,7 @@ export function FloatingHub() {
                 onClose={close}
                 messages={messages}
                 setMessages={setMessages}
+                initialThreadId={currentThreadId}
               />
             )}
           </motion.div>
