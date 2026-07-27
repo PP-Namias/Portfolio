@@ -12,16 +12,18 @@ import {
   Share2,
   X,
   ArrowUpRight,
+  MessageSquare,
 } from 'lucide-react';
 import { HubMenuItem } from './HubMenuItem';
 import { useModal } from '@/hooks/useModal';
 import { useCmsContent } from '@/hooks/useCmsContent';
-import { IS_BLOG_VISIBLE } from '@/lib/features';
+import { IS_BLOG_VISIBLE, IS_CHAT_THREADING_ENABLED } from '@/lib/features';
 import { resolveContentImageSrc } from '@/lib/media';
 
 interface HubMenuProps {
   onClose: () => void;
   onOpenChat: () => void;
+  onOpenThread?: (threadId: string, title: string) => void;
 }
 
 const CONNECT_SOCIALS = ['github', 'linkedin', 'x', 'twitter'] as const;
@@ -33,8 +35,9 @@ const socialIconMap: Record<string, ComponentType<{ className?: string }>> = {
   twitter: FaXTwitter,
 };
 
-export function HubMenu({ onClose, onOpenChat }: Readonly<HubMenuProps>) {
+export function HubMenu({ onClose, onOpenChat, onOpenThread }: Readonly<HubMenuProps>) {
   const [connectExpanded, setConnectExpanded] = useState(false);
+  const [recentThreads, setRecentThreads] = useState<Array<{ id: string; title: string; messageCount: number }>>([]);
   const { openModal } = useModal();
   const { profile, socialLinks, hero } = useCmsContent();
   const menuRef = useRef<HTMLDivElement>(null);
@@ -64,7 +67,15 @@ export function HubMenu({ onClose, onOpenChat }: Readonly<HubMenuProps>) {
   }, []);
 
   useEffect(() => {
-    // Auto-focus first menu item when menu opens
+    if (IS_CHAT_THREADING_ENABLED) {
+      fetch('/api/chat/threads').then((r) => r.json()).then((data) => {
+        const threads = (data.threads || []) as Array<{ id: string; title: string; messageCount: number }>;
+        setRecentThreads(threads.slice(0, 3));
+      }).catch(() => {});
+    }
+  }, []);
+
+  useEffect(() => {
     const timer = setTimeout(() => {
       const firstItem = menuRef.current?.querySelector<HTMLElement>('[role="menuitem"]');
       firstItem?.focus();
@@ -174,6 +185,26 @@ export function HubMenu({ onClose, onOpenChat }: Readonly<HubMenuProps>) {
           iconColorClass="text-violet-500"
           iconBgClass="bg-violet-500/10"
         />
+
+        {IS_CHAT_THREADING_ENABLED && recentThreads.length > 0 && (
+          <div className="px-5 py-1">
+            <p className="text-[9px] font-semibold text-text-muted-light dark:text-text-muted-dark uppercase tracking-widest mb-1">
+              Recent Conversations
+            </p>
+            {recentThreads.map((thread) => (
+              <button
+                key={thread.id}
+                type="button"
+                role="menuitem"
+                onClick={() => { onOpenThread?.(thread.id, thread.title); onClose(); }}
+                className="w-full flex items-center gap-2 px-2 py-1.5 rounded-lg text-[11px] text-text-secondary-light dark:text-text-secondary-dark hover:bg-surface-light dark:hover:bg-surface-dark hover:text-text-primary-light dark:hover:text-text-primary-dark transition-colors text-left"
+              >
+                <MessageSquare className="h-3 w-3 flex-shrink-0 text-text-muted-light dark:text-text-muted-dark" />
+                <span className="truncate">{thread.title}</span>
+              </button>
+            ))}
+          </div>
+        )}
 
         <HubMenuItem
           icon={FileDown}

@@ -12,6 +12,7 @@ export function FloatingHub() {
   const [hubState, setHubState] = useState<HubState>('closed');
   const [messages, setMessages] = useState<ChatMessageType[]>([]);
   const [hasInteracted, setHasInteracted] = useState(false);
+  const [currentThreadId, setCurrentThreadId] = useState<string | null>(null);
   const panelRef = useRef<HTMLDivElement>(null);
 
   const close = useCallback(() => setHubState('closed'), []);
@@ -23,6 +24,11 @@ export function FloatingHub() {
     }
   }, [hasInteracted]);
   const openChat = useCallback(() => setHubState('chat'), []);
+  const openThread = useCallback((threadId: string, _title: string) => {
+    setCurrentThreadId(threadId);
+    setMessages([]);
+    setHubState('chat');
+  }, []);
 
   // Load sessionStorage flag on mount
   useEffect(() => {
@@ -134,7 +140,7 @@ export function FloatingHub() {
             className="fixed z-50 bottom-0 right-0 sm:bottom-5 sm:right-5 w-full h-full sm:w-96 sm:h-[540px] sm:rounded-2xl flex flex-col overflow-hidden border border-border-light dark:border-border-dark bg-white dark:bg-card-bg-dark shadow-2xl"
           >
             {hubState === 'menu' && (
-              <HubMenu onClose={close} onOpenChat={openChat} />
+              <HubMenu onClose={close} onOpenChat={openChat} onOpenThread={openThread} />
             )}
             {hubState === 'chat' && (
               <ChatPanel
