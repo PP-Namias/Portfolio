@@ -36,16 +36,21 @@ export function ThreadSidebar({
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editTitle, setEditTitle] = useState('');
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   const loadThreads = useCallback(async () => {
     setIsLoading(true);
+    setError(null);
     try {
       const res = await fetch('/api/chat/threads');
       if (res.ok) {
         const data = await res.json() as { threads: ThreadInfo[] };
         setThreads(data.threads);
+      } else {
+        setError('Failed to load conversations');
       }
     } catch {
+      setError('Network error loading conversations');
     } finally {
       setIsLoading(false);
     }
@@ -58,6 +63,7 @@ export function ThreadSidebar({
   }, [isOpen, loadThreads]);
 
   const handleNewThread = useCallback(async () => {
+    setError(null);
     try {
       const res = await fetch('/api/chat/threads', {
         method: 'POST',
@@ -69,19 +75,26 @@ export function ThreadSidebar({
         setThreads((prev) => [data.thread, ...prev]);
         onNewThread();
         onSelectThread(data.thread.id);
+      } else {
+        setError('Failed to create conversation');
       }
     } catch {
+      setError('Network error creating conversation');
     }
   }, [onNewThread, onSelectThread]);
 
   const handleDelete = useCallback(async (id: string) => {
+    setError(null);
     try {
       const res = await fetch(`/api/chat/threads/${id}`, { method: 'DELETE' });
       if (res.ok) {
         setThreads((prev) => prev.filter((t) => t.id !== id));
         onDeleteThread(id);
+      } else {
+        setError('Failed to delete conversation');
       }
     } catch {
+      setError('Network error deleting conversation');
     }
     setConfirmDeleteId(null);
   }, [onDeleteThread]);
@@ -91,6 +104,7 @@ export function ThreadSidebar({
       setEditingId(null);
       return;
     }
+    setError(null);
     try {
       const res = await fetch(`/api/chat/threads/${id}`, {
         method: 'PATCH',
@@ -101,8 +115,11 @@ export function ThreadSidebar({
         const data = await res.json() as { thread: ThreadInfo };
         setThreads((prev) => prev.map((t) => t.id === id ? data.thread : t));
         onRenameThread(id, editTitle.trim());
+      } else {
+        setError('Failed to rename conversation');
       }
     } catch {
+      setError('Network error renaming conversation');
     }
     setEditingId(null);
   }, [editTitle, onRenameThread]);
@@ -161,7 +178,13 @@ export function ThreadSidebar({
               </div>
             )}
 
-            {!isLoading && threads.length === 0 && (
+            {error && (
+              <div className="mx-3 my-2 px-2 py-1.5 rounded bg-red-500/10 border border-red-500/20">
+                <p className="text-[10px] text-red-600 dark:text-red-400">{error}</p>
+              </div>
+            )}
+
+            {!isLoading && threads.length === 0 && !error && (
               <div className="flex flex-col items-center justify-center py-8 px-3 text-center">
                 <Sparkles className="h-5 w-5 text-text-muted-light dark:text-text-muted-dark mb-2" />
                 <p className="text-[11px] text-text-muted-light dark:text-text-muted-dark">
