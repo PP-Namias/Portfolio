@@ -158,4 +158,5 @@ docs/security/pentestagent/knowledge/
 /studio/data_downloads/*
 !/studio/data_downloads/README.md
 
-# Chat runtime data.chat-data/
+# Chat runtime data
+.chat-data/
