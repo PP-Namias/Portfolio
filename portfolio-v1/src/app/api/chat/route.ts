@@ -7,6 +7,9 @@ import { buildSmartFallback } from './lib/smartFallback';
 import { classifyProviderError, generateWithGemini, generateWithOpenAI, getProviderHealth, isMultiProviderEnabled } from './lib/providers';
 import { buildSystemPrompt } from './lib/promptBuilder';
 import { isRateLimited } from './lib/rateLimiter';
+import { IS_LANGGRAPH_ENABLED, IS_CHAT_STREAMING_ENABLED } from '@/lib/features';
+import { runChatGraph } from '@/lib/chat/graph';
+import { saveMessage } from '@/lib/chat/persistence';
 import { RetrievedChunk } from '@/lib/rag/types';
 import {
   CertificationData,
@@ -25,11 +28,13 @@ const MAX_MESSAGE_LENGTH = 500;
 interface RequestBody {
   message?: unknown;
   history?: unknown;
+  threadId?: unknown;
 }
 
 interface ParsedChatRequest {
   message: string;
   history: ConversationHistoryMessage[];
+  threadId?: string;
 }
 
 interface ValidationError {
@@ -81,9 +86,14 @@ function parseChatRequest(body: RequestBody | null): ParsedChatRequest | Validat
     };
   }
 
+  const threadId = typeof body.threadId === 'string' && body.threadId.trim()
+    ? body.threadId.trim()
+    : undefined;
+
   return {
     message,
     history: normalizeHistory(body.history),
+    threadId,
   };
 }
 
@@ -135,6 +145,10 @@ function logEvent(
   }
 
   console.info('[Chat API]', payload);
+}
+
+function encodeSSE(event: string, data: unknown): string {
+  return `event: ${event}\ndata: ${JSON.stringify(data)}\n\n`;
 }
 
 export async function GET() {
@@ -195,8 +209,47 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { message, history } = parsedRequest;
+    const { message, history, threadId } = parsedRequest;
     fallbackUserMessage = message;
+
+    const acceptsStreaming = request.headers.get('accept') === 'text/event-stream'
+      && IS_CHAT_STREAMING_ENABLED
+      && IS_LANGGRAPH_ENABLED;
+
+    if (acceptsStreaming) {
+      return handleStreamingResponse(request, message, history, threadId, chatDataContext, requestId);
+    }
+
+    if (IS_LANGGRAPH_ENABLED) {
+      try {
+        const result = await runChatGraph({
+          message,
+          history,
+          threadId,
+        });
+
+        if (threadId) {
+          saveMessage(threadId, 'user', message);
+          saveMessage(threadId, 'assistant', result.response);
+        }
+
+        logEvent('info', 'chat_graph_success', {
+          requestId,
+          threadId: result.threadId,
+          totalLatencyMs: Date.now() - requestStartedAt,
+        });
+
+        return withRequestId(
+          NextResponse.json({ message: result.response, fallback: false, threadId: result.threadId }),
+          requestId
+        );
+      } catch (graphError) {
+        logEvent('warn', 'chat_graph_fallback', {
+          requestId,
+          error: graphError instanceof Error ? graphError.message : String(graphError),
+        });
+      }
+    }
 
     let ragContext = '';
     let ragChunks: RetrievedChunk[] = [];
@@ -206,7 +259,6 @@ export async function POST(request: NextRequest) {
         ragContext = formatContext(ragChunks);
       }
     } catch {
-      // RAG failure is non-fatal — proceed without augmented context
     }
 
     const systemPrompt = buildSystemPrompt(chatDataContext, ragContext);
@@ -315,4 +367,61 @@ export async function POST(request: NextRequest) {
       requestId
     );
   }
+}
+
+async function handleStreamingResponse(
+  request: NextRequest,
+  message: string,
+  history: ConversationHistoryMessage[],
+  threadId: string | undefined,
+  chatDataContext: ChatDataContext,
+  requestId: string
+): Promise<Response> {
+  const resolvedThreadId = threadId || `thread_${Date.now()}`;
+
+  const stream = new ReadableStream({
+    async start(controller) {
+      try {
+        const encoder = new TextEncoder();
+
+        controller.enqueue(encoder.encode(encodeSSE('status', { step: 'start', threadId: resolvedThreadId })));
+
+        const result = await runChatGraph({
+          message,
+          history,
+          threadId: resolvedThreadId,
+          onToken: (token) => {
+            controller.enqueue(encoder.encode(encodeSSE('token', { content: token })));
+          },
+          onToolCall: (name, args) => {
+            controller.enqueue(encoder.encode(encodeSSE('tool_call', { name, args })));
+          },
+          onStatus: (step) => {
+            controller.enqueue(encoder.encode(encodeSSE('status', { step, threadId: resolvedThreadId })));
+          },
+        });
+
+        if (resolvedThreadId) {
+          saveMessage(resolvedThreadId, 'user', message);
+          saveMessage(resolvedThreadId, 'assistant', result.response);
+        }
+
+        controller.enqueue(encoder.encode(encodeSSE('done', { threadId: resolvedThreadId })));
+      } catch (error) {
+        const errorMsg = error instanceof Error ? error.message : 'Streaming error';
+        controller.enqueue(encoder.encode(encodeSSE('error', { error: errorMsg })));
+      } finally {
+        controller.close();
+      }
+    },
+  });
+
+  return new Response(stream, {
+    headers: {
+      'Content-Type': 'text/event-stream',
+      'Cache-Control': 'no-cache, no-store, must-revalidate',
+      'Connection': 'keep-alive',
+      'x-request-id': requestId,
+    },
+  });
 }
