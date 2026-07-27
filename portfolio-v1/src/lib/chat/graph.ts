@@ -366,7 +366,12 @@ export async function runChatGraph(params: {
     }
 
     saveCheckpoint(threadId, finalState as unknown as Record<string, unknown>);
-    onToken?.(finalResponse);
+
+    const tokens = finalResponse.match(/\S+\s*/g) || [finalResponse];
+    for (const token of tokens) {
+      onToken?.(token);
+      await new Promise((resolve) => setTimeout(resolve, 0));
+    }
     onStatus?.('done');
 
     return {
@@ -380,7 +385,10 @@ export async function runChatGraph(params: {
       message,
       cmsContextCache || { profile: {}, experiences: [], projects: [], technologies: [], certifications: [], memberships: [], socials: [] },
     );
-    onToken?.(fallbackResponse);
+    const tokens = fallbackResponse.match(/\S+\s*/g) || [fallbackResponse];
+    for (const token of tokens) {
+      onToken?.(token);
+    }
     return { response: fallbackResponse, threadId, toolCalls: [] };
   }
 }
