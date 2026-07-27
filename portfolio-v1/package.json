@@ -48,6 +48,9 @@
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
+    "@langchain/community": "^1.1.29",
+    "@langchain/core": "^1.2.3",
+    "@langchain/langgraph": "^1.4.8",
     "@sanity/client": "^7.23.0",
     "@upstash/redis": "^1.38.0",
     "framer-motion": "^11.15.0",
