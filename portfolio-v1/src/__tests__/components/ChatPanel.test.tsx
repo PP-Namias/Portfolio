@@ -4,6 +4,16 @@ import userEvent from '@testing-library/user-event';
 import { ChatPanel } from '@/components/ui/ChatPanel';
 import type { ChatMessage as ChatMessageType } from '@/types';
 
+vi.mock('@/lib/features', () => ({
+  IS_BLOG_VISIBLE: true,
+  IS_MAGIC_CURSOR_VISIBLE: false,
+  IS_PROJECTS_REVAMP_ENABLED: false,
+  IS_STREAMING_SSR_ENABLED: false,
+  IS_LANGGRAPH_ENABLED: false,
+  IS_CHAT_STREAMING_ENABLED: false,
+  IS_CHAT_THREADING_ENABLED: false,
+}));
+
 // Mock framer-motion
 vi.mock('framer-motion', () => ({
   motion: {

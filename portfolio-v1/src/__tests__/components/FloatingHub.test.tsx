@@ -30,6 +30,16 @@ vi.mock('framer-motion', () => {
   };
 });
 
+vi.mock('@/lib/features', () => ({
+  IS_BLOG_VISIBLE: true,
+  IS_MAGIC_CURSOR_VISIBLE: true,
+  IS_PROJECTS_REVAMP_ENABLED: true,
+  IS_STREAMING_SSR_ENABLED: true,
+  IS_LANGGRAPH_ENABLED: false,
+  IS_CHAT_STREAMING_ENABLED: false,
+  IS_CHAT_THREADING_ENABLED: false,
+}));
+
 // Mock ChatMessage
 vi.mock('@/components/ui/ChatMessage', () => ({
   ChatMessage: ({ message }: { message: { content: string; role: string } }) => (

@@ -63,6 +63,17 @@ vi.mock('@/lib/cms-content.server', () => ({
   getCmsContent: vi.fn(async () => mockCmsContent),
 }));
 
+// Disable LangGraph and streaming for existing linear-flow tests
+vi.mock('@/lib/features', () => ({
+  IS_BLOG_VISIBLE: true,
+  IS_MAGIC_CURSOR_VISIBLE: true,
+  IS_PROJECTS_REVAMP_ENABLED: true,
+  IS_STREAMING_SSR_ENABLED: true,
+  IS_LANGGRAPH_ENABLED: false,
+  IS_CHAT_STREAMING_ENABLED: false,
+  IS_CHAT_THREADING_ENABLED: false,
+}));
+
 import { GET, POST } from '@/app/api/chat/route';
 import { NextRequest } from 'next/server';
 

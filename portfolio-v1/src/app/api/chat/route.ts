@@ -381,9 +381,8 @@ async function handleStreamingResponse(
 
   const stream = new ReadableStream({
     async start(controller) {
+      const encoder = new TextEncoder();
       try {
-        const encoder = new TextEncoder();
-
         controller.enqueue(encoder.encode(encodeSSE('status', { step: 'start', threadId: resolvedThreadId })));
 
         const result = await runChatGraph({

@@ -1,4 +1,43 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+
+vi.mock('fs', () => {
+  const store: Record<string, string> = {};
+  (globalThis as unknown as Record<string, unknown>).__mockFileStore = store;
+  const mockExistsSync = (path: string) => path in store;
+  const mockReadFileSync = (path: string, _enc?: string) => {
+    if (!(path in store)) throw new Error('ENOENT');
+    return store[path];
+  };
+  const mockWriteFileSync = (path: string, data: string) => {
+    store[path] = data;
+  };
+  const mockMkdirSync = vi.fn();
+  return {
+    existsSync: mockExistsSync,
+    readFileSync: mockReadFileSync,
+    writeFileSync: mockWriteFileSync,
+    mkdirSync: mockMkdirSync,
+    default: {
+      existsSync: mockExistsSync,
+      readFileSync: mockReadFileSync,
+      writeFileSync: mockWriteFileSync,
+      mkdirSync: mockMkdirSync,
+    },
+  };
+});
+
+vi.mock('path', () => {
+  const mockJoin = (...args: string[]) => args.join('/');
+  const mockResolve = (...args: string[]) => args.join('/');
+  return {
+    join: mockJoin,
+    resolve: mockResolve,
+    default: { join: mockJoin, resolve: mockResolve },
+  };
+});
+
+process.cwd = vi.fn(() => '/test');
+
 import {
   saveCheckpoint,
   loadCheckpoint,
@@ -13,31 +52,16 @@ import {
   deleteThreadMessages,
 } from '@/lib/chat/persistence';
 
-vi.mock('fs', () => {
-  const store: Record<string, string> = {};
-  return {
-    existsSync: vi.fn((path: string) => path in store),
-    readFileSync: vi.fn((path: string, _enc?: string) => {
-      if (!(path in store)) throw new Error('ENOENT');
-      return store[path];
-    }),
-    writeFileSync: vi.fn((path: string, data: string) => {
-      store[path] = data;
-    }),
-    mkdirSync: vi.fn(),
-  };
-});
-
-vi.mock('path', () => ({
-  join: (...args: string[]) => args.join('/'),
-  resolve: (...args: string[]) => args.join('/'),
-}));
-
-process.cwd = vi.fn(() => '/test');
+function clearFileStore() {
+  const store = (globalThis as unknown as Record<string, unknown>).__mockFileStore as Record<string, string> | undefined;
+  if (store) {
+    Object.keys(store).forEach((k) => delete store[k]);
+  }
+}
 
 describe('Persistence', () => {
   beforeEach(() => {
-    vi.clearAllMocks();
+    clearFileStore();
   });
 
   describe('Thread CRUD', () => {

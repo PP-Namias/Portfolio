@@ -83,6 +83,9 @@ vi.mock('framer-motion', () => {
 
 vi.mock('@/lib/features', () => ({
   IS_BLOG_VISIBLE: true,
+  IS_CHAT_THREADING_ENABLED: false,
+  IS_LANGGRAPH_ENABLED: false,
+  IS_CHAT_STREAMING_ENABLED: false,
 }));
 
 vi.mock('@/data/socials', () => ({

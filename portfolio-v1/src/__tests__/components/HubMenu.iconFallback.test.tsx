@@ -96,6 +96,9 @@ vi.mock('react-icons/fa6', async () => {
 
 vi.mock('@/lib/features', () => ({
   IS_BLOG_VISIBLE: false,
+  IS_CHAT_THREADING_ENABLED: false,
+  IS_LANGGRAPH_ENABLED: false,
+  IS_CHAT_STREAMING_ENABLED: false,
 }));
 
 vi.mock('@/data/socials', () => ({
