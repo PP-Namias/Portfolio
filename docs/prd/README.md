@@ -14,7 +14,7 @@ Product Requirements Documents for the PP Namias Portfolio.
 | `prd.playwright-mcp-automation.json` | in-progress | Playwright MCP automation |
 | `prd.portfolio-v2-system-audit.json` | in-progress | Portfolio V2 system audit |
 | `prd.smart-deploy-workflow.json` | planned | Smart deploy workflow |
-| `prd.ai-chatbot.json` | draft | LangGraph Chatbot for portfolio-v1 — streaming, threading, tools, LangGraph state graph |
+| `prd.ai-chatbot.json` | in-progress | LangGraph Chatbot for portfolio-v1 — streaming, threading, tools, LangGraph state graph |
 | `prd.rag-chatbot.json` | — | — | (archived — superseded by prd.ai-chatbot.json)
 
 ## Archived PRDs
