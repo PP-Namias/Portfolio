@@ -3,10 +3,14 @@
 import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import useSWR from 'swr';
-import { X, Send, RotateCcw, ArrowLeft, Trash2, Sparkles } from 'lucide-react';
+import { X, Send, RotateCcw, ArrowLeft, Trash2, Sparkles, Bot } from 'lucide-react';
 import { ChatMessage } from './ChatMessage';
 import { useModal } from '@/hooks/useModal';
 import { useCmsContent } from '@/hooks/useCmsContent';
+import { useChatStream } from '@/hooks/use-chat-stream';
+import { ThreadSidebar } from './ThreadSidebar';
+import { ThreadToggle } from './ThreadToggle';
+import { IS_CHAT_STREAMING_ENABLED, IS_CHAT_THREADING_ENABLED } from '@/lib/features';
 import type { ChatMessage as ChatMessageType } from '@/types';
 import Image from '@/components/ui/OptimizedImage';
 import { resolveContentImageSrc } from '@/lib/media';
@@ -71,6 +75,48 @@ function TypingIndicator() {
   );
 }
 
+function ToolCallIndicator({ name }: Readonly<{ name: string }>) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 4 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="flex justify-start mb-2.5"
+    >
+      <div className="bg-white dark:bg-card-bg-dark border border-border-light/60 dark:border-border-dark/60 rounded-2xl rounded-bl-md px-3 py-2 flex items-center gap-2">
+        <motion.div
+          animate={{ rotate: 360 }}
+          transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+          className="h-3 w-3 rounded-full border-2 border-accent-pink/30 border-t-accent-pink"
+        />
+        <span className="text-[11px] text-text-muted-light dark:text-text-muted-dark">
+          Using {name.replace(/_/g, ' ')}...
+        </span>
+      </div>
+    </motion.div>
+  );
+}
+
+function StreamingMessage({ content }: Readonly<{ content: string }>) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 4 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="flex justify-start mb-2.5"
+    >
+      <div className="max-w-[95%] bg-white dark:bg-card-bg-dark border border-border-light/60 dark:border-border-dark/60 text-text-primary-light dark:text-text-primary-dark rounded-2xl rounded-bl-md">
+        <div className="px-3 py-2 text-[13px] leading-relaxed whitespace-pre-wrap">
+          {content}
+          <motion.span
+            animate={{ opacity: [1, 0] }}
+            transition={{ duration: 0.6, repeat: Infinity, repeatType: 'reverse' }}
+            className="inline-block h-3.5 w-[2px] bg-accent-pink ml-0.5 align-text-bottom"
+          />
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
 interface ChatPanelProps {
   onBack: () => void;
   onClose: () => void;
@@ -83,6 +129,10 @@ export function ChatPanel({ onBack, onClose, messages, setMessages }: Readonly<C
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [chatAvailability, setChatAvailability] = useState<ChatAvailabilityStatus>('checking');
+  const [streamingContent, setStreamingContent] = useState('');
+  const [currentToolCall, setCurrentToolCall] = useState<string | null>(null);
+  const [threadSidebarOpen, setThreadSidebarOpen] = useState(false);
+  const [currentThreadId, setCurrentThreadId] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -92,13 +142,63 @@ export function ChatPanel({ onBack, onClose, messages, setMessages }: Readonly<C
     folder: 'profile',
   });
 
+  const handleStreamToken = useCallback((token: string) => {
+    setStreamingContent((prev) => prev + token);
+  }, []);
+
+  const handleStreamToolCall = useCallback((toolCall: { name: string }) => {
+    setCurrentToolCall(toolCall.name);
+  }, []);
+
+  const handleStreamDone = useCallback((threadId: string) => {
+    setCurrentThreadId(threadId);
+    setMessages((prev) => {
+      if (!streamingContent) return prev;
+      const exists = prev.some((m) => m.id === 'streaming-msg');
+      if (exists) {
+        return prev.map((m) =>
+          m.id === 'streaming-msg'
+            ? { ...m, content: streamingContent }
+            : m
+        );
+      }
+      return [
+        ...prev,
+        {
+          id: (Date.now() + 2).toString(),
+          role: 'assistant',
+          content: streamingContent,
+          timestamp: new Date(),
+        },
+      ];
+    });
+    setStreamingContent('');
+    setCurrentToolCall(null);
+  }, [streamingContent, setMessages]);
+
+  const handleStreamError = useCallback((err: string) => {
+    setError(err);
+  }, []);
+
+  const {
+    sendMessage: streamSendMessage,
+    isStreaming,
+    cancel,
+  } = useChatStream({
+    onToken: handleStreamToken,
+    onToolCall: handleStreamToolCall,
+    onDone: handleStreamDone,
+    onError: handleStreamError,
+  });
+
   const handleClearChat = useCallback(() => {
     setMessages([]);
     setError(null);
     setInput('');
+    setStreamingContent('');
+    setCurrentToolCall(null);
   }, [setMessages]);
 
-  // Get context-aware follow-up suggestions (exclude already-asked questions)
   const followUpSuggestions = useMemo(() => {
     const asked = new Set(messages.filter((m) => m.role === 'user').map((m) => m.content));
     return FOLLOW_UP_POOL.filter((q) => !asked.has(q)).slice(0, 3);
@@ -136,30 +236,18 @@ export function ChatPanel({ onBack, onClose, messages, setMessages }: Readonly<C
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages, isLoading]);
+  }, [messages, isLoading, streamingContent]);
 
   useEffect(() => {
     setTimeout(() => inputRef.current?.focus(), 100);
   }, []);
 
-  // Auto-send welcome message when chat opens with no messages
   useEffect(() => {
     if (messages.length === 0) {
       setMessages([WELCOME_MESSAGE]);
     }
   }, [messages.length, setMessages]);
 
-  // SWR-based availability probe. The key is null in tests so SWR
-  // skips the fetch entirely (the test branch in the effect below
-  // forces chatAvailability='active'). In production:
-  //   - refreshInterval: 45_000 -> matches the previous setInterval cadence
-  //   - revalidateOnReconnect: true -> browser 'online' event triggers
-  //     a re-fetch; equivalent to the previous handleOnline() callback
-  //     but handled by SWR internally
-  //   - revalidateOnFocus: false -> we don't want a re-fetch every time
-  //     the user tabs back to the chat; the interval is enough
-  //   - dedupingInterval: 5_000 -> if multiple components share the
-  //     same key, dedupe in-flight requests for 5s
   const { mutate: revalidateAvailability } = useSWR<{ status: string }>(
     process.env.NODE_ENV === 'test' ? null : '/api/chat',
     async (url: string) => {
@@ -238,12 +326,23 @@ export function ChatPanel({ onBack, onClose, messages, setMessages }: Readonly<C
       setMessages((prev) => [...prev, userMsg]);
       setIsLoading(true);
 
-      try {
-        const history = messagesRef.current.map((m) => ({
-          role: m.role,
-          content: m.content,
-        }));
+      const history = messagesRef.current.map((m) => ({
+        role: m.role,
+        content: m.content,
+      }));
 
+      if (IS_CHAT_STREAMING_ENABLED && IS_CHAT_STREAMING_ENABLED) {
+        try {
+          await streamSendMessage(trimmed, currentThreadId || undefined);
+        } catch {
+          setError('Failed to stream response.');
+        } finally {
+          setIsLoading(false);
+        }
+        return;
+      }
+
+      try {
         const res = await fetch('/api/chat', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -274,7 +373,7 @@ export function ChatPanel({ onBack, onClose, messages, setMessages }: Readonly<C
         setIsLoading(false);
       }
     },
-    [setMessages]
+    [setMessages, currentThreadId, streamSendMessage]
   );
 
   const handleAction = useCallback((action: string) => {
@@ -322,208 +421,247 @@ export function ChatPanel({ onBack, onClose, messages, setMessages }: Readonly<C
     sendMessage(input);
   };
 
+  const handleSelectThread = useCallback((id: string) => {
+    setCurrentThreadId(id);
+    setThreadSidebarOpen(false);
+    setError(null);
+    setMessages([]);
+  }, [setMessages]);
+
+  const handleNewThread = useCallback(() => {
+    setCurrentThreadId(null);
+    setMessages([]);
+  }, [setMessages]);
+
+  const handleDeleteThread = useCallback((id: string) => {
+    if (id === currentThreadId) {
+      setCurrentThreadId(null);
+      setMessages([]);
+    }
+  }, [currentThreadId, setMessages]);
+
+  const handleRenameThread = useCallback((_id: string, _title: string) => {
+  }, []);
+
+  const hasStreamingMessage = streamingContent.length > 0;
+
   return (
-    <>
-      {/* Header */}
-      <div className="flex items-center justify-between px-4 py-3 border-b border-border-light/60 dark:border-border-dark/60 bg-white dark:bg-card-bg-dark">
-        <div className="flex items-center gap-2.5">
-          <button
-            type="button"
-            onClick={onBack}
-            className="h-7 w-7 rounded-full flex items-center justify-center text-text-muted-light dark:text-text-muted-dark hover:bg-surface-light dark:hover:bg-surface-dark transition-colors"
-            aria-label="Back to menu"
-          >
-            <ArrowLeft className="h-3.5 w-3.5" />
-          </button>
-          <div className="relative flex-shrink-0">
-            <div className="h-8 w-8 rounded-full overflow-hidden border border-border-light dark:border-border-dark bg-surface-light dark:bg-card-bg-dark">
-              {profileImageSrc ? (
-                <Image
-                  src={profileImageSrc}
-                  alt={profile.name}
-                  width={32}
-                  height={32}
-                  className="object-cover h-full w-full"
-                />
-              ) : (
-                <div className="flex h-full w-full items-center justify-center bg-surface-light text-[9px] font-semibold text-text-muted-light dark:bg-surface-dark dark:text-text-muted-dark">
-                  PN
-                </div>
-              )}
-            </div>
-            <div className="absolute -bottom-0.5 -right-0.5 h-3.5 w-3.5 rounded-full bg-accent-pink flex items-center justify-center border-[1.5px] border-white dark:border-card-bg-dark">
-              <Sparkles className="h-[7px] w-[7px] text-white" />
-            </div>
-          </div>
-          <div>
-            <p className="text-[12px] font-semibold text-text-primary-light dark:text-text-primary-dark leading-tight">
-              Keneth&apos;s AI
-            </p>
-            <p className={`text-[9px] flex items-center gap-1 ${statusMeta.textClass}`}>
-              <span className="relative flex h-1 w-1">
-                {statusMeta.showPulse && (
-                  <span className={`absolute inline-flex h-full w-full animate-ping rounded-full ${statusMeta.pulseClass} opacity-75`} />
-                )}
-                <span className={`relative inline-flex h-1 w-1 rounded-full ${statusMeta.dotClass}`} />
-              </span>
-              {statusMeta.label}
-            </p>
-          </div>
-        </div>
-        <div className="flex items-center gap-0.5">
-          {messages.length > 0 && (
+    <div className="flex h-full">
+      {IS_CHAT_THREADING_ENABLED && (
+        <ThreadSidebar
+          isOpen={threadSidebarOpen}
+          currentThreadId={currentThreadId}
+          onSelectThread={handleSelectThread}
+          onNewThread={handleNewThread}
+          onDeleteThread={handleDeleteThread}
+          onRenameThread={handleRenameThread}
+          onClose={() => setThreadSidebarOpen(false)}
+        />
+      )}
+      <div className="flex-1 flex flex-col min-w-0">
+        <div className="flex items-center justify-between px-4 py-3 border-b border-border-light/60 dark:border-border-dark/60 bg-white dark:bg-card-bg-dark">
+          <div className="flex items-center gap-2.5 min-w-0">
             <button
               type="button"
-              onClick={handleClearChat}
-              className="flex items-center gap-1 h-6 px-2 rounded-full text-text-muted-light dark:text-text-muted-dark hover:bg-red-500/10 hover:text-red-500 transition-colors"
-              aria-label="Clear chat history"
-              title="Clear chat"
+              onClick={onBack}
+              className="h-7 w-7 rounded-full flex items-center justify-center text-text-muted-light dark:text-text-muted-dark hover:bg-surface-light dark:hover:bg-surface-dark transition-colors flex-shrink-0"
+              aria-label="Back to menu"
             >
-              <Trash2 className="h-3 w-3" />
+              <ArrowLeft className="h-3.5 w-3.5" />
             </button>
-          )}
-          <button
-            type="button"
-            onClick={onClose}
-            className="h-7 w-7 rounded-full flex items-center justify-center text-text-muted-light dark:text-text-muted-dark hover:bg-surface-light dark:hover:bg-surface-dark transition-colors"
-            aria-label="Close chat"
-          >
-            <X className="h-3.5 w-3.5" />
-          </button>
-        </div>
-      </div>
-
-      {/* Messages */}
-      <div
-        ref={messagesContainerRef}
-        data-lenis-prevent
-        className="flex-1 overflow-y-auto overscroll-contain px-4 py-4 chat-scrollbar touch-pan-y"
-      >
-        <AnimatePresence mode="wait">
-          {messages.length === 0 && !isLoading && (
-            <motion.div
-              key="empty"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="flex flex-col items-center justify-center h-full px-4"
-            >
-              <div className="relative mb-3">
-                <div className="h-12 w-12 rounded-full overflow-hidden border border-border-light dark:border-border-dark bg-white dark:bg-card-bg-dark">
-                  {profileImageSrc ? (
-                    <Image
-                      src={profileImageSrc}
-                      alt={profile.name}
-                      width={48}
-                      height={48}
-                      className="object-cover h-full w-full"
-                    />
-                  ) : (
-                    <div className="flex h-full w-full items-center justify-center bg-surface-light text-[11px] font-semibold text-text-muted-light dark:bg-surface-dark dark:text-text-muted-dark">
-                      PN
-                    </div>
-                  )}
-                </div>
-                <div className="absolute -bottom-0.5 -right-0.5 h-5 w-5 rounded-full bg-accent-pink flex items-center justify-center border-[2px] border-white dark:border-card-bg-dark">
-                  <Sparkles className="h-2.5 w-2.5 text-white" />
-                </div>
+            {IS_CHAT_THREADING_ENABLED && (
+              <ThreadToggle isOpen={threadSidebarOpen} onToggle={() => setThreadSidebarOpen((p) => !p)} />
+            )}
+            <div className="relative flex-shrink-0">
+              <div className="h-8 w-8 rounded-full overflow-hidden border border-border-light dark:border-border-dark bg-surface-light dark:bg-card-bg-dark">
+                {profileImageSrc ? (
+                  <Image
+                    src={profileImageSrc}
+                    alt={profile.name}
+                    width={32}
+                    height={32}
+                    className="object-cover h-full w-full"
+                  />
+                ) : (
+                  <div className="flex h-full w-full items-center justify-center bg-surface-light text-[9px] font-semibold text-text-muted-light dark:bg-surface-dark dark:text-text-muted-dark">
+                    PN
+                  </div>
+                )}
               </div>
-              <p className="text-[14px] font-bold tracking-tight text-text-primary-light dark:text-text-primary-dark">
-                Hi! I&apos;m Keneth&apos;s AI
+              <div className="absolute -bottom-0.5 -right-0.5 h-3.5 w-3.5 rounded-full bg-accent-pink flex items-center justify-center border-[1.5px] border-white dark:border-card-bg-dark">
+                <Sparkles className="h-[7px] w-[7px] text-white" />
+              </div>
+            </div>
+            <div className="min-w-0">
+              <p className="text-[12px] font-semibold text-text-primary-light dark:text-text-primary-dark leading-tight truncate">
+                Keneth&apos;s AI
               </p>
-              <p className="text-[11px] text-text-muted-light dark:text-text-muted-dark mt-0.5 mb-4">
-                Ask me anything about Keneth
+              <p className={`text-[9px] flex items-center gap-1 ${statusMeta.textClass}`}>
+                <span className="relative flex h-1 w-1 flex-shrink-0">
+                  {statusMeta.showPulse && (
+                    <span className={`absolute inline-flex h-full w-full animate-ping rounded-full ${statusMeta.pulseClass} opacity-75`} />
+                  )}
+                  <span className={`relative inline-flex h-1 w-1 rounded-full ${statusMeta.dotClass}`} />
+                </span>
+                {statusMeta.label}
               </p>
+            </div>
+          </div>
+          <div className="flex items-center gap-0.5 flex-shrink-0">
+            {messages.length > 0 && (
+              <button
+                type="button"
+                onClick={handleClearChat}
+                className="flex items-center gap-1 h-6 px-2 rounded-full text-text-muted-light dark:text-text-muted-dark hover:bg-red-500/10 hover:text-red-500 transition-colors"
+                aria-label="Clear chat history"
+                title="Clear chat"
+              >
+                <Trash2 className="h-3 w-3" />
+              </button>
+            )}
+            <button
+              type="button"
+              onClick={onClose}
+              className="h-7 w-7 rounded-full flex items-center justify-center text-text-muted-light dark:text-text-muted-dark hover:bg-surface-light dark:hover:bg-surface-dark transition-colors"
+              aria-label="Close chat"
+            >
+              <X className="h-3.5 w-3.5" />
+            </button>
+          </div>
+        </div>
+
+        <div
+          ref={messagesContainerRef}
+          data-lenis-prevent
+          className="flex-1 overflow-y-auto overscroll-contain px-4 py-4 chat-scrollbar touch-pan-y"
+        >
+          <AnimatePresence mode="wait">
+            {messages.length === 0 && !isLoading && (
+              <motion.div
+                key="empty"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="flex flex-col items-center justify-center h-full px-4"
+              >
+                <div className="relative mb-3">
+                  <div className="h-12 w-12 rounded-full overflow-hidden border border-border-light dark:border-border-dark bg-white dark:bg-card-bg-dark">
+                    {profileImageSrc ? (
+                      <Image
+                        src={profileImageSrc}
+                        alt={profile.name}
+                        width={48}
+                        height={48}
+                        className="object-cover h-full w-full"
+                      />
+                    ) : (
+                      <div className="flex h-full w-full items-center justify-center bg-surface-light text-[11px] font-semibold text-text-muted-light dark:bg-surface-dark dark:text-text-muted-dark">
+                        PN
+                      </div>
+                    )}
+                  </div>
+                  <div className="absolute -bottom-0.5 -right-0.5 h-5 w-5 rounded-full bg-accent-pink flex items-center justify-center border-[2px] border-white dark:border-card-bg-dark">
+                    <Sparkles className="h-2.5 w-2.5 text-white" />
+                  </div>
+                </div>
+                <p className="text-[14px] font-bold tracking-tight text-text-primary-light dark:text-text-primary-dark">
+                  Hi! I&apos;m Keneth&apos;s AI
+                </p>
+                <p className="text-[11px] text-text-muted-light dark:text-text-muted-dark mt-0.5 mb-4">
+                  Ask me anything about Keneth
+                </p>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {messages.map((msg) => (
+            <ChatMessage key={msg.id} message={msg} onAction={handleAction} />
+          ))}
+
+          {currentToolCall && <ToolCallIndicator name={currentToolCall} />}
+
+          {hasStreamingMessage && <StreamingMessage content={streamingContent} />}
+
+          {messages.length > 0 && !isLoading && !hasStreamingMessage && messages.at(-1)?.role === 'assistant' && followUpSuggestions.length > 0 && (
+            <motion.div
+              initial={{ opacity: 0, y: 4 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.15 }}
+              className="flex flex-wrap gap-1 mb-2.5 mt-1"
+            >
+              {followUpSuggestions.map((q) => (
+                <button
+                  type="button"
+                  key={q}
+                  onClick={() => sendMessage(q)}
+                  className="text-[10px] px-2 py-1 rounded-full border border-border-light/60 dark:border-border-dark/60 text-text-secondary-light dark:text-text-secondary-dark hover:border-accent-pink/40 hover:text-accent-pink transition-[border-color,color]"
+                >
+                  {q}
+                </button>
+              ))}
             </motion.div>
           )}
-        </AnimatePresence>
 
-        {messages.map((msg) => (
-          <ChatMessage key={msg.id} message={msg} onAction={handleAction} />
-        ))}
+          {isLoading && !hasStreamingMessage && <TypingIndicator />}
 
-        {/* Follow-up suggestion chips after AI response */}
-        {messages.length > 0 && !isLoading && messages.at(-1)?.role === 'assistant' && followUpSuggestions.length > 0 && (
-          <motion.div
-            initial={{ opacity: 0, y: 4 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.15 }}
-            className="flex flex-wrap gap-1 mb-2.5 mt-1"
+          {error && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="flex justify-center mb-2.5"
+            >
+              <div className="flex items-center gap-2 text-[11px] text-red-500 bg-red-500/8 rounded-lg px-3 py-2">
+                <span>{error}</span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setError(null);
+                    if (messages.length > 0) {
+                      const lastUserMsg = [...messages]
+                        .reverse()
+                        .find((m) => m.role === 'user');
+                      if (lastUserMsg) sendMessage(lastUserMsg.content);
+                    }
+                  }}
+                  className="flex items-center gap-1 text-accent-pink hover:underline font-medium"
+                >
+                  <RotateCcw className="h-3 w-3" />
+                  Retry
+                </button>
+              </div>
+            </motion.div>
+          )}
+
+          <div ref={messagesEndRef} />
+        </div>
+
+        <div className="border-t border-border-light/60 dark:border-border-dark/60 bg-white dark:bg-card-bg-dark px-3 py-2.5">
+          <form
+            onSubmit={handleSubmit}
+            className="flex items-center gap-2"
           >
-            {followUpSuggestions.map((q) => (
-              <button
-                type="button"
-                key={q}
-                onClick={() => sendMessage(q)}
-                className="text-[10px] px-2 py-1 rounded-full border border-border-light/60 dark:border-border-dark/60 text-text-secondary-light dark:text-text-secondary-dark hover:border-accent-pink/40 hover:text-accent-pink transition-[border-color,color]"
-              >
-                {q}
-              </button>
-            ))}
-          </motion.div>
-        )}
-
-        {isLoading && <TypingIndicator />}
-
-        {error && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="flex justify-center mb-2.5"
-          >
-            <div className="flex items-center gap-2 text-[11px] text-red-500 bg-red-500/8 rounded-lg px-3 py-2">
-              <span>{error}</span>
-              <button
-                type="button"
-                onClick={() => {
-                  setError(null);
-                  if (messages.length > 0) {
-                    const lastUserMsg = [...messages]
-                      .reverse()
-                      .find((m) => m.role === 'user');
-                    if (lastUserMsg) sendMessage(lastUserMsg.content);
-                  }
-                }}
-                className="flex items-center gap-1 text-accent-pink hover:underline font-medium"
-              >
-                <RotateCcw className="h-3 w-3" />
-                Retry
-              </button>
-            </div>
-          </motion.div>
-        )}
-
-        <div ref={messagesEndRef} />
+            <input
+              ref={inputRef}
+              type="text"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              placeholder="Ask about skills, projects..."
+              maxLength={500}
+              disabled={isLoading}
+              aria-label="Chat message"
+              className="flex-1 bg-surface-light/80 dark:bg-surface-dark/80 border border-border-light/60 dark:border-border-dark/60 rounded-full px-3.5 py-2 text-[13px] text-text-primary-light dark:text-text-primary-dark placeholder:text-text-muted-light/60 dark:placeholder:text-text-muted-dark/60 focus-visible:outline-none focus-visible:border-accent-pink/40 focus-visible:ring-1 focus-visible:ring-accent-pink/20 disabled:opacity-50 transition-[border-color,box-shadow]"
+            />
+            <button
+              type="submit"
+              disabled={isLoading || !input.trim()}
+              className="h-8 w-8 rounded-full bg-accent-pink text-white flex items-center justify-center hover:bg-accent-pink-hover transition-colors disabled:opacity-20 disabled:cursor-not-allowed flex-shrink-0 shadow-sm shadow-accent-pink/20 disabled:shadow-none"
+              aria-label="Send message"
+            >
+              <Send className="h-3.5 w-3.5" />
+            </button>
+          </form>
+        </div>
       </div>
-
-      {/* Input */}
-      <div className="border-t border-border-light/60 dark:border-border-dark/60 bg-white dark:bg-card-bg-dark px-3 py-2.5">
-        <form
-          onSubmit={handleSubmit}
-          className="flex items-center gap-2"
-        >
-          <input
-            ref={inputRef}
-            type="text"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            placeholder="Ask about skills, projects..."
-            maxLength={500}
-            disabled={isLoading}
-            aria-label="Chat message"
-            className="flex-1 bg-surface-light/80 dark:bg-surface-dark/80 border border-border-light/60 dark:border-border-dark/60 rounded-full px-3.5 py-2 text-[13px] text-text-primary-light dark:text-text-primary-dark placeholder:text-text-muted-light/60 dark:placeholder:text-text-muted-dark/60 focus-visible:outline-none focus-visible:border-accent-pink/40 focus-visible:ring-1 focus-visible:ring-accent-pink/20 disabled:opacity-50 transition-[border-color,box-shadow]"
-          />
-          <button
-            type="submit"
-            disabled={isLoading || !input.trim()}
-            className="h-8 w-8 rounded-full bg-accent-pink text-white flex items-center justify-center hover:bg-accent-pink-hover transition-colors disabled:opacity-20 disabled:cursor-not-allowed flex-shrink-0 shadow-sm shadow-accent-pink/20 disabled:shadow-none"
-            aria-label="Send message"
-          >
-            <Send className="h-3.5 w-3.5" />
-          </button>
-        </form>
-      </div>
-    </>
+    </div>
   );
 }
-
