@@ -42,6 +42,10 @@ This file is the entry point for any agent (opencode, future coding agents, or h
 - `debugging-error-tracking` — systematic debugging for console errors, hydration, network, performance
 - `seo-optimization` — meta tags, JSON-LD structured data, sitemaps, social previews
 
+### AI Chatbot
+
+- `ai-chatbot` — LangGraph chatbot: graph engine, tools, SSE streaming, thread management, persistence. Core files in `src/lib/chat/`, `src/hooks/use-chat-stream.ts`, thread API routes, `ChatPanel`/`ThreadSidebar`/`FloatingHub` UI. Gate behind feature flags in `src/lib/features.ts`. Docs at `portfolio-v1/docs/chatbot/ARCHITECTURE.md`.
+
 ### API & Backend
 
 - `api-design` — REST API patterns, validation, error handling, rate limiting
@@ -92,6 +96,7 @@ Specialized agents for different domains. Use the right agent for the task.
 | **Content**  | `.agents/subagents/content.md`  | Sanity CMS, schemas, GROQ queries         |
 | **Security** | `.agents/subagents/security.md` | Security audits, vulnerability scanning   |
 | **DevOps**   | `.agents/subagents/devops.md`   | Deployment, CI/CD, monitoring             |
+| **AI**       | `.agents/skills/ai-chatbot/SKILL.md` | LangGraph chatbot, tools, streaming, threads |
 
 ## Workflows
 
@@ -268,6 +273,7 @@ MCP servers give your AI agent access to browser DevTools, component libraries, 
 | **Experience**     | `add-an-experience`                                                      |
 | **Gallery**        | `frontend-design`, `component-api-scaffolding`                           |
 | **Contact**        | `api-design`, `webhook-design`                                           |
+| **Chatbot**        | `ai-chatbot`, `api-design`, `frontend-design`, `testing-workflow`        |
 | **API Routes**     | `api-design`                                                             |
 | **Sanity Studio**  | `sanity-schema-validator`, `sanity-data-operations`, `sanity-groq-query` |
 
@@ -275,7 +281,9 @@ MCP servers give your AI agent access to browser DevTools, component libraries, 
 
 - 86+ test files, 700+ tests, all green
 - Run: `npm run test -- --run`
+- Chat tests: `npm run test -- --run src/__tests__/chat/` (graph, tools, persistence), `src/__tests__/api/chat*.test.ts` (routes), `src/__tests__/hooks/use-chat-stream.test.tsx` (streaming hook)
 - Test isolation: use `SWRConfig` with `provider: () => new Map()` for any test that exercises a SWR consumer
+- When testing chat features, mock feature flags (`IS_LANGGRAPH_ENABLED: false` etc.) to test legacy linear flow
 - Studios, scripts, and generated code are excluded from both `tsc` and `eslint` config; they have their own lanes
 
 ## Loop Engineering
