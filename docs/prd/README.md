@@ -16,6 +16,7 @@ Product Requirements Documents for the PP Namias Portfolio.
 | `prd.smart-deploy-workflow.json` | planned | Smart deploy workflow |
 | `prd.ai-chatbot.json` | completed | LangGraph Chatbot for portfolio-v1 — streaming, threading, tools, LangGraph state graph |
 | `prd.ai-chatbot-2.json` | planning | Smarter AI Chatbot v2 — bind_tools, SqliteSaver, streamEvents, SQLite vector store, Tavily search |
+| `ai-chatbot-implement-prompt.md` | — | Copy-paste implementation prompt for new session — 10-step build, all files, quality gates |
 | `prd.rag-chatbot.json` | — | — | (archived — superseded by prd.ai-chatbot.json)
 
 ## Archived PRDs
