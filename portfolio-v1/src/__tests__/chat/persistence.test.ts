@@ -146,6 +146,20 @@ describe('Persistence', () => {
     });
   });
 
+  describe('Auto-archive', () => {
+    it('should auto-archive oldest thread when exceeding 50 threads', () => {
+      const threshold = 52;
+      for (let i = 0; i < threshold; i++) {
+        createThread(`auto-${i}`, `Thread ${i}`);
+      }
+      const threads = listThreads();
+      expect(threads.length).toBeLessThanOrEqual(50);
+      const ids = threads.map((t) => t.id);
+      expect(ids).not.toContain('auto-0');
+      expect(ids).toContain(`auto-${threshold - 1}`);
+    });
+  });
+
   describe('Messages', () => {
     it('should save a message', () => {
       const msg = saveMessage('msg-thread', 'user', 'Hello');
