@@ -71,3 +71,26 @@ These are intentional, justified suppressions. Each is in the code with a one-pa
 ## Scoreboard is locked
 
 This scoreboard is the locked target. The CI threshold of 0 findings is the contract; new PRs must keep the score at 100/100. See `docs/react-doctor/PR_NOTES.md` for the showcase PR description.
+
+---
+
+## Post-upgrade baseline (react-doctor 0.9.2)
+
+After upgrading react-doctor from `0.2.16` → `0.9.2` (EPIC-11), the tool added many new stricter rules. The score reset to 49/100 with 25 findings — all pre-existing code patterns that the previous version did not detect.
+
+| Metric | Value |
+|---|---:|
+| **Score** | 49/100 (Needs Improvement) |
+| **Total findings** | 25 |
+| **Errors** | 1 |
+| **Warnings** | 24 |
+| **Affected files** | 11 |
+| **HEAD** | `465b4cf1` |
+| **react-doctor** | 0.9.2 |
+
+These 25 findings are from the version upgrade, not from any code changes in EPIC-11. Fixing them is tracked in a follow-up epic.
+
+## Follow-up
+
+- **Fixed (EPIC-11)**: 0 findings — EPIC-11 changed no component code, only test/tsc/lint fixes.
+- **To fix (next epic)**: 25 findings from the 0.2.16→0.9.2 migration. Each will be closed in one pass per rule following the `fix-react-doctor-finding` workflow.

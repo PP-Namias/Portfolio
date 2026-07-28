@@ -279,7 +279,7 @@ MCP servers give your AI agent access to browser DevTools, component libraries, 
 
 ## Testing
 
-- 86+ test files, 700+ tests, all green
+- 109 test files, 1004 tests, all green
 - Run: `npm run test -- --run`
 - Chat tests: `npm run test -- --run src/__tests__/chat/` (graph, tools, persistence), `src/__tests__/api/chat*.test.ts` (routes), `src/__tests__/hooks/use-chat-stream.test.tsx` (streaming hook)
 - Test isolation: use `SWRConfig` with `provider: () => new Map()` for any test that exercises a SWR consumer
