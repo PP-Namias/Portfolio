@@ -8,6 +8,7 @@ import { FloatingHubWithBoundary } from '@/components/ui/FloatingHub';
 import { ScrollToTop } from '@/components/ui/ScrollToTop';
 import { Analytics } from '@/components/ui/Analytics';
 import { MagicCursor } from '@/components/ui/MagicCursor';
+import { OfflineBanner } from '@/components/ui/OfflineBanner';
 import { JsonLd } from '@/components/seo/JsonLd';
 import { getCmsContent } from '@/lib/cms-content.server';
 import { IS_MAGIC_CURSOR_VISIBLE, IS_STREAMING_SSR_ENABLED } from '@/lib/features';
@@ -139,6 +140,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
             <MagicCursor />
             <FloatingHubWithBoundary />
             <ScrollToTop />
+            <OfflineBanner />
           </Providers>
         </body>
       </html>
@@ -190,6 +192,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
             {children}
             <FloatingHubWithBoundary />
             <ScrollToTop />
+            <OfflineBanner />
             {isDraftMode ? <VisualEditing /> : null}
           </Providers>
         </body>
@@ -225,6 +228,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
           {children}
           <FloatingHubWithBoundary />
           <ScrollToTop />
+          <OfflineBanner />
           {isDraftMode ? <VisualEditing /> : null}
         </Providers>
       </body>
