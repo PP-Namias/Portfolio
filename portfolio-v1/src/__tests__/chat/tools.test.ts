@@ -126,7 +126,7 @@ describe('createTools', () => {
       experiences: [{ company: 'Test Co', position: 'Dev', startedAt: '2025', endedAt: null }],
       projects: [{ title: 'Test Project', description: 'A test project', year: 2025, repositoryURL: null, liveURL: null, tags: [] }],
       technologies: [{ name: 'TypeScript', category: 'Languages', proficiency: 90 }],
-      certifications: [],
+      certifications: [{ title: 'AWS Certified', issuer: 'Amazon', year: 2025 }],
       memberships: [],
       socials: [],
     };
@@ -137,6 +137,51 @@ describe('createTools', () => {
     if (portfolioTool) {
       const result = await portfolioTool.invoke({ category: 'projects' });
       expect(result).toContain('Test Project');
+    }
+  });
+
+  it('portfolio_query rejects invalid category via schema', async () => {
+    const mockContext: ChatDataContext = {
+      profile: { name: 'Keneth', title: 'Engineer' },
+      experiences: [],
+      projects: [],
+      technologies: [],
+      certifications: [],
+      memberships: [],
+      socials: [],
+    };
+    const contextProvider = () => mockContext;
+    const tools = createTools(contextProvider);
+    const portfolioTool = tools.find((t) => t.name === 'portfolio_query');
+    expect(portfolioTool).toBeDefined();
+    if (portfolioTool) {
+      await expect(
+        portfolioTool.invoke({ category: 'invalid_category' })
+      ).rejects.toThrow('Received tool input did not match expected schema');
+    }
+  });
+
+  it('portfolio_query returns result for each valid category', async () => {
+    const mockContext: ChatDataContext = {
+      profile: { name: 'Keneth', title: 'Engineer' },
+      experiences: [{ company: 'Test Co', position: 'Dev', startedAt: '2025', endedAt: null }],
+      projects: [{ title: 'Test Project', description: 'A test project', year: 2025, repositoryURL: null, liveURL: null, tags: [] }],
+      technologies: [{ name: 'TypeScript', category: 'Languages', proficiency: 90 }],
+      certifications: [{ title: 'AWS Certified', issuer: 'Amazon', year: 2025 }],
+      memberships: [],
+      socials: [],
+    };
+    const contextProvider = () => mockContext;
+    const tools = createTools(contextProvider);
+    const portfolioTool = tools.find((t) => t.name === 'portfolio_query');
+    expect(portfolioTool).toBeDefined();
+    if (portfolioTool) {
+      const categories = ['projects', 'experience', 'skills', 'certifications', 'contact'] as const;
+      for (const cat of categories) {
+        const result = await portfolioTool.invoke({ category: cat });
+        expect(result).toBeDefined();
+        expect(result.length).toBeGreaterThan(0);
+      }
     }
   });
 });

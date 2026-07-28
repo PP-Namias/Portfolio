@@ -198,4 +198,23 @@ describe('Chat Graph Engine', () => {
     const graph2 = getCompiledGraph();
     expect(graph1).toBe(graph2);
   });
+
+  it('should handle very long messages', async () => {
+    const longMsg = 'A'.repeat(5000);
+    const result = await runChatGraph({
+      message: longMsg,
+      history: mockHistory,
+    });
+    expect(result.response).toBeDefined();
+    expect(result.response.length).toBeGreaterThan(0);
+  });
+
+  it('should handle special characters and unicode', async () => {
+    const result = await runChatGraph({
+      message: 'Hello 你好 Привет مرحبا!',
+      history: mockHistory,
+    });
+    expect(result.response).toBeDefined();
+    expect(result.response.length).toBeGreaterThan(0);
+  });
 });

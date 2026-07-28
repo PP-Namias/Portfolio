@@ -186,5 +186,15 @@ describe('Persistence', () => {
       deleteThreadMessages('del-msg');
       expect(getThreadMessages('del-msg')).toEqual([]);
     });
+
+    it('should handle large batch of messages', () => {
+      for (let i = 0; i < 100; i++) {
+        saveMessage('batch-thread', 'user', `Message ${i}`);
+      }
+      const messages = getThreadMessages('batch-thread');
+      expect(messages).toHaveLength(100);
+      expect(messages[0].content).toBe('Message 0');
+      expect(messages[99].content).toBe('Message 99');
+    });
   });
 });
