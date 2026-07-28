@@ -1,4 +1,4 @@
-import { GoogleGenerativeAI } from '@google/generative-ai'
+import { GoogleGenerativeAI, type EmbedContentRequest } from '@google/generative-ai'
 import { Chunk } from './types'
 
 const EMBEDDING_MODEL = 'gemini-embedding-001'
@@ -21,8 +21,7 @@ export async function embedText(text: string): Promise<number[]> {
 
   const result = await model.embedContent({
     content: { role: 'user', parts: [{ text }] },
-    outputDimensionality: 768,
-  })
+  } as EmbedContentRequest)
   const embedding = result.embedding
 
   if (!embedding?.values) {

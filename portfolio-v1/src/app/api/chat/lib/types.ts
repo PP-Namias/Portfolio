@@ -39,6 +39,9 @@ export interface ExperienceData {
 export interface ProjectData {
   title?: string;
   description?: string;
+  challenge?: string;
+  solution?: string;
+  result?: string;
   year?: number;
   repositoryURL?: string | null;
   liveURL?: string | null;
