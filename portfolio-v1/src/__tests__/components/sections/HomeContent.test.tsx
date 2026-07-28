@@ -15,6 +15,7 @@ vi.mock('@/components/sections/GallerySection', () => ({ GallerySection: () => <
 vi.mock('@/components/layout/Footer', () => ({ Footer: () => <footer data-testid="footer">Footer</footer> }));
 vi.mock('@/components/ui/Card', () => ({ Card: ({ children, id, className }: any) => <div id={id} className={className} data-testid="card">{children}</div> }));
 vi.mock('@/components/ui/ErrorBoundary', () => ({ SectionErrorBoundary: ({ children }: any) => <div data-testid="error-boundary">{children}</div> }));
+vi.mock('@/lib/features', () => ({ IS_PROJECTS_REVAMP_ENABLED: true, IS_STREAMING_SSR_ENABLED: false, IS_BLOG_VISIBLE: true, IS_CHAT_THREADING_ENABLED: false, IS_LANGGRAPH_ENABLED: false, IS_CHAT_STREAMING_ENABLED: false, IS_MAGIC_CURSOR_VISIBLE: false }));
 
 import { HomeContent } from '@/components/sections/HomeContent';
 
@@ -40,15 +41,32 @@ describe('HomeContent', () => {
     expect(screen.getByRole('main')).toBeInTheDocument();
   });
 
-  it('renders projects section via revamped when flag is on', async () => {
-    vi.mock('@/lib/features', () => ({ IS_PROJECTS_REVAMP_ENABLED: true }));
+  it('renders revamped projects section when IS_PROJECTS_REVAMP_ENABLED is true', () => {
     render(<HomeContent />);
     expect(screen.getByTestId('projects-revamped')).toBeInTheDocument();
+    expect(screen.queryByTestId('projects')).not.toBeInTheDocument();
   });
 
   it('renders blog section inside error boundary', () => {
     render(<HomeContent />);
     const boundaries = screen.getAllByTestId('error-boundary');
     expect(boundaries.length).toBeGreaterThanOrEqual(1);
+  });
+
+  it('renders blog section inside a Card wrapper', () => {
+    render(<HomeContent />);
+    expect(screen.getByTestId('blog')).toBeInTheDocument();
+  });
+
+  it('renders projects section inside a Card wrapper', () => {
+    render(<HomeContent />);
+    const projectsCard = screen.getByTestId('projects-revamped').closest('[data-testid="card"]');
+    expect(projectsCard).toBeInTheDocument();
+  });
+
+  it('wraps blog, certs, and gallery in SectionErrorBoundary', () => {
+    render(<HomeContent />);
+    const boundaries = screen.getAllByTestId('error-boundary');
+    expect(boundaries.length).toBe(3);
   });
 });
