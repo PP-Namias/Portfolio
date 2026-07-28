@@ -127,6 +127,7 @@ vi.mock('@/hooks/useCmsContent', () => ({
 }));
 
 import { MagicCursor } from '@/components/ui/MagicCursor';
+import OptimizedImage from '@/components/ui/OptimizedImage';
 import { AccentColorProvider } from '@/hooks/useAccentColor';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
@@ -307,6 +308,23 @@ describe('uncovered UI components', () => {
     expect(screen.getByText('Built systems')).toBeInTheDocument();
     expect(screen.getByText('Award')).toBeInTheDocument();
     expect(screen.getByText('TypeScript')).toBeInTheDocument();
+  });
+
+  describe('OptimizedImage', () => {
+    it('renders an image with the correct src and alt', () => {
+      render(<OptimizedImage src="/test.jpg" alt="Test image" width={100} height={100} />);
+      const img = screen.getByAltText('Test image');
+      expect(img).toBeInTheDocument();
+      expect(img).toHaveAttribute('src', '/test.jpg');
+    });
+
+    it('shows placeholder on image load error', () => {
+      const { container } = render(<OptimizedImage src="/broken.jpg" alt="Broken" width={100} height={100} />);
+      const img = screen.getByAltText('Broken');
+      fireEvent.error(img);
+      const placeholder = container.querySelector('[aria-label="Broken"]');
+      expect(placeholder).toBeInTheDocument();
+    });
   });
 
   describe('MagicCursor', () => {
