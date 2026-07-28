@@ -128,6 +128,7 @@ vi.mock('@/hooks/useCmsContent', () => ({
 
 import { MagicCursor } from '@/components/ui/MagicCursor';
 import OptimizedImage from '@/components/ui/OptimizedImage';
+import { HackedText } from '@/components/ui/hacked-text';
 import { AccentColorProvider } from '@/hooks/useAccentColor';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
@@ -373,6 +374,31 @@ describe('uncovered UI components', () => {
       }));
       render(<MagicCursor />);
       expect(addEventListenerSpy).not.toHaveBeenCalledWith('mousemove', expect.any(Function));
+    });
+  });
+
+  describe('HackedText', () => {
+    it('renders span with the provided text initially', () => {
+      render(<HackedText text="Hello" />);
+      expect(screen.getByText('Hello')).toBeInTheDocument();
+    });
+
+    it('has aria-label set to the original text', () => {
+      render(<HackedText text="Hello World" />);
+      expect(screen.getByLabelText('Hello World')).toBeInTheDocument();
+    });
+
+    it('has data-value attribute with original text', () => {
+      render(<HackedText text="Hello World" />);
+      const span = screen.getByLabelText('Hello World');
+      expect(span.getAttribute('data-value')).toBe('Hello World');
+    });
+
+    it('re-runs animation on mouseOver', () => {
+      render(<HackedText text="Hello" />);
+      const span = screen.getByLabelText('Hello');
+      fireEvent.mouseOver(span);
+      expect(span.getAttribute('data-value')).toBe('Hello');
     });
   });
 });
