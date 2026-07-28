@@ -46,7 +46,8 @@ export async function registerSW(): Promise<ServiceWorkerRegistration | null> {
 }
 
 export async function sendMessageToSW(type: string, data?: Record<string, unknown>): Promise<unknown> {
-  if (!navigator.serviceWorker.controller) return null;
+  const controller = navigator.serviceWorker.controller;
+  if (!controller) return null;
 
   return new Promise((resolve, reject) => {
     const messageChannel = new MessageChannel();
@@ -54,7 +55,7 @@ export async function sendMessageToSW(type: string, data?: Record<string, unknow
       if (event.data?.error) reject(new Error(event.data.error));
       else resolve(event.data);
     };
-    navigator.serviceWorker.controller.postMessage(
+    controller.postMessage(
       { type, ...data },
       [messageChannel.port2]
     );
