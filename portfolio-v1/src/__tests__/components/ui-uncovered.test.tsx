@@ -129,6 +129,7 @@ vi.mock('@/hooks/useCmsContent', () => ({
 import { MagicCursor } from '@/components/ui/MagicCursor';
 import OptimizedImage from '@/components/ui/OptimizedImage';
 import { HackedText } from '@/components/ui/hacked-text';
+import { CardContainer, CardBody, CardItem } from '@/components/ui/3d-card';
 import { AccentColorProvider } from '@/hooks/useAccentColor';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
@@ -399,6 +400,65 @@ describe('uncovered UI components', () => {
       const span = screen.getByLabelText('Hello');
       fireEvent.mouseOver(span);
       expect(span.getAttribute('data-value')).toBe('Hello');
+    });
+  });
+
+  describe('3d-card', () => {
+    it('CardContainer renders children', () => {
+      render(<CardContainer><div data-testid="child">Content</div></CardContainer>);
+      expect(screen.getByTestId('child')).toBeInTheDocument();
+    });
+
+    it('CardContainer sets perspective on wrapper', () => {
+      const { container } = render(<CardContainer><div>Content</div></CardContainer>);
+      const outer = container.firstChild as HTMLElement;
+      expect(outer.style.perspective).toBe('1000px');
+    });
+
+    it('CardContainer applies transform on mouse move and resets on leave', () => {
+      const { container } = render(<CardContainer><div>Content</div></CardContainer>);
+      const inner = container.firstChild?.firstChild as HTMLElement;
+
+      fireEvent.mouseEnter(inner);
+      fireEvent.mouseMove(inner, { clientX: 100, clientY: 100 });
+
+      expect(inner.style.transform).toContain('rotateY');
+      expect(inner.style.transform).toContain('rotateX');
+
+      fireEvent.mouseLeave(inner);
+      expect(inner.style.transform).toBe('rotateY(0deg) rotateX(0deg)');
+    });
+
+    it('CardBody renders children', () => {
+      render(<CardBody><div data-testid="child">Body</div></CardBody>);
+      expect(screen.getByTestId('child')).toBeInTheDocument();
+    });
+
+    it('CardItem renders with custom tag', () => {
+      render(
+        <CardContainer>
+          <CardItem as="a" href="/test" translateZ={50}>Link</CardItem>
+        </CardContainer>
+      );
+      const link = screen.getByText('Link');
+      expect(link.tagName).toBe('A');
+      expect(link).toHaveAttribute('href', '/test');
+    });
+
+    it('CardItem applies translateZ on mouse enter', () => {
+      const { container } = render(
+        <CardContainer>
+          <CardItem translateZ={50}>Item</CardItem>
+        </CardContainer>
+      );
+      const inner = container.firstChild?.firstChild as HTMLElement;
+      const cardItem = inner.firstChild as HTMLElement;
+
+      fireEvent.mouseEnter(inner);
+      expect(cardItem.style.transform).toContain('translateZ(50px)');
+
+      fireEvent.mouseLeave(inner);
+      expect(cardItem.style.transform).toContain('translateX(0px)');
     });
   });
 });
