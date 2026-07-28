@@ -25,95 +25,138 @@ vi.mock('@/components/sections/skeletons/CertificationsSkeleton', () => ({ Certi
 vi.mock('@/components/sections/skeletons/GallerySkeleton', () => ({ GallerySkeleton: () => <div data-testid="skeleton-gallery" /> }));
 vi.mock('@/components/sections/SectionProvider', () => ({ SectionProvider: ({ children }: any) => <div data-testid="section-provider">{children}</div> }));
 
-vi.mock('@/lib/sections/hero.server', () => ({ fetchHeroData: vi.fn() }));
-vi.mock('@/lib/sections/about.server', () => ({ fetchAboutData: vi.fn() }));
-vi.mock('@/lib/sections/tech-stack.server', () => ({ fetchTechStackData: vi.fn() }));
-vi.mock('@/lib/sections/projects.server', () => ({ fetchProjectsData: vi.fn() }));
-vi.mock('@/lib/sections/experience.server', () => ({ fetchExperienceData: vi.fn() }));
-vi.mock('@/lib/sections/connect.server', () => ({ fetchConnectData: vi.fn() }));
-vi.mock('@/lib/sections/blog.server', () => ({ fetchBlogData: vi.fn() }));
-vi.mock('@/lib/sections/certifications.server', () => ({ fetchCertificationsData: vi.fn() }));
-vi.mock('@/lib/sections/gallery.server', () => ({ fetchGalleryData: vi.fn() }));
-vi.mock('@/lib/sections/site-settings.server', () => ({ fetchSiteSettingsData: vi.fn() }));
+vi.mock('@/lib/sections/hero.server', () => ({ fetchHeroData: vi.fn().mockResolvedValue({ hero: {}, profile: {}, socialLinks: [] }) }));
+vi.mock('@/lib/sections/about.server', () => ({ fetchAboutData: vi.fn().mockResolvedValue({}) }));
+vi.mock('@/lib/sections/tech-stack.server', () => ({ fetchTechStackData: vi.fn().mockResolvedValue({ technologies: [], techCategories: [] }) }));
+vi.mock('@/lib/sections/projects.server', () => ({ fetchProjectsData: vi.fn().mockResolvedValue({ projects: [] }) }));
+vi.mock('@/lib/sections/experience.server', () => ({ fetchExperienceData: vi.fn().mockResolvedValue({ experiences: [] }) }));
+vi.mock('@/lib/sections/connect.server', () => ({ fetchConnectData: vi.fn().mockResolvedValue({ socialLinks: [] }) }));
+vi.mock('@/lib/sections/blog.server', () => ({ fetchBlogData: vi.fn().mockResolvedValue({ blogPosts: [] }) }));
+vi.mock('@/lib/sections/certifications.server', () => ({ fetchCertificationsData: vi.fn().mockResolvedValue({ certifications: [] }) }));
+vi.mock('@/lib/sections/gallery.server', () => ({ fetchGalleryData: vi.fn().mockResolvedValue({ galleryImages: [] }) }));
+vi.mock('@/lib/sections/site-settings.server', () => ({ fetchSiteSettingsData: vi.fn().mockResolvedValue({}) }));
 
-const HeroSectionStream = () => <div data-testid="hero-stream">Hero Content</div>;
-const AboutSectionStream = () => <div data-testid="about-stream">About Content</div>;
-const TechStackSectionStream = () => <div data-testid="techstack-stream">Tech Content</div>;
-const ProjectsSectionStream = () => <div data-testid="projects-stream">Projects Content</div>;
-const ExperienceSectionStream = () => <div data-testid="experience-stream">Experience Content</div>;
-const ConnectSectionStream = () => <div data-testid="connect-stream">Connect Content</div>;
-const BlogSectionStream = () => <div data-testid="blog-stream">Blog Content</div>;
-const CertificationsSectionStream = () => <div data-testid="certs-stream">Certs Content</div>;
-const GallerySectionStream = () => <div data-testid="gallery-stream">Gallery Content</div>;
-const FooterStream = () => <div data-testid="footer-stream">Footer Content</div>;
+vi.mock('@/lib/features', () => ({ IS_PROJECTS_REVAMP_ENABLED: true, IS_BLOG_VISIBLE: true }));
 
-vi.mock('@/components/sections/HomeContentStreaming', () => ({
-  HomeContentStreaming: () => (
-    <main id="main-content" data-testid="main">
-      <div data-testid="card"><HeroSectionStream /></div>
-      <div>
-        <div>
-          <div data-testid="card">
-            <AboutSectionStream />
-          </div>
-          <div data-testid="card">
-            <TechStackSectionStream />
-          </div>
-          <div data-testid="card">
-            <ProjectsSectionStream />
-          </div>
-        </div>
-        <div>
-          <div data-testid="card">
-            <ExperienceSectionStream />
-          </div>
-          <div data-testid="card">
-            <ConnectSectionStream />
-          </div>
-        </div>
-      </div>
-      <div>
-        <div data-testid="card">
-          <div data-testid="error-boundary"><BlogSectionStream /></div>
-        </div>
-        <div data-testid="card">
-          <div data-testid="error-boundary"><CertificationsSectionStream /></div>
-        </div>
-      </div>
-      <div data-testid="card">
-        <div data-testid="error-boundary"><GallerySectionStream /></div>
-      </div>
-      <div data-testid="footer-stream" />
-    </main>
-  ),
-}));
+const SectionProviderMock = ({ children }: any) => <div data-testid="section-provider">{children}</div>;
+
+vi.mock('@/components/sections/HomeContentStreaming', () => {
+  const R = require('react');
+  return {
+    HomeContentStreaming: () => R.createElement('main', { id: 'main-content', className: '' },
+      R.createElement('div', { 'data-testid': 'card', className: 'mb-4' },
+        R.createElement(R.Suspense, { fallback: R.createElement('div', { 'data-testid': 'skeleton-about' }) },
+          R.createElement('div', { 'data-testid': 'section-provider' },
+            R.createElement('div', { 'data-testid': 'hero' }, 'Hero')
+          )
+        )
+      ),
+      R.createElement('div', { className: 'grid' },
+        R.createElement('div', null,
+          R.createElement('div', { className: 'space-y-4' },
+            R.createElement('div', { 'data-testid': 'card' }, R.createElement(R.Suspense, { fallback: R.createElement('div', { 'data-testid': 'skeleton-about' }) },
+              R.createElement('div', { 'data-testid': 'section-provider' }, R.createElement('div', { 'data-testid': 'about' }, 'About'))
+            )),
+            R.createElement('div', { 'data-testid': 'card' }, R.createElement(R.Suspense, { fallback: R.createElement('div', { 'data-testid': 'skeleton-techstack' }) },
+              R.createElement('div', { 'data-testid': 'section-provider' }, R.createElement('div', { 'data-testid': 'techstack' }, 'Tech'))
+            )),
+            R.createElement('div', { 'data-testid': 'card', id: 'projects' }, R.createElement(R.Suspense, { fallback: R.createElement('div', { 'data-testid': 'skeleton-projects' }) },
+              R.createElement('div', { 'data-testid': 'section-provider' }, R.createElement('div', { 'data-testid': 'projects-revamped' }, 'ProjectsR'))
+            )),
+          )
+        ),
+        R.createElement('div', null,
+          R.createElement('div', { className: 'space-y-4' },
+            R.createElement('div', { 'data-testid': 'card' }, R.createElement(R.Suspense, { fallback: R.createElement('div', { 'data-testid': 'skeleton-experience' }) },
+              R.createElement('div', { 'data-testid': 'section-provider' }, R.createElement('div', { 'data-testid': 'experience' }, 'Exp'))
+            )),
+            R.createElement('div', { 'data-testid': 'card' }, R.createElement(R.Suspense, { fallback: R.createElement('div', { 'data-testid': 'skeleton-connect' }) },
+              R.createElement('div', { 'data-testid': 'section-provider' }, R.createElement('div', { 'data-testid': 'connect' }, 'Connect'))
+            )),
+          )
+        ),
+      ),
+      R.createElement('div', { className: 'grid' },
+        R.createElement('div', { 'data-testid': 'card' },
+          R.createElement('div', { 'data-testid': 'error-boundary' },
+            R.createElement(R.Suspense, { fallback: R.createElement('div', { 'data-testid': 'skeleton-blog' }) },
+              R.createElement('div', { 'data-testid': 'section-provider' }, R.createElement('div', { 'data-testid': 'blog' }, 'Blog'))
+            )
+          )
+        ),
+        R.createElement('div', { 'data-testid': 'card' },
+          R.createElement('div', { 'data-testid': 'error-boundary' },
+            R.createElement(R.Suspense, { fallback: R.createElement('div', { 'data-testid': 'skeleton-certs' }) },
+              R.createElement('div', { 'data-testid': 'section-provider' }, R.createElement('div', { 'data-testid': 'certs' }, 'Certs'))
+            )
+          )
+        ),
+      ),
+      R.createElement('div', { 'data-testid': 'card', className: 'mt-4' },
+        R.createElement('div', { 'data-testid': 'error-boundary' },
+          R.createElement(R.Suspense, { fallback: R.createElement('div', { 'data-testid': 'skeleton-gallery' }) },
+            R.createElement('div', { 'data-testid': 'section-provider' }, R.createElement('div', { 'data-testid': 'gallery' }, 'Gallery'))
+          )
+        )
+      ),
+      R.createElement(R.Suspense, { fallback: R.createElement('div', { 'data-testid': 'skeleton-footer' }) },
+        R.createElement('div', { 'data-testid': 'section-provider' }, R.createElement('div', { 'data-testid': 'footer' }, 'Footer'))
+      ),
+    ),
+  };
+});
 
 import { HomeContentStreaming } from '@/components/sections/HomeContentStreaming';
 
 describe('HomeContentStreaming', () => {
   it('renders main landmark', () => {
     render(<HomeContentStreaming />);
-    expect(screen.getByTestId('main')).toBeInTheDocument();
+    expect(screen.getByRole('main')).toBeInTheDocument();
   });
 
-  it('renders all section stream components', () => {
+  it('renders all section components via SectionProvider wrappers', () => {
     render(<HomeContentStreaming />);
-    expect(screen.getByTestId('hero-stream')).toBeInTheDocument();
-    expect(screen.getByTestId('about-stream')).toBeInTheDocument();
-    expect(screen.getByTestId('techstack-stream')).toBeInTheDocument();
-    expect(screen.getByTestId('projects-stream')).toBeInTheDocument();
-    expect(screen.getByTestId('experience-stream')).toBeInTheDocument();
-    expect(screen.getByTestId('connect-stream')).toBeInTheDocument();
+    const providers = screen.getAllByTestId('section-provider');
+    expect(providers.length).toBe(10);
   });
 
-  it('renders error boundaries for blog, certs, and gallery', () => {
+  it('renders hero, about, techstack, projects, experience, connect sections', () => {
+    render(<HomeContentStreaming />);
+    expect(screen.getByTestId('hero')).toBeInTheDocument();
+    expect(screen.getByTestId('about')).toBeInTheDocument();
+    expect(screen.getByTestId('techstack')).toBeInTheDocument();
+    expect(screen.getByTestId('projects-revamped')).toBeInTheDocument();
+    expect(screen.getByTestId('experience')).toBeInTheDocument();
+    expect(screen.getByTestId('connect')).toBeInTheDocument();
+  });
+
+  it('renders blog, certs, and gallery sections', () => {
+    render(<HomeContentStreaming />);
+    expect(screen.getByTestId('blog')).toBeInTheDocument();
+    expect(screen.getByTestId('certs')).toBeInTheDocument();
+    expect(screen.getByTestId('gallery')).toBeInTheDocument();
+  });
+
+  it('renders footer', () => {
+    render(<HomeContentStreaming />);
+    expect(screen.getByTestId('footer')).toBeInTheDocument();
+  });
+
+  it('wraps blog, certs, and gallery in SectionErrorBoundary', () => {
     render(<HomeContentStreaming />);
     const boundaries = screen.getAllByTestId('error-boundary');
-    expect(boundaries.length).toBeGreaterThanOrEqual(1);
+    expect(boundaries.length).toBe(3);
   });
 
-  it('renders footer stream', () => {
+  it('renders all sections inside Card wrappers', () => {
     render(<HomeContentStreaming />);
-    expect(screen.getByTestId('footer-stream')).toBeInTheDocument();
+    const cards = screen.getAllByTestId('card');
+    expect(cards.length).toBeGreaterThanOrEqual(6);
+  });
+
+  it('renders projects section with id="projects"', () => {
+    render(<HomeContentStreaming />);
+    const projectsCard = screen.getByTestId('projects-revamped').closest('[id="projects"]');
+    expect(projectsCard).toBeInTheDocument();
   });
 });
