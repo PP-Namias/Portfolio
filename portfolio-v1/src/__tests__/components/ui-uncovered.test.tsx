@@ -126,6 +126,7 @@ vi.mock('@/hooks/useCmsContent', () => ({
   }),
 }));
 
+import { MagicCursor } from '@/components/ui/MagicCursor';
 import { AccentColorProvider } from '@/hooks/useAccentColor';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
@@ -306,5 +307,54 @@ describe('uncovered UI components', () => {
     expect(screen.getByText('Built systems')).toBeInTheDocument();
     expect(screen.getByText('Award')).toBeInTheDocument();
     expect(screen.getByText('TypeScript')).toBeInTheDocument();
+  });
+
+  describe('MagicCursor', () => {
+    beforeEach(() => {
+      vi.useFakeTimers();
+    });
+
+    afterEach(() => {
+      vi.useRealTimers();
+    });
+
+    it('renders a fixed container with aria-hidden', () => {
+      const { container } = render(<MagicCursor />);
+      const el = container.firstChild as HTMLElement;
+      expect(el.getAttribute('aria-hidden')).toBe('true');
+      expect(el.style.position).toBe('fixed');
+      expect(el.style.pointerEvents).toBe('none');
+    });
+
+    it('attaches mousemove and touchmove event listeners on mount', () => {
+      const addEventListenerSpy = vi.spyOn(window, 'addEventListener');
+      render(<MagicCursor />);
+      expect(addEventListenerSpy).toHaveBeenCalledWith('mousemove', expect.any(Function));
+      expect(addEventListenerSpy).toHaveBeenCalledWith('touchmove', expect.any(Function), { passive: true });
+    });
+
+    it('cleans up event listeners on unmount', () => {
+      const removeEventListenerSpy = vi.spyOn(window, 'removeEventListener');
+      const { unmount } = render(<MagicCursor />);
+      unmount();
+      expect(removeEventListenerSpy).toHaveBeenCalledWith('mousemove', expect.any(Function));
+      expect(removeEventListenerSpy).toHaveBeenCalledWith('touchmove', expect.any(Function));
+    });
+
+    it('does not attach event listeners when prefers-reduced-motion matches', () => {
+      const addEventListenerSpy = vi.spyOn(window, 'addEventListener');
+      window.matchMedia = vi.fn().mockImplementation((query: string) => ({
+        matches: query === '(prefers-reduced-motion: reduce)',
+        media: query,
+        onchange: null,
+        addListener: vi.fn(),
+        removeListener: vi.fn(),
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+        dispatchEvent: vi.fn(),
+      }));
+      render(<MagicCursor />);
+      expect(addEventListenerSpy).not.toHaveBeenCalledWith('mousemove', expect.any(Function));
+    });
   });
 });
