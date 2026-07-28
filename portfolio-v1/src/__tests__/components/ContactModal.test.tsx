@@ -121,4 +121,61 @@ describe('ContactModal', () => {
     expect(screen.getByText('Discord')).toBeInTheDocument();
     expect(screen.getByText('Book a Call')).toBeInTheDocument();
   });
+
+  it('persists draft to localStorage on form change', async () => {
+    render(<ContactModal open={true} onClose={onClose} />);
+    fireEvent.change(screen.getByLabelText('Name'), { target: { value: 'John' } });
+    await waitFor(() => {
+      const saved = globalThis.localStorage.getItem('contact-modal-draft-v1');
+      expect(saved).toBeTruthy();
+    });
+    const saved = JSON.parse(globalThis.localStorage.getItem('contact-modal-draft-v1')!);
+    expect(saved.name).toBe('John');
+  });
+
+  it('restores draft from localStorage on mount', () => {
+    const draft = { name: 'John', email: 'john@test.com', topic: '', subject: 'Test', message: 'Hello there, this is a test message for draft restore.' };
+    globalThis.localStorage.setItem('contact-modal-draft-v1', JSON.stringify(draft));
+    render(<ContactModal open={true} onClose={onClose} />);
+    const nameInput = screen.getByLabelText('Name') as HTMLInputElement;
+    expect(nameInput.value).toBe('John');
+    const emailInput = screen.getByLabelText('Email') as HTMLInputElement;
+    expect(emailInput.value).toBe('john@test.com');
+  });
+
+  it('clear draft button resets form fields', () => {
+    render(<ContactModal open={true} onClose={onClose} />);
+    fireEvent.change(screen.getByLabelText('Name'), { target: { value: 'John' } });
+    fireEvent.change(screen.getByLabelText('Email'), { target: { value: 'john@test.com' } });
+    fireEvent.change(screen.getByLabelText('Message'), { target: { value: 'A longer message that meets the minimum character requirement for validation.' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Clear draft' }));
+    const nameInput = screen.getByLabelText('Name') as HTMLInputElement;
+    expect(nameInput.value).toBe('');
+    const emailInput = screen.getByLabelText('Email') as HTMLInputElement;
+    expect(emailInput.value).toBe('');
+  });
+
+  it('sets aria-invalid on fields with validation errors', () => {
+    render(<ContactModal open={true} onClose={onClose} />);
+    fireEvent.click(screen.getByText('Open email draft'));
+    const nameField = screen.getByLabelText('Name');
+    expect(nameField.getAttribute('aria-invalid')).toBe('true');
+  });
+
+  it('handles clipboard copy failure gracefully', async () => {
+    Object.defineProperty(globalThis.navigator, 'clipboard', {
+      value: { writeText: vi.fn().mockRejectedValue(new Error('Clipboard denied')) },
+      writable: true,
+      configurable: true,
+    });
+    render(<ContactModal open={true} onClose={onClose} />);
+    fireEvent.change(screen.getByLabelText('Name'), { target: { value: 'John' } });
+    fireEvent.change(screen.getByLabelText('Email'), { target: { value: 'john@test.com' } });
+    fireEvent.change(screen.getByLabelText('Subject'), { target: { value: 'Hello' } });
+    fireEvent.change(screen.getByLabelText('Message'), { target: { value: 'Test message with enough characters to pass validation.' } });
+    fireEvent.click(screen.getByText('Copy draft'));
+    await waitFor(() => {
+      expect(screen.getByText(/Couldn't copy/)).toBeInTheDocument();
+    });
+  });
 });
