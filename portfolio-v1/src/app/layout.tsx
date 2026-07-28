@@ -53,9 +53,16 @@ export async function generateMetadata(): Promise<Metadata> {
       title: seo.siteTitle,
       description: seo.siteDescription,
     },
+    manifest: '/site.webmanifest',
+    themeColor: '#000000',
+    appleWebApp: {
+      capable: true,
+      statusBarStyle: 'black-translucent',
+      title: 'JN Portfolio',
+    },
     icons: {
       icon: '/favicon.svg',
-      apple: '/apple-touch-icon.svg',
+      apple: '/apple-touch-icon.png',
     },
   };
 }
