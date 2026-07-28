@@ -67,7 +67,7 @@ curl -s -o /dev/null -w "%{http_code}" http://localhost:3333
 5. Verify:
    - [ ] The page loads fully (all CSS, JS, images visible)
    - [ ] No network requests show in the Network tab (all grayed out or zero)
-   - [ ] The offline banner does NOT appear (because the page loaded from cache successfully)
+   - [ ] No offline banner appears (cached content loading flawlessly IS the wow moment)
 
 ### 2.4 Unvisited Route Fallback
 
@@ -156,10 +156,10 @@ Open that URL on your desktop browser first to verify the site loads.
    - [ ] All text, styling, and layout render correctly
    - [ ] All SVG and PNG icons display
    - [ ] The homepage hero, blog section, project cards, and certifications all visible
-   - [ ] The amber offline banner **may** appear at the bottom: *"You are currently offline. Browsing cached portfolio data."*
+   - [ ] No banner or interruption — the experience is identical to being online
    - [ ] Clicking project links loads cached versions or gracefully shows the `/offline` page
 7. **Turn off Airplane Mode**
-8. **The green banner** appears briefly: *"Back online — you are viewing the latest content."* then fades
+8. A subtle green pill appears briefly in the bottom-right corner: *"Back online"* then fades — the only UI feedback during the whole flow
 
 ### 3.6 iOS Safari-specific Notes
 

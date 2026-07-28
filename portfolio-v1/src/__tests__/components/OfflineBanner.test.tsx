@@ -19,52 +19,34 @@ describe('OfflineBanner', () => {
     expect(container.innerHTML).toBe('');
   });
 
-  it('renders offline message when offline event fires', () => {
+  it('renders nothing when offline (cached content is the wow moment)', () => {
     render(<OfflineBanner />);
 
     act(() => {
       window.dispatchEvent(new Event('offline'));
     });
 
-    expect(screen.getByRole('alert')).toBeInTheDocument();
-    expect(screen.getByText(/currently offline/i)).toBeInTheDocument();
+    expect(screen.queryByRole('status')).not.toBeInTheDocument();
   });
 
-  it('renders reconnection message then hides after 3 seconds', () => {
+  it('shows back online pill briefly after reconnection then hides', () => {
     render(<OfflineBanner />);
 
     act(() => {
       window.dispatchEvent(new Event('offline'));
     });
-
-    expect(screen.getByText(/currently offline/i)).toBeInTheDocument();
 
     act(() => {
       window.dispatchEvent(new Event('online'));
     });
 
+    expect(screen.getByRole('status')).toBeInTheDocument();
     expect(screen.getByText(/back online/i)).toBeInTheDocument();
 
     act(() => {
-      vi.advanceTimersByTime(3300);
+      vi.advanceTimersByTime(2800);
     });
 
-    expect(screen.queryByRole('alert')).not.toBeInTheDocument();
-  });
-
-  it('remains offline when still offline after multiple events', () => {
-    render(<OfflineBanner />);
-
-    act(() => {
-      window.dispatchEvent(new Event('offline'));
-    });
-
-    expect(screen.getByText(/currently offline/i)).toBeInTheDocument();
-
-    act(() => {
-      window.dispatchEvent(new Event('offline'));
-    });
-
-    expect(screen.getByText(/currently offline/i)).toBeInTheDocument();
+    expect(screen.queryByRole('status')).not.toBeInTheDocument();
   });
 });
