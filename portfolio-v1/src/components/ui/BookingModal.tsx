@@ -18,7 +18,7 @@ const SAFETY_MARGIN = 16;
 const MAX_SCHEDULING_HEIGHT = 700;
 
 const EVENT_TYPES = [
-  { slug: 'introductory-call', label: 'Introductory Call', duration: '30 min' },
+  { slug: 'introductory-call', label: 'Introductory Call' },
 ] as const;
 
 type BookingEventSlug = (typeof EVENT_TYPES)[number]['slug'];
@@ -78,28 +78,9 @@ export function BookingModal({ open, onClose }: Readonly<BookingModalProps>) {
     <Modal open={open} onClose={onClose} showCloseButton={false} scrollable={false} panelStyle={panelStyle} modalVariant="scheduling">
       {/* Toolbar */}
       <div className="flex items-center justify-between px-5 py-3 border-b border-border-light dark:border-border-dark flex-shrink-0 transition-colors duration-300">
-        <div className="flex items-center gap-4">
-          <h2 className="text-sm font-semibold text-text-primary-light dark:text-text-primary-dark">
-            Schedule a Meeting
-          </h2>
-          {/* Event type selector */}
-          <div className="flex items-center gap-1.5">
-            {EVENT_TYPES.map((event) => (
-              <button
-                type="button"
-                key={event.slug}
-                onClick={() => setSelectedEvent(event.slug)}
-                className={`text-xs font-medium px-3 py-1 rounded-full transition-colors ${
-                  selectedEvent === event.slug
-                    ? 'bg-accent-pink text-white'
-                    : 'bg-accent-pink/10 text-accent-pink hover:bg-accent-pink/20'
-                }`}
-              >
-                {event.duration}
-              </button>
-            ))}
-          </div>
-        </div>
+        <h2 className="text-sm font-semibold text-text-primary-light dark:text-text-primary-dark">
+          Schedule a Meeting
+        </h2>
         <div className="flex items-center gap-3">
           <a
             href={`${CAL_BASE_URL}/${CAL_USERNAME}`}

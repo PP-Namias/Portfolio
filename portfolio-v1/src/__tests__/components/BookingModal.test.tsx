@@ -44,11 +44,6 @@ describe('BookingModal', () => {
     expect(iframe).toHaveAttribute('src', expect.stringContaining('embed=true'));
   });
 
-  it('renders event type selector button', () => {
-    render(<BookingModal open={true} onClose={mockOnClose} />);
-    expect(screen.getByText('30 min')).toBeInTheDocument();
-  });
-
   it('has a link to open Cal.com externally', () => {
     render(<BookingModal open={true} onClose={mockOnClose} />);
     const externalLink = screen.getByText('Open in Cal.com').closest('a');
