@@ -3,7 +3,7 @@ import { Inter } from 'next/font/google';
 import { draftMode } from 'next/headers';
 import { VisualEditing } from 'next-sanity';
 import { Providers } from './providers';
-import { fallbackCmsContent } from '@/lib/cms-content.shared';
+import { fallbackCmsContent, type CmsContent } from '@/lib/cms-content.shared';
 import { FloatingHubWithBoundary } from '@/components/ui/FloatingHub';
 import { ScrollToTop } from '@/components/ui/ScrollToTop';
 import { Analytics } from '@/components/ui/Analytics';
@@ -15,6 +15,7 @@ import { getCmsContent } from '@/lib/cms-content.server';
 import { IS_MAGIC_CURSOR_VISIBLE, IS_PWA_ENABLED, IS_STREAMING_SSR_ENABLED } from '@/lib/features';
 import { SITE_URL, SITE_NAME, SITE_DESCRIPTION } from '@/lib/site-config';
 import { fetchSeoData } from '@/lib/sections/seo.server';
+import { fetchHeroData } from '@/lib/sections/hero.server';
 import './globals.css';
 
 const inter = Inter({
@@ -154,9 +155,9 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
   const isDraftMode = await draftMode().then((d) => d.isEnabled);
 
   if (IS_STREAMING_SSR_ENABLED) {
-    const [seoData] = await Promise.all([fetchSeoData()]);
+    const [seoData, heroData] = await Promise.all([fetchSeoData(), fetchHeroData()]);
 
-    const streamingCmsContent = {
+    const streamingCmsContent: CmsContent = {
       ...fallbackCmsContent,
       seoSettings: {
         ...fallbackCmsContent.seoSettings,
@@ -168,6 +169,19 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
         noindex: seoData.noindex,
         nofollow: seoData.nofollow,
       },
+      profile: {
+        ...fallbackCmsContent.profile,
+        name: heroData.profile.name || fallbackCmsContent.profile.name,
+        title: heroData.profile.title || fallbackCmsContent.profile.title,
+        email: heroData.profile.email || fallbackCmsContent.profile.email,
+        location: heroData.profile.location || fallbackCmsContent.profile.location,
+      },
+      hero: {
+        roles: heroData.hero.roles,
+        availabilityLabel: heroData.hero.availabilityLabel,
+        profileImageUrl: heroData.hero.profileImageUrl,
+      },
+      socialLinks: heroData.socialLinks,
     };
 
     return (

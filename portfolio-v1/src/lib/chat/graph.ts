@@ -377,7 +377,7 @@ export async function runChatGraph(params: {
     };
   } catch (error) {
     onStatus?.('error');
-    const fallbackContext = cmsContextCache || state.chatDataContext || { profile: {} as Record<string, unknown>, experiences: [], projects: [], technologies: [], certifications: [], memberships: [], socials: [] };
+    const fallbackContext = cmsContextCache || { profile: {} as Record<string, unknown>, experiences: [], projects: [], technologies: [], certifications: [], memberships: [], socials: [] };
     const fallbackResponse = buildSmartFallback(
       message,
       fallbackContext as ChatDataContext,

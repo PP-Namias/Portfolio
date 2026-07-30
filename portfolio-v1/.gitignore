@@ -160,3 +160,6 @@ docs/security/pentestagent/knowledge/
 
 # Chat runtime data
 .chat-data/
+
+# Generated service worker assets manifest
+public/sw-assets.json

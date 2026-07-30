@@ -318,3 +318,89 @@ This repo uses loop engineering patterns (inspired by [cobusgreyling/loop-engine
 - Append to `loop-run-log.md` after completing automated tasks.
 - Respect `loop-budget.md` token caps.
 - Use `loop-engineering` skill for detailed instructions.
+
+## Auto-Commit Workflow
+
+Every change made to the codebase MUST be followed by a git commit. This ensures:
+
+1. **Traceability** — every change is linked to a commit message
+2. **Safety** — work is not lost if the session ends
+3. **Review readiness** — PRs are built from small, reviewable slices
+
+### Rules
+
+1. **Commit after every logical change** — after each bug fix, feature addition, or configuration change, stage and commit
+2. **Commit message format**: `type(scope): short description`
+   - Types: `fix`, `feat`, `chore`, `docs`, `test`, `refactor`, `style`, `ci`
+   - Scope: the area of change (e.g., `layout`, `chat`, `cms`, `config`)
+3. **Verify before commit**: run relevant quality gates first
+   - `npm run test -- --run` — if source code changed
+   - `npx tsc --noEmit` — if TypeScript changed
+   - `npm run lint` — if code changed
+   - `npm run doctor:check` — if React components changed
+4. **One commit per story slice** — do not mix unrelated changes
+5. **Body**: bullet list of what changed, why, and what was verified
+
+### Example
+
+```bash
+git add -A
+git commit -m "fix(layout): include hero data in streaming SSR root context
+
+- Fetch fetchHeroData() alongside fetchSeoData() in streaming SSR layout
+- Merge profile, hero, and socialLinks into streamingCmsContent
+- Fixes FloatingHub showing empty profile image/name/title
+- Verified: npm test, tsc --noEmit, npm run lint all pass"
+```
+
+## CodeRabbit AI Code Review
+
+CodeRabbit is configured to automatically review every PR for bugs, security issues, accessibility problems, and code quality.
+
+### Configuration
+
+- Config file: `.coderabbit.yaml` at repo root
+- Workflow: `.github/workflows/coderabbit.yml`
+
+### Setup Steps
+
+1. **Add the CodeRabbit GitHub App** to this repository
+   - Go to: https://github.com/apps/coderabbit-ai/installations/new
+   - Select the `PP-Namias/Portfolio` repository
+   - Grant permissions for: pull requests, issues, checks, statuses
+
+2. **Add an OpenAI API key** as a repository secret
+   - Name: `CODERABBIT_OPENAI_KEY`
+   - Value: Your OpenAI API key with GPT-4 access
+   - Location: Settings → Secrets and variables → Actions → New repository secret
+
+3. **Verify** — Open a PR and check that CodeRabbit comments on it within 2 minutes
+
+### What CodeRabbit Reviews
+
+| Category | What It Checks |
+|----------|---------------|
+| **Bugs** | Logic errors, null pointer risks, race conditions |
+| **Security** | Injection, XSS, hardcoded secrets, unsafe iframes |
+| **Accessibility** | Missing ARIA attributes, keyboard support, focus management |
+| **TypeScript** | Type safety, strict mode compliance, proper generics |
+| **React** | Hook rules, key props, re-render optimization |
+| **Performance** | Expensive computations, missing memo, bundle size |
+
+### Custom Instructions by Path
+
+See `.coderabbit.yaml` `path_instructions` for per-directory review rules.
+
+## Code Quality Gate
+
+Before pushing or creating a PR, run the full quality gate:
+
+```bash
+cd portfolio-v1
+npm run test -- --run          # 1015+ tests
+npx tsc --noEmit                # strict TypeScript
+npm run lint                    # ESLint
+npm run doctor:check            # react-doctor 100/100
+```
+
+All four must pass before creating a PR.

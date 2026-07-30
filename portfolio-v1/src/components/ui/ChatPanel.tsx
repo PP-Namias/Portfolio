@@ -152,8 +152,7 @@ export function ChatPanel({ onBack, onClose, messages, setMessages }: Readonly<C
     setCurrentToolCall(toolCall.name);
   }, []);
 
-  const handleStreamDone = useCallback((threadId: string) => {
-    setCurrentThreadId(threadId);
+  const handleStreamDone = useCallback((_threadId: string) => {
     const content = streamingContentRef.current;
     setMessages((prev) => {
       if (!content) return prev;

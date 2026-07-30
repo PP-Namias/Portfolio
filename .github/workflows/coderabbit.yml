@@ -1,0 +1,40 @@
+# CodeRabbit AI Review — triggered on every PR
+# https://github.com/marketplace/actions/coderabbit-ai-review
+
+name: CodeRabbit AI Review
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+  pull_request_review_comment:
+    types: [created, edited]
+  issue_comment:
+    types: [created, edited]
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+  discussions: write
+  checks: read
+  statuses: read
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    if: github.event.sender.type != 'Bot'
+    steps:
+      - uses: coderabbitai/openai-pr-reviewer@main
+        name: CodeRabbit AI Review
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          OPENAI_API_KEY: ${{ secrets.CODERABBIT_OPENAI_KEY }}
+        with:
+          language: en-US
+          review_feedback: "assertive"
+          enable_early_access: "true"
+          enable_auto_approval: false
+          enable_pull_request_qa: true
+          enable_chat: true
+          enable_learning: true
+          enable_bug_detection: true

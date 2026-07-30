@@ -38,7 +38,7 @@ function YoutubeEmbed({ videoId, title }: { videoId: string; title?: string }) {
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
           allowFullScreen
           className="absolute inset-0 w-full h-full"
-          sandbox="allow-same-origin allow-scripts allow-presentation"
+          sandbox="allow-scripts allow-presentation"
         />
       </div>
       {title && (
@@ -303,9 +303,10 @@ export default function BlogPostContent({ post, allPosts, slug, backLabel }: Rea
           <div className="prose-custom">
             {preprocessContent(postObj.content).map((node, idx) => {
               if (typeof node === 'string') {
+                const stableKey = node.slice(0, 40).replace(/\s+/g, '-') || `md-${idx}`;
                 return (
                   <ReactMarkdown
-                    key={`md-${idx}`}
+                    key={stableKey}
                     remarkPlugins={[remarkGfm]}
                     rehypePlugins={[rehypeHighlight]}
                     components={markdownComponents}

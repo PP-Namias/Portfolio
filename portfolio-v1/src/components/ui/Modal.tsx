@@ -146,6 +146,7 @@ export function Modal({ open, onClose, title, children, fullScreen = false, desc
             aria-label={title}
             aria-describedby={descriptionId}
             onClick={handlePanelClick}
+            onKeyDown={(e) => { if (e.key === 'Escape') e.stopPropagation(); }}
           >
             {/* Header */}
             {title && showCloseButton && (

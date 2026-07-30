@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 export interface NetworkStatus {
   isOnline: boolean;
@@ -9,7 +9,7 @@ export function useNetworkStatus(): NetworkStatus {
   const [isOnline, setIsOnline] = useState<boolean>(
     typeof navigator !== 'undefined' ? navigator.onLine : true
   );
-  const wasOfflineRef = useRef(false);
+  const [wasOffline, setWasOffline] = useState(false);
 
   const handleOnline = useCallback(() => {
     setIsOnline(true);
@@ -17,7 +17,7 @@ export function useNetworkStatus(): NetworkStatus {
 
   const handleOffline = useCallback(() => {
     setIsOnline(false);
-    wasOfflineRef.current = true;
+    setWasOffline(true);
   }, []);
 
   useEffect(() => {
@@ -29,5 +29,5 @@ export function useNetworkStatus(): NetworkStatus {
     };
   }, [handleOnline, handleOffline]);
 
-  return { isOnline, wasOffline: wasOfflineRef.current };
+  return { isOnline, wasOffline };
 }

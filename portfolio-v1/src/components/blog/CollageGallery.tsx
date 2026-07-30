@@ -25,8 +25,8 @@ export default function CollageGallery({ images, layout }: CollageGalleryProps) 
 
   return (
     <div className={`grid ${gridCols[layout] || gridCols['2col']} gap-3 my-6`}>
-      {images.map((img, index) => (
-        <figure key={index} className="space-y-1.5">
+      {images.map((img) => (
+        <figure key={img.url} className="space-y-1.5">
           <div className="overflow-hidden rounded-lg border border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark">
             <Image
               src={img.url}
