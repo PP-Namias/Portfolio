@@ -60,7 +60,9 @@ async function fetchResumeFromSanity(): Promise<{ resumeUrl: string | null; isAc
       ? [payload.result]
       : [];
   const selectedResume = activeResumes.find((resume) => typeof resume.resumeUrl === 'string' && resume.resumeUrl.trim().length > 0) ?? activeResumes[0];
-  const resumeUrl = buildMediaGatewayUrl(selectedResume?.resumeUrl?.trim() || '', { sign: true }) || null;
+  const rawUrl = selectedResume?.resumeUrl?.trim() || '';
+  const gatewayUrl = buildMediaGatewayUrl(rawUrl, { sign: true });
+  const resumeUrl = gatewayUrl || rawUrl || null;
 
   return {
     resumeUrl,

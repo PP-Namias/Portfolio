@@ -131,6 +131,7 @@ export function ChatPanel({ onBack, onClose, messages, setMessages, initialThrea
   const [error, setError] = useState<string | null>(null);
   const [chatAvailability, setChatAvailability] = useState<ChatAvailabilityStatus>('checking');
   const [streamingContent, setStreamingContent] = useState('');
+  const [isLoadingThread, setIsLoadingThread] = useState(false);
   const [currentToolCall, setCurrentToolCall] = useState<string | null>(null);
   const [threadSidebarOpen, setThreadSidebarOpen] = useState(false);
   const [currentThreadId, setCurrentThreadId] = useState<string | null>(initialThreadId || null);
@@ -143,6 +144,12 @@ export function ChatPanel({ onBack, onClose, messages, setMessages, initialThrea
     folder: 'profile',
   });
 
+  const streamingContentRef = useRef('');
+
+  useEffect(() => {
+    streamingContentRef.current = streamingContent;
+  }, [streamingContent]);
+
   const handleStreamToken = useCallback((token: string) => {
     setStreamingContent((prev) => prev + token);
   }, []);
@@ -153,13 +160,14 @@ export function ChatPanel({ onBack, onClose, messages, setMessages, initialThrea
 
   const handleStreamDone = useCallback((threadId: string) => {
     setCurrentThreadId(threadId);
+    const content = streamingContentRef.current;
     setMessages((prev) => {
-      if (!streamingContent) return prev;
+      if (!content) return prev;
       const exists = prev.some((m) => m.id === 'streaming-msg');
       if (exists) {
         return prev.map((m) =>
           m.id === 'streaming-msg'
-            ? { ...m, content: streamingContent }
+            ? { ...m, content }
             : m
         );
       }
@@ -168,14 +176,14 @@ export function ChatPanel({ onBack, onClose, messages, setMessages, initialThrea
         {
           id: (Date.now() + 2).toString(),
           role: 'assistant',
-          content: streamingContent,
+          content,
           timestamp: new Date(),
         },
       ];
     });
     setStreamingContent('');
     setCurrentToolCall(null);
-  }, [streamingContent, setMessages]);
+  }, [setMessages]);
 
   const handleStreamError = useCallback((err: string) => {
     setError(err);
@@ -245,6 +253,7 @@ export function ChatPanel({ onBack, onClose, messages, setMessages, initialThrea
 
   useEffect(() => {
     if (initialThreadId) {
+      setIsLoadingThread(true);
       fetch(`/api/chat/threads/${initialThreadId}`)
         .then((r) => r.json())
         .then((data) => {
@@ -258,7 +267,8 @@ export function ChatPanel({ onBack, onClose, messages, setMessages, initialThrea
             setMessages(loaded);
           }
         })
-        .catch(() => {});
+        .catch(() => {})
+        .finally(() => setIsLoadingThread(false));
     }
   }, [initialThreadId, setMessages]);
 
@@ -314,6 +324,7 @@ export function ChatPanel({ onBack, onClose, messages, setMessages, initialThrea
 
   const messagesRef = useRef(messages);
   const isLoadingRef = useRef(isLoading);
+  const isStreamingRef = useRef(isStreaming);
 
   useEffect(() => {
     messagesRef.current = messages;
@@ -323,10 +334,14 @@ export function ChatPanel({ onBack, onClose, messages, setMessages, initialThrea
     isLoadingRef.current = isLoading;
   }, [isLoading]);
 
+  useEffect(() => {
+    isStreamingRef.current = isStreaming;
+  }, [isStreaming]);
+
   const sendMessage = useCallback(
     async (text: string) => {
       const trimmed = text.trim();
-      if (!trimmed || isLoadingRef.current) return;
+      if (!trimmed || isLoadingRef.current || isStreamingRef.current) return;
 
       if (typeof navigator !== 'undefined' && !navigator.onLine) {
         setChatAvailability('inactive');
@@ -351,7 +366,7 @@ export function ChatPanel({ onBack, onClose, messages, setMessages, initialThrea
         content: m.content,
       }));
 
-      if (IS_CHAT_STREAMING_ENABLED && IS_CHAT_STREAMING_ENABLED) {
+      if (IS_CHAT_STREAMING_ENABLED) {
         try {
           await streamSendMessage(trimmed, currentThreadId || undefined);
         } catch {
@@ -667,13 +682,13 @@ export function ChatPanel({ onBack, onClose, messages, setMessages, initialThrea
               onChange={(e) => setInput(e.target.value)}
               placeholder="Ask about skills, projects..."
               maxLength={500}
-              disabled={isLoading}
+              disabled={isLoading || isStreaming}
               aria-label="Chat message"
               className="flex-1 bg-surface-light/80 dark:bg-surface-dark/80 border border-border-light/60 dark:border-border-dark/60 rounded-full px-3.5 py-2 text-[13px] text-text-primary-light dark:text-text-primary-dark placeholder:text-text-muted-light/60 dark:placeholder:text-text-muted-dark/60 focus-visible:outline-none focus-visible:border-accent-pink/40 focus-visible:ring-1 focus-visible:ring-accent-pink/20 disabled:opacity-50 transition-[border-color,box-shadow]"
             />
             <button
               type="submit"
-              disabled={isLoading || !input.trim()}
+              disabled={isLoading || isStreaming || !input.trim()}
               className="h-8 w-8 rounded-full bg-accent-pink text-white flex items-center justify-center hover:bg-accent-pink-hover transition-colors disabled:opacity-20 disabled:cursor-not-allowed flex-shrink-0 shadow-sm shadow-accent-pink/20 disabled:shadow-none"
               aria-label="Send message"
             >

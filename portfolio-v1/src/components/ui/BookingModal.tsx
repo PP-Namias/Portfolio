@@ -15,6 +15,7 @@ const CAL_BASE_URL = 'https://cal.com';
 const BOOKING_MODAL_EVENT_KEY = 'booking-modal-event';
 const BACKDROP_PADDING = 48;
 const SAFETY_MARGIN = 16;
+const MAX_SCHEDULING_HEIGHT = 700;
 
 const EVENT_TYPES = [
   { slug: 'introductory-call', label: 'Introductory Call', duration: '30 min' },
@@ -23,10 +24,10 @@ const EVENT_TYPES = [
 type BookingEventSlug = (typeof EVENT_TYPES)[number]['slug'];
 
 function calcPanelStyle(): React.CSSProperties {
-  if (typeof window === 'undefined') return { width: 960, height: 700 };
+  if (typeof window === 'undefined') return { width: 960, height: MAX_SCHEDULING_HEIGHT };
   const vh = window.innerHeight;
   const vw = window.innerWidth;
-  const h = Math.round(vh - BACKDROP_PADDING - SAFETY_MARGIN);
+  const h = Math.round(Math.min(vh - BACKDROP_PADDING - SAFETY_MARGIN, MAX_SCHEDULING_HEIGHT));
   const w = Math.min(Math.round(vw - BACKDROP_PADDING - SAFETY_MARGIN), 1100);
   return { width: w, height: h };
 }
@@ -74,7 +75,7 @@ export function BookingModal({ open, onClose }: Readonly<BookingModalProps>) {
   }, [open]);
 
   return (
-    <Modal open={open} onClose={onClose} showCloseButton={false} scrollable={false} panelStyle={panelStyle}>
+    <Modal open={open} onClose={onClose} showCloseButton={false} scrollable={false} panelStyle={panelStyle} modalVariant="scheduling">
       {/* Toolbar */}
       <div className="flex items-center justify-between px-5 py-3 border-b border-border-light dark:border-border-dark flex-shrink-0 transition-colors duration-300">
         <div className="flex items-center gap-4">

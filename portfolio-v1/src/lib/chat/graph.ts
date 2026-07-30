@@ -367,11 +367,7 @@ export async function runChatGraph(params: {
 
     saveCheckpoint(threadId, finalState as unknown as Record<string, unknown>);
 
-    const tokens = finalResponse.match(/\S+\s*/g) || [finalResponse];
-    for (const token of tokens) {
-      onToken?.(token);
-      await new Promise((resolve) => setTimeout(resolve, 0));
-    }
+    onToken?.(finalResponse);
     onStatus?.('done');
 
     return {
@@ -381,14 +377,12 @@ export async function runChatGraph(params: {
     };
   } catch (error) {
     onStatus?.('error');
+    const fallbackContext = cmsContextCache || state.chatDataContext || { profile: {} as Record<string, unknown>, experiences: [], projects: [], technologies: [], certifications: [], memberships: [], socials: [] };
     const fallbackResponse = buildSmartFallback(
       message,
-      cmsContextCache || { profile: {}, experiences: [], projects: [], technologies: [], certifications: [], memberships: [], socials: [] },
+      fallbackContext as ChatDataContext,
     );
-    const tokens = fallbackResponse.match(/\S+\s*/g) || [fallbackResponse];
-    for (const token of tokens) {
-      onToken?.(token);
-    }
+    onToken?.(fallbackResponse);
     return { response: fallbackResponse, threadId, toolCalls: [] };
   }
 }

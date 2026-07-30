@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useRef, useCallback } from 'react';
+import React, { useEffect, useRef, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
 
@@ -10,6 +10,8 @@ import { X } from 'lucide-react';
 // the source text, not the runtime DOM).
 const FOCUSABLE_SELECTOR =
   'a[href], button:not([disabled]), input:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+
+type ModalVariant = 'default' | 'scheduling';
 
 interface ModalProps {
   open: boolean;
@@ -26,9 +28,11 @@ interface ModalProps {
   scrollable?: boolean;
   /** Custom inline styles for the panel (width, height, etc.). When provided, fullScreen sizing classes are skipped. */
   panelStyle?: React.CSSProperties;
+  /** Visual variant that applies preset sizing constraints. 'scheduling' caps panel height for embed widgets. */
+  modalVariant?: ModalVariant;
 }
 
-export function Modal({ open, onClose, title, children, fullScreen = false, descriptionId, showCloseButton = true, scrollable = true, panelStyle }: Readonly<ModalProps>) {
+export function Modal({ open, onClose, title, children, fullScreen = false, descriptionId, showCloseButton = true, scrollable = true, panelStyle, modalVariant = 'default' }: Readonly<ModalProps>) {
   const panelRef = useRef<HTMLDivElement>(null);
 
   // Lock body scroll when open
@@ -78,6 +82,15 @@ export function Modal({ open, onClose, title, children, fullScreen = false, desc
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [open]);
 
+  const mergedPanelStyle = useMemo(() => {
+    if (!panelStyle && modalVariant !== 'scheduling') return undefined;
+    const style: React.CSSProperties = { ...(panelStyle ?? {}) };
+    if (modalVariant === 'scheduling') {
+      style.maxHeight = '75vh';
+    }
+    return Object.keys(style).length > 0 ? style : undefined;
+  }, [panelStyle, modalVariant]);
+
   const handleBackdropClick = useCallback(
     (e: React.MouseEvent) => {
       if (e.target === e.currentTarget) onClose();
@@ -111,8 +124,8 @@ export function Modal({ open, onClose, title, children, fullScreen = false, desc
                 : fullScreen
                   ? 'max-w-5xl max-h-[92vh]'
                   : 'max-w-2xl max-h-[85vh]'
-            }`}
-            style={panelStyle}
+            } ${modalVariant === 'scheduling' ? 'max-h-[75vh]' : ''}`}
+            style={mergedPanelStyle}
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}

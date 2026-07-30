@@ -170,8 +170,8 @@ export function ThreadSidebar({
                   {[0, 1, 2].map((i) => (
                     <div
                       key={i}
-                      className="h-1.5 w-1.5 rounded-full bg-accent-pink/60"
-                      style={{ animation: `pulse 0.5s ease-in-out ${i * 0.12}s infinite` }}
+                      className="h-1.5 w-1.5 rounded-full bg-accent-pink/60 animate-pulse"
+                      style={{ animationDelay: `${i * 120}ms` }}
                     />
                   ))}
                 </div>

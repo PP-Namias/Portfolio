@@ -67,12 +67,19 @@ export function HubMenu({ onClose, onOpenChat, onOpenThread }: Readonly<HubMenuP
   }, []);
 
   useEffect(() => {
-    if (IS_CHAT_THREADING_ENABLED) {
-      fetch('/api/chat/threads').then((r) => r.json()).then((data) => {
+    if (!IS_CHAT_THREADING_ENABLED) return;
+    let cancelled = false;
+    fetch('/api/chat/threads')
+      .then((r) => r.json())
+      .then((data) => {
+        if (cancelled) return;
         const threads = (data.threads || []) as Array<{ id: string; title: string; messageCount: number }>;
         setRecentThreads(threads.slice(0, 3));
-      }).catch(() => {});
-    }
+      })
+      .catch(() => {
+        if (!cancelled) setRecentThreads([]);
+      });
+    return () => { cancelled = true; };
   }, []);
 
   useEffect(() => {
