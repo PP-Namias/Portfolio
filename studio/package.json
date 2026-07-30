@@ -11,7 +11,8 @@
     "build": "sanity build",
     "deploy": "sanity deploy",
     "deploy-graphql": "sanity graphql deploy",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "seed:tech-stack": "node scripts/seed-tech-stack.mjs"
   },
   "keywords": [
     "sanity"
