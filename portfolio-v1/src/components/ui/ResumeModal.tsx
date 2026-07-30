@@ -8,6 +8,7 @@ import { Modal } from './Modal';
 const LOAD_TIMEOUT_MS = 15_000;
 const BACKDROP_PADDING = 48;
 const SAFETY_MARGIN = 16;
+const RESUME_SWR_KEY = '/api/resume';
 
 function calcPanelStyle(): React.CSSProperties {
   if (typeof window === 'undefined') return { width: 600, height: 840 };
@@ -29,15 +30,22 @@ export function ResumeModal({ open, onClose }: Readonly<ResumeModalProps>) {
   const [panelStyle, setPanelStyle] = useState<React.CSSProperties>(calcPanelStyle);
   const loadTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const { mutate } = useSWRConfig();
+  const hasLoadedOnceRef = useRef(false);
 
   const { data, isLoading, error: swrError } = useSWR<{ resumeUrl?: string }>(
-    open ? '/api/resume' : null,
+    open ? RESUME_SWR_KEY : null,
     async (url: string) => {
       const res = await fetch(url);
       if (!res.ok) throw new Error(`resume url fetch failed: ${res.status}`);
       return (await res.json()) as { resumeUrl?: string };
     },
-    { revalidateOnFocus: false, dedupingInterval: 30_000 },
+    {
+      revalidateOnFocus: false,
+      dedupingInterval: 300_000, // 5 minutes - resume doesn't change often
+      keepPreviousData: true, // Don't flash loading state on re-open
+      revalidateOnMount: true,
+      errorRetryCount: 2,
+    },
   );
 
   const resumeUrl =
@@ -54,17 +62,30 @@ export function ResumeModal({ open, onClose }: Readonly<ResumeModalProps>) {
     return () => window.removeEventListener('resize', update);
   }, [open]);
 
-  // Reset states when modal opens or resume URL changes
+  // Only show loading spinner on FIRST load, not on subsequent opens
   useEffect(() => {
-    if (open) {
-      setPdfLoading(true);
+    if (!open) return;
+    // If we already have data cached, skip loading state
+    if (data && resumeUrl && hasLoadedOnceRef.current) {
+      setPdfLoading(false);
       setPdfError(false);
+      return;
     }
-  }, [open, resumeUrl]);
+    // First time or no cache - show loading
+    setPdfLoading(true);
+    setPdfError(false);
+  }, [open, data, resumeUrl]);
+
+  // Mark as loaded once iframe fires onLoad
+  useEffect(() => {
+    if (!pdfLoading && resumeUrl && !pdfError) {
+      hasLoadedOnceRef.current = true;
+    }
+  }, [pdfLoading, resumeUrl, pdfError]);
 
   // Timeout: if iframe onLoad never fires, show error
   useEffect(() => {
-    if (pdfLoading && !swrError) {
+    if (pdfLoading && !swrError && open) {
       loadTimerRef.current = setTimeout(() => {
         setPdfLoading(false);
         setPdfError(true);
@@ -73,11 +94,12 @@ export function ResumeModal({ open, onClose }: Readonly<ResumeModalProps>) {
     return () => {
       if (loadTimerRef.current) clearTimeout(loadTimerRef.current);
     };
-  }, [pdfLoading, swrError]);
+  }, [pdfLoading, swrError, open]);
 
   const handleLoad = useCallback(() => {
     if (loadTimerRef.current) clearTimeout(loadTimerRef.current);
     setPdfLoading(false);
+    hasLoadedOnceRef.current = true;
   }, []);
 
   const handleError = useCallback(() => {
@@ -89,7 +111,8 @@ export function ResumeModal({ open, onClose }: Readonly<ResumeModalProps>) {
   const handleRetry = useCallback(() => {
     setPdfLoading(true);
     setPdfError(false);
-    mutate('/api/resume');
+    hasLoadedOnceRef.current = false;
+    mutate(RESUME_SWR_KEY);
   }, [mutate]);
 
   const showFetching = isLoading && !data;
@@ -189,7 +212,7 @@ export function ResumeModal({ open, onClose }: Readonly<ResumeModalProps>) {
 
         {!showFetching && resumeUrl && (
           <iframe
-            key={resumeUrl}
+            key={iframeSrc}
             src={iframeSrc}
             className="w-full h-full border-0"
             title="Resume PDF Viewer"
