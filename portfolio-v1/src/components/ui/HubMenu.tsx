@@ -12,18 +12,16 @@ import {
   Share2,
   X,
   ArrowUpRight,
-  MessageSquare,
 } from 'lucide-react';
 import { HubMenuItem } from './HubMenuItem';
 import { useModal } from '@/hooks/useModal';
 import { useCmsContent } from '@/hooks/useCmsContent';
-import { IS_BLOG_VISIBLE, IS_CHAT_THREADING_ENABLED } from '@/lib/features';
+import { IS_BLOG_VISIBLE } from '@/lib/features';
 import { resolveContentImageSrc } from '@/lib/media';
 
 interface HubMenuProps {
   onClose: () => void;
   onOpenChat: () => void;
-  onOpenThread?: (threadId: string, title: string) => void;
 }
 
 const CONNECT_SOCIALS = ['github', 'linkedin', 'x', 'twitter'] as const;
@@ -35,9 +33,8 @@ const socialIconMap: Record<string, ComponentType<{ className?: string }>> = {
   twitter: FaXTwitter,
 };
 
-export function HubMenu({ onClose, onOpenChat, onOpenThread }: Readonly<HubMenuProps>) {
+export function HubMenu({ onClose, onOpenChat }: Readonly<HubMenuProps>) {
   const [connectExpanded, setConnectExpanded] = useState(false);
-  const [recentThreads, setRecentThreads] = useState<Array<{ id: string; title: string; messageCount: number }>>([]);
   const { openModal } = useModal();
   const { profile, socialLinks, hero } = useCmsContent();
   const menuRef = useRef<HTMLDivElement>(null);
@@ -67,22 +64,6 @@ export function HubMenu({ onClose, onOpenChat, onOpenThread }: Readonly<HubMenuP
   }, []);
 
   useEffect(() => {
-    if (!IS_CHAT_THREADING_ENABLED) return;
-    let cancelled = false;
-    fetch('/api/chat/threads')
-      .then((r) => r.json())
-      .then((data) => {
-        if (cancelled) return;
-        const threads = (data.threads || []) as Array<{ id: string; title: string; messageCount: number }>;
-        setRecentThreads(threads.slice(0, 3));
-      })
-      .catch(() => {
-        if (!cancelled) setRecentThreads([]);
-      });
-    return () => { cancelled = true; };
-  }, []);
-
-  useEffect(() => {
     const timer = setTimeout(() => {
       const firstItem = menuRef.current?.querySelector<HTMLElement>('[role="menuitem"]');
       firstItem?.focus();
@@ -92,39 +73,39 @@ export function HubMenu({ onClose, onOpenChat, onOpenThread }: Readonly<HubMenuP
 
   return (
     <>
-      {/* Profile Header — elevated without gradient accent */}
+      {/* Profile Header — full image + name + title */}
       <motion.div
-        className="relative px-5 pt-5 pb-4 bg-white dark:bg-[#1C1C1E] border-b border-border-light/50 dark:border-border-dark/50"
+        className="relative px-5 pt-5 pb-4 bg-white dark:bg-[#1C1C1E]"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.3 }}
       >
-        <div className="relative flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            {/* Profile avatar with curved square shape */}
+        <div className="relative flex items-start justify-between">
+          <div className="flex items-center gap-3.5">
+            {/* Profile avatar */}
             <motion.div
-              className="relative"
+              className="relative flex-shrink-0"
               initial={{ scale: 0, rotate: -18 }}
               animate={{ scale: 1, rotate: 0 }}
               transition={{ type: 'spring', stiffness: 200, damping: 15, delay: 0.1 }}
             >
-              <div className="h-11 w-11 rounded-lg border border-border-light dark:border-border-dark overflow-hidden bg-white dark:bg-card-bg-dark shadow-sm">
+              <div className="h-12 w-12 rounded-xl overflow-hidden border-2 border-white dark:border-[#2C2C2E] shadow-md bg-surface-light dark:bg-surface-dark">
                 {profileImageSrc ? (
                   <Image
                     src={profileImageSrc}
                     alt={profile.name}
                     fill
-                    sizes="44px"
+                    sizes="48px"
                     className="object-cover"
                   />
                 ) : (
-                  <div className="flex h-full w-full items-center justify-center bg-surface-light text-[11px] font-semibold text-text-muted-light dark:bg-surface-dark dark:text-text-muted-dark">
+                  <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-accent-pink/20 to-accent-pink/5 text-[13px] font-bold text-accent-pink">
                     PN
                   </div>
                 )}
               </div>
               <motion.div
-                className="absolute -bottom-1 -right-1 h-3.5 w-3.5 rounded-full bg-emerald-400 border-2 border-white dark:border-[#1C1C1E]"
+                className="absolute -bottom-0.5 -right-0.5 h-3.5 w-3.5 rounded-full bg-emerald-400 border-2 border-white dark:border-[#1C1C1E]"
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 transition={{ delay: 0.4, type: 'spring', stiffness: 300 }}
@@ -136,11 +117,11 @@ export function HubMenu({ onClose, onOpenChat, onOpenThread }: Readonly<HubMenuP
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.15, duration: 0.3 }}
             >
-              <p className="text-sm font-semibold text-text-primary-light dark:text-text-primary-dark truncate">
-                {profile.name}
+              <p className="text-[14px] font-bold text-text-primary-light dark:text-text-primary-dark truncate leading-tight">
+                {profile.name || 'Jhon Keneth Namias'}
               </p>
-              <p className="text-xs text-text-muted-light dark:text-text-muted-dark truncate">
-                {profile.title}
+              <p className="text-[11px] text-text-muted-light dark:text-text-muted-dark truncate mt-0.5">
+                {profile.title || 'Full Stack Engineer'}
               </p>
             </motion.div>
           </div>
@@ -173,7 +154,7 @@ export function HubMenu({ onClose, onOpenChat, onOpenThread }: Readonly<HubMenuP
       >
         {/* Section label */}
         <motion.div
-          className="px-5 pt-1 pb-2"
+          className="px-5 pt-2 pb-2"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.2 }}
@@ -192,26 +173,6 @@ export function HubMenu({ onClose, onOpenChat, onOpenThread }: Readonly<HubMenuP
           iconColorClass="text-violet-500"
           iconBgClass="bg-violet-500/10"
         />
-
-        {IS_CHAT_THREADING_ENABLED && recentThreads.length > 0 && (
-          <div className="px-5 py-1">
-            <p className="text-[9px] font-semibold text-text-muted-light dark:text-text-muted-dark uppercase tracking-widest mb-1">
-              Recent Conversations
-            </p>
-            {recentThreads.map((thread) => (
-              <button
-                key={thread.id}
-                type="button"
-                role="menuitem"
-                onClick={() => { onOpenThread?.(thread.id, thread.title); onClose(); }}
-                className="w-full flex items-center gap-2 px-2 py-1.5 rounded-lg text-[11px] text-text-secondary-light dark:text-text-secondary-dark hover:bg-surface-light dark:hover:bg-surface-dark hover:text-text-primary-light dark:hover:text-text-primary-dark transition-colors text-left"
-              >
-                <MessageSquare className="h-3 w-3 flex-shrink-0 text-text-muted-light dark:text-text-muted-dark" />
-                <span className="truncate">{thread.title}</span>
-              </button>
-            ))}
-          </div>
-        )}
 
         <HubMenuItem
           icon={FileDown}

@@ -194,7 +194,7 @@ export function ResumeModal({ open, onClose }: Readonly<ResumeModalProps>) {
             className="w-full h-full border-0"
             title="Resume PDF Viewer"
             loading="lazy"
-            sandbox=""
+            sandbox="allow-same-origin allow-scripts allow-popups"
             onLoad={handleLoad}
             onError={handleError}
           />

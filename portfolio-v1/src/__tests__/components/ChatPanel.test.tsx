@@ -55,6 +55,21 @@ vi.mock('@/hooks/useModal', () => ({
   useModal: () => ({ openModal: mockOpenModal, closeModal: vi.fn(), activeModal: null }),
 }));
 
+// Mock useCmsContent
+vi.mock('@/hooks/useCmsContent', () => ({
+  useCmsContent: () => ({
+    profile: {
+      name: 'Jhon Keneth Ryan Namias',
+      title: 'Full Stack Engineer',
+      email: 'pp.namias@gmail.com',
+    },
+    hero: {
+      profileImageUrl: 'https://cdn.example.com/profile.jpg',
+    },
+    socialLinks: [],
+  }),
+}));
+
 // Mock fetch
 const mockFetch = vi.fn();
 globalThis.fetch = mockFetch;
@@ -93,7 +108,7 @@ describe('ChatPanel', () => {
 
   it('renders the chat panel with header', () => {
     renderChatPanel();
-    expect(screen.getByText("Keneth's AI")).toBeInTheDocument();
+    expect(screen.getByText('Jhon Keneth Ryan Namias')).toBeInTheDocument();
   });
 
   it('shows active status indicator by default', () => {

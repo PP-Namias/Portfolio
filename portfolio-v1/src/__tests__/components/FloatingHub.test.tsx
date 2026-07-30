@@ -137,7 +137,7 @@ describe('FloatingHub', () => {
     fireEvent.click(screen.getByLabelText('Open quick actions'));
     fireEvent.click(screen.getByText('Ask AI Assistant'));
 
-    expect(screen.getByText("Keneth's AI")).toBeInTheDocument();
+    expect(screen.getByText('Jhon Keneth Ryan Namias')).toBeInTheDocument();
     expect(screen.getByLabelText('Back to menu')).toBeInTheDocument();
   });
 
@@ -185,7 +185,7 @@ describe('FloatingHub', () => {
     fireEvent.click(screen.getByLabelText('Open quick actions'));
     fireEvent.click(screen.getByText('Ask AI Assistant'));
 
-    expect(screen.getByText("Keneth's AI")).toBeInTheDocument();
+    expect(screen.getByText('Jhon Keneth Ryan Namias')).toBeInTheDocument();
 
     fireEvent.click(screen.getByLabelText('Back to menu'));
     expect(screen.getByText('Quick Actions')).toBeInTheDocument();

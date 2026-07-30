@@ -93,9 +93,20 @@ export function Modal({ open, onClose, title, children, fullScreen = false, desc
 
   const handleBackdropClick = useCallback(
     (e: React.MouseEvent) => {
-      if (e.target === e.currentTarget) onClose();
+      // Close when clicking the backdrop or outer container (not the panel)
+      const target = e.target as HTMLElement;
+      if (target === e.currentTarget || target.dataset.modalBackdrop !== undefined) {
+        onClose();
+      }
     },
     [onClose]
+  );
+
+  const handlePanelClick = useCallback(
+    (e: React.MouseEvent) => {
+      e.stopPropagation();
+    },
+    []
   );
 
   return (
@@ -108,12 +119,12 @@ export function Modal({ open, onClose, title, children, fullScreen = false, desc
           exit={{ opacity: 0 }}
           transition={{ duration: 0.2 }}
           onClick={handleBackdropClick}
-          onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') onClose(); }}
+          onKeyDown={(e) => { if (e.key === 'Escape') onClose(); }}
           role="button"
           tabIndex={-1}
         >
           {/* Backdrop */}
-          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" data-modal-backdrop />
 
           {/* Panel */}
           <motion.div
@@ -134,6 +145,7 @@ export function Modal({ open, onClose, title, children, fullScreen = false, desc
             aria-modal="true"
             aria-label={title}
             aria-describedby={descriptionId}
+            onClick={handlePanelClick}
           >
             {/* Header */}
             {title && showCloseButton && (
