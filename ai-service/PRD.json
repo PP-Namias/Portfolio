@@ -37,7 +37,7 @@
     {
       "id": "phase-2",
       "name": "Vector Store & Gemini Embeddings Engine",
-      "status": "pending",
+      "status": "completed",
       "tasks": [
         "Embeddings: GoogleGenerativeAIEmbeddings (text-embedding-004) via @langchain/google-genai.",
         "Upstash Vector adapter mirroring v1 contract: upsert, query, delete, deleteByMetadata, reset, info.",
