@@ -1,0 +1,41 @@
+{
+  "name": "ai-service",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Standalone AI chatbot microservice sidecar: Sanity CMS ingestion, LangGraph RAG orchestration, and Gemini-powered REST/SSE endpoints.",
+  "license": "MIT",
+  "type": "module",
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "scripts": {
+    "dev": "tsx watch src/server/index.ts",
+    "start": "tsx src/server/index.ts",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "ingest": "tsx src/cli/ingest.ts"
+  },
+  "dependencies": {
+    "@hono/node-server": "^2.0.12",
+    "@hono/zod-validator": "^0.9.0",
+    "@langchain/core": "^1.2.4",
+    "@langchain/google-genai": "^2.2.0",
+    "@langchain/langgraph": "^1.4.8",
+    "@sanity/client": "^7.26.0",
+    "dotenv": "^17.4.2",
+    "hono": "^4.12.33",
+    "pino": "^10.3.1",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.0.0",
+    "@types/node": "^22.0.0",
+    "eslint": "^9.0.0",
+    "tsx": "^4.23.1",
+    "typescript": "~5.7.3",
+    "typescript-eslint": "^8.65.0",
+    "vitest": "^4.1.10"
+  }
+}

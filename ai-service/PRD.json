@@ -1,0 +1,86 @@
+{
+  "project": "Sanity-Backed Gemini AI Chatbot Microservice",
+  "version": "1.0.0",
+  "architecture": {
+    "runtime": "Node.js / TypeScript",
+    "llm": "Google Gemini via LangChain",
+    "orchestrator": "LangGraph",
+    "cms": "Sanity CMS (GROQ Ingestion)"
+  },
+  "phases": [
+    {
+      "id": "phase-0",
+      "name": "Codebase & Sanity Audit",
+      "status": "completed",
+      "tasks": [
+        "Audited repo layout: monorepo root with portfolio-v1 (Next.js 16 + integrated LangGraph chat), portfolio-v2 (redesign), studio (Sanity Studio). No /ai-service existed; greenfield.",
+        "Audited env vars: .env.local already provides NEXT_PUBLIC_SANITY_PROJECT_ID=nl0qw78w, NEXT_PUBLIC_SANITY_DATASET=production, SANITY_API_READ_TOKEN, GOOGLE_GEMINI_API_KEY, UPSTASH_VECTOR_URL, UPSTASH_VECTOR_TOKEN, REINDEX_SECRET. Spec names (SANITY_PROJECT_ID/SANITY_DATASET/SANITY_API_TOKEN) resolved via fallback mapping in config layer.",
+        "Audited Sanity schemas: 22 doc types in studio/schemaTypes (profile, project, experience, certification, certificationCategory, certificationIssuer, post, techStack, membership, recommendation, galleryImage, galleryCategory, category, author, blockContent, resume, seoSettings, siteSettings, mediaSettings, aboutSection, etc.).",
+        "Audited existing RAG stack (portfolio-v1/src/lib/rag): sentence chunker (512-token max, 64 overlap), gemini-embedding-001 via raw @google/generative-ai, Upstash Vector store (0.60 threshold, topK 5). Patterns ported and hardened for the sidecar.",
+        "Audited package deps: @langchain/langgraph 1.4.8, @langchain/core 1.2.4, @langchain/google-genai 2.2.0 (new, peers @langchain/core ^1.2.0), hono 4.12.33, @sanity/client 7.26.0, zod 3.25.76, vitest 4.1.10, tsx 4.23.1, typescript ~5.7.3 (typescript-eslint 8.65 caps at <6.1).",
+        "Decisions: Upstash Vector (existing provision), Hono server (SSE-friendly), endpoints-only integration (v1 UI untouched), vector IDs prefixed aisvc: to isolate from v1 index."
+      ]
+    },
+    {
+      "id": "phase-1",
+      "name": "Sanity Ingestion & Data Preprocessing Pipeline",
+      "status": "pending",
+      "tasks": [
+        "Create zod-validated env config with dual-name fallback (repo convention + spec names).",
+        "Create Sanity client (apiVersion 2025-xx, read token) and typed GROQ queries for all knowledge doc types.",
+        "Implement PortableText/HTML to plain-text cleaner (normalize whitespace, strip markup, resolve block style prefixes).",
+        "Implement sentence-based chunker with overlap and token estimation.",
+        "Enrich chunk metadata: docId, docType, slug, category, _updatedAt, URL path, title.",
+        "Implement dedup/staleness pass: skip unchanged _updatedAt docs, drop vectors for removed docs."
+      ]
+    },
+    {
+      "id": "phase-2",
+      "name": "Vector Store & Gemini Embeddings Engine",
+      "status": "pending",
+      "tasks": [
+        "Embeddings: GoogleGenerativeAIEmbeddings (text-embedding-004) via @langchain/google-genai.",
+        "Upstash Vector adapter mirroring v1 contract: upsert, query, delete, deleteByMetadata, reset, info.",
+        "Batch embedding with retry + rate limiting (p-queue style concurrency).",
+        "Full reindex + incremental reindex CLI entrypoint (REINDEX_SECRET-guarded)."
+      ]
+    },
+    {
+      "id": "phase-3",
+      "name": "LangGraph Stateful RAG Agent Architecture",
+      "status": "pending",
+      "tasks": [
+        "Typed graph state (messages, query, reformulatedQuery, intent, chunks, filteredChunks, response, citations, status).",
+        "Node 1 analyzeIntent: LLM intent classification + HyDE reformulation (gemini-2.5-flash).",
+        "Node 2 retrieve: vector search against Upstash using reformulated query embedding.",
+        "Node 3 relevanceFilter: score threshold, dedup, data quality verification, citation collection.",
+        "Node 4 generate: Gemini RAG synthesis with citation markers.",
+        "Node 5 validate: grounding/format check + citation mapping; no-answer fallback edge."
+      ]
+    },
+    {
+      "id": "phase-4",
+      "name": "Microservice HTTP / SSE Streaming API Server",
+      "status": "pending",
+      "tasks": [
+        "Hono app with CORS, zod request validation, error middleware, rate limiting.",
+        "POST /api/chat: SSE (Accept: text/event-stream) + JSON mode; contract-compatible with v1 /api/chat events (status/token/tool_call/done/error).",
+        "Thread endpoints: GET/POST /api/chat/threads, GET/PATCH/DELETE /api/chat/threads/[id].",
+        "Admin: POST /api/admin/reindex (REINDEX_SECRET-guarded), GET /api/admin/stats.",
+        "GET /api/health, GET /api/stats for observability."
+      ]
+    },
+    {
+      "id": "phase-5",
+      "name": "Data Quality Benchmarks & Automated Testing",
+      "status": "pending",
+      "tasks": [
+        "Vitest unit tests: cleaner, chunker, dedup, metadata enrichment.",
+        "LangGraph node tests with mocked LLM + vector store.",
+        "API route + SSE integration tests.",
+        "Benchmark script: retrieval hit-rate, faithfulness, citation accuracy.",
+        "PRD.json: all phases -> completed."
+      ]
+    }
+  ]
+}
