@@ -1,7 +1,7 @@
 import { config as loadEnv } from 'dotenv';
 import { z } from 'zod';
 
-loadEnv({ path: ['.env.local', '.env'], quiet: true });
+loadEnv({ path: ['.env.local', '.env', '../.env.local'], quiet: true });
 
 function first(...candidates: Array<string | undefined>): string | undefined {
   for (const candidate of candidates) {

@@ -61,7 +61,7 @@
     {
       "id": "phase-4",
       "name": "Microservice HTTP / SSE Streaming API Server",
-      "status": "pending",
+      "status": "completed",
       "tasks": [
         "Hono app with CORS, zod request validation, error middleware, rate limiting.",
         "POST /api/chat: SSE (Accept: text/event-stream) + JSON mode; contract-compatible with v1 /api/chat events (status/token/tool_call/done/error).",
