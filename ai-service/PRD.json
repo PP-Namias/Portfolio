@@ -24,7 +24,7 @@
     {
       "id": "phase-1",
       "name": "Sanity Ingestion & Data Preprocessing Pipeline",
-      "status": "pending",
+      "status": "completed",
       "tasks": [
         "Create zod-validated env config with dual-name fallback (repo convention + spec names).",
         "Create Sanity client (apiVersion 2025-xx, read token) and typed GROQ queries for all knowledge doc types.",
