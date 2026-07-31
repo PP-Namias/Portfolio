@@ -15,7 +15,8 @@
     "lint": "eslint .",
     "test": "vitest run",
     "test:watch": "vitest",
-    "ingest": "tsx src/cli/ingest.ts"
+    "ingest": "tsx src/cli/ingest.ts",
+    "benchmark": "tsx src/benchmark/run.ts"
   },
   "dependencies": {
     "@hono/node-server": "^2.0.12",

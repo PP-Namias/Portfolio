@@ -6,3 +6,4 @@ coverage/
 .env.*
 !.env.example
 .ai-service-data/
+benchmarks/latest-report.json

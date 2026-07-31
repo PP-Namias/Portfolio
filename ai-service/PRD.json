@@ -73,7 +73,7 @@
     {
       "id": "phase-5",
       "name": "Data Quality Benchmarks & Automated Testing",
-      "status": "pending",
+      "status": "completed",
       "tasks": [
         "Vitest unit tests: cleaner, chunker, dedup, metadata enrichment.",
         "LangGraph node tests with mocked LLM + vector store.",
