@@ -12,6 +12,7 @@ import { CertificationsSection } from './CertificationsSection';
 import { GallerySection } from './GallerySection';
 import { Footer } from '@/components/layout/Footer';
 import { Card } from '@/components/ui/Card';
+import { StickyTwoColumn } from './StickyTwoColumn';
 import { SectionErrorBoundary } from '@/components/ui/ErrorBoundary';
 import { IS_PROJECTS_REVAMP_ENABLED, IS_BLOG_VISIBLE } from '@/lib/features';
 import { fetchHeroData } from '@/lib/sections/hero.server';
@@ -125,12 +126,6 @@ async function FooterStream() {
   );
 }
 
-type StickySide = 'left' | 'right' | null;
-
-function StickyLayout({ children }: { readonly children: React.ReactNode }) {
-  return <>{children}</>;
-}
-
 export function HomeContentStreaming() {
   return (
     <main id="main-content" className="mx-auto max-w-container px-4 sm:px-6 pt-8 lg:pt-12">
@@ -140,9 +135,9 @@ export function HomeContentStreaming() {
         </Suspense>
       </Card>
 
-      <div className="grid grid-cols-1 lg:grid-cols-[62%_1fr] lg:items-start gap-4 mt-4">
-        <div className="order-1 lg:order-none lg:col-start-1 lg:self-start">
-          <div className="space-y-4">
+      <StickyTwoColumn
+        left={
+          <>
             <Card>
               <Suspense fallback={<AboutSkeleton />}>
                 <AboutSectionStream />
@@ -158,10 +153,10 @@ export function HomeContentStreaming() {
                 <ProjectsSectionStream />
               </Suspense>
             </Card>
-          </div>
-        </div>
-        <div className="order-2 lg:order-none lg:col-start-2 lg:self-start">
-          <div className="space-y-4">
+          </>
+        }
+        right={
+          <>
             <Card>
               <Suspense fallback={<ExperienceSkeleton />}>
                 <ExperienceSectionStream />
@@ -172,9 +167,9 @@ export function HomeContentStreaming() {
                 <ConnectSectionStream />
               </Suspense>
             </Card>
-          </div>
-        </div>
-      </div>
+          </>
+        }
+      />
 
       <div className="mt-4 grid grid-cols-1 lg:grid-cols-2 gap-4 items-stretch">
         <Card>
