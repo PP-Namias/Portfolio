@@ -12,6 +12,7 @@ import { Card } from '@/components/ui/Card';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import { ReadingProgress } from '@/components/ui/ReadingProgress';
 import { formatDateUtc } from '@/lib/date';
+import { parseImageDimensions } from '@/lib/media';
 import type { BlogPost } from '@/types';
 
 import CollageGallery from '@/components/blog/CollageGallery';
@@ -96,17 +97,18 @@ function preprocessContent(content: string): React.ReactNode[] {
 const markdownComponents: any = {
   img: ({ src, alt }: { src?: string; alt?: string }) => {
     const { altText, caption, credit, source, license } = parseImageAlt(alt || '');
+    const dims = parseImageDimensions(src);
     return (
       <figure className="my-6 space-y-2">
-        <div className="overflow-hidden rounded-lg border border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark">
+        <div className="flex items-center justify-center overflow-hidden rounded-lg border border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark">
           <Image
             src={src || ''}
             alt={altText || ''}
-            width={800}
-            height={450}
+            width={dims?.width ?? 800}
+            height={dims?.height ?? 450}
             sizes="(max-width: 768px) 100vw, 800px"
             unoptimized
-            className="w-full object-cover"
+            className={`w-full h-auto ${dims ? '' : 'object-cover'}`}
           />
         </div>
         {(caption || credit) && (
@@ -227,6 +229,7 @@ export default function BlogPostContent({ post, allPosts, slug, backLabel }: Rea
 
   const prevPost = postIndex > 0 ? all[postIndex - 1] : null;
   const nextPost = postIndex < all.length - 1 ? all[postIndex + 1] : null;
+  const coverDims = parseImageDimensions(postObj.coverImage);
 
   return (
     <main className="mx-auto max-w-container px-4 sm:px-6 pt-8 lg:pt-12 pb-16">
@@ -256,8 +259,8 @@ export default function BlogPostContent({ post, allPosts, slug, backLabel }: Rea
               <Image
                 src={postObj.coverImage}
                 alt={postObj.title}
-                width={800}
-                height={320}
+                width={coverDims?.width ?? 800}
+                height={coverDims?.height ?? 320}
                 sizes="(max-width: 768px) 100vw, 800px"
                 unoptimized
                 className="w-full h-auto"

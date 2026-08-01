@@ -7,6 +7,7 @@ import { Clock, Calendar, ChevronRight } from 'lucide-react';
 import { Card } from '@/components/ui/Card';
 import { BlogPost } from '@/types';
 import { formatDateUtc } from '@/lib/date';
+import { parseImageDimensions } from '@/lib/media';
 
 interface BlogListClientProps {
   posts: BlogPost[];
@@ -15,7 +16,9 @@ interface BlogListClientProps {
 export default function BlogListClient({ posts }: BlogListClientProps) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-      {posts.map((post, index) => (
+      {posts.map((post, index) => {
+        const coverDims = parseImageDimensions(post.coverImage);
+        return (
         <motion.div
           key={post.id}
           initial={{ opacity: 0, y: 20 }}
@@ -30,8 +33,8 @@ export default function BlogListClient({ posts }: BlogListClientProps) {
                   <Image
                     src={post.coverImage}
                     alt={post.title}
-                    width={400}
-                    height={160}
+                    width={coverDims?.width ?? 400}
+                    height={coverDims?.height ?? 160}
                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                     unoptimized
                     className="w-full h-auto transition-transform duration-300 group-hover:scale-105"
@@ -83,7 +86,8 @@ export default function BlogListClient({ posts }: BlogListClientProps) {
             </Card>
           </Link>
         </motion.div>
-      ))}
+        );
+      })}
     </div>
   );
 }

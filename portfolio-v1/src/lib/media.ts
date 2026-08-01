@@ -14,6 +14,52 @@ export interface ResolveContentImageSrcOptions {
   fallback?: string;
 }
 
+export interface ImageDimensions {
+  width: number;
+  height: number;
+}
+
+const CDN_DIMENSIONS_RE = /-(\d{1,5})x(\d{1,5})\.(?:jpg|jpeg|png|webp|gif|avif|tiff|bmp)$/i;
+
+export function decodeGatewayTarget(encodedTarget: string): string | null {
+  try {
+    const base64 = encodedTarget.replace(/-/g, '+').replace(/_/g, '/');
+    const padded = base64 + '='.repeat((4 - (base64.length % 4)) % 4);
+    const binary = atob(padded);
+    const bytes = new Uint8Array(binary.length);
+    for (let i = 0; i < binary.length; i++) {
+      bytes[i] = binary.charCodeAt(i);
+    }
+    return new TextDecoder().decode(bytes);
+  } catch {
+    return null;
+  }
+}
+
+export function parseImageDimensions(src: string | null | undefined): ImageDimensions | null {
+  const trimmed = String(src || '').trim();
+  if (!trimmed) return null;
+
+  let rawUrl = trimmed;
+  const gatewayMatch = trimmed.match(
+    new RegExp(`^${MEDIA_ROUTE_PREFIX}/${SANITY_NAMESPACE}/([A-Za-z0-9_-]+)`)
+  );
+  if (gatewayMatch) {
+    const decoded = decodeGatewayTarget(gatewayMatch[1]);
+    if (!decoded) return null;
+    rawUrl = decoded;
+  }
+
+  const match = rawUrl.match(CDN_DIMENSIONS_RE);
+  if (!match) return null;
+
+  const width = Number.parseInt(match[1], 10);
+  const height = Number.parseInt(match[2], 10);
+  if (!width || !height) return null;
+
+  return { width, height };
+}
+
 function buildPublicMediaGatewayUrl(rawUrl: string): string {
   if (!isSanityCdnUrl(rawUrl)) {
     return '';
