@@ -147,6 +147,14 @@ Local Python 3.8 is insufficient (3.10+ required). The CI pipeline is the primar
 - Branch protection on `main` forbids merge commits — rebase and ff
 - ASCII-safe PR descriptions; use `--body-file` to avoid PowerShell escape corruption
 
+## PR.md workflow
+
+`PR.md` (repo root) is the single accumulating PR description for branch `dev`. Every update on the branch is appended there so the PR always tells the full story.
+
+- After each commit on `dev`, run `scripts/append-pr-update.ps1` (appends the latest commit as a dated entry), then commit `PR.md` with `docs(pr): update PR.md with latest change`.
+- Keep the deployment checklist section current when env vars or the deploy path change.
+- When opening the `dev` → `main` PR, use PR.md as the description (ASCII-safe; `gh pr create --body-file PR.md`).
+
 ## Code conventions
 
 - TypeScript strict; `npx tsc --noEmit` must pass
