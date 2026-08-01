@@ -51,10 +51,7 @@ export function CertificationsSection() {
       transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
     >
       <h2 id="certifications-heading" className="text-lg font-semibold text-text-primary-light dark:text-text-primary-dark mb-4">
-        Certifications{' '}
-        <span className="text-xs font-medium px-1.5 py-0.5 rounded-md bg-accent-pink/10 text-accent-pink ml-2 align-middle">
-          {certifications.length}
-        </span>
+        Certifications
       </h2>
 
       {/* Issuer filter tabs */}
@@ -70,7 +67,7 @@ export function CertificationsSection() {
                 : 'bg-surface-light dark:bg-surface-dark text-text-secondary-light dark:text-text-secondary-dark hover:bg-accent-pink/10 hover:text-accent-pink border border-border-light dark:border-border-dark'
             }`}
           >
-            {issuer === 'All' ? `All (${certifications.length})` : issuer}
+            {issuer}
           </button>
         ))}
       </div>
@@ -127,7 +124,7 @@ export function CertificationsSection() {
           {expanded ? (
             <>Show less <ChevronUp className="h-3.5 w-3.5" /></>
           ) : (
-            <>View all {filtered.length} certs <ChevronDown className="h-3.5 w-3.5" /></>
+            <>View all certs <ChevronDown className="h-3.5 w-3.5" /></>
           )}
         </button>
       )}

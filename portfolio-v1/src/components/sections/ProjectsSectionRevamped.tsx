@@ -44,9 +44,6 @@ export function ProjectsSectionRevamped() {
           <h2 className="text-lg font-semibold text-text-primary-light dark:text-text-primary-dark">
             Recent Projects
           </h2>
-          <p className="mt-1 text-xs text-text-muted-light dark:text-text-muted-dark">
-            {projects.length} total &middot; showing latest {recentProjects.length}
-          </p>
         </div>
         <Link
           href="/projects"

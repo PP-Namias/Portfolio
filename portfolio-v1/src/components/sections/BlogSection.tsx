@@ -122,10 +122,7 @@ export function BlogSection() {
           id="home-blog-heading"
           className="text-lg font-semibold text-text-primary-light dark:text-text-primary-dark"
         >
-          Blog{' '}
-          <span className="text-xs font-medium px-1.5 py-0.5 rounded-md bg-accent-pink/10 text-accent-pink ml-2 align-middle">
-            {blogPosts.length}
-          </span>
+          Blog
         </h2>
 
         {blogPosts.length > 0 && (
@@ -133,7 +130,7 @@ export function BlogSection() {
             href="/blog"
             className="inline-flex items-center gap-1 text-xs font-medium text-text-muted-light dark:text-text-muted-dark hover:text-accent-pink dark:hover:text-accent-pink transition-colors"
           >
-            View all {blogPosts.length} posts
+            View all blog posts
             <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
           </Link>
         )}

@@ -120,10 +120,7 @@ export function GallerySection() {
     >
       {/* Header */}
       <h2 id="gallery-heading" className="text-lg font-semibold text-text-primary-light dark:text-text-primary-dark mb-4">
-        Gallery{' '}
-        <span className="text-xs font-medium px-1.5 py-0.5 rounded-md bg-accent-pink/10 text-accent-pink ml-2 align-middle">
-          {filtered.length}
-        </span>
+        Gallery
       </h2>
 
       {/* Tag filter */}
@@ -205,7 +202,7 @@ export function GallerySection() {
             {expanded ? (
               <>Show Less <ChevronUp className="h-3.5 w-3.5" aria-hidden="true" /></>
             ) : (
-              <>View all {filtered.length} photos <ChevronDown className="h-3.5 w-3.5" aria-hidden="true" /></>
+              <>View all photos <ChevronDown className="h-3.5 w-3.5" aria-hidden="true" /></>
             )}
           </button>
         </motion.div>
@@ -234,11 +231,6 @@ export function GallerySection() {
             >
               <X className="h-5 w-5" aria-hidden="true" />
             </button>
-
-            {/* Counter */}
-            <div className="absolute top-5 left-1/2 -translate-x-1/2 text-[12px] text-white/60 font-medium">
-              {selectedIndex + 1} / {filtered.length}
-            </div>
 
             {/* Previous button */}
             <button

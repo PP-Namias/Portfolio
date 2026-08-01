@@ -123,12 +123,11 @@ describe('BlogSection', () => {
     expect(container).toBeEmptyDOMElement();
   });
 
-  it('renders the Blog header and a count badge', () => {
+  it('renders the Blog header without a count badge', () => {
     useCmsContentMock.mockReturnValue({ blogPosts: samplePosts });
 
     render(<BlogSection />);
     expect(screen.getByRole('heading', { name: /^Blog/ })).toBeInTheDocument();
-    expect(screen.getByText(String(samplePosts.length))).toBeInTheDocument();
   });
 
   it('shows the latest 3 posts sorted by date desc', () => {
@@ -143,11 +142,11 @@ describe('BlogSection', () => {
     expect(slugs).toEqual(['/blog/delta', '/blog/bravo', '/blog/alpha']);
   });
 
-  it('exposes a "View all N posts" link to /blog with the total count', () => {
+  it('exposes a "View all blog posts" link to /blog', () => {
     useCmsContentMock.mockReturnValue({ blogPosts: samplePosts });
 
     render(<BlogSection />);
-    const viewAll = screen.getByRole('link', { name: `View all ${samplePosts.length} posts` });
+    const viewAll = screen.getByRole('link', { name: 'View all blog posts' });
     expect(viewAll).toHaveAttribute('href', '/blog');
   });
 

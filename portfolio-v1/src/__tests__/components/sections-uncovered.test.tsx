@@ -533,7 +533,7 @@ describe('uncovered section components', () => {
     fireEvent.click(screen.getAllByRole('button', { name: 'Org A' })[0]);
     expect(screen.queryByRole('button', { name: /View all/i })).not.toBeInTheDocument();
 
-    fireEvent.click(screen.getByRole('button', { name: /All \(7\)/i }));
+    fireEvent.click(screen.getByRole('button', { name: 'All' }));
     expect(screen.getByRole('button', { name: /View all/i })).toBeInTheDocument();
 
     fireEvent.click(screen.getByRole('button', { name: /View all/i }));

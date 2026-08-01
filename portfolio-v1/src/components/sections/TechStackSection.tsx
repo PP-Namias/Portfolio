@@ -9,7 +9,7 @@ import type { Technology } from '@/types';
 const INITIAL_CATEGORIES = 3;
 
 export function TechStackSection() {
-  const { techCategories, technologies } = useCmsContent();
+  const { techCategories } = useCmsContent();
   const [expanded, setExpanded] = useState(false);
   const categories = Object.entries(techCategories) as Array<[string, Technology[]]>;
   const visible = expanded ? categories : categories.slice(0, INITIAL_CATEGORIES);
@@ -23,10 +23,7 @@ export function TechStackSection() {
         transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
       >
       <h2 id="tech-stack-heading" className="text-lg font-semibold text-text-primary-light dark:text-text-primary-dark mb-4">
-        Tech Stack{' '}
-        <span className="text-xs font-medium px-1.5 py-0.5 rounded-md bg-accent-pink/10 text-accent-pink ml-2 align-middle">
-          {technologies.length}
-        </span>
+        Tech Stack
       </h2>
 
       <div className="space-y-3">
@@ -68,7 +65,7 @@ export function TechStackSection() {
           {expanded ? (
             <>Show less <ChevronUp className="h-3.5 w-3.5" /></>
           ) : (
-            <>View all {categories.length} categories <ChevronDown className="h-3.5 w-3.5" /></>
+            <>View all categories <ChevronDown className="h-3.5 w-3.5" /></>
           )}
         </button>
       )}

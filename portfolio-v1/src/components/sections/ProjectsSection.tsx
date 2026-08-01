@@ -186,10 +186,7 @@ export function ProjectsSection() {
       transition={sectionTransition}
     >
       <h2 className="mb-2 text-lg font-semibold text-text-primary-light dark:text-text-primary-dark">
-        Projects{' '}
-        <span className="ml-2 inline-flex items-center rounded-md bg-accent-pink/10 px-1.5 py-0.5 align-middle text-xs font-medium text-accent-pink">
-          {projects.length}
-        </span>
+        Projects
       </h2>
 
       <p className="mb-4 text-xs text-text-muted-light dark:text-text-muted-dark">Hover any card to see the 3D tilt effect.</p>
@@ -219,7 +216,7 @@ export function ProjectsSection() {
             </>
           ) : (
             <>
-              View all {orderedProjects.length} projects <ChevronDown className="h-3.5 w-3.5" />
+              View all projects <ChevronDown className="h-3.5 w-3.5" />
             </>
           )}
         </button>
