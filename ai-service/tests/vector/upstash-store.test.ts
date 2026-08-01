@@ -67,7 +67,7 @@ describe('upstash-store', () => {
 
   it('queries vectors and maps results', async () => {
     mockFetch.mockResolvedValue(
-      mockResponse({ results: [{ id: 'aisvc:project:a:0', score: 0.85, metadata: { docId: 'project:a' } }] }),
+      mockResponse({ result: [{ id: 'aisvc:project:a:0', score: 0.85, metadata: { docId: 'project:a' } }] }),
     );
     const results = await queryVectors([0.1, 0.2], 5);
     expect(results).toHaveLength(1);
@@ -75,6 +75,7 @@ describe('upstash-store', () => {
     const [url, init] = mockFetch.mock.calls[0]!;
     expect(url).toBe('https://test.upstash.io/query');
     expect(JSON.parse(init.body)).toMatchObject({ topK: 5, includeMetadata: true });
+    expect(JSON.parse(init.body).filter).toBe('namespace = "aisvc"');
   });
 
   it('deletes by ids and by metadata filter', async () => {
@@ -89,6 +90,11 @@ describe('upstash-store', () => {
   it('returns zero count when info fails', async () => {
     mockFetch.mockResolvedValue(mockResponse({}, false, 500));
     await expect(getVectorCount()).resolves.toBe(0);
+  });
+
+  it('parses vectorCount from the info response', async () => {
+    mockFetch.mockResolvedValue(mockResponse({ result: { vectorCount: 42, dimension: 768 } }));
+    await expect(getVectorCount()).resolves.toBe(42);
   });
 
   it('throws descriptive errors on failed requests', async () => {

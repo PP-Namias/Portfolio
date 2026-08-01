@@ -91,6 +91,7 @@ async function embedChunks(chunks: Chunk[]): Promise<UpstashVectorRecord[]> {
         id: buildVectorId(chunk),
         vector,
         metadata: {
+          namespace: 'aisvc',
           docId: chunk.docId,
           docType: chunk.docType,
           chunkIndex: chunk.chunkIndex,

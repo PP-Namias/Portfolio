@@ -47,18 +47,26 @@ export async function upsertVectors(vectors: UpstashVectorRecord[]): Promise<voi
   await request('/upsert', vectors);
 }
 
+function toFilterExpression(filter: Record<string, unknown>): string {
+  return Object.entries(filter)
+    .map(([key, value]) => `${key} = "${String(value)}"`)
+    .join(' AND ');
+}
+
 export async function queryVectors(
   vector: number[],
   topK: number,
   includeMetadata = true,
+  filter?: Record<string, unknown>,
 ): Promise<UpstashQueryResult[]> {
-  const result = await request<{ results?: UpstashQueryResult[] }>('/query', {
+  const result = await request<{ result?: UpstashQueryResult[]; results?: UpstashQueryResult[] }>('/query', {
     vector,
     topK,
     includeMetadata,
     includeVectors: false,
+    filter: toFilterExpression(filter ?? { namespace: 'aisvc' }),
   });
-  return result.results ?? [];
+  return result.result ?? result.results ?? [];
 }
 
 export async function deleteVectors(ids: string[]): Promise<void> {
@@ -78,8 +86,8 @@ export async function resetIndex(): Promise<void> {
 
 export async function getVectorCount(): Promise<number> {
   try {
-    const result = await request<{ total: number }>('/info', {});
-    return result.total ?? 0;
+    const result = await request<{ result?: { vectorCount?: number; total?: number } }>('/info', {});
+    return result.result?.vectorCount ?? result.result?.total ?? 0;
   } catch {
     return 0;
   }

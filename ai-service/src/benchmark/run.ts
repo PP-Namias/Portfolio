@@ -33,7 +33,7 @@ async function loadCases(): Promise<BenchmarkCase[]> {
 
 async function retrieveDocIds(query: string): Promise<string[]> {
   const embedding = await embedText(query);
-  const results = await queryVectors(embedding, 12, true);
+  const results = await queryVectors(embedding, 30, true);
   const env = getEnv();
   return results
     .filter((result) => (result.score ?? 0) >= env.similarityThreshold)

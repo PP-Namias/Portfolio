@@ -14,7 +14,7 @@ export async function retrieveNode(state: RagState): Promise<Partial<RagState>> 
     const env = getEnv();
     const query = state.reformulatedQuery || state.query;
     const embedding = await withRetry(() => embedText(query));
-    const results = await queryVectors(embedding, env.ragTopK * 2, true);
+    const results = await queryVectors(embedding, env.ragTopK * 3, true);
 
     const chunks: RetrievedChunk[] = results.map((result) => {
       const metadata = result.metadata ?? {};

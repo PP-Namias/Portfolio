@@ -33,7 +33,7 @@ export const defaultCases: BenchmarkCase[] = [
   {
     id: 'skills-stack',
     query: 'Which technologies are in PP Namias tech stack?',
-    expectedDocIds: ['skill:'],
+    expectedDocIds: ['technology:'],
     keywords: ['stack', 'skill', 'technolog'],
   },
   {

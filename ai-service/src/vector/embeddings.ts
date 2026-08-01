@@ -1,27 +1,45 @@
-import { GoogleGenerativeAIEmbeddings } from '@langchain/google-genai';
+import { GoogleGenAI } from '@google/genai';
 
 import { getEnv } from '../config/env';
 
-let cached: GoogleGenerativeAIEmbeddings | null = null;
+let cached: GoogleGenAI | null = null;
 
-export function getEmbeddings(): GoogleGenerativeAIEmbeddings {
+function getClient(): GoogleGenAI {
   const env = getEnv();
   if (!cached) {
-    cached = new GoogleGenerativeAIEmbeddings({
-      model: env.embeddingModel,
-      apiKey: env.geminiApiKey,
-    });
+    cached = new GoogleGenAI({ apiKey: env.geminiApiKey });
   }
   return cached;
 }
 
+async function embed(
+  text: string,
+  taskType: 'RETRIEVAL_DOCUMENT' | 'RETRIEVAL_QUERY',
+): Promise<number[]> {
+  const env = getEnv();
+  const response = await getClient().models.embedContent({
+    model: env.embeddingModel,
+    contents: text,
+    config: {
+      taskType,
+      outputDimensionality: env.embeddingDimensions,
+    },
+  });
+  const values = response.embeddings?.[0]?.values;
+  if (!values || values.length === 0) {
+    throw new Error('Gemini embedding returned no values');
+  }
+  return values;
+}
+
 export async function embedText(text: string): Promise<number[]> {
-  return getEmbeddings().embedQuery(text);
+  return embed(text, 'RETRIEVAL_QUERY');
 }
 
 export async function embedDocuments(texts: string[]): Promise<number[][]> {
-  if (texts.length === 0) {
-    return [];
+  const vectors: number[][] = [];
+  for (const text of texts) {
+    vectors.push(await embed(text, 'RETRIEVAL_DOCUMENT'));
   }
-  return getEmbeddings().embedDocuments(texts);
+  return vectors;
 }
