@@ -76,8 +76,9 @@ globalThis.fetch = mockFetch;
 
 const mockOnBack = vi.fn();
 const mockOnClose = vi.fn();
+const mockOnToggleMaximize = vi.fn();
 
-function renderChatPanel(messages: ChatMessageType[] = []) {
+function renderChatPanel(messages: ChatMessageType[] = [], isMaximized = false) {
   const setMessages = vi.fn((updater) => {
     if (typeof updater === 'function') {
       return updater(messages);
@@ -89,6 +90,8 @@ function renderChatPanel(messages: ChatMessageType[] = []) {
       <ChatPanel
         onBack={mockOnBack}
         onClose={mockOnClose}
+        isMaximized={isMaximized}
+        onToggleMaximize={mockOnToggleMaximize}
         messages={messages}
         setMessages={setMessages}
       />
@@ -253,28 +256,25 @@ describe('ChatPanel', () => {
     expect(mockFetch).not.toHaveBeenCalled();
   });
 
-  it('shows clear chat button when messages exist', () => {
+  it('has a maximize button that calls onToggleMaximize', () => {
+    renderChatPanel();
+    fireEvent.click(screen.getByLabelText('Maximize chat'));
+    expect(mockOnToggleMaximize).toHaveBeenCalledTimes(1);
+  });
+
+  it('shows minimize label when maximized', () => {
+    renderChatPanel([], true);
+    expect(screen.getByLabelText('Minimize chat')).toBeInTheDocument();
+    expect(screen.queryByLabelText('Maximize chat')).not.toBeInTheDocument();
+  });
+
+  it('does not render a clear chat button', () => {
     const messages: ChatMessageType[] = [
       { id: '1', role: 'user', content: 'Hello', timestamp: new Date() },
       { id: '2', role: 'assistant', content: 'Hi there!', timestamp: new Date() },
     ];
     renderChatPanel(messages);
-    expect(screen.getByLabelText('Clear chat history')).toBeInTheDocument();
-  });
-
-  it('does not show clear chat button when chat is empty', () => {
-    renderChatPanel();
     expect(screen.queryByLabelText('Clear chat history')).not.toBeInTheDocument();
-  });
-
-  it('calls setMessages to clear when clear button is clicked', () => {
-    const messages: ChatMessageType[] = [
-      { id: '1', role: 'user', content: 'Hello', timestamp: new Date() },
-      { id: '2', role: 'assistant', content: 'Hi!', timestamp: new Date() },
-    ];
-    const { setMessages } = renderChatPanel(messages);
-    fireEvent.click(screen.getByLabelText('Clear chat history'));
-    expect(setMessages).toHaveBeenCalledWith([]);
   });
 
   it('shows follow-up suggestion chips after assistant response', () => {

@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import useSWR from 'swr';
-import { X, Send, RotateCcw, ArrowLeft, Trash2, Sparkles } from 'lucide-react';
+import { X, Send, RotateCcw, ArrowLeft, Maximize2, Minimize2, Sparkles } from 'lucide-react';
 import { ChatMessage } from './ChatMessage';
 import { useModal } from '@/hooks/useModal';
 import { useCmsContent } from '@/hooks/useCmsContent';
@@ -118,11 +118,20 @@ function StreamingMessage({ content }: Readonly<{ content: string }>) {
 interface ChatPanelProps {
   onBack: () => void;
   onClose: () => void;
+  isMaximized: boolean;
+  onToggleMaximize: () => void;
   messages: ChatMessageType[];
   setMessages: React.Dispatch<React.SetStateAction<ChatMessageType[]>>;
 }
 
-export function ChatPanel({ onBack, onClose, messages, setMessages }: Readonly<ChatPanelProps>) {
+export function ChatPanel({
+  onBack,
+  onClose,
+  isMaximized,
+  onToggleMaximize,
+  messages,
+  setMessages,
+}: Readonly<ChatPanelProps>) {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -192,14 +201,6 @@ export function ChatPanel({ onBack, onClose, messages, setMessages }: Readonly<C
     onDone: handleStreamDone,
     onError: handleStreamError,
   });
-
-  const handleClearChat = useCallback(() => {
-    setMessages([]);
-    setError(null);
-    setInput('');
-    setStreamingContent('');
-    setCurrentToolCall(null);
-  }, [setMessages]);
 
   const followUpSuggestions = useMemo(() => {
     const asked = new Set(messages.filter((m) => m.role === 'user').map((m) => m.content));
@@ -444,10 +445,10 @@ export function ChatPanel({ onBack, onClose, messages, setMessages }: Readonly<C
               <button
                 type="button"
                 onClick={onBack}
-                className="h-7 w-7 rounded-full flex items-center justify-center text-text-muted-light dark:text-text-muted-dark hover:bg-surface-light dark:hover:bg-surface-dark transition-colors flex-shrink-0 mt-0.5"
+                className="h-9 w-9 rounded-full flex items-center justify-center text-text-muted-light dark:text-text-muted-dark hover:bg-surface-light dark:hover:bg-surface-dark transition-colors flex-shrink-0 mt-0.5 touch-manipulation"
                 aria-label="Back to menu"
               >
-                <ArrowLeft className="h-3.5 w-3.5" />
+                <ArrowLeft className="h-4 w-4" aria-hidden="true" />
               </button>
 
               {/* Profile section with full context */}
@@ -499,24 +500,27 @@ export function ChatPanel({ onBack, onClose, messages, setMessages }: Readonly<C
 
             {/* Action buttons */}
             <div className="flex items-center gap-1 flex-shrink-0 mt-0.5">
-              {messages.length > 0 && (
-                <button
-                  type="button"
-                  onClick={handleClearChat}
-                  className="flex items-center gap-1 h-7 px-2 rounded-full text-text-muted-light dark:text-text-muted-dark hover:bg-red-500/10 hover:text-red-500 transition-colors"
-                  aria-label="Clear chat history"
-                  title="Clear chat"
-                >
-                  <Trash2 className="h-3 w-3" />
-                </button>
-              )}
+              <button
+                type="button"
+                onClick={onToggleMaximize}
+                className="hidden sm:inline-flex h-9 w-9 items-center justify-center rounded-full text-text-muted-light dark:text-text-muted-dark hover:bg-surface-light dark:hover:bg-surface-dark hover:text-text-primary-light dark:hover:text-text-primary-dark transition-colors touch-manipulation"
+                aria-label={isMaximized ? 'Minimize chat' : 'Maximize chat'}
+                title={isMaximized ? 'Minimize chat' : 'Maximize chat'}
+              >
+                {isMaximized ? (
+                  <Minimize2 className="h-4 w-4" aria-hidden="true" />
+                ) : (
+                  <Maximize2 className="h-4 w-4" aria-hidden="true" />
+                )}
+              </button>
               <button
                 type="button"
                 onClick={onClose}
-                className="h-7 w-7 rounded-full flex items-center justify-center text-text-muted-light dark:text-text-muted-dark hover:bg-surface-light dark:hover:bg-surface-dark transition-colors"
+                className="h-9 w-9 rounded-full flex items-center justify-center text-text-muted-light dark:text-text-muted-dark hover:bg-red-500/10 hover:text-red-500 transition-colors touch-manipulation"
                 aria-label="Close chat"
+                title="Close chat"
               >
-                <X className="h-3.5 w-3.5" />
+                <X className="h-4 w-4" aria-hidden="true" />
               </button>
             </div>
           </div>

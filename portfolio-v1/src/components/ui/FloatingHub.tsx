@@ -12,9 +12,13 @@ export function FloatingHub() {
   const [hubState, setHubState] = useState<HubState>('closed');
   const [messages, setMessages] = useState<ChatMessageType[]>([]);
   const [hasInteracted, setHasInteracted] = useState(false);
+  const [isMaximized, setIsMaximized] = useState(false);
   const panelRef = useRef<HTMLDivElement>(null);
 
-  const close = useCallback(() => setHubState('closed'), []);
+  const close = useCallback(() => {
+    setIsMaximized(false);
+    setHubState('closed');
+  }, []);
   const openMenu = useCallback(() => {
     setHubState('menu');
     if (!hasInteracted) {
@@ -23,6 +27,7 @@ export function FloatingHub() {
     }
   }, [hasInteracted]);
   const openChat = useCallback(() => setHubState('chat'), []);
+  const toggleMaximize = useCallback(() => setIsMaximized((m) => !m), []);
 
   // Load sessionStorage flag on mount
   useEffect(() => {
@@ -131,7 +136,11 @@ export function FloatingHub() {
             aria-label={hubState === 'menu' ? 'Quick Actions' : "Chat with Keneth's AI"}
             tabIndex={-1}
             data-lenis-prevent
-            className="fixed z-50 bottom-0 right-0 sm:bottom-5 sm:right-5 w-full h-full sm:w-96 sm:h-[540px] sm:rounded-2xl flex flex-col overflow-hidden border border-border-light dark:border-border-dark bg-white dark:bg-card-bg-dark shadow-2xl"
+            className={`fixed z-50 flex flex-col overflow-hidden border border-border-light dark:border-border-dark bg-white dark:bg-card-bg-dark shadow-2xl ${
+              isMaximized
+                ? 'inset-0 w-full h-full sm:rounded-none'
+                : 'bottom-0 right-0 sm:bottom-5 sm:right-5 w-full h-full sm:w-96 sm:h-[540px] sm:rounded-2xl'
+            }`}
           >
             {hubState === 'menu' && (
               <HubMenu onClose={close} onOpenChat={openChat} />
@@ -140,6 +149,8 @@ export function FloatingHub() {
               <ChatPanel
                 onBack={openMenu}
                 onClose={close}
+                isMaximized={isMaximized}
+                onToggleMaximize={toggleMaximize}
                 messages={messages}
                 setMessages={setMessages}
               />

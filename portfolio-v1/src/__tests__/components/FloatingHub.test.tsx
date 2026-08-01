@@ -428,6 +428,24 @@ describe('FloatingHub', () => {
     spy.mockRestore();
   });
 
+  it('maximizes and restores the chat panel, resetting on close', () => {
+    render(<FloatingHub />);
+    fireEvent.click(screen.getByLabelText('Open quick actions'));
+    fireEvent.click(screen.getByText('Ask AI Assistant'));
+
+    const dialog = screen.getByRole('dialog');
+    expect(dialog).toHaveClass('sm:rounded-2xl');
+    expect(dialog).not.toHaveClass('inset-0');
+
+    fireEvent.click(screen.getByLabelText('Maximize chat'));
+    expect(dialog).toHaveClass('inset-0');
+    expect(dialog).not.toHaveClass('sm:bottom-5');
+
+    fireEvent.click(screen.getByLabelText('Minimize chat'));
+    expect(dialog).not.toHaveClass('inset-0');
+    expect(dialog).toHaveClass('sm:rounded-2xl');
+  });
+
   it('FAB has correct aria-label', () => {
     render(<FloatingHub />);
     const fab = screen.getByLabelText('Open quick actions');
