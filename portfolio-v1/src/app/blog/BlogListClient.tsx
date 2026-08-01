@@ -34,7 +34,7 @@ export default function BlogListClient({ posts }: BlogListClientProps) {
                     height={160}
                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                     unoptimized
-                    className="w-full h-40 object-cover transition-transform duration-300 group-hover:scale-105"
+                    className="w-full h-auto transition-transform duration-300 group-hover:scale-105"
                   />
                 ) : (
                   <div className="flex h-40 items-center justify-center bg-surface-light dark:bg-surface-dark text-xs text-text-muted-light dark:text-text-muted-dark">
