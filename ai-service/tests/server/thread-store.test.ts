@@ -70,4 +70,19 @@ describe('thread-store', () => {
     expect(Array.isArray(parsed)).toBe(true);
     expect(parsed.every((item) => typeof item.id === 'string')).toBe(true);
   });
+
+  it('isolates stores with different files', async () => {
+    const otherPath = join(tmpdir(), `ai-service-threads-other-${process.pid}-${Date.now()}.json`);
+    const other = createThreadStore({ filePath: otherPath });
+    try {
+      const inStore = await store.create('mine');
+      const inOther = await other.create('theirs');
+      expect((await store.get(inOther.id))).toBeNull();
+      expect((await other.get(inStore.id))).toBeNull();
+      expect((await store.list()).map((item) => item.id)).toContain(inStore.id);
+      expect((await other.list()).map((item) => item.id)).toContain(inOther.id);
+    } finally {
+      rmSync(otherPath, { force: true });
+    }
+  });
 });

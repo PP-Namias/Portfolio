@@ -1,3 +1,5 @@
+import { timingSafeEqual } from 'node:crypto';
+
 import { z } from 'zod';
 import { zValidator } from '@hono/zod-validator';
 import { Hono } from 'hono';
@@ -13,6 +15,12 @@ const reindexSchema = z.object({
   reset: z.boolean().default(false),
 });
 
+function secretMatches(provided: string, expected: string): boolean {
+  const providedBuf = Buffer.from(provided);
+  const expectedBuf = Buffer.from(expected);
+  return providedBuf.length === expectedBuf.length && timingSafeEqual(providedBuf, expectedBuf);
+}
+
 export function buildAdminRoute() {
   const app = new Hono();
 
@@ -23,7 +31,7 @@ export function buildAdminRoute() {
       return c.json({ error: 'Reindex secret not configured on the server' }, 503);
     }
     const provided = c.req.header('x-reindex-secret');
-    if (!provided || provided !== env.reindexSecret) {
+    if (!provided || !secretMatches(provided, env.reindexSecret)) {
       return c.json({ error: 'Unauthorized' }, 401);
     }
     await next();
