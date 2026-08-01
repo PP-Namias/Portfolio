@@ -15,8 +15,13 @@ export interface UseChatStreamOptions {
   onError?: (error: string) => void;
 }
 
+export interface ChatHistoryItem {
+  role: string;
+  content: string;
+}
+
 export interface UseChatStreamReturn {
-  sendMessage: (message: string, threadId?: string) => Promise<void>;
+  sendMessage: (message: string, threadId?: string, history?: ChatHistoryItem[]) => Promise<void>;
   isStreaming: boolean;
   error: string | null;
   currentThreadId: string | null;
@@ -37,7 +42,7 @@ export function useChatStream(options: UseChatStreamOptions = {}): UseChatStream
     setIsStreaming(false);
   }, []);
 
-  const sendMessage = useCallback(async (message: string, threadId?: string) => {
+  const sendMessage = useCallback(async (message: string, threadId?: string, history?: ChatHistoryItem[]) => {
     cancel();
 
     const controller = new AbortController();
@@ -53,7 +58,11 @@ export function useChatStream(options: UseChatStreamOptions = {}): UseChatStream
           'Content-Type': 'application/json',
           Accept: 'text/event-stream',
         },
-        body: JSON.stringify({ message, threadId }),
+        body: JSON.stringify({
+          message,
+          threadId,
+          history: history && history.length > 0 ? history : undefined,
+        }),
         signal: controller.signal,
       });
 

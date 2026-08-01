@@ -72,6 +72,17 @@ interface ProviderGenerationResult {
   latencyMs: number;
 }
 
+export interface StreamingResult {
+  message: string;
+  model: string;
+  provider: ProviderName;
+  latencyMs: number;
+}
+
+interface StreamingChunkHandler {
+  onChunk: (text: string) => void;
+}
+
 interface ProviderHealth {
   configured: boolean;
   circuitOpen: boolean;
@@ -437,6 +448,123 @@ async function requestOpenAIChatCompletion(
   }
 }
 
+async function tryGeminiModelStream(
+  genAI: GoogleGenerativeAI,
+  modelName: string,
+  message: string,
+  history: ConversationHistoryMessage[],
+  systemPrompt: string,
+  onChunk: (text: string) => void
+): Promise<string> {
+  const model = genAI.getGenerativeModel({
+    model: modelName,
+    systemInstruction: systemPrompt,
+    generationConfig: {
+      temperature: 0.6,
+      topP: 0.85,
+      maxOutputTokens: 1024,
+    },
+  });
+
+  const chat = model.startChat({
+    history: mapHistoryForGemini(history),
+  });
+
+  const result = await chat.sendMessageStream(message);
+  let fullText = '';
+
+  for await (const chunk of result.stream) {
+    const text = chunk.text();
+    if (text) {
+      fullText += text;
+      onChunk(text);
+    }
+  }
+
+  const response = fullText.trim();
+
+  if (!response) {
+    throw new Error('Gemini stream returned an empty response.');
+  }
+
+  return response;
+}
+
+async function streamWithGemini(
+  message: string,
+  history: ConversationHistoryMessage[],
+  systemPrompt: string,
+  handlers: StreamingChunkHandler
+): Promise<StreamingResult> {
+  if (!isConfigured('gemini')) {
+    throw new ProviderUnavailableError('gemini', 'missing_config', 'Gemini API key is not configured.');
+  }
+
+  if (isCircuitOpen('gemini')) {
+    throw new ProviderUnavailableError('gemini', 'circuit_open', 'Gemini circuit is temporarily open.');
+  }
+
+  const apiKey = process.env.GOOGLE_GEMINI_API_KEY as string;
+  const genAI = new GoogleGenerativeAI(apiKey);
+  const timeoutMs = getProviderTimeoutMs();
+
+  const providerStartedAt = Date.now();
+  let lastError: unknown = null;
+
+  try {
+    for (const modelName of GEMINI_MODELS) {
+      let streamedAnyChunk = false;
+
+      try {
+        const { value: fullText } = await executeWithRetry(async (attempt) => {
+          try {
+            return await withTimeout(
+              async () => {
+                const text = await tryGeminiModelStream(
+                  genAI,
+                  modelName,
+                  message,
+                  history,
+                  systemPrompt,
+                  (chunk) => {
+                    streamedAnyChunk = true;
+                    handlers.onChunk(chunk);
+                  }
+                );
+                return text;
+              },
+              timeoutMs,
+              `gemini:${modelName}:attempt-${attempt}`
+            );
+          } catch (error) {
+            if (streamedAnyChunk) {
+              throw new Error('Gemini stream interrupted after partial output.');
+            }
+            throw error;
+          }
+        });
+
+        markProviderSuccess('gemini');
+
+        return {
+          provider: 'gemini',
+          model: modelName,
+          message: fullText,
+          latencyMs: Date.now() - providerStartedAt,
+        };
+      } catch (error) {
+        lastError = error;
+        if (streamedAnyChunk) break;
+      }
+    }
+
+    throw lastError || new Error('Gemini streaming failed across all configured models.');
+  } catch (error) {
+    markProviderFailure('gemini');
+    throw error;
+  }
+}
+
 async function generateWithOpenAI(
   message: string,
   history: ConversationHistoryMessage[],
@@ -495,6 +623,7 @@ export {
   generateWithOpenAI,
   getProviderHealth,
   isMultiProviderEnabled,
+  streamWithGemini,
   ProviderUnavailableError,
 };
 export type { ProviderGenerationResult, ProviderName, ChatProviderHealth };

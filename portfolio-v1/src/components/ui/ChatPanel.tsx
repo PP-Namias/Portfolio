@@ -5,10 +5,13 @@ import { motion, AnimatePresence } from 'framer-motion';
 import useSWR from 'swr';
 import { X, Send, RotateCcw, ArrowLeft, Maximize2, Minimize2, Sparkles } from 'lucide-react';
 import { ChatMessage } from './ChatMessage';
+import { ThreadSidebar } from './ThreadSidebar';
+import type { ThreadInfo } from './ThreadSidebar';
+import { ThreadToggle } from './ThreadToggle';
 import { useModal } from '@/hooks/useModal';
 import { useCmsContent } from '@/hooks/useCmsContent';
 import { useChatStream } from '@/hooks/use-chat-stream';
-import { IS_CHAT_STREAMING_ENABLED } from '@/lib/features';
+import { IS_CHAT_STREAMING_ENABLED, IS_CHAT_THREADING_ENABLED } from '@/lib/features';
 import type { ChatMessage as ChatMessageType } from '@/types';
 import Image from '@/components/ui/OptimizedImage';
 import { resolveContentImageSrc } from '@/lib/media';
@@ -202,6 +205,108 @@ export function ChatPanel({
     onError: handleStreamError,
   });
 
+  const [threadSidebarOpen, setThreadSidebarOpen] = useState(false);
+  const [currentThreadId, setCurrentThreadId] = useState<string | null>(null);
+  const [threads, setThreads] = useState<ThreadInfo[]>([]);
+  const sessionThreadIdRef = useRef<string | null>(null);
+
+  const refreshThreads = useCallback(async () => {
+    if (!IS_CHAT_THREADING_ENABLED) return;
+    try {
+      const res = await fetch('/api/chat/threads', { cache: 'no-store' });
+      if (res.ok) {
+        const data = (await res.json()) as { threads: ThreadInfo[] };
+        setThreads(data.threads);
+      }
+    } catch {
+    }
+  }, []);
+
+  useEffect(() => {
+    if (IS_CHAT_THREADING_ENABLED) {
+      void refreshThreads();
+    }
+  }, [refreshThreads]);
+
+  const createThread = useCallback(async (title: string): Promise<string> => {
+    const res = await fetch('/api/chat/threads', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ title: title.slice(0, 50) || 'New Conversation' }),
+    });
+    if (!res.ok) {
+      throw new Error('Failed to create conversation.');
+    }
+    const data = (await res.json()) as { thread: ThreadInfo };
+    setThreads((prev) => [data.thread, ...prev]);
+    setCurrentThreadId(data.thread.id);
+    return data.thread.id;
+  }, []);
+
+  const resolveThreadId = useCallback(async (firstMessage: string): Promise<string> => {
+    if (IS_CHAT_THREADING_ENABLED) {
+      if (currentThreadId) return currentThreadId;
+      return createThread(firstMessage);
+    }
+    if (!sessionThreadIdRef.current) {
+      sessionThreadIdRef.current = `session_${Date.now()}`;
+    }
+    return sessionThreadIdRef.current;
+  }, [currentThreadId, createThread]);
+
+  const selectThread = useCallback(async (id: string) => {
+    try {
+      const res = await fetch(`/api/chat/threads/${id}`, { cache: 'no-store' });
+      if (!res.ok) return;
+      const data = (await res.json()) as {
+        messages: Array<{ id: number; role: string; content: string; createdAt: string }>;
+      };
+      setCurrentThreadId(id);
+      setMessages(
+        data.messages.map((m) => ({
+          id: `persisted-${m.id}`,
+          role: m.role === 'assistant' ? 'assistant' : 'user',
+          content: m.content,
+          timestamp: new Date(m.createdAt),
+        }))
+      );
+    } catch {
+    }
+  }, [setMessages]);
+
+  const newThread = useCallback(() => {
+    setCurrentThreadId(null);
+    setMessages([]);
+    setStreamingContent('');
+    setError(null);
+  }, [setMessages]);
+
+  const deleteThread = useCallback(async (id: string) => {
+    try {
+      await fetch(`/api/chat/threads/${id}`, { method: 'DELETE' });
+    } catch {
+    }
+    setThreads((prev) => prev.filter((t) => t.id !== id));
+    if (currentThreadId === id) {
+      newThread();
+    }
+  }, [currentThreadId, newThread]);
+
+  const renameThread = useCallback(async (id: string, title: string) => {
+    try {
+      const res = await fetch(`/api/chat/threads/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title }),
+      });
+      if (res.ok) {
+        const data = (await res.json()) as { thread: ThreadInfo };
+        setThreads((prev) => prev.map((t) => (t.id === id ? data.thread : t)));
+      }
+    } catch {
+    }
+  }, []);
+
   const followUpSuggestions = useMemo(() => {
     const asked = new Set(messages.filter((m) => m.role === 'user').map((m) => m.content));
     return FOLLOW_UP_POOL.filter((q) => !asked.has(q)).slice(0, 3);
@@ -334,14 +439,17 @@ export function ChatPanel({
       setMessages((prev) => [...prev, userMsg]);
       setIsLoading(true);
 
-      const history = messagesRef.current.map((m) => ({
-        role: m.role,
-        content: m.content,
-      }));
+      const history = messagesRef.current
+        .filter((m) => m.id !== WELCOME_MESSAGE.id)
+        .map((m) => ({
+          role: m.role,
+          content: m.content,
+        }));
 
       if (IS_CHAT_STREAMING_ENABLED) {
         try {
-          await streamSendMessage(trimmed);
+          const threadId = await resolveThreadId(trimmed);
+          await streamSendMessage(trimmed, threadId, history);
         } catch {
           setError('Failed to stream response.');
         } finally {
@@ -381,7 +489,7 @@ export function ChatPanel({
         setIsLoading(false);
       }
     },
-    [setMessages, streamSendMessage]
+    [setMessages, streamSendMessage, resolveThreadId]
   );
 
   const handleAction = useCallback((action: string) => {
@@ -433,6 +541,17 @@ export function ChatPanel({
 
   return (
     <div className="flex h-full">
+      {IS_CHAT_THREADING_ENABLED && (
+        <ThreadSidebar
+          isOpen={threadSidebarOpen}
+          currentThreadId={currentThreadId}
+          onSelectThread={(id) => void selectThread(id)}
+          onNewThread={newThread}
+          onDeleteThread={(id) => void deleteThread(id)}
+          onRenameThread={(id, title) => void renameThread(id, title)}
+          onClose={() => setThreadSidebarOpen(false)}
+        />
+      )}
       <div className="flex-1 flex flex-col min-w-0">
         {/* Header with full image and title context */}
         <div className="relative px-4 pt-4 pb-3 border-b border-border-light/60 dark:border-border-dark/60 bg-white dark:bg-card-bg-dark">
@@ -500,6 +619,10 @@ export function ChatPanel({
 
             {/* Action buttons */}
             <div className="flex items-center gap-1 flex-shrink-0 mt-0.5">
+              <ThreadToggle
+                isOpen={threadSidebarOpen}
+                onToggle={() => setThreadSidebarOpen((o) => !o)}
+              />
               <button
                 type="button"
                 onClick={onToggleMaximize}

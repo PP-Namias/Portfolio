@@ -4,7 +4,37 @@ import {
   getProviderHealth,
   isMultiProviderEnabled,
   ProviderUnavailableError,
+  streamWithGemini,
 } from '@/app/api/chat/lib/providers';
+
+const streamMock = vi.hoisted(() => ({
+  chunks: [] as string[],
+  failCount: 0,
+}));
+
+vi.mock('@google/generative-ai', () => ({
+  GoogleGenerativeAI: vi.fn(function () {
+    return {
+      getGenerativeModel: vi.fn(() => ({
+        startChat: vi.fn(() => ({
+          sendMessageStream: vi.fn(async () => {
+            if (streamMock.failCount > 0) {
+              streamMock.failCount -= 1;
+              throw new Error('fetch failed');
+            }
+            return {
+              stream: (async function* () {
+                for (const chunk of streamMock.chunks) {
+                  yield { text: () => chunk };
+                }
+              })(),
+            };
+          }),
+        })),
+      })),
+    };
+  }),
+}));
 
 describe('providers', () => {
   beforeEach(() => {
@@ -152,6 +182,73 @@ describe('providers', () => {
 
     it('classifies object error', () => {
       expect(classifyProviderError({ code: 500 })).toBe('provider_error:unknown');
+    });
+  });
+
+  describe('streamWithGemini', () => {
+    beforeEach(() => {
+      vi.stubEnv('GOOGLE_GEMINI_API_KEY', 'test-key');
+      vi.stubEnv('CHAT_PROVIDER_RETRY_BASE_MS', '5');
+      streamMock.chunks = [];
+      streamMock.failCount = 0;
+    });
+
+    afterEach(() => {
+      streamMock.chunks = [];
+      streamMock.failCount = 0;
+    });
+
+    it('emits chunks progressively and returns the accumulated message', async () => {
+      streamMock.chunks = ['Hello ', 'world ', 'from Gemini'];
+
+      const onChunk = vi.fn();
+      const result = await streamWithGemini(
+        'Hi',
+        [],
+        'system prompt',
+        { onChunk }
+      );
+
+      expect(onChunk).toHaveBeenCalledTimes(3);
+      expect(onChunk).toHaveBeenNthCalledWith(1, 'Hello ');
+      expect(onChunk).toHaveBeenNthCalledWith(2, 'world ');
+      expect(onChunk).toHaveBeenNthCalledWith(3, 'from Gemini');
+      expect(result.message).toBe('Hello world from Gemini');
+      expect(result.provider).toBe('gemini');
+      expect(result.model).toBe('gemini-2.5-flash');
+      expect(result.latencyMs).toBeGreaterThanOrEqual(0);
+    });
+
+    it('throws ProviderUnavailableError when the API key is missing', async () => {
+      vi.stubEnv('GOOGLE_GEMINI_API_KEY', '');
+
+      await expect(
+        streamWithGemini('Hi', [], 'prompt', { onChunk: vi.fn() })
+      ).rejects.toMatchObject({
+        name: 'ProviderUnavailableError',
+        provider: 'gemini',
+        reason: 'missing_config',
+      });
+    });
+
+    it('throws when the stream yields no text', async () => {
+      streamMock.chunks = [];
+
+      await expect(
+        streamWithGemini('Hi', [], 'prompt', { onChunk: vi.fn() })
+      ).rejects.toThrow('Gemini stream returned an empty response.');
+    });
+
+    it('retries before emitting any chunk on a transient error', async () => {
+      streamMock.chunks = ['recovered'];
+      streamMock.failCount = 1;
+
+      const onChunk = vi.fn();
+      const result = await streamWithGemini('Hi', [], 'prompt', { onChunk });
+
+      expect(onChunk).toHaveBeenCalledTimes(1);
+      expect(onChunk).toHaveBeenCalledWith('recovered');
+      expect(result.message).toBe('recovered');
     });
   });
 

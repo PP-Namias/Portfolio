@@ -16,4 +16,4 @@ export const IS_OFFLINE_BANNER_VISIBLE = true;
 // When disabled, the existing linear chat flow and UI are used (backward compatible).
 export const IS_LANGGRAPH_ENABLED = true;
 export const IS_CHAT_STREAMING_ENABLED = true;
-export const IS_CHAT_THREADING_ENABLED = false;
+export const IS_CHAT_THREADING_ENABLED = true;

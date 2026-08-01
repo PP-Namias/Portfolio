@@ -221,6 +221,50 @@ describe('useChatStream', () => {
     }));
   });
 
+  it('should send conversation history and thread id in the request body', async () => {
+    const stream = createSSEMock([
+      { event: 'done', data: { threadId: 't1' } },
+    ]);
+    fetchSpy.mockResolvedValue(okResponse(stream));
+
+    const { result } = renderHook(() => useChatStream());
+
+    await act(async () => {
+      await result.current.sendMessage('follow up', 't1', [
+        { role: 'user', content: 'first question' },
+        { role: 'assistant', content: 'first answer' },
+      ]);
+    });
+
+    expect(fetchSpy).toHaveBeenCalledWith('/api/chat', expect.objectContaining({
+      body: JSON.stringify({
+        message: 'follow up',
+        threadId: 't1',
+        history: [
+          { role: 'user', content: 'first question' },
+          { role: 'assistant', content: 'first answer' },
+        ],
+      }),
+    }));
+  });
+
+  it('should omit history from the body when not provided', async () => {
+    const stream = createSSEMock([
+      { event: 'done', data: { threadId: 't1' } },
+    ]);
+    fetchSpy.mockResolvedValue(okResponse(stream));
+
+    const { result } = renderHook(() => useChatStream());
+
+    await act(async () => {
+      await result.current.sendMessage('no history');
+    });
+
+    expect(fetchSpy).toHaveBeenCalledWith('/api/chat', expect.objectContaining({
+      body: JSON.stringify({ message: 'no history', threadId: undefined }),
+    }));
+  });
+
   it('should set isStreaming true during request', async () => {
     const stream = createSSEMock([
       { event: 'done', data: { threadId: 't' } },

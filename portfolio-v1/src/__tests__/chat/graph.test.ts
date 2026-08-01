@@ -29,6 +29,16 @@ vi.mock('@/app/api/chat/lib/providers', () => ({
     attempts: 1,
     latencyMs: 100,
   })),
+  streamWithGemini: vi.fn(async (_message: string, _history: unknown[], _systemPrompt: string, handlers: { onChunk: (text: string) => void }) => {
+    handlers.onChunk('Mock');
+    handlers.onChunk(' stream');
+    return {
+      provider: 'gemini',
+      model: 'gemini-2.5-flash',
+      message: 'Mock stream',
+      latencyMs: 50,
+    };
+  }),
   isMultiProviderEnabled: vi.fn(() => false),
   classifyProviderError: vi.fn(() => 'test_error'),
 }));
@@ -147,7 +157,7 @@ describe('Chat Graph Engine', () => {
     expect(result.response).toBeDefined();
   });
 
-  it('should call onToken callback during streaming', async () => {
+  it('should call onToken callback with streamed chunks during streaming', async () => {
     const onToken = vi.fn();
     await runChatGraph({
       message: 'Hello',
@@ -155,6 +165,47 @@ describe('Chat Graph Engine', () => {
       onToken,
     });
 
+    expect(onToken).toHaveBeenCalledTimes(2);
+    expect(onToken).toHaveBeenNthCalledWith(1, 'Mock');
+    expect(onToken).toHaveBeenNthCalledWith(2, ' stream');
+  });
+
+  it('executes a tool exactly once and feeds the tool result into generation', async () => {
+    const { generateWithGemini } = await import('@/app/api/chat/lib/providers');
+    const result = await runChatGraph({
+      message: 'Calculate 15 plus 30',
+      history: mockHistory,
+    });
+
+    expect(generateWithGemini).toHaveBeenCalledTimes(1);
+    const generateArg = vi.mocked(generateWithGemini).mock.calls[0][0];
+    expect(generateArg).toContain('Tool result');
+    expect(generateArg).toContain('result');
+    expect(result.response).toBeDefined();
+  });
+
+  it('does not loop tool execution more than once per message', async () => {
+    const { generateWithGemini } = await import('@/app/api/chat/lib/providers');
+    await runChatGraph({
+      message: 'Calculate 100 divided by 4',
+      history: mockHistory,
+    });
+
+    expect(generateWithGemini).toHaveBeenCalledTimes(1);
+  });
+
+  it('streams the tool result through the generation call when streaming', async () => {
+    const { streamWithGemini } = await import('@/app/api/chat/lib/providers');
+    const onToken = vi.fn();
+    await runChatGraph({
+      message: 'Calculate 7 times 6',
+      history: mockHistory,
+      onToken,
+    });
+
+    expect(streamWithGemini).toHaveBeenCalledTimes(1);
+    const generateArg = vi.mocked(streamWithGemini).mock.calls[0][0];
+    expect(generateArg).toContain('Tool result');
     expect(onToken).toHaveBeenCalled();
   });
 
