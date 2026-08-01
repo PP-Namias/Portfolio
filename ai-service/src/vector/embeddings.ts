@@ -12,6 +12,8 @@ function getClient(): GoogleGenAI {
   return cached;
 }
 
+const EMBED_BATCH_SIZE = 10;
+
 async function embed(
   text: string,
   taskType: 'RETRIEVAL_DOCUMENT' | 'RETRIEVAL_QUERY',
@@ -37,9 +39,30 @@ export async function embedText(text: string): Promise<number[]> {
 }
 
 export async function embedDocuments(texts: string[]): Promise<number[][]> {
-  const vectors: number[][] = [];
-  for (const text of texts) {
-    vectors.push(await embed(text, 'RETRIEVAL_DOCUMENT'));
+  if (texts.length === 0) {
+    return [];
   }
+
+  const env = getEnv();
+  const vectors: number[][] = [];
+
+  for (let i = 0; i < texts.length; i += EMBED_BATCH_SIZE) {
+    const batch = texts.slice(i, i + EMBED_BATCH_SIZE);
+    const response = await getClient().models.embedContent({
+      model: env.embeddingModel,
+      contents: batch,
+      config: {
+        taskType: 'RETRIEVAL_DOCUMENT',
+        outputDimensionality: env.embeddingDimensions,
+      },
+    });
+
+    const batchVectors = (response.embeddings ?? []).map((embedding) => embedding.values ?? []);
+    if (batchVectors.length !== batch.length || batchVectors.some((vector) => vector.length === 0)) {
+      throw new Error('Gemini embedding returned an incomplete batch');
+    }
+    vectors.push(...batchVectors);
+  }
+
   return vectors;
 }
