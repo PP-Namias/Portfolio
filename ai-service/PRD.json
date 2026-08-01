@@ -39,7 +39,7 @@
       "name": "Vector Store & Gemini Embeddings Engine",
       "status": "completed",
       "tasks": [
-        "Embeddings: GoogleGenerativeAIEmbeddings (text-embedding-004) via @langchain/google-genai.",
+        "Embeddings: gemini-embedding-001 (outputDimensionality 768) via @google/genai SDK (text-embedding-004 404s on the production API key, so the planned @langchain/google-genai path was swapped for the raw SDK).",
         "Upstash Vector adapter mirroring v1 contract: upsert, query, delete, deleteByMetadata, reset, info.",
         "Batch embedding with retry + rate limiting (p-queue style concurrency).",
         "Full reindex + incremental reindex CLI entrypoint (REINDEX_SECRET-guarded)."
