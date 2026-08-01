@@ -78,13 +78,25 @@ describe('upstash-store', () => {
     expect(JSON.parse(init.body).filter).toBe('namespace = "aisvc"');
   });
 
-  it('deletes by ids and by metadata filter', async () => {
+  it('deletes by ids and by metadata filter expression', async () => {
     mockFetch.mockResolvedValue(mockResponse({}));
     await deleteVectors(['a', 'b']);
     await deleteByMetadata({ docId: 'project:gone' });
     expect(mockFetch).toHaveBeenCalledTimes(2);
     expect(mockFetch.mock.calls[1]![0]).toBe('https://test.upstash.io/delete');
-    expect(JSON.parse(mockFetch.mock.calls[1]![1].body)).toEqual({ filter: { docId: 'project:gone' } });
+    expect(JSON.parse(mockFetch.mock.calls[1]![1].body)).toEqual({ filter: 'docId = "project:gone"' });
+  });
+
+  it('escapes quotes and backslashes in delete filter expressions', async () => {
+    mockFetch.mockResolvedValue(mockResponse({}));
+    await deleteByMetadata({ docId: 'a"b\\c' });
+    expect(JSON.parse(mockFetch.mock.calls[0]![1].body).filter).toBe('docId = "a\\"b\\\\c"');
+  });
+
+  it('sends an abort timeout on every request', async () => {
+    mockFetch.mockResolvedValue(mockResponse({ result: [] }));
+    await queryVectors([0.1], 1);
+    expect(mockFetch.mock.calls[0]![1].signal).toBeInstanceOf(AbortSignal);
   });
 
   it('returns zero count when info fails', async () => {

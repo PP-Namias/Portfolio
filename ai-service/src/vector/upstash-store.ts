@@ -1,5 +1,8 @@
 import { getEnv } from '../config/env';
+import { logger } from '../lib/logger';
 import type { Chunk } from '../ingest/types';
+
+const DEFAULT_TIMEOUT_MS = 30_000;
 
 export interface UpstashVectorRecord {
   id: string;
@@ -13,7 +16,7 @@ export interface UpstashQueryResult {
   metadata?: Record<string, unknown>;
 }
 
-async function request<T>(path: string, body: unknown): Promise<T> {
+async function request<T>(path: string, body: unknown, timeoutMs = DEFAULT_TIMEOUT_MS): Promise<T> {
   const env = getEnv();
   if (!env.upstashVectorUrl || !env.upstashVectorToken) {
     throw new Error('Upstash Vector is not configured. Set UPSTASH_VECTOR_URL and UPSTASH_VECTOR_TOKEN.');
@@ -26,6 +29,7 @@ async function request<T>(path: string, body: unknown): Promise<T> {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(body),
+    signal: AbortSignal.timeout(timeoutMs),
   });
 
   if (!response.ok) {
@@ -49,7 +53,7 @@ export async function upsertVectors(vectors: UpstashVectorRecord[]): Promise<voi
 
 function toFilterExpression(filter: Record<string, unknown>): string {
   return Object.entries(filter)
-    .map(([key, value]) => `${key} = "${String(value)}"`)
+    .map(([key, value]) => `${key} = "${String(value).replace(/\\/g, '\\\\').replace(/"/g, '\\"')}"`)
     .join(' AND ');
 }
 
@@ -77,7 +81,7 @@ export async function deleteVectors(ids: string[]): Promise<void> {
 }
 
 export async function deleteByMetadata(filter: Record<string, unknown>): Promise<void> {
-  await request('/delete', { filter });
+  await request('/delete', { filter: toFilterExpression(filter) });
 }
 
 export async function resetIndex(): Promise<void> {
@@ -88,7 +92,8 @@ export async function getVectorCount(): Promise<number> {
   try {
     const result = await request<{ result?: { vectorCount?: number; total?: number } }>('/info', {});
     return result.result?.vectorCount ?? result.result?.total ?? 0;
-  } catch {
+  } catch (error) {
+    logger.warn({ err: String(error) }, 'failed to read vector count, reporting 0');
     return 0;
   }
 }
