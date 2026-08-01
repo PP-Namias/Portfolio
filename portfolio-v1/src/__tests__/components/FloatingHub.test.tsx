@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
 import { FloatingHub } from '@/components/ui/FloatingHub';
@@ -253,6 +253,32 @@ describe('FloatingHub', () => {
     expect(screen.getByTestId('message-user')).toHaveTextContent('Hello');
     const assistantMsgs = screen.getAllByTestId('message-assistant');
     expect(assistantMsgs.some((el) => el.textContent?.includes('AI response here'))).toBe(true);
+  });
+
+  it('clears the conversation and starts fresh after an hour of inactivity', async () => {
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+    try {
+      render(<FloatingHub />);
+      fireEvent.click(screen.getByLabelText('Open quick actions'));
+      fireEvent.click(screen.getByText('Ask AI Assistant'));
+
+      const input = screen.getByPlaceholderText('Ask about skills, projects...');
+      fireEvent.change(input, { target: { value: 'Hello' } });
+      fireEvent.click(screen.getByLabelText('Send message'));
+
+      await waitFor(() => {
+        expect(screen.getByTestId('message-user')).toHaveTextContent('Hello');
+      });
+
+      act(() => {
+        vi.advanceTimersByTime(60 * 60 * 1000);
+      });
+
+      expect(screen.queryByTestId('message-user')).not.toBeInTheDocument();
+      expect(screen.getAllByTestId('message-assistant').some((el) => el.textContent?.includes("Keneth's AI assistant"))).toBe(true);
+    } finally {
+      vi.useRealTimers();
+    }
   });
 
   it('has accessible dialog attributes', () => {

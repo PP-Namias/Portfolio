@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
 import { ChatPanel } from '@/components/ui/ChatPanel';
@@ -11,7 +11,7 @@ vi.mock('@/lib/features', () => ({
   IS_STREAMING_SSR_ENABLED: false,
   IS_LANGGRAPH_ENABLED: true,
   IS_CHAT_STREAMING_ENABLED: true,
-  IS_CHAT_THREADING_ENABLED: true,
+  IS_CHAT_THREADING_ENABLED: false,
 }));
 
 vi.mock('framer-motion', () => {
@@ -63,48 +63,7 @@ vi.mock('@/hooks/use-chat-stream', () => ({
   }),
 }));
 
-function jsonResponse(data: unknown) {
-  return {
-    ok: true,
-    status: 200,
-    json: () => Promise.resolve(data),
-  } as unknown as Response;
-}
-
-const thread1 = {
-  id: 'thread-1',
-  title: 'Existing chat',
-  createdAt: '2026-01-01T00:00:00.000Z',
-  updatedAt: '2026-01-01T00:00:00.000Z',
-  messageCount: 2,
-};
-
-const mockFetch = vi.fn((url: string, init?: RequestInit) => {
-  if (init?.method === 'POST' && url === '/api/chat/threads') {
-    return Promise.resolve(jsonResponse({
-      thread: { ...thread1, id: 'thread-1', title: 'Tell me about your projects', messageCount: 0 },
-    }));
-  }
-  if (init?.method === 'DELETE' && url === '/api/chat/threads/thread-1') {
-    return Promise.resolve({ ok: true, status: 200, json: () => Promise.resolve({ success: true }) } as unknown as Response);
-  }
-  if (init?.method === 'PATCH' && url === '/api/chat/threads/thread-1') {
-    return Promise.resolve(jsonResponse({ thread: { ...thread1, title: 'Renamed' } }));
-  }
-  if (url === '/api/chat/threads') {
-    return Promise.resolve(jsonResponse({ threads: [thread1] }));
-  }
-  if (url === '/api/chat/threads/thread-1') {
-    return Promise.resolve(jsonResponse({
-      thread: thread1,
-      messages: [
-        { id: 1, threadId: 'thread-1', role: 'user', content: 'Saved question', toolCalls: null, createdAt: '2026-01-01T00:00:00.000Z' },
-        { id: 2, threadId: 'thread-1', role: 'assistant', content: 'Saved answer', toolCalls: null, createdAt: '2026-01-01T00:00:01.000Z' },
-      ],
-    }));
-  }
-  return Promise.resolve(jsonResponse({}));
-});
+const mockFetch = vi.fn(() => Promise.resolve({ ok: true, json: () => Promise.resolve({}) } as unknown as Response));
 
 function renderChatPanel() {
   function Harness() {
@@ -128,15 +87,18 @@ function renderChatPanel() {
   return render(<Harness />);
 }
 
-describe('ChatPanel streaming + threading', () => {
+describe('ChatPanel streaming with conversations hidden', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     globalThis.fetch = mockFetch as unknown as typeof fetch;
   });
 
-  it('creates a thread on first message and reuses it with history on follow-up', async () => {
+  it('reuses one session thread id with growing history and never calls the threads API', async () => {
     const user = userEvent.setup();
     renderChatPanel();
+
+    expect(screen.queryByLabelText('Open thread sidebar')).not.toBeInTheDocument();
+    expect(screen.queryByText('Conversations')).not.toBeInTheDocument();
 
     await user.type(screen.getByLabelText('Chat message'), 'Tell me about your projects');
     await user.click(screen.getByLabelText('Send message'));
@@ -152,71 +114,19 @@ describe('ChatPanel streaming + threading', () => {
       expect(mockStreamSend).toHaveBeenCalledTimes(2);
     });
 
-    expect(mockFetch).toHaveBeenCalledWith(
-      '/api/chat/threads',
-      expect.objectContaining({ method: 'POST' })
-    );
+    expect(mockFetch).not.toHaveBeenCalled();
 
     const firstCall = mockStreamSend.mock.calls[0];
     const secondCall = mockStreamSend.mock.calls[1];
 
     expect(firstCall[0]).toBe('Tell me about your projects');
-    expect(firstCall[1]).toBe('thread-1');
+    expect(firstCall[1]).toMatch(/^session_\d+$/);
+    expect(firstCall[2]).toEqual([]);
 
     expect(secondCall[0]).toBe('And your skills?');
-    expect(secondCall[1]).toBe('thread-1');
+    expect(secondCall[1]).toBe(firstCall[1]);
     expect(secondCall[2]).toEqual([
       { role: 'user', content: 'Tell me about your projects' },
     ]);
-  });
-
-  it('opens the thread sidebar and lists conversations', async () => {
-    renderChatPanel();
-
-    fireEvent.click(screen.getByLabelText('Open thread sidebar'));
-
-    await waitFor(() => {
-      expect(screen.getByText('Conversations')).toBeInTheDocument();
-    });
-    expect(mockFetch).toHaveBeenCalledWith('/api/chat/threads', expect.any(Object));
-    expect(screen.getByLabelText('Thread: Existing chat')).toBeInTheDocument();
-  });
-
-  it('loads a thread and its messages when selected', async () => {
-    renderChatPanel();
-
-    fireEvent.click(screen.getByLabelText('Open thread sidebar'));
-    await waitFor(() => {
-      expect(screen.getByLabelText('Thread: Existing chat')).toBeInTheDocument();
-    });
-
-    fireEvent.click(screen.getByLabelText('Thread: Existing chat'));
-
-    await waitFor(() => {
-      expect(screen.getByText('Saved question')).toBeInTheDocument();
-    });
-    expect(screen.getByText('Saved answer')).toBeInTheDocument();
-    expect(mockFetch).toHaveBeenCalledWith('/api/chat/threads/thread-1', expect.any(Object));
-  });
-
-  it('deletes a thread from the sidebar', async () => {
-    renderChatPanel();
-
-    fireEvent.click(screen.getByLabelText('Open thread sidebar'));
-    await waitFor(() => {
-      expect(screen.getByLabelText('Thread: Existing chat')).toBeInTheDocument();
-    });
-
-    const threadRow = screen.getByLabelText('Thread: Existing chat');
-    fireEvent.click(screen.getByLabelText('Delete thread'));
-    fireEvent.click(screen.getByLabelText('Confirm delete'));
-
-    await waitFor(() => {
-      expect(mockFetch).toHaveBeenCalledWith(
-        '/api/chat/threads/thread-1',
-        expect.objectContaining({ method: 'DELETE' })
-      );
-    });
-    expect(threadRow).not.toBeInTheDocument();
   });
 });

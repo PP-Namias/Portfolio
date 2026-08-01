@@ -38,6 +38,13 @@ export function FloatingHub() {
     } catch {}
   }, []);
 
+  // Start a fresh conversation after an hour of inactivity
+  useEffect(() => {
+    if (messages.length === 0) return;
+    const timeout = setTimeout(() => setMessages([]), 60 * 60 * 1000);
+    return () => clearTimeout(timeout);
+  }, [messages]);
+
   // Escape key handling: chat → menu → closed
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
