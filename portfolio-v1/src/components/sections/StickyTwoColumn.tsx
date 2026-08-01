@@ -12,6 +12,7 @@ interface StickyTwoColumnProps {
 
 const DESKTOP_BREAKPOINT = 1024;
 const EQUAL_HEIGHT_THRESHOLD = 24;
+const STICKY_TOP_OFFSET = 16;
 
 export function StickyTwoColumn({ left, right }: StickyTwoColumnProps) {
   const leftColumnRef = useRef<HTMLDivElement | null>(null);
@@ -35,7 +36,14 @@ export function StickyTwoColumn({ left, right }: StickyTwoColumnProps) {
         return;
       }
 
-      setStickySide(leftHeight < rightHeight ? 'left' : 'right');
+      const stickyLeft = leftHeight < rightHeight;
+      const shorterHeight = stickyLeft ? leftHeight : rightHeight;
+      if (shorterHeight > window.innerHeight - STICKY_TOP_OFFSET * 2) {
+        setStickySide(null);
+        return;
+      }
+
+      setStickySide(stickyLeft ? 'left' : 'right');
     };
 
     updateStickySide();

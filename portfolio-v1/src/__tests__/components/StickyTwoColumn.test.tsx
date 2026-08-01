@@ -56,4 +56,14 @@ describe('StickyTwoColumn', () => {
     expect(stickyParent('RightColumn')).toBeNull();
     if (originalWidth) Object.defineProperty(window, 'innerWidth', originalWidth);
   });
+
+  it('disables stickiness when the shorter column is taller than the viewport', () => {
+    mockHeights(800, 400);
+    const originalHeight = Object.getOwnPropertyDescriptor(window, 'innerHeight');
+    Object.defineProperty(window, 'innerHeight', { value: 300, configurable: true });
+    render(<StickyTwoColumn left={<div>LeftColumn</div>} right={<div>RightColumn</div>} />);
+    expect(stickyParent('LeftColumn')).toBeNull();
+    expect(stickyParent('RightColumn')).toBeNull();
+    if (originalHeight) Object.defineProperty(window, 'innerHeight', originalHeight);
+  });
 });
