@@ -172,3 +172,6 @@ Notes for keeping it smart:
   - Reacts to react-doctor build-pipeline-secret-boundary findings; verified
   - npm rebuild removal is safe (sharp/esbuild/fsevents ship prebuilt binaries)
   - Verified: doctor:check 100/100, 1050 tests, tsc, lint
+### 2026-08-03 - Update
+
+  - a4cd56d4 feat(studio): add Discord option to social platform dropdown
