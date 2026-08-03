@@ -1,0 +1,214 @@
+{
+  "project": "Namias Portfolio - Realtime Sanity CMS → Website Updates (no manual refresh)",
+  "codeName": "realtime-sanity",
+  "version": "0.1.0",
+  "owner": "Jhon Keneth Ryan Namias (PP Namias)",
+  "contact": "pp.namias@gmail.com",
+  "lastUpdated": "2026-08-03",
+  "branch": "dev",
+  "links": {
+    "marketing": "https://namias.tech",
+    "studio": "https://namias-cms.sanity.studio",
+    "repo": "https://github.com/PP-Namias/Portfolio",
+    "webhook": "https://namias.tech/api/sanity/webhook",
+    "liveProbe": "https://namias.tech/api/sanity/live"
+  },
+  "summary": "When the owner publishes or edits any document in Sanity CMS, the live portfolio website must update automatically in every open browser tab without a manual refresh. The feature builds on the existing signed webhook (tag-based L1/L2 cache invalidation + revalidatePath), adds a monotonic content-version heartbeat that the webhook bumps, exposes it via /api/sanity/live, and mounts a version-aware client polling bridge in the root layout that calls router.refresh() only when the version changes. A complete Playwright E2E layer is introduced from scratch (config, dependency, env-gated CMS fixture seam, smoke specs, and a deterministic realtime spec that mutates the fixture, fires the webhook, and asserts the page updates without reload), wired into CI.",
+  "narrative": "Today, publishing in Sanity invalidates caches and paths server-side (the next request is fresh), but an already-open browser tab shows stale content until the visitor manually reloads or navigates. The repo already contains most of the machinery: a signed webhook route with tag-based invalidation, a two-layer cache (in-memory + Redis) with 300s TTL / 60s stale, draft mode with VisualEditing for the studio preview, and a dormant client polling hook (useSanityLiveRefresh, 45s blind router.refresh()) that is mounted nowhere. The missing pieces are: (1) a lightweight content version signal so the client can detect 'something changed' instead of refreshing on a fixed schedule; (2) mounting a version-aware refresh bridge in the layout gated by a feature flag; (3) a deterministic E2E test bed (Playwright) that proves the whole loop — CMS mutation equivalent → webhook → version bump → client poll → router.refresh() → fresh SSR content — works automatically, plus smoke tests for the home page, blog, and connect sections. The design deliberately avoids the Sanity Live Content API / useLiveQuery retrofit (would require converting server-rendered context consumers to client queries and exposing a browser token); the version-heartbeat + router.refresh() approach keeps the existing streaming SSR architecture intact and works in every environment (Vercel + Cloudflare) without new Sanity project features.",
+  "principles": [
+    "Build on what exists - the signed webhook, tag invalidation, revalidatePath, and the dormant polling hook are the foundation; no new CMS, no schema changes, no new document types.",
+    "Refresh only when something changed - the client polls a version number, never refreshes on a timer alone; zero unnecessary RSC re-renders.",
+    "Feature-flagged - the bridge and the E2E seam are gated (IS_REALTIME_SANITY_ENABLED, env-only E2E_CMS_FILE) so production behavior is opt-in and safe.",
+    "No secrets in the browser - the client only reads a public version integer; the webhook secret stays server-side.",
+    "Resilient by default - Redis down, version read failures, or webhook body parse failures degrade to current behavior (TTL-based freshness), never crash.",
+    "Deterministic tests - E2E uses an env-gated local CMS fixture (no real Sanity dependency, no flakiness), while unit tests mock querySanity per the established pattern.",
+    "One story slice per commit - every story in this PRD lands as its own commit with quality gates green (vitest, tsc, lint, doctor:check 100)."
+  ],
+  "personas": [
+    {
+      "id": "P-OWNER",
+      "label": "PP Namias (owner)",
+      "goals": ["Publish/edit content in Sanity and see it live on namias.tech immediately", "Not have to tell visitors to hard-refresh after a content change", "Trust that the pipeline is covered by automated tests"],
+      "painPointsToday": ["Open tabs keep showing old content for minutes", "No way to verify the realtime loop works except manually poking the webhook", "Playwright exists only as a stale CI file and a planning PRD - no runnable E2E layer"]
+    },
+    {
+      "id": "P-VISITOR",
+      "label": "Portfolio visitor",
+      "goals": ["Always see the latest content without reloading", "Never see half-updated sections (stale image with new text)"],
+      "painPointsToday": ["May read an outdated project list or blog post after a refresh-less session"]
+    },
+    {
+      "id": "P-AGENT",
+      "label": "OpenCode / future coding agent",
+      "goals": ["Find the realtime pipeline by file path (content-version store, live route, refresh hook)", "Understand the E2E fixture seam and how to run Playwright locally and in CI", "Know which tests prove the realtime loop"],
+      "painPointsToday": ["No documentation of the realtime architecture", "No runnable Playwright entry point to extend"]
+    }
+  ],
+  "successMetrics": {
+    "primary": [
+      "Publishing/editing a Sanity document updates open browser tabs within the poll interval without manual refresh (proven by the realtime E2E spec)",
+      "/api/sanity/live returns a monotonic version that increases after every webhook event",
+      "The client bridge calls router.refresh() only when the version changes (unit-tested with fake timers)",
+      "Playwright runs green in CI: smoke specs (home, blog, connect) + realtime spec + webhook-auth spec",
+      "vitest stays green (1052 existing + new unit tests), tsc --noEmit, npm run lint, doctor:check 100/100"
+    ],
+    "secondary": [
+      "The bridge respects the configurable poll interval (NEXT_PUBLIC_SANITY_LIVE_POLL_MS) for fast E2E runs",
+      "Redis outage does not break version tracking (in-memory fallback, unit-tested)",
+      "Draft mode keeps working untouched (VisualEditing path unchanged)",
+      "No new console errors or hydration warnings introduced",
+      "The orphaned .github/workflows/playwright.yml is replaced with a runnable workflow scoped to portfolio-v1 (npm, chromium)"
+    ]
+  },
+  "nonGoals": [
+    "Migrate to the Sanity Live Content API / useLiveQuery (out of scope by design; requires client-side queries and browser token)",
+    "Change the CMS schema, add new document types, or modify studio content",
+    "Replace the existing webhook signature scheme or draft-mode flow",
+    "Add SSE/WebSocket server push (polling + version heartbeat is sufficient and portable)",
+    "Write E2E tests that depend on the live Sanity production dataset (deterministic fixture seam instead)",
+    "Overhaul the L1/L2 cache TTLs (existing invalidation already handles freshness after webhook)",
+    "Cover portfolio-v2 or ai-service with Playwright in this PRD"
+  ],
+  "designDecisions": [
+    {
+      "id": "DD-1",
+      "topic": "Real-time mechanism",
+      "choice": "Version heartbeat + client polling + router.refresh() instead of the Sanity Live Content API.",
+      "rationale": "The site renders CMS content server-side via streaming SSR context; retrofitting every consumer to useLiveQuery would be a rewrite and would expose a browser token. A version integer the webhook bumps and a client that refreshes only on change achieves 'no manual refresh' with minimal surface, works on Vercel and Cloudflare, and reuses the dormant polling hook."
+    },
+    {
+      "id": "DD-2",
+      "topic": "Version store",
+      "choice": "Redis-backed monotonic counter (INCR) with an in-memory fallback, exposed by src/lib/content-version.ts.",
+      "rationale": "Matches the existing redis-cache resilience pattern (catch → fallback). The version is public and harmless; it only answers 'did anything change since I last looked?'."
+    },
+    {
+      "id": "DD-3",
+      "topic": "Version bump source",
+      "choice": "The existing /api/sanity/webhook route bumps the version after successful validation, alongside tag invalidation and revalidatePath.",
+      "rationale": "One authoritative mutation path. The dashboard-configured webhook already delivers every publish/edit/delete; bumping there keeps a single source of truth."
+    },
+    {
+      "id": "DD-4",
+      "topic": "Client poll behavior",
+      "choice": "Poll /api/sanity/live every NEXT_PUBLIC_SANITY_LIVE_POLL_MS (default 15s, E2E uses ~300ms); refresh only when the version differs; also refresh on focus/visibilitychange; skip draft mode.",
+      "rationale": "Version-diff refresh eliminates blind timer refreshes. Focus/visibility refresh covers tab-switch staleness for free. Draft mode already renders fresh content with VisualEditing, so polling is skipped there."
+    },
+    {
+      "id": "DD-5",
+      "topic": "E2E CMS seam",
+      "choice": "querySanity checks E2E_CMS_FILE (server env): when set, reads a local JSON fixture fresh per call (matching the GROQ _type via a small registry), skipping Sanity and all caching.",
+      "rationale": "Gives Playwright a deterministic content source it can mutate mid-test. Only active when the env var is set (never in prod); unit-tested; keeps every other test pattern intact."
+    },
+    {
+      "id": "DD-6",
+      "topic": "Playwright scope",
+      "choice": "@playwright/test in portfolio-v1 only; chromium project; webServer boots next dev on port 3100 with E2E env; service workers blocked in the browser context.",
+      "rationale": "portfolio-v1 is the production site. Chromium only keeps CI fast; the workflow replaces the orphaned pnpm-root workflow with an npm + chromium version. Blocking SWs avoids PWA cache interference with refresh assertions."
+    },
+    {
+      "id": "DD-7",
+      "topic": "Realtime E2E determinism",
+      "choice": "The realtime spec rewrites the fixture JSON (v1 → v2), POSTs a signed webhook payload, then asserts the page text updates without any reload.",
+      "rationale": "Exercises the complete loop: mutation → webhook → version bump → poll → router.refresh() → fresh SSR. No real Sanity credentials or network flakiness."
+    },
+    {
+      "id": "DD-8",
+      "topic": "Feature flag",
+      "choice": "IS_REALTIME_SANITY_ENABLED in src/lib/features.ts gates the mounted bridge (default true after Phase 2, same pattern as IS_STREAMING_SSR_ENABLED).",
+      "rationale": "Established flag pattern; allows the owner to disable the bridge without code removal."
+    }
+  ],
+  "epics": [
+    {
+      "id": "EPIC-0",
+      "title": "Audit & PRD",
+      "status": "done",
+      "summary": "Audited the existing Sanity pipeline (webhook, L1/L2 cache, draft mode, dormant polling hook) and the testing infrastructure (Vitest mature, Playwright absent), then authored this PRD.",
+      "value": "high",
+      "complexity": "low",
+      "stories": [
+        { "id": "S-0.1", "title": "Audit Sanity integration and revalidation", "done": true, "details": "Mapped cms-content.server.ts (querySanity, CONTENT_TAGS, L1/L2 getOrFetch), the webhook route, draft mode, section loaders, layout streaming, and all API routes.", "files": [] },
+        { "id": "S-0.2", "title": "Audit testing infrastructure", "done": true, "details": "Confirmed 116 Vitest files/1052 tests, no Playwright dependency/config/tests, orphaned playwright.yml, PRD schema from prd.blog.json.", "files": [] },
+        { "id": "S-0.3", "title": "Write PRD", "done": true, "details": "Author prd.realtime-sanity.json with epics, stories, metrics, design decisions, and phase plan.", "files": ["prd.realtime-sanity.json"] }
+      ]
+    },
+    {
+      "id": "EPIC-1",
+      "title": "Server: content version heartbeat",
+      "status": "planned",
+      "summary": "Add a monotonic content version (Redis + in-memory fallback), bump it in the webhook, expose it through /api/sanity/live, and extend webhook unit coverage.",
+      "value": "high",
+      "complexity": "medium",
+      "stories": [
+        { "id": "S-1.1", "title": "Add content-version store", "done": false, "details": "Create src/lib/content-version.ts: getContentVersion() and bumpContentVersion() backed by redis INCR (new redis-cache helpers) with an in-memory counter fallback; export the key and defaults. Unit-test Redis-down and normal paths.", "files": ["src/lib/content-version.ts", "src/lib/redis-cache.ts"] },
+        { "id": "S-1.2", "title": "Bump version in webhook", "done": false, "details": "In POST /api/sanity/webhook, after secret validation and before responding, call bumpContentVersion() (non-fatal on failure). Extend sanity-webhook-route tests: body _type → correct invalidateByTag calls, version bump, RAG branch mocked, body-less payload still revalidates.", "files": ["src/app/api/sanity/webhook/route.ts", "src/__tests__/app/sanity-webhook-route.test.ts"] },
+        { "id": "S-1.3", "title": "Expose version on /api/sanity/live", "done": false, "details": "Extend GET /api/sanity/live to return { ok, version, draftMode, pollIntervalMs, revalidatePaths } (keep ?enable=1 compat). Add sanity-live-route tests: version present, CORS, OPTIONS, draft flag.", "files": ["src/app/api/sanity/live/route.ts", "src/__tests__/app/sanity-live-route.test.ts"] }
+      ]
+    },
+    {
+      "id": "EPIC-2",
+      "title": "Client: version-aware auto-refresh bridge",
+      "status": "planned",
+      "summary": "Upgrade the dormant polling hook to version-aware polling and mount it in the root layout behind a feature flag.",
+      "value": "high",
+      "complexity": "medium",
+      "stories": [
+        { "id": "S-2.1", "title": "Upgrade useSanityLiveRefresh to version-aware polling", "done": false, "details": "Poll GET /api/sanity/live every NEXT_PUBLIC_SANITY_LIVE_POLL_MS (default 15_000); call router.refresh() only when the returned version differs from the last seen one; skip when draft mode is on; keep focus/visibility triggers and MIN_REFRESH_GAP; extend paths to /projects and /projects/[slug]. Rewrite the hook test with fake timers: no refresh when version unchanged, refresh on change, interval from env.", "files": ["src/hooks/useSanityLiveRefresh.tsx", "src/__tests__/hooks/useSanityLiveRefresh.test.tsx"] },
+        { "id": "S-2.2", "title": "Mount bridge and add feature flag", "done": false, "details": "Add IS_REALTIME_SANITY_ENABLED to src/lib/features.ts (default true) and mount <SanityLiveRefreshBridge /> in the root layout body when the flag is on and not in draft mode. Update layout/app tests to cover the mounted bridge and the flag-off path.", "files": ["src/lib/features.ts", "src/app/layout.tsx", "src/__tests__/app/app-layout-page.test.tsx"] }
+      ]
+    },
+    {
+      "id": "EPIC-3",
+      "title": "E2E infrastructure (Playwright)",
+      "status": "planned",
+      "summary": "Introduce Playwright from scratch: dependency, config, scripts, fixtures, and an env-gated CMS fixture seam.",
+      "value": "high",
+      "complexity": "medium",
+      "stories": [
+        { "id": "S-3.1", "title": "Add Playwright dependency and config", "done": false, "details": "npm i -D @playwright/test in portfolio-v1; create playwright.config.ts (testDir tests/e2e, chromium project, webServer next dev on port 3100 with E2E env, serviceWorkers block, trace on retry); add scripts test:e2e / test:e2e:ui / test:e2e:report; add tests/e2e/.gitkeep + README note.", "files": ["package.json", "playwright.config.ts", "tests/e2e/"] },
+        { "id": "S-3.2", "title": "Add env-gated CMS fixture seam", "done": false, "details": "In querySanity (cms-content.server.ts): when process.env.E2E_CMS_FILE is set, read the JSON fixture fresh on every call, resolve the _type from the GROQ query via a small regex registry, and return fixture data with no caching. Unit-test: seam active with env, inactive without, missing type falls through to the real path.", "files": ["src/lib/cms-content.server.ts", "src/__tests__/lib/cms-content.server.test.ts"] },
+        { "id": "S-3.3", "title": "Write E2E smoke specs", "done": false, "details": "Specs: home.spec.ts (hero name, sections render, no console errors), blog.spec.ts (list + post detail from fixture), connect.spec.ts (social chips incl. Discord label).", "files": ["tests/e2e/home.spec.ts", "tests/e2e/blog.spec.ts", "tests/e2e/connect.spec.ts"] }
+      ]
+    },
+    {
+      "id": "EPIC-4",
+      "title": "E2E realtime spec + CI",
+      "status": "planned",
+      "summary": "Prove the full realtime loop end-to-end and wire Playwright into CI.",
+      "value": "high",
+      "complexity": "high",
+      "stories": [
+        { "id": "S-4.1", "title": "Write the realtime E2E spec", "done": false, "details": "realtime.spec.ts: load home with fixture v1 (assert name A), rewrite fixture file to v2 (name B), POST /api/sanity/webhook with valid secret and { _type: 'profile' }, then expect.poll that the page shows name B without any reload (poll interval 300ms via env).", "files": ["tests/e2e/realtime.spec.ts", "tests/e2e/fixtures/cms-v1.json", "tests/e2e/fixtures/cms-v2.json"] },
+        { "id": "S-4.2", "title": "Webhook-auth E2E spec", "done": false, "details": "auth.spec.ts: POST to /api/sanity/webhook without/with wrong secret → 401 and no version bump; with correct secret → 200 and version increments on the next /api/sanity/live call.", "files": ["tests/e2e/auth.spec.ts"] },
+        { "id": "S-4.3", "title": "Fix the Playwright CI workflow", "done": false, "details": "Rewrite .github/workflows/playwright.yml: scope to portfolio-v1, setup-node 22 + npm ci, npx playwright install --with-deps chromium, run test:e2e, upload report/screenshots on failure. Keep matrix at chromium only.", "files": [".github/workflows/playwright.yml"] }
+      ]
+    },
+    {
+      "id": "EPIC-5",
+      "title": "Docs, PRD update, and wrap-up",
+      "status": "planned",
+      "summary": "Document the architecture, update the PRD status, and run the full quality gate.",
+      "value": "medium",
+      "complexity": "low",
+      "stories": [
+        { "id": "S-5.1", "title": "Write realtime architecture doc", "done": false, "details": "Add portfolio-v1/docs/REALTIME_SANITY.md: flow diagram, env vars (SANITY_REVALIDATE_SECRET, NEXT_PUBLIC_SANITY_LIVE_POLL_MS, E2E_CMS_FILE), how to run unit + E2E tests, dashboard webhook setup recap.", "files": ["docs/REALTIME_SANITY.md"] },
+        { "id": "S-5.2", "title": "Update PRD status and PR.md", "done": false, "details": "Mark epics/stories done as implemented; run scripts/append-pr-update.ps1 and commit PR.md per the AGENTS.md workflow.", "files": ["docs/prd/prd.realtime-sanity.json", "PR.md"] }
+      ]
+    }
+  ],
+  "phases": [
+    { "id": "PHASE-0", "label": "Audit & PRD", "epics": ["EPIC-0"], "status": "done" },
+    { "id": "PHASE-1", "label": "Server version heartbeat", "epics": ["EPIC-1"], "status": "planned" },
+    { "id": "PHASE-2", "label": "Client auto-refresh bridge", "epics": ["EPIC-2"], "status": "planned" },
+    { "id": "PHASE-3", "label": "E2E infrastructure", "epics": ["EPIC-3"], "status": "planned" },
+    { "id": "PHASE-4", "label": "E2E realtime + CI", "epics": ["EPIC-4"], "status": "planned" },
+    { "id": "PHASE-5", "label": "Docs & wrap-up", "epics": ["EPIC-5"], "status": "planned" }
+  ],
+  "openQuestions": [
+    "Should the dashboard webhook stay the only bump source, or should the studio publish action (publishAndRefreshAction) also be fixed to send the secret header and _type? (Current studio-triggered call is broken — 401 + no _type; dashboard webhook is the working path.)",
+    "Poll interval default of 15s: acceptable freshness, or should the owner prefer 5s in exchange for more requests?",
+    "Should the realtime bridge also cover /projects and /projects/[slug] (currently planned) or only / and /blog?",
+    "Do we want a manual 'refresh now' affordance (e.g. a small toast 'Content updated — tap to refresh') in a follow-up PRD?"
+  ]
+}
