@@ -185,3 +185,13 @@ Notes for keeping it smart:
   - availabilityLabel stays in CMS/state plumbing for future use
   - Verified live: badge gone from SSR; tsc, lint, 33 hero-adjacent
   - tests pass
+### 2026-08-04 - Update
+
+  - bd9c9429 docs(realtime): add architecture doc and mark PRD implemented
+  - S-5.1: portfolio-v1/docs/REALTIME_SANITY.md - flow diagram, server/client
+  - component tables, env vars (SANITY_REVALIDATE_SECRET,
+  - NEXT_PUBLIC_SANITY_LIVE_POLL_MS, E2E_CMS_FILE), unit + E2E test
+  - commands, dashboard webhook setup recap, known RAG 422 noise note
+  - S-5.2: prd.realtime-sanity.json bumped to 1.0.0, all epics/stories/
+  - phases marked done, lastUpdated 2026-08-04 (minimal token diff)
+  - Verified: JSON parses, no code touched
