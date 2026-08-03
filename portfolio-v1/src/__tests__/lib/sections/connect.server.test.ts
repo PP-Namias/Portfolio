@@ -54,4 +54,32 @@ describe('fetchConnectData', () => {
     const result = await fetchConnectData();
     expect(result.socialLinks).toHaveLength(1);
   });
+
+  it('uses the icon as the identity when platform is the generic message placeholder', async () => {
+    (querySanity as ReturnType<typeof vi.fn>).mockResolvedValue({
+      socialLinks: [
+        {
+          _key: 'discord',
+          platform: 'message',
+          icon: 'discord',
+          url: 'https://discord.com/users/683914336376455200',
+        },
+      ],
+    });
+    const result = await fetchConnectData();
+    expect(result.socialLinks).toHaveLength(1);
+    expect(result.socialLinks[0].name).toBe('discord');
+    expect(result.socialLinks[0].label).toBe('Discord');
+    expect(result.socialLinks[0].icon).toBe('discord');
+  });
+
+  it('keeps the generic message label when no specific icon is set', async () => {
+    (querySanity as ReturnType<typeof vi.fn>).mockResolvedValue({
+      socialLinks: [{ platform: 'message', url: 'https://m.me/example' }],
+    });
+    const result = await fetchConnectData();
+    expect(result.socialLinks).toHaveLength(1);
+    expect(result.socialLinks[0].name).toBe('message');
+    expect(result.socialLinks[0].label).toBe('Message');
+  });
 });

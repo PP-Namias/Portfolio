@@ -25,7 +25,10 @@ function mapSocialLink(link: {
   url?: string;
   placements?: string[];
 }): SocialLink | null {
-  const normalizedName = normalizeSocialName(String(link.platform || link.icon || ''));
+  const platform = String(link.platform || '').toLowerCase();
+  const icon = String(link.icon || '').toLowerCase();
+  const source = platform === 'message' && icon ? icon : platform || icon;
+  const normalizedName = normalizeSocialName(source);
   const url = String(link.url || '').trim();
 
   if (!normalizedName || !url) {
@@ -34,8 +37,8 @@ function mapSocialLink(link: {
 
   return {
     name: normalizedName,
-    icon: normalizeSocialName(String(link.icon || link.platform || 'message')),
-    label: titleCase(link.platform || link.icon || normalizedName),
+    icon: normalizeSocialName(icon || platform || 'message'),
+    label: titleCase(source),
     link: url,
     featured: Array.isArray(link.placements) ? link.placements.includes('hero') : false,
   };
