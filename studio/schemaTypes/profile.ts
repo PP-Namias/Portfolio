@@ -6,6 +6,7 @@ const socialIconOptions = [
   {title: 'Facebook', value: 'facebook'},
   {title: 'Instagram', value: 'instagram'},
   {title: 'Twitter / X', value: 'twitter'},
+  {title: 'Discord', value: 'discord'},
   {title: 'WhatsApp', value: 'whatsapp'},
   {title: 'Email', value: 'email'},
   {title: 'YouTube', value: 'youtube'},
