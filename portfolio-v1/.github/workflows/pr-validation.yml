@@ -37,7 +37,7 @@ jobs:
           cache: 'npm'
 
       - name: Install Dependencies
-        run: npm ci
+        run: npm ci --ignore-scripts
 
       - name: Lint Check
         run: npm run lint
@@ -69,7 +69,7 @@ jobs:
           cache: 'npm'
 
       - name: Install Dependencies
-        run: npm ci
+        run: npm ci --ignore-scripts
 
       - name: Security Audit
         run: npm audit --audit-level moderate || echo "Audit completed with warnings"

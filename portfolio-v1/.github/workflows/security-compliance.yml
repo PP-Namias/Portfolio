@@ -74,7 +74,7 @@ jobs:
 
       - name: Install and Build
         run: |
-          npm ci
+          npm ci --ignore-scripts
           npm run build
         env:
           NEXT_PUBLIC_SANITY_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_SANITY_PROJECT_ID || 'nl0qw78w' }}

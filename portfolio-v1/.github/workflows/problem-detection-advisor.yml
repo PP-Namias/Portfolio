@@ -77,23 +77,23 @@ jobs:
               const tips = [];
 
               if (lower.includes('lint')) {
-                addUnique(tips, 'Run `npm run lint` locally and fix ESLint violations before pushing.');
+                addUnique(tips, 'Run the lint command locally and fix ESLint violations before pushing.');
               }
 
               if (lower.includes('type')) {
-                addUnique(tips, 'Run `npx tsc --noEmit` and resolve strict TypeScript errors.');
+                addUnique(tips, 'Run the strict TypeScript check and resolve any strict-mode errors.');
               }
 
               if (lower.includes('build')) {
-                addUnique(tips, 'Run `npm run build` locally and fix compile/runtime import issues.');
+                addUnique(tips, 'Run the production build locally and fix compile/runtime import issues.');
               }
 
               if (lower.includes('test')) {
-                addUnique(tips, 'Run `npm run test` and fix failing assertions or flaky tests.');
+                addUnique(tips, 'Run the test suite and fix failing assertions or flaky tests.');
               }
 
               if (lower.includes('security') || lower.includes('audit') || lower.includes('codeql')) {
-                addUnique(tips, 'Run `npm audit` and apply safe fixes (`npm audit fix`) for non-breaking updates.');
+                addUnique(tips, 'Run the dependency audit and apply safe fixes (`audit fix`) for non-breaking updates.');
                 addUnique(tips, 'Review advisories and patch vulnerable dependencies while keeping framework compatibility.');
               }
 
@@ -107,7 +107,7 @@ jobs:
               }
 
               if (tips.length === 0) {
-                tips.push('Review workflow logs and reproduce locally with `npm ci`, `npm run lint`, `npm run build`, and `npm run test`.');
+                tips.push('Review workflow logs and reproduce locally with a fresh install, lint, build, and test run.');
               }
 
               return tips;
