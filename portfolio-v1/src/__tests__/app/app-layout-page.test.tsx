@@ -2,6 +2,51 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import React from 'react';
 
+const featureState = vi.hoisted(() => ({ realtime: true }));
+
+vi.mock('@/lib/features', () => ({
+  IS_BLOG_VISIBLE: true,
+  IS_MAGIC_CURSOR_VISIBLE: false,
+  IS_PROJECTS_REVAMP_ENABLED: true,
+  IS_STREAMING_SSR_ENABLED: true,
+  IS_PWA_ENABLED: false,
+  IS_OFFLINE_BANNER_VISIBLE: true,
+  IS_LANGGRAPH_ENABLED: true,
+  IS_CHAT_STREAMING_ENABLED: true,
+  IS_CHAT_THREADING_ENABLED: false,
+  get IS_REALTIME_SANITY_ENABLED() {
+    return featureState.realtime;
+  },
+}));
+
+vi.mock('next/headers', () => ({
+  draftMode: () => Promise.resolve({ isEnabled: false }),
+}));
+
+vi.mock('@/lib/sections/seo.server', () => ({
+  fetchSeoData: async () => ({
+    siteTitle: 'Test Title',
+    siteDescription: 'Test Description',
+    canonicalUrl: 'https://namias.tech',
+    ogImageUrl: '',
+    twitterImageUrl: '',
+    noindex: false,
+    nofollow: false,
+  }),
+}));
+
+vi.mock('@/lib/sections/hero.server', () => ({
+  fetchHeroData: async () => ({
+    profile: { name: 'Test Name', title: 'Test Role', email: 'test@example.com', location: 'Test City' },
+    hero: { roles: ['Test Role'], availabilityLabel: '', profileImageUrl: '' },
+    socialLinks: [],
+  }),
+}));
+
+vi.mock('@/hooks/useSanityLiveRefresh', () => ({
+  SanityLiveRefreshBridge: () => <div data-testid="sanity-live-bridge" />,
+}));
+
 vi.mock('framer-motion', () => {
   const R = require('react');
   const motion = new Proxy(
@@ -183,5 +228,49 @@ describe('app layout and page coverage', () => {
     expect(screen.getByText(/404/)).toBeTruthy();
     expect(screen.getByText(/Page not found/)).toBeTruthy();
     expect(screen.getByText(/Back to home/).closest('a')).toHaveAttribute('href', '/');
+  });
+
+  it('mounts the SanityLiveRefreshBridge in the streaming branch when realtime is enabled', async () => {
+    const savedVitest = process.env.VITEST;
+    const savedNodeEnv = process.env.NODE_ENV;
+    process.env.VITEST = 'false';
+    process.env.NODE_ENV = 'production';
+    featureState.realtime = true;
+    try {
+      const tree = await RootLayout({ children: <div>StreamingChild</div> });
+
+      expect((tree as React.ReactElement).type).toBe('html');
+
+      const domWarningSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+      render(tree as React.ReactElement);
+      domWarningSpy.mockRestore();
+
+      expect(screen.getByText('StreamingChild')).toBeInTheDocument();
+      expect(screen.getByTestId('sanity-live-bridge')).toBeInTheDocument();
+    } finally {
+      process.env.VITEST = savedVitest;
+      process.env.NODE_ENV = savedNodeEnv;
+    }
+  });
+
+  it('omits the SanityLiveRefreshBridge when the realtime flag is off', async () => {
+    const savedVitest = process.env.VITEST;
+    const savedNodeEnv = process.env.NODE_ENV;
+    process.env.VITEST = 'false';
+    process.env.NODE_ENV = 'production';
+    featureState.realtime = false;
+    try {
+      const tree = await RootLayout({ children: <div>StreamingChild</div> });
+
+      const domWarningSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+      render(tree as React.ReactElement);
+      domWarningSpy.mockRestore();
+
+      expect(screen.getByText('StreamingChild')).toBeInTheDocument();
+      expect(screen.queryByTestId('sanity-live-bridge')).not.toBeInTheDocument();
+    } finally {
+      process.env.VITEST = savedVitest;
+      process.env.NODE_ENV = savedNodeEnv;
+    }
   });
 });

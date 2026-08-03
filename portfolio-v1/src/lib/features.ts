@@ -12,6 +12,10 @@ export const IS_STREAMING_SSR_ENABLED = true;
 export const IS_PWA_ENABLED = true;
 export const IS_OFFLINE_BANNER_VISIBLE = true;
 
+// Realtime Sanity: version-aware client polling bridge that refreshes open
+// tabs when the content version changes (see /api/sanity/live + webhook bump).
+export const IS_REALTIME_SANITY_ENABLED = true;
+
 // Chat feature flags — gate new LangGraph, streaming, and threading features
 // When disabled, the existing linear chat flow and UI are used (backward compatible).
 export const IS_LANGGRAPH_ENABLED = true;

@@ -11,9 +11,10 @@ import { MagicCursor } from '@/components/ui/MagicCursor';
 import { OfflineBanner } from '@/components/ui/OfflineBanner';
 import { ServiceWorkerManager } from '@/components/ui/ServiceWorkerManager';
 import { PathMemory } from '@/components/ui/PathMemory';
+import { SanityLiveRefreshBridge } from '@/hooks/useSanityLiveRefresh';
 import { JsonLd } from '@/components/seo/JsonLd';
 import { getCmsContent } from '@/lib/cms-content.server';
-import { IS_MAGIC_CURSOR_VISIBLE, IS_PWA_ENABLED, IS_STREAMING_SSR_ENABLED } from '@/lib/features';
+import { IS_MAGIC_CURSOR_VISIBLE, IS_PWA_ENABLED, IS_REALTIME_SANITY_ENABLED, IS_STREAMING_SSR_ENABLED } from '@/lib/features';
 import { SITE_URL, SITE_NAME, SITE_DESCRIPTION } from '@/lib/site-config';
 import { fetchSeoData } from '@/lib/sections/seo.server';
 import { fetchHeroData } from '@/lib/sections/hero.server';
@@ -215,6 +216,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
             <ScrollToTop />
             <OfflineBanner />
             {IS_PWA_ENABLED ? <ServiceWorkerManager /> : null}
+            {IS_REALTIME_SANITY_ENABLED && !isDraftMode ? <SanityLiveRefreshBridge /> : null}
             {isDraftMode ? <VisualEditing /> : null}
           </Providers>
         </body>
@@ -253,6 +255,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
           <ScrollToTop />
           <OfflineBanner />
           {IS_PWA_ENABLED ? <ServiceWorkerManager /> : null}
+          {IS_REALTIME_SANITY_ENABLED && !isDraftMode ? <SanityLiveRefreshBridge /> : null}
           {isDraftMode ? <VisualEditing /> : null}
         </Providers>
       </body>
