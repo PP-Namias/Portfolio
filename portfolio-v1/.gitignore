@@ -145,6 +145,12 @@ vite.config.ts.timestamp-*
 # The canonical historical baseline lives in docs/react-doctor/baseline.{json,txt}
 .react-doctor/
 
+# Playwright E2E artifacts
+test-results/
+playwright-report/
+blob-report/
+playwright/.cache/
+
 # PentestAgent cloned repo (not committed — use setup script)
 /pentestagent/
 .pentestagent/
