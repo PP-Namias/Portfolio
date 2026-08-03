@@ -1,7 +1,8 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import Image from '@/components/ui/OptimizedImage';
 import { motion } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
@@ -11,12 +12,35 @@ import { ArrowLeft, Clock, Calendar, ChevronLeft, ChevronRight } from 'lucide-re
 import { Card } from '@/components/ui/Card';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import { ReadingProgress } from '@/components/ui/ReadingProgress';
+import { getPrevPath } from '@/lib/path-memory';
 import { formatDateUtc } from '@/lib/date';
 import { parseImageDimensions } from '@/lib/media';
 import type { BlogPost } from '@/types';
 
 import CollageGallery from '@/components/blog/CollageGallery';
 import type { GalleryImage } from '@/components/blog/CollageGallery';
+
+function BackButton({ fallbackLabel }: { fallbackLabel?: string }) {
+  const pathname = usePathname();
+  const [originHref, setOriginHref] = useState<string | null>(null);
+
+  useEffect(() => {
+    const prev = getPrevPath();
+    if (prev && prev !== pathname) {
+      setOriginHref(prev);
+    }
+  }, [pathname]);
+
+  return (
+    <Link
+      href={originHref ?? '/blog'}
+      className="inline-flex items-center gap-2 text-sm text-text-muted-light dark:text-text-muted-dark hover:text-accent-pink dark:hover:text-accent-pink transition-colors duration-200"
+    >
+      <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+      {originHref ? 'Back' : fallbackLabel || 'Back to Blog'}
+    </Link>
+  );
+}
 
 function parseImageAlt(alt: string): { altText: string; caption: string; credit: string; source: string; license: string } {
   const parts = alt.split('|');
@@ -204,13 +228,7 @@ export default function BlogPostContent({ post, allPosts, slug, backLabel }: Rea
     return (
       <main className="mx-auto max-w-container px-4 sm:px-6 pt-8 lg:pt-12 pb-16">
         <div className="flex items-center justify-between mb-8">
-          <Link
-            href="/blog"
-            className="inline-flex items-center gap-2 text-sm text-text-muted-light dark:text-text-muted-dark hover:text-accent-pink dark:hover:text-accent-pink transition-colors duration-200"
-          >
-            <ArrowLeft className="h-4 w-4" aria-hidden="true" />
-            {backLabel || 'Back to Blog'}
-          </Link>
+          <BackButton fallbackLabel={backLabel} />
           <ThemeToggle />
         </div>
         <Card>
@@ -230,6 +248,9 @@ export default function BlogPostContent({ post, allPosts, slug, backLabel }: Rea
   const prevPost = postIndex > 0 ? all[postIndex - 1] : null;
   const nextPost = postIndex < all.length - 1 ? all[postIndex + 1] : null;
   const coverDims = parseImageDimensions(postObj.coverImage);
+  const coverRatio =
+    coverDims && coverDims.width > 0 && coverDims.height > 0 ? coverDims.width / coverDims.height : null;
+  const isLandscapeCover = coverRatio === null || coverRatio >= 1.15;
 
   return (
     <main className="mx-auto max-w-container px-4 sm:px-6 pt-8 lg:pt-12 pb-16">
@@ -237,13 +258,7 @@ export default function BlogPostContent({ post, allPosts, slug, backLabel }: Rea
 
       {/* Header */}
       <div className="flex items-center justify-between mb-8">
-        <Link
-          href="/blog"
-          className="inline-flex items-center gap-2 text-sm text-text-muted-light dark:text-text-muted-dark hover:text-accent-pink dark:hover:text-accent-pink transition-colors duration-200"
-          >
-            <ArrowLeft className="h-4 w-4" aria-hidden="true" />
-            {backLabel || 'Back to Blog'}
-          </Link>
+        <BackButton fallbackLabel={backLabel} />
         <ThemeToggle />
       </div>
 
@@ -252,26 +267,45 @@ export default function BlogPostContent({ post, allPosts, slug, backLabel }: Rea
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <Card>
-          {/* Cover Image */}
-          <div className="-mx-5 -mt-5 mb-6 rounded-t-xl overflow-hidden">
-            {postObj.coverImage ? (
-              <Image
-                src={postObj.coverImage}
-                alt={postObj.title}
-                width={coverDims?.width ?? 800}
-                height={coverDims?.height ?? 320}
-                sizes="(max-width: 768px) 100vw, 800px"
-                unoptimized
-                className="w-full h-auto"
-                priority
-              />
-            ) : (
-              <div className="flex h-48 sm:h-64 items-center justify-center bg-surface-light dark:bg-surface-dark text-xs text-text-muted-light dark:text-text-muted-dark">
-                Cover image unavailable
+        {/* Smart cover: landscape images become a full-bleed hero; portrait images keep their natural shape */}
+        {postObj.coverImage ? (
+          isLandscapeCover ? (
+            <div className="relative -mx-4 sm:-mx-6 lg:-mx-[max(0px,calc((100vw-860px)/2+1.5rem))] mb-8 overflow-hidden rounded-xl border border-border-light dark:border-border-dark">
+              <div className="relative w-full aspect-[16/10] sm:aspect-[21/10] lg:aspect-[16/7]">
+                <Image
+                  src={postObj.coverImage}
+                  alt={postObj.title}
+                  fill
+                  sizes="100vw"
+                  unoptimized
+                  priority
+                  className="object-cover object-center"
+                />
               </div>
-            )}
+            </div>
+          ) : (
+            <div className="mb-8 flex justify-center">
+              <div className="w-full max-w-lg">
+                <Image
+                  src={postObj.coverImage}
+                  alt={postObj.title}
+                  width={coverDims?.width ?? 800}
+                  height={coverDims?.height ?? 320}
+                  sizes="(max-width: 768px) 100vw, 512px"
+                  unoptimized
+                  priority
+                  className="w-full h-auto rounded-xl border border-border-light dark:border-border-dark"
+                />
+              </div>
+            </div>
+          )
+        ) : (
+          <div className="mb-8 flex h-48 sm:h-64 items-center justify-center rounded-xl bg-surface-light dark:bg-surface-dark text-xs text-text-muted-light dark:text-text-muted-dark">
+            Cover image unavailable
           </div>
+        )}
+
+        <Card>
 
           {/* Tags */}
           <div className="flex flex-wrap gap-1.5 mb-4">

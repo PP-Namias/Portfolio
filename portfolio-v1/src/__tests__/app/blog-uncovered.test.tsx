@@ -40,6 +40,7 @@ vi.mock('framer-motion', () => {
 
 vi.mock('next/navigation', () => ({
   notFound: vi.fn(),
+  usePathname: () => '/blog/some-post',
 }));
 
 vi.mock('next/image', () => ({
@@ -278,5 +279,55 @@ describe('blog route and content coverage', () => {
     const jsonLdScript = container.querySelector('script[type="application/ld+json"]');
     expect(jsonLdScript).toBeInTheDocument();
     expect(jsonLdScript?.innerHTML).toContain('Article');
+  });
+
+  it('BlogPostContent back link falls back to /blog when no origin was recorded', async () => {
+    window.sessionStorage.clear();
+    render(
+      <BlogPostContent
+        slug="deep-dive"
+        allPosts={[
+          {
+            id: '2',
+            slug: 'deep-dive',
+            title: 'Deep Dive',
+            excerpt: 'Advanced post excerpt',
+            content: '## Deep\n\nMore content.',
+            date: '2026-02-20',
+            readTime: '7 min',
+            tags: ['Cloud', 'Next.js'],
+            coverImage: '/images/blog/deep-dive.jpg',
+          },
+        ]}
+      />
+    );
+
+    const back = await screen.findByRole('link', { name: 'Back to Blog' });
+    expect(back).toHaveAttribute('href', '/blog');
+  });
+
+  it('BlogPostContent back link goes to the recorded origin path', async () => {
+    window.sessionStorage.setItem('pp_prev_path', '/#projects');
+    render(
+      <BlogPostContent
+        slug="deep-dive"
+        allPosts={[
+          {
+            id: '2',
+            slug: 'deep-dive',
+            title: 'Deep Dive',
+            excerpt: 'Advanced post excerpt',
+            content: '## Deep\n\nMore content.',
+            date: '2026-02-20',
+            readTime: '7 min',
+            tags: ['Cloud', 'Next.js'],
+            coverImage: '/images/blog/deep-dive.jpg',
+          },
+        ]}
+      />
+    );
+
+    const back = await screen.findByRole('link', { name: 'Back' });
+    expect(back).toHaveAttribute('href', '/#projects');
   });
 });

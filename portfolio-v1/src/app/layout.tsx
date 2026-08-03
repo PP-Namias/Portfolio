@@ -10,6 +10,7 @@ import { Analytics } from '@/components/ui/Analytics';
 import { MagicCursor } from '@/components/ui/MagicCursor';
 import { OfflineBanner } from '@/components/ui/OfflineBanner';
 import { ServiceWorkerManager } from '@/components/ui/ServiceWorkerManager';
+import { PathMemory } from '@/components/ui/PathMemory';
 import { JsonLd } from '@/components/seo/JsonLd';
 import { getCmsContent } from '@/lib/cms-content.server';
 import { IS_MAGIC_CURSOR_VISIBLE, IS_PWA_ENABLED, IS_STREAMING_SSR_ENABLED } from '@/lib/features';
@@ -141,6 +142,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
             Skip to main content
           </a>
           <Providers cmsContent={cmsContent}>
+            <PathMemory />
             {children}
             <MagicCursor />
             <FloatingHubWithBoundary />
@@ -206,6 +208,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
             Skip to main content
           </a>
           <Providers cmsContent={streamingCmsContent} isDraftMode={isDraftMode}>
+            <PathMemory />
             {IS_MAGIC_CURSOR_VISIBLE ? <MagicCursor /> : null}
             {children}
             <FloatingHubWithBoundary />
@@ -243,6 +246,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
           Skip to main content
         </a>
         <Providers cmsContent={cmsContent} isDraftMode={isDraftMode}>
+          <PathMemory />
           {IS_MAGIC_CURSOR_VISIBLE ? <MagicCursor /> : null}
           {children}
           <FloatingHubWithBoundary />
