@@ -1,10 +1,10 @@
 {
   "project": "Namias Portfolio - Realtime Sanity CMS → Website Updates (no manual refresh)",
   "codeName": "realtime-sanity",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "owner": "Jhon Keneth Ryan Namias (PP Namias)",
   "contact": "pp.namias@gmail.com",
-  "lastUpdated": "2026-08-03",
+  "lastUpdated": "2026-08-04",
   "branch": "dev",
   "links": {
     "marketing": "https://namias.tech",
@@ -136,74 +136,74 @@
     {
       "id": "EPIC-1",
       "title": "Server: content version heartbeat",
-      "status": "planned",
+      "status": "done",
       "summary": "Add a monotonic content version (Redis + in-memory fallback), bump it in the webhook, expose it through /api/sanity/live, and extend webhook unit coverage.",
       "value": "high",
       "complexity": "medium",
       "stories": [
-        { "id": "S-1.1", "title": "Add content-version store", "done": false, "details": "Create src/lib/content-version.ts: getContentVersion() and bumpContentVersion() backed by redis INCR (new redis-cache helpers) with an in-memory counter fallback; export the key and defaults. Unit-test Redis-down and normal paths.", "files": ["src/lib/content-version.ts", "src/lib/redis-cache.ts"] },
-        { "id": "S-1.2", "title": "Bump version in webhook", "done": false, "details": "In POST /api/sanity/webhook, after secret validation and before responding, call bumpContentVersion() (non-fatal on failure). Extend sanity-webhook-route tests: body _type → correct invalidateByTag calls, version bump, RAG branch mocked, body-less payload still revalidates.", "files": ["src/app/api/sanity/webhook/route.ts", "src/__tests__/app/sanity-webhook-route.test.ts"] },
-        { "id": "S-1.3", "title": "Expose version on /api/sanity/live", "done": false, "details": "Extend GET /api/sanity/live to return { ok, version, draftMode, pollIntervalMs, revalidatePaths } (keep ?enable=1 compat). Add sanity-live-route tests: version present, CORS, OPTIONS, draft flag.", "files": ["src/app/api/sanity/live/route.ts", "src/__tests__/app/sanity-live-route.test.ts"] }
+        { "id": "S-1.1", "title": "Add content-version store", "done": true, "details": "Create src/lib/content-version.ts: getContentVersion() and bumpContentVersion() backed by redis INCR (new redis-cache helpers) with an in-memory counter fallback; export the key and defaults. Unit-test Redis-down and normal paths.", "files": ["src/lib/content-version.ts", "src/lib/redis-cache.ts"] },
+        { "id": "S-1.2", "title": "Bump version in webhook", "done": true, "details": "In POST /api/sanity/webhook, after secret validation and before responding, call bumpContentVersion() (non-fatal on failure). Extend sanity-webhook-route tests: body _type → correct invalidateByTag calls, version bump, RAG branch mocked, body-less payload still revalidates.", "files": ["src/app/api/sanity/webhook/route.ts", "src/__tests__/app/sanity-webhook-route.test.ts"] },
+        { "id": "S-1.3", "title": "Expose version on /api/sanity/live", "done": true, "details": "Extend GET /api/sanity/live to return { ok, version, draftMode, pollIntervalMs, revalidatePaths } (keep ?enable=1 compat). Add sanity-live-route tests: version present, CORS, OPTIONS, draft flag.", "files": ["src/app/api/sanity/live/route.ts", "src/__tests__/app/sanity-live-route.test.ts"] }
       ]
     },
     {
       "id": "EPIC-2",
       "title": "Client: version-aware auto-refresh bridge",
-      "status": "planned",
+      "status": "done",
       "summary": "Upgrade the dormant polling hook to version-aware polling and mount it in the root layout behind a feature flag.",
       "value": "high",
       "complexity": "medium",
       "stories": [
-        { "id": "S-2.1", "title": "Upgrade useSanityLiveRefresh to version-aware polling", "done": false, "details": "Poll GET /api/sanity/live every NEXT_PUBLIC_SANITY_LIVE_POLL_MS (default 15_000); call router.refresh() only when the returned version differs from the last seen one; skip when draft mode is on; keep focus/visibility triggers and MIN_REFRESH_GAP; extend paths to /projects and /projects/[slug]. Rewrite the hook test with fake timers: no refresh when version unchanged, refresh on change, interval from env.", "files": ["src/hooks/useSanityLiveRefresh.tsx", "src/__tests__/hooks/useSanityLiveRefresh.test.tsx"] },
-        { "id": "S-2.2", "title": "Mount bridge and add feature flag", "done": false, "details": "Add IS_REALTIME_SANITY_ENABLED to src/lib/features.ts (default true) and mount <SanityLiveRefreshBridge /> in the root layout body when the flag is on and not in draft mode. Update layout/app tests to cover the mounted bridge and the flag-off path.", "files": ["src/lib/features.ts", "src/app/layout.tsx", "src/__tests__/app/app-layout-page.test.tsx"] }
+        { "id": "S-2.1", "title": "Upgrade useSanityLiveRefresh to version-aware polling", "done": true, "details": "Poll GET /api/sanity/live every NEXT_PUBLIC_SANITY_LIVE_POLL_MS (default 15_000); call router.refresh() only when the returned version differs from the last seen one; skip when draft mode is on; keep focus/visibility triggers and MIN_REFRESH_GAP; extend paths to /projects and /projects/[slug]. Rewrite the hook test with fake timers: no refresh when version unchanged, refresh on change, interval from env.", "files": ["src/hooks/useSanityLiveRefresh.tsx", "src/__tests__/hooks/useSanityLiveRefresh.test.tsx"] },
+        { "id": "S-2.2", "title": "Mount bridge and add feature flag", "done": true, "details": "Add IS_REALTIME_SANITY_ENABLED to src/lib/features.ts (default true) and mount <SanityLiveRefreshBridge /> in the root layout body when the flag is on and not in draft mode. Update layout/app tests to cover the mounted bridge and the flag-off path.", "files": ["src/lib/features.ts", "src/app/layout.tsx", "src/__tests__/app/app-layout-page.test.tsx"] }
       ]
     },
     {
       "id": "EPIC-3",
       "title": "E2E infrastructure (Playwright)",
-      "status": "planned",
+      "status": "done",
       "summary": "Introduce Playwright from scratch: dependency, config, scripts, fixtures, and an env-gated CMS fixture seam.",
       "value": "high",
       "complexity": "medium",
       "stories": [
-        { "id": "S-3.1", "title": "Add Playwright dependency and config", "done": false, "details": "npm i -D @playwright/test in portfolio-v1; create playwright.config.ts (testDir tests/e2e, chromium project, webServer next dev on port 3100 with E2E env, serviceWorkers block, trace on retry); add scripts test:e2e / test:e2e:ui / test:e2e:report; add tests/e2e/.gitkeep + README note.", "files": ["package.json", "playwright.config.ts", "tests/e2e/"] },
-        { "id": "S-3.2", "title": "Add env-gated CMS fixture seam", "done": false, "details": "In querySanity (cms-content.server.ts): when process.env.E2E_CMS_FILE is set, read the JSON fixture fresh on every call, resolve the _type from the GROQ query via a small regex registry, and return fixture data with no caching. Unit-test: seam active with env, inactive without, missing type falls through to the real path.", "files": ["src/lib/cms-content.server.ts", "src/__tests__/lib/cms-content.server.test.ts"] },
-        { "id": "S-3.3", "title": "Write E2E smoke specs", "done": false, "details": "Specs: home.spec.ts (hero name, sections render, no console errors), blog.spec.ts (list + post detail from fixture), connect.spec.ts (social chips incl. Discord label).", "files": ["tests/e2e/home.spec.ts", "tests/e2e/blog.spec.ts", "tests/e2e/connect.spec.ts"] }
+        { "id": "S-3.1", "title": "Add Playwright dependency and config", "done": true, "details": "npm i -D @playwright/test in portfolio-v1; create playwright.config.ts (testDir tests/e2e, chromium project, webServer next dev on port 3100 with E2E env, serviceWorkers block, trace on retry); add scripts test:e2e / test:e2e:ui / test:e2e:report; add tests/e2e/.gitkeep + README note.", "files": ["package.json", "playwright.config.ts", "tests/e2e/"] },
+        { "id": "S-3.2", "title": "Add env-gated CMS fixture seam", "done": true, "details": "In querySanity (cms-content.server.ts): when process.env.E2E_CMS_FILE is set, read the JSON fixture fresh on every call, resolve the _type from the GROQ query via a small regex registry, and return fixture data with no caching. Unit-test: seam active with env, inactive without, missing type falls through to the real path.", "files": ["src/lib/cms-content.server.ts", "src/__tests__/lib/cms-content.server.test.ts"] },
+        { "id": "S-3.3", "title": "Write E2E smoke specs", "done": true, "details": "Specs: home.spec.ts (hero name, sections render, no console errors), blog.spec.ts (list + post detail from fixture), connect.spec.ts (social chips incl. Discord label).", "files": ["tests/e2e/home.spec.ts", "tests/e2e/blog.spec.ts", "tests/e2e/connect.spec.ts"] }
       ]
     },
     {
       "id": "EPIC-4",
       "title": "E2E realtime spec + CI",
-      "status": "planned",
+      "status": "done",
       "summary": "Prove the full realtime loop end-to-end and wire Playwright into CI.",
       "value": "high",
       "complexity": "high",
       "stories": [
-        { "id": "S-4.1", "title": "Write the realtime E2E spec", "done": false, "details": "realtime.spec.ts: load home with fixture v1 (assert name A), rewrite fixture file to v2 (name B), POST /api/sanity/webhook with valid secret and { _type: 'profile' }, then expect.poll that the page shows name B without any reload (poll interval 300ms via env).", "files": ["tests/e2e/realtime.spec.ts", "tests/e2e/fixtures/cms-v1.json", "tests/e2e/fixtures/cms-v2.json"] },
-        { "id": "S-4.2", "title": "Webhook-auth E2E spec", "done": false, "details": "auth.spec.ts: POST to /api/sanity/webhook without/with wrong secret → 401 and no version bump; with correct secret → 200 and version increments on the next /api/sanity/live call.", "files": ["tests/e2e/auth.spec.ts"] },
-        { "id": "S-4.3", "title": "Fix the Playwright CI workflow", "done": false, "details": "Rewrite .github/workflows/playwright.yml: scope to portfolio-v1, setup-node 22 + npm ci, npx playwright install --with-deps chromium, run test:e2e, upload report/screenshots on failure. Keep matrix at chromium only.", "files": [".github/workflows/playwright.yml"] }
+        { "id": "S-4.1", "title": "Write the realtime E2E spec", "done": true, "details": "realtime.spec.ts: load home with fixture v1 (assert name A), rewrite fixture file to v2 (name B), POST /api/sanity/webhook with valid secret and { _type: 'profile' }, then expect.poll that the page shows name B without any reload (poll interval 300ms via env).", "files": ["tests/e2e/realtime.spec.ts", "tests/e2e/fixtures/cms-v1.json", "tests/e2e/fixtures/cms-v2.json"] },
+        { "id": "S-4.2", "title": "Webhook-auth E2E spec", "done": true, "details": "auth.spec.ts: POST to /api/sanity/webhook without/with wrong secret → 401 and no version bump; with correct secret → 200 and version increments on the next /api/sanity/live call.", "files": ["tests/e2e/auth.spec.ts"] },
+        { "id": "S-4.3", "title": "Fix the Playwright CI workflow", "done": true, "details": "Rewrite .github/workflows/playwright.yml: scope to portfolio-v1, setup-node 22 + npm ci, npx playwright install --with-deps chromium, run test:e2e, upload report/screenshots on failure. Keep matrix at chromium only.", "files": [".github/workflows/playwright.yml"] }
       ]
     },
     {
       "id": "EPIC-5",
       "title": "Docs, PRD update, and wrap-up",
-      "status": "planned",
+      "status": "done",
       "summary": "Document the architecture, update the PRD status, and run the full quality gate.",
       "value": "medium",
       "complexity": "low",
       "stories": [
-        { "id": "S-5.1", "title": "Write realtime architecture doc", "done": false, "details": "Add portfolio-v1/docs/REALTIME_SANITY.md: flow diagram, env vars (SANITY_REVALIDATE_SECRET, NEXT_PUBLIC_SANITY_LIVE_POLL_MS, E2E_CMS_FILE), how to run unit + E2E tests, dashboard webhook setup recap.", "files": ["docs/REALTIME_SANITY.md"] },
-        { "id": "S-5.2", "title": "Update PRD status and PR.md", "done": false, "details": "Mark epics/stories done as implemented; run scripts/append-pr-update.ps1 and commit PR.md per the AGENTS.md workflow.", "files": ["docs/prd/prd.realtime-sanity.json", "PR.md"] }
+        { "id": "S-5.1", "title": "Write realtime architecture doc", "done": true, "details": "Add portfolio-v1/docs/REALTIME_SANITY.md: flow diagram, env vars (SANITY_REVALIDATE_SECRET, NEXT_PUBLIC_SANITY_LIVE_POLL_MS, E2E_CMS_FILE), how to run unit + E2E tests, dashboard webhook setup recap.", "files": ["docs/REALTIME_SANITY.md"] },
+        { "id": "S-5.2", "title": "Update PRD status and PR.md", "done": true, "details": "Mark epics/stories done as implemented; run scripts/append-pr-update.ps1 and commit PR.md per the AGENTS.md workflow.", "files": ["docs/prd/prd.realtime-sanity.json", "PR.md"] }
       ]
     }
   ],
   "phases": [
     { "id": "PHASE-0", "label": "Audit & PRD", "epics": ["EPIC-0"], "status": "done" },
-    { "id": "PHASE-1", "label": "Server version heartbeat", "epics": ["EPIC-1"], "status": "planned" },
-    { "id": "PHASE-2", "label": "Client auto-refresh bridge", "epics": ["EPIC-2"], "status": "planned" },
-    { "id": "PHASE-3", "label": "E2E infrastructure", "epics": ["EPIC-3"], "status": "planned" },
-    { "id": "PHASE-4", "label": "E2E realtime + CI", "epics": ["EPIC-4"], "status": "planned" },
-    { "id": "PHASE-5", "label": "Docs & wrap-up", "epics": ["EPIC-5"], "status": "planned" }
+    { "id": "PHASE-1", "label": "Server version heartbeat", "epics": ["EPIC-1"], "status": "done" },
+    { "id": "PHASE-2", "label": "Client auto-refresh bridge", "epics": ["EPIC-2"], "status": "done" },
+    { "id": "PHASE-3", "label": "E2E infrastructure", "epics": ["EPIC-3"], "status": "done" },
+    { "id": "PHASE-4", "label": "E2E realtime + CI", "epics": ["EPIC-4"], "status": "done" },
+    { "id": "PHASE-5", "label": "Docs & wrap-up", "epics": ["EPIC-5"], "status": "done" }
   ],
   "openQuestions": [
     "Should the dashboard webhook stay the only bump source, or should the studio publish action (publishAndRefreshAction) also be fixed to send the secret header and _type? (Current studio-triggered call is broken — 401 + no _type; dashboard webhook is the working path.)",
