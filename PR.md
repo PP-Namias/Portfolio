@@ -175,3 +175,13 @@ Notes for keeping it smart:
 ### 2026-08-03 - Update
 
   - a4cd56d4 feat(studio): add Discord option to social platform dropdown
+
+### 2026-08-03 - Update
+
+  - bb4a1295 fix(hero): remove ambiguous availability indicator
+  - Drop the pulsing green dot + 'Available' badge from the hero
+  - (location/socials line); the label had no context and conveyed
+  - nothing actionable
+  - availabilityLabel stays in CMS/state plumbing for future use
+  - Verified live: badge gone from SSR; tsc, lint, 33 hero-adjacent
+  - tests pass
