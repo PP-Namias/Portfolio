@@ -186,10 +186,11 @@ describe('promptBuilder', () => {
       expect(prompt).toContain('[ACTION:email]');
     });
 
-    it('includes off-topic handling', () => {
+    it('includes general assistance and off-topic handling', () => {
       const prompt = buildSystemPrompt(mockData);
+      expect(prompt).toContain('GENERAL ASSISTANCE');
+      expect(prompt).toContain('TOOL RESULT USAGE');
       expect(prompt).toContain('OFF-TOPIC HANDLING:');
-      expect(prompt).toContain('portfolio assistant');
     });
 
     it('includes never section', () => {
