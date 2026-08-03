@@ -1,4 +1,5 @@
 import { cache } from 'react';
+import { readFile } from 'node:fs/promises';
 import { draftMode } from 'next/headers';
 
 import { getOrFetch } from './cache';
@@ -96,7 +97,59 @@ export const CONTENT_TAGS: Record<string, string[]> = {
   siteSettings: ['cms:settings'],
 };
 
+const E2E_TYPE_REGISTRY: Array<{ pattern: RegExp; key: string }> = [
+  { pattern: /_type\s*==\s*"profile"/, key: 'profile' },
+  { pattern: /_type\s*==\s*"aboutSection"/, key: 'aboutSection' },
+  { pattern: /_type\s*==\s*"techStack"/, key: 'techStack' },
+  { pattern: /_type\s*==\s*"experience"/, key: 'experience' },
+  { pattern: /_type\s*==\s*"project"/, key: 'project' },
+  { pattern: /_type\s*==\s*"certification"/, key: 'certification' },
+  { pattern: /_type\s*==\s*"galleryImage"/, key: 'galleryImage' },
+  { pattern: /_type\s*==\s*"post"/, key: 'post' },
+  { pattern: /_type\s*==\s*"membership"/, key: 'membership' },
+  { pattern: /_type\s*==\s*"recommendation"/, key: 'recommendation' },
+  { pattern: /_type\s*==\s*"siteSettings"/, key: 'siteSettings' },
+];
+
+/**
+ * E2E CMS seam: when E2E_CMS_FILE is set (Playwright runs only), every
+ * querySanity call reads the local JSON fixture fresh and resolves the
+ * GROQ _type through a small registry. No caching, no Sanity network.
+ * Never active in production (env var unset there).
+ */
+async function queryE2eFixture<T>(query: string): Promise<{ found: boolean; value: T | null }> {
+  const fixturePath = process.env.E2E_CMS_FILE?.trim();
+  if (!fixturePath) {
+    return { found: false, value: null };
+  }
+  try {
+    const fixture = JSON.parse(await readFile(fixturePath, 'utf8')) as Record<string, unknown>;
+    for (const { pattern, key } of E2E_TYPE_REGISTRY) {
+      if (pattern.test(query)) {
+        const value = fixture[key];
+        if (value === undefined) {
+          return { found: false, value: null };
+        }
+        return { found: true, value: value as T };
+      }
+    }
+    return { found: false, value: null };
+  } catch (err) {
+    if (process.env.NODE_ENV !== 'test') {
+      console.warn('[cms] E2E fixture read failed, falling through to Sanity', err);
+    }
+    return { found: false, value: null };
+  }
+}
+
 export async function querySanity<T>(query: string, options?: { tags?: string[] }): Promise<T | null> {
+  if (process.env.E2E_CMS_FILE?.trim()) {
+    const fixtureResult = await queryE2eFixture<T>(query);
+    if (fixtureResult.found) {
+      return fixtureResult.value;
+    }
+  }
+
   const projectId = getProjectId();
   if (!projectId) return null;
 
