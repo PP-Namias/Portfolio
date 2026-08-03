@@ -25,7 +25,7 @@ vi.mock('@upstash/redis', () => {
   };
 });
 
-import { redisGet, redisSet, redisInvalidateByTag, redisFlush, redisStats } from '@/lib/redis-cache';
+import { redisGet, redisSet, redisInvalidateByTag, redisFlush, redisStats, redisIncr, redisGetNumber } from '@/lib/redis-cache';
 
 describe('redis-cache', () => {
   beforeEach(() => {
@@ -55,5 +55,15 @@ describe('redis-cache', () => {
     const stats = await redisStats();
     expect(stats).toHaveProperty('size');
     expect(stats).toHaveProperty('redisConnected');
+  });
+
+  it('redisIncr returns null when no connection', async () => {
+    const result = await redisIncr('nonexistent-key');
+    expect(result).toBeNull();
+  });
+
+  it('redisGetNumber returns null when no connection', async () => {
+    const result = await redisGetNumber('nonexistent-key');
+    expect(result).toBeNull();
   });
 });

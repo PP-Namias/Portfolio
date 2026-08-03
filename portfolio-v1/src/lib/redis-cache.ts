@@ -98,6 +98,27 @@ export async function redisInvalidateByTag(tag: string): Promise<number> {
   }
 }
 
+export async function redisIncr(key: string): Promise<number | null> {
+  const r = getRedis()
+  if (!r) return null
+  try {
+    return await r.incr(key)
+  } catch {
+    return null
+  }
+}
+
+export async function redisGetNumber(key: string): Promise<number | null> {
+  const r = getRedis()
+  if (!r) return null
+  try {
+    const value = await r.get<number>(key)
+    return typeof value === 'number' ? value : null
+  } catch {
+    return null
+  }
+}
+
 export async function redisFlush(): Promise<number> {
   const r = getRedis()
   if (!r) return 0
