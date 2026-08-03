@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { timingSafeEqual } from 'node:crypto';
 import { clearCmsQueryCache } from '@/lib/cms-content.server';
 import { invalidateByTag } from '@/lib/cache';
+import { bumpContentVersion } from '@/lib/content-version';
 import { isVectorStoreConfigured } from '@/lib/rag/vector-store';
 import { SITE_URL } from '@/lib/site-config';
 
@@ -121,6 +122,15 @@ export async function POST(request: NextRequest) {
   }
 
   revalidateCmsPaths();
+
+  // Bump the content version so open browser tabs can detect the change.
+  try {
+    await bumpContentVersion();
+  } catch (err) {
+    // Non-fatal — version tracking must never break webhook handling.
+    // eslint-disable-next-line no-console
+    console.warn('Failed to bump content version', err);
+  }
 
   if (isVectorStoreConfigured() && docType) {
     const docId = typeof body?._id === 'string' ? body._id : docType;

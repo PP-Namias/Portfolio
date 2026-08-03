@@ -10,6 +10,7 @@ vi.mock('next/cache', () => ({
 }));
 
 import { OPTIONS, POST } from '@/app/api/sanity/webhook/route';
+import { getContentVersion } from '@/lib/content-version';
 
 describe('/api/sanity/webhook route', () => {
   beforeEach(() => {
@@ -26,6 +27,7 @@ describe('/api/sanity/webhook route', () => {
   });
 
   it('rejects requests with an invalid secret', async () => {
+    const before = await getContentVersion();
     const request = new NextRequest('http://localhost:3000/api/sanity/webhook', {
       method: 'POST',
       headers: { 'x-sanity-webhook-secret': 'wrong' },
@@ -36,9 +38,11 @@ describe('/api/sanity/webhook route', () => {
     expect(response.status).toBe(401);
     expect(response.headers.get('x-robots-tag')).toBe('noindex, nofollow');
     expect(revalidatePathMock).not.toHaveBeenCalled();
+    expect(await getContentVersion()).toBe(before);
   });
 
   it('revalidates CMS routes when the secret is valid', async () => {
+    const before = await getContentVersion();
     const request = new NextRequest('http://localhost:3000/api/sanity/webhook', {
       method: 'POST',
       headers: { 'x-sanity-webhook-secret': 'unit-test-secret' },
@@ -53,5 +57,36 @@ describe('/api/sanity/webhook route', () => {
     expect(revalidatePathMock).toHaveBeenCalledWith('/blog/[slug]', 'page');
     expect(revalidatePathMock).toHaveBeenCalledWith('/projects/[slug]', 'page');
     expect(revalidatePathMock).toHaveBeenCalledWith('/sitemap.xml', 'page');
+    expect(await getContentVersion()).toBe(before + 1);
+  });
+
+  it('bumps the version and revalidates for a typed body', async () => {
+    const before = await getContentVersion();
+    const request = new NextRequest('http://localhost:3000/api/sanity/webhook', {
+      method: 'POST',
+      headers: { 'x-sanity-webhook-secret': 'unit-test-secret', 'content-type': 'application/json' },
+      body: JSON.stringify({ _type: 'post', _id: 'post-1', operation: 'create' }),
+    });
+
+    const response = await POST(request);
+
+    expect(response.status).toBe(200);
+    expect(revalidatePathMock).toHaveBeenCalledWith('/', 'page');
+    expect(await getContentVersion()).toBe(before + 1);
+  });
+
+  it('still revalidates and bumps the version when the body is empty', async () => {
+    const before = await getContentVersion();
+    const request = new NextRequest('http://localhost:3000/api/sanity/webhook', {
+      method: 'POST',
+      headers: { 'x-sanity-webhook-secret': 'unit-test-secret', 'content-type': 'application/json' },
+      body: '',
+    });
+
+    const response = await POST(request);
+
+    expect(response.status).toBe(200);
+    expect(revalidatePathMock).toHaveBeenCalledWith('/', 'page');
+    expect(await getContentVersion()).toBe(before + 1);
   });
 });
