@@ -1,5 +1,6 @@
 import { act, render } from '@testing-library/react';
 import React from 'react';
+import { SWRConfig } from 'swr';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 const refreshMock = vi.fn();
@@ -37,6 +38,14 @@ function TestHarness() {
   return <div />;
 }
 
+function renderHarness() {
+  return render(
+    <SWRConfig value={{ provider: () => new Map() }}>
+      <TestHarness />
+    </SWRConfig>,
+  );
+}
+
 function setLiveVersion(version: number, draftMode = false): ReturnType<typeof vi.fn> {
   const fetchMock = vi.fn(async () => liveResponse(version, draftMode));
   vi.stubGlobal('fetch', fetchMock);
@@ -58,7 +67,7 @@ describe('useSanityLiveRefresh', () => {
     setLiveVersion(1);
 
     act(() => {
-      render(<TestHarness />);
+      renderHarness();
     });
     await act(async () => {
       await Promise.resolve();
@@ -71,7 +80,7 @@ describe('useSanityLiveRefresh', () => {
     setLiveVersion(1);
 
     act(() => {
-      render(<TestHarness />);
+      renderHarness();
     });
     await act(async () => {
       await Promise.resolve();
@@ -91,7 +100,7 @@ describe('useSanityLiveRefresh', () => {
     setLiveVersion(1);
 
     act(() => {
-      render(<TestHarness />);
+      renderHarness();
     });
     await act(async () => {
       await Promise.resolve();
@@ -119,7 +128,7 @@ describe('useSanityLiveRefresh', () => {
     setLiveVersion(1);
 
     act(() => {
-      render(<TestHarness />);
+      renderHarness();
     });
     await act(async () => {
       await Promise.resolve();
@@ -157,7 +166,7 @@ describe('useSanityLiveRefresh', () => {
     setLiveVersion(1);
 
     act(() => {
-      render(<TestHarness />);
+      renderHarness();
     });
     await act(async () => {
       await Promise.resolve();
@@ -178,7 +187,7 @@ describe('useSanityLiveRefresh', () => {
     setLiveVersion(1);
 
     act(() => {
-      render(<TestHarness />);
+      renderHarness();
     });
     await act(async () => {
       await Promise.resolve();
@@ -200,7 +209,7 @@ describe('useSanityLiveRefresh', () => {
     const fetchMock = setLiveVersion(1);
 
     act(() => {
-      render(<TestHarness />);
+      renderHarness();
     });
     await act(async () => {
       await Promise.resolve();

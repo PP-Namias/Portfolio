@@ -2,10 +2,12 @@
 
 import { useEffect, useRef } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
+import useSWR from 'swr';
 
 const DEFAULT_SANITY_LIVE_POLL_MS = 15_000;
 const SANITY_REFRESH_PATHS = new Set(['/', '/blog', '/projects']);
 const MIN_REFRESH_GAP_MS = 5_000;
+const LIVE_URL = '/api/sanity/live';
 
 const SANITY_LIVE_POLL_MS = (() => {
   const parsed = Number(process.env.NEXT_PUBLIC_SANITY_LIVE_POLL_MS);
@@ -28,78 +30,65 @@ interface LiveStatus {
   revalidatePaths?: string[];
 }
 
+async function fetchLiveStatus(url: string): Promise<LiveStatus> {
+  const res = await fetch(url, { cache: 'no-store' });
+  if (!res.ok) {
+    throw new Error(`sanity live endpoint returned ${res.status}`);
+  }
+  return (await res.json()) as LiveStatus;
+}
+
 export function useSanityLiveRefresh() {
   const lastRefreshAtRef = useRef(0);
   const lastVersionRef = useRef<number | null>(null);
   const router = useRouter();
   const pathname = usePathname();
+  const enabled = !!pathname && shouldRefreshPath(pathname);
 
-  useEffect(() => {
-    if (!pathname || !shouldRefreshPath(pathname)) {
-      return;
-    }
-
-    const triggerRefresh = () => {
-      const now = Date.now();
-
-      if (now - lastRefreshAtRef.current < MIN_REFRESH_GAP_MS) {
+  const { mutate } = useSWR(enabled ? LIVE_URL : null, fetchLiveStatus, {
+    dedupingInterval: 0,
+    revalidateOnFocus: false,
+    refreshInterval: enabled ? SANITY_LIVE_POLL_MS : 0,
+    onSuccess: (status) => {
+      if (!status || status.draftMode) {
         return;
       }
-
-      lastRefreshAtRef.current = now;
-      router.refresh();
-    };
-
-    const checkVersion = async () => {
-      try {
-        const res = await fetch('/api/sanity/live', { cache: 'no-store' });
-        if (!res.ok) {
-          return;
+      if (
+        typeof status.version === 'number' &&
+        lastVersionRef.current !== null &&
+        status.version !== lastVersionRef.current
+      ) {
+        const now = Date.now();
+        if (now - lastRefreshAtRef.current >= MIN_REFRESH_GAP_MS) {
+          lastRefreshAtRef.current = now;
+          router.refresh();
         }
-        const status = (await res.json()) as LiveStatus;
-        if (status.draftMode) {
-          return;
-        }
-        if (
-          typeof status.version === 'number' &&
-          lastVersionRef.current !== null &&
-          status.version !== lastVersionRef.current
-        ) {
-          triggerRefresh();
-        }
-        if (typeof status.version === 'number') {
-          lastVersionRef.current = status.version;
-        }
-      } catch {
-        // Network or parse failure — retry on the next poll cycle.
       }
-    };
+      if (typeof status.version === 'number') {
+        lastVersionRef.current = status.version;
+      }
+    },
+  });
 
+  useEffect(() => {
+    if (!enabled) {
+      return;
+    }
     const handleVisibilityChange = () => {
       if (document.visibilityState === 'visible') {
-        void checkVersion();
+        void mutate();
       }
     };
-
     const handleFocus = () => {
-      void checkVersion();
+      void mutate();
     };
-
-    void checkVersion();
-
-    const intervalId = globalThis.setInterval(() => {
-      void checkVersion();
-    }, SANITY_LIVE_POLL_MS);
-
     document.addEventListener('visibilitychange', handleVisibilityChange);
     globalThis.addEventListener('focus', handleFocus);
-
     return () => {
-      globalThis.clearInterval(intervalId as unknown as number);
       document.removeEventListener('visibilitychange', handleVisibilityChange);
       globalThis.removeEventListener('focus', handleFocus);
     };
-  }, [pathname, router]);
+  }, [enabled, mutate]);
 }
 
 export function SanityLiveRefreshBridge() {
