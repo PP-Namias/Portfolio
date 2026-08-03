@@ -1,6 +1,7 @@
 import type {NextRequest} from 'next/server'
 import {NextResponse} from 'next/server'
 import {draftMode} from 'next/headers'
+import {getContentVersion, getSanityLivePollMs} from '@/lib/content-version'
 import {SITE_URL} from '@/lib/site-config'
 
 export const runtime = 'nodejs'
@@ -22,19 +23,17 @@ async function isDraftModeEnabled(): Promise<boolean> {
 }
 
 export async function GET(request: NextRequest) {
-  if (request.nextUrl.searchParams.get('enable') === '1') {
-    return withCors(
-      NextResponse.json({
-        ok: true,
-        enabled: await isDraftModeEnabled(),
-        revalidatePaths: REVALIDATE_PATHS,
-      }),
-    )
-  }
+  const isEnableProbe = request.nextUrl.searchParams.get('enable') === '1'
+  const draft = await isDraftModeEnabled()
+  const version = await getContentVersion()
   return withCors(
     NextResponse.json({
-      ok: false,
-      error: 'Pass ?enable=1 to test the draft-mode connection.',
+      ok: true,
+      version,
+      draftMode: draft,
+      pollIntervalMs: getSanityLivePollMs(),
+      revalidatePaths: REVALIDATE_PATHS,
+      ...(isEnableProbe ? {enabled: draft} : {}),
     }),
   )
 }
