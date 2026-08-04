@@ -195,3 +195,16 @@ Notes for keeping it smart:
   - S-5.2: prd.realtime-sanity.json bumped to 1.0.0, all epics/stories/
   - phases marked done, lastUpdated 2026-08-04 (minimal token diff)
   - Verified: JSON parses, no code touched
+### 2026-08-05 - Update
+
+  - f03ba670 feat(seo): deploy static og-image.png with absolute OG/Twitter URLs
+  - Remove runtime opengraph-image/twitter-image routes (edge Google-Font fetch 500s)
+  - Add public/og-image.png (1200x630) rendered by scripts/render-og-image.cjs via Playwright
+  - Point root layout, blog/projects layouts, providers, SectionProvider, and fallback
+  - seo data at /og-image.png with absolute SITE_URL everywhere
+  - Update site title/description to 'Jhon Keneth Ryan B. Namias | Full Stack Engineer &
+  - AI Specialist' and root og:image alt to the Person long-form name
+  - Delete obsolete public/og-image.svg (invisible to link preview scrapers); gitignore .og-render-tmp/
+  - Rewrite og-image.test.ts to validate the static PNG (sig, 1200x630, >= platform mins);
+  - fix app-metadata.test.ts mocks (next/font, cms-content, seo.server, per-test features)
+  - Verified: vitest 1085 passed, tsc --noEmit, npm run lint, doctor:check 100/100 all green
