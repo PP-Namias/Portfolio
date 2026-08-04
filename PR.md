@@ -208,3 +208,20 @@ Notes for keeping it smart:
   - Rewrite og-image.test.ts to validate the static PNG (sig, 1200x630, >= platform mins);
   - fix app-metadata.test.ts mocks (next/font, cms-content, seo.server, per-test features)
   - Verified: vitest 1085 passed, tsc --noEmit, npm run lint, doctor:check 100/100 all green
+### 2026-08-05 - Update
+
+  - 7ad17df3 feat(seo): exact-match image alts on hero and profile avatars
+  - Hero profile image alt now uses PERSON_IMAGE_ALT
+  - ('Jhon Keneth Ryan B. Namias - Full Stack Engineer & AI Automation Specialist'),
+  - the exact-match keyword string already used by the Person JSON-LD ImageObject
+  - and the root og:image alt, keeping alt text consistent across head and body
+  - ChatPanel (header + empty state) and HubMenu floating-hub avatars switched
+  - from alt={profile.name} to the same exact-match alt
+  - Hero keeps priority + fetchPriority="high" (Next.js priority renders
+  - loading="eager" fetchpriority="high" in the DOM)
+  - Semantic filenames: repo already ships semantic static assets (og-image.png,
+  - icons, favicon); Sanity-hosted images keep hash-based CDN URLs that can only
+  - be renamed via CMS asset management, documented as a manual follow-up
+  - Update sections-uncovered hero test: assert exact-match alt renders and the
+  - img carries fetchpriority="high"
+  - Verified: vitest 1085 passed, tsc --noEmit, npm run lint, doctor:check 100/100
