@@ -18,6 +18,7 @@ import { useModal } from '@/hooks/useModal';
 import { useCmsContent } from '@/hooks/useCmsContent';
 import { IS_BLOG_VISIBLE } from '@/lib/features';
 import { resolveContentImageSrc } from '@/lib/media';
+import { PERSON_IMAGE_ALT } from '@/lib/jsonld';
 
 interface HubMenuProps {
   onClose: () => void;
@@ -93,7 +94,7 @@ export function HubMenu({ onClose, onOpenChat }: Readonly<HubMenuProps>) {
                 {profileImageSrc ? (
                   <Image
                     src={profileImageSrc}
-                    alt={profile.name}
+                    alt={PERSON_IMAGE_ALT}
                     fill
                     sizes="48px"
                     className="object-cover"

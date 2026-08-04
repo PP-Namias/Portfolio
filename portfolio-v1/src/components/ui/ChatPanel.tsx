@@ -15,6 +15,7 @@ import { IS_CHAT_STREAMING_ENABLED, IS_CHAT_THREADING_ENABLED } from '@/lib/feat
 import type { ChatMessage as ChatMessageType } from '@/types';
 import Image from '@/components/ui/OptimizedImage';
 import { resolveContentImageSrc } from '@/lib/media';
+import { PERSON_IMAGE_ALT } from '@/lib/jsonld';
 
 const FOLLOW_UP_POOL = [
   'What certifications do you have?',
@@ -578,7 +579,7 @@ export function ChatPanel({
                     {profileImageSrc ? (
                       <Image
                         src={profileImageSrc}
-                        alt={profile.name}
+                        alt={PERSON_IMAGE_ALT}
                         width={48}
                         height={48}
                         className="object-cover h-full w-full"
@@ -669,7 +670,7 @@ export function ChatPanel({
                     {profileImageSrc ? (
                       <Image
                         src={profileImageSrc}
-                        alt={profile.name}
+                        alt={PERSON_IMAGE_ALT}
                         width={64}
                         height={64}
                         className="object-cover h-full w-full"

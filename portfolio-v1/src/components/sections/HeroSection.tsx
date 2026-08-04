@@ -18,6 +18,7 @@ import { HackedText } from '@/components/ui/hacked-text';
 import { useModal } from '@/hooks/useModal';
 import { useCmsContent } from '@/hooks/useCmsContent';
 import { IS_BLOG_VISIBLE } from '@/lib/features';
+import { PERSON_IMAGE_ALT } from '@/lib/jsonld';
 import { sanityField } from '@/utils/sanity-data-attribute';
 
 const socialIconMap: Record<string, React.ComponentType<{ className?: string }>> = {
@@ -155,7 +156,7 @@ export function HeroSection() {
                     {activeProfileImage ? (
                       <Image
                         src={activeProfileImage}
-                        alt={profile.name}
+                        alt={PERSON_IMAGE_ALT}
                         fill
                         sizes="(max-width: 640px) 160px, 160px"
                         className="object-cover"

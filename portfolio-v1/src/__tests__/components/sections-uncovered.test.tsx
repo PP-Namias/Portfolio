@@ -585,7 +585,11 @@ describe('uncovered section components', () => {
   it('HeroSection renders CTAs with mailto for email', async () => {
     render(<HeroSection />);
 
-    expect(screen.getAllByLabelText('Jhon Keneth Ryan Namias').length).toBeGreaterThanOrEqual(1);
+    const profileImage = screen.getByAltText(
+      'Jhon Keneth Ryan B. Namias - Full Stack Engineer & AI Automation Specialist'
+    );
+    expect(profileImage).toHaveAttribute('fetchpriority', 'high');
+
     fireEvent.click(screen.getByText('Resume'));
     expect(openModalMock).toHaveBeenCalledWith('resume');
 
