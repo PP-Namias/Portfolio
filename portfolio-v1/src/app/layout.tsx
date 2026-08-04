@@ -15,7 +15,8 @@ import { SanityLiveRefreshBridge } from '@/hooks/useSanityLiveRefresh';
 import { JsonLd } from '@/components/seo/JsonLd';
 import { getCmsContent } from '@/lib/cms-content.server';
 import { IS_MAGIC_CURSOR_VISIBLE, IS_PWA_ENABLED, IS_REALTIME_SANITY_ENABLED, IS_STREAMING_SSR_ENABLED } from '@/lib/features';
-import { SITE_URL, SITE_NAME, SITE_DESCRIPTION } from '@/lib/site-config';
+import { buildPortfolioJsonLd } from '@/lib/jsonld';
+import { SITE_URL } from '@/lib/site-config';
 import { fetchSeoData } from '@/lib/sections/seo.server';
 import { fetchHeroData } from '@/lib/sections/hero.server';
 import './globals.css';
@@ -75,45 +76,7 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-const jsonLd = {
-  '@context': 'https://schema.org',
-  '@graph': [
-    {
-      '@type': 'WebSite',
-      '@id': `${SITE_URL}/#website`,
-      url: SITE_URL,
-      name: SITE_NAME,
-      description: SITE_DESCRIPTION,
-    },
-    {
-      '@type': 'Person',
-      '@id': `${SITE_URL}/#person`,
-      name: 'Jhon Keneth Ryan Namias',
-      jobTitle: 'Full Stack Engineer & AI Automation Specialist',
-      url: SITE_URL,
-      email: 'pp.namias@gmail.com',
-      image: {
-        '@type': 'ImageObject',
-        url: `${SITE_URL}/opengraph-image`,
-        width: 1200,
-        height: 630,
-        alt: 'Jhon Keneth Ryan Namias - Full Stack Developer',
-      },
-      address: {
-        '@type': 'PostalAddress',
-        addressLocality: 'Caloocan City',
-        addressCountry: 'PH',
-      },
-      sameAs: [
-        'https://github.com/PP-Namias',
-        'https://www.linkedin.com/in/pp-namias/',
-        'https://x.com/PP_Namias',
-        'https://www.facebook.com/profile.php?id=100093808752066',
-      ],
-      knowsAbout: ['React', 'TypeScript', 'Node.js', 'Next.js', 'Python', 'AI Automation', 'Prompt Engineering'],
-    },
-  ],
-};
+const jsonLdImageFallback = `${SITE_URL}/og-image.png`;
 
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   const isTest = process.env.VITEST === 'true' || process.env.NODE_ENV === 'test';
@@ -132,7 +95,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
           <link rel="dns-prefetch" href="https://cloud.umami.is" />
           <link rel="preconnect" href="https://cloud.umami.is" />
           <style>{`body{font-family:system-ui,Segoe UI,Roboto,Helvetica Neue,Arial,sans-serif;}a:focus-visible{outline:2px solid #db2777;outline-offset:2px;border-radius:8px;}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border-width:0;}`}</style>
-          <JsonLd data={jsonLd} id="layout-jsonld-test" />
+          <JsonLd data={buildPortfolioJsonLd(fallbackCmsContent.hero.profileImageUrl || jsonLdImageFallback)} id="layout-jsonld-test" />
           <Analytics />
         </head>
         <body className="bg-background-light dark:bg-background-dark text-text-primary-light dark:text-text-primary-dark min-h-screen font-sans antialiased">
@@ -198,7 +161,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
           <link rel="dns-prefetch" href="https://cloud.umami.is" />
           <link rel="preconnect" href="https://cloud.umami.is" />
           <style>{`body{font-family:system-ui,Segoe UI,Roboto,Helvetica Neue,Arial,sans-serif;}.font-inter{font-family:var(--font-inter),system-ui,Segoe UI,Roboto,Helvetica Neue,Arial,sans-serif;}a:focus-visible{outline:2px solid #db2777;outline-offset:2px;border-radius:8px;}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border-width:0;}`}</style>
-          <JsonLd data={jsonLd} id="layout-jsonld-streaming" />
+          <JsonLd data={buildPortfolioJsonLd(heroData.hero.profileImageUrl || jsonLdImageFallback)} id="layout-jsonld-streaming" />
           <Analytics />
         </head>
         <body className="bg-background-light dark:bg-background-dark text-text-primary-light dark:text-text-primary-dark min-h-screen font-sans antialiased">
@@ -237,7 +200,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
           <link rel="dns-prefetch" href="https://cloud.umami.is" />
           <link rel="preconnect" href="https://cloud.umami.is" />
           <style>{`body{font-family:system-ui,Segoe UI,Roboto,Helvetica Neue,Arial,sans-serif;}a:focus-visible{outline:2px solid #db2777;outline-offset:2px;border-radius:8px;}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border-width:0;}`}</style>
-          <JsonLd data={jsonLd} id="layout-jsonld-runtime" />
+          <JsonLd data={buildPortfolioJsonLd(cmsContent.hero.profileImageUrl || jsonLdImageFallback)} id="layout-jsonld-runtime" />
           <Analytics />
         </head>
       <body className="bg-background-light dark:bg-background-dark text-text-primary-light dark:text-text-primary-dark min-h-screen font-sans antialiased">

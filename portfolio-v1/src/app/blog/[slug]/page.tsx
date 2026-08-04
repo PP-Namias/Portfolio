@@ -5,6 +5,7 @@ import { IS_BLOG_VISIBLE } from '@/lib/features';
 import { fallbackBlogPosts } from '@/lib/cms-content.shared';
 import { JsonLd } from '@/components/seo/JsonLd';
 import { SITE_URL } from '@/lib/site-config';
+import { PERSON_ENTITY_ID, PERSON_NAME } from '@/lib/jsonld';
 import BlogPostContent from './BlogPostContent';
 
 export const revalidate = 3600;
@@ -88,7 +89,8 @@ export default async function BlogPostPage({ params }: Readonly<{ params: Promis
         dateModified: post.date,
         author: {
           '@type': 'Person',
-          name: 'Jhon Keneth Ryan Namias',
+          '@id': PERSON_ENTITY_ID,
+          name: PERSON_NAME,
           url: SITE_URL,
         },
         image: post.coverImage

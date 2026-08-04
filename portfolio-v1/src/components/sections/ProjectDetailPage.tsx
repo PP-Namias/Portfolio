@@ -9,6 +9,7 @@ import { Project } from '@/types';
 import { resolveContentImageSrc } from '@/lib/media';
 import { JsonLd } from '@/components/seo/JsonLd';
 import { SITE_URL } from '@/lib/site-config';
+import { PERSON_ENTITY_ID, PERSON_NAME } from '@/lib/jsonld';
 
 interface ProjectDetailPageProps {
   project: Project;
@@ -27,7 +28,7 @@ export function ProjectDetailPage({ project }: Readonly<ProjectDetailPageProps>)
           name: project.title,
           description: project.description,
           dateCreated: `${project.year}`,
-          author: { '@type': 'Person', name: 'Jhon Keneth Ryan Namias' },
+          author: { '@type': 'Person', '@id': PERSON_ENTITY_ID, name: PERSON_NAME },
           keywords: project.tags.join(', '),
           image: heroSrc
             ? {
