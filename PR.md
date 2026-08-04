@@ -225,3 +225,18 @@ Notes for keeping it smart:
   - Update sections-uncovered hero test: assert exact-match alt renders and the
   - img carries fetchpriority="high"
   - Verified: vitest 1085 passed, tsc --noEmit, npm run lint, doctor:check 100/100
+### 2026-08-05 - Update
+
+  - 5791368b feat(seo): add robots.txt route explicitly allowing web and AI crawlers
+  - Add src/app/robots.ts (Next.js MetadataRoute.Robots):
+  - catch-all '*' allow rule
+  - explicit allow group for Googlebot, Googlebot-Image, Bingbot, DuckDuckBot
+  - explicit allow group for AI/answer-engine crawlers: GPTBot, OAI-SearchBot,
+  - PerplexityBot, anthropic-ai, ClaudeBot, Claude-Web, Google-Extended
+  - Sitemap directive pointing at https://namias.tech/sitemap.xml
+  - Dynamic sitemap.ts already covers all portfolio routes (home, /projects,
+  - /blog + posts, and project detail pages when the revamp flag is on)
+  - Leave canary honeypot decoys (robots-canary.txt, sitemap-canary.xml) untouched
+  - Add robots.test.ts covering catch-all, web crawler group, AI crawler group,
+  - and sitemap reference (4 tests)
+  - Verified: vitest 1089 passed, tsc --noEmit, npm run lint, doctor:check 100/100
