@@ -795,7 +795,7 @@ const getCmsContentImpl = async (): Promise<CmsContent> => {
   return {
     seoSettings: {
       // Prefer the new siteSettings.ogImage (the big branded card); fall
-      // back to the static /og-image.svg served from /public, and finally
+      // back to the static /og-image.png served from /public, and finally
       // to the empty fallback.
       siteTitle:
         siteSettingsDoc?.ogTitle || siteSettingsDoc?.defaultMetaTitle ||

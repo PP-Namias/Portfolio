@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 import { SITE_URL } from '@/lib/site-config';
 
-const OG_IMAGE = `${SITE_URL}/og-image.svg`;
+const OG_IMAGE = `${SITE_URL}/og-image.png`;
 
 export const metadata: Metadata = {
   title: 'Blog | Jhon Keneth Ryan Namias',

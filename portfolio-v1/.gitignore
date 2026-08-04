@@ -169,3 +169,5 @@ docs/security/pentestagent/knowledge/
 
 # Generated service worker assets manifest
 public/sw-assets.json
+# OG image render artifacts
+.og-render-tmp/

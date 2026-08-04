@@ -286,11 +286,12 @@ const emptyProfile: Profile = {
 
 export const fallbackCmsContent: CmsContent = {
   seoSettings: {
-    siteTitle: 'Jhon Keneth Namias | Portfolio',
-    siteDescription: 'Personal portfolio of Jhon Keneth Namias.',
+    siteTitle: 'Jhon Keneth Ryan B. Namias | Full Stack Engineer & AI Specialist',
+    siteDescription:
+      'Full Stack Engineering, AI Automation, and project management portfolio of Jhon Keneth Ryan B. Namias. Production-grade web apps, AI chatbot architectures, and content pipelines.',
     canonicalUrl: SITE_URL,
-    ogImageUrl: '/og-image.svg',
-    twitterImageUrl: '/og-image.svg',
+    ogImageUrl: '/og-image.png',
+    twitterImageUrl: '/og-image.png',
     noindex: false,
     nofollow: false,
   },

@@ -15,7 +15,7 @@ import { SanityLiveRefreshBridge } from '@/hooks/useSanityLiveRefresh';
 import { JsonLd } from '@/components/seo/JsonLd';
 import { getCmsContent } from '@/lib/cms-content.server';
 import { IS_MAGIC_CURSOR_VISIBLE, IS_PWA_ENABLED, IS_REALTIME_SANITY_ENABLED, IS_STREAMING_SSR_ENABLED } from '@/lib/features';
-import { buildPortfolioJsonLd } from '@/lib/jsonld';
+import { buildPortfolioJsonLd, PERSON_IMAGE_ALT } from '@/lib/jsonld';
 import { SITE_URL } from '@/lib/site-config';
 import { fetchSeoData } from '@/lib/sections/seo.server';
 import { fetchHeroData } from '@/lib/sections/hero.server';
@@ -53,15 +53,24 @@ export async function generateMetadata(): Promise<Metadata> {
     openGraph: {
       title: seo.siteTitle,
       description: seo.siteDescription,
-      siteName: 'Jhon Keneth Namias Portfolio',
+      siteName: 'Jhon Keneth Ryan B. Namias Portfolio',
       type: 'website',
       locale: 'en_US',
+      images: [
+        {
+          url: '/og-image.png',
+          width: 1200,
+          height: 630,
+          alt: PERSON_IMAGE_ALT,
+        },
+      ],
     },
     twitter: {
       card: 'summary_large_image',
       site: '@PP_Namias',
       title: seo.siteTitle,
       description: seo.siteDescription,
+      images: ['/og-image.png'],
     },
     manifest: '/site.webmanifest',
     appleWebApp: {
