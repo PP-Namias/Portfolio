@@ -240,3 +240,21 @@ Notes for keeping it smart:
   - Add robots.test.ts covering catch-all, web crawler group, AI crawler group,
   - and sitemap reference (4 tests)
   - Verified: vitest 1089 passed, tsc --noEmit, npm run lint, doctor:check 100/100
+### 2026-08-06 - Update
+
+  - cac3a753 fix(seo): retire stale og-image.svg references and static robots.txt
+  - Delete public/robots.txt so the new src/app/robots.ts route serves (static
+  - file takes precedence over the route in Next.js; content was stale)
+  - sw.js: precache /og-image.png instead of the deleted svg, bump CACHE_VERSION
+  - v5 -> v6 so browsers reinstall the service worker and drop the 404 entry
+  - generate-sw-manifest.mjs: BASE_ASSETS now /og-image.png
+  - next.config.js: images.localPatterns and header route point at og-image.png
+  - with immutable caching
+  - site.webmanifest: PWA screenshot entry now the real PNG (1200x630)
+  - seed-site-settings.ts: Sanity seed uploads og-image.png, not the deleted svg
+  - docs/performance/dashboard.md: cache-layer table row updated
+  - Pre-PR audit sweep: realtime chain (live route + webhook + useSanityLiveRefresh
+  - polling) verified end-to-end with 44 targeted tests; no stale references to
+  - og-image.svg / opengraph-image / twitter-image / sw.js in workflows or src
+  - Verified: vitest 121 files/1089 passed, tsc --noEmit, npm run lint (0 errors),
+  - doctor:check 100/100 all green
