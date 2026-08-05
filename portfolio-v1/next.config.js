@@ -102,7 +102,7 @@ const nextConfig = {
     ],
     localPatterns: [
       {pathname: '/api/media/sanity/**'},
-      {pathname: '/og-image.svg'},
+      {pathname: '/og-image.png'},
     ],
     deviceSizes: [320, 480, 640, 768, 1024, 1280, 1536],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384, 512, 640, 750, 828, 1080, 1200, 1920, 2048, 3840],
@@ -138,9 +138,9 @@ const nextConfig = {
         ],
       },
       {
-        source: '/og-image.svg',
+        source: '/og-image.png',
         headers: [
-          { key: 'Cache-Control', value: 'public, max-age=86400, stale-while-revalidate=604800' },
+          { key: 'Cache-Control', value: 'public, max-age=31536000, immutable' },
         ],
       },
       {

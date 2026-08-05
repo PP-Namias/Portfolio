@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'v5';
+const CACHE_VERSION = 'v6';
 const STATIC_CACHE = `portfolio-static-${CACHE_VERSION}`;
 const NAV_CACHE = `portfolio-nav-${CACHE_VERSION}`;
 const API_CACHE = `portfolio-api-${CACHE_VERSION}`;
@@ -9,7 +9,7 @@ const ASSETS = [
   '/site.webmanifest',
   '/favicon.svg',
   '/apple-touch-icon.png',
-  '/og-image.svg',
+  '/og-image.png',
   '/icons/icon-192x192.png',
   '/icons/icon-256x256.png',
   '/icons/icon-384x384.png',

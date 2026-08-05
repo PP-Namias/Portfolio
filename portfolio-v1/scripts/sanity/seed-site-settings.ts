@@ -39,9 +39,9 @@ const client: SanityClient = createClient({
 const __dirname = process.cwd()
 const ogImagePath = (() => {
   const candidates = [
-    resolve(__dirname, 'public', 'og-image.svg'),
-    resolve(__dirname, '..', 'public', 'og-image.svg'),
-    resolve(__dirname, '..', '..', 'public', 'og-image.svg'),
+    resolve(__dirname, 'public', 'og-image.png'),
+    resolve(__dirname, '..', 'public', 'og-image.png'),
+    resolve(__dirname, '..', '..', 'public', 'og-image.png'),
   ]
   for (const p of candidates) {
     if (existsSync(p)) return p
@@ -52,8 +52,8 @@ const ogImagePath = (() => {
 async function uploadOgImage(): Promise<{_type: 'image'; asset: {_type: 'reference'; _ref: string}}> {
   const fileBuffer = readFileSync(ogImagePath)
   const asset = await client.assets.upload('image', fileBuffer, {
-    filename: 'og-image.svg',
-    contentType: 'image/svg+xml',
+    filename: 'og-image.png',
+    contentType: 'image/png',
     description: 'Branded portfolio Open Graph image (1200x630)',
   })
   return {

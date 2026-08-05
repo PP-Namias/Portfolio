@@ -40,7 +40,7 @@
 | `/api/sanity/live` | no-cache, no-store | No | - |
 | `/api/sanity/webhook` | no-cache, no-store | No | - |
 | `/api/performance/cache` | no-cache, private | No | - |
-| `/og-image.svg` | public, max-age=86400 | No | 604800 |
+| `/og-image.png` | public, max-age=31536000 | No | - |
 | Pages (via ISR) | public, max-age=3600, s-maxage=86400 | No | - |
 
 ## Cache Tags
