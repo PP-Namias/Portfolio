@@ -290,3 +290,27 @@ Notes for keeping it smart:
   - knowsAbout expanded: autonomous agents, n8n, IoT, Raspberry Pi, Arduino
   - Verified: vitest 122 files/1098 tests pass, tsc clean, lint 0 errors,
   - doctor 100/100
+
+### 2026-08-08 - Update
+
+  - 0ca0dfe9 feat(docker): containerize monorepo with compose, k8s, and CI/CD
+  - Dockerfiles: portfolio-v1 (Next.js standalone, non-root, port 3000),
+  - ai-service (Hono+LangGraph, tsx, port 8787, writable .ai-service-data
+  - volume, /api/health healthcheck), studio (Sanity, port 3333)
+  - Fixed broken COPY context paths in studio/Dockerfile
+  - Fixed portfolio-v1/.dockerignore: kept package-lock.json for npm ci,
+  - kept scripts/generate-sw-manifest.mjs for the build
+  - docker-compose.yml (dev): hot-reload volume mounts, ai-data named
+  - volume, shared bridge network, healthchecks, resource limits
+  - docker-compose.prod.yml (prod): runner targets, read_only + tmpfs,
+  - no-new-privileges, nginx proxy on 8080 routing / -> v1:3000 and
+  - /api/ai/* -> ai-service:8787 (/ai stripped, SSE proxy_buffering off)
+  - .env.docker.example with full env key set (gitignored .env.docker)
+  - Kubernetes: namespace, configmap, secrets-template, deployments,
+  - services, ingress (namias.tech, /api/ai regex rewrite, TLS)
+  - GitHub Actions: ci.yml matrix gate, deploy-frontends.yml dual
+  - Vercel+Cloudflare, docker-publish.yml ghcr.io builds with gha cache
+  - README: Cloud Infrastructure & DevOps section (ports, launch
+  - commands, k8s, CI/CD table, secrets guide, dual-deploy model)
+  - Validated: compose config -q (dev+prod), YAML parse of all k8s and
+  - workflow files (deployments/services multi-doc confirmed)
