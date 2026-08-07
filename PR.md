@@ -258,3 +258,20 @@ Notes for keeping it smart:
   - og-image.svg / opengraph-image / twitter-image / sw.js in workflows or src
   - Verified: vitest 121 files/1089 passed, tsc --noEmit, npm run lint (0 errors),
   - doctor:check 100/100 all green
+
+### 2026-08-08 - Update
+
+  - 33cbc2e1 chore(hooks): activate husky + lint-staged zero-defect git hooks
+  - Root package.json (private dev tooling) + prepare: husky so clones
+  - auto-install hooks; pins husky 9.1.7, lint-staged 17.0.8, commitlint
+  - 21.1.0, prettier 3.9.0 (all were ad-hoc in root node_modules)
+  - Fixed core.hooksPath -> .husky/_ (was pointing at dead .githooks stub
+  - that only echoed text; deleted the stub dir)
+  - pre-commit: lint-staged only (eslint --fix + prettier --write on staged
+  - portfolio-v1 files per .lintstagedrc.json globs) + optional gitleaks;
+  - full-project tsc moved out of the commit path for speed
+  - pre-push: full tsc --noEmit + full vitest run (1089 tests) gate
+  - commit-msg: commitlint conventional commits now actually enforced
+  - Dry-run verified: intentional rules-of-hooks violation blocked the
+  - commit (husky exit 1, no commit created); corrected file passed
+  - Verified: lint-staged + commitlint ran on the setup commit itself
