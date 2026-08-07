@@ -1,11 +1,27 @@
 #!/bin/sh
 echo "[hooks] Running pre-push checks..."
 
-# 1. TypeScript type check (full project, portfolio-v1)
-echo "[hooks] TypeScript type check..."
+# 1. TypeScript type checks (portfolio-v1, ai-service, studio; portfolio-v2 excluded)
+echo "[hooks] TypeScript type check (portfolio-v1)..."
 cd portfolio-v1 && npx tsc --noEmit
 if [ $? -ne 0 ]; then
-  echo "[hooks] TypeScript errors found. Fix type errors before pushing."
+  echo "[hooks] portfolio-v1: TypeScript errors found. Fix type errors before pushing."
+  exit 1
+fi
+cd ..
+
+echo "[hooks] TypeScript type check (ai-service)..."
+cd ai-service && npm run typecheck
+if [ $? -ne 0 ]; then
+  echo "[hooks] ai-service: TypeScript errors found. Fix type errors before pushing."
+  exit 1
+fi
+cd ..
+
+echo "[hooks] TypeScript type check (studio)..."
+cd studio && npm run typecheck
+if [ $? -ne 0 ]; then
+  echo "[hooks] studio: TypeScript errors found. Fix type errors before pushing."
   exit 1
 fi
 cd ..

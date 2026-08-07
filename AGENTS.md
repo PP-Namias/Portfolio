@@ -419,6 +419,6 @@ Repo-root git hooks enforce zero-defect commits. Tooling lives in the root `pack
 
 - **pre-commit** — `lint-staged` runs ESLint `--fix` + Prettier `--write` on staged files in `portfolio-v1/` only (globs in `portfolio-v1/.lintstagedrc.json`). Full-project checks are deliberately NOT here to keep commits fast. Optional gitleaks scan runs if installed.
 - **commit-msg** — commitlint enforces conventional commits (`commitlint.config.mjs` at root).
-- **pre-push** — full `tsc --noEmit` + full `vitest run` (1089 tests) run before code leaves the machine.
+- **pre-push** — typecheck `tsc --noEmit` for `portfolio-v1`, `ai-service`, and `studio` + full `vitest run` (~1098 tests) run before code leaves the machine. (Root cause of the original pre-push failure: a zombie `next dev` process wrote truncated `.next/dev/types` files that `tsc` picked up via `include`; kill stale node/next processes and rebuild `.next` if you see TS1435/truncated-declaration errors.)
 - **Emergency bypass** — `git commit --no-verify` / `git push --no-verify` skips hooks; use only when a hook has a false positive or a broken dependency.
 - Hooks auto-skip deleted files and empty staged sets (no-op success).
