@@ -275,3 +275,18 @@ Notes for keeping it smart:
   - Dry-run verified: intentional rules-of-hooks violation blocked the
   - commit (husky exit 1, no commit created); corrected file passed
   - Verified: lint-staged + commitlint ran on the setup commit itself
+
+### 2026-08-08 - Update
+
+  - 26674180 feat(seo): add llms.txt for AI crawlers and expand Knowledge Graph JSON-LD
+  - public/llms.txt: RAG-optimized Markdown per llms.txt spec (title + > URL
+  - blockquote) - identity, roles, Caloocan City PH, full stack + AI automation
+  - competencies, Klaro, M.A.S.H., Aeternitas/Wilshire/PhoneCraft roles, education
+  - Linked in <head> via metadata alternates.types
+  - (<link rel='alternate' type='text/markdown' href='/llms.txt' />)
+  - Person JSON-LD: + address (PostalAddress), knowsLanguage, description,
+  - disambiguatingDescription, mainEntityOfPage, ImageObject @id
+  - WebSite JSON-LD: + inLanguage, publisher/about graph edges to Person
+  - knowsAbout expanded: autonomous agents, n8n, IoT, Raspberry Pi, Arduino
+  - Verified: vitest 122 files/1098 tests pass, tsc clean, lint 0 errors,
+  - doctor 100/100
