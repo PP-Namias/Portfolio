@@ -1,17 +1,15 @@
 FROM node:22-alpine AS base
-RUN corepack enable && corepack prepare npm@10 --activate
 RUN apk add --no-cache libc6-compat
+WORKDIR /app
 
 FROM base AS deps
-WORKDIR /app
-COPY studio/package.json ./
-RUN npm install
+COPY package.json package-lock.json ./
+RUN npm ci
 
 FROM base AS builder
-WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
-COPY studio/ ./
-
+COPY . .
+ENV NODE_ENV=production
 RUN npm run build
 
 FROM base AS runner
@@ -25,10 +23,14 @@ RUN adduser --system --uid 1001 sanity
 
 COPY --from=builder --chown=sanity:sanity /app/dist ./dist
 COPY --from=builder --chown=sanity:sanity /app/node_modules ./node_modules
-COPY --from=builder --chown=sanity:sanity /app/package.json ./
+COPY --from=builder --chown=sanity:sanity /app/package.json /app/package-lock.json ./
+COPY --from=builder --chown=sanity:sanity /app/sanity.config.ts /app/sanity.cli.ts /app/tsconfig.json ./
 
 USER sanity
 
 EXPOSE 3333
+
+HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
+  CMD wget --no-verbose --tries=1 --spider http://localhost:3333 || exit 1
 
 CMD ["npm", "start"]

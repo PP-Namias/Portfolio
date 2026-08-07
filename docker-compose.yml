@@ -1,136 +1,14 @@
+name: namias-portfolio
+
 services:
-  # ═══════════════════════════════════════════════════════════════
-  # Portfolio V1 - Independent service
-  # ═══════════════════════════════════════════════════════════════
   portfolio-v1:
-    build:
-      context: ./portfolio-v1
-      dockerfile: Dockerfile
-      target: runner
-    container_name: namias-v1
-    ports:
-      - "3001:3000"
-    env_file:
-      - .env.docker
-    environment:
-      - NODE_ENV=production
-      - NEXT_PUBLIC_SITE_URL=http://localhost:3001
-    init: true
-    restart: always
-    read_only: true
-    tmpfs:
-      - /app/.next/cache:size=256m
-    security_opt:
-      - no-new-privileges:true
-    deploy:
-      resources:
-        limits:
-          cpus: "1.0"
-          memory: 512M
-        reservations:
-          cpus: "0.25"
-          memory: 128M
-    healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 60s
-    networks:
-      - v1-network
-
-  # ═══════════════════════════════════════════════════════════════
-  # Portfolio V2 - Independent service
-  # ═══════════════════════════════════════════════════════════════
-  portfolio-v2:
-    build:
-      context: ./portfolio-v2
-      dockerfile: Dockerfile
-      target: runner
-    container_name: namias-v2
-    ports:
-      - "3002:3000"
-    env_file:
-      - .env.docker
-    environment:
-      - NODE_ENV=production
-      - NEXT_PUBLIC_APP_URL=http://localhost:3002
-    init: true
-    restart: always
-    read_only: true
-    tmpfs:
-      - /app/.next/cache:size=256m
-    security_opt:
-      - no-new-privileges:true
-    deploy:
-      resources:
-        limits:
-          cpus: "1.0"
-          memory: 512M
-        reservations:
-          cpus: "0.25"
-          memory: 128M
-    healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/api/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 60s
-    networks:
-      - v2-network
-
-  # ═══════════════════════════════════════════════════════════════
-  # Sanity Studio - Independent service
-  # ═══════════════════════════════════════════════════════════════
-  sanity-studio:
-    build:
-      context: ./studio
-      dockerfile: Dockerfile
-      target: runner
-    container_name: namias-studio
-    ports:
-      - "3333:3333"
-    env_file:
-      - .env.docker
-    environment:
-      - NODE_ENV=production
-      - PORT=3333
-      - SANITY_STUDIO_PROJECT_ID=${NEXT_PUBLIC_SANITY_PROJECT_ID}
-      - SANITY_STUDIO_DATASET=${NEXT_PUBLIC_SANITY_DATASET}
-    init: true
-    restart: always
-    read_only: true
-    security_opt:
-      - no-new-privileges:true
-    deploy:
-      resources:
-        limits:
-          cpus: "0.5"
-          memory: 256M
-        reservations:
-          cpus: "0.1"
-          memory: 64M
-    healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3333"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 30s
-    networks:
-      - studio-network
-
-  # ═══════════════════════════════════════════════════════════════
-  # Development mode services (docker-compose --profile dev up)
-  # ═══════════════════════════════════════════════════════════════
-  portfolio-v1-dev:
-    profiles: ["dev"]
     build:
       context: ./portfolio-v1
       dockerfile: Dockerfile
       target: deps
     container_name: namias-v1-dev
     ports:
-      - "3001:3000"
+      - "3000:3000"
     volumes:
       - ./portfolio-v1:/app
       - /app/node_modules
@@ -139,15 +17,14 @@ services:
       - .env.docker
     environment:
       - NODE_ENV=development
-      - NEXT_PUBLIC_SITE_URL=http://localhost:3001
-    command: npm run dev
+    command: npx next dev -p 3000
     init: true
-    restart: always
+    restart: unless-stopped
     deploy:
       resources:
         limits:
           cpus: "2.0"
-          memory: 1G
+          memory: 2G
     healthcheck:
       test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000"]
       interval: 30s
@@ -155,45 +32,44 @@ services:
       retries: 3
       start_period: 90s
     networks:
-      - v1-network
+      - namias-net
 
-  portfolio-v2-dev:
-    profiles: ["dev"]
+  ai-service:
     build:
-      context: ./portfolio-v2
+      context: ./ai-service
       dockerfile: Dockerfile
       target: deps
-    container_name: namias-v2-dev
+    container_name: namias-ai-dev
     ports:
-      - "3002:3000"
+      - "8787:8787"
     volumes:
-      - ./portfolio-v2:/app
+      - ./ai-service:/app
       - /app/node_modules
-      - /app/.next
+      - ai-data:/app/.ai-service-data
     env_file:
       - .env.docker
     environment:
       - NODE_ENV=development
-      - NEXT_PUBLIC_APP_URL=http://localhost:3002
-    command: pnpm dev
+      - AI_SERVICE_HOST=0.0.0.0
+      - AI_SERVICE_PORT=8787
+    command: npm run dev
     init: true
-    restart: always
+    restart: unless-stopped
     deploy:
       resources:
         limits:
-          cpus: "2.0"
+          cpus: "1.0"
           memory: 1G
     healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000"]
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8787/api/health"]
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 90s
     networks:
-      - v2-network
+      - namias-net
 
-  sanity-studio-dev:
-    profiles: ["dev"]
+  studio:
     build:
       context: ./studio
       dockerfile: Dockerfile
@@ -209,15 +85,13 @@ services:
     environment:
       - NODE_ENV=development
       - PORT=3333
-      - SANITY_STUDIO_PROJECT_ID=${NEXT_PUBLIC_SANITY_PROJECT_ID}
-      - SANITY_STUDIO_DATASET=${NEXT_PUBLIC_SANITY_DATASET}
     command: npm run dev
     init: true
-    restart: always
+    restart: unless-stopped
     deploy:
       resources:
         limits:
-          cpus: "2.0"
+          cpus: "1.0"
           memory: 1G
     healthcheck:
       test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3333"]
@@ -226,19 +100,12 @@ services:
       retries: 3
       start_period: 90s
     networks:
-      - studio-network
+      - namias-net
 
-# ═══════════════════════════════════════════════════════════════
-# Isolated networks - each service on its own network
-# This ensures complete isolation and independence
-# ═══════════════════════════════════════════════════════════════
+volumes:
+  ai-data:
+
 networks:
-  v1-network:
+  namias-net:
     driver: bridge
-    name: namias-v1-net
-  v2-network:
-    driver: bridge
-    name: namias-v2-net
-  studio-network:
-    driver: bridge
-    name: namias-studio-net
+    name: namias-dev-net

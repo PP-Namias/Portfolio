@@ -205,6 +205,78 @@ Only repository owners, members, or collaborators can approve remediation reruns
 
 ---
 
+## 🐳 Cloud Infrastructure & DevOps
+
+### Architecture & local routing
+
+| URL | Container service | Stack | Internal port |
+| --- | ----------------- | ----- | -------------- |
+| `http://localhost:8080/` | `nginx` (reverse proxy) | Nginx 1.27 | 80 |
+| `http://localhost:8080/api/ai/*` | `ai-service` (via proxy, `/ai` stripped → `/api/*`) | Hono + LangGraph | 8787 |
+| `http://localhost:3000` | `portfolio-v1` (Next.js standalone) | Next.js 16 | 3000 |
+| `http://localhost:8787` | `ai-service` | Hono + LangGraph + tsx | 8787 |
+| `http://localhost:3333` | `studio` (Sanity CMS) | Sanity + Vite | 3333 |
+
+> Portfolio v2 is **excluded** from Docker, Compose, K8s, and CI/CD — it is work-in-progress.
+
+### Local launch (Docker)
+
+```bash
+# 1. Environment (template -> real values)
+cp .env.docker.example .env.docker   # fill in tokens/keys
+
+# 2a. Development (hot reload, volume-mounted)
+docker compose up --build
+
+# 2b. Production (multi-stage builds + nginx proxy on :8080)
+docker compose -f docker-compose.prod.yml up --build
+```
+
+Hot-reload mounts: `./portfolio-v1:/app`, `./ai-service:/app`, `./studio:/app` (anonymous `node_modules` volumes). AI thread history persists in the `ai-data` named volume.
+
+### Kubernetes
+
+```bash
+# 1. Secrets (never commit populated values)
+cp .k8s/secrets-template.yaml .k8s/secrets.yaml
+#    fill the base64 values, then:
+kubectl apply -f .k8s/secrets.yaml
+
+# 2. Apply the stack
+kubectl apply -f .k8s/namespace.yaml
+kubectl apply -f .k8s/configmap.yaml
+kubectl apply -f .k8s/deployments.yaml
+kubectl apply -f .k8s/services.yaml
+kubectl apply -f .k8s/ingress.yaml   # needs an nginx Ingress controller + TLS secret `namias-tech-tls`
+```
+
+Ingress routing: `/` → `portfolio-v1:3000` (Prefix), `/api/ai/*` → `ai-service:8787` with `rewrite-target: /api/$2` (regex capture, `ImplementationSpecific`). Studio stays internal (ClusterIP) because its SPA assets are root-absolute.
+
+### CI/CD (GitHub Actions)
+
+| Workflow | Trigger | What it does |
+| -------- | ------- | ------------ |
+| `ci.yml` | PR → `main` | Matrix quality gate: lint + typecheck + tests for `portfolio-v1`, `ai-service`, `studio` (v2 excluded via `paths-ignore`) |
+| `deploy-frontends.yml` | push → `main` | Parallel dual deploy: **Vercel** (CLI, prebuilt) + **Cloudflare Pages/Workers** (wrangler) |
+| `docker-publish.yml` | push → `main` (ai/studio paths) | Buildx builds `ghcr.io/pp-namias/{ai-service,studio}` with gha layer cache, tagged `sha-*` + `latest` |
+
+### Required repository secrets
+
+| Secret | Used by | Purpose |
+| ------ | ------- | ------- |
+| `VERCEL_TOKEN` | deploy-frontends | Vercel auth |
+| `VERCEL_ORG_ID` | deploy-frontends | Vercel org scope |
+| `VERCEL_PROJECT_ID` | deploy-frontends | Vercel project scope |
+| `CLOUDFLARE_API_TOKEN` | deploy-frontends | Wrangler auth (Workers/Pages) |
+| `CLOUDFLARE_ACCOUNT_ID` | deploy-frontends | Cloudflare account scope |
+| `GHCR_PAT` (optional) | docker-publish | Defaults to `GITHUB_TOKEN`; only needed for cross-repo push |
+
+### Dual deployment model
+
+`deploy-frontends.yml` runs Vercel and Cloudflare jobs **in parallel** on every push to `main`. Both jobs deploy `portfolio-v1`; Vercel uses the prebuilt output (`vercel build --prod --prebuilt`) and Cloudflare uses `wrangler deploy` against the existing `wrangler.jsonc` config. Either provider can serve as primary DNS (currently `namias.tech` → Vercel) with the other as a warm standby.
+
+---
+
 ## Design acknowledgment
 
 This project draws design inspiration from [bryllim.com](https://bryllim.com/). All implementation code in this repository is original.

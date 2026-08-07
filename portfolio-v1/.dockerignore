@@ -17,8 +17,6 @@ test-results
 .env*
 !.env.example
 
-package-lock.json
-
 wrangler.jsonc
 open-next.config.ts
 
@@ -27,6 +25,7 @@ studio/.sanity
 studio/dist
 
 docs
-scripts
+scripts/*
+!scripts/generate-sw-manifest.mjs
 
 .namias

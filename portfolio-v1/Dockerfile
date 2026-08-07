@@ -1,18 +1,17 @@
 FROM node:22-alpine AS base
 RUN corepack enable && corepack prepare npm@10 --activate
 RUN apk add --no-cache libc6-compat
+WORKDIR /app
 
 FROM base AS deps
-WORKDIR /app
-COPY package.json ./
-RUN npm install
+COPY package.json package-lock.json ./
+RUN npm ci
 
 FROM base AS builder
-WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
-
-RUN npm run build
+ENV NEXT_TELEMETRY_DISABLED=1
+RUN npx next build && npm run generate-sw-manifest
 
 FROM base AS runner
 WORKDIR /app
@@ -34,5 +33,8 @@ RUN mkdir -p /app/.next/cache && chown -R nextjs:nodejs /app/.next/cache
 USER nextjs
 
 EXPOSE 3000
+
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+  CMD wget --no-verbose --tries=1 --spider http://localhost:3000/ || exit 1
 
 CMD ["node", "server.js"]
