@@ -1,4 +1,0 @@
-#!/bin/sh
-# Auto-commit hook: ensures changes can't be committed without staging
-# This hook runs before each commit to verify quality
-echo "Running pre-commit checks..."
