@@ -1,43 +1,48 @@
-import type { Metadata, Viewport } from 'next';
-import { Inter } from 'next/font/google';
-import { draftMode } from 'next/headers';
-import { VisualEditing } from 'next-sanity';
-import { Providers } from './providers';
-import { fallbackCmsContent, type CmsContent } from '@/lib/cms-content.shared';
-import { FloatingHubWithBoundary } from '@/components/ui/FloatingHub';
-import { ScrollToTop } from '@/components/ui/ScrollToTop';
-import { Analytics } from '@/components/ui/Analytics';
-import { MagicCursor } from '@/components/ui/MagicCursor';
-import { OfflineBanner } from '@/components/ui/OfflineBanner';
-import { ServiceWorkerManager } from '@/components/ui/ServiceWorkerManager';
-import { PathMemory } from '@/components/ui/PathMemory';
-import { SanityLiveRefreshBridge } from '@/hooks/useSanityLiveRefresh';
-import { JsonLd } from '@/components/seo/JsonLd';
-import { getCmsContent } from '@/lib/cms-content.server';
-import { IS_MAGIC_CURSOR_VISIBLE, IS_PWA_ENABLED, IS_REALTIME_SANITY_ENABLED, IS_STREAMING_SSR_ENABLED } from '@/lib/features';
-import { buildPortfolioJsonLd, PERSON_IMAGE_ALT } from '@/lib/jsonld';
-import { SITE_URL } from '@/lib/site-config';
-import { fetchSeoData } from '@/lib/sections/seo.server';
-import { fetchHeroData } from '@/lib/sections/hero.server';
-import './globals.css';
+import type { Metadata, Viewport } from 'next'
+import { Inter } from 'next/font/google'
+import { draftMode } from 'next/headers'
+import { VisualEditing } from 'next-sanity'
+import { Providers } from './providers'
+import { fallbackCmsContent, type CmsContent } from '@/lib/cms-content.shared'
+import { FloatingHubWithBoundary } from '@/components/ui/FloatingHub'
+import { ScrollToTop } from '@/components/ui/ScrollToTop'
+import { Analytics } from '@/components/ui/Analytics'
+import { MagicCursor } from '@/components/ui/MagicCursor'
+import { OfflineBanner } from '@/components/ui/OfflineBanner'
+import { ServiceWorkerManager } from '@/components/ui/ServiceWorkerManager'
+import { PathMemory } from '@/components/ui/PathMemory'
+import { SanityLiveRefreshBridge } from '@/hooks/useSanityLiveRefresh'
+import { JsonLd } from '@/components/seo/JsonLd'
+import { getCmsContent } from '@/lib/cms-content.server'
+import {
+  IS_MAGIC_CURSOR_VISIBLE,
+  IS_PWA_ENABLED,
+  IS_REALTIME_SANITY_ENABLED,
+  IS_STREAMING_SSR_ENABLED,
+} from '@/lib/features'
+import { buildPortfolioJsonLd, PERSON_IMAGE_ALT } from '@/lib/jsonld'
+import { SITE_URL } from '@/lib/site-config'
+import { fetchSeoData } from '@/lib/sections/seo.server'
+import { fetchHeroData } from '@/lib/sections/hero.server'
+import './globals.css'
 
 const inter = Inter({
   subsets: ['latin'],
   display: 'optional',
   variable: '--font-inter',
   fallback: ['system-ui', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
-});
+})
 
-const fallbackSeo = fallbackCmsContent.seoSettings;
+const fallbackSeo = fallbackCmsContent.seoSettings
 
 export const viewport: Viewport = {
   themeColor: '#000000',
-};
+}
 
 export async function generateMetadata(): Promise<Metadata> {
   const seo = IS_STREAMING_SSR_ENABLED
     ? await fetchSeoData()
-    : (await getCmsContent()).seoSettings || fallbackSeo;
+    : (await getCmsContent()).seoSettings || fallbackSeo
 
   return {
     title: seo.siteTitle,
@@ -45,6 +50,9 @@ export async function generateMetadata(): Promise<Metadata> {
     metadataBase: new URL(seo.canonicalUrl || fallbackSeo.canonicalUrl),
     alternates: {
       canonical: seo.canonicalUrl || fallbackSeo.canonicalUrl,
+      types: {
+        'text/markdown': '/llms.txt',
+      },
     },
     robots: {
       index: !seo.noindex,
@@ -82,16 +90,16 @@ export async function generateMetadata(): Promise<Metadata> {
       icon: '/favicon.svg',
       apple: '/apple-touch-icon.png',
     },
-  };
+  }
 }
 
-const jsonLdImageFallback = `${SITE_URL}/og-image.png`;
+const jsonLdImageFallback = `${SITE_URL}/og-image.png`
 
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  const isTest = process.env.VITEST === 'true' || process.env.NODE_ENV === 'test';
+  const isTest = process.env.VITEST === 'true' || process.env.NODE_ENV === 'test'
 
   if (isTest) {
-    const cmsContent = fallbackCmsContent;
+    const cmsContent = fallbackCmsContent
 
     return (
       <html lang="en" suppressHydrationWarning className={inter.variable}>
@@ -104,7 +112,12 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
           <link rel="dns-prefetch" href="https://cloud.umami.is" />
           <link rel="preconnect" href="https://cloud.umami.is" />
           <style>{`body{font-family:system-ui,Segoe UI,Roboto,Helvetica Neue,Arial,sans-serif;}a:focus-visible{outline:2px solid #db2777;outline-offset:2px;border-radius:8px;}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border-width:0;}`}</style>
-          <JsonLd data={buildPortfolioJsonLd(fallbackCmsContent.hero.profileImageUrl || jsonLdImageFallback)} id="layout-jsonld-test" />
+          <JsonLd
+            data={buildPortfolioJsonLd(
+              fallbackCmsContent.hero.profileImageUrl || jsonLdImageFallback
+            )}
+            id="layout-jsonld-test"
+          />
           <Analytics />
         </head>
         <body className="bg-background-light dark:bg-background-dark text-text-primary-light dark:text-text-primary-dark min-h-screen font-sans antialiased">
@@ -124,13 +137,13 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
           </Providers>
         </body>
       </html>
-    );
+    )
   }
 
-  const isDraftMode = await draftMode().then((d) => d.isEnabled);
+  const isDraftMode = await draftMode().then((d) => d.isEnabled)
 
   if (IS_STREAMING_SSR_ENABLED) {
-    const [seoData, heroData] = await Promise.all([fetchSeoData(), fetchHeroData()]);
+    const [seoData, heroData] = await Promise.all([fetchSeoData(), fetchHeroData()])
 
     const streamingCmsContent: CmsContent = {
       ...fallbackCmsContent,
@@ -157,7 +170,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
         profileImageUrl: heroData.hero.profileImageUrl,
       },
       socialLinks: heroData.socialLinks,
-    };
+    }
 
     return (
       <html lang="en" suppressHydrationWarning className={inter.variable}>
@@ -170,7 +183,10 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
           <link rel="dns-prefetch" href="https://cloud.umami.is" />
           <link rel="preconnect" href="https://cloud.umami.is" />
           <style>{`body{font-family:system-ui,Segoe UI,Roboto,Helvetica Neue,Arial,sans-serif;}.font-inter{font-family:var(--font-inter),system-ui,Segoe UI,Roboto,Helvetica Neue,Arial,sans-serif;}a:focus-visible{outline:2px solid #db2777;outline-offset:2px;border-radius:8px;}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border-width:0;}`}</style>
-          <JsonLd data={buildPortfolioJsonLd(heroData.hero.profileImageUrl || jsonLdImageFallback)} id="layout-jsonld-streaming" />
+          <JsonLd
+            data={buildPortfolioJsonLd(heroData.hero.profileImageUrl || jsonLdImageFallback)}
+            id="layout-jsonld-streaming"
+          />
           <Analytics />
         </head>
         <body className="bg-background-light dark:bg-background-dark text-text-primary-light dark:text-text-primary-dark min-h-screen font-sans antialiased">
@@ -193,25 +209,28 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
           </Providers>
         </body>
       </html>
-    );
+    )
   }
 
-  const cmsContent = await getCmsContent();
+  const cmsContent = await getCmsContent()
 
   return (
-      <html lang="en" suppressHydrationWarning className={inter.variable}>
-        <head>
-          <link rel="dns-prefetch" href="https://cdn.sanity.io" />
-          <link rel="preconnect" href="https://cdn.sanity.io" />
-          <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
-          <link rel="preconnect" href="https://fonts.googleapis.com" />
-          <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-          <link rel="dns-prefetch" href="https://cloud.umami.is" />
-          <link rel="preconnect" href="https://cloud.umami.is" />
-          <style>{`body{font-family:system-ui,Segoe UI,Roboto,Helvetica Neue,Arial,sans-serif;}a:focus-visible{outline:2px solid #db2777;outline-offset:2px;border-radius:8px;}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border-width:0;}`}</style>
-          <JsonLd data={buildPortfolioJsonLd(cmsContent.hero.profileImageUrl || jsonLdImageFallback)} id="layout-jsonld-runtime" />
-          <Analytics />
-        </head>
+    <html lang="en" suppressHydrationWarning className={inter.variable}>
+      <head>
+        <link rel="dns-prefetch" href="https://cdn.sanity.io" />
+        <link rel="preconnect" href="https://cdn.sanity.io" />
+        <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://cloud.umami.is" />
+        <link rel="preconnect" href="https://cloud.umami.is" />
+        <style>{`body{font-family:system-ui,Segoe UI,Roboto,Helvetica Neue,Arial,sans-serif;}a:focus-visible{outline:2px solid #db2777;outline-offset:2px;border-radius:8px;}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border-width:0;}`}</style>
+        <JsonLd
+          data={buildPortfolioJsonLd(cmsContent.hero.profileImageUrl || jsonLdImageFallback)}
+          id="layout-jsonld-runtime"
+        />
+        <Analytics />
+      </head>
       <body className="bg-background-light dark:bg-background-dark text-text-primary-light dark:text-text-primary-dark min-h-screen font-sans antialiased">
         <a
           href="#main-content"
@@ -232,5 +251,5 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
         </Providers>
       </body>
     </html>
-  );
+  )
 }

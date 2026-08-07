@@ -1,0 +1,76 @@
+# Jhon Keneth Ryan B. Namias
+
+> https://namias.tech
+
+## Identity
+
+- Name: Jhon Keneth Ryan B. Namias
+- Roles: Project Manager, Full Stack Engineer, AI Automation Specialist
+- Location: Caloocan City, Philippines
+- Email: pp.namias@gmail.com
+- Profiles: [GitHub](https://github.com/PP-Namias) · [LinkedIn](https://www.linkedin.com/in/pp-namias/) · [X/Twitter](https://x.com/PP_Namias)
+
+## Summary
+
+Full Stack Engineer and AI Automation Specialist with project management experience. Builds production web applications end-to-end (Flutter, NestJS, Next.js, React-TypeScript, PostgreSQL) and automates business workflows with AI agents and hardware/IoT integrations (n8n, Raspberry Pi, Arduino). BS Computer Science graduate (Cum Laude) from the University of Caloocan City.
+
+## Core Competencies
+
+### Full Stack Development
+
+- Flutter (cross-platform mobile)
+- NestJS (backend APIs and services)
+- Next.js + React-TypeScript (web applications, SSR/SSG)
+- PostgreSQL (relational databases)
+- Full product lifecycle: design, implementation, testing, deployment, maintenance
+
+### AI Automation
+
+- n8n (workflow automation)
+- Autonomous AI agents (design and orchestration)
+- AI chatbot architecture (LangGraph, streaming, tool calling)
+- Hardware/IoT integration via Raspberry Pi and Arduino
+
+### Project Management
+
+- Planning, scoping, and delivery of software projects
+- Cross-functional coordination and stakeholder communication
+
+## Key Projects & Experience
+
+### Projects
+
+#### Klaro — Medical Document Processing Platform
+
+- Medical document processing platform with automated data extraction and processing workflows
+- Technologies: full stack web engineering, automation pipelines
+
+#### M.A.S.H. — Thesis Project (Full Stack + IoT)
+
+- BS Computer Science thesis combining full stack development with IoT hardware integration
+- Technologies: full stack web/mobile, Raspberry Pi/Arduino integration
+
+### Professional Roles
+
+#### Software Engineer Intern — Aeternitas Chapels
+
+- Built an enterprise HRIS (Human Resource Information System) for internal operations
+- Applied production software engineering practices end-to-end
+
+#### Automation Engineer Trainee — Wilshire Financial Network
+
+- Financial services automation work: process automation and workflow optimization
+
+#### Head Technician — PhoneCraft
+
+- Led technical operations; hardware diagnostics and repair services
+
+## Education
+
+- BS Computer Science, University of Caloocan City — Cum Laude
+
+## What This Site Is
+
+- Personal portfolio of Jhon Keneth Ryan B. Namias: projects, experience, certifications, and blog
+- Sections: home, projects, blog, certifications, experience, contact
+- Contact: pp.namias@gmail.com
