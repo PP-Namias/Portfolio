@@ -314,3 +314,23 @@ Notes for keeping it smart:
   - commands, k8s, CI/CD table, secrets guide, dual-deploy model)
   - Validated: compose config -q (dev+prod), YAML parse of all k8s and
   - workflow files (deployments/services multi-doc confirmed)
+
+### 2026-08-08 - Update
+
+  - f713b160 fix(git): repair pre-push hook and cover all workspace packages
+  - Live dry-run push proved the '/usr/bin/env: bash' transcript was stale;
+  - real blocker: a zombie next dev process truncated .next/dev/types typegen
+  - files that tsc --noEmit picks up via tsconfig include (TS1435/TS1128)
+  - Killed stale node/next processes, rebuilt .next from scratch
+  - Extended .husky/pre-push: typechecks portfolio-v1 + ai-service + studio
+  - (portfolio-v2 excluded), then full vitest suite
+  - Verified: git push --dry-run origin dev passes end to end (3 typechecks
+  - + 122 files / 1098 tests, all green)
+
+### 2026-08-08 - Update
+
+  - c1a0c28b chore(git): pin .husky and container files to LF via .gitattributes
+  - core.autocrlf=true would check out hooks as CRLF on Windows and
+  - resurrect the '/usr/bin/env: bash' shebang failure on other machines
+  - .gitattributes pins .husky/*, *.sh, Dockerfile*, **/.dockerignore to
+  - text eol=lf; verified pre-push worktree is LF after re-checkout
