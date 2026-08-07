@@ -1,21 +1,23 @@
 /** @type {import('next').NextConfig} */
-const isDev = process.env.NODE_ENV !== 'production';
-const defaultUmamiScriptUrl = 'https://cloud.umami.is/script.js';
-const defaultUmamiHostUrl = 'https://api-gateway.umami.dev';
+const isDev = process.env.NODE_ENV !== 'production'
+const defaultUmamiScriptUrl = 'https://cloud.umami.is/script.js'
+const defaultUmamiHostUrl = 'https://api-gateway.umami.dev'
 
 const getOrigin = (value) => {
   try {
-    return new URL(value).origin;
+    return new URL(value).origin
   } catch {
-    return '';
+    return ''
   }
-};
+}
 
-const umamiScriptOrigin = getOrigin(process.env.NEXT_PUBLIC_UMAMI_SCRIPT_URL || defaultUmamiScriptUrl);
-const umamiHostOrigin = getOrigin(process.env.NEXT_PUBLIC_UMAMI_HOST_URL || defaultUmamiHostUrl);
+const umamiScriptOrigin = getOrigin(
+  process.env.NEXT_PUBLIC_UMAMI_SCRIPT_URL || defaultUmamiScriptUrl
+)
+const umamiHostOrigin = getOrigin(process.env.NEXT_PUBLIC_UMAMI_HOST_URL || defaultUmamiHostUrl)
 
-const connectSrc = ["'self'", umamiHostOrigin].filter(Boolean).join(' ');
-const isWindows = process.platform === 'win32';
+const connectSrc = ["'self'", umamiHostOrigin].filter(Boolean).join(' ')
+const isWindows = process.platform === 'win32'
 
 const contentSecurityPolicy = `
   default-src 'self';
@@ -33,7 +35,7 @@ const contentSecurityPolicy = `
   worker-src 'self' blob:;
   upgrade-insecure-requests;
   report-uri /api/csp-violation;
-`;
+`
 
 const securityHeaders = [
   {
@@ -85,13 +87,16 @@ const securityHeaders = [
   },
   {
     key: 'NEL',
-    value: JSON.stringify({report_to: 'default', max_age: 2592000, include_subdomains: true}),
+    value: JSON.stringify({ report_to: 'default', max_age: 2592000, include_subdomains: true }),
   },
-];
+]
 
 const nextConfig = {
   output: isWindows ? undefined : 'standalone',
   poweredByHeader: false,
+  turbopack: {
+    root: __dirname,
+  },
   devIndicators: {
     buildActivity: false,
   },
@@ -100,12 +105,11 @@ const nextConfig = {
       { protocol: 'https', hostname: 'cdn.sanity.io' },
       { protocol: 'https', hostname: '**.sanity.io' },
     ],
-    localPatterns: [
-      {pathname: '/api/media/sanity/**'},
-      {pathname: '/og-image.png'},
-    ],
+    localPatterns: [{ pathname: '/api/media/sanity/**' }, { pathname: '/og-image.png' }],
     deviceSizes: [320, 480, 640, 768, 1024, 1280, 1536],
-    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384, 512, 640, 750, 828, 1080, 1200, 1920, 2048, 3840],
+    imageSizes: [
+      16, 32, 48, 64, 96, 128, 256, 384, 512, 640, 750, 828, 1080, 1200, 1920, 2048, 3840,
+    ],
     qualities: [75, 85],
     formats: ['image/webp', 'image/avif'],
   },
@@ -113,35 +117,27 @@ const nextConfig = {
     return [
       {
         source: '/:path*',
-        headers: securityHeaders.filter(h => h.key !== 'X-Frame-Options'),
+        headers: securityHeaders.filter((h) => h.key !== 'X-Frame-Options'),
       },
       ...(!isDev
         ? [
             {
               source: '/_next/static/:path*',
-              headers: [
-                { key: 'Cache-Control', value: 'public, max-age=31536000, immutable' },
-              ],
+              headers: [{ key: 'Cache-Control', value: 'public, max-age=31536000, immutable' }],
             },
           ]
         : []),
       {
         source: '/fonts/:path*',
-        headers: [
-          { key: 'Cache-Control', value: 'public, max-age=31536000, immutable' },
-        ],
+        headers: [{ key: 'Cache-Control', value: 'public, max-age=31536000, immutable' }],
       },
       {
         source: '/favicon.ico',
-        headers: [
-          { key: 'Cache-Control', value: 'public, max-age=86400, immutable' },
-        ],
+        headers: [{ key: 'Cache-Control', value: 'public, max-age=86400, immutable' }],
       },
       {
         source: '/og-image.png',
-        headers: [
-          { key: 'Cache-Control', value: 'public, max-age=31536000, immutable' },
-        ],
+        headers: [{ key: 'Cache-Control', value: 'public, max-age=31536000, immutable' }],
       },
       {
         source: '/sw.js',
@@ -152,18 +148,14 @@ const nextConfig = {
       },
       {
         source: '/icons/:path*',
-        headers: [
-          { key: 'Cache-Control', value: 'public, max-age=31536000, immutable' },
-        ],
+        headers: [{ key: 'Cache-Control', value: 'public, max-age=31536000, immutable' }],
       },
       {
         source: '/site.webmanifest',
-        headers: [
-          { key: 'Cache-Control', value: 'public, max-age=86400' },
-        ],
+        headers: [{ key: 'Cache-Control', value: 'public, max-age=86400' }],
       },
-    ];
+    ]
   },
-};
+}
 
-module.exports = nextConfig;
+module.exports = nextConfig
