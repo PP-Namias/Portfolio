@@ -412,3 +412,13 @@ npm run doctor:check            # react-doctor 100/100
 ```
 
 All four must pass before creating a PR.
+
+## Git hooks (husky + lint-staged)
+
+Repo-root git hooks enforce zero-defect commits. Tooling lives in the root `package.json` (private, dev-only); run `npm install` at the repo root to (re)install hooks via `prepare`.
+
+- **pre-commit** — `lint-staged` runs ESLint `--fix` + Prettier `--write` on staged files in `portfolio-v1/` only (globs in `portfolio-v1/.lintstagedrc.json`). Full-project checks are deliberately NOT here to keep commits fast. Optional gitleaks scan runs if installed.
+- **commit-msg** — commitlint enforces conventional commits (`commitlint.config.mjs` at root).
+- **pre-push** — full `tsc --noEmit` + full `vitest run` (1089 tests) run before code leaves the machine.
+- **Emergency bypass** — `git commit --no-verify` / `git push --no-verify` skips hooks; use only when a hook has a false positive or a broken dependency.
+- Hooks auto-skip deleted files and empty staged sets (no-op success).

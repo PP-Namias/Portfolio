@@ -1,1 +1,22 @@
-npx vitest run --run 2>&1 | tail -5
+#!/bin/sh
+echo "[hooks] Running pre-push checks..."
+
+# 1. TypeScript type check (full project, portfolio-v1)
+echo "[hooks] TypeScript type check..."
+cd portfolio-v1 && npx tsc --noEmit
+if [ $? -ne 0 ]; then
+  echo "[hooks] TypeScript errors found. Fix type errors before pushing."
+  exit 1
+fi
+cd ..
+
+# 2. Full test suite (portfolio-v1, 1089 tests)
+echo "[hooks] Running test suite (vitest)..."
+cd portfolio-v1 && npx vitest run
+if [ $? -ne 0 ]; then
+  echo "[hooks] Tests failed. Fix failures before pushing."
+  exit 1
+fi
+cd ..
+
+echo "[hooks] All pre-push checks passed."

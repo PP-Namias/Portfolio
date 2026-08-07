@@ -1,0 +1,16 @@
+{
+  "name": "namias-portfolio-tooling",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Root-level git hook tooling for the Namias portfolio monorepo (husky, lint-staged, commitlint, prettier). Application code lives in portfolio-v1/.",
+  "scripts": {
+    "prepare": "husky"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "21.1.0",
+    "@commitlint/config-conventional": "21.1.0",
+    "husky": "9.1.7",
+    "lint-staged": "17.0.8",
+    "prettier": "3.9.0"
+  }
+}
