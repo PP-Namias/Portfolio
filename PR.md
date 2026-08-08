@@ -334,3 +334,15 @@ Notes for keeping it smart:
   - resurrect the '/usr/bin/env: bash' shebang failure on other machines
   - .gitattributes pins .husky/*, *.sh, Dockerfile*, **/.dockerignore to
   - text eol=lf; verified pre-push worktree is LF after re-checkout
+### 2026-08-09 - Update
+
+  - 554ed340 fix(git): harden husky PATH fallback and enforce LF on husky shims
+  - .gitattributes: add .husky/_/* text eol=lf so husky-generated shims
+  - stay LF on Windows checkouts (autocrlf=true would otherwise rewrite
+  - them to CRLF and break the shebang interpreter)
+  - pre-push/pre-commit: resolve node/npx from common Windows install
+  - paths (/c/Program Files/nodejs, LOCALAPPDATA nodejs, /usr/local/bin)
+  - when PATH is stripped by GUI git clients (VS Code, GitHub Desktop)
+  - All hooks audited byte-level: 0 CRLF, #!/bin/sh shebangs
+  - Verified: real push fires the full pre-push gate (3 typechecks + 1098
+  - tests) and completes without code 127
