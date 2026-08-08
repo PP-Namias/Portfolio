@@ -207,6 +207,17 @@ Only repository owners, members, or collaborators can approve remediation reruns
 
 ## 🐳 Cloud Infrastructure & DevOps
 
+### Windows prerequisites
+
+Docker Desktop's Linux engine runs on WSL2, which needs the **Virtual Machine Platform** Windows feature. On Windows 10/11 enable it once (admin PowerShell) and reboot:
+
+```powershell
+dism /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
+dism /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
+```
+
+Verify with `docker info` — if the engine answers 500 on the `dockerDesktopLinuxEngine` pipe or logs `Virtual Machine Platform not enabled`, the feature is off and a reboot is pending.
+
 ### Architecture & local routing
 
 | URL | Container service | Stack | Internal port |
