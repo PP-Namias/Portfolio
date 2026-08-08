@@ -66,7 +66,7 @@ export async function generateMetadata(): Promise<Metadata> {
       locale: 'en_US',
       images: [
         {
-          url: '/og-image.png',
+          url: seo.ogImageUrl || '/og-image.png',
           width: 1200,
           height: 630,
           alt: PERSON_IMAGE_ALT,
@@ -78,7 +78,7 @@ export async function generateMetadata(): Promise<Metadata> {
       site: '@PP_Namias',
       title: seo.siteTitle,
       description: seo.siteDescription,
-      images: ['/og-image.png'],
+      images: [seo.twitterImageUrl || seo.ogImageUrl || '/og-image.png'],
     },
     manifest: '/site.webmanifest',
     appleWebApp: {

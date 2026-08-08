@@ -1,39 +1,43 @@
-import { Metadata } from 'next';
-import { notFound } from 'next/navigation';
-import { getCmsContent, getBlogPostSlugsForStaticParams } from '@/lib/cms-content.server';
-import { IS_BLOG_VISIBLE } from '@/lib/features';
-import { fallbackBlogPosts } from '@/lib/cms-content.shared';
-import { JsonLd } from '@/components/seo/JsonLd';
-import { SITE_URL } from '@/lib/site-config';
-import { PERSON_ENTITY_ID, PERSON_NAME } from '@/lib/jsonld';
-import BlogPostContent from './BlogPostContent';
+import { Metadata } from 'next'
+import { notFound } from 'next/navigation'
+import { getCmsContent, getBlogPostSlugsForStaticParams } from '@/lib/cms-content.server'
+import { IS_BLOG_VISIBLE } from '@/lib/features'
+import { fallbackBlogPosts } from '@/lib/cms-content.shared'
+import { JsonLd } from '@/components/seo/JsonLd'
+import { SITE_URL } from '@/lib/site-config'
+import { PERSON_ENTITY_ID, PERSON_NAME } from '@/lib/jsonld'
+import BlogPostContent from './BlogPostContent'
 
-export const revalidate = 3600;
+export const revalidate = 3600
 
-export const dynamicParams = true;
+export const dynamicParams = true
 
 export async function generateStaticParams(): Promise<{ slug: string }[]> {
-  return getBlogPostSlugsForStaticParams();
+  return getBlogPostSlugsForStaticParams()
 }
 
 function resolveCoverImageUrl(coverImage: string | undefined): string | undefined {
-  if (!coverImage) return undefined;
-  return coverImage.startsWith('http') ? coverImage : `${SITE_URL}${coverImage}`;
+  if (!coverImage) return undefined
+  return coverImage.startsWith('http') ? coverImage : `${SITE_URL}${coverImage}`
 }
 
-export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
-  const { slug } = await params;
-  const { blogPosts } = await getCmsContent();
-  const posts = blogPosts && blogPosts.length > 0 ? blogPosts : fallbackBlogPosts;
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>
+}): Promise<Metadata> {
+  const { slug } = await params
+  const { blogPosts } = await getCmsContent()
+  const posts = blogPosts && blogPosts.length > 0 ? blogPosts : fallbackBlogPosts
 
-  const post = posts.find((p) => p.slug === slug);
+  const post = posts.find((p) => p.slug === slug)
   if (!post) {
-    return { title: 'Post Not Found | Jhon Keneth Ryan Namias' };
+    return { title: 'Post Not Found | Jhon Keneth Ryan Namias' }
   }
 
-  const title = post.metaTitle || post.title;
-  const description = post.metaDescription || post.excerpt;
-  const coverUrl = resolveCoverImageUrl(post.coverImage);
+  const title = post.metaTitle || post.title
+  const description = post.metaDescription || post.excerpt
+  const coverUrl = resolveCoverImageUrl(post.coverImage)
 
   return {
     title: `${title} | Jhon Keneth Ryan Namias`,
@@ -64,30 +68,39 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       description,
       images: coverUrl ? [coverUrl] : undefined,
     },
-  };
+  }
 }
 
-export default async function BlogPostPage({ params }: Readonly<{ params: Promise<{ slug: string }> }>) {
+export default async function BlogPostPage({
+  params,
+}: Readonly<{ params: Promise<{ slug: string }> }>) {
   if (!IS_BLOG_VISIBLE) {
-    notFound();
+    notFound()
   }
 
-  const { slug } = await params;
-  const { blogPosts, siteSettings } = await getCmsContent();
-  const blogCopy = siteSettings.blog;
-  const posts = blogPosts && blogPosts.length > 0 ? blogPosts : fallbackBlogPosts;
+  const { slug } = await params
+  const { blogPosts, siteSettings } = await getCmsContent()
+  const blogCopy = siteSettings.blog
+  const posts = blogPosts && blogPosts.length > 0 ? blogPosts : fallbackBlogPosts
 
-  const post = posts.find((p) => p.slug === slug);
+  const post = posts.find((p) => p.slug === slug)
 
   const jsonLd = post
     ? {
         '@context': 'https://schema.org',
-        '@type': 'Article',
+        '@type': 'BlogPosting',
         headline: post.metaTitle || post.title,
         description: post.metaDescription || post.excerpt,
         datePublished: post.date,
-        dateModified: post.date,
+        mainEntityOfPage: `${SITE_URL}/blog/${slug}`,
+        url: `${SITE_URL}/blog/${slug}`,
         author: {
+          '@type': 'Person',
+          '@id': PERSON_ENTITY_ID,
+          name: PERSON_NAME,
+          url: SITE_URL,
+        },
+        publisher: {
           '@type': 'Person',
           '@id': PERSON_ENTITY_ID,
           name: PERSON_NAME,
@@ -103,7 +116,7 @@ export default async function BlogPostPage({ params }: Readonly<{ params: Promis
             }
           : undefined,
       }
-    : null;
+    : null
 
   const breadcrumbJsonLd = post
     ? {
@@ -115,13 +128,17 @@ export default async function BlogPostPage({ params }: Readonly<{ params: Promis
           { '@type': 'ListItem', position: 3, name: post.title },
         ],
       }
-    : null;
+    : null
 
   return (
     <>
       <JsonLd data={jsonLd} id="blog-post-jsonld" />
       <JsonLd data={breadcrumbJsonLd} id="blog-post-breadcrumb-jsonld" />
-      <BlogPostContent post={post ?? null} allPosts={posts} backLabel={blogCopy.backLabel || 'Back to Blog'} />
+      <BlogPostContent
+        post={post ?? null}
+        allPosts={posts}
+        backLabel={blogCopy.backLabel || 'Back to Blog'}
+      />
     </>
-  );
+  )
 }

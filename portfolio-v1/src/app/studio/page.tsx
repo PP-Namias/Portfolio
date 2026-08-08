@@ -1,21 +1,27 @@
-import Link from 'next/link';
-import { redirect } from 'next/navigation';
-import type { Metadata } from 'next';
+import Link from 'next/link'
+import { redirect } from 'next/navigation'
+import type { Metadata } from 'next'
+import { SITE_URL } from '@/lib/site-config'
 
 export const metadata: Metadata = {
+  title: 'Sanity Studio | Jhon Keneth Ryan Namias',
+  description: 'The Sanity CMS and CRM editorial workspace for the PP Namias portfolio.',
   robots: {
     index: false,
     follow: false,
   },
-};
+  alternates: {
+    canonical: `${SITE_URL}/studio`,
+  },
+}
 
 const studioHref =
   (process.env.SANITY_STUDIO_URL || process.env.NEXT_PUBLIC_SANITY_STUDIO_URL)?.trim() ||
-  'https://namias-cms.sanity.studio/';
+  'https://namias-cms.sanity.studio/'
 
 export default function StudioLandingPage() {
   if (process.env.NODE_ENV === 'production' && process.env.SANITY_STUDIO_URL) {
-    redirect(process.env.SANITY_STUDIO_URL);
+    redirect(process.env.SANITY_STUDIO_URL)
   }
 
   return (
@@ -27,7 +33,8 @@ export default function StudioLandingPage() {
         CMS and CRM operations live here.
       </h1>
       <p className="mt-4 text-sm leading-7 text-text-secondary-light dark:text-text-secondary-dark sm:text-base">
-        The portfolio content is powered by Sanity, and the full editorial workflow is deployed separately for content management.
+        The portfolio content is powered by Sanity, and the full editorial workflow is deployed
+        separately for content management.
       </p>
       <div className="mt-8 flex flex-wrap justify-center gap-3">
         <a
@@ -46,5 +53,5 @@ export default function StudioLandingPage() {
         </Link>
       </div>
     </main>
-  );
+  )
 }

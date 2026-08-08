@@ -1,10 +1,10 @@
-import Link from 'next/link';
+import Link from 'next/link'
 
 export default function BlogNotFound() {
   return (
     <div className="mx-auto max-w-container px-4 sm:px-6 pt-8 lg:pt-12">
       <div className="text-center py-12">
-        <h2 className="text-xl font-semibold mb-2">Blog post not found</h2>
+        <h1 className="text-xl font-semibold mb-2">Blog post not found</h1>
         <p className="text-text-muted-light dark:text-text-muted-dark mb-4">
           The blog post you&apos;re looking for doesn&apos;t exist or has been removed.
         </p>
@@ -13,5 +13,5 @@ export default function BlogNotFound() {
         </Link>
       </div>
     </div>
-  );
+  )
 }
