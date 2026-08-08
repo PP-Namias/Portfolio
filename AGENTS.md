@@ -300,12 +300,14 @@ This repo uses loop engineering patterns (inspired by [cobusgreyling/loop-engine
 
 ### Core files
 
-| File              | Purpose                                                    |
-| ----------------- | ---------------------------------------------------------- |
-| `STATE.md`        | Live loop state — what is active, blocked, or watch-listed |
-| `LOOP.md`         | Documents all active loops, cadence, and gates             |
-| `loop-budget.md`  | Daily token caps per loop                                  |
-| `loop-run-log.md` | Append-only run history                                    |
+All loop state lives in `.agents/state/`.
+
+| File                             | Purpose                                                    |
+| -------------------------------- | ---------------------------------------------------------- |
+| `.agents/state/STATE.md`         | Live loop state — what is active, blocked, or watch-listed |
+| `.agents/state/LOOP.md`          | Documents all active loops, cadence, and gates             |
+| `.agents/state/loop-budget.md`   | Daily token caps per loop                                  |
+| `.agents/state/loop-run-log.md`  | Append-only run history                                    |
 
 ### Active loops
 
@@ -318,13 +320,13 @@ This repo uses loop engineering patterns (inspired by [cobusgreyling/loop-engine
 ### Kill switch
 
 - Label: `loop-pause-all` — when present on the repo, all loop workflows skip execution.
-- Resume: remove the label and clear the pause in `STATE.md`.
+- Resume: remove the label and clear the pause in `.agents/state/STATE.md`.
 
 ### Agent behavior
 
-- Read `STATE.md` before starting work to understand what loops are active.
-- Append to `loop-run-log.md` after completing automated tasks.
-- Respect `loop-budget.md` token caps.
+- Read `.agents/state/STATE.md` before starting work to understand what loops are active.
+- Append to `.agents/state/loop-run-log.md` after completing automated tasks.
+- Respect `.agents/state/loop-budget.md` token caps.
 - Use `loop-engineering` skill for detailed instructions.
 
 ## Auto-Commit Workflow

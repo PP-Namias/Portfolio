@@ -95,7 +95,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Generate STATE.md
+      - name: Generate loop state
         if: steps.kill-switch.outputs.paused != 'true'
         run: |
           TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
@@ -129,7 +129,7 @@ jobs:
             WATCH_LIST="\n—"
           fi
 
-          cat > STATE.md << EOF
+          cat > .agents/state/STATE.md << EOF
           # Loop State — PP Namias Portfolio
 
           Last run: ${TIMESTAMP} (daily-triage workflow)
@@ -146,7 +146,7 @@ jobs:
 
           ---
 
-          Run log: Updated by \`.github/workflows/daily-triage.yml\`. See \`LOOP.md\` for cadence and gates.
+          Run log: Updated by \`.github/workflows/daily-triage.yml\`. See \`.agents/state/LOOP.md\` for cadence and gates.
           EOF
 
       - name: Append to run log
@@ -166,7 +166,7 @@ jobs:
             FINDINGS="Lint: ${LINT}, Tests: ${TEST}, Doctor: ${DOCTOR}, Audit: ${AUDIT}"
           fi
 
-          cat >> loop-run-log.md << EOF
+          cat >> .agents/state/loop-run-log.md << EOF
 
           ## ${TIMESTAMP} — daily-triage
           - **Status**: ${STATUS}
@@ -175,11 +175,11 @@ jobs:
           - **Tokens**: ~5k (estimated)
           EOF
 
-      - name: Commit STATE.md and run log
+      - name: Commit loop state and run log
         if: steps.kill-switch.outputs.paused != 'true'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add STATE.md loop-run-log.md
+          git add .agents/state/STATE.md .agents/state/loop-run-log.md
           git diff --cached --quiet || git commit -m "chore(loop): daily triage update STATE.md + run log [automated]"
           git push

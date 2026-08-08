@@ -13,19 +13,19 @@
 ## On budget exceed
 
 1. Pause schedulers / disable high-cadence workflows
-2. Append event to `loop-run-log.md`
+2. Append event to `.agents/state/loop-run-log.md`
 3. Open maintainer issue
 
 ## Kill switch
 
 - Label: `loop-pause-all`
-- Resume only after cleared in `STATE.md`
+- Resume only after cleared in `.agents/state/STATE.md`
 
 ## Estimate spend
 
 Check current loop readiness:
 
 ```bash
-cat STATE.md
-tail -20 loop-run-log.md
+cat .agents/state/STATE.md
+tail -20 .agents/state/loop-run-log.md
 ```

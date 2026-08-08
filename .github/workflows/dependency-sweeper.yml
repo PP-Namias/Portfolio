@@ -125,7 +125,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TITLE: "chore(deps): patch updates via dependency sweeper"
 
-      - name: Update STATE.md watch list
+      - name: Update loop state watch list
         if: steps.kill-switch.outputs.paused != 'true' && steps.outdated.outputs.majors != '0'
         run: |
           node -e "
@@ -135,7 +135,7 @@ jobs:
             const entries = majors.map(m => \`- Major update available: \\\${m.pkg} \\\${m.current} → \\\${m.latest}. Manual review required.\`).join('\\n');
             const timestamp = new Date().toISOString();
 
-            let state = require('fs').readFileSync('STATE.md', 'utf8');
+            let state = require('fs').readFileSync('.agents/state/STATE.md', 'utf8');
 
             // Replace Watch List section content
             state = state.replace(
@@ -149,7 +149,7 @@ jobs:
               \`Last run: \\\${timestamp} (daily-triage workflow)\`
             );
 
-            require('fs').writeFileSync('STATE.md', state);
+            require('fs').writeFileSync('.agents/state/STATE.md', state);
           "
 
       - name: Append to run log
@@ -168,21 +168,21 @@ jobs:
             FINDINGS="Patches: ${PATCHES}, Majors: ${MAJORS}, Vulnerabilities: ${VULNS}"
           fi
 
-          cat >> loop-run-log.md << EOF
+          cat >> .agents/state/loop-run-log.md << EOF
 
           ## ${TIMESTAMP} — dependency-sweeper
           - **Status**: ${STATUS}
           - **Findings**: ${FINDINGS}
-          - **Actions**: PRs created for patches, majors logged to STATE.md
+          - **Actions**: PRs created for patches, majors logged to loop state
           - **Tokens**: ~15k (estimated)
           EOF
 
-      - name: Commit STATE.md and run log
+      - name: Commit loop state and run log
         if: steps.kill-switch.outputs.paused != 'true'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git checkout main 2>/dev/null || true
-          git add STATE.md loop-run-log.md
+          git add .agents/state/STATE.md .agents/state/loop-run-log.md
           git diff --cached --quiet || git commit -m "chore(loop): dependency sweeper update [automated]"
           git push || true

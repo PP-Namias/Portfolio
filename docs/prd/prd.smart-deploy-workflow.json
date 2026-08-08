@@ -628,7 +628,7 @@
             "steps": ["list-vercel-deployments", "select-target", "promote-to-production"],
             "inputs": {
               "deploymentId": "Vercel deployment ID to rollback to",
-              "reason": "Reason for rollback (logged to loop-run-log.md)"
+              "reason": "Reason for rollback (logged to .agents/state/loop-run-log.md)"
             }
           }
         },
@@ -642,7 +642,7 @@
             "steps": ["list-cloudflare-deployments", "select-target", "wrangler rollback"],
             "inputs": {
               "version": "Cloudflare Workers version to rollback to",
-              "reason": "Reason for rollback (logged to loop-run-log.md)"
+              "reason": "Reason for rollback (logged to .agents/state/loop-run-log.md)"
             }
           }
         },
@@ -682,8 +682,8 @@
         },
         {
           "id": "S8.2",
-          "title": "Add deployment metrics to loop-run-log.md",
-          "description": "Append deployment events to loop-run-log.md for observability.",
+          "title": "Add deployment metrics to .agents/state/loop-run-log.md",
+          "description": "Append deployment events to .agents/state/loop-run-log.md for observability.",
           "details": {
             "events": ["deploy-start", "deploy-success", "deploy-failure", "rollback"],
             "format": "[date] [environment] [event] [commit-sha] [duration] [url]"

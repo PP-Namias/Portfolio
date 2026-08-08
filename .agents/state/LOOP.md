@@ -10,7 +10,7 @@ The goal is to move from ad-hoc agent prompting to designed loops that prompt ag
 
 - Cadence: 1d weekdays (`/.github/workflows/daily-triage.yml`)
 - Skill: `loop-engineering` (from `.agents/skills/loop-engineering`)
-- State: `STATE.md` (updated by workflow; human reviews weekly)
+- State: `.agents/state/STATE.md` (updated by workflow; human reviews weekly)
 - Phase: Report-only. Human reviews and decides actions.
 - Handoff: Design decisions, large refactors, new pattern acceptance.
 
@@ -26,7 +26,7 @@ The goal is to move from ad-hoc agent prompting to designed loops that prompt ag
 
 - Cadence: 6h (`/.github/workflows/dependency-sweeper.yml`)
 - Skill: `dependency-audit`
-- State: `STATE.md` watch list for majors; PRs for patches
+- State: `.agents/state/STATE.md` watch list for majors; PRs for patches
 - Phase: Patch-only auto-PR. Majors require human review.
 - Handoff: Human reviews PRs and merges.
 
@@ -41,27 +41,27 @@ Priority: PR Babysitter (on PR event) → Dependency Sweeper (scheduled) → Dai
 
 ## Budget & Observability
 
-- Token caps: `loop-budget.md`
-- Run history: `loop-run-log.md` (appended each run by workflows)
-- Kill switch: `loop-pause-all` label or flag in `STATE.md`
+- Token caps: `.agents/state/loop-budget.md`
+- Run history: `.agents/state/loop-run-log.md` (appended each run by workflows)
+- Kill switch: `loop-pause-all` label or flag in `.agents/state/STATE.md`
 
 ## Safety & Gates (this repo)
 
 - No auto-merge on main except trivial dependency patches (allowlist + verifier)
 - Denylist: core Sanity schemas, deployment configs, security headers without human review
-- Live loop state: `STATE.md` at repo root
+- Live loop state: `.agents/state/STATE.md`
 
 ## How to run locally
 
 ```bash
 # Check loop status
-cat STATE.md
+cat .agents/state/STATE.md
 
 # View run history
-tail -20 loop-run-log.md
+tail -20 .agents/state/loop-run-log.md
 
 # Check budget
-cat loop-budget.md
+cat .agents/state/loop-budget.md
 ```
 
 ## Evolution
