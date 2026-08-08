@@ -346,3 +346,13 @@ Notes for keeping it smart:
   - All hooks audited byte-level: 0 CRLF, #!/bin/sh shebangs
   - Verified: real push fires the full pre-push gate (3 typechecks + 1098
   - tests) and completes without code 127
+### 2026-08-09 - Update
+
+  - 4c9e3615 fix(seo): harden utility-route metadata, fix h1 landmarks, wire CMS og:image, upgrade blog schema
+  - admin/canary: replace ignored next/head robots meta (App Router drops it) with a server layout exporting metadata; page was crawlable and canonicalized to the home page. Now noindex + unique title
+  - offline + studio: give both routes unique titles/descriptions/canonicals (previously inherited home metadata); robots.txt now disallows /admin, /offline, /studio for all crawlers
+  - projects/[slug]: align title suffix with the rest of the site; add <main> landmark around the article
+  - root layout: og:image/twitter:image now come from Sanity siteSettings (ogImageUrl/twitterImageUrl) with /og-image.png fallback instead of being hardcoded
+  - blog posts: JSON-LD upgraded Article -> BlogPosting with mainEntityOfPage, url, publisher; drop fake dateModified
+  - error/not-found boundaries under /blog and /projects: h2 -> h1 so every document has exactly one h1
+  - Verified: lint 0 errors, tsc clean, 35 affected tests pass, doctor 100/100, curl checks on all routes
