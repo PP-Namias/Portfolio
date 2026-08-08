@@ -4,7 +4,8 @@
   "version": "1.0.0",
   "description": "Root-level git hook tooling for the Namias portfolio monorepo (husky, lint-staged, commitlint, prettier). Application code lives in portfolio-v1/.",
   "scripts": {
-    "prepare": "husky"
+    "prepare": "husky",
+    "acp": "node scripts/acp.mjs"
   },
   "devDependencies": {
     "@commitlint/cli": "21.1.0",
