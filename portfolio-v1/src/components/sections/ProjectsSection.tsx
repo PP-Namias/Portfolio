@@ -1,42 +1,42 @@
-'use client';
+'use client'
 
-import React, { useMemo, useState } from 'react';
-import Image from '@/components/ui/OptimizedImage';
-import { motion, useReducedMotion } from 'framer-motion';
-import { ChevronDown, ChevronUp } from 'lucide-react';
-import { useCmsContent } from '@/hooks/useCmsContent';
-import { Project } from '@/types';
-import { resolveContentImageSrc } from '@/lib/media';
-import { CardBody, CardContainer, CardItem } from '@/components/ui/3d-card';
+import React, { useMemo, useState } from 'react'
+import Image from '@/components/ui/OptimizedImage'
+import { motion, useReducedMotion } from 'framer-motion'
+import { ChevronDown, ChevronUp } from 'lucide-react'
+import { useCmsContent } from '@/hooks/useCmsContent'
+import { Project } from '@/types'
+import { resolveContentImageSrc } from '@/lib/media'
+import { CardBody, CardContainer, CardItem } from '@/components/ui/3d-card'
 
-const INITIAL_VISIBLE_PROJECTS = 4;
+const INITIAL_VISIBLE_PROJECTS = 4
 
 function sortProjectsForShowcase(entries: Project[]): Project[] {
   return [...entries].sort((a, b) => {
-    const aRank = a.featuredRank ?? Number.MAX_SAFE_INTEGER;
-    const bRank = b.featuredRank ?? Number.MAX_SAFE_INTEGER;
+    const aRank = a.featuredRank ?? Number.MAX_SAFE_INTEGER
+    const bRank = b.featuredRank ?? Number.MAX_SAFE_INTEGER
 
     if (aRank !== bRank) {
-      return aRank - bRank;
+      return aRank - bRank
     }
 
-    return b.year - a.year;
-  });
+    return b.year - a.year
+  })
 }
 
 function resolveProjectTarget(project: Project): string | null {
-  return project.detailURL || project.liveURL || project.repositoryURL || null;
+  return project.detailURL || project.liveURL || project.repositoryURL || null
 }
 
-function getProjectPreviewSrc(image: string): string {
-  return resolveContentImageSrc(image, { folder: 'projects' });
+function getProjectPreviewSrc(image: string, label?: string): string {
+  return resolveContentImageSrc(image, { folder: 'projects', label })
 }
 
 interface ProjectShowcaseCardProps {
-  project: Project;
-  index: number;
-  reduceMotion: boolean;
-  showAll: boolean;
+  project: Project
+  index: number
+  reduceMotion: boolean
+  showAll: boolean
 }
 
 function ProjectShowcaseCard({
@@ -45,15 +45,19 @@ function ProjectShowcaseCard({
   reduceMotion,
   showAll,
 }: Readonly<ProjectShowcaseCardProps>) {
-  const target = resolveProjectTarget(project);
-  const previewSrc = getProjectPreviewSrc(project.image);
-  const hasImagePreview = Boolean(previewSrc);
-  const isPriority = index === 0 && !showAll;
-  const hasLink = Boolean(target);
+  const target = resolveProjectTarget(project)
+  const previewSrc = getProjectPreviewSrc(project.image, project.slug || project.title)
+  const hasImagePreview = Boolean(previewSrc)
+  const isPriority = index === 0 && !showAll
+  const hasLink = Boolean(target)
 
   const cardTransition = reduceMotion
     ? { duration: 0 }
-    : { duration: 0.3, ease: [0.25, 0.1, 0.25, 1] as [number, number, number, number], delay: index * 0.05 };
+    : {
+        duration: 0.3,
+        ease: [0.25, 0.1, 0.25, 1] as [number, number, number, number],
+        delay: index * 0.05,
+      }
 
   return (
     <motion.article
@@ -118,7 +122,10 @@ function ProjectShowcaseCard({
               </h3>
             </CardItem>
 
-            <CardItem translateZ="30" className="mt-1 flex w-fit flex-wrap items-center gap-1.5 text-[11px] text-text-muted-light dark:text-text-muted-dark">
+            <CardItem
+              translateZ="30"
+              className="mt-1 flex w-fit flex-wrap items-center gap-1.5 text-[11px] text-text-muted-light dark:text-text-muted-dark"
+            >
               <span>{project.year}</span>
               {project.role && (
                 <>
@@ -128,7 +135,11 @@ function ProjectShowcaseCard({
               )}
             </CardItem>
 
-            <CardItem translateZ="20" as="p" className="mt-2 line-clamp-2 w-full text-xs leading-relaxed text-text-secondary-light dark:text-text-secondary-dark">
+            <CardItem
+              translateZ="20"
+              as="p"
+              className="mt-2 line-clamp-2 w-full text-xs leading-relaxed text-text-secondary-light dark:text-text-secondary-dark"
+            >
               {project.description}
             </CardItem>
 
@@ -149,7 +160,10 @@ function ProjectShowcaseCard({
             </CardItem>
 
             {project.impactMetrics && project.impactMetrics.length > 0 && (
-              <CardItem translateZ="25" className="mt-3 w-full rounded-lg border border-border-light/80 bg-surface-light/70 p-2.5 dark:border-border-dark/80 dark:bg-surface-dark/70">
+              <CardItem
+                translateZ="25"
+                className="mt-3 w-full rounded-lg border border-border-light/80 bg-surface-light/70 p-2.5 dark:border-border-dark/80 dark:bg-surface-dark/70"
+              >
                 <p className="text-[11px] text-text-muted-light dark:text-text-muted-dark">
                   {project.impactMetrics[0].label}: {project.impactMetrics[0].value}
                 </p>
@@ -159,24 +173,24 @@ function ProjectShowcaseCard({
         </CardBody>
       </CardContainer>
     </motion.article>
-  );
+  )
 }
 
 export function ProjectsSection() {
-  const { projects } = useCmsContent();
-  const reduceMotion = useReducedMotion();
-  const [showAll, setShowAll] = useState(false);
+  const { projects } = useCmsContent()
+  const reduceMotion = useReducedMotion()
+  const [showAll, setShowAll] = useState(false)
 
-  const orderedProjects = useMemo(() => sortProjectsForShowcase(projects), [projects]);
+  const orderedProjects = useMemo(() => sortProjectsForShowcase(projects), [projects])
 
   const visibleProjects = useMemo(
     () => (showAll ? orderedProjects : orderedProjects.slice(0, INITIAL_VISIBLE_PROJECTS)),
     [orderedProjects, showAll]
-  );
+  )
 
   const sectionTransition = reduceMotion
     ? { duration: 0 }
-    : { duration: 0.45, ease: [0.25, 0.1, 0.25, 1] as [number, number, number, number] };
+    : { duration: 0.45, ease: [0.25, 0.1, 0.25, 1] as [number, number, number, number] }
 
   return (
     <motion.section
@@ -189,7 +203,9 @@ export function ProjectsSection() {
         Projects
       </h2>
 
-      <p className="mb-4 text-xs text-text-muted-light dark:text-text-muted-dark">Hover any card to see the 3D tilt effect.</p>
+      <p className="mb-4 text-xs text-text-muted-light dark:text-text-muted-dark">
+        Hover any card to see the 3D tilt effect.
+      </p>
 
       <div className="space-y-3">
         {visibleProjects.map((project, index) => (
@@ -222,5 +238,5 @@ export function ProjectsSection() {
         </button>
       )}
     </motion.section>
-  );
+  )
 }

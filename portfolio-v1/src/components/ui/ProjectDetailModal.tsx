@@ -1,44 +1,52 @@
-'use client';
+'use client'
 
-
-import Image from '@/components/ui/OptimizedImage';
-import { Calendar, Code2, ExternalLink, Layers, BriefcaseBusiness } from 'lucide-react';
-import { Modal } from './Modal';
-import { Project } from '@/types';
-import { resolveContentImageSrc } from '@/lib/media';
+import Image from '@/components/ui/OptimizedImage'
+import { Calendar, Code2, ExternalLink, Layers, BriefcaseBusiness } from 'lucide-react'
+import { Modal } from './Modal'
+import { Project } from '@/types'
+import { resolveContentImageSrc } from '@/lib/media'
 
 interface ProjectDetailModalProps {
-  open: boolean;
-  onClose: () => void;
-  project: Project | null;
+  open: boolean
+  onClose: () => void
+  project: Project | null
 }
 
 function toStatusLabel(status?: Project['status']): string {
-  if (!status) return 'Completed';
-  if (status === 'in-progress') return 'In Progress';
-  if (status === 'prototype') return 'Prototype';
-  return 'Completed';
+  if (!status) return 'Completed'
+  if (status === 'in-progress') return 'In Progress'
+  if (status === 'prototype') return 'Prototype'
+  return 'Completed'
 }
 
 function resolveProjectTarget(project: Project): string | null {
-  return project.detailURL || project.liveURL || project.repositoryURL || null;
+  return project.detailURL || project.liveURL || project.repositoryURL || null
 }
 
 export function ProjectDetailModal({ open, onClose, project }: Readonly<ProjectDetailModalProps>) {
   if (!project) {
-    return null;
+    return null
   }
 
   const descriptionId = `project-detail-description-${project.title
     .toLowerCase()
     .replaceAll(/[^a-z0-9]+/g, '-')
-    .replaceAll(/(^-|-$)/g, '')}`;
+    .replaceAll(/(^-|-$)/g, '')}`
 
-  const target = resolveProjectTarget(project);
-  const heroImageSrc = resolveContentImageSrc(project.image, { folder: 'projects' });
+  const target = resolveProjectTarget(project)
+  const heroImageSrc = resolveContentImageSrc(project.image, {
+    folder: 'projects',
+    label: project.slug || project.title,
+  })
 
   return (
-    <Modal open={open} onClose={onClose} title={project.title} fullScreen descriptionId={descriptionId}>
+    <Modal
+      open={open}
+      onClose={onClose}
+      title={project.title}
+      fullScreen
+      descriptionId={descriptionId}
+    >
       <div className="space-y-5 p-5 sm:p-6">
         {(project.previewVideoURL || heroImageSrc) && (
           <div className="relative h-56 overflow-hidden rounded-xl border border-border-light dark:border-border-dark sm:h-72">
@@ -82,7 +90,10 @@ export function ProjectDetailModal({ open, onClose, project }: Readonly<ProjectD
           </span>
         </div>
 
-        <p id={descriptionId} className="text-sm leading-relaxed text-text-secondary-light dark:text-text-secondary-dark">
+        <p
+          id={descriptionId}
+          className="text-sm leading-relaxed text-text-secondary-light dark:text-text-secondary-dark"
+        >
           {project.description}
         </p>
 
@@ -137,15 +148,21 @@ export function ProjectDetailModal({ open, onClose, project }: Readonly<ProjectD
 
         {project.impactMetrics && project.impactMetrics.length > 0 && (
           <section className="space-y-2">
-            <h3 className="text-sm font-semibold text-text-primary-light dark:text-text-primary-dark">Impact Highlights</h3>
+            <h3 className="text-sm font-semibold text-text-primary-light dark:text-text-primary-dark">
+              Impact Highlights
+            </h3>
             <ul className="grid gap-2 sm:grid-cols-2">
               {project.impactMetrics.map((metric) => (
                 <li
                   key={`${metric.label}-${metric.value}`}
                   className="rounded-lg border border-border-light bg-surface-light p-3 dark:border-border-dark dark:bg-surface-dark"
                 >
-                  <p className="text-[11px] font-semibold text-text-primary-light dark:text-text-primary-dark">{metric.label}</p>
-                  <p className="mt-1 text-xs text-text-secondary-light dark:text-text-secondary-dark">{metric.value}</p>
+                  <p className="text-[11px] font-semibold text-text-primary-light dark:text-text-primary-dark">
+                    {metric.label}
+                  </p>
+                  <p className="mt-1 text-xs text-text-secondary-light dark:text-text-secondary-dark">
+                    {metric.value}
+                  </p>
                 </li>
               ))}
             </ul>
@@ -153,10 +170,15 @@ export function ProjectDetailModal({ open, onClose, project }: Readonly<ProjectD
         )}
 
         <section className="space-y-2">
-          <h3 className="text-sm font-semibold text-text-primary-light dark:text-text-primary-dark">Tech Stack</h3>
+          <h3 className="text-sm font-semibold text-text-primary-light dark:text-text-primary-dark">
+            Tech Stack
+          </h3>
           <div className="flex flex-wrap gap-1.5">
             {project.tags.map((tag) => (
-              <span key={tag} className="rounded-full bg-accent-pink/10 px-2 py-0.5 text-[11px] font-medium text-accent-pink">
+              <span
+                key={tag}
+                className="rounded-full bg-accent-pink/10 px-2 py-0.5 text-[11px] font-medium text-accent-pink"
+              >
                 {tag}
               </span>
             ))}
@@ -165,7 +187,9 @@ export function ProjectDetailModal({ open, onClose, project }: Readonly<ProjectD
 
         {project.gallery && project.gallery.length > 0 && (
           <section className="space-y-2">
-            <h3 className="text-sm font-semibold text-text-primary-light dark:text-text-primary-dark">Project Gallery</h3>
+            <h3 className="text-sm font-semibold text-text-primary-light dark:text-text-primary-dark">
+              Project Gallery
+            </h3>
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               {project.gallery.map((item) => (
                 <figure
@@ -174,7 +198,10 @@ export function ProjectDetailModal({ open, onClose, project }: Readonly<ProjectD
                 >
                   <div className="relative h-40">
                     <Image
-                      src={resolveContentImageSrc(item.image, { folder: 'projects' })}
+                      src={resolveContentImageSrc(item.image, {
+                        folder: 'projects',
+                        label: item.caption,
+                      })}
                       alt={item.caption}
                       fill
                       sizes="(max-width: 768px) 100vw, 400px"
@@ -192,6 +219,5 @@ export function ProjectDetailModal({ open, onClose, project }: Readonly<ProjectD
         )}
       </div>
     </Modal>
-  );
+  )
 }
-

@@ -1,50 +1,37 @@
-'use client';
+'use client'
 
-
-import Image from '@/components/ui/OptimizedImage';
-import {
-  MapPin,
-  Building2,
-  Calendar,
-  Briefcase,
-  CheckCircle,
-  Star,
-} from 'lucide-react';
-import { motion } from 'framer-motion';
-import { Modal } from './Modal';
-import { useCmsContent } from '@/hooks/useCmsContent';
-import { resolveContentImageSrc } from '@/lib/media';
+import Image from '@/components/ui/OptimizedImage'
+import { MapPin, Building2, Calendar, Briefcase, CheckCircle, Star } from 'lucide-react'
+import { motion } from 'framer-motion'
+import { Modal } from './Modal'
+import { useCmsContent } from '@/hooks/useCmsContent'
+import { resolveContentImageSrc } from '@/lib/media'
 
 interface ExperienceModalProps {
-  open: boolean;
-  onClose: () => void;
+  open: boolean
+  onClose: () => void
 }
 
 const imageShadow =
-  'shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]';
+  'shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]'
 
 export function ExperienceModal({ open, onClose }: Readonly<ExperienceModalProps>) {
-  const { experiences } = useCmsContent();
+  const { experiences } = useCmsContent()
 
   return (
     <Modal open={open} onClose={onClose} title="Work Experience" fullScreen>
       <div className="px-5 py-4 space-y-6">
         <p className="text-sm text-text-secondary-light dark:text-text-secondary-dark">
-          A detailed timeline of my professional journey — from hardware repair
-          to full-stack development, AI consulting, and enterprise software
-          engineering.
+          A detailed timeline of my professional journey — from hardware repair to full-stack
+          development, AI consulting, and enterprise software engineering.
         </p>
 
         {experiences.map((exp, idx) => {
-          const startYear = new Date(exp.startedAt).getFullYear();
-          const endLabel = exp.endedAt
-            ? new Date(exp.endedAt).getFullYear().toString()
-            : 'Present';
+          const startYear = new Date(exp.startedAt).getFullYear()
+          const endLabel = exp.endedAt ? new Date(exp.endedAt).getFullYear().toString() : 'Present'
           const dateLabel =
-            startYear === Number(endLabel)
-              ? `${startYear}`
-              : `${startYear} – ${endLabel}`;
-          const images = exp.images || [];
+            startYear === Number(endLabel) ? `${startYear}` : `${startYear} – ${endLabel}`
+          const images = exp.images || []
 
           return (
             <motion.div
@@ -155,32 +142,30 @@ export function ExperienceModal({ open, onClose }: Readonly<ExperienceModalProps
               {images.length > 0 && (
                 <div
                   className={
-                    images.length === 1
-                      ? 'grid grid-cols-1 gap-3'
-                      : 'grid grid-cols-2 gap-3'
+                    images.length === 1 ? 'grid grid-cols-1 gap-3' : 'grid grid-cols-2 gap-3'
                   }
                 >
                   {images.map((src) => (
                     <Image
                       key={src}
-                      src={resolveContentImageSrc(src, { folder: 'experience' })}
+                      src={resolveContentImageSrc(src, {
+                        folder: 'experience',
+                        label: exp.company || exp.position,
+                      })}
                       alt={`${exp.company} — ${exp.position}`}
                       width={500}
                       height={300}
                       className={`rounded-lg object-cover w-full ${imageShadow} ${
-                        images.length === 1
-                          ? 'h-32 md:h-44'
-                          : 'h-20 md:h-36'
+                        images.length === 1 ? 'h-32 md:h-44' : 'h-20 md:h-36'
                       }`}
                     />
                   ))}
                 </div>
               )}
             </motion.div>
-          );
+          )
         })}
       </div>
     </Modal>
-  );
+  )
 }
-

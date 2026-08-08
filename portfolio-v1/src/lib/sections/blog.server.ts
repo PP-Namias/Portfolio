@@ -1,132 +1,138 @@
-import { cache } from 'react';
-import { querySanity, CONTENT_TAGS } from '@/lib/cms-content.server';
-import { buildMediaGatewayUrl } from '@/lib/media-gateway';
-import { IS_BLOG_VISIBLE } from '@/lib/features';
-import type { BlogPost } from '@/types';
+import { cache } from 'react'
+import { querySanity, CONTENT_TAGS } from '@/lib/cms-content.server'
+import { buildMediaGatewayUrl } from '@/lib/media-gateway'
+import { IS_BLOG_VISIBLE } from '@/lib/features'
+import type { BlogPost } from '@/types'
 
 const maybeCache = <T extends (...args: unknown[]) => Promise<BlogData>>(fn: T) => {
-  return typeof cache === 'function' ? cache(fn) : fn;
-};
+  return typeof cache === 'function' ? cache(fn) : fn
+}
 
 function portableTextToMarkdown(blocks: unknown): string {
   if (!Array.isArray(blocks)) {
-    return '';
+    return ''
   }
 
-  const lines: string[] = [];
+  const lines: string[] = []
 
   for (const block of blocks) {
     if (!block || typeof block !== 'object') {
-      continue;
+      continue
     }
 
     const imgBlock = block as {
-      _type?: string;
-      asset?: { url?: string };
-      alt?: string;
-      caption?: string;
-      credit?: string;
-      source?: string;
-      license?: string;
-    };
+      _type?: string
+      asset?: { url?: string }
+      alt?: string
+      caption?: string
+      credit?: string
+      source?: string
+      license?: string
+    }
 
     if (imgBlock._type === 'image') {
-      const url = imgBlock.asset?.url || '';
-      const alt = imgBlock.alt || '';
-      const caption = imgBlock.caption || '';
-      const credit = imgBlock.credit || '';
-      const source = imgBlock.source || '';
-      const license = imgBlock.license || '';
-      lines.push(`![${alt}|${caption}|${credit}|${source}|${license}](${url})`);
-      lines.push('');
-      continue;
+      const url = imgBlock.asset?.url || ''
+      const alt = imgBlock.alt || ''
+      const caption = imgBlock.caption || ''
+      const credit = imgBlock.credit || ''
+      const source = imgBlock.source || ''
+      const license = imgBlock.license || ''
+      lines.push(`![${alt}|${caption}|${credit}|${source}|${license}](${url})`)
+      lines.push('')
+      continue
     }
 
     const galleryBlock = block as {
-      _type?: string;
+      _type?: string
       images?: Array<{
-        asset?: { url?: string };
-        alt?: string;
-        caption?: string;
-        credit?: string;
-      }>;
-      layout?: string;
-    };
+        asset?: { url?: string }
+        alt?: string
+        caption?: string
+        credit?: string
+      }>
+      layout?: string
+    }
 
     if (galleryBlock._type === 'imageGallery') {
-      const layout = galleryBlock.layout || '2col';
-      const images = galleryBlock.images || [];
-      lines.push(`[gallery:${layout}]`);
+      const layout = galleryBlock.layout || '2col'
+      const images = galleryBlock.images || []
+      lines.push(`[gallery:${layout}]`)
       for (const img of images) {
-        const url = img.asset?.url || '';
-        const alt = img.alt || '';
-        const caption = img.caption || '';
-        const credit = img.credit || '';
-        lines.push(`![${alt}|${caption}|${credit}||](${url})`);
+        const url = img.asset?.url || ''
+        const alt = img.alt || ''
+        const caption = img.caption || ''
+        const credit = img.credit || ''
+        lines.push(`![${alt}|${caption}|${credit}||](${url})`)
       }
-      lines.push(`[/gallery]`);
-      lines.push('');
-      continue;
+      lines.push(`[/gallery]`)
+      lines.push('')
+      continue
     }
 
     const candidate = block as {
-      style?: string;
-      children?: Array<{ text?: string }>;
-    };
-    const text = candidate.children?.map((child) => child.text ?? '').join(' ').trim() ?? '';
+      style?: string
+      children?: Array<{ text?: string }>
+    }
+    const text =
+      candidate.children
+        ?.map((child) => child.text ?? '')
+        .join(' ')
+        .trim() ?? ''
 
     if (!text) {
-      continue;
+      continue
     }
 
     if (candidate.style === 'h1') {
-      lines.push(`# ${text}`);
+      lines.push(`# ${text}`)
     } else if (candidate.style === 'h2') {
-      lines.push(`## ${text}`);
+      lines.push(`## ${text}`)
     } else if (candidate.style === 'h3') {
-      lines.push(`### ${text}`);
+      lines.push(`### ${text}`)
     } else {
-      lines.push(text);
+      lines.push(text)
     }
 
-    lines.push('');
+    lines.push('')
   }
 
-  return lines.join('\n').trim();
+  return lines.join('\n').trim()
 }
 
 export type BlogData = {
-  blogPosts: BlogPost[];
-};
+  blogPosts: BlogPost[]
+}
 
 async function fetchBlogDataImpl(): Promise<BlogData> {
   if (!IS_BLOG_VISIBLE) {
-    return { blogPosts: [] };
+    return { blogPosts: [] }
   }
 
-  const blogDocs = await querySanity<Array<{
-    title?: string;
-    slug?: string;
-    excerpt?: string;
-    readTime?: string;
-    body?: unknown;
-    tags?: string[];
-    publishedAt?: string;
-    coverImagePath?: string;
-    mainImage?: { asset?: { originalFilename?: string; url?: string } };
-    author?: { name?: string };
-    categories?: Array<{ title?: string }>;
-    sourceId?: string;
-    published?: boolean;
-    featured?: boolean;
-    metaTitle?: string;
-    metaDescription?: string;
-    mainImageFile?: string;
-    mainImageUrl?: string;
-  }>>(
+  const blogDocs = await querySanity<
+    Array<{
+      title?: string
+      slug?: string
+      excerpt?: string
+      readTime?: string
+      body?: unknown
+      tags?: string[]
+      publishedAt?: string
+      coverImagePath?: string
+      mainImage?: { asset?: { originalFilename?: string; url?: string } }
+      author?: { name?: string }
+      categories?: Array<{ title?: string }>
+      sourceId?: string
+      published?: boolean
+      featured?: boolean
+      metaTitle?: string
+      metaDescription?: string
+      mainImageFile?: string
+      mainImageUrl?: string
+    }>
+  >(
     '*[_type == "post" && published == true && defined(slug.current)] | order(publishedAt desc){title,"slug":slug.current,excerpt,readTime,body,tags,publishedAt,coverImagePath,featured,metaTitle,metaDescription,"mainImageFile":mainImage.asset->originalFilename,"mainImageUrl":mainImage.asset->url,"author":author->name,"categories":categories[]->title,sourceId,published}',
     { tags: CONTENT_TAGS.post }
-  );
+  )
 
   const blogPosts: BlogPost[] = (blogDocs ?? []).map((post, index) => ({
     id: post.sourceId || post.slug || `post-${index + 1}`,
@@ -142,15 +148,16 @@ async function fetchBlogDataImpl(): Promise<BlogData> {
         width: 960,
         quality: 85,
         sign: true,
-      });
-      return resolved || '';
+        label: post.slug || post.title,
+      })
+      return resolved || ''
     })(),
     featured: post.featured || false,
     metaTitle: post.metaTitle || '',
     metaDescription: post.metaDescription || '',
-  }));
+  }))
 
-  return { blogPosts };
+  return { blogPosts }
 }
 
-export const fetchBlogData = maybeCache(fetchBlogDataImpl);
+export const fetchBlogData = maybeCache(fetchBlogDataImpl)

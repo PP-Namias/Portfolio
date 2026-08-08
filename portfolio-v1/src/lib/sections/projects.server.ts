@@ -1,67 +1,69 @@
-import { cache } from 'react';
-import { querySanity, CONTENT_TAGS } from '@/lib/cms-content.server';
-import { buildMediaGatewayUrl } from '@/lib/media-gateway';
-import type { Project } from '@/types';
+import { cache } from 'react'
+import { querySanity, CONTENT_TAGS } from '@/lib/cms-content.server'
+import { buildMediaGatewayUrl } from '@/lib/media-gateway'
+import type { Project } from '@/types'
 
 const maybeCache = <T extends (...args: unknown[]) => Promise<ProjectsData>>(fn: T) => {
-  return typeof cache === 'function' ? cache(fn) : fn;
-};
+  return typeof cache === 'function' ? cache(fn) : fn
+}
 
 function resolveMediaPath(fileName?: string | null, url?: string | null): string {
-  const normalizedUrl = String(url || '').trim();
+  const normalizedUrl = String(url || '').trim()
   if (normalizedUrl) {
-    return buildMediaGatewayUrl(normalizedUrl, { sign: true });
+    return buildMediaGatewayUrl(normalizedUrl, { sign: true })
   }
-  return '';
+  return ''
 }
 
 export type ProjectsData = {
-  projects: Project[];
-};
+  projects: Project[]
+}
 
 async function fetchProjectsDataImpl(): Promise<ProjectsData> {
-  const projectDocs = await querySanity<Array<{
-    title?: string;
-    slug?: string;
-    summary?: string;
-    challenge?: string;
-    solution?: string;
-    result?: string;
-    year?: number;
-    category?: string;
-    featured?: boolean;
-    role?: string;
-    technologies?: string[];
-    achievements?: string[];
-    featuredRank?: number;
-    status?: string;
-    liveUrl?: string;
-    repositoryUrl?: string;
-    imageFile?: string;
-    imageUrl?: string;
-    imageAlt?: string;
-    imageCaption?: string;
-    imageCredit?: string;
-    imageSource?: string;
-    imageLicense?: string;
-    galleryItems?: Array<{
-      file?: string;
-      url?: string;
-      alt?: string;
-      caption?: string;
-      credit?: string;
-      source?: string;
-      license?: string;
-    }>;
-    tier?: string;
-    showcaseDetail?: boolean;
-    shortDescription?: string;
-    highlights?: string[];
-    githubRepo?: string;
-  }>>(
+  const projectDocs = await querySanity<
+    Array<{
+      title?: string
+      slug?: string
+      summary?: string
+      challenge?: string
+      solution?: string
+      result?: string
+      year?: number
+      category?: string
+      featured?: boolean
+      role?: string
+      technologies?: string[]
+      achievements?: string[]
+      featuredRank?: number
+      status?: string
+      liveUrl?: string
+      repositoryUrl?: string
+      imageFile?: string
+      imageUrl?: string
+      imageAlt?: string
+      imageCaption?: string
+      imageCredit?: string
+      imageSource?: string
+      imageLicense?: string
+      galleryItems?: Array<{
+        file?: string
+        url?: string
+        alt?: string
+        caption?: string
+        credit?: string
+        source?: string
+        license?: string
+      }>
+      tier?: string
+      showcaseDetail?: boolean
+      shortDescription?: string
+      highlights?: string[]
+      githubRepo?: string
+    }>
+  >(
     '*[_type == "project"] | order(order asc, featuredRank asc, title asc){title,"slug":slug.current,summary,challenge,solution,result,year,category,featured,role,technologies,achievements,featuredRank,status,liveUrl,repositoryUrl,"imageFile":image.asset->originalFilename,"imageUrl":image.asset->url,"imageAlt":image.alt,"imageCaption":image.caption,"imageCredit":image.credit,"imageSource":image.source,"imageLicense":image.license,tier,showcaseDetail,shortDescription,highlights,githubRepo,"galleryItems":gallery[]{"file":asset->originalFilename,"url":asset->url,alt,caption,credit,source,license}}',
     { tags: CONTENT_TAGS.project }
-  );
+  )
 
   const rawProjects: Project[] = (projectDocs ?? []).map((project) => ({
     title: project.title || '',
@@ -70,6 +72,7 @@ async function fetchProjectsDataImpl(): Promise<ProjectsData> {
         width: 560,
         quality: 85,
         sign: true,
+        label: project.slug || project.title,
       }) ||
       resolveMediaPath(project.imageFile, project.imageUrl) ||
       '',
@@ -112,18 +115,18 @@ async function fetchProjectsDataImpl(): Promise<ProjectsData> {
     highlights: project.highlights || [],
     githubRepo: project.githubRepo || '',
     slug: project.slug || '',
-  }));
+  }))
 
-  const seenProjectKeys = new Set<string>();
+  const seenProjectKeys = new Set<string>()
   const projects = rawProjects.filter((project) => {
-    const key = (project.githubRepo || project.slug || project.title || '').trim().toLowerCase();
-    if (!key) return true;
-    if (seenProjectKeys.has(key)) return false;
-    seenProjectKeys.add(key);
-    return true;
-  });
+    const key = (project.githubRepo || project.slug || project.title || '').trim().toLowerCase()
+    if (!key) return true
+    if (seenProjectKeys.has(key)) return false
+    seenProjectKeys.add(key)
+    return true
+  })
 
-  return { projects };
+  return { projects }
 }
 
-export const fetchProjectsData = maybeCache(fetchProjectsDataImpl);
+export const fetchProjectsData = maybeCache(fetchProjectsDataImpl)

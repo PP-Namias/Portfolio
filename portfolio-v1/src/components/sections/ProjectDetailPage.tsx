@@ -16,7 +16,10 @@ interface ProjectDetailPageProps {
 
 export function ProjectDetailPage({ project }: Readonly<ProjectDetailPageProps>) {
   const reduceMotion = useReducedMotion()
-  const heroSrc = resolveContentImageSrc(project.image, { folder: 'projects' })
+  const heroSrc = resolveContentImageSrc(project.image, {
+    folder: 'projects',
+    label: project.slug || project.title,
+  })
 
   return (
     <>
@@ -194,7 +197,10 @@ export function ProjectDetailPage({ project }: Readonly<ProjectDetailPageProps>)
                     className="relative aspect-video overflow-hidden rounded-lg border border-border-light dark:border-border-dark"
                   >
                     <Image
-                      src={resolveContentImageSrc(item.image, { folder: 'projects' })}
+                      src={resolveContentImageSrc(item.image, {
+                        folder: 'projects',
+                        label: item.alt || item.caption || project.title,
+                      })}
                       alt={item.alt || item.caption || project.title}
                       fill
                       sizes="(max-width: 768px) 100vw, 384px"

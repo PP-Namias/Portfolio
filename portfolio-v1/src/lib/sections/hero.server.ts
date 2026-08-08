@@ -1,14 +1,14 @@
-import { cache } from 'react';
-import { querySanity, CONTENT_TAGS } from '@/lib/cms-content.server';
-import { buildMediaGatewayUrl } from '@/lib/media-gateway';
-import type { SocialLink } from '@/types';
+import { cache } from 'react'
+import { querySanity, CONTENT_TAGS } from '@/lib/cms-content.server'
+import { buildMediaGatewayUrl } from '@/lib/media-gateway'
+import type { SocialLink } from '@/types'
 
 const maybeCache = <T extends (...args: unknown[]) => Promise<HeroData>>(fn: T) => {
-  return typeof cache === 'function' ? cache(fn) : fn;
-};
+  return typeof cache === 'function' ? cache(fn) : fn
+}
 
 function normalizeSocialName(value: string): string {
-  return value.toLowerCase();
+  return value.toLowerCase()
 }
 
 function titleCase(value: string): string {
@@ -16,23 +16,23 @@ function titleCase(value: string): string {
     .split(/[-_\s]+/)
     .filter(Boolean)
     .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
-    .join(' ');
+    .join(' ')
 }
 
 function mapSocialLink(link: {
-  platform?: string;
-  icon?: string;
-  url?: string;
-  placements?: string[];
+  platform?: string
+  icon?: string
+  url?: string
+  placements?: string[]
 }): SocialLink | null {
-  const platform = String(link.platform || '').toLowerCase();
-  const icon = String(link.icon || '').toLowerCase();
-  const source = platform === 'message' && icon ? icon : platform || icon;
-  const normalizedName = normalizeSocialName(source);
-  const url = String(link.url || '').trim();
+  const platform = String(link.platform || '').toLowerCase()
+  const icon = String(link.icon || '').toLowerCase()
+  const source = platform === 'message' && icon ? icon : platform || icon
+  const normalizedName = normalizeSocialName(source)
+  const url = String(link.url || '').trim()
 
   if (!normalizedName || !url) {
-    return null;
+    return null
   }
 
   return {
@@ -41,57 +41,57 @@ function mapSocialLink(link: {
     label: titleCase(source),
     link: url,
     featured: Array.isArray(link.placements) ? link.placements.includes('hero') : false,
-  };
+  }
 }
 
 export type HeroData = {
   profile: {
-    name: string;
-    title: string;
-    location: string;
-    email: string;
-  };
+    name: string
+    title: string
+    location: string
+    email: string
+  }
   hero: {
-    roles: string[];
-    availabilityLabel: string;
-    profileImageUrl: string;
-  };
-  socialLinks: SocialLink[];
-};
+    roles: string[]
+    availabilityLabel: string
+    profileImageUrl: string
+  }
+  socialLinks: SocialLink[]
+}
 
 async function fetchHeroDataImpl(): Promise<HeroData> {
   const profileDoc = await querySanity<{
-    fullName?: string;
-    title?: string;
-    email?: string;
-    location?: string;
-    avatarUrl?: string;
-    profileImageUrl?: string;
-    availabilityLabel?: string;
-    heroRoles?: string[];
-    socialLinks?: Array<{ platform?: string; icon?: string; url?: string; placements?: string[] }>;
+    fullName?: string
+    title?: string
+    email?: string
+    location?: string
+    avatarUrl?: string
+    profileImageUrl?: string
+    availabilityLabel?: string
+    heroRoles?: string[]
+    socialLinks?: Array<{ platform?: string; icon?: string; url?: string; placements?: string[] }>
   }>(
     '*[_type == "profile"][0]{fullName,title,email,location,"avatarUrl":avatar.asset->url,"profileImageUrl":profileImage.asset->url,availabilityLabel,heroRoles,socialLinks[]{platform,icon,url,placements}}',
     { tags: CONTENT_TAGS.profile }
-  );
+  )
 
   if (!profileDoc) {
     return {
       profile: { name: '', title: '', location: '', email: '' },
       hero: { roles: [], availabilityLabel: '', profileImageUrl: '' },
       socialLinks: [],
-    };
+    }
   }
 
   const socialLinks = (() => {
-    const mapped = (profileDoc.socialLinks ?? []).map(mapSocialLink).filter(Boolean) as SocialLink[];
-    const seen = new Set<string>();
+    const mapped = (profileDoc.socialLinks ?? []).map(mapSocialLink).filter(Boolean) as SocialLink[]
+    const seen = new Set<string>()
     return mapped.filter((link) => {
-      if (seen.has(link.name)) return false;
-      seen.add(link.name);
-      return true;
-    });
-  })();
+      if (seen.has(link.name)) return false
+      seen.add(link.name)
+      return true
+    })
+  })()
 
   return {
     profile: {
@@ -108,10 +108,11 @@ async function fetchHeroDataImpl(): Promise<HeroData> {
           width: 320,
           quality: 85,
           sign: true,
+          label: profileDoc.fullName,
         }) || '',
     },
     socialLinks,
-  };
+  }
 }
 
-export const fetchHeroData = maybeCache(fetchHeroDataImpl);
+export const fetchHeroData = maybeCache(fetchHeroDataImpl)

@@ -1,21 +1,21 @@
-'use client';
+'use client'
 
-import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import useSWR from 'swr';
-import { X, Send, RotateCcw, ArrowLeft, Maximize2, Minimize2, Sparkles } from 'lucide-react';
-import { ChatMessage } from './ChatMessage';
-import { ThreadSidebar } from './ThreadSidebar';
-import type { ThreadInfo } from './ThreadSidebar';
-import { ThreadToggle } from './ThreadToggle';
-import { useModal } from '@/hooks/useModal';
-import { useCmsContent } from '@/hooks/useCmsContent';
-import { useChatStream } from '@/hooks/use-chat-stream';
-import { IS_CHAT_STREAMING_ENABLED, IS_CHAT_THREADING_ENABLED } from '@/lib/features';
-import type { ChatMessage as ChatMessageType } from '@/types';
-import Image from '@/components/ui/OptimizedImage';
-import { resolveContentImageSrc } from '@/lib/media';
-import { PERSON_IMAGE_ALT } from '@/lib/jsonld';
+import { useState, useRef, useEffect, useCallback, useMemo } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import useSWR from 'swr'
+import { X, Send, RotateCcw, ArrowLeft, Maximize2, Minimize2, Sparkles } from 'lucide-react'
+import { ChatMessage } from './ChatMessage'
+import { ThreadSidebar } from './ThreadSidebar'
+import type { ThreadInfo } from './ThreadSidebar'
+import { ThreadToggle } from './ThreadToggle'
+import { useModal } from '@/hooks/useModal'
+import { useCmsContent } from '@/hooks/useCmsContent'
+import { useChatStream } from '@/hooks/use-chat-stream'
+import { IS_CHAT_STREAMING_ENABLED, IS_CHAT_THREADING_ENABLED } from '@/lib/features'
+import type { ChatMessage as ChatMessageType } from '@/types'
+import Image from '@/components/ui/OptimizedImage'
+import { resolveContentImageSrc } from '@/lib/media'
+import { PERSON_IMAGE_ALT } from '@/lib/jsonld'
 
 const FOLLOW_UP_POOL = [
   'What certifications do you have?',
@@ -28,28 +28,29 @@ const FOLLOW_UP_POOL = [
   'How can I schedule a meeting?',
   'What are your key achievements?',
   'Where is Keneth based?',
-];
+]
 
 const ACTION_QUESTION_MAP: Record<string, string> = {
   skills: 'What tech stack do you specialize in?',
   projects: 'Tell me about your projects',
-  experience: 'Tell me about Keneth\'s work experience and roles',
+  experience: "Tell me about Keneth's work experience and roles",
   certifications: 'What certifications do you have?',
   contact: 'How can I contact Keneth?',
   achievements: 'What are your key achievements?',
   education: 'Tell me about your education',
   profile: 'Who is Keneth? Tell me about him.',
   booking: 'How can I schedule a meeting with Keneth?',
-};
+}
 
 const WELCOME_MESSAGE: ChatMessageType = {
   id: 'welcome-message',
   role: 'assistant',
-  content: 'Hi there! I\'m Keneth\'s AI assistant. I can help you learn about Keneth\'s skills, experience, projects, and more. What would you like to know?\n\n[WELCOME_TOPICS]',
+  content:
+    "Hi there! I'm Keneth's AI assistant. I can help you learn about Keneth's skills, experience, projects, and more. What would you like to know?\n\n[WELCOME_TOPICS]",
   timestamp: new Date(),
-};
+}
 
-type ChatAvailabilityStatus = 'checking' | 'active' | 'inactive';
+type ChatAvailabilityStatus = 'checking' | 'active' | 'inactive'
 
 function TypingIndicator() {
   return (
@@ -74,7 +75,7 @@ function TypingIndicator() {
         ))}
       </div>
     </motion.div>
-  );
+  )
 }
 
 function ToolCallIndicator({ name }: Readonly<{ name: string }>) {
@@ -95,7 +96,7 @@ function ToolCallIndicator({ name }: Readonly<{ name: string }>) {
         </span>
       </div>
     </motion.div>
-  );
+  )
 }
 
 function StreamingMessage({ content }: Readonly<{ content: string }>) {
@@ -116,16 +117,16 @@ function StreamingMessage({ content }: Readonly<{ content: string }>) {
         </div>
       </div>
     </motion.div>
-  );
+  )
 }
 
 interface ChatPanelProps {
-  onBack: () => void;
-  onClose: () => void;
-  isMaximized: boolean;
-  onToggleMaximize: () => void;
-  messages: ChatMessageType[];
-  setMessages: React.Dispatch<React.SetStateAction<ChatMessageType[]>>;
+  onBack: () => void
+  onClose: () => void
+  isMaximized: boolean
+  onToggleMaximize: () => void
+  messages: ChatMessageType[]
+  setMessages: React.Dispatch<React.SetStateAction<ChatMessageType[]>>
 }
 
 export function ChatPanel({
@@ -136,64 +137,64 @@ export function ChatPanel({
   messages,
   setMessages,
 }: Readonly<ChatPanelProps>) {
-  const [input, setInput] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [chatAvailability, setChatAvailability] = useState<ChatAvailabilityStatus>('checking');
-  const [streamingContent, setStreamingContent] = useState('');
-  const [currentToolCall, setCurrentToolCall] = useState<string | null>(null);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
-  const messagesContainerRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
-  const { openModal } = useModal();
-  const { profile, hero } = useCmsContent();
+  const [input, setInput] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [chatAvailability, setChatAvailability] = useState<ChatAvailabilityStatus>('checking')
+  const [streamingContent, setStreamingContent] = useState('')
+  const [currentToolCall, setCurrentToolCall] = useState<string | null>(null)
+  const messagesEndRef = useRef<HTMLDivElement>(null)
+  const messagesContainerRef = useRef<HTMLDivElement>(null)
+  const inputRef = useRef<HTMLInputElement>(null)
+  const { openModal } = useModal()
+  const { profile, hero } = useCmsContent()
   const profileImageSrc = resolveContentImageSrc(hero.profileImageUrl, {
     folder: 'profile',
-  });
+    label: profile.name,
+  })
 
-  const streamingContentRef = useRef('');
+  const streamingContentRef = useRef('')
 
   useEffect(() => {
-    streamingContentRef.current = streamingContent;
-  }, [streamingContent]);
+    streamingContentRef.current = streamingContent
+  }, [streamingContent])
 
   const handleStreamToken = useCallback((token: string) => {
-    setStreamingContent((prev) => prev + token);
-  }, []);
+    setStreamingContent((prev) => prev + token)
+  }, [])
 
   const handleStreamToolCall = useCallback((toolCall: { name: string }) => {
-    setCurrentToolCall(toolCall.name);
-  }, []);
+    setCurrentToolCall(toolCall.name)
+  }, [])
 
-  const handleStreamDone = useCallback((_threadId: string) => {
-    const content = streamingContentRef.current;
-    setMessages((prev) => {
-      if (!content) return prev;
-      const exists = prev.some((m) => m.id === 'streaming-msg');
-      if (exists) {
-        return prev.map((m) =>
-          m.id === 'streaming-msg'
-            ? { ...m, content }
-            : m
-        );
-      }
-      return [
-        ...prev,
-        {
-          id: (Date.now() + 2).toString(),
-          role: 'assistant',
-          content,
-          timestamp: new Date(),
-        },
-      ];
-    });
-    setStreamingContent('');
-    setCurrentToolCall(null);
-  }, [setMessages]);
+  const handleStreamDone = useCallback(
+    (_threadId: string) => {
+      const content = streamingContentRef.current
+      setMessages((prev) => {
+        if (!content) return prev
+        const exists = prev.some((m) => m.id === 'streaming-msg')
+        if (exists) {
+          return prev.map((m) => (m.id === 'streaming-msg' ? { ...m, content } : m))
+        }
+        return [
+          ...prev,
+          {
+            id: (Date.now() + 2).toString(),
+            role: 'assistant',
+            content,
+            timestamp: new Date(),
+          },
+        ]
+      })
+      setStreamingContent('')
+      setCurrentToolCall(null)
+    },
+    [setMessages]
+  )
 
   const handleStreamError = useCallback((err: string) => {
-    setError(err);
-  }, []);
+    setError(err)
+  }, [])
 
   const {
     sendMessage: streamSendMessage,
@@ -204,94 +205,100 @@ export function ChatPanel({
     onToolCall: handleStreamToolCall,
     onDone: handleStreamDone,
     onError: handleStreamError,
-  });
+  })
 
-  const [threadSidebarOpen, setThreadSidebarOpen] = useState(false);
-  const [currentThreadId, setCurrentThreadId] = useState<string | null>(null);
-  const [threads, setThreads] = useState<ThreadInfo[]>([]);
-  const sessionThreadIdRef = useRef<string | null>(null);
+  const [threadSidebarOpen, setThreadSidebarOpen] = useState(false)
+  const [currentThreadId, setCurrentThreadId] = useState<string | null>(null)
+  const [threads, setThreads] = useState<ThreadInfo[]>([])
+  const sessionThreadIdRef = useRef<string | null>(null)
 
   const refreshThreads = useCallback(async () => {
-    if (!IS_CHAT_THREADING_ENABLED) return;
+    if (!IS_CHAT_THREADING_ENABLED) return
     try {
-      const res = await fetch('/api/chat/threads', { cache: 'no-store' });
+      const res = await fetch('/api/chat/threads', { cache: 'no-store' })
       if (res.ok) {
-        const data = (await res.json()) as { threads: ThreadInfo[] };
-        setThreads(data.threads);
+        const data = (await res.json()) as { threads: ThreadInfo[] }
+        setThreads(data.threads)
       }
-    } catch {
-    }
-  }, []);
+    } catch {}
+  }, [])
 
   useEffect(() => {
     if (IS_CHAT_THREADING_ENABLED) {
-      void refreshThreads();
+      void refreshThreads()
     }
-  }, [refreshThreads]);
+  }, [refreshThreads])
 
   const createThread = useCallback(async (title: string): Promise<string> => {
     const res = await fetch('/api/chat/threads', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ title: title.slice(0, 50) || 'New Conversation' }),
-    });
+    })
     if (!res.ok) {
-      throw new Error('Failed to create conversation.');
+      throw new Error('Failed to create conversation.')
     }
-    const data = (await res.json()) as { thread: ThreadInfo };
-    setThreads((prev) => [data.thread, ...prev]);
-    setCurrentThreadId(data.thread.id);
-    return data.thread.id;
-  }, []);
+    const data = (await res.json()) as { thread: ThreadInfo }
+    setThreads((prev) => [data.thread, ...prev])
+    setCurrentThreadId(data.thread.id)
+    return data.thread.id
+  }, [])
 
-  const resolveThreadId = useCallback(async (firstMessage: string): Promise<string> => {
-    if (IS_CHAT_THREADING_ENABLED) {
-      if (currentThreadId) return currentThreadId;
-      return createThread(firstMessage);
-    }
-    if (!sessionThreadIdRef.current) {
-      sessionThreadIdRef.current = `session_${Date.now()}`;
-    }
-    return sessionThreadIdRef.current;
-  }, [currentThreadId, createThread]);
+  const resolveThreadId = useCallback(
+    async (firstMessage: string): Promise<string> => {
+      if (IS_CHAT_THREADING_ENABLED) {
+        if (currentThreadId) return currentThreadId
+        return createThread(firstMessage)
+      }
+      if (!sessionThreadIdRef.current) {
+        sessionThreadIdRef.current = `session_${Date.now()}`
+      }
+      return sessionThreadIdRef.current
+    },
+    [currentThreadId, createThread]
+  )
 
-  const selectThread = useCallback(async (id: string) => {
-    try {
-      const res = await fetch(`/api/chat/threads/${id}`, { cache: 'no-store' });
-      if (!res.ok) return;
-      const data = (await res.json()) as {
-        messages: Array<{ id: number; role: string; content: string; createdAt: string }>;
-      };
-      setCurrentThreadId(id);
-      setMessages(
-        data.messages.map((m) => ({
-          id: `persisted-${m.id}`,
-          role: m.role === 'assistant' ? 'assistant' : 'user',
-          content: m.content,
-          timestamp: new Date(m.createdAt),
-        }))
-      );
-    } catch {
-    }
-  }, [setMessages]);
+  const selectThread = useCallback(
+    async (id: string) => {
+      try {
+        const res = await fetch(`/api/chat/threads/${id}`, { cache: 'no-store' })
+        if (!res.ok) return
+        const data = (await res.json()) as {
+          messages: Array<{ id: number; role: string; content: string; createdAt: string }>
+        }
+        setCurrentThreadId(id)
+        setMessages(
+          data.messages.map((m) => ({
+            id: `persisted-${m.id}`,
+            role: m.role === 'assistant' ? 'assistant' : 'user',
+            content: m.content,
+            timestamp: new Date(m.createdAt),
+          }))
+        )
+      } catch {}
+    },
+    [setMessages]
+  )
 
   const newThread = useCallback(() => {
-    setCurrentThreadId(null);
-    setMessages([]);
-    setStreamingContent('');
-    setError(null);
-  }, [setMessages]);
+    setCurrentThreadId(null)
+    setMessages([])
+    setStreamingContent('')
+    setError(null)
+  }, [setMessages])
 
-  const deleteThread = useCallback(async (id: string) => {
-    try {
-      await fetch(`/api/chat/threads/${id}`, { method: 'DELETE' });
-    } catch {
-    }
-    setThreads((prev) => prev.filter((t) => t.id !== id));
-    if (currentThreadId === id) {
-      newThread();
-    }
-  }, [currentThreadId, newThread]);
+  const deleteThread = useCallback(
+    async (id: string) => {
+      try {
+        await fetch(`/api/chat/threads/${id}`, { method: 'DELETE' })
+      } catch {}
+      setThreads((prev) => prev.filter((t) => t.id !== id))
+      if (currentThreadId === id) {
+        newThread()
+      }
+    },
+    [currentThreadId, newThread]
+  )
 
   const renameThread = useCallback(async (id: string, title: string) => {
     try {
@@ -299,19 +306,18 @@ export function ChatPanel({
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ title }),
-      });
+      })
       if (res.ok) {
-        const data = (await res.json()) as { thread: ThreadInfo };
-        setThreads((prev) => prev.map((t) => (t.id === id ? data.thread : t)));
+        const data = (await res.json()) as { thread: ThreadInfo }
+        setThreads((prev) => prev.map((t) => (t.id === id ? data.thread : t)))
       }
-    } catch {
-    }
-  }, []);
+    } catch {}
+  }, [])
 
   const followUpSuggestions = useMemo(() => {
-    const asked = new Set(messages.filter((m) => m.role === 'user').map((m) => m.content));
-    return FOLLOW_UP_POOL.filter((q) => !asked.has(q)).slice(0, 3);
-  }, [messages]);
+    const asked = new Set(messages.filter((m) => m.role === 'user').map((m) => m.content))
+    return FOLLOW_UP_POOL.filter((q) => !asked.has(q)).slice(0, 3)
+  }, [messages])
 
   const statusMeta = useMemo(() => {
     if (chatAvailability === 'active') {
@@ -321,7 +327,7 @@ export function ChatPanel({
         pulseClass: 'bg-emerald-400',
         textClass: 'text-text-muted-light dark:text-text-muted-dark',
         showPulse: true,
-      };
+      }
     }
 
     if (chatAvailability === 'inactive') {
@@ -331,7 +337,7 @@ export function ChatPanel({
         pulseClass: 'bg-red-400',
         textClass: 'text-red-500',
         showPulse: false,
-      };
+      }
     }
 
     return {
@@ -340,29 +346,29 @@ export function ChatPanel({
       pulseClass: 'bg-amber-400',
       textClass: 'text-amber-500',
       showPulse: true,
-    };
-  }, [chatAvailability]);
+    }
+  }, [chatAvailability])
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages, isLoading, streamingContent]);
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }, [messages, isLoading, streamingContent])
 
   useEffect(() => {
-    setTimeout(() => inputRef.current?.focus(), 100);
-  }, []);
+    setTimeout(() => inputRef.current?.focus(), 100)
+  }, [])
 
   useEffect(() => {
     if (messages.length === 0) {
-      setMessages([WELCOME_MESSAGE]);
+      setMessages([WELCOME_MESSAGE])
     }
-  }, [messages.length, setMessages]);
+  }, [messages.length, setMessages])
 
   const { mutate: revalidateAvailability } = useSWR<{ status: string }>(
     process.env.NODE_ENV === 'test' ? null : '/api/chat',
     async (url: string) => {
-      const res = await fetch(url, { method: 'GET', cache: 'no-store' });
-      if (!res.ok) throw new Error(`availability check failed: ${res.status}`);
-      return (await res.json()) as { status: string };
+      const res = await fetch(url, { method: 'GET', cache: 'no-store' })
+      if (!res.ok) throw new Error(`availability check failed: ${res.status}`)
+      return (await res.json()) as { status: string }
     },
     {
       refreshInterval: 45_000,
@@ -371,92 +377,92 @@ export function ChatPanel({
       dedupingInterval: 5_000,
       onSuccess: (data) => {
         if (data?.status === 'active') {
-          setChatAvailability('active');
+          setChatAvailability('active')
         } else {
-          setChatAvailability('inactive');
+          setChatAvailability('inactive')
         }
       },
       onError: () => setChatAvailability('inactive'),
-    },
-  );
+    }
+  )
 
   useEffect(() => {
     if (process.env.NODE_ENV === 'test') {
-      setChatAvailability('active');
-      return;
+      setChatAvailability('active')
+      return
     }
 
-    const handleOffline = () => setChatAvailability('inactive');
+    const handleOffline = () => setChatAvailability('inactive')
     const handleOnline = () => {
-      setChatAvailability('checking');
-      void revalidateAvailability();
-    };
+      setChatAvailability('checking')
+      void revalidateAvailability()
+    }
 
-    globalThis.addEventListener('online', handleOnline);
-    globalThis.addEventListener('offline', handleOffline);
+    globalThis.addEventListener('online', handleOnline)
+    globalThis.addEventListener('offline', handleOffline)
 
     return () => {
-      globalThis.removeEventListener('online', handleOnline);
-      globalThis.removeEventListener('offline', handleOffline);
-    };
-  }, [revalidateAvailability]);
+      globalThis.removeEventListener('online', handleOnline)
+      globalThis.removeEventListener('offline', handleOffline)
+    }
+  }, [revalidateAvailability])
 
-  const messagesRef = useRef(messages);
-  const isLoadingRef = useRef(isLoading);
-  const isStreamingRef = useRef(isStreaming);
-
-  useEffect(() => {
-    messagesRef.current = messages;
-  }, [messages]);
+  const messagesRef = useRef(messages)
+  const isLoadingRef = useRef(isLoading)
+  const isStreamingRef = useRef(isStreaming)
 
   useEffect(() => {
-    isLoadingRef.current = isLoading;
-  }, [isLoading]);
+    messagesRef.current = messages
+  }, [messages])
 
   useEffect(() => {
-    isStreamingRef.current = isStreaming;
-  }, [isStreaming]);
+    isLoadingRef.current = isLoading
+  }, [isLoading])
+
+  useEffect(() => {
+    isStreamingRef.current = isStreaming
+  }, [isStreaming])
 
   const sendMessage = useCallback(
     async (text: string) => {
-      const trimmed = text.trim();
-      if (!trimmed || isLoadingRef.current || isStreamingRef.current) return;
+      const trimmed = text.trim()
+      if (!trimmed || isLoadingRef.current || isStreamingRef.current) return
 
       if (typeof navigator !== 'undefined' && !navigator.onLine) {
-        setChatAvailability('inactive');
-        setError('Connection looks offline. Please reconnect and try again.');
-        return;
+        setChatAvailability('inactive')
+        setError('Connection looks offline. Please reconnect and try again.')
+        return
       }
 
-      setError(null);
-      setInput('');
+      setError(null)
+      setInput('')
 
       const userMsg: ChatMessageType = {
         id: Date.now().toString(),
         role: 'user',
         content: trimmed,
         timestamp: new Date(),
-      };
-      setMessages((prev) => [...prev, userMsg]);
-      setIsLoading(true);
+      }
+      setMessages((prev) => [...prev, userMsg])
+      setIsLoading(true)
 
       const history = messagesRef.current
         .filter((m) => m.id !== WELCOME_MESSAGE.id)
         .map((m) => ({
           role: m.role,
           content: m.content,
-        }));
+        }))
 
       if (IS_CHAT_STREAMING_ENABLED) {
         try {
-          const threadId = await resolveThreadId(trimmed);
-          await streamSendMessage(trimmed, threadId, history);
+          const threadId = await resolveThreadId(trimmed)
+          await streamSendMessage(trimmed, threadId, history)
         } catch {
-          setError('Failed to stream response.');
+          setError('Failed to stream response.')
         } finally {
-          setIsLoading(false);
+          setIsLoading(false)
         }
-        return;
+        return
       }
 
       try {
@@ -464,15 +470,15 @@ export function ChatPanel({
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ message: trimmed, history }),
-        });
+        })
 
-        const data = await res.json();
+        const data = await res.json()
 
         if (!res.ok) {
-          setError(data.error || 'Something went wrong.');
-          setChatAvailability(res.status >= 500 ? 'inactive' : 'active');
-          setIsLoading(false);
-          return;
+          setError(data.error || 'Something went wrong.')
+          setChatAvailability(res.status >= 500 ? 'inactive' : 'active')
+          setIsLoading(false)
+          return
         }
 
         const botMsg: ChatMessageType = {
@@ -480,65 +486,74 @@ export function ChatPanel({
           role: 'assistant',
           content: data.message,
           timestamp: new Date(),
-        };
-        setChatAvailability('active');
-        setMessages((prev) => [...prev, botMsg]);
+        }
+        setChatAvailability('active')
+        setMessages((prev) => [...prev, botMsg])
       } catch {
-        setChatAvailability('inactive');
-        setError('Failed to connect. Please try again.');
+        setChatAvailability('inactive')
+        setError('Failed to connect. Please try again.')
       } finally {
-        setIsLoading(false);
+        setIsLoading(false)
       }
     },
     [setMessages, streamSendMessage, resolveThreadId]
-  );
+  )
 
-  const handleAction = useCallback((action: string) => {
-    if (action === 'booking') {
-      openModal('booking');
-      return;
-    }
-
-    if (action === 'resume') {
-      openModal('resume');
-      return;
-    }
-
-    if (action === 'email') {
-      window.location.href = 'mailto:pp.namias@gmail.com';
-      return;
-    }
-
-    if (action === 'linkedin') {
-      if (process.env.NODE_ENV === 'test') {
-        (window.open as unknown as (url: string, target?: string) => unknown)('https://www.linkedin.com/in/pp-namias/', '_blank');
-      } else {
-        window.open('https://www.linkedin.com/in/pp-namias/', '_blank', 'noopener,noreferrer');
+  const handleAction = useCallback(
+    (action: string) => {
+      if (action === 'booking') {
+        openModal('booking')
+        return
       }
-      return;
-    }
 
-    if (action === 'github') {
-      if (process.env.NODE_ENV === 'test') {
-        (window.open as unknown as (url: string, target?: string) => unknown)('https://github.com/PP-Namias', '_blank');
-      } else {
-        window.open('https://github.com/PP-Namias', '_blank', 'noopener,noreferrer');
+      if (action === 'resume') {
+        openModal('resume')
+        return
       }
-      return;
-    }
 
-    const followUpQuestion = ACTION_QUESTION_MAP[action];
-    if (followUpQuestion) {
-      sendMessage(followUpQuestion);
-    }
-  }, [openModal, sendMessage]);
+      if (action === 'email') {
+        window.location.href = 'mailto:pp.namias@gmail.com'
+        return
+      }
+
+      if (action === 'linkedin') {
+        if (process.env.NODE_ENV === 'test') {
+          ;(window.open as unknown as (url: string, target?: string) => unknown)(
+            'https://www.linkedin.com/in/pp-namias/',
+            '_blank'
+          )
+        } else {
+          window.open('https://www.linkedin.com/in/pp-namias/', '_blank', 'noopener,noreferrer')
+        }
+        return
+      }
+
+      if (action === 'github') {
+        if (process.env.NODE_ENV === 'test') {
+          ;(window.open as unknown as (url: string, target?: string) => unknown)(
+            'https://github.com/PP-Namias',
+            '_blank'
+          )
+        } else {
+          window.open('https://github.com/PP-Namias', '_blank', 'noopener,noreferrer')
+        }
+        return
+      }
+
+      const followUpQuestion = ACTION_QUESTION_MAP[action]
+      if (followUpQuestion) {
+        sendMessage(followUpQuestion)
+      }
+    },
+    [openModal, sendMessage]
+  )
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    sendMessage(input);
-  };
+    e.preventDefault()
+    sendMessage(input)
+  }
 
-  const hasStreamingMessage = streamingContent.length > 0;
+  const hasStreamingMessage = streamingContent.length > 0
 
   return (
     <div className="flex h-full">
@@ -558,7 +573,7 @@ export function ChatPanel({
         <div className="relative px-4 pt-4 pb-3 border-b border-border-light/60 dark:border-border-dark/60 bg-white dark:bg-card-bg-dark">
           {/* Background gradient accent */}
           <div className="absolute inset-0 bg-gradient-to-b from-accent-pink/5 to-transparent pointer-events-none" />
-          
+
           <div className="relative flex items-start justify-between">
             <div className="flex items-center gap-3">
               {/* Back button */}
@@ -605,12 +620,18 @@ export function ChatPanel({
                   <p className="text-[10px] text-text-muted-light dark:text-text-muted-dark truncate mt-0.5">
                     {profile.title}
                   </p>
-                  <p className={`text-[9px] flex items-center gap-1 mt-0.5 ${statusMeta.textClass}`}>
+                  <p
+                    className={`text-[9px] flex items-center gap-1 mt-0.5 ${statusMeta.textClass}`}
+                  >
                     <span className="relative flex h-1 w-1 flex-shrink-0">
                       {statusMeta.showPulse && (
-                        <span className={`absolute inline-flex h-full w-full animate-ping rounded-full ${statusMeta.pulseClass} opacity-75`} />
+                        <span
+                          className={`absolute inline-flex h-full w-full animate-ping rounded-full ${statusMeta.pulseClass} opacity-75`}
+                        />
                       )}
-                      <span className={`relative inline-flex h-1 w-1 rounded-full ${statusMeta.dotClass}`} />
+                      <span
+                        className={`relative inline-flex h-1 w-1 rounded-full ${statusMeta.dotClass}`}
+                      />
                     </span>
                     {statusMeta.label}
                   </p>
@@ -703,25 +724,29 @@ export function ChatPanel({
 
           {hasStreamingMessage && <StreamingMessage content={streamingContent} />}
 
-          {messages.length > 0 && !isLoading && !hasStreamingMessage && messages.at(-1)?.role === 'assistant' && followUpSuggestions.length > 0 && (
-            <motion.div
-              initial={{ opacity: 0, y: 4 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.15 }}
-              className="flex flex-wrap gap-1 mb-2.5 mt-1"
-            >
-              {followUpSuggestions.map((q) => (
-                <button
-                  type="button"
-                  key={q}
-                  onClick={() => sendMessage(q)}
-                  className="text-[10px] px-2 py-1 rounded-full border border-border-light/60 dark:border-border-dark/60 text-text-secondary-light dark:text-text-secondary-dark hover:border-accent-pink/40 hover:text-accent-pink transition-[border-color,color]"
-                >
-                  {q}
-                </button>
-              ))}
-            </motion.div>
-          )}
+          {messages.length > 0 &&
+            !isLoading &&
+            !hasStreamingMessage &&
+            messages.at(-1)?.role === 'assistant' &&
+            followUpSuggestions.length > 0 && (
+              <motion.div
+                initial={{ opacity: 0, y: 4 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.15 }}
+                className="flex flex-wrap gap-1 mb-2.5 mt-1"
+              >
+                {followUpSuggestions.map((q) => (
+                  <button
+                    type="button"
+                    key={q}
+                    onClick={() => sendMessage(q)}
+                    className="text-[10px] px-2 py-1 rounded-full border border-border-light/60 dark:border-border-dark/60 text-text-secondary-light dark:text-text-secondary-dark hover:border-accent-pink/40 hover:text-accent-pink transition-[border-color,color]"
+                  >
+                    {q}
+                  </button>
+                ))}
+              </motion.div>
+            )}
 
           {isLoading && !hasStreamingMessage && <TypingIndicator />}
 
@@ -736,12 +761,10 @@ export function ChatPanel({
                 <button
                   type="button"
                   onClick={() => {
-                    setError(null);
+                    setError(null)
                     if (messages.length > 0) {
-                      const lastUserMsg = [...messages]
-                        .reverse()
-                        .find((m) => m.role === 'user');
-                      if (lastUserMsg) sendMessage(lastUserMsg.content);
+                      const lastUserMsg = [...messages].reverse().find((m) => m.role === 'user')
+                      if (lastUserMsg) sendMessage(lastUserMsg.content)
                     }
                   }}
                   className="flex items-center gap-1 text-accent-pink hover:underline font-medium"
@@ -758,10 +781,7 @@ export function ChatPanel({
 
         {/* Input area */}
         <div className="border-t border-border-light/60 dark:border-border-dark/60 bg-white dark:bg-card-bg-dark px-3 py-3">
-          <form
-            onSubmit={handleSubmit}
-            className="flex items-center gap-2"
-          >
+          <form onSubmit={handleSubmit} className="flex items-center gap-2">
             <input
               ref={inputRef}
               type="text"
@@ -785,5 +805,5 @@ export function ChatPanel({
         </div>
       </div>
     </div>
-  );
+  )
 }

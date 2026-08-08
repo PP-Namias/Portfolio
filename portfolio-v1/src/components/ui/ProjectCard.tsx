@@ -1,22 +1,24 @@
-'use client';
+'use client'
 
-
-import Image from '@/components/ui/OptimizedImage';
-import { motion, useReducedMotion } from 'framer-motion';
-import { ExternalLink, Github } from 'lucide-react';
-import { Project } from '@/types';
-import { Card } from './Card';
-import { resolveContentImageSrc } from '@/lib/media';
+import Image from '@/components/ui/OptimizedImage'
+import { motion, useReducedMotion } from 'framer-motion'
+import { ExternalLink, Github } from 'lucide-react'
+import { Project } from '@/types'
+import { Card } from './Card'
+import { resolveContentImageSrc } from '@/lib/media'
 
 interface ProjectCardProps {
-  project: Project;
-  index: number;
+  project: Project
+  index: number
 }
 
 export function ProjectCard({ project, index }: ProjectCardProps) {
-  const projectUrl = project.liveURL || project.repositoryURL;
-  const reduceMotion = useReducedMotion();
-  const projectImageSrc = resolveContentImageSrc(project.image, { folder: 'projects' });
+  const projectUrl = project.liveURL || project.repositoryURL
+  const reduceMotion = useReducedMotion()
+  const projectImageSrc = resolveContentImageSrc(project.image, {
+    folder: 'projects',
+    label: project.slug || project.title,
+  })
 
   return (
     <motion.div
@@ -100,6 +102,5 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
         )}
       </Card>
     </motion.div>
-  );
+  )
 }
-

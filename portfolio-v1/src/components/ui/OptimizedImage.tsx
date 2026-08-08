@@ -1,25 +1,27 @@
-'use client';
+'use client'
 
-import { useCallback, useState } from 'react';
-import Image, { type ImageProps } from 'next/image';
+import { useCallback, useState } from 'react'
+import Image, { type ImageProps } from 'next/image'
 
 function extractRawSanityUrl(src: string): string | null {
   try {
-    const url = new URL(src, window.location.origin);
-    const pathSegments = url.pathname.split('/');
-    const sanityIndex = pathSegments.indexOf('sanity');
-    if (sanityIndex === -1 || !pathSegments[sanityIndex + 1]) return null;
-    const encoded = pathSegments[sanityIndex + 1];
-    const base64 = encoded.replace(/-/g, '+').replace(/_/g, '/');
-    const padded = base64 + '='.repeat((4 - (base64.length % 4)) % 4);
-    const binary = atob(padded);
-    const bytes = new Uint8Array(binary.length);
+    const url = new URL(src, window.location.origin)
+    const pathSegments = url.pathname.split('/')
+    const sanityIndex = pathSegments.indexOf('sanity')
+    if (sanityIndex === -1 || !pathSegments[sanityIndex + 1]) return null
+    const segment = pathSegments[sanityIndex + 1]
+    const encoded = segment.includes('.') ? url.searchParams.get('target') : segment
+    if (!encoded) return null
+    const base64 = encoded.replace(/-/g, '+').replace(/_/g, '/')
+    const padded = base64 + '='.repeat((4 - (base64.length % 4)) % 4)
+    const binary = atob(padded)
+    const bytes = new Uint8Array(binary.length)
     for (let i = 0; i < binary.length; i++) {
-      bytes[i] = binary.charCodeAt(i);
+      bytes[i] = binary.charCodeAt(i)
     }
-    return new TextDecoder().decode(bytes);
+    return new TextDecoder().decode(bytes)
   } catch {
-    return null;
+    return null
   }
 }
 
@@ -43,7 +45,7 @@ function ImagePlaceholder({ className, alt }: { className?: string; alt?: string
         />
       </svg>
     </div>
-  );
+  )
 }
 
 /**
@@ -72,30 +74,43 @@ function ImagePlaceholder({ className, alt }: { className?: string; alt?: string
  * currently) can override by passing `unoptimized={false}`.
  */
 const OptimizedImage = (props: ImageProps) => {
-  const [imgSrc, setImgSrc] = useState<string | ImageProps['src']>(props.src);
-  const [hasFallback, setHasFallback] = useState(false);
-  const [hasError, setHasError] = useState(false);
+  const [imgSrc, setImgSrc] = useState<string | ImageProps['src']>(props.src)
+  const [hasFallback, setHasFallback] = useState(false)
+  const [hasError, setHasError] = useState(false)
 
   const handleError = useCallback(() => {
     if (hasFallback) {
-      setHasError(true);
-      return;
+      setHasError(true)
+      return
     }
-    const raw = extractRawSanityUrl(String(imgSrc));
+    const raw = extractRawSanityUrl(String(imgSrc))
     if (raw) {
-      setImgSrc(raw);
-      setHasFallback(true);
+      setImgSrc(raw)
+      setHasFallback(true)
     } else {
-      setHasError(true);
+      setHasError(true)
     }
-  }, [imgSrc, hasFallback]);
+  }, [imgSrc, hasFallback])
 
   if (hasError) {
-    return <ImagePlaceholder className={props.className} alt={typeof props.alt === 'string' ? props.alt : ''} />;
+    return (
+      <ImagePlaceholder
+        className={props.className}
+        alt={typeof props.alt === 'string' ? props.alt : ''}
+      />
+    )
   }
 
   // eslint-disable-next-line jsx-a11y/alt-text -- alt is forwarded via props
-  return <Image {...props} src={imgSrc} quality={props.quality ?? 85} unoptimized onError={handleError} />;
-};
+  return (
+    <Image
+      {...props}
+      src={imgSrc}
+      quality={props.quality ?? 85}
+      unoptimized
+      onError={handleError}
+    />
+  )
+}
 
-export default OptimizedImage;
+export default OptimizedImage

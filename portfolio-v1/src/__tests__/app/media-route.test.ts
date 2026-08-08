@@ -1,95 +1,194 @@
-import { NextRequest } from 'next/server';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { buildMediaGatewayUrl } from '@/lib/media-gateway';
+import { NextRequest } from 'next/server'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { buildMediaGatewayUrl } from '@/lib/media-gateway'
 
-import { GET } from '@/app/api/media/[...path]/route';
+import { GET } from '@/app/api/media/[...path]/route'
 
 describe('/api/media route', () => {
   beforeEach(() => {
-    process.env.SANITY_MEDIA_GATEWAY_SECRET = 'unit-test-media-secret';
-    vi.stubGlobal('fetch', vi.fn());
-  });
+    process.env.SANITY_MEDIA_GATEWAY_SECRET = 'unit-test-media-secret'
+    vi.stubGlobal('fetch', vi.fn())
+  })
 
   it('proxies a sanity asset through the gateway and preserves cache headers', async () => {
-    const targetUrl = 'https://cdn.sanity.io/images/project/production/image-800x600.jpg';
-    const gatewayUrl = buildMediaGatewayUrl(targetUrl, { width: 320, quality: 70, sign: true });
+    const targetUrl = 'https://cdn.sanity.io/images/project/production/image-800x600.jpg'
+    const gatewayUrl = buildMediaGatewayUrl(targetUrl, { width: 320, quality: 70, sign: true })
     const upstreamResponse = new Response('binary-image-data', {
       status: 200,
       headers: {
         'content-type': 'image/jpeg',
         etag: 'etag-value',
       },
-    });
+    })
 
-    vi.mocked(fetch).mockResolvedValueOnce(upstreamResponse);
+    vi.mocked(fetch).mockResolvedValueOnce(upstreamResponse)
 
-    const request = new NextRequest(`http://localhost:3000${gatewayUrl}`);
-    const path = new URL(`http://localhost:3000${gatewayUrl}`).pathname.split('/').filter(Boolean).slice(2);
+    const request = new NextRequest(`http://localhost:3000${gatewayUrl}`)
+    const path = new URL(`http://localhost:3000${gatewayUrl}`).pathname
+      .split('/')
+      .filter(Boolean)
+      .slice(2)
 
-    const response = await GET(request, { params: Promise.resolve({ path }) as Promise<{ path?: string[] }> });
+    const response = await GET(request, {
+      params: Promise.resolve({ path }) as Promise<{ path?: string[] }>,
+    })
 
-    expect(fetch).toHaveBeenCalledTimes(1);
-    expect(response.status).toBe(200);
-    expect(response.headers.get('content-type')).toBe('image/jpeg');
-    expect(response.headers.get('etag')).toBe('etag-value');
-    expect(response.headers.get('cache-control')).toContain('max-age=');
-    expect(response.headers.get('x-media-asset-kind')).toBe('image');
-    expect(response.headers.get('x-robots-tag')).toBe('noindex, nofollow');
-  });
+    expect(fetch).toHaveBeenCalledTimes(1)
+    expect(response.status).toBe(200)
+    expect(response.headers.get('content-type')).toBe('image/jpeg')
+    expect(response.headers.get('etag')).toBe('etag-value')
+    expect(response.headers.get('cache-control')).toContain('max-age=')
+    expect(response.headers.get('x-media-asset-kind')).toBe('image')
+    expect(response.headers.get('x-robots-tag')).toBe('noindex, nofollow')
+  })
 
   it('rejects malformed asset targets', async () => {
-    const request = new NextRequest('http://localhost:3000/api/media/sanity/invalid');
-    const response = await GET(request, { params: Promise.resolve({ path: ['sanity', 'invalid'] }) as Promise<{ path?: string[] }> });
+    const request = new NextRequest('http://localhost:3000/api/media/sanity/invalid')
+    const response = await GET(request, {
+      params: Promise.resolve({ path: ['sanity', 'invalid'] }) as Promise<{ path?: string[] }>,
+    })
 
-    expect(response.status).toBe(400);
-  });
+    expect(response.status).toBe(400)
+  })
 
   it('rejects crafted unsupported Sanity asset targets', async () => {
-    const malformedTarget = 'https://cdn.sanity.io/other/project/production/image-800x600.jpg';
-    const encoded = Buffer.from(malformedTarget, 'utf8').toString('base64url');
-    const request = new NextRequest(`http://localhost:3000/api/media/sanity/${encoded}`);
+    const malformedTarget = 'https://cdn.sanity.io/other/project/production/image-800x600.jpg'
+    const encoded = Buffer.from(malformedTarget, 'utf8').toString('base64url')
+    const request = new NextRequest(`http://localhost:3000/api/media/sanity/${encoded}`)
 
-    const response = await GET(request, { params: Promise.resolve({ path: ['sanity', encoded] }) as Promise<{ path?: string[] }> });
+    const response = await GET(request, {
+      params: Promise.resolve({ path: ['sanity', encoded] }) as Promise<{ path?: string[] }>,
+    })
 
-    expect(response.status).toBe(400);
-  });
+    expect(response.status).toBe(400)
+  })
 
   it('treats file assets as immutable cacheable responses', async () => {
-    process.env.SANITY_MEDIA_GATEWAY_SECRET = 'unit-test-media-secret';
-    const targetUrl = 'https://cdn.sanity.io/files/project/production/resume.pdf';
-    const gatewayUrl = buildMediaGatewayUrl(targetUrl, { sign: true });
+    process.env.SANITY_MEDIA_GATEWAY_SECRET = 'unit-test-media-secret'
+    const targetUrl = 'https://cdn.sanity.io/files/project/production/resume.pdf'
+    const gatewayUrl = buildMediaGatewayUrl(targetUrl, { sign: true })
     const upstreamResponse = new Response('binary-pdf-data', {
       status: 200,
       headers: {
         'content-type': 'application/pdf',
       },
-    });
+    })
 
-    vi.mocked(fetch).mockResolvedValueOnce(upstreamResponse);
+    vi.mocked(fetch).mockResolvedValueOnce(upstreamResponse)
 
-    const request = new NextRequest(`http://localhost:3000${gatewayUrl}`);
-    const path = new URL(`http://localhost:3000${gatewayUrl}`).pathname.split('/').filter(Boolean).slice(2);
+    const request = new NextRequest(`http://localhost:3000${gatewayUrl}`)
+    const path = new URL(`http://localhost:3000${gatewayUrl}`).pathname
+      .split('/')
+      .filter(Boolean)
+      .slice(2)
 
-    const response = await GET(request, { params: Promise.resolve({ path }) as Promise<{ path?: string[] }> });
+    const response = await GET(request, {
+      params: Promise.resolve({ path }) as Promise<{ path?: string[] }>,
+    })
 
-    expect(response.status).toBe(200);
-    expect(response.headers.get('cache-control')).toContain('max-age=');
-    expect(response.headers.get('x-media-asset-kind')).toBe('file');
-  });
+    expect(response.status).toBe(200)
+    expect(response.headers.get('cache-control')).toContain('max-age=')
+    expect(response.headers.get('x-media-asset-kind')).toBe('file')
+  })
 
   it('rejects expired signatures with 401 instead of unsigned fallback', async () => {
-    process.env.SANITY_MEDIA_GATEWAY_SECRET = 'unit-test-media-secret';
-    const targetUrl = 'https://cdn.sanity.io/images/project/production/image-800x600.jpg';
-    const encoded = Buffer.from(targetUrl, 'utf8').toString('base64url');
-    const farPast = Math.floor(Date.now() / 1000) - 7200;
+    process.env.SANITY_MEDIA_GATEWAY_SECRET = 'unit-test-media-secret'
+    const targetUrl = 'https://cdn.sanity.io/images/project/production/image-800x600.jpg'
+    const encoded = Buffer.from(targetUrl, 'utf8').toString('base64url')
+    const farPast = Math.floor(Date.now() / 1000) - 7200
 
-    const requestUrl = `http://localhost:3000/api/media/sanity/${encoded}?w=320&q=85&exp=${farPast}&sig=expired-sig`;
-    const request = new NextRequest(requestUrl);
-    const path = ['sanity', encoded];
+    const requestUrl = `http://localhost:3000/api/media/sanity/${encoded}?w=320&q=85&exp=${farPast}&sig=expired-sig`
+    const request = new NextRequest(requestUrl)
+    const path = ['sanity', encoded]
 
-    const response = await GET(request, { params: Promise.resolve({ path }) as Promise<{ path?: string[] }> });
+    const response = await GET(request, {
+      params: Promise.resolve({ path }) as Promise<{ path?: string[] }>,
+    })
 
-    expect(fetch).not.toHaveBeenCalled();
-    expect(response.status).toBe(401);
-  });
-});
+    expect(fetch).not.toHaveBeenCalled()
+    expect(response.status).toBe(401)
+  })
+
+  it('serves unsigned public images and sets a clean Content-Disposition filename', async () => {
+    process.env.SANITY_MEDIA_GATEWAY_SECRET = 'unit-test-media-secret'
+    const targetUrl =
+      'https://cdn.sanity.io/images/project/production/f34107054bdd53ab63d9a801d5bc329bf40b2672-1200x630.svg'
+    const encoded = Buffer.from(targetUrl, 'utf8').toString('base64url')
+
+    const requestUrl = `http://localhost:3000/api/media/sanity/hack-for-gov-2025.svg?target=${encoded}&w=320&q=85`
+    const request = new NextRequest(requestUrl)
+    const path = ['sanity', 'hack-for-gov-2025.svg']
+
+    vi.mocked(fetch).mockResolvedValueOnce(
+      new Response('binary-image-data', {
+        status: 200,
+        headers: { 'content-type': 'image/svg+xml' },
+      })
+    )
+
+    const response = await GET(request, {
+      params: Promise.resolve({ path }) as Promise<{ path?: string[] }>,
+    })
+
+    expect(fetch).toHaveBeenCalledTimes(1)
+    expect(response.status).toBe(200)
+    expect(response.headers.get('content-type')).toBe('image/svg+xml')
+    expect(response.headers.get('content-disposition')).toBe(
+      'inline; filename="hack-for-gov-2025.svg"'
+    )
+    expect(response.headers.get('cache-control')).toContain('max-age=')
+  })
+
+  it('serves unsigned legacy-format image requests', async () => {
+    process.env.SANITY_MEDIA_GATEWAY_SECRET = 'unit-test-media-secret'
+    const targetUrl = 'https://cdn.sanity.io/images/project/production/image-800x600.jpg'
+    const encoded = Buffer.from(targetUrl, 'utf8').toString('base64url')
+
+    const request = new NextRequest(`http://localhost:3000/api/media/sanity/${encoded}?w=320&q=85`)
+    const path = ['sanity', encoded]
+
+    vi.mocked(fetch).mockResolvedValueOnce(
+      new Response('binary-image-data', {
+        status: 200,
+        headers: { 'content-type': 'image/jpeg' },
+      })
+    )
+
+    const response = await GET(request, {
+      params: Promise.resolve({ path }) as Promise<{ path?: string[] }>,
+    })
+
+    expect(response.status).toBe(200)
+  })
+
+  it('still requires a signature for file assets', async () => {
+    process.env.SANITY_MEDIA_GATEWAY_SECRET = 'unit-test-media-secret'
+    const targetUrl = 'https://cdn.sanity.io/files/project/production/resume.pdf'
+    const encoded = Buffer.from(targetUrl, 'utf8').toString('base64url')
+
+    const request = new NextRequest(`http://localhost:3000/api/media/sanity/${encoded}?w=320&q=85`)
+    const path = ['sanity', encoded]
+
+    const response = await GET(request, {
+      params: Promise.resolve({ path }) as Promise<{ path?: string[] }>,
+    })
+
+    expect(fetch).not.toHaveBeenCalled()
+    expect(response.status).toBe(401)
+  })
+
+  it('rejects a clean path without a target query param', async () => {
+    process.env.SANITY_MEDIA_GATEWAY_SECRET = 'unit-test-media-secret'
+
+    const request = new NextRequest(
+      'http://localhost:3000/api/media/sanity/hack-for-gov-2025.svg?w=320&q=85'
+    )
+    const path = ['sanity', 'hack-for-gov-2025.svg']
+
+    const response = await GET(request, {
+      params: Promise.resolve({ path }) as Promise<{ path?: string[] }>,
+    })
+
+    expect(response.status).toBe(400)
+  })
+})
