@@ -356,3 +356,13 @@ Notes for keeping it smart:
   - blog posts: JSON-LD upgraded Article -> BlogPosting with mainEntityOfPage, url, publisher; drop fake dateModified
   - error/not-found boundaries under /blog and /projects: h2 -> h1 so every document has exactly one h1
   - Verified: lint 0 errors, tsc clean, 35 affected tests pass, doctor 100/100, curl checks on all routes
+### 2026-08-09 - Update
+
+  - 673e2c19 fix(media): clean descriptive gateway URLs, allow unsigned public images, add Content-Disposition
+  - Route accepts clean /api/media/sanity/<slug>.<ext>?target=... (base64url) format; legacy base64-only paths still decode (backward compatible, discriminator: segment contains a dot)
+  - Signature required for file assets (resume) or when sig present (401 expired / 403 invalid); unsigned image requests now 200, eliminating the client-side 401 that caused silent raw-CDN double-fetch
+  - content-disposition: inline; filename=<descriptive slug> on all responses
+  - buildMediaGatewayUrl / resolveContentImageSrc accept label option; slugifyMediaLabel folds NFKD, lowercases, hyphens non-alnum, caps 64 chars, falls back to portfolio-image
+  - Labeled ~15 call sites (profile fullName, project slug/title, gallery title/alt, cert title, blog slug/title, experience company, collage alt) across server data loaders and client components; OptimizedImage + parseImageDimensions handle both URL formats
+  - Tests: media, media-gateway, media-route suites extended; fixed pre-existing robots disallow-array and project-slug fallback-title regressions from the SEO commit
+  - Verified: lint 0 errors, tsc clean, doctor 100/100, next build exit 0, live curl checks (signed 200, unsigned image 200, unsigned file 401, legacy format 200)
