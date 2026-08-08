@@ -22,7 +22,7 @@ const isWindows = process.platform === 'win32'
 const contentSecurityPolicy = `
   default-src 'self';
   script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ''}${umamiScriptOrigin ? ` ${umamiScriptOrigin}` : ''} https://cal.com https://*.cal.com;
-  style-src 'self' 'unsafe-inline'; /* required by Next.js hydration */
+  style-src 'self' 'unsafe-inline';
   img-src 'self' data: blob: https:;
   font-src 'self' data: https:;
   connect-src ${connectSrc} https://namias-cms.sanity.studio https://*.sanity.studio https://*.api.sanity.io https://cal.com https://*.cal.com;
