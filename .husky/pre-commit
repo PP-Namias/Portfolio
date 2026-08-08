@@ -1,6 +1,13 @@
 #!/bin/sh
 echo "[hooks] Running pre-commit checks..."
 
+# Resolve node/npx when PATH is stripped (VS Code Git UI, GitHub Desktop, IDE hooks)
+if ! command -v node >/dev/null 2>&1; then
+  for base in "/c/Program Files/nodejs" "$LOCALAPPDATA/Programs/nodejs" "/usr/local/bin"; do
+    [ -x "$base/node" ] && export PATH="$base:$PATH" && break
+  done
+fi
+
 # 1. Lint + format staged files only (ESLint --fix + Prettier --write)
 #    Scoped strictly to staged files via lint-staged for fast commits.
 echo "[hooks] Running lint-staged..."

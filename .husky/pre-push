@@ -1,6 +1,13 @@
 #!/bin/sh
 echo "[hooks] Running pre-push checks..."
 
+# Resolve node/npx when PATH is stripped (VS Code Git UI, GitHub Desktop, IDE hooks)
+if ! command -v node >/dev/null 2>&1; then
+  for base in "/c/Program Files/nodejs" "$LOCALAPPDATA/Programs/nodejs" "/usr/local/bin"; do
+    [ -x "$base/node" ] && export PATH="$base:$PATH" && break
+  done
+fi
+
 # 1. TypeScript type checks (portfolio-v1, ai-service, studio; portfolio-v2 excluded)
 echo "[hooks] TypeScript type check (portfolio-v1)..."
 cd portfolio-v1 && npx tsc --noEmit
