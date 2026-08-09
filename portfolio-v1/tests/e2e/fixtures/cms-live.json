@@ -64,7 +64,12 @@
         {
           "_type": "block",
           "style": "normal",
-          "children": [{ "_type": "span", "text": "This is the E2E post body." }]
+          "children": [
+            {
+              "_type": "span",
+              "text": "This is the E2E post body."
+            }
+          ]
         }
       ],
       "tags": ["e2e"],
