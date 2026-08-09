@@ -54,6 +54,13 @@ jobs:
     uses: ./.github/workflows/vercel-deploy-v1.yml
     secrets: inherit
 
+  deploy-v1-cf:
+    name: Deploy V1 to Cloudflare
+    needs: detect-changes
+    if: needs.detect-changes.outputs.v1 == 'true' || github.event_name == 'workflow_dispatch'
+    uses: ./.github/workflows/cloudflare-deploy.yml
+    secrets: inherit
+
   deploy-v2:
     name: Deploy V2 to Cloudflare
     needs: detect-changes
