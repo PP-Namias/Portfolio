@@ -16,6 +16,7 @@ const config = [
         setInterval: 'readonly',
         clearInterval: 'readonly',
         URL: 'readonly',
+        fetch: 'readonly',
       },
     },
   },

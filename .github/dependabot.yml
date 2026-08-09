@@ -4,7 +4,8 @@ updates:
     directory: "/portfolio-v1"
     schedule:
       interval: "daily"
-      cooldown: "7d"
+    cooldown:
+      default-days: 7
     groups:
       patch-updates:
         patterns:

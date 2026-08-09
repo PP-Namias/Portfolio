@@ -22,11 +22,11 @@
     "ai-chatbot"
   ],
   "scripts": {
-    "postinstall": "patch-package && npm install --prefix studio",
+    "postinstall": "patch-package && npm install --prefix ../studio --ignore-scripts",
     "dev": "concurrently --names next,sanity --prefix-colors cyan,magenta \"next dev\" \"npm run dev:studio\"",
-    "dev:studio": "cd studio && npm run dev",
+    "dev:studio": "cd ../studio && npm run dev",
     "build": "concurrently --names next,sanity --prefix-colors cyan,magenta --kill-others-on-fail \"next build && npm run generate-sw-manifest\" \"npm run build:studio\"",
-    "build:studio": "cd studio && npm run build",
+    "build:studio": "cd ../studio && npm run build",
     "start": "next start",
     "lint": "eslint src --ext .ts,.tsx,.js,.jsx",
     "test": "vitest run",
