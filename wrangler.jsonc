@@ -11,8 +11,4 @@
     "directory": "portfolio-v1/.open-next/assets",
     "binding": "ASSETS"
   }
-  // Root-level mirror for the Cloudflare Workers Builds (dashboard) integration.
-  // The app lives in portfolio-v1/; builds must run inside that directory.
-  // CI deploys (cloudflare-deploy*.yml) run from portfolio-v1 and use that
-  // directory's own wrangler.jsonc.
 }
