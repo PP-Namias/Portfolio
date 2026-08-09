@@ -13,3 +13,13 @@
   - 'pnpm deploy' requires a pnpm workspace; the intent was the studio's
   - deploy script (sanity deploy). ERR_PNPM_CANNOT_DEPLOY broke the
   - Sanity Studio Deploy workflow on every studio change.
+### 2026-08-10 - Update
+
+  - 27fe0080 fix(ci): pin all actions to verified SHAs and remove inert nested workflow
+  - Pin github/codeql-action init/analyze to v3.23.1 SHA in codeql.yml and security-compliance.yml (unpinned-uses)
+  - Pin actions/checkout, setup-node, upload-artifact in playwright.yml
+  - Pin pnpm/action-setup to v4.1.0 SHA in sanity-studio-deploy.yml and cloudflare-deploy-v2.yml
+  - Fix dorny/paths-filter SHA in deploy.yml and oven-sh/setup-bun SHA in cloudflare-deploy-v2.yml (impostor-commit: SHAs did not belong to the referenced repos)
+  - Replace corrupted upload-artifact SHA in cloudflare-deploy.yml
+  - Delete nested portfolio-v1/.github/workflows/problem-detection-advisor.yml (inert; dangerous workflow_run trigger)
+  - Resolves all 17 zizmor error-level findings blocking the code_quality gate
