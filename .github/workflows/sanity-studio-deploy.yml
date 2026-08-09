@@ -47,6 +47,6 @@ jobs:
 
       - name: Deploy to Sanity Hosting
         working-directory: studio
-        run: pnpm deploy
+        run: pnpm run deploy
         env:
           SANITY_AUTH_TOKEN: ${{ secrets.SANITY_AUTH_TOKEN }}
