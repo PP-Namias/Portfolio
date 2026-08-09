@@ -27,7 +27,7 @@ jobs:
 
       - name: Detect portfolio-v1 changes
         id: changes-v1
-        uses: dorny/paths-filter@de90cc6fb38fc0963ad72b210f1f383952240f2f # v3.0.2
+        uses: dorny/paths-filter@de90cc6fb38fc0963ad72b210f1f284cd68cea36 # v3.0.2
         with:
           filters: |
             v1:
@@ -35,7 +35,7 @@ jobs:
 
       - name: Detect portfolio-v2 changes
         id: changes-v2
-        uses: dorny/paths-filter@de90cc6fb38fc0963ad72b210f1f383952240f2f # v3.0.2
+        uses: dorny/paths-filter@de90cc6fb38fc0963ad72b210f1f284cd68cea36 # v3.0.2
         with:
           filters: |
             v2:

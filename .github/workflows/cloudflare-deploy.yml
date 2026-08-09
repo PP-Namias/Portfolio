@@ -89,7 +89,7 @@ jobs:
         working-directory: portfolio-v1
 
       - name: Upload OpenNext artifact
-        uses: actions/upload-artifact@e165f8d65b6e75b5640v3492e2b4886f43607fa02 # v4.6.2
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: opennext-build-${{ github.run_id }}
           path: portfolio-v1/.open-next
