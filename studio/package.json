@@ -19,6 +19,8 @@
   ],
   "dependencies": {
     "@sanity/assist": "^4.4.8",
+    "@sanity/icons": "^3.8.0",
+    "@sanity/ui": "^3.5.2",
     "@sanity/vision": "^4.22.0",
     "marked": "^18.0.4",
     "react": "19.2.6",
