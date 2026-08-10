@@ -23,3 +23,12 @@
   - Replace corrupted upload-artifact SHA in cloudflare-deploy.yml
   - Delete nested portfolio-v1/.github/workflows/problem-detection-advisor.yml (inert; dangerous workflow_run trigger)
   - Resolves all 17 zizmor error-level findings blocking the code_quality gate
+### 2026-08-10 - Update
+
+  - 8392c277 fix(deploy): strip UTF-8 BOM from portfolio-v1 package.json
+  - Remove EF BB BF BOM that Turbopack cannot parse ('package.json is not parseable'),
+    crashing both Vercel (next build) and Cloudflare Workers (opennextjs-cloudflare build)
+  - 9152a5e9 ci(quality): add next build smoke check to portfolio-v1 gate
+  - Appends 'npx next build' to the quality matrix so JSON/config parse errors
+    and build crashes are caught pre-merge
+  - Verified: next build and opennextjs-cloudflare build exit 0 locally
