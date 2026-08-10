@@ -30,6 +30,7 @@ jobs:
               npx tsc --noEmit
               npm run test -- --run
               npm run doctor:check
+              npx next build
           - service: ai-service
             commands: |
               npm run lint
