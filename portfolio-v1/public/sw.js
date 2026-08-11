@@ -128,6 +128,7 @@ async function staleWhileRevalidate(request, cacheName) {
 }
 
 self.addEventListener('message', (event) => {
+  if (event.origin && event.origin !== self.location.origin) return;
   if (event.data && event.data.type === 'CLEAR_CACHE') {
     const keep = event.data.keep || [];
     caches.keys().then((keys) => {

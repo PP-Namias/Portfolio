@@ -27,13 +27,16 @@ function buildCacheControl(assetKind: 'image' | 'file' | 'unknown', expiresAt?: 
   return 'public, max-age=86400, s-maxage=86400, stale-while-revalidate=604800'
 }
 
+const SANITY_CDN_ORIGIN = 'https://cdn.sanity.io'
+const SAFE_ASSET_PATH = /^\/[A-Za-z0-9._~/-]+$/
+
 function buildUpstreamUrl(
-  targetUrl: string,
+  parsedTarget: URL,
   assetKind: 'image' | 'file' | 'unknown',
   width: number,
   quality: number
 ): URL {
-  const upstreamUrl = new URL(targetUrl)
+  const upstreamUrl = new URL(`${SANITY_CDN_ORIGIN}${parsedTarget.pathname}${parsedTarget.search}`)
 
   if (assetKind === 'image') {
     upstreamUrl.searchParams.set('auto', 'format')
@@ -42,6 +45,22 @@ function buildUpstreamUrl(
   }
 
   return upstreamUrl
+}
+
+function isSafeSanityTarget(targetUrl: string): boolean {
+  let parsed: URL
+  try {
+    parsed = new URL(targetUrl)
+  } catch {
+    return false
+  }
+  return (
+    parsed.protocol === 'https:' &&
+    parsed.hostname === 'cdn.sanity.io' &&
+    !parsed.username &&
+    !parsed.password &&
+    SAFE_ASSET_PATH.test(parsed.pathname)
+  )
 }
 
 function buildError(status: number, message: string): Response {
@@ -87,7 +106,7 @@ export async function GET(request: NextRequest, context: { params: Promise<{ pat
 
   const targetUrl = decodeGatewayTarget(encodedTarget)
 
-  if (!isSanityCdnUrl(targetUrl)) {
+  if (!isSanityCdnUrl(targetUrl) || !isSafeSanityTarget(targetUrl)) {
     return buildError(400, 'Invalid asset target')
   }
 
@@ -123,16 +142,19 @@ export async function GET(request: NextRequest, context: { params: Promise<{ pat
     )
   }
 
+  const parsedTarget = new URL(targetUrl)
+  const safeLogTarget = targetUrl.replace(/[\r\n\u0000-\u001f\u007f]/g, '')
+
   if (sigResult.expired && signature && expiresAt) {
     const remainingMs = (expiresAt - Math.floor(Date.now() / 1000)) * 1000
     if (remainingMs < 3600_000) {
       console.warn(
-        `[media-gateway] Signature expiring soon for ${targetUrl} (${Math.round(remainingMs / 60_000)}m remaining)`
+        `[media-gateway] Signature expiring soon for ${safeLogTarget} (${Math.round(remainingMs / 60_000)}m remaining)`
       )
     }
   }
 
-  const upstreamUrl = buildUpstreamUrl(targetUrl, assetKind, width, quality)
+  const upstreamUrl = buildUpstreamUrl(parsedTarget, assetKind, width, quality)
 
   if (upstreamUrl.hostname !== 'cdn.sanity.io') {
     return buildError(400, 'Invalid asset target')

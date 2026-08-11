@@ -84,11 +84,10 @@ if (!command) {
   process.exit(1)
 }
 
-const commandLine = ['npm', 'exec', '--', command, ...commandArgs].join(' ')
 const child =
   process.platform === 'win32'
-    ? spawn('cmd.exe', ['/d', '/s', '/c', commandLine], {stdio: 'inherit', env})
-    : spawn(command, commandArgs, {stdio: 'inherit', env})
+    ? spawn('npm.cmd', ['exec', '--', command, ...commandArgs], {stdio: 'inherit', env})
+    : spawn('npm', ['exec', '--', command, ...commandArgs], {stdio: 'inherit', env})
 
 child.on('error', (error) => {
   globalThis.console.error(error)

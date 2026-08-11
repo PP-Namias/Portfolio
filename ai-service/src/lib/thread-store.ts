@@ -55,7 +55,7 @@ export function createThreadStore(options: ThreadStoreOptions = {}) {
     const data = JSON.stringify([...threads.values()], null, 2);
     await mkdir(dirname(filePath), { recursive: true });
     const tmpPath = join(dirname(filePath), `.threads-${randomUUID()}.tmp`);
-    await writeFile(tmpPath, data, 'utf8');
+    await writeFile(tmpPath, data, { encoding: 'utf8', flag: 'wx', mode: 0o600 });
     try {
       await rename(tmpPath, filePath);
     } catch (error) {

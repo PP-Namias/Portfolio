@@ -1,5 +1,4 @@
 const CONTROL_CHARS = /\p{Cc}/gu;
-const HTML_TAG = /<[^>]*>/g;
 const ENTITY_RE = /&(?:nbsp|amp|lt|gt|quot|#39|apos);/gi;
 const ENTITY_MAP: Record<string, string> = {
   '&nbsp;': ' ',
@@ -10,6 +9,21 @@ const ENTITY_MAP: Record<string, string> = {
   '&#39;': "'",
   '&apos;': "'",
 };
+const BLOCK_TAG_NAMES = new Set([
+  'p',
+  'div',
+  'h1',
+  'h2',
+  'h3',
+  'h4',
+  'h5',
+  'h6',
+  'li',
+  'ul',
+  'ol',
+  'blockquote',
+  'br',
+]);
 
 function decodeEntities(text: string): string {
   return text.replace(ENTITY_RE, (match) => ENTITY_MAP[match.toLowerCase()] ?? match);
@@ -23,14 +37,35 @@ export function normalizeWhitespace(text: string): string {
 }
 
 export function stripHtml(html: string): string {
-  return decodeEntities(html)
-    .replace(/<br\s*\/?>/gi, '\n')
-    .replace(/<\/(p|div|h[1-6]|li|ul|ol|blockquote)>/gi, '\n')
-    .replace(/<li[^>]*>/gi, '- ')
-    .replace(HTML_TAG, '')
-    .replace(/<[^>]*/g, '')
-    .replace(/[<>]/g, '')
-    .trimEnd();
+  const text = decodeEntities(html);
+  let out = '';
+  let i = 0;
+  while (i < text.length) {
+    if (text[i] !== '<') {
+      out += text[i];
+      i += 1;
+      continue;
+    }
+    const end = text.indexOf('>', i + 1);
+    if (end === -1) {
+      i += 1;
+      continue;
+    }
+    const rawTag = text.slice(i + 1, end).trim();
+    const tagName = ((rawTag.startsWith('/') ? rawTag.slice(1) : rawTag).split(/[\s/]/)[0] ?? '').toLowerCase();
+    if (tagName === 'li') {
+      out += '- ';
+    } else if (BLOCK_TAG_NAMES.has(tagName)) {
+      out += '\n';
+    }
+    i = end + 1;
+  }
+  return out
+    .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, ' ')
+    .replace(/\r\n?/g, '\n')
+    .replace(/[^\S\n]+/g, ' ')
+    .replace(/\n{2,}/g, '\n')
+    .trim();
 }
 
 export function isLikelyHtml(text: string): boolean {

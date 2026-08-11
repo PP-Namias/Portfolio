@@ -18,6 +18,8 @@ export const isInIframe = () => {
   return window.self !== window.top
 }
 
+const ALLOWED_PARENT_HOSTS = new Set(["namias.tech", "ppnamias.com"])
+
 export function useIframeMessageListener<
   Message extends ParentToIframeMessage,
   MessageType extends Message["type"],
@@ -37,6 +39,19 @@ export function useIframeMessageListener<
     }
 
     const handleMessage = (event: MessageEvent) => {
+      if (event.source !== window.parent) return
+      let allowedOrigin = false
+      if (event.origin) {
+        try {
+          const host = new URL(event.origin).hostname
+          allowedOrigin = host === window.location.hostname || ALLOWED_PARENT_HOSTS.has(host)
+        } catch {
+          allowedOrigin = false
+        }
+      } else {
+        allowedOrigin = true
+      }
+      if (!allowedOrigin) return
       if (event.data.type === messageType) {
         onMessageRef.current(event.data.data)
       }
