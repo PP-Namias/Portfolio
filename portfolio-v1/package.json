@@ -34,7 +34,7 @@
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:report": "playwright show-report",
-    "cloudflare:build": "opennextjs-cloudflare build --dangerouslyUseUnsupportedNextVersion",
+    "cloudflare:build": "opennextjs-cloudflare build --dangerouslyUseUnsupportedNextVersion --config ../wrangler.jsonc",
     "cloudflare:dev": "wrangler dev",
     "cloudflare:deploy": "opennextjs-cloudflare deploy --dangerouslyUseUnsupportedNextVersion",
     "generate-icons": "node scripts/generate-icons.mjs",
