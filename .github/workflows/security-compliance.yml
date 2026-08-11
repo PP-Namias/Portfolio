@@ -67,13 +67,25 @@ jobs:
         uses: github/codeql-action/init@f6c040146fc24e8c63f0c461c14a75e89ae41856 # v3.23.1
         with:
           languages: javascript-typescript
-          build-mode: none
           config-file: .github/codeql/codeql-config.yml
+
+      - name: Setup Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install and Build
+        run: |
+          npm ci
+          npm run build
+        env:
+          NEXT_PUBLIC_SANITY_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_SANITY_PROJECT_ID || 'nl0qw78w' }}
+          NEXT_PUBLIC_SANITY_DATASET: ${{ secrets.NEXT_PUBLIC_SANITY_DATASET || 'production' }}
+          SANITY_API_READ_TOKEN: ${{ secrets.SANITY_API_READ_TOKEN || '' }}
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@f6c040146fc24e8c63f0c461c14a75e89ae41856 # v3.23.1
-        with:
-          category: "/language:javascript-typescript"
 
   security-summary:
     name: Security Summary
