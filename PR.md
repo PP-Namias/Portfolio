@@ -32,3 +32,17 @@
   - Appends 'npx next build' to the quality matrix so JSON/config parse errors
     and build crashes are caught pre-merge
   - Verified: next build and opennextjs-cloudflare build exit 0 locally
+### 2026-08-11 - Update
+
+  - d391b7af fix(deploy): restore Cloudflare worker build and make Vercel config explicit
+  - root wrangler.jsonc: main/assets back at repo root (shape Cloudflare git
+  - integration builds successfully), build command delegates to new
+  - scripts/cloudflare-build.mjs which installs, runs the OpenNext build in
+  - portfolio-v1, then stages .open-next at repo root
+  - add esbuild 0.25.4 devDependency: @opennextjs/cloudflare bundler imports
+  - esbuild at top level; fresh npm ci no longer hoists it, which broke every
+  - git-integration build after the monorepo restructure (ERR_MODULE_NOT_FOUND)
+  - vercel.json: full explicit build/install/output overrides so dashboard
+  - settings cannot reject the deployment at config-validation time
+  - Verified locally: node scripts/cloudflare-build.mjs exit 0,
+  - wrangler deploy --dry-run exit 0 (75 assets, ASSETS binding)
