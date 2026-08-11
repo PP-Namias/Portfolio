@@ -53,7 +53,7 @@ export function stripHtml(html: string): string {
     }
     const rawTag = text.slice(i + 1, end).trim();
     const tagName = ((rawTag.startsWith('/') ? rawTag.slice(1) : rawTag).split(/[\s/]/)[0] ?? '').toLowerCase();
-    if (tagName === 'li') {
+    if (tagName === 'li' && !rawTag.startsWith('/')) {
       out += '- ';
     } else if (BLOCK_TAG_NAMES.has(tagName)) {
       out += '\n';
