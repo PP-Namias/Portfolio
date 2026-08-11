@@ -3,6 +3,7 @@
 import React from 'react'
 import Image from '@/components/ui/OptimizedImage'
 import { resolveContentImageSrc } from '@/lib/media'
+import { isSanityCdnUrl } from '@/lib/media-constants'
 
 export interface GalleryImage {
   url: string
@@ -27,7 +28,7 @@ export default function CollageGallery({ images, layout }: CollageGalleryProps) 
   return (
     <div className={`grid ${gridCols[layout] || gridCols['2col']} gap-3 my-6`}>
       {images.map((img) => {
-        const src = img.url.includes('cdn.sanity.io')
+        const src = isSanityCdnUrl(img.url)
           ? resolveContentImageSrc(img.url, { folder: 'blog', label: img.alt })
           : img.url
 

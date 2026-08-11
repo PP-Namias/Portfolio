@@ -1,5 +1,5 @@
-import { mkdir, readFile, writeFile } from 'node:fs/promises';
-import { dirname } from 'node:path';
+import { mkdir, readFile, writeFile, rename, rm } from 'node:fs/promises';
+import { dirname, join } from 'node:path';
 import { randomUUID } from 'node:crypto';
 
 import type { Citation } from '../graph/types';
@@ -52,8 +52,16 @@ export function createThreadStore(options: ThreadStoreOptions = {}) {
   }
 
   async function persist(): Promise<void> {
+    const data = JSON.stringify([...threads.values()], null, 2);
     await mkdir(dirname(filePath), { recursive: true });
-    await writeFile(filePath, JSON.stringify([...threads.values()], null, 2), 'utf8');
+    const tmpPath = join(dirname(filePath), `.threads-${randomUUID()}.tmp`);
+    await writeFile(tmpPath, data, 'utf8');
+    try {
+      await rename(tmpPath, filePath);
+    } catch (error) {
+      await rm(tmpPath, { force: true });
+      throw error;
+    }
   }
 
   return {

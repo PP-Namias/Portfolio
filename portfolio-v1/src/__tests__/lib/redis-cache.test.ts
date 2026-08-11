@@ -1,19 +1,23 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest'
 
 vi.mock('@upstash/redis', () => {
-  const store = new Map<string, unknown>();
+  const store = new Map<string, unknown>()
   return {
     Redis: vi.fn().mockImplementation(() => ({
       get: vi.fn(async (key: string) => store.get(key) ?? null),
-      set: vi.fn(async (key: string, value: unknown) => { store.set(key, value); }),
-      del: vi.fn(async (key: string) => { store.delete(key); }),
+      set: vi.fn(async (key: string, value: unknown) => {
+        store.set(key, value)
+      }),
+      del: vi.fn(async (key: string) => {
+        store.delete(key)
+      }),
       keys: vi.fn(async (pattern: string) => {
-        const prefix = pattern.replace('*', '');
-        return [...store.keys()].filter((k) => k.startsWith(prefix));
+        const prefix = pattern.split('*')[0]
+        return [...store.keys()].filter((k) => k.startsWith(prefix))
       }),
       smembers: vi.fn(async (key: string) => {
-        const val = store.get(key);
-        return Array.isArray(val) ? val : [];
+        const val = store.get(key)
+        return Array.isArray(val) ? val : []
       }),
       pipeline: vi.fn(() => ({
         get: vi.fn().mockReturnThis(),
@@ -22,48 +26,56 @@ vi.mock('@upstash/redis', () => {
         exec: vi.fn(async () => []),
       })),
     })),
-  };
-});
+  }
+})
 
-import { redisGet, redisSet, redisInvalidateByTag, redisFlush, redisStats, redisIncr, redisGetNumber } from '@/lib/redis-cache';
+import {
+  redisGet,
+  redisSet,
+  redisInvalidateByTag,
+  redisFlush,
+  redisStats,
+  redisIncr,
+  redisGetNumber,
+} from '@/lib/redis-cache'
 
 describe('redis-cache', () => {
   beforeEach(() => {
-    vi.clearAllMocks();
-  });
+    vi.clearAllMocks()
+  })
 
   it('redisGet returns null when no connection', async () => {
-    const result = await redisGet('nonexistent-key');
-    expect(result).toBeNull();
-  });
+    const result = await redisGet('nonexistent-key')
+    expect(result).toBeNull()
+  })
 
   it('redisSet returns early when no connection', async () => {
-    await expect(redisSet('key', 'value')).resolves.toBeUndefined();
-  });
+    await expect(redisSet('key', 'value')).resolves.toBeUndefined()
+  })
 
   it('redisInvalidateByTag returns 0 when no connection', async () => {
-    const count = await redisInvalidateByTag('nonexistent-tag');
-    expect(count).toBe(0);
-  });
+    const count = await redisInvalidateByTag('nonexistent-tag')
+    expect(count).toBe(0)
+  })
 
   it('redisFlush returns 0 when no connection', async () => {
-    const count = await redisFlush();
-    expect(count).toBe(0);
-  });
+    const count = await redisFlush()
+    expect(count).toBe(0)
+  })
 
   it('redisStats returns disconnected state', async () => {
-    const stats = await redisStats();
-    expect(stats).toHaveProperty('size');
-    expect(stats).toHaveProperty('redisConnected');
-  });
+    const stats = await redisStats()
+    expect(stats).toHaveProperty('size')
+    expect(stats).toHaveProperty('redisConnected')
+  })
 
   it('redisIncr returns null when no connection', async () => {
-    const result = await redisIncr('nonexistent-key');
-    expect(result).toBeNull();
-  });
+    const result = await redisIncr('nonexistent-key')
+    expect(result).toBeNull()
+  })
 
   it('redisGetNumber returns null when no connection', async () => {
-    const result = await redisGetNumber('nonexistent-key');
-    expect(result).toBeNull();
-  });
-});
+    const result = await redisGetNumber('nonexistent-key')
+    expect(result).toBeNull()
+  })
+})

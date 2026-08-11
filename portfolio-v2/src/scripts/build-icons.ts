@@ -1,6 +1,7 @@
 #!/usr/bin/env tsx
 import * as fs from "fs"
 import * as path from "path"
+import { randomUUID } from "node:crypto"
 import { iconLibraries, type IconLibraryName } from "shadcn/icons"
 
 type IconUsage = Record<IconLibraryName, Set<string>>
@@ -86,7 +87,9 @@ ${icons.map((icon) => `export { ${icon} } from "${config.export}"`).join("\n")}
       return
     }
 
-    fs.writeFileSync(filepath, content)
+    const tmpPath = path.join(outputDir, `.${filename}.${randomUUID()}.tmp`)
+    fs.writeFileSync(tmpPath, content)
+    fs.renameSync(tmpPath, filepath)
     written.push(`  - ${config.title}: ${icons.length} icons`)
   })
 

@@ -100,44 +100,48 @@ export async function GET(request: NextRequest, context: { params: Promise<{ pat
 
   const secret = process.env.SANITY_MEDIA_GATEWAY_SECRET?.trim()
 
-  if (signature) {
+  const sigResult = verifyMediaGatewaySignature({
+    targetUrl,
+    width,
+    quality,
+    expiresAt,
+    signature,
+  })
+
+  const unsignedPublicImage = assetKind === 'image' && !signature
+
+  if (!unsignedPublicImage && !sigResult.valid) {
+    if (!signature) {
+      return buildError(401, 'Missing media signature')
+    }
     if (!secret) {
       return buildError(501, 'Media gateway secret not configured')
     }
+    return buildError(
+      sigResult.expired ? 401 : 403,
+      sigResult.expired ? 'Media signature expired' : 'Invalid media signature'
+    )
+  }
 
-    const sigResult = verifyMediaGatewaySignature({
-      targetUrl,
-      width,
-      quality,
-      expiresAt,
-      signature,
-    })
-
-    if (!sigResult.valid) {
-      return buildError(
-        sigResult.expired ? 401 : 403,
-        sigResult.expired ? 'Media signature expired' : 'Invalid media signature'
+  if (sigResult.expired && signature && expiresAt) {
+    const remainingMs = (expiresAt - Math.floor(Date.now() / 1000)) * 1000
+    if (remainingMs < 3600_000) {
+      console.warn(
+        `[media-gateway] Signature expiring soon for ${targetUrl} (${Math.round(remainingMs / 60_000)}m remaining)`
       )
     }
-
-    if (sigResult.expired && expiresAt) {
-      const remainingMs = (expiresAt - Math.floor(Date.now() / 1000)) * 1000
-      if (remainingMs < 3600_000) {
-        console.warn(
-          `[media-gateway] Signature expiring soon for ${targetUrl} (${Math.round(remainingMs / 60_000)}m remaining)`
-        )
-      }
-    }
-  } else if (assetKind !== 'image') {
-    return buildError(401, 'Missing media signature')
   }
 
   const upstreamUrl = buildUpstreamUrl(targetUrl, assetKind, width, quality)
 
+  if (upstreamUrl.hostname !== 'cdn.sanity.io') {
+    return buildError(400, 'Invalid asset target')
+  }
+
   try {
     const upstreamResponse = await fetch(upstreamUrl, {
       cache: 'no-store',
-      redirect: 'follow',
+      redirect: 'error',
       signal: AbortSignal.timeout(15_000),
     })
 

@@ -1,5 +1,19 @@
 const CONTROL_CHARS = /\p{Cc}/gu;
 const HTML_TAG = /<[^>]*>/g;
+const ENTITY_RE = /&(?:nbsp|amp|lt|gt|quot|#39|apos);/gi;
+const ENTITY_MAP: Record<string, string> = {
+  '&nbsp;': ' ',
+  '&amp;': '&',
+  '&lt;': '<',
+  '&gt;': '>',
+  '&quot;': '"',
+  '&#39;': "'",
+  '&apos;': "'",
+};
+
+function decodeEntities(text: string): string {
+  return text.replace(ENTITY_RE, (match) => ENTITY_MAP[match.toLowerCase()] ?? match);
+}
 
 export function normalizeWhitespace(text: string): string {
   return text
@@ -9,17 +23,13 @@ export function normalizeWhitespace(text: string): string {
 }
 
 export function stripHtml(html: string): string {
-  return html
+  return decodeEntities(html)
     .replace(/<br\s*\/?>/gi, '\n')
     .replace(/<\/(p|div|h[1-6]|li|ul|ol|blockquote)>/gi, '\n')
     .replace(/<li[^>]*>/gi, '- ')
     .replace(HTML_TAG, '')
-    .replace(/&nbsp;/gi, ' ')
-    .replace(/&amp;/gi, '&')
-    .replace(/&lt;/gi, '<')
-    .replace(/&gt;/gi, '>')
-    .replace(/&quot;/gi, '"')
-    .replace(/&#39;|&apos;/gi, "'")
+    .replace(/<[^>]*/g, '')
+    .replace(/[<>]/g, '')
     .trimEnd();
 }
 
