@@ -46,3 +46,10 @@
   - settings cannot reject the deployment at config-validation time
   - Verified locally: node scripts/cloudflare-build.mjs exit 0,
   - wrangler deploy --dry-run exit 0 (75 assets, ASSETS binding)
+### 2026-08-11 - Update
+
+  - cd13e139 ci(security): build app during custom CodeQL analysis and correct action pins
+  - custom CodeQL run now installs and builds the app (was build-mode none),
+  - giving the analyzer full type data for the monorepo
+  - correct codeql-action pins to the real v3.23.1 commit f6c040146; the
+  - previous sha was labeled v3.23.1 but points at a different revision
