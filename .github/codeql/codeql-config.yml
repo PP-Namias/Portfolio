@@ -20,6 +20,7 @@ paths-ignore:
   - studio/**
   # Scripts
   - scripts/**
+  - portfolio-v1/scripts/**
   # Sanity plans/docs
   - docs/**
   # Sanity Functions (standalone, run on Sanity infrastructure)
