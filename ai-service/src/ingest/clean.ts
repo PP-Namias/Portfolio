@@ -61,7 +61,7 @@ export function stripHtml(html: string): string {
     i = end + 1;
   }
   return out
-    .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, ' ')
+    .replace(/\p{Cc}/gu, (ch) => (ch === '\t' || ch === '\n' || ch === '\r' ? ch : ' '))
     .replace(/\r\n?/g, '\n')
     .replace(/[^\S\n]+/g, ' ')
     .replace(/\n{2,}/g, '\n')
