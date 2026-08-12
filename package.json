@@ -6,7 +6,7 @@
   "scripts": {
     "prepare": "husky",
     "acp": "node scripts/acp.mjs",
-    "build": "cd portfolio-v1 && npm run build"
+    "build": "node scripts/cloudflare-build.mjs"
   },
   "devDependencies": {
     "@commitlint/cli": "21.1.0",
