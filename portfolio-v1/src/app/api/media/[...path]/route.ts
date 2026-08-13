@@ -161,8 +161,7 @@ export async function GET(request: NextRequest, context: { params: Promise<{ pat
   }
 
   try {
-    // codeql[js/request-forgery] upstream URL is pinned to the constant
-    // SANITY_CDN_ORIGIN with an allowlisted path (SAFE_ASSET_PATH)
+    // codeql[js/request-forgery] upstream URL pinned to SANITY_CDN_ORIGIN with SAFE_ASSET_PATH path allowlist
     const upstreamResponse = await fetch(upstreamUrl, {
       cache: 'no-store',
       redirect: 'error',

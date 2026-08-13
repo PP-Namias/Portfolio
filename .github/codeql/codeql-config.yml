@@ -10,12 +10,16 @@ paths-ignore:
   # produce HTML-significant characters from a plain object. No attacker-
   # controlled input reaches this code path.
   - src/components/seo/JsonLd.tsx
+  - portfolio-v1/src/components/seo/JsonLd.tsx
   # Canary honeypot system: intentionally contains fake credentials and
   # endpoints to trap attackers. All credentials are decoys, not real secrets.
   - src/lib/canary/**
   - src/app/api/canary/**
+  - portfolio-v1/src/lib/canary/**
+  - portfolio-v1/src/app/api/canary/**
   # Test files
   - src/__tests__/**
+  - portfolio-v1/src/__tests__/**
   # Studio files (separate build)
   - studio/**
   # Scripts
@@ -25,3 +29,4 @@ paths-ignore:
   - docs/**
   # Sanity Functions (standalone, run on Sanity infrastructure)
   - functions/**
+  - portfolio-v1/functions/**
