@@ -53,3 +53,18 @@
   - giving the analyzer full type data for the monorepo
   - correct codeql-action pins to the real v3.23.1 commit f6c040146; the
   - previous sha was labeled v3.23.1 but points at a different revision
+### 2026-08-14 - Update
+
+  - 9549830c fix(ci): restore canonical Vercel root config and fix react-doctor expression
+  - vercel.json: set rootDirectory to portfolio-v1 (standard monorepo pattern)
+  - so Vercel's Next.js builder finds .next at the app root; remove the
+  - cd-commands and outputDirectory('portfolio-v1/.next') combo that made
+  - every deployment since Aug 9 fail on the missing .next directory
+  - react-doctor.yml: single-quote the fallback string inside the GitHub
+  - expression (double quotes are rejected by the workflow parser, making
+  - the file invalid and producing a failure run on every push)
+  - CodeQL '1 configuration not found' needs no YAML change: the
+  - security-compliance.yml:codeql analysis simply never ran for the last
+  - head SHA because the pull_request event was not delivered
+  - Verified: npm run build and npx next build with VERCEL=1 pass locally;
+  - js-yaml and JSON parsing clean
