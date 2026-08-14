@@ -77,3 +77,18 @@
   - tooling package.json and lockfile (ours) as the canonical version
   - Required to restore pull_request event delivery and CI runs on the PR
   - head, and to make the PR mergeable
+### 2026-08-15 - Update
+
+  - 3dad9db0 fix(ci): satisfy Vercel next version gate and make CodeQL suppression effective
+  - package.json: bump next to ^16.3.1; Vercel deploy fails on 16.3.0 with
+  - 'Cannot patch preview comments when immutable static file upload is
+  - enabled. Upgrade to next@v16.3.0-canary.32 or newer' - 16.3.1 passes
+  - the gate and contains the NFT regression fix (vercel/next.js#97287)
+  - codeql.yml: drop the push trigger; push-event SARIF uploads cannot
+  - process inline suppressions (only PR analyses apply them), so the
+  - unsuppressed push SARIF kept feeding the failing GHAS CodeQL check;
+  - security-compliance.yml still covers push-event analysis
+  - route.ts: use exact codeql[rule-id] suppression format (no trailing
+  - text after the rule id)
+  - Verified: next build (VERCEL=1) passes, tsc --noEmit clean,
+  - lint 0 errors, react-doctor 100/100
