@@ -80,7 +80,7 @@ jobs:
               '## React Doctor — regression detected',
               '',
               '```',
-              '${{ steps.doctor.outputs.summary || "see action log" }}',
+              "${{ steps.doctor.outputs.summary || 'see action log' }}",
               '```',
               '',
               'Threshold: **' + process.env.THRESHOLD + '/100** (0 findings).',
