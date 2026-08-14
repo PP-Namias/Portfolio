@@ -68,3 +68,12 @@
   - head SHA because the pull_request event was not delivered
   - Verified: npm run build and npx next build with VERCEL=1 pass locally;
   - js-yaml and JSON parsing clean
+### 2026-08-14 - Update
+
+  - b53ce571 chore(ci): merge origin/main into dev and resolve dependabot conflicts
+  - main's root package.json is the legacy pre-monorepo app manifest;
+  - dev repurposed it as tooling (husky, lint-staged, commitlint, prettier)
+  - dependabot bumps on main targeted the legacy manifest; keep dev's
+  - tooling package.json and lockfile (ours) as the canonical version
+  - Required to restore pull_request event delivery and CI runs on the PR
+  - head, and to make the PR mergeable
