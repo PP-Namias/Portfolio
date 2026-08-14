@@ -8,6 +8,9 @@
     "acp": "node scripts/acp.mjs",
     "build": "node scripts/cloudflare-build.mjs"
   },
+  "dependencies": {
+    "next": "^16.3.1"
+  },
   "devDependencies": {
     "@commitlint/cli": "21.1.0",
     "@commitlint/config-conventional": "21.1.0",
