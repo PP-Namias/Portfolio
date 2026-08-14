@@ -167,7 +167,7 @@ export async function GET(request: NextRequest, context: { params: Promise<{ pat
       signal: AbortSignal.timeout(15_000),
     }
 
-    // codeql[js/request-forgery] upstream URL pinned to SANITY_CDN_ORIGIN with SAFE_ASSET_PATH path allowlist
+    // codeql[js/request-forgery]
     const upstreamResponse = await fetch(upstreamUrl, upstreamRequestOptions)
 
     if (!upstreamResponse.ok || !upstreamResponse.body) {
