@@ -160,6 +160,12 @@ export async function GET(request: NextRequest, context: { params: Promise<{ pat
     return buildError(400, 'Invalid asset target')
   }
 
+  const parsedUpstream = new URL(upstreamUrl)
+
+  if (parsedUpstream.hostname !== 'cdn.sanity.io') {
+    return buildError(403, 'Forbidden: Invalid media host')
+  }
+
   try {
     const upstreamRequestOptions: RequestInit = {
       cache: 'no-store',
@@ -167,7 +173,6 @@ export async function GET(request: NextRequest, context: { params: Promise<{ pat
       signal: AbortSignal.timeout(15_000),
     }
 
-    // codeql[js/request-forgery]
     const upstreamResponse = await fetch(upstreamUrl, upstreamRequestOptions)
 
     if (!upstreamResponse.ok || !upstreamResponse.body) {
