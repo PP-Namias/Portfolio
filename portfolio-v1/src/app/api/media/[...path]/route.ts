@@ -155,11 +155,6 @@ export async function GET(request: NextRequest, context: { params: Promise<{ pat
   }
 
   const upstreamUrl = buildUpstreamUrl(parsedTarget, assetKind, width, quality)
-
-  if (upstreamUrl.hostname !== 'cdn.sanity.io') {
-    return buildError(400, 'Invalid asset target')
-  }
-
   const parsedUpstream = new URL(upstreamUrl)
 
   if (parsedUpstream.hostname !== 'cdn.sanity.io') {
@@ -173,7 +168,8 @@ export async function GET(request: NextRequest, context: { params: Promise<{ pat
       signal: AbortSignal.timeout(15_000),
     }
 
-    const upstreamResponse = await fetch(upstreamUrl, upstreamRequestOptions)
+    // codeql[js/request-forgery] upstream URL pinned to SANITY_CDN_ORIGIN with hostname validation above
+    const upstreamResponse = await fetch(parsedUpstream, upstreamRequestOptions)
 
     if (!upstreamResponse.ok || !upstreamResponse.body) {
       return buildError(upstreamResponse.status === 404 ? 404 : 502, 'Media unavailable')
