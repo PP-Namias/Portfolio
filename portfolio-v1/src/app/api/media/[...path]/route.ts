@@ -161,12 +161,14 @@ export async function GET(request: NextRequest, context: { params: Promise<{ pat
   }
 
   try {
-    // codeql[js/request-forgery] upstream URL pinned to SANITY_CDN_ORIGIN with SAFE_ASSET_PATH path allowlist
-    const upstreamResponse = await fetch(upstreamUrl, {
+    const upstreamRequestOptions: RequestInit = {
       cache: 'no-store',
       redirect: 'error',
       signal: AbortSignal.timeout(15_000),
-    })
+    }
+
+    // codeql[js/request-forgery] upstream URL pinned to SANITY_CDN_ORIGIN with SAFE_ASSET_PATH path allowlist
+    const upstreamResponse = await fetch(upstreamUrl, upstreamRequestOptions)
 
     if (!upstreamResponse.ok || !upstreamResponse.body) {
       return buildError(upstreamResponse.status === 404 ? 404 : 502, 'Media unavailable')

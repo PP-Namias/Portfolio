@@ -1,5 +1,5 @@
 import { RetrievedChunk } from '@/lib/rag/types'
-import { ChatDataContext, ExperienceData, ProjectData, TechnologyData, CertificationData } from './types'
+import { ChatDataContext, ExperienceData, ProjectData } from './types'
 
 interface GroupedChunks {
   projects: RetrievedChunk[]
@@ -15,9 +15,15 @@ interface GroupedChunks {
 
 function groupByDocType(chunks: RetrievedChunk[]): GroupedChunks {
   const groups: GroupedChunks = {
-    projects: [], experiences: [], certifications: [],
-    technologies: [], profile: [], posts: [],
-    memberships: [], recommendations: [], other: [],
+    projects: [],
+    experiences: [],
+    certifications: [],
+    technologies: [],
+    profile: [],
+    posts: [],
+    memberships: [],
+    recommendations: [],
+    other: [],
   }
   for (const chunk of chunks) {
     const t = chunk.docType
@@ -37,20 +43,24 @@ function groupByDocType(chunks: RetrievedChunk[]): GroupedChunks {
 function extractUniqueNames(chunks: RetrievedChunk[], label: string): string[] {
   const names = new Set<string>()
   for (const c of chunks) {
-    const name = (c.metadata?.title as string) || (c.metadata?.name as string) || (c.metadata?.company as string) || ''
+    const name =
+      (c.metadata?.title as string) ||
+      (c.metadata?.name as string) ||
+      (c.metadata?.company as string) ||
+      ''
     if (name) names.add(name)
   }
   return [...names]
 }
 
 function extractChunkTexts(chunks: RetrievedChunk[]): string[] {
-  return chunks.map(c => c.text).filter(Boolean)
+  return chunks.map((c) => c.text).filter(Boolean)
 }
 
 function buildProjectResponse(chunks: RetrievedChunk[], projects: ProjectData[]): string {
   const names = extractUniqueNames(chunks, 'project')
   if (names.length === 1) {
-    const project = projects.find(p => p.title === names[0])
+    const project = projects.find((p) => p.title === names[0])
     if (project) {
       const tags = project.tags?.slice(0, 6).join(', ') || 'Various technologies'
       const links = [project.liveURL, project.repositoryURL].filter(Boolean).join(' | ')
@@ -64,27 +74,38 @@ function buildProjectResponse(chunks: RetrievedChunk[], projects: ProjectData[])
     }
   }
   const texts = extractChunkTexts(chunks)
-  return texts.join(' ') || 'Keneth has worked on several featured projects spanning full-stack web, IoT, and AI automation.'
+  return (
+    texts.join(' ') ||
+    'Keneth has worked on several featured projects spanning full-stack web, IoT, and AI automation.'
+  )
 }
 
 function buildExperienceResponse(chunks: RetrievedChunk[], experiences: ExperienceData[]): string {
   const names = extractUniqueNames(chunks, 'experience')
   if (names.length === 1) {
-    const exp = experiences.find(e => `${e.position} at ${e.company}` === names[0])
+    const exp = experiences.find((e) => `${e.position} at ${e.company}` === names[0])
     if (exp) {
       const end = exp.endedAt || 'Present'
       const techs = exp.technologies?.length ? ` using ${exp.technologies.join(', ')}` : ''
-      const achievements = exp.achievements?.length ? ` Key contributions include ${exp.achievements.slice(0, 3).join(', ')}.` : ''
+      const achievements = exp.achievements?.length
+        ? ` Key contributions include ${exp.achievements.slice(0, 3).join(', ')}.`
+        : ''
       return `${exp.position} at ${exp.company} (${exp.startedAt} – ${end}, ${exp.modality || 'On-site'}, ${exp.country || 'Philippines'}). ${exp.summary || ''}${achievements}${techs}.`
     }
   }
   const texts = extractChunkTexts(chunks)
-  return texts.join(' ') || 'Keneth has experience across software engineering, AI automation, and technical leadership.'
+  return (
+    texts.join(' ') ||
+    'Keneth has experience across software engineering, AI automation, and technical leadership.'
+  )
 }
 
 function buildCertificationResponse(chunks: RetrievedChunk[]): string {
   const texts = extractChunkTexts(chunks)
-  return texts.join(' ') || 'Keneth holds multiple certifications in software engineering, AI, and cybersecurity.'
+  return (
+    texts.join(' ') ||
+    'Keneth holds multiple certifications in software engineering, AI, and cybersecurity.'
+  )
 }
 
 function buildTechnologyResponse(chunks: RetrievedChunk[]): string {
@@ -119,20 +140,42 @@ function buildGenericResponse(chunks: RetrievedChunk[], data: ChatDataContext): 
   return parts.join('. ') + '.'
 }
 
-export function buildRagResponse(chunks: RetrievedChunk[], message: string, data: ChatDataContext): string {
+export function buildRagResponse(
+  chunks: RetrievedChunk[],
+  message: string,
+  data: ChatDataContext
+): string {
   if (chunks.length === 0) return ''
 
   const groups = groupByDocType(chunks)
   const msg = message.toLowerCase()
   let response = ''
 
-  if (groups.projects.length > 0 && (msg.includes('project') || msg.includes('built') || groups.projects.length > groups.experiences.length)) {
+  if (
+    groups.projects.length > 0 &&
+    (msg.includes('project') ||
+      msg.includes('built') ||
+      groups.projects.length > groups.experiences.length)
+  ) {
     response = buildProjectResponse(groups.projects, data.projects)
-  } else if (groups.experiences.length > 0 && (msg.includes('experience') || msg.includes('work') || msg.includes('role') || msg.includes('company') || groups.experiences.length >= groups.projects.length)) {
+  } else if (
+    groups.experiences.length > 0 &&
+    (msg.includes('experience') ||
+      msg.includes('work') ||
+      msg.includes('role') ||
+      msg.includes('company') ||
+      groups.experiences.length >= groups.projects.length)
+  ) {
     response = buildExperienceResponse(groups.experiences, data.experiences)
-  } else if (groups.certifications.length > 0 && (msg.includes('certification') || groups.certifications.length > groups.technologies.length)) {
+  } else if (
+    groups.certifications.length > 0 &&
+    (msg.includes('certification') || groups.certifications.length > groups.technologies.length)
+  ) {
     response = buildCertificationResponse(groups.certifications)
-  } else if (groups.technologies.length > 0 && (msg.includes('tech') || msg.includes('skill') || msg.includes('language'))) {
+  } else if (
+    groups.technologies.length > 0 &&
+    (msg.includes('tech') || msg.includes('skill') || msg.includes('language'))
+  ) {
     response = buildTechnologyResponse(groups.technologies)
   } else {
     response = buildGenericResponse(chunks, data)

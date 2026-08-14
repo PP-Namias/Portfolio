@@ -196,11 +196,7 @@ export function ChatPanel({
     setError(err)
   }, [])
 
-  const {
-    sendMessage: streamSendMessage,
-    isStreaming,
-    cancel,
-  } = useChatStream({
+  const { sendMessage: streamSendMessage, isStreaming } = useChatStream({
     onToken: handleStreamToken,
     onToolCall: handleStreamToolCall,
     onDone: handleStreamDone,
@@ -209,7 +205,7 @@ export function ChatPanel({
 
   const [threadSidebarOpen, setThreadSidebarOpen] = useState(false)
   const [currentThreadId, setCurrentThreadId] = useState<string | null>(null)
-  const [threads, setThreads] = useState<ThreadInfo[]>([])
+  const [, setThreads] = useState<ThreadInfo[]>([])
   const sessionThreadIdRef = useRef<string | null>(null)
 
   const refreshThreads = useCallback(async () => {

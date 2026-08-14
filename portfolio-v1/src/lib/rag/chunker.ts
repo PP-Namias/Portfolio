@@ -1,13 +1,17 @@
-import { Chunk, DocType } from './types'
+import { Chunk } from './types'
 import type { CmsContent } from '@/lib/cms-content.shared'
 
 function estimateTokens(text: string): number {
   return Math.ceil(text.length / 4)
 }
 
-function chunkText(text: string, docId: string, docType: string, metadata: Record<string, unknown>): Chunk[] {
+function chunkText(
+  text: string,
+  docId: string,
+  docType: string,
+  metadata: Record<string, unknown>
+): Chunk[] {
   const maxTokens = 512
-  const overlap = 64
   const chunks: Chunk[] = []
   const sentences = text.split(/(?<=[.!?])\s+/).filter(Boolean)
 
@@ -27,7 +31,10 @@ function chunkText(text: string, docId: string, docType: string, metadata: Recor
         metadata: { ...metadata, chunkCount: chunks.length + 1 },
       })
       chunkIndex++
-      const overlapSentences = currentText.split(/(?<=[.!?])\s+/).slice(-2).join(' ')
+      const overlapSentences = currentText
+        .split(/(?<=[.!?])\s+/)
+        .slice(-2)
+        .join(' ')
       currentText = overlapSentences
       currentTokens = estimateTokens(overlapSentences)
     }
@@ -225,20 +232,25 @@ function chunkProfile(cms: CmsContent): Chunk[] {
     profile.github && `GitHub: ${profile.github}`,
     profile.linkedin && `LinkedIn: ${profile.linkedin}`,
     profile.availabilityLabel && `Availability: ${profile.availabilityLabel}`,
-    profile.highlights?.yearsExperience && `Years of Experience: ${profile.highlights.yearsExperience}`,
-    profile.highlights?.projectsCompleted && `Projects Completed: ${profile.highlights.projectsCompleted}`,
-    profile.highlights?.primaryTechnologies?.length && `Primary Technologies: ${profile.highlights.primaryTechnologies.join(', ')}`,
+    profile.highlights?.yearsExperience &&
+      `Years of Experience: ${profile.highlights.yearsExperience}`,
+    profile.highlights?.projectsCompleted &&
+      `Projects Completed: ${profile.highlights.projectsCompleted}`,
+    profile.highlights?.primaryTechnologies?.length &&
+      `Primary Technologies: ${profile.highlights.primaryTechnologies.join(', ')}`,
   ].filter((s): s is string => typeof s === 'string')
 
   const profileText = parts.join('. ')
 
-  const chunks: Chunk[] = [{
-    docId,
-    docType: 'profile',
-    chunkIndex: 0,
-    text: profileText,
-    metadata: { name: profile.name },
-  }]
+  const chunks: Chunk[] = [
+    {
+      docId,
+      docType: 'profile',
+      chunkIndex: 0,
+      text: profileText,
+      metadata: { name: profile.name },
+    },
+  ]
 
   const education = profile.education?.[0]
   if (education) {
@@ -250,7 +262,8 @@ function chunkProfile(cms: CmsContent): Chunk[] {
       education.endedAt && `Status: ${education.endedAt}`,
       education.gpa && `GWA: ${education.gpa}`,
       education.honors?.length && `Honors: ${education.honors.join(', ')}`,
-      education.relevantCourses?.length && `Relevant Courses: ${education.relevantCourses.join(', ')}`,
+      education.relevantCourses?.length &&
+        `Relevant Courses: ${education.relevantCourses.join(', ')}`,
     ].filter((s): s is string => typeof s === 'string')
 
     chunks.push({
@@ -294,7 +307,9 @@ function chunkMemberships(cms: CmsContent): Chunk[] {
       `Membership: ${membership.name}`,
       membership.url && `URL: ${membership.url}`,
       membership.joinedAt && `Joined: ${membership.joinedAt}`,
-    ].filter(Boolean).join('. ')
+    ]
+      .filter(Boolean)
+      .join('. ')
 
     chunks.push({
       docId,

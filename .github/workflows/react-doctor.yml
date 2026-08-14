@@ -47,6 +47,7 @@ jobs:
         working-directory: portfolio-v1
         run: |
           set -e
+          mkdir -p .react-doctor
           npm run doctor:json
           node -e "
             const r = require('./.react-doctor/report.json');
