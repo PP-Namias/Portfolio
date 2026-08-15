@@ -1,0 +1,119 @@
+{
+  "project": "Graphify Integration",
+  "branch_strategy": {
+    "working_branch": "dev",
+    "target_branch": "main"
+  },
+  "technical_requirements": [
+    "Local deterministic AST parsing (tree-sitter, no LLM calls for code)",
+    "No vector store implementation",
+    "Edge tagging (EXTRACTED/INFERRED)",
+    "Project-scoped AI skill installation",
+    "Offline-capable extraction (--code-only where applicable)"
+  ],
+  "tooling": {
+    "pypi_package": "graphifyy",
+    "cli_command": "graphify",
+    "install_method": "uv tool install graphifyy",
+    "python_requirement": ">=3.10",
+    "platform_target": "opencode"
+  },
+  "phases": [
+    {
+      "phase_id": 1,
+      "name": "Branch Setup & Git Initialization",
+      "tasks": [
+        {
+          "task_id": 1.1,
+          "description": "Checkout dev branch",
+          "status": "pending",
+          "commit": null
+        },
+        {
+          "task_id": 1.2,
+          "description": "Initialize PRD.json tracking",
+          "status": "pending",
+          "commit": null
+        }
+      ]
+    },
+    {
+      "phase_id": 2,
+      "name": "Graphify CLI & Package Installation",
+      "tasks": [
+        {
+          "task_id": 2.1,
+          "description": "Install graphifyy via uv/pipx",
+          "status": "pending",
+          "commit": null
+        },
+        {
+          "task_id": 2.2,
+          "description": "Add to project dependencies (requirements-graphify.txt + AGENTS.md tooling note)",
+          "status": "pending",
+          "commit": null
+        }
+      ]
+    },
+    {
+      "phase_id": 3,
+      "name": "Agent Skill Registration",
+      "tasks": [
+        {
+          "task_id": 3.1,
+          "description": "Run graphify install --project --platform opencode",
+          "status": "pending",
+          "commit": null
+        },
+        {
+          "task_id": 3.2,
+          "description": "Configure IDE agent rules (AGENTS.md skill registry + routing)",
+          "status": "pending",
+          "commit": null
+        }
+      ]
+    },
+    {
+      "phase_id": 4,
+      "name": "Graph Generation & Configuration",
+      "tasks": [
+        {
+          "task_id": 4.1,
+          "description": "Configure .graphifyignore for IDE artifacts",
+          "status": "pending",
+          "commit": null
+        },
+        {
+          "task_id": 4.2,
+          "description": "Run initial /graphify extraction (AST-only, code-only)",
+          "status": "pending",
+          "commit": null
+        }
+      ]
+    },
+    {
+      "phase_id": 5,
+      "name": "Verification & Pull Request",
+      "tasks": [
+        {
+          "task_id": 5.1,
+          "description": "Verify local AST parsing (query/path/explain round-trips)",
+          "status": "pending",
+          "commit": null
+        },
+        {
+          "task_id": 5.2,
+          "description": "Verify edge explanations (EXTRACTED/INFERRED counts in graph.json)",
+          "status": "pending",
+          "commit": null
+        },
+        {
+          "task_id": 5.3,
+          "description": "Automate PR creation from dev to main",
+          "status": "pending",
+          "commit": null
+        }
+      ]
+    }
+  ]
+}
