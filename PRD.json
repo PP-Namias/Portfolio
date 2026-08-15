@@ -44,14 +44,14 @@
         {
           "task_id": 2.1,
           "description": "Install graphifyy via uv/pipx",
-          "status": "pending",
-          "commit": null
+          "status": "done",
+          "commit": "uv 0.12.5 + graphify 0.9.43 via `uv tool install graphifyy`"
         },
         {
           "task_id": 2.2,
           "description": "Add to project dependencies (requirements-graphify.txt + AGENTS.md tooling note)",
-          "status": "pending",
-          "commit": null
+          "status": "done",
+          "commit": "8a14cbe0"
         }
       ]
     },
@@ -62,14 +62,14 @@
         {
           "task_id": 3.1,
           "description": "Run graphify install --project --platform opencode",
-          "status": "pending",
-          "commit": null
+          "status": "done",
+          "commit": "bbccb0e4 (.opencode/ + .agents/skills/graphify/ + plugin)"
         },
         {
           "task_id": 3.2,
           "description": "Configure IDE agent rules (AGENTS.md skill registry + routing)",
-          "status": "pending",
-          "commit": null
+          "status": "done",
+          "commit": "03252dd8"
         }
       ]
     },
