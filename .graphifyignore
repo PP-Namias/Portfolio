@@ -1,0 +1,44 @@
+# Graphify ignore rules — keep IDE artifacts, secrets, and build output out of the knowledge graph.
+# Precedence: .graphifyignore > .gitignore (run extract with --no-gitignore to make this the only filter).
+
+# VCS
+.git/
+
+# Dependencies
+node_modules/
+**/node_modules/
+portfolio-v2/.pnpm/
+
+# Build & framework output
+.next/
+**/.next/
+out/
+.open-next/
+.vercel/
+.wrangler/
+coverage/
+.nyc_output/
+dist/
+build/
+
+# Environments & secrets
+.env*
+!.env.example
+!.env.docker.example
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+**/.venv/
+
+# Graphify self-output
+graphify-out/
+**/graphify-out/
+
+# Editor / IDE
+.vscode/
+.idea/
+
+# One-time script output
+portfolio-v1/graphify-out/

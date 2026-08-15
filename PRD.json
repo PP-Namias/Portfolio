@@ -1,0 +1,119 @@
+{
+  "project": "Graphify Integration",
+  "branch_strategy": {
+    "working_branch": "dev",
+    "target_branch": "main"
+  },
+  "technical_requirements": [
+    "Local deterministic AST parsing (tree-sitter, no LLM calls for code)",
+    "No vector store implementation",
+    "Edge tagging (EXTRACTED/INFERRED)",
+    "Project-scoped AI skill installation",
+    "Offline-capable extraction (--code-only where applicable)"
+  ],
+  "tooling": {
+    "pypi_package": "graphifyy",
+    "cli_command": "graphify",
+    "install_method": "uv tool install graphifyy",
+    "python_requirement": ">=3.10",
+    "platform_target": "opencode"
+  },
+  "phases": [
+    {
+      "phase_id": 1,
+      "name": "Branch Setup & Git Initialization",
+      "tasks": [
+        {
+          "task_id": 1.1,
+          "description": "Checkout dev branch",
+          "status": "done",
+          "commit": "dev branch checked out and synced with origin/dev"
+        },
+        {
+          "task_id": 1.2,
+          "description": "Initialize PRD.json tracking",
+          "status": "done",
+          "commit": "e0a1e44a"
+        }
+      ]
+    },
+    {
+      "phase_id": 2,
+      "name": "Graphify CLI & Package Installation",
+      "tasks": [
+        {
+          "task_id": 2.1,
+          "description": "Install graphifyy via uv/pipx",
+          "status": "done",
+          "commit": "uv 0.12.5 + graphify 0.9.43 via `uv tool install graphifyy`"
+        },
+        {
+          "task_id": 2.2,
+          "description": "Add to project dependencies (requirements-graphify.txt + AGENTS.md tooling note)",
+          "status": "done",
+          "commit": "8a14cbe0"
+        }
+      ]
+    },
+    {
+      "phase_id": 3,
+      "name": "Agent Skill Registration",
+      "tasks": [
+        {
+          "task_id": 3.1,
+          "description": "Run graphify install --project --platform opencode",
+          "status": "done",
+          "commit": "bbccb0e4 (.opencode/ + .agents/skills/graphify/ + plugin)"
+        },
+        {
+          "task_id": 3.2,
+          "description": "Configure IDE agent rules (AGENTS.md skill registry + routing)",
+          "status": "done",
+          "commit": "03252dd8"
+        }
+      ]
+    },
+    {
+      "phase_id": 4,
+      "name": "Graph Generation & Configuration",
+      "tasks": [
+        {
+          "task_id": 4.1,
+          "description": "Configure .graphifyignore for IDE artifacts",
+          "status": "done",
+          "commit": "5048319a"
+        },
+        {
+          "task_id": 4.2,
+          "description": "Run initial /graphify extraction (AST-only, code-only)",
+          "status": "done",
+          "commit": "172c5d14 (6579 nodes, 12545 edges, 448 communities, tree_sitter_sql extra)"
+        }
+      ]
+    },
+    {
+      "phase_id": 5,
+      "name": "Verification & Pull Request",
+      "tasks": [
+        {
+          "task_id": 5.1,
+          "description": "Verify local AST parsing (query/path/explain round-trips)",
+          "status": "done",
+          "commit": "query/path/explain/god-nodes all verified offline on graph.json"
+        },
+        {
+          "task_id": 5.2,
+          "description": "Verify edge explanations (EXTRACTED/INFERRED counts in graph.json)",
+          "status": "done",
+          "commit": "12428 EXTRACTED + 117 INFERRED (0 AMBIGUOUS), _origin=ast, 0 tokens"
+        },
+        {
+          "task_id": 5.3,
+          "description": "Automate PR creation from dev to main",
+          "status": "done",
+          "commit": "PR #323: https://github.com/PP-Namias/Portfolio/pull/323"
+        }
+      ]
+    }
+  ]
+}
