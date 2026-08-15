@@ -36,7 +36,17 @@ function buildUpstreamUrl(
   width: number,
   quality: number
 ): URL {
-  const upstreamUrl = new URL(`${SANITY_CDN_ORIGIN}${parsedTarget.pathname}${parsedTarget.search}`)
+  const normalizedPath = `/${parsedTarget.pathname
+    .split('/')
+    .filter(Boolean)
+    .map((segment) => encodeURIComponent(decodeURIComponent(segment)))
+    .join('/')}`
+
+  if (!SAFE_ASSET_PATH.test(normalizedPath)) {
+    throw new Error('Invalid asset target path')
+  }
+
+  const upstreamUrl = new URL(normalizedPath, SANITY_CDN_ORIGIN)
 
   if (assetKind === 'image') {
     upstreamUrl.searchParams.set('auto', 'format')
@@ -155,9 +165,8 @@ export async function GET(request: NextRequest, context: { params: Promise<{ pat
   }
 
   const upstreamUrl = buildUpstreamUrl(parsedTarget, assetKind, width, quality)
-  const parsedUpstream = new URL(upstreamUrl)
 
-  if (parsedUpstream.hostname !== 'cdn.sanity.io') {
+  if (upstreamUrl.hostname !== 'cdn.sanity.io') {
     return buildError(403, 'Forbidden: Invalid media host')
   }
 
@@ -168,8 +177,8 @@ export async function GET(request: NextRequest, context: { params: Promise<{ pat
       signal: AbortSignal.timeout(15_000),
     }
 
-    // codeql[js/request-forgery] upstream URL pinned to SANITY_CDN_ORIGIN with hostname validation above
-    const upstreamResponse = await fetch(parsedUpstream, upstreamRequestOptions)
+    // codeql[js/request-forgery]
+    const upstreamResponse = await fetch(upstreamUrl, upstreamRequestOptions)
 
     if (!upstreamResponse.ok || !upstreamResponse.body) {
       return buildError(upstreamResponse.status === 404 ? 404 : 502, 'Media unavailable')
