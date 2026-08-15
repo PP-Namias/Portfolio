@@ -178,3 +178,6 @@ portfolio-v1/graphify-out/cost.json
 # Portfolio V2
 portfolio-v2/.mcp.json
 portfolio-v2/registry.json
+
+graphify-out/cache/
+# Graphify AST cache (regenerated on extract)
