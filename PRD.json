@@ -110,8 +110,8 @@
         {
           "task_id": 5.3,
           "description": "Automate PR creation from dev to main",
-          "status": "pending",
-          "commit": null
+          "status": "done",
+          "commit": "PR #323: https://github.com/PP-Namias/Portfolio/pull/323"
         }
       ]
     }
