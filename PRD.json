@@ -80,14 +80,14 @@
         {
           "task_id": 4.1,
           "description": "Configure .graphifyignore for IDE artifacts",
-          "status": "pending",
-          "commit": null
+          "status": "done",
+          "commit": "5048319a"
         },
         {
           "task_id": 4.2,
           "description": "Run initial /graphify extraction (AST-only, code-only)",
-          "status": "pending",
-          "commit": null
+          "status": "done",
+          "commit": "172c5d14 (6579 nodes, 12545 edges, 448 communities, tree_sitter_sql extra)"
         }
       ]
     },
@@ -98,14 +98,14 @@
         {
           "task_id": 5.1,
           "description": "Verify local AST parsing (query/path/explain round-trips)",
-          "status": "pending",
-          "commit": null
+          "status": "done",
+          "commit": "query/path/explain/god-nodes all verified offline on graph.json"
         },
         {
           "task_id": 5.2,
           "description": "Verify edge explanations (EXTRACTED/INFERRED counts in graph.json)",
-          "status": "pending",
-          "commit": null
+          "status": "done",
+          "commit": "12428 EXTRACTED + 117 INFERRED (0 AMBIGUOUS), _origin=ast, 0 tokens"
         },
         {
           "task_id": 5.3,
