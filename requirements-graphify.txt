@@ -1,0 +1,5 @@
+# Graphify CLI (knowledge graph) — dev tool dependency
+# Install: uv tool install graphifyy   (or: pipx install graphifyy)
+# Usage:  graphify install --project --platform opencode
+#         graphify extract . --code-only   (local AST, no API key)
+graphifyy==0.9.43
