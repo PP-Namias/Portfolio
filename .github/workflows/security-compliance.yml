@@ -36,8 +36,11 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
 
-      - name: Install Dependencies
-        run: npm ci
+      - name: Install Dependencies (no lifecycle scripts)
+        run: npm ci --ignore-scripts
+
+      - name: Rebuild native modules
+        run: npm rebuild
 
       - name: Security Audit
         run: |
@@ -61,19 +64,21 @@ jobs:
           persist-credentials: false
 
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@dd903d2e4f5405488e5ef1422510ee31c8b32357
+        uses: github/codeql-action/init@dd903d2e4f5405488e5ef1422510ee31c8b32357 # v3.23.1
         with:
           languages: javascript-typescript
           config-file: .github/codeql/codeql-config.yml
 
       - name: Setup Node.js
-        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
 
       - name: Install and Build
         run: |
+          npm ci
+          cd portfolio-v1
           npm ci
           npm run build
         env:
@@ -82,7 +87,7 @@ jobs:
           SANITY_API_READ_TOKEN: ${{ secrets.SANITY_API_READ_TOKEN || '' }}
 
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@dd903d2e4f5405488e5ef1422510ee31c8b32357
+        uses: github/codeql-action/analyze@dd903d2e4f5405488e5ef1422510ee31c8b32357 # v3.23.1
 
   security-summary:
     name: Security Summary

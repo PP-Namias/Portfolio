@@ -1,0 +1,777 @@
+{
+  "id": "PRD-SANITY-STUDIO-ROOT",
+  "title": "Root-Level Sanity CMS Studio — Shared Smart CMS",
+  "version": "1.0.0",
+  "status": "completed",
+  "created": "2026-07-14",
+  "completedAt": "2026-07-14",
+  "description": "Extract Sanity Studio from portfolio-v1/studio/ to a root-level studio/ directory. Make it a shared CMS serving both portfolio-v1 and portfolio-v2. Add Sanity Assist (AI-powered) as the primary smart feature. Use pnpm. Create a content lifecycle workflow for ongoing maintenance.",
+
+  "context": {
+    "currentLocation": "portfolio-v1/studio/",
+    "targetLocation": "studio/",
+    "sanityProject": "nl0qw78w",
+    "sanityDataset": "production",
+    "studioAppId": "rpjnth2yentmovjzzw6tx0xe",
+    "studioTitle": "Namias CMS",
+    "consumers": ["portfolio-v1 (Next.js 16, React 18)", "portfolio-v2 (Next.js 16, React 19)"],
+    "packageManager": "pnpm",
+    "sanityVersion": "^4.22.0",
+    "goal": "A standalone, AI-powered Sanity CMS studio at the repo root that serves both portfolios with live editing, smart content assistance, and automated workflows"
+  },
+
+  "architecture": {
+    "layout": "Root-level studio/ with its own package.json, tsconfig, sanity.config.ts",
+    "sharedDataset": "Both v1 and v2 read from the same Sanity project/dataset",
+    "envVars": "studio/.env.local with SANITY_STUDIO_PROJECT_ID, SANITY_STUDIO_DATASET, SANITY_AUTH_TOKEN",
+    "deployment": "Sanity Hosting via `sanity deploy` from studio/",
+    "aiAssist": "Sanity Assist plugin for auto-suggestions, SEO optimization, content generation",
+    "consumers": {
+      "v1": "portfolio-v1/ reads via @sanity/client, fetches from Sanity API",
+      "v2": "portfolio-v2/ reads via @sanity/client, fetches from Sanity API"
+    }
+  },
+
+  "epics": [
+    {
+      "id": "EPIC-1",
+      "title": "Studio Migration — Move to Root",
+      "priority": "P0",
+      "description": "Extract studio from portfolio-v1/studio/ to root studio/, ensuring it works standalone.",
+      "stories": [
+        {
+          "id": "S1.1",
+          "title": "Copy studio/ to root",
+          "description": "Move the entire portfolio-v1/studio/ directory to studio/ at the repo root",
+          "files": ["studio/"],
+          "effort": "30m",
+          "status": "planned",
+          "acceptance": [
+            "studio/ exists at root with all files intact",
+            "portfolio-v1/studio/ is removed or symlinked"
+          ]
+        },
+        {
+          "id": "S1.2",
+          "title": "Update studio package.json",
+          "description": "Change name to namias-cms-studio, update scripts, add pnpm as package manager",
+          "files": ["studio/package.json"],
+          "effort": "15m",
+          "status": "planned",
+          "acceptance": [
+            "package.json name is namias-cms-studio",
+            "Scripts use pnpm-compatible syntax",
+            "No references to portfolio-v1 paths"
+          ]
+        },
+        {
+          "id": "S1.3",
+          "title": "Create studio .env.local",
+          "description": "Create studio/.env.local with Sanity project credentials",
+          "files": ["studio/.env.local", "studio/.env.example"],
+          "effort": "10m",
+          "status": "planned",
+          "acceptance": [
+            "SANITY_STUDIO_PROJECT_ID is set",
+            "SANITY_STUDIO_DATASET is set",
+            ".env.example has all required vars documented"
+          ]
+        },
+        {
+          "id": "S1.4",
+          "title": "Update sanity.cli.ts for root deployment",
+          "description": "Ensure sanity.cli.ts deploys correctly from root studio/",
+          "files": ["studio/sanity.cli.ts"],
+          "effort": "10m",
+          "status": "planned",
+          "acceptance": [
+            "sanity deploy works from studio/",
+            "App ID matches existing deployment"
+          ]
+        },
+        {
+          "id": "S1.5",
+          "title": "Update sanity.config.ts title and base path",
+          "description": "Set studio title to Namias CMS and ensure config works from root",
+          "files": ["studio/sanity.config.ts"],
+          "effort": "10m",
+          "status": "planned",
+          "acceptance": [
+            "Studio title displays as Namias CMS",
+            "No import path errors"
+          ]
+        },
+        {
+          "id": "S1.6",
+          "title": "Install dependencies with pnpm",
+          "description": "Run pnpm install in studio/ and verify no errors",
+          "files": ["studio/pnpm-lock.yaml"],
+          "effort": "10m",
+          "status": "planned",
+          "acceptance": [
+            "pnpm install completes without errors",
+            "pnpm-lock.yaml is generated"
+          ]
+        },
+        {
+          "id": "S1.7",
+          "title": "Verify studio dev server runs",
+          "description": "Run pnpm dev in studio/ and confirm studio loads in browser",
+          "files": [],
+          "effort": "15m",
+          "status": "planned",
+          "acceptance": [
+            "Studio loads at http://localhost:3333",
+            "All schemas visible in desk",
+            "No console errors"
+          ]
+        },
+        {
+          "id": "S1.8",
+          "title": "Update .gitignore for root studio",
+          "description": "Ensure studio/node_modules, studio/.sanity, studio/data are gitignored",
+          "files": [".gitignore"],
+          "effort": "5m",
+          "status": "planned",
+          "acceptance": [
+            "studio/node_modules is gitignored",
+            "studio/.sanity is gitignored",
+            "studio/data/exports is gitignored"
+          ]
+        },
+        {
+          "id": "S1.9",
+          "title": "Update root package.json scripts",
+          "description": "Add root-level scripts: studio:dev, studio:build, studio:deploy",
+          "files": ["package.json"],
+          "effort": "10m",
+          "status": "planned",
+          "acceptance": [
+            "studio:dev runs studio dev server",
+            "studio:build builds studio",
+            "studio:deploy deploys to Sanity Hosting"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "EPIC-2",
+      "title": "Shared CMS Configuration",
+      "priority": "P0",
+      "description": "Configure the studio as a shared CMS that both portfolio-v1 and portfolio-v2 can consume from the same dataset.",
+      "stories": [
+        {
+          "id": "S2.1",
+          "title": "Create shared environment template",
+          "description": "Create studio/.env.shared.example documenting all env vars needed by consumers",
+          "files": ["studio/.env.shared.example"],
+          "effort": "15m",
+          "status": "planned",
+          "acceptance": [
+            "All env vars documented",
+            "Consumer-specific vars noted"
+          ]
+        },
+        {
+          "id": "S2.2",
+          "title": "Document consumer setup guide",
+          "description": "Create studio/README.md with setup instructions for v1 and v2 consumers",
+          "files": ["studio/README.md"],
+          "effort": "30m",
+          "status": "planned",
+          "acceptance": [
+            "Setup steps for v1 documented",
+            "Setup steps for v2 documented",
+            "Troubleshooting section included"
+          ]
+        },
+        {
+          "id": "S2.3",
+          "title": "Verify v1 still connects to shared studio",
+          "description": "Ensure portfolio-v1 can fetch data from the shared Sanity dataset",
+          "files": ["portfolio-v1/src/lib/sanity/client.ts"],
+          "effort": "15m",
+          "status": "planned",
+          "acceptance": [
+            "v1 dev server starts",
+            "v1 fetches data from Sanity",
+            "No import errors"
+          ]
+        },
+        {
+          "id": "S2.4",
+          "title": "Verify v2 connects to shared studio",
+          "description": "Ensure portfolio-v2 can fetch data from the shared Sanity dataset",
+          "files": ["portfolio-v2/src/sanity/lib/client.ts"],
+          "effort": "15m",
+          "status": "planned",
+          "acceptance": [
+            "v2 dev server starts",
+            "v2 fetches data from Sanity",
+            "No import errors"
+          ]
+        },
+        {
+          "id": "S2.5",
+          "title": "Add studio deployment workflow",
+          "description": "Create .github/workflows/sanity-studio-deploy.yml for automated studio deployment",
+          "files": [".github/workflows/sanity-studio-deploy.yml"],
+          "effort": "30m",
+          "status": "planned",
+          "acceptance": [
+            "Workflow triggers on push to main (studio/**)",
+            "Deploys studio to Sanity Hosting",
+            "Slack/notification on success/failure"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "EPIC-3",
+      "title": "AI-Powered Sanity Assist",
+      "priority": "P1",
+      "description": "Add Sanity Assist plugin for AI-powered content assistance, auto-suggestions, SEO optimization, and content generation.",
+      "stories": [
+        {
+          "id": "S3.1",
+          "title": "Install Sanity Assist plugin",
+          "description": "Install @sanity/assist and configure in sanity.config.ts",
+          "files": ["studio/package.json", "studio/sanity.config.ts"],
+          "effort": "15m",
+          "status": "planned",
+          "acceptance": [
+            "@sanity/assist installed",
+            "Assist plugin added to sanity.config.ts",
+            "Assist toolbar icon visible in studio"
+          ]
+        },
+        {
+          "id": "S3.2",
+          "title": "Configure Assist for profile schema",
+          "description": "Add AI instructions for profile fields: auto-generate about text, suggest social links, optimize display name",
+          "files": ["studio/schemaTypes/profile.ts"],
+          "effort": "30m",
+          "status": "planned",
+          "acceptance": [
+            "Auto-generate about text from fields",
+            "Suggest social link platforms",
+            "Optimize display name formatting"
+          ]
+        },
+        {
+          "id": "S3.3",
+          "title": "Configure Assist for project schema",
+          "description": "Add AI instructions for projects: auto-generate summaries, suggest technologies, generate SEO descriptions",
+          "files": ["studio/schemaTypes/project.ts"],
+          "effort": "30m",
+          "status": "planned",
+          "acceptance": [
+            "Auto-generate project summary from description",
+            "Suggest technology tags",
+            "Generate meta description for SEO"
+          ]
+        },
+        {
+          "id": "S3.4",
+          "title": "Configure Assist for blog posts",
+          "description": "Add AI instructions for posts: auto-generate excerpts, suggest tags, optimize titles for SEO",
+          "files": ["studio/schemaTypes/post.ts"],
+          "effort": "30m",
+          "status": "planned",
+          "acceptance": [
+            "Auto-generate excerpt from body",
+            "Suggest relevant tags",
+            "Optimize title length for SEO"
+          ]
+        },
+        {
+          "id": "S3.5",
+          "title": "Configure Assist for experience schema",
+          "description": "Add AI instructions for experience: auto-generate highlights, suggest skills, format dates",
+          "files": ["studio/schemaTypes/experience.ts"],
+          "effort": "30m",
+          "status": "planned",
+          "acceptance": [
+            "Auto-generate highlights from description",
+            "Suggest skill tags",
+            "Format employment type consistently"
+          ]
+        },
+        {
+          "id": "S3.6",
+          "title": "Configure Assist for certification schema",
+          "description": "Add AI instructions for certifications: auto-fill issuer details, suggest categories, validate URLs",
+          "files": ["studio/schemaTypes/certification.ts"],
+          "effort": "20m",
+          "status": "planned",
+          "acceptance": [
+            "Auto-suggest issuer from title",
+            "Suggest certification categories",
+            "Validate credential URL format"
+          ]
+        },
+        {
+          "id": "S3.7",
+          "title": "Add cross-field Assist instructions",
+          "description": "Configure Assist to use data across schemas: suggest related projects, recommend certifications, link experiences",
+          "files": ["studio/sanity.config.ts"],
+          "effort": "30m",
+          "status": "planned",
+          "acceptance": [
+            "Assist can reference data across schemas",
+            "Suggestions are contextually relevant",
+            "No performance degradation"
+          ]
+        },
+        {
+          "id": "S3.8",
+          "title": "Test Assist across all schemas",
+          "description": "Verify Assist works correctly for all document types and provides useful suggestions",
+          "files": [],
+          "effort": "1h",
+          "status": "planned",
+          "acceptance": [
+            "All schemas have working Assist instructions",
+            "Suggestions are accurate and helpful",
+            "No errors in studio console"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "EPIC-4",
+      "title": "Studio Enhancements",
+      "priority": "P2",
+      "description": "Enhance the studio with better UX, validation, and workflow features.",
+      "stories": [
+        {
+          "id": "S4.1",
+          "title": "Enhance desk structure for shared CMS",
+          "description": "Update deskStructure.ts to show content from both v1 and v2 perspectives",
+          "files": ["studio/structure/deskStructure.ts"],
+          "effort": "1h",
+          "status": "planned",
+          "acceptance": [
+            "Clear content organization",
+            "Quick access to frequently edited content",
+            "Search works across all document types"
+          ]
+        },
+        {
+          "id": "S4.2",
+          "title": "Add content health dashboard",
+          "description": "Enhance ContentHealth inspector panel with completeness scoring and fix suggestions",
+          "files": ["studio/components/inspector/ContentHealth.tsx"],
+          "effort": "2h",
+          "status": "planned",
+          "acceptance": [
+            "Shows content completeness percentage",
+            "Highlights missing required fields",
+            "Suggests fixes for common issues"
+          ]
+        },
+        {
+          "id": "S4.3",
+          "title": "Add SEO preview panel",
+          "description": "Enhance SeoPreview with Google search result preview and social media cards",
+          "files": ["studio/components/inspector/SeoPreview.tsx"],
+          "effort": "2h",
+          "status": "planned",
+          "acceptance": [
+            "Google search result preview",
+            "Twitter card preview",
+            "Open Graph preview"
+          ]
+        },
+        {
+          "id": "S4.4",
+          "title": "Add validation rules for shared content",
+          "description": "Add cross-consumer validation rules ensuring content works for both v1 and v2",
+          "files": ["studio/validation/rules.ts"],
+          "effort": "1h",
+          "status": "planned",
+          "acceptance": [
+            "URLs are valid",
+            "Slugs are unique",
+            "Images have alt text",
+            "SEO fields meet length requirements"
+          ]
+        },
+        {
+          "id": "S4.5",
+          "title": "Add custom document actions",
+          "description": "Add publishAndRefresh, viewOnSite actions that work for both v1 and v2",
+          "files": ["studio/actions/"],
+          "effort": "1h",
+          "status": "planned",
+          "acceptance": [
+            "publishAndRefresh triggers revalidation for both consumers",
+            "viewOnSite opens the correct site URL",
+            "No conflicts between v1 and v2 actions"
+          ]
+        },
+        {
+          "id": "S4.6",
+          "title": "Enhance presentation tool",
+          "description": "Configure presentation tool to work with both v1 and v2 preview URLs",
+          "files": ["studio/sanity.config.ts"],
+          "effort": "1h",
+          "status": "planned",
+          "acceptance": [
+            "Presentation tool opens v1 preview",
+            "Presentation tool opens v2 preview",
+            "Visual editing works for both"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "EPIC-5",
+      "title": "Content Lifecycle Workflow",
+      "priority": "P1",
+      "description": "Create a workflow for content creation, review, publishing, and maintenance.",
+      "stories": [
+        {
+          "id": "S5.1",
+          "title": "Create content workflow documentation",
+          "description": "Document the content lifecycle: draft → review → publish → maintain",
+          "files": ["studio/docs/content-workflow.md"],
+          "effort": "1h",
+          "status": "planned",
+          "acceptance": [
+            "Clear steps for each phase",
+            "Role responsibilities defined",
+            "Escalation path documented"
+          ]
+        },
+        {
+          "id": "S5.2",
+          "title": "Add content scheduling",
+          "description": "Configure scheduled publishing for blog posts and time-sensitive content",
+          "files": ["studio/schemaTypes/post.ts"],
+          "effort": "1h",
+          "status": "planned",
+          "acceptance": [
+            "Can schedule publish date/time",
+            "Scheduled content appears at correct time",
+            "Unpublish scheduling works"
+          ]
+        },
+        {
+          "id": "S5.3",
+          "title": "Add content review workflow",
+          "description": "Add status fields and workflow states for content review process",
+          "files": ["studio/schemaTypes/post.ts", "studio/schemaTypes/project.ts"],
+          "effort": "2h",
+          "status": "planned",
+          "acceptance": [
+            "Content can be marked as draft, in-review, approved, published",
+            "Reviewers can add comments",
+            "Approval triggers publish"
+          ]
+        },
+        {
+          "id": "S5.4",
+          "title": "Add bulk operations",
+          "description": "Enable bulk publish, archive, and delete operations for content management",
+          "files": ["studio/structure/deskStructure.ts"],
+          "effort": "2h",
+          "status": "planned",
+          "acceptance": [
+            "Can select multiple documents",
+            "Bulk publish works",
+            "Bulk archive works",
+            "Confirmation dialog for destructive actions"
+          ]
+        },
+        {
+          "id": "S5.5",
+          "title": "Add content versioning",
+          "description": "Enable document version history and comparison for content changes",
+          "files": ["studio/sanity.config.ts"],
+          "effort": "1h",
+          "status": "planned",
+          "acceptance": [
+            "Version history visible",
+            "Can compare versions",
+            "Can restore previous versions"
+          ]
+        },
+        {
+          "id": "S5.6",
+          "title": "Create backup workflow",
+          "description": "Automate content backup and restore procedures",
+          "files": ["studio/scripts/backup.ts", "studio/scripts/restore.ts"],
+          "effort": "2h",
+          "status": "planned",
+          "acceptance": [
+            "Backup script exports all content",
+            "Restore script imports content",
+            "Backup includes assets"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "EPIC-6",
+      "title": "Testing & Verification",
+      "priority": "P0",
+      "description": "Ensure everything works correctly after migration.",
+      "stories": [
+        {
+          "id": "S6.1",
+          "title": "Run studio build",
+          "description": "Verify studio builds without errors",
+          "command": "cd studio && pnpm build",
+          "effort": "15m",
+          "status": "planned",
+          "acceptance": [
+            "Build completes without errors",
+            "No TypeScript errors",
+            "No ESLint errors"
+          ]
+        },
+        {
+          "id": "S6.2",
+          "title": "Run studio lint",
+          "description": "Verify studio code passes ESLint",
+          "command": "cd studio && pnpm lint",
+          "effort": "10m",
+          "status": "planned",
+          "acceptance": [
+            "No ESLint errors",
+            "No ESLint warnings"
+          ]
+        },
+        {
+          "id": "S6.3",
+          "title": "Test v1 integration",
+          "description": "Verify portfolio-v1 works with shared studio",
+          "command": "cd portfolio-v1 && pnpm dev",
+          "effort": "15m",
+          "status": "planned",
+          "acceptance": [
+            "v1 dev server starts",
+            "v1 fetches data from Sanity",
+            "v1 pages render correctly"
+          ]
+        },
+        {
+          "id": "S6.4",
+          "title": "Test v2 integration",
+          "description": "Verify portfolio-v2 works with shared studio",
+          "command": "cd portfolio-v2 && pnpm dev",
+          "effort": "15m",
+          "status": "planned",
+          "acceptance": [
+            "v2 dev server starts",
+            "v2 fetches data from Sanity",
+            "v2 pages render correctly"
+          ]
+        },
+        {
+          "id": "S6.5",
+          "title": "Test Sanity Assist",
+          "description": "Verify AI-powered assist works for all schemas",
+          "command": "cd studio && pnpm dev",
+          "effort": "30m",
+          "status": "planned",
+          "acceptance": [
+            "Assist icon visible in all schemas",
+            "AI suggestions generate correctly",
+            "No errors in studio console"
+          ]
+        },
+        {
+          "id": "S6.6",
+          "title": "Test studio deployment",
+          "description": "Deploy studio to Sanity Hosting and verify",
+          "command": "cd studio && pnpm deploy",
+          "effort": "15m",
+          "status": "planned",
+          "acceptance": [
+            "Studio deploys successfully",
+            "Studio loads at Sanity Hosting URL",
+            "All features work in production"
+          ]
+        }
+      ]
+    }
+  ],
+
+  "milestones": [
+    {
+      "id": "milestone-1",
+      "name": "Studio Migration Complete",
+      "phase": "EPIC-1",
+      "criteria": [
+        "Studio exists at root studio/",
+        "Studio dev server runs",
+        "All schemas visible",
+        "No import errors"
+      ]
+    },
+    {
+      "id": "milestone-2",
+      "name": "Shared CMS Configured",
+      "phase": "EPIC-2",
+      "criteria": [
+        "Both v1 and v2 connect to shared studio",
+        "Deployment workflow created",
+        "Documentation complete"
+      ]
+    },
+    {
+      "id": "milestone-3",
+      "name": "AI Assist Active",
+      "phase": "EPIC-3",
+      "criteria": [
+        "Sanity Assist installed",
+        "All schemas have AI instructions",
+        "Suggestions working correctly"
+      ]
+    },
+    {
+      "id": "milestone-4",
+      "name": "Studio Enhanced",
+      "phase": "EPIC-4",
+      "criteria": [
+        "Desk structure updated",
+        "Content health dashboard working",
+        "SEO preview functional",
+        "Validation rules active"
+      ]
+    },
+    {
+      "id": "milestone-5",
+      "name": "Workflow Established",
+      "phase": "EPIC-5",
+      "criteria": [
+        "Content workflow documented",
+        "Scheduling working",
+        "Review process active",
+        "Backup workflow tested"
+      ]
+    },
+    {
+      "id": "milestone-6",
+      "name": "All Tests Passing",
+      "phase": "EPIC-6",
+      "criteria": [
+        "Studio builds successfully",
+        "v1 integration verified",
+        "v2 integration verified",
+        "Studio deployed to production"
+      ]
+    }
+  ],
+
+  "risks": [
+    {
+      "id": "risk-1",
+      "name": "Data loss during migration",
+      "impact": "high",
+      "probability": "low",
+      "mitigation": "Export all data before migration, verify backup, test restore"
+    },
+    {
+      "id": "risk-2",
+      "name": "v1 breaks after studio moves",
+      "impact": "high",
+      "probability": "medium",
+      "mitigation": "Update v1 imports to use shared studio, test thoroughly before removing v1/studio/"
+    },
+    {
+      "id": "risk-3",
+      "name": "Sanity Assist API costs",
+      "impact": "medium",
+      "probability": "medium",
+      "mitigation": "Monitor usage, set usage limits, optimize AI instructions"
+    },
+    {
+      "id": "risk-4",
+      "name": "Studio build fails after changes",
+      "impact": "medium",
+      "probability": "medium",
+      "mitigation": "Run type checks after each change, fix errors immediately"
+    },
+    {
+      "id": "risk-5",
+      "name": "Environment variable conflicts",
+      "impact": "medium",
+      "probability": "low",
+      "mitigation": "Use distinct env var names, document clearly, test each consumer"
+    }
+  ],
+
+  "dependencies": [
+    {
+      "id": "dep-1",
+      "name": "Sanity API access",
+      "required": true,
+      "status": "available"
+    },
+    {
+      "id": "dep-2",
+      "name": "Sanity project permissions",
+      "required": true,
+      "status": "available"
+    },
+    {
+      "id": "dep-3",
+      "name": "Sanity Assist license",
+      "required": true,
+      "status": "available"
+    },
+    {
+      "id": "dep-4",
+      "name": "Node.js 18+",
+      "required": true,
+      "status": "available"
+    },
+    {
+      "id": "dep-5",
+      "name": "pnpm",
+      "required": true,
+      "status": "available"
+    }
+  ],
+
+  "successCriteria": [
+    "Studio exists at root studio/ with all features working",
+    "Both portfolio-v1 and portfolio-v2 consume from shared Sanity dataset",
+    "Sanity Assist provides AI-powered suggestions for all schemas",
+    "Content health dashboard shows completeness scores",
+    "SEO preview shows Google and social media previews",
+    "Content lifecycle workflow documented and tested",
+    "Studio deployed to Sanity Hosting",
+    "No TypeScript or ESLint errors",
+    "All integration tests passing"
+  ],
+
+  "commitPlan": {
+    "strategy": "One commit per story slice, grouped by epic",
+    "naming": "type(scope): description",
+    "types": ["feat", "fix", "chore", "docs", "refactor"],
+    "totalExpectedCommits": 35,
+    "examples": [
+      "chore(studio): move studio from portfolio-v1 to root",
+      "chore(studio): update package.json for pnpm",
+      "feat(studio): add Sanity Assist plugin",
+      "feat(studio): configure AI instructions for profile schema",
+      "feat(studio): enhance content health dashboard",
+      "docs(studio): add content lifecycle workflow guide",
+      "feat(studio): add studio deployment workflow"
+    ]
+  },
+
+  "verification": {
+    "typescript": "cd studio && npx tsc --noEmit must pass",
+    "eslint": "cd studio && pnpm lint must pass",
+    "build": "cd studio && pnpm build must succeed",
+    "v1integration": "cd portfolio-v1 && pnpm dev — fetches from Sanity",
+    "v2integration": "cd portfolio-v2 && pnpm dev — fetches from Sanity",
+    "assist": "All schemas have working AI suggestions",
+    "deploy": "cd studio && pnpm deploy succeeds"
+  }
+}

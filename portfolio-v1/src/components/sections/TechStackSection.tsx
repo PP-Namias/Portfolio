@@ -1,0 +1,75 @@
+'use client';
+
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ChevronDown, ChevronUp } from 'lucide-react';
+import { useCmsContent } from '@/hooks/useCmsContent';
+import type { Technology } from '@/types';
+
+const INITIAL_CATEGORIES = 3;
+
+export function TechStackSection() {
+  const { techCategories } = useCmsContent();
+  const [expanded, setExpanded] = useState(false);
+  const categories = Object.entries(techCategories) as Array<[string, Technology[]]>;
+  const visible = expanded ? categories : categories.slice(0, INITIAL_CATEGORIES);
+
+  return (
+    <section aria-labelledby="tech-stack-heading">
+      <motion.section
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: '-50px' }}
+        transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
+      >
+      <h2 id="tech-stack-heading" className="text-lg font-semibold text-text-primary-light dark:text-text-primary-dark mb-4">
+        Tech Stack
+      </h2>
+
+      <div className="space-y-3">
+        <AnimatePresence mode="popLayout">
+          {visible.map(([category, techs], catIndex) => (
+            <motion.div
+              key={category}
+              layout
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ delay: catIndex * 0.05, duration: 0.3 }}
+            >
+              <h3 className="text-xs font-semibold text-text-muted-light dark:text-text-muted-dark mb-2 uppercase tracking-wider">
+                {category}
+              </h3>
+              <div className="flex flex-wrap gap-1.5">
+                {techs.map((tech) => (
+                  <span
+                    key={tech.name}
+                    className="text-xs font-medium px-2.5 py-1 rounded-lg bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark text-text-secondary-light dark:text-text-secondary-dark hover:border-accent-pink/40 hover:text-accent-pink transition-colors cursor-default"
+                  >
+                    {tech.name}
+                  </span>
+                ))}
+              </div>
+            </motion.div>
+          ))}
+        </AnimatePresence>
+      </div>
+
+      {categories.length > INITIAL_CATEGORIES && (
+        <button
+          type="button"
+          onClick={() => setExpanded((prev) => !prev)}
+          aria-expanded={expanded}
+          className="flex items-center gap-1 mx-auto mt-3 text-xs font-medium text-text-muted-light dark:text-text-muted-dark hover:text-accent-pink dark:hover:text-accent-pink transition-colors"
+        >
+          {expanded ? (
+            <>Show less <ChevronUp className="h-3.5 w-3.5" /></>
+          ) : (
+            <>View all categories <ChevronDown className="h-3.5 w-3.5" /></>
+          )}
+        </button>
+      )}
+      </motion.section>
+    </section>
+  );
+}

@@ -1,0 +1,160 @@
+name: PR Babysitter
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  babysit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+
+      - name: Check kill switch
+        id: kill-switch
+        run: |
+          if gh label list --search "loop-pause-all" --json name -q '.[].name' | grep -q "loop-pause-all"; then
+            echo "paused=true" >> "$GITHUB_OUTPUT"
+            echo "Kill switch active — skipping babysitter"
+          else
+            echo "paused=false" >> "$GITHUB_OUTPUT"
+          fi
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        if: steps.kill-switch.outputs.paused != 'true'
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        if: steps.kill-switch.outputs.paused != 'true'
+        run: npm ci
+        working-directory: portfolio-v1
+
+      - name: Run lint
+        if: steps.kill-switch.outputs.paused != 'true'
+        id: lint
+        working-directory: portfolio-v1
+        run: |
+          OUTPUT=$(npm run lint 2>&1) && echo "status=pass" >> "$GITHUB_OUTPUT" || echo "status=fail" >> "$GITHUB_OUTPUT"
+          echo "$OUTPUT" > /tmp/lint-output.txt
+
+      - name: Run typecheck
+        if: steps.kill-switch.outputs.paused != 'true'
+        id: typecheck
+        working-directory: portfolio-v1
+        run: |
+          OUTPUT=$(npx tsc --noEmit 2>&1) && echo "status=pass" >> "$GITHUB_OUTPUT" || echo "status=fail" >> "$GITHUB_OUTPUT"
+          echo "$OUTPUT" > /tmp/typecheck-output.txt
+
+      - name: Run tests
+        if: steps.kill-switch.outputs.paused != 'true'
+        id: test
+        working-directory: portfolio-v1
+        run: |
+          OUTPUT=$(npm run test -- --run 2>&1) && echo "status=pass" >> "$GITHUB_OUTPUT" || echo "status=fail" >> "$GITHUB_OUTPUT"
+          echo "$OUTPUT" > /tmp/test-output.txt
+
+      - name: Run react-doctor
+        if: steps.kill-switch.outputs.paused != 'true'
+        id: doctor
+        working-directory: portfolio-v1
+        run: |
+          OUTPUT=$(npm run doctor -- --json 2>&1) && echo "status=pass" >> "$GITHUB_OUTPUT" || echo "status=fail" >> "$GITHUB_OUTPUT"
+          echo "$OUTPUT" > /tmp/doctor-output.txt
+
+      - name: Build failure comment
+        if: steps.kill-switch.outputs.paused != 'true' && (steps.lint.outputs.status == 'fail' || steps.typecheck.outputs.status == 'fail' || steps.test.outputs.status == 'fail' || steps.doctor.outputs.status == 'fail')
+        uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b
+        with:
+          script: |
+            const lint = '${{ steps.lint.outputs.status }}';
+            const typecheck = '${{ steps.typecheck.outputs.status }}';
+            const test = '${{ steps.test.outputs.status }}';
+            const doctor = '${{ steps.doctor.outputs.status }}';
+
+            let body = '## 🤖 PR Babysitter Report\n\n';
+
+            if (lint === 'fail') {
+              body += '### ❌ Lint Failed\nRun `npm run lint -- --fix` to auto-fix, then commit.\n\n';
+            }
+            if (typecheck === 'fail') {
+              body += '### ❌ Typecheck Failed\nRun `npx tsc --noEmit` to see errors, then fix in the affected files.\n\n';
+            }
+            if (test === 'fail') {
+              body += '### ❌ Tests Failed\nRun `npm run test -- --run` to see failures, then fix the failing tests.\n\n';
+            }
+            if (doctor === 'fail') {
+              body += '### ❌ react-doctor Score Dropped\nRun `npm run doctor` and follow the `fix-react-doctor-finding` skill to resolve.\n\n';
+            }
+
+            body += '---\n*Posted by PR Babysitter — loop engineering workflow*';
+
+            // Check if we already commented to avoid spam
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+            const existing = comments.find(c => c.body.includes('PR Babysitter Report'));
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existing.id,
+                body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body,
+              });
+            }
+
+      - name: Append to run log
+        if: steps.kill-switch.outputs.paused != 'true'
+        run: |
+          TIMESTAMP=$(date -u +"%Y-%m-%d")
+          LINT="${{ steps.lint.outputs.status }}"
+          TYPECHECK="${{ steps.typecheck.outputs.status }}"
+          TEST="${{ steps.test.outputs.status }}"
+          DOCTOR="${{ steps.doctor.outputs.status }}"
+
+          if [ "$LINT" = "pass" ] && [ "$TYPECHECK" = "pass" ] && [ "$TEST" = "pass" ] && [ "$DOCTOR" = "pass" ]; then
+            STATUS="pass"
+            FINDINGS="All checks passing"
+          else
+            STATUS="fail"
+            FINDINGS="Lint: ${LINT}, Typecheck: ${TYPECHECK}, Tests: ${TEST}, Doctor: ${DOCTOR}"
+          fi
+
+          cat >> .agents/state/loop-run-log.md << EOF
+
+          ## ${TIMESTAMP} — pr-babysitter (PR #${{ github.event.pull_request.number }})
+          - **Status**: ${STATUS}
+          - **Findings**: ${FINDINGS}
+          - **Actions**: Comment posted on PR
+          - **Tokens**: ~10k (estimated)
+          EOF
+
+      - name: Commit run log
+        if: steps.kill-switch.outputs.paused != 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add .agents/state/loop-run-log.md
+          git diff --cached --quiet || git commit -m "chore(loop): pr babysitter run log [automated]"
+          git push origin HEAD:pr-babysitter-logs 2>/dev/null || git push --force origin HEAD:pr-babysitter-logs

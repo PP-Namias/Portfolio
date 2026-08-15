@@ -1,0 +1,63 @@
+name: CI - Quality Gate
+
+on:
+  pull_request:
+    branches: [main]
+    paths-ignore:
+      - "portfolio-v2/**"
+      - "**.md"
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  quality:
+    name: ${{ matrix.service }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - service: portfolio-v1
+            commands: |
+              npm run lint
+              npx tsc --noEmit
+              npm run test -- --run
+              npm run doctor:check
+              npx next build
+          - service: ai-service
+            commands: |
+              npm run lint
+              npm run typecheck
+              npm run test
+          - service: studio
+            commands: |
+              npm run lint
+              npm run typecheck
+              npm run build
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: "22"
+          cache: "npm"
+          cache-dependency-path: ${{ matrix.service }}/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
+        working-directory: ${{ matrix.service }}
+
+      - name: Run quality commands
+        run: ${{ matrix.commands }}
+        working-directory: ${{ matrix.service }}

@@ -15,4 +15,9 @@ export default defineCliConfig({
     appId: 'rpjnth2yentmovjzzw6tx0xe',
     autoUpdates: false,
   },
+  vite: {
+    resolve: {
+      dedupe: ['react', 'react-dom'],
+    },
+  },
 })

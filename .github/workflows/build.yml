@@ -33,12 +33,15 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+        working-directory: portfolio-v1
 
       - name: Run ESLint
         run: npm run lint
+        working-directory: portfolio-v1
 
       - name: TypeScript Check
         run: npx tsc --noEmit
+        working-directory: portfolio-v1
 
   build:
     name: Build Application
@@ -59,9 +62,11 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+        working-directory: portfolio-v1
 
       - name: Build Application
         run: npm run build
+        working-directory: portfolio-v1
 
       - name: Build Summary
         run: |
@@ -88,6 +93,8 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+        working-directory: portfolio-v1
 
       - name: Run Tests
         run: npm test
+        working-directory: portfolio-v1

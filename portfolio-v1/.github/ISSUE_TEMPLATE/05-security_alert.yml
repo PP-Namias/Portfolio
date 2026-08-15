@@ -1,0 +1,77 @@
+name: Security Alert
+description: Report a security vulnerability or compliance issue
+title: "[Security]: "
+labels: ["security", "vulnerability"]
+assignees:
+  - PP-Namias
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ⚠️ **Please do not report security vulnerabilities publicly!**
+        
+        For serious security issues, please contact @PP-Namias directly.
+        Use this template only for non-critical security observations.
+
+  - type: dropdown
+    id: security-type
+    attributes:
+      label: Security Issue Type
+      description: What type of security issue is this?
+      options:
+        - Dependency Vulnerability
+        - Code Security Issue
+        - Container Security
+        - Infrastructure Security
+        - Compliance Issue
+        - Secret Exposure
+        - Access Control
+        - Other
+    validations:
+      required: true
+
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severity Level
+      description: How severe is this security issue?
+      options:
+        - Low (Informational)
+        - Medium (Moderate Risk)
+        - High (Significant Risk)
+        - Critical (Immediate Action Required)
+    validations:
+      required: true
+
+  - type: textarea
+    id: security-description
+    attributes:
+      label: Security Issue Description
+      description: Describe the security issue (be careful not to expose sensitive details)
+      placeholder: Describe the security concern without revealing exploitable details
+    validations:
+      required: true
+
+  - type: textarea
+    id: affected-components
+    attributes:
+      label: Affected Components
+      description: Which parts of the system are affected?
+      placeholder: |
+        - Component 1
+        - Component 2
+        - Workflow X
+
+  - type: textarea
+    id: remediation-steps
+    attributes:
+      label: Suggested Remediation
+      description: What steps do you suggest to fix this issue?
+      placeholder: Suggested steps to resolve the security issue
+
+  - type: textarea
+    id: additional-info
+    attributes:
+      label: Additional Information
+      description: Any additional context about the security issue
+      placeholder: References, links to documentation, etc.

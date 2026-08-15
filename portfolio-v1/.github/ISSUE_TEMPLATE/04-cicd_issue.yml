@@ -1,0 +1,116 @@
+name: CI/CD Pipeline Issue
+description: Report an issue with the CI/CD pipeline or deployment
+title: "[CI/CD]: "
+labels: ["ci-cd", "pipeline"]
+assignees:
+  - PP-Namias
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a CI/CD pipeline issue! Please provide as much detail as possible.
+  
+  - type: dropdown
+    id: pipeline-component
+    attributes:
+      label: Pipeline Component
+      description: Which part of the CI/CD pipeline is affected?
+      multiple: true
+      options:
+        - GitHub Actions Workflows
+        - Docker Build & Containers
+        - Kubernetes Deployment
+        - Jenkins Integration
+        - GitLab CI Integration
+        - Master Orchestrator
+        - Security Scanning
+        - Testing Suite
+        - Monitoring & Health Checks
+        - Preview Deployments
+    validations:
+      required: true
+
+  - type: dropdown
+    id: environment
+    attributes:
+      label: Environment
+      description: Which environment is affected?
+      options:
+        - Development
+        - Staging
+        - Production
+        - All Environments
+    validations:
+      required: true
+
+  - type: textarea
+    id: issue-description
+    attributes:
+      label: Issue Description
+      description: A clear and concise description of the issue
+      placeholder: Describe what happened and what you expected to happen
+    validations:
+      required: true
+
+  - type: textarea
+    id: workflow-logs
+    attributes:
+      label: Workflow Logs
+      description: Relevant logs from the failed workflow (if applicable)
+      placeholder: Paste relevant log output here
+      render: shell
+
+  - type: input
+    id: workflow-run-id
+    attributes:
+      label: Workflow Run ID
+      description: The GitHub Actions run ID where the issue occurred
+      placeholder: e.g., 1234567890
+
+  - type: input
+    id: commit-sha
+    attributes:
+      label: Commit SHA
+      description: The commit SHA where the issue was observed
+      placeholder: e.g., abc123def456
+
+  - type: dropdown
+    id: deployment-type
+    attributes:
+      label: Deployment Type
+      description: What type of deployment was being attempted?
+      options:
+        - Standard Deployment
+        - Container Deployment
+        - Kubernetes Deployment
+        - Jenkins Pipeline
+        - GitLab CI Pipeline
+        - Multi-Platform Deployment
+        - Manual Trigger
+
+  - type: textarea
+    id: steps-to-reproduce
+    attributes:
+      label: Steps to Reproduce
+      description: Steps to reproduce the issue
+      placeholder: |
+        1. Trigger workflow '...'
+        2. Wait for step '...'
+        3. See error in '...'
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected-behavior
+    attributes:
+      label: Expected Behavior
+      description: What should have happened?
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional Context
+      description: Add any other context about the problem
+      placeholder: Screenshots, configuration files, related issues, etc.

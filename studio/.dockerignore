@@ -1,0 +1,14 @@
+node_modules
+dist
+.sanity
+.git
+.github
+.vscode
+.env*
+!.env.example
+*.md
+!.README.md
+coverage
+tests
+test-results
+tsconfig.tsbuildinfo

@@ -1,0 +1,809 @@
+{
+  "id": "PRD-SMART-DEPLOY-WORKFLOW",
+  "title": "Smart Branching & Deployment Workflow — V1/V2 Staging Pipeline",
+  "version": "1.0.0",
+  "status": "planned",
+  "created": "2026-07-11",
+  "description": "Introduce a branch-driven deployment pipeline where dev branch deploys Portfolio V1 to Vercel (staging) and staging branch deploys Portfolio V2 to Cloudflare (testing). This PRD defines the branch strategy, CI/CD workflows, environment promotion, and quality gates that make every future prompt operation aware of which environment it targets.",
+
+  "context": {
+    "currentBranches": {
+      "dev": "Active development branch, currently checked out",
+      "main": "Production-ready branch, currently serves as the release target"
+    },
+    "currentDeployments": {
+      "v1": "Portfolio V1 lives at portfolio-v1/ — has vercel.json and wrangler.jsonc (dual deploy ready)",
+      "v2": "Portfolio V2 lives at portfolio-v2/ — has wrangler.jsonc (Cloudflare only)"
+    },
+    "goal": "dev → Vercel (V1 staging), staging → Cloudflare (V2 testing), main → production gate",
+    "sharedCMS": "Sanity project nl0qw78w, dataset production — both deployments read from same Sanity source",
+    "motivation": "Eliminate manual deployment steps. Every push to dev automatically stages V1 on Vercel. Every push to staging automatically tests V2 on Cloudflare. main is the production gate with required checks before merge."
+  },
+
+  "branchStrategy": {
+    "dev": {
+      "purpose": "Active development and V1 staging",
+      "autoDeploy": true,
+      "target": "Vercel",
+      "deploymentUrl": "dev.namias.tech (or namias-dev.vercel.app)",
+      "portfolio": "portfolio-v1",
+      "triggers": ["push to dev"],
+      "qualityGates": ["lint", "typecheck", "test", "react-doctor"],
+      "description": "Every push to dev deploys V1 to Vercel preview. This is the working staging environment where all features land first."
+    },
+    "staging": {
+      "purpose": "V2 integration testing on Cloudflare edge",
+      "autoDeploy": true,
+      "target": "Cloudflare Workers",
+      "deploymentUrl": "staging.namias.tech (or staging.namias-v2.workers.dev)",
+      "portfolio": "portfolio-v2",
+      "triggers": ["push to staging"],
+      "qualityGates": ["lint", "typecheck", "test", "playwright", "build-opennext"],
+      "description": "Every push to staging deploys V2 to Cloudflare Workers preview. Used for integration testing of the new stack (React 19, Tailwind v4, shadcn registry)."
+    },
+    "main": {
+      "purpose": "Production releases for both V1 and V2",
+      "autoDeploy": false,
+      "requiresApproval": true,
+      "target": "Both (Vercel + Cloudflare)",
+      "triggers": ["PR merge from dev or staging", "manual workflow_dispatch"],
+      "qualityGates": ["lint", "typecheck", "test", "react-doctor", "playwright", "build-v1", "build-v2", "security-scan"],
+      "description": "Production deployments. V1 deploys to namias.tech on Vercel. V2 deploys to v2.namias.tech on Cloudflare. Requires all checks to pass and manual approval."
+    }
+  },
+
+  "architecture": {
+    "flow": {
+      "developer": "Push to dev → auto-deploys V1 to Vercel staging",
+      "integration": "Merge dev → staging → auto-deploys V2 to Cloudflare testing",
+      "production": "Merge staging → main → manual approval → deploys both to production",
+      "hotfix": "Branch from main → fix → PR to main + cherry-pick to dev"
+    },
+    "qualityPipeline": {
+      "prLevel": ["lint", "typecheck", "test"],
+      "devLevel": ["lint", "typecheck", "test", "react-doctor", "build-v1"],
+      "stagingLevel": ["lint", "typecheck", "test", "react-doctor", "playwright", "build-v1", "build-v2"],
+      "mainLevel": ["lint", "typecheck", "test", "react-doctor", "playwright", "security-scan", "build-v1", "build-v2", "e2e-production"]
+    },
+    "environmentVariables": {
+      "dev": {
+        "prefix": "DEV_",
+        "sanityDataset": "development",
+        "analyticsEnabled": false,
+        "debugMode": true
+      },
+      "staging": {
+        "prefix": "STAGING_",
+        "sanityDataset": "production",
+        "analyticsEnabled": false,
+        "debugMode": true
+      },
+      "main": {
+        "prefix": "",
+        "sanityDataset": "production",
+        "analyticsEnabled": true,
+        "debugMode": false
+      }
+    }
+  },
+
+  "epics": [
+    {
+      "id": "EPIC-1",
+      "title": "Branch Protection & Rules",
+      "priority": "high",
+      "description": "Configure GitHub branch protection rules for dev, staging, and main to enforce quality gates before merge.",
+      "stories": [
+        {
+          "id": "S1.1",
+          "title": "Create staging branch from dev",
+          "action": "git push origin dev:staging",
+          "description": "Create the staging branch as a copy of dev. This becomes the V2 testing branch.",
+          "details": {
+            "branch": "staging",
+            "from": "dev",
+            "initialContent": "Same as dev at creation time"
+          }
+        },
+        {
+          "id": "S1.2",
+          "title": "Configure dev branch protection",
+          "file": "N/A (GitHub settings)",
+          "description": "Protect dev branch — require PR for merge, require status checks (lint, typecheck, test), allow force push only for admin.",
+          "details": {
+            "rules": {
+              "requirePR": true,
+              "requiredChecks": ["validate-v1-lint", "validate-v1-typecheck", "validate-v1-test"],
+              "allowForcePush": true,
+              "allowDeletes": false,
+              "requireReviews": 1
+            }
+          }
+        },
+        {
+          "id": "S1.3",
+          "title": "Configure staging branch protection",
+          "file": "N/A (GitHub settings)",
+          "description": "Protect staging branch — require PR for merge, require status checks (lint, typecheck, test, build), allow force push only for admin.",
+          "details": {
+            "rules": {
+              "requirePR": true,
+              "requiredChecks": ["validate-v2-lint", "validate-v2-typecheck", "validate-v2-test", "validate-v2-build"],
+              "allowForcePush": true,
+              "allowDeletes": false,
+              "requireReviews": 1
+            }
+          }
+        },
+        {
+          "id": "S1.4",
+          "title": "Configure main branch protection",
+          "file": "N/A (GitHub settings)",
+          "description": "Protect main branch — require PR, require ALL status checks, require 2 reviews, no force push, no deletes.",
+          "details": {
+            "rules": {
+              "requirePR": true,
+              "requiredChecks": [
+                "validate-v1-lint", "validate-v1-typecheck", "validate-v1-test", "validate-v1-react-doctor",
+                "validate-v2-lint", "validate-v2-typecheck", "validate-v2-test", "validate-v2-build",
+                "deploy-production-v1", "deploy-production-v2"
+              ],
+              "allowForcePush": false,
+              "allowDeletes": false,
+              "requireReviews": 2,
+              "requireCodeOwnerReviews": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "EPIC-2",
+      "title": "Dev → Vercel (V1 Staging) Pipeline",
+      "priority": "high",
+      "description": "Auto-deploy Portfolio V1 to Vercel on every push to dev branch. Includes quality gates, build verification, and preview URL generation.",
+      "stories": [
+        {
+          "id": "S2.1",
+          "title": "Create dev-deploy-v1.yml workflow",
+          "file": ".github/workflows/dev-deploy-v1.yml",
+          "description": "GitHub Actions workflow triggered on push to dev. Runs quality checks, builds V1, and deploys to Vercel.",
+          "details": {
+            "trigger": "push to dev (paths: portfolio-v1/**, .github/workflows/dev-deploy-v1.yml)",
+            "concurrency": "deploy-dev-v1-${{ github.ref }}",
+            "jobs": {
+              "validate": {
+                "runs-on": "ubuntu-latest",
+                "workingDirectory": "portfolio-v1",
+                "steps": [
+                  "checkout",
+                  "setup-node-22",
+                  "npm ci --ignore-scripts",
+                  "npm run lint",
+                  "npx tsc --noEmit",
+                  "npm run test -- --run",
+                  "npm run doctor -- --json"
+                ]
+              },
+              "deploy": {
+                "needs": "validate",
+                "runs-on": "ubuntu-latest",
+                "steps": [
+                  "checkout",
+                  "setup-node-22",
+                  "npm ci --ignore-scripts",
+                  "npm run build",
+                  "vercel --prebuilt --token=${{ secrets.VERCEL_TOKEN }}"
+                ],
+                "environment": {
+                  "name": "dev",
+                  "url": "https://dev.namias.tech"
+                }
+              }
+            },
+            "secrets": ["VERCEL_TOKEN", "VERCEL_ORG_ID", "VERCEL_PROJECT_ID"],
+            "envVars": {
+              "NEXT_PUBLIC_SANITY_PROJECT_ID": "${{ secrets.SANITY_PROJECT_ID }}",
+              "NEXT_PUBLIC_SANITY_DATASET": "production",
+              "SANITY_API_READ_TOKEN": "${{ secrets.SANITY_API_READ_TOKEN }}",
+              "SANITY_REVALIDATE_SECRET": "${{ secrets.SANITY_REVALIDATE_SECRET }}"
+            }
+          }
+        },
+        {
+          "id": "S2.2",
+          "title": "Create Vercel dev project",
+          "action": "vercel link --project namias-dev",
+          "description": "Create a separate Vercel project for dev deployments. This keeps staging isolated from production.",
+          "details": {
+            "projectName": "namias-dev",
+            "domain": "dev.namias.tech",
+            "framework": "nextjs",
+            "nodeVersion": "22",
+            "buildCommand": "npm run build",
+            "outputDirectory": ".next"
+          }
+        },
+        {
+          "id": "S2.3",
+          "title": "Configure Vercel dev environment variables",
+          "description": "Set all required env vars in the Vercel dev project dashboard.",
+          "envVars": [
+            "NEXT_PUBLIC_SANITY_PROJECT_ID",
+            "NEXT_PUBLIC_SANITY_DATASET=production",
+            "SANITY_API_READ_TOKEN",
+            "SANITY_REVALIDATE_SECRET",
+            "SANITY_MEDIA_GATEWAY_SECRET",
+            "NEXT_PUBLIC_UMAMI_WEBSITE_ID",
+            "NEXT_PUBLIC_UMAMI_DOMAINS"
+          ]
+        },
+        {
+          "id": "S2.4",
+          "title": "Add Vercel commit status check",
+          "description": "Configure Vercel to report deployment status as a GitHub commit status. This blocks merge if deployment fails.",
+          "details": {
+            "integration": "Vercel GitHub integration (automatic)",
+            "requiredCheck": "Vercel — namias-dev",
+            "blocking": true
+          }
+        },
+        {
+          "id": "S2.5",
+          "title": "Add deploy notification step",
+          "description": "After successful Vercel deployment, post a comment on the dev branch commit with the preview URL.",
+          "details": {
+            "action": "github-script to post commit comment",
+            "content": "Deployment URL: https://dev.namias.tech | Commit: ${{ github.sha }}"
+          }
+        }
+      ]
+    },
+    {
+      "id": "EPIC-3",
+      "title": "Staging → Cloudflare (V2 Testing) Pipeline",
+      "priority": "high",
+      "description": "Auto-deploy Portfolio V2 to Cloudflare Workers on every push to staging branch. Includes quality gates, OpenNext build, and preview URL generation.",
+      "stories": [
+        {
+          "id": "S3.1",
+          "title": "Create staging-deploy-v2.yml workflow",
+          "file": ".github/workflows/staging-deploy-v2.yml",
+          "description": "GitHub Actions workflow triggered on push to staging. Runs quality checks, builds V2 with OpenNext, and deploys to Cloudflare Workers.",
+          "details": {
+            "trigger": "push to staging (paths: portfolio-v2/**, .github/workflows/staging-deploy-v2.yml)",
+            "concurrency": "deploy-staging-v2-${{ github.ref }}",
+            "jobs": {
+              "validate": {
+                "runs-on": "ubuntu-latest",
+                "workingDirectory": "portfolio-v2",
+                "steps": [
+                  "checkout",
+                  "setup-pnpm",
+                  "setup-node-24",
+                  "pnpm install --frozen-lockfile",
+                  "pnpm lint",
+                  "pnpm check-types",
+                  "pnpm test:run"
+                ]
+              },
+              "build": {
+                "needs": "validate",
+                "runs-on": "ubuntu-latest",
+                "workingDirectory": "portfolio-v2",
+                "steps": [
+                  "checkout",
+                  "setup-pnpm",
+                  "setup-node-24",
+                  "pnpm install --frozen-lockfile",
+                  "pnpm build",
+                  "npx opennextjs-cloudflare build --dangerouslyUseUnsupportedNextVersion"
+                ]
+              },
+              "deploy": {
+                "needs": "build",
+                "runs-on": "ubuntu-latest",
+                "steps": [
+                  "checkout",
+                  "cloudflare/wrangler-action@v3",
+                  {
+                    "action": "deploy",
+                    "workerName": "namias-v2-staging",
+                    "apiToken": "${{ secrets.CLOUDFLARE_API_TOKEN }}",
+                    "accountId": "${{ secrets.CLOUDFLARE_ACCOUNT_ID }}",
+                    "command": "deploy --name namias-v2-staging"
+                  }
+                ],
+                "environment": {
+                  "name": "staging",
+                  "url": "https://staging.namias-v2.workers.dev"
+                }
+              }
+            },
+            "secrets": ["CLOUDFLARE_API_TOKEN", "CLOUDFLARE_ACCOUNT_ID"],
+            "envVars": {
+              "NEXT_PUBLIC_SANITY_PROJECT_ID": "${{ secrets.SANITY_PROJECT_ID }}",
+              "NEXT_PUBLIC_SANITY_DATASET": "production",
+              "SANITY_API_READ_TOKEN": "${{ secrets.SANITY_API_READ_TOKEN }}",
+              "SANITY_REVALIDATE_SECRET": "${{ secrets.SANITY_REVALIDATE_SECRET }}",
+              "SANITY_MEDIA_GATEWAY_SECRET": "${{ secrets.SANITY_MEDIA_GATEWAY_SECRET }}"
+            }
+          }
+        },
+        {
+          "id": "S3.2",
+          "title": "Create Cloudflare staging worker",
+          "action": "wrangler deploy --name namias-v2-staging --outdir .open-next",
+          "description": "Deploy an initial version of the V2 worker to Cloudflare. This creates the worker binding for staging.",
+          "details": {
+            "workerName": "namias-v2-staging",
+            "domain": "staging.namias-v2.workers.dev",
+            "compatibilityDate": "2026-07-11"
+          }
+        },
+        {
+          "id": "S3.3",
+          "title": "Configure Cloudflare staging environment variables",
+          "description": "Set all required env vars in the Cloudflare Workers dashboard for the staging worker.",
+          "envVars": [
+            "NEXT_PUBLIC_SANITY_PROJECT_ID",
+            "NEXT_PUBLIC_SANITY_DATASET=production",
+            "SANITY_API_READ_TOKEN",
+            "SANITY_REVALIDATE_SECRET",
+            "SANITY_MEDIA_GATEWAY_SECRET"
+          ]
+        },
+        {
+          "id": "S3.4",
+          "title": "Add staging worker routes",
+          "description": "Configure Cloudflare routes for the staging worker to handle staging domain traffic.",
+          "details": {
+            "routes": [
+              { "pattern": "staging.namias.tech/*", "worker": "namias-v2-staging" },
+              { "pattern": "staging.namias-v2.workers.dev/*", "worker": "namias-v2-staging" }
+            ]
+          }
+        },
+        {
+          "id": "S3.5",
+          "title": "Add Playwright smoke tests to staging pipeline",
+          "description": "After deployment, run a subset of Playwright tests against the staging URL to verify basic functionality.",
+          "details": {
+            "tests": ["routes.spec.ts", "accessibility.spec.ts", "seo-meta.spec.ts"],
+            "target": "https://staging.namias-v2.workers.dev",
+            "timeout": "5 minutes"
+          }
+        }
+      ]
+    },
+    {
+      "id": "EPIC-4",
+      "title": "Main → Production Gate",
+      "priority": "high",
+      "description": "Production deployment workflow triggered on merge to main. Requires all quality gates, dual deployment, and post-deploy verification.",
+      "stories": [
+        {
+          "id": "S4.1",
+          "title": "Create production-deploy.yml workflow",
+          "file": ".github/workflows/production-deploy.yml",
+          "description": "GitHub Actions workflow triggered on push to main (after PR merge). Deploys V1 to Vercel production and V2 to Cloudflare production.",
+          "details": {
+            "trigger": "push to main (after PR merge from dev or staging)",
+            "concurrency": "deploy-production-${{ github.ref }}",
+            "jobs": {
+              "validate-v1": {
+                "runs-on": "ubuntu-latest",
+                "workingDirectory": "portfolio-v1",
+                "steps": ["checkout", "setup-node-22", "npm ci", "npm run lint", "npx tsc --noEmit", "npm run test -- --run", "npm run doctor -- --json"]
+              },
+              "validate-v2": {
+                "runs-on": "ubuntu-latest",
+                "workingDirectory": "portfolio-v2",
+                "steps": ["checkout", "setup-pnpm", "setup-node-24", "pnpm install", "pnpm lint", "pnpm check-types", "pnpm test:run"]
+              },
+              "deploy-v1": {
+                "needs": "validate-v1",
+                "runs-on": "ubuntu-latest",
+                "environment": { "name": "production-v1", "url": "https://namias.tech" },
+                "steps": ["checkout", "setup-node-22", "npm ci", "npm run build", "vercel --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}"]
+              },
+              "deploy-v2": {
+                "needs": "validate-v2",
+                "runs-on": "ubuntu-latest",
+                "environment": { "name": "production-v2", "url": "https://v2.namias.tech" },
+                "steps": ["checkout", "setup-pnpm", "setup-node-24", "pnpm install", "pnpm build", "npx opennextjs-cloudflare build", "wrangler deploy --name namias-v2 --outdir .open-next"]
+              },
+              "post-deploy": {
+                "needs": ["deploy-v1", "deploy-v2"],
+                "runs-on": "ubuntu-latest",
+                "steps": ["verify-namias-tech-200", "verify-v2-namias-tech-200", "run-smoke-tests", "notify-slack"]
+              }
+            },
+            "secrets": ["VERCEL_TOKEN", "VERCEL_ORG_ID", "VERCEL_PROJECT_ID", "CLOUDFLARE_API_TOKEN", "CLOUDFLARE_ACCOUNT_ID", "SLACK_WEBHOOK_URL"]
+          }
+        },
+        {
+          "id": "S4.2",
+          "title": "Create production environment in GitHub",
+          "description": "Create GitHub environments for production deployments with required reviewers.",
+          "details": {
+            "environments": [
+              {
+                "name": "production-v1",
+                "protectionRules": [{ "type": "requiredReviewers", "reviewers": ["PP-Namias"] }],
+                "deploymentBranchPolicy": "main"
+              },
+              {
+                "name": "production-v2",
+                "protectionRules": [{ "type": "requiredReviewers", "reviewers": ["PP-Namias"] }],
+                "deploymentBranchPolicy": "main"
+              }
+            ]
+          }
+        },
+        {
+          "id": "S4.3",
+          "title": "Configure production DNS",
+          "description": "Set up DNS records for production domains.",
+          "details": {
+            "v1": {
+              "domain": "namias.tech",
+              "type": "CNAME",
+              "value": "cname.vercel-dns.com",
+              "proxied": false
+            },
+            "v2": {
+              "domain": "v2.namias.tech",
+              "type": "CNAME",
+              "value": "namias-v2.<account-id>.workers.dev",
+              "proxied": true
+            }
+          }
+        },
+        {
+          "id": "S4.4",
+          "title": "Add Sanity webhook dual-targeting",
+          "description": "Configure Sanity webhooks to trigger revalidation on both production deployments.",
+          "details": {
+            "webhooks": [
+              { "url": "https://namias.tech/api/revalidate", "trigger": "on publish", "secret": "${{ secrets.SANITY_REVALIDATE_SECRET }}" },
+              { "url": "https://v2.namias.tech/api/revalidate", "trigger": "on publish", "secret": "${{ secrets.SANITY_REVALIDATE_SECRET }}" }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "EPIC-5",
+      "title": "PR Validation Pipeline",
+      "priority": "medium",
+      "description": "Validate PRs targeting dev, staging, or main. Only run checks relevant to the changed portfolio.",
+      "stories": [
+        {
+          "id": "S5.1",
+          "title": "Create pr-validate.yml workflow",
+          "file": ".github/workflows/pr-validate.yml",
+          "description": "GitHub Actions workflow triggered on pull_request. Detects which portfolio changed and runs appropriate checks.",
+          "details": {
+            "trigger": "pull_request (opened, synchronize, reopened)",
+            "jobs": {
+              "detect-changes": {
+                "outputs":": { v1_changed, v2_changed }",
+                "steps": ["dorny/paths-filter to detect portfolio-v1/** and portfolio-v2/** changes"]
+              },
+              "validate-v1": {
+                "if": "needs.detect-changes.outputs.v1_changed == 'true'",
+                "workingDirectory": "portfolio-v1",
+                "steps": ["lint", "typecheck", "test", "react-doctor"]
+              },
+              "validate-v2": {
+                "if": "needs.detect-changes.outputs.v2_changed == 'true'",
+                "workingDirectory": "portfolio-v2",
+                "steps": ["lint", "typecheck", "test", "build-check"]
+              },
+              "pr-comment": {
+                "needs": ["validate-v1", "validate-v2"],
+                "steps": ["post validation summary as PR comment"]
+              }
+            }
+          }
+        },
+        {
+          "id": "S5.2",
+          "title": "Add path-based job filtering",
+          "description": "Use dorny/paths-filter or similar to detect which files changed and only run relevant validation jobs.",
+          "details": {
+            "filters": {
+              "v1": "portfolio-v1/**",
+              "v2": "portfolio-v2/**",
+              "shared": ".github/**, AGENTS.md, docs/**"
+            }
+          }
+        },
+        {
+          "id": "S5.3",
+          "title": "Add PR preview deployments",
+          "description": "Auto-deploy preview environments for PRs targeting dev (Vercel) or staging (Cloudflare).",
+          "details": {
+            "v1Preview": {
+              "trigger": "PR targeting dev",
+              "provider": "Vercel (auto-preview)",
+              "url": "https://namias-dev-<hash>.vercel.app"
+            },
+            "v2Preview": {
+              "trigger": "PR targeting staging",
+              "provider": "Cloudflare Workers preview",
+              "url": "https://staging-<hash>.namias-v2.workers.dev"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "EPIC-6",
+      "title": "Smart Prompt Integration",
+      "priority": "medium",
+      "description": "Make every agent prompt aware of the current branch and environment. Agents should know which deployment they are targeting and what quality gates apply.",
+      "stories": [
+        {
+          "id": "S6.1",
+          "title": "Create DEPLOY_ENV.md context file",
+          "file": "DEPLOY_ENV.md",
+          "description": "Auto-generated file that agents read to understand the current deployment context. Updated by CI workflows.",
+          "details": {
+            "sections": {
+              "currentBranch": "detected from git or CI",
+              "targetDeployment": "Vercel (V1) or Cloudflare (V2)",
+              "environment": "dev | staging | production",
+              "deploymentUrl": "current deployment URL",
+              "qualityGatesRequired": ["lint", "typecheck", "test"],
+              "lastDeployment": "timestamp of last successful deploy"
+            }
+          }
+        },
+        {
+          "id": "S6.2",
+          "title": "Add environment-aware npm scripts",
+          "file": "portfolio-v1/package.json, portfolio-v2/package.json",
+          "description": "Add scripts that are aware of the deployment environment.",
+          "details": {
+            "v1Scripts": {
+              "deploy:dev": "vercel --token=$VERCEL_TOKEN",
+              "deploy:prod": "vercel --prod --token=$VERCEL_TOKEN",
+              "deploy:status": "vercel ls --token=$VERCEL_TOKEN"
+            },
+            "v2Scripts": {
+              "deploy:staging": "wrangler deploy --name namias-v2-staging",
+              "deploy:prod": "wrangler deploy --name namias-v2",
+              "deploy:status": "wrangler deployments list --name namias-v2"
+            }
+          }
+        },
+        {
+          "id": "S6.3",
+          "title": "Update AGENTS.md with deployment context",
+          "file": "AGENTS.md",
+          "description": "Add a Deployment Pipeline section to AGENTS.md so agents understand the branch → environment mapping.",
+          "details": {
+            "sections": [
+              "Branch Strategy: dev (Vercel staging) → staging (Cloudflare testing) → main (production)",
+              "Which environment am I in? Read DEPLOY_ENV.md",
+              "Quality gates per environment",
+              "How to trigger deployments",
+              "Rollback procedures per platform"
+            ]
+          }
+        },
+        {
+          "id": "S6.4",
+          "title": "Add deployment skill",
+          "file": ".agents/skills/smart-deploy/SKILL.md",
+          "description": "Create a skill that agents can load to understand the deployment pipeline, run deployments, and check deployment status.",
+          "details": {
+            "commands": [
+              "deploy:status — check current deployment state for both V1 and V2",
+              "deploy:dev — deploy V1 to Vercel dev",
+              "deploy:staging — deploy V2 to Cloudflare staging",
+              "deploy:production — deploy both to production (requires approval)",
+              "deploy:rollback:v1 — rollback V1 to previous Vercel deployment",
+              "deploy:rollback:v2 — rollback V2 to previous Cloudflare deployment"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "EPIC-7",
+      "title": "Rollback & Recovery",
+      "priority": "medium",
+      "description": "Automated and manual rollback procedures for each deployment target.",
+      "stories": [
+        {
+          "id": "S7.1",
+          "title": "Create rollback-v1.yml workflow",
+          "file": ".github/workflows/rollback-v1.yml",
+          "description": "Manual trigger workflow to rollback V1 to a previous Vercel deployment.",
+          "details": {
+            "trigger": "workflow_dispatch with input (deployment ID or 'previous')",
+            "steps": ["list-vercel-deployments", "select-target", "promote-to-production"],
+            "inputs": {
+              "deploymentId": "Vercel deployment ID to rollback to",
+              "reason": "Reason for rollback (logged to .agents/state/loop-run-log.md)"
+            }
+          }
+        },
+        {
+          "id": "S7.2",
+          "title": "Create rollback-v2.yml workflow",
+          "file": ".github/workflows/rollback-v2.yml",
+          "description": "Manual trigger workflow to rollback V2 to a previous Cloudflare Workers deployment.",
+          "details": {
+            "trigger": "workflow_dispatch with input (deployment version or 'previous')",
+            "steps": ["list-cloudflare-deployments", "select-target", "wrangler rollback"],
+            "inputs": {
+              "version": "Cloudflare Workers version to rollback to",
+              "reason": "Reason for rollback (logged to .agents/state/loop-run-log.md)"
+            }
+          }
+        },
+        {
+          "id": "S7.3",
+          "title": "Add health check verification post-rollback",
+          "description": "After any rollback, automatically verify the deployment is healthy.",
+          "details": {
+            "checks": [
+              "HTTP 200 on homepage",
+              "Sanity content loads",
+              "API routes respond",
+              "Security headers present",
+              "No console errors in Playwright"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "EPIC-8",
+      "title": "Monitoring & Observability",
+      "priority": "low",
+      "description": "Track deployment health, build times, and failure rates across environments.",
+      "stories": [
+        {
+          "id": "S8.1",
+          "title": "Add deployment status badges",
+          "description": "Add status badges to README.md showing current deployment state for dev, staging, and production.",
+          "details": {
+            "badges": [
+              { "label": "Dev (Vercel)", "url": "https://img.shields.io/badge/Dev-Deployed-brightgreen", "link": "https://dev.namias.tech" },
+              { "label": "Staging (CF)", "url": "https://img.shields.io/badge/Staging-Deployed-brightgreen", "link": "https://staging.namias.tech" },
+              { "label": "Production", "url": "https://img.shields.io/badge/Production-Deployed-brightgreen", "link": "https://namias.tech" }
+            ]
+          }
+        },
+        {
+          "id": "S8.2",
+          "title": "Add deployment metrics to .agents/state/loop-run-log.md",
+          "description": "Append deployment events to .agents/state/loop-run-log.md for observability.",
+          "details": {
+            "events": ["deploy-start", "deploy-success", "deploy-failure", "rollback"],
+            "format": "[date] [environment] [event] [commit-sha] [duration] [url]"
+          }
+        }
+      ]
+    }
+  ],
+
+  "deploymentMatrix": {
+    "dev": {
+      "branch": "dev",
+      "portfolio": "V1",
+      "hosting": "Vercel",
+      "domain": "dev.namias.tech",
+      "autoDeploy": true,
+      "trigger": "push to dev",
+      "qualityGates": ["lint", "typecheck", "test", "react-doctor"],
+      "rollback": "Vercel instant rollback",
+      "envVars": "Sanity (production), analytics (disabled)"
+    },
+    "staging": {
+      "branch": "staging",
+      "portfolio": "V2",
+      "hosting": "Cloudflare Workers",
+      "domain": "staging.namias.tech",
+      "autoDeploy": true,
+      "trigger": "push to staging",
+      "qualityGates": ["lint", "typecheck", "test", "playwright", "build-opennext"],
+      "rollback": "Cloudflare wrangler rollback",
+      "envVars": "Sanity (production), analytics (disabled)"
+    },
+    "production": {
+      "branch": "main",
+      "portfolio": "Both",
+      "hosting": "Vercel (V1) + Cloudflare (V2)",
+      "domain": "namias.tech + v2.namias.tech",
+      "autoDeploy": false,
+      "trigger": "PR merge to main + approval",
+      "qualityGates": ["all checks", "security-scan", "e2e-production"],
+      "rollback": "Vercel rollback (V1) + Cloudflare rollback (V2)",
+      "envVars": "Sanity (production), analytics (enabled), debug (disabled)"
+    }
+  },
+
+  "risks": [
+    {
+      "risk": "Branch confusion — developers push to wrong branch",
+      "mitigation": "Branch protection rules, DEPLOY_ENV.md context file, clear AGENTS.md documentation",
+      "severity": "medium"
+    },
+    {
+      "risk": "Vercel and Cloudflare deployment race conditions",
+      "mitigation": "Concurrency groups in workflows, sequential deployment on main (V1 first, then V2)",
+      "severity": "low"
+    },
+    {
+      "risk": "Environment variable drift between dev/staging/production",
+      "mitigation": "Unified .env.example with per-environment sections, validation step in CI",
+      "severity": "medium"
+    },
+    {
+      "risk": "Staging branch diverging too far from dev",
+      "mitigation": "Weekly auto-sync workflow (dev → staging), PR-based merge required",
+      "severity": "medium"
+    },
+    {
+      "risk": "OpenNext build failures in staging pipeline",
+      "mitigation": "Build verification step before deploy, --dangerouslyUseUnsupportedNextVersion flag",
+      "severity": "high"
+    },
+    {
+      "risk": "Production deploy blocked by a single failing check",
+      "mitigation": "Rollback workflow available, manual override via workflow_dispatch for emergencies",
+      "severity": "medium"
+    }
+  ],
+
+  "successCriteria": {
+    "dev": [
+      "Push to dev auto-deploys V1 to Vercel within 5 minutes",
+      "Preview URL is accessible at dev.namias.tech",
+      "All quality gates pass before deployment",
+      "Deployment status reported as commit status"
+    ],
+    "staging": [
+      "Push to staging auto-deploys V2 to Cloudflare within 8 minutes",
+      "Preview URL is accessible at staging.namias.tech",
+      "Playwright smoke tests pass against staging URL",
+      "OpenNext build succeeds consistently"
+    ],
+    "production": [
+      "Merge to main deploys both V1 and V2 within 15 minutes",
+      "Both production URLs accessible (namias.tech, v2.namias.tech)",
+      "All quality gates pass before deployment",
+      "Post-deploy health checks pass",
+      "Sanity webhooks trigger revalidation on both"
+    ],
+    "smartPrompt": [
+      "DEPLOY_ENV.md exists and is auto-updated by CI",
+      "AGENTS.md documents branch → environment mapping",
+      "Agents can read DEPLOY_ENV.md to know current deployment target",
+      "Environment-specific npm scripts work correctly",
+      "Rollback workflows can be triggered by agents"
+    ]
+  },
+
+  "nonGoals": [
+    "Replace existing deployment configs (vercel.json, wrangler.jsonc) — enhance them",
+    "Implement auto-merge for PRs — human approval stays required",
+    "Build a custom deployment dashboard — use Vercel + Cloudflare dashboards",
+    "Multi-region deployment — single region (sin1 for Vercel, default for CF) for now",
+    "Canary or blue-green deployments — simple atomic deployments for both"
+  ],
+
+  "openQuestions": [
+    "Should staging sync from dev automatically on a schedule, or only via PR?",
+    "Should we use Vercel preview deployments for PRs targeting dev, or only for the dev branch itself?",
+    "Do we need a separate Cloudflare worker for staging, or use wrangler --env staging?",
+    "Should production deploy require 2 reviews or just 1 with the deploy workflow approval?",
+    "Should we add Slack/Discord notifications for deployment events?"
+  ]
+}

@@ -1,10 +1,11 @@
 version: 2
 updates:
   - package-ecosystem: "npm"
-    directory: "/"
+    directory: "/portfolio-v1"
     schedule:
       interval: "daily"
-      cooldown: "7d"
+    cooldown:
+      default-days: 7
     groups:
       patch-updates:
         patterns:

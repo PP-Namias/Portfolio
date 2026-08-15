@@ -1,0 +1,110 @@
+{
+  "id": "prd.chatbot",
+  "title": "AI Chatbot — Full Functionality Fix",
+  "status": "implemented",
+  "date": "2026-08-02",
+  "owner": "PP Namias",
+  "product": "Portfolio V1 AI Chatbot (/api/chat, FloatingHub ChatPanel)",
+  "summary": "The chatbot backend and UI exist but ship with four functional defects that make it unusable as a real assistant: (1) no multi-turn memory in the streaming path, (2) fake one-shot streaming, (3) a tool-execution loop that wastes up to 5 Gemini calls per message and never feeds tool output to the model, and (4) thread persistence UI disabled and unwired. This PRD fixes all four, wires threading into the panel, adds a deployment env checklist, and requires full test coverage before commit.",
+
+  "problem_statement": {
+    "verified_findings": [
+      {
+        "id": "F1",
+        "severity": "P0",
+        "title": "No conversation memory in streaming path",
+        "evidence": "ChatPanel.sendMessage() calls streamSendMessage(trimmed) with no threadId and no history; useChatStream posts only {message, threadId: undefined}. Server creates thread_${Date.now()} per request, so every user message is answered with zero prior context.",
+        "fix": "Frontend keeps a stable session threadId and sends conversation history with every streaming request."
+      },
+      {
+        "id": "F2",
+        "severity": "P0",
+        "title": "Fake streaming (one-shot token)",
+        "evidence": "graph.ts runChatGraph calls onToken(finalResponse) once after full generation. Live SSE shows a single token event with the whole answer after a long silent wait.",
+        "fix": "Add streamWithGemini() in providers.ts using generateContentStream; graph generateNode streams chunks via onToken with first-chunk timeout and fallback chain (stream → non-stream → OpenAI → smartFallback)."
+      },
+      {
+        "id": "F3",
+        "severity": "P0",
+        "title": "Tool execution loop burns API quota and ignores tool output",
+        "evidence": "classifyIntent routes tool_call → retrieveContext → generate → executeTool → generate → executeTool … until toolIterations = 5. generateNode only uses state.history (never the ToolMessage), so the model answer never includes the tool result, and a message like 'Calculate 15 plus 30' triggers up to 5 paid Gemini calls.",
+        "fix": "Route tool_call → executeTool directly, store tool output in a toolContext state field, feed it into the single generation call, then always end. One tool pass, one LLM call max."
+      },
+      {
+        "id": "F4",
+        "severity": "P1",
+        "title": "Thread persistence disabled and unwired",
+        "evidence": "IS_CHAT_THREADING_ENABLED = false; ThreadToggle/ThreadSidebar exist and are tested but are not rendered by ChatPanel.",
+        "fix": "Enable the flag; wire ThreadSidebar + ThreadToggle into ChatPanel with thread create/select/delete/rename and message loading via the existing /api/chat/threads routes."
+      },
+      {
+        "id": "F5",
+        "severity": "P1",
+        "title": "Deployed chatbot has no AI provider",
+        "evidence": ".env.vercel (tracked) lacks GOOGLE_GEMINI_API_KEY, UPSTASH_VECTOR_URL/TOKEN, and multi-provider flags, so the production build always serves smartFallback canned text.",
+        "fix": "Add documented env placeholders to .env.vercel and a deployment checklist; the key itself is never committed."
+      },
+      {
+        "id": "F6",
+        "severity": "P2",
+        "title": "Dead code in graph.ts",
+        "evidence": "shouldContinue, convertHistory, getLastUserMessage are unused.",
+        "fix": "Remove."
+      }
+    ]
+  },
+
+  "goals": [
+    "A working conversational assistant with real multi-turn memory.",
+    "True progressive token streaming with first-token latency of ~1s.",
+    "Correct tool behavior: one tool pass, tool output included in the answer.",
+    "Thread sidebar fully functional (create, select, rename, delete, persist).",
+    "Production env checklist so the deployed chatbot uses the real model.",
+    "100% of the changed surfaces covered by tests; all existing gates green."
+  ],
+
+  "non_goals": [
+    "Fine-tuning or custom models.",
+    "Vector/RAG tuning beyond keeping the existing Upstash integration intact.",
+    "Rewrite of the UI shell (header, input, message bubbles stay as-is)."
+  ],
+
+  "architecture": {
+    "streaming_flow": "POST /api/chat (Accept: text/event-stream) → handleStreamingResponse → runChatGraph({onToken}) → generateNode → streamWithGemini(generateContentStream) → SSE token events → useChatStream parses → StreamingMessage renders progressively",
+    "tool_flow": "classifyIntent(tool_call) → executeTool → toolContext in state → generate(LLM call includes tool result) → end",
+    "thread_flow": "ChatPanel session threadId (or created thread) → {message, history, threadId} on every request → saveMessage persists user/assistant per thread → ThreadSidebar lists/selects/deletes/renames via /api/chat/threads"
+  },
+
+  "deliverables": [
+    { "id": "D1", "item": "providers.ts: streamWithGemini() with config/circuit checks, first-chunk timeout, model chain, retry-before-first-chunk" },
+    { "id": "D2", "item": "graph.ts: toolContext state field, direct tool routing, single-pass tool flow, streaming generateNode, dead code removal" },
+    { "id": "D3", "item": "use-chat-stream.ts: sendMessage(message, threadId, history) and history in request body" },
+    { "id": "D4", "item": "ChatPanel.tsx: stable session threadId + history in streaming path; ThreadSidebar/ThreadToggle wired and gated by IS_CHAT_THREADING_ENABLED" },
+    { "id": "D5", "item": "features.ts: IS_CHAT_THREADING_ENABLED = true" },
+    { "id": "D6", "item": ".env.vercel: chat/RAG env placeholder block with instructions" },
+    { "id": "D7", "item": "Tests: graph (tool flow, streaming), providers (streamWithGemini), route (SSE event order), hook (history body), ChatPanel (multi-turn, threading), all existing suites kept green" }
+  ],
+
+  "acceptance_criteria": [
+    "AC1: Two consecutive messages in one chat session share context (second answer references the first).",
+    "AC2: SSE stream emits multiple token events in order before done; first token arrives before full generation finishes (verified via mocked stream test).",
+    "AC3: 'Calculate 15 plus 30' performs exactly one tool execution and one LLM call; the answer reflects the tool result.",
+    "AC4: Thread sidebar opens, lists persisted conversations, creates/switches/renames/deletes them; selecting a thread restores its messages.",
+    "AC5: GET /api/chat returns active status with a configured key.",
+    "AC6: npm run test -- --run (all), npx tsc --noEmit, npm run lint, react-doctor all pass.",
+    "AC7: All changes committed on branch dev with a story-slice commit per deliverable."
+  ],
+
+  "deployment_checklist": {
+    "vercel": [
+      "GOOGLE_GEMINI_API_KEY (required — set in Vercel dashboard: Settings → Environment Variables)",
+      "UPSTASH_VECTOR_URL + UPSTASH_VECTOR_TOKEN (optional, enables RAG)",
+      "CHAT_MULTI_PROVIDER_ENABLED=true + OPENAI_API_KEY (optional secondary provider)",
+      "CHAT_PROVIDER_TIMEOUT_MS / CHAT_PROVIDER_MAX_RETRIES / CHAT_PROVIDER_RETRY_BASE_MS (optional tuning)"
+    ],
+    "local": [
+      ".env.local already contains GOOGLE_GEMINI_API_KEY and UPSTASH_VECTOR_*",
+      "npm run dev → http://localhost:3000 → FloatingHub → Ask AI Assistant"
+    ]
+  }
+}

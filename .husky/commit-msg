@@ -1,0 +1,16 @@
+#!/bin/sh
+echo "[hooks] Validating commit message..."
+
+# Resolve node/npx when PATH is stripped (VS Code Git UI, GitHub Desktop, IDE hooks)
+if ! command -v node >/dev/null 2>&1; then
+  for base in "/c/Program Files/nodejs" "$LOCALAPPDATA/Programs/nodejs" "/usr/local/bin"; do
+    [ -x "$base/node" ] && export PATH="$base:$PATH" && break
+  done
+fi
+
+npx --no -- commitlint --edit "$1"
+if [ $? -ne 0 ]; then
+  echo "[hooks] Commit message rejected. Use conventional format: type(scope): subject"
+  echo "[hooks] Allowed types: feat, fix, docs, style, refactor, perf, test, build, ci, chore, revert"
+  exit 1
+fi

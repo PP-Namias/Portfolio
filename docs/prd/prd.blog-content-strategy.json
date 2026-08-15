@@ -1,0 +1,134 @@
+{
+  "prd": {
+    "title": "Blog Content Strategy & Expansion",
+    "version": "1.0.0",
+    "status": "draft",
+    "owner": "PP Namias",
+    "created": "2026-07-16",
+    "goal": "Transform the portfolio blog into a visual storytelling engine with inline images, image collages, YouTube embeds, and a foundation for 50+ posts.",
+    "interviewStorytelling": "Each post serves as a talking point for interviews — origin stories, technical milestones, client work, leadership, AI/automation, career growth"
+  },
+  "currentState": {
+    "totalPosts": 14,
+    "dateRange": "2025-03-15 to 2026-12-28",
+    "postsWithImages": 0,
+    "postsWithGalleries": 0,
+    "postsWithYoutubeEmbeds": 1,
+    "featuredPosts": 2,
+    "existingPosts": [
+      { "slug": "hello-world-the-day-i-wrote-my-first-line-of-code", "title": "Hello World: The Day I Wrote My First Line of Code", "date": "2025-03-15", "tags": ["beginner", "self-taught", "web-development", "html", "css", "javascript"], "featured": false },
+      { "slug": "building-student-attendance-management-system-from-scratch", "title": "Building Student Attendance Management System from Scratch", "date": "2025-09-10", "tags": ["csharp", "postgresql", "desktop", "attendance", "barcode", "project"], "featured": false },
+      { "slug": "from-for-loops-to-full-stack-engineer", "title": "From For Loops to Full-Stack Engineer", "date": "2025-11-05", "tags": ["growth", "fullstack", "journey", "transformation"], "featured": false },
+      { "slug": "how-i-built-an-ai-chatbot-for-a-real-client", "title": "How I Built an AI Chatbot for a Real Client", "date": "2026-01-15", "tags": ["ai", "chatbot", "llm", "client-work"], "featured": false },
+      { "slug": "gitgoing-computer-science-github-webinar", "title": "GitGoing - Computer Science GitHub Webinar!", "date": "2026-02-28", "tags": ["git", "github", "webinar", "speaking", "collaboration", "version-control", "ucc"], "featured": true },
+      { "slug": "what-i-learned-automating-enterprise-workflows-with-n8n", "title": "What I Learned Automating Enterprise Workflows with n8n", "date": "2026-03-20", "tags": ["n8n", "automation", "workflow"], "featured": false },
+      { "slug": "building-a-portfolio-with-278-tests-and-100-score", "title": "Building a Portfolio with 278 Tests and a 100/100 Score", "date": "2026-05-10", "tags": ["nextjs", "testing", "react"], "featured": false },
+      { "slug": "hi-welcome-to-my-blog-portfolio", "title": "Hi - Welcome to my blog-portfolio!", "date": "2026-05-20", "tags": ["intro", "career", "ai", "fullstack", "personal"], "featured": true },
+      { "slug": "my-experience-as-a-developer-in-2026", "title": "My Experience as a Developer in 2026", "date": "2026-06-05", "tags": ["experience", "reflection", "ai", "cs50", "balance", "learning", "developer-journey"], "featured": false },
+      { "slug": "impostor-syndrome-at-50-plus-repos", "title": "Impostor Syndrome at 50+ Repos", "date": "2026-07-01", "tags": ["reflection", "impostor", "career"], "featured": false },
+      { "slug": "how-i-use-ai-as-a-force-multiplier", "title": "How I Use AI as a Force Multiplier", "date": "2026-08-15", "tags": ["ai", "productivity", "balance"], "featured": false },
+      { "slug": "architecture-behind-this-portfolios-ai-chat", "title": "Architecture Behind This Portfolio's AI Chat", "date": "2026-09-28", "tags": ["ai-chat", "architecture", "rag"], "featured": false },
+      { "slug": "what-hiring-managers-look-for-in-a-junior-dev", "title": "What Hiring Managers Look for in a Junior Dev", "date": "2026-11-10", "tags": ["career", "interview", "advice"], "featured": false },
+      { "slug": "2026-year-in-review", "title": "2026 Year in Review", "date": "2026-12-28", "tags": ["reflection", "year-in-review"], "featured": false }
+    ]
+  },
+  "epics": [
+    {
+      "id": "EPIC-1",
+      "title": "Fix Sanity Studio React Error",
+      "status": "completed",
+      "stories": [
+        { "id": "STORY-1.1", "title": "Add pnpm overrides for react/react-dom", "status": "done" },
+        { "id": "STORY-1.2", "title": "Add public-hoist-pattern in .npmrc", "status": "done" },
+        { "id": "STORY-1.3", "title": "Add Vite resolve.dedupe in sanity.cli.ts", "status": "done" }
+      ]
+    },
+    {
+      "id": "EPIC-2",
+      "title": "Inline Image System",
+      "status": "completed",
+      "stories": [
+        { "id": "STORY-2.1", "title": "Schema: credit/source/license fields on inline images", "status": "done" },
+        { "id": "STORY-2.2", "title": "Schema: imageGallery array member", "status": "done" },
+        { "id": "STORY-2.3", "title": "Pipeline: portableTextToMarkdown preserves image blocks", "status": "done" },
+        { "id": "STORY-2.4", "title": "Render: custom img component with metadata parsing", "status": "done" },
+        { "id": "STORY-2.5", "title": "Render: CollageGallery component", "status": "done" }
+      ]
+    },
+    {
+      "id": "EPIC-3",
+      "title": "YouTube Embed Support",
+      "status": "completed",
+      "stories": [
+        { "id": "STORY-3.1", "title": "Add YoutubeEmbed component", "status": "done" },
+        { "id": "STORY-3.2", "title": "Add [youtube:] parsing in preprocessContent", "status": "done" },
+        { "id": "STORY-3.3", "title": "Add YouTube embed to Attendance System post", "status": "done" }
+      ]
+    },
+    {
+      "id": "EPIC-4",
+      "title": "Blog Content — All 14 Posts Live",
+      "status": "completed",
+      "stories": [
+        { "id": "STORY-4.1", "title": "Phase 1: Foundation (3 posts)", "status": "done" },
+        { "id": "STORY-4.2", "title": "Phase 2: Depth (4 posts)", "status": "done" },
+        { "id": "STORY-4.3", "title": "Phase 3: Ongoing (4 posts)", "status": "done" },
+        { "id": "STORY-4.4", "title": "Push all posts to Sanity CMS", "status": "done" },
+        { "id": "STORY-4.5", "title": "Staggered dates (2025-03 to 2026-12)", "status": "done" }
+      ]
+    },
+    {
+      "id": "EPIC-5",
+      "title": "Blog Expansion Pipeline",
+      "status": "in-progress",
+      "stories": [
+        { "id": "STORY-5.1", "title": "push-blog-to-sanity.mjs sync script", "status": "done" },
+        { "id": "STORY-5.2", "title": "fetch-blog-data.mjs inspection script", "status": "done" },
+        { "id": "STORY-5.3", "title": "Cover images for all posts", "status": "pending" },
+        { "id": "STORY-5.4", "title": "Category/tag filtering on blog list", "status": "pending" }
+      ]
+    },
+    {
+      "id": "EPIC-6",
+      "title": "Image Content — Upload via Studio",
+      "status": "pending",
+      "stories": [
+        { "id": "STORY-6.1", "title": "Upload screenshots to Hello World post", "status": "pending" },
+        { "id": "STORY-6.2", "title": "Upload app screenshots to Attendance System post", "status": "pending" },
+        { "id": "STORY-6.3", "title": "Upload event photos to GitGoing post", "status": "pending" },
+        { "id": "STORY-6.4", "title": "Upload diagrams to AI Chatbot post", "status": "pending" },
+        { "id": "STORY-6.5", "title": "Upload workflow screenshots to n8n post", "status": "pending" },
+        { "id": "STORY-6.6", "title": "Upload test results/Lighthouse to Portfolio post", "status": "pending" },
+        { "id": "STORY-6.7", "title": "Upload architecture diagram to AI Chat post", "status": "pending" }
+      ]
+    },
+    {
+      "id": "EPIC-7",
+      "title": "Future Blog Features",
+      "status": "planned",
+      "stories": [
+        { "id": "STORY-7.1", "title": "Related posts at bottom of each post", "status": "planned" },
+        { "id": "STORY-7.2", "title": "Reading progress bar", "status": "done" },
+        { "id": "STORY-7.3", "title": "Social share buttons", "status": "planned" },
+        { "id": "STORY-7.4", "title": "Blog RSS feed", "status": "planned" },
+        { "id": "STORY-7.5", "title": "50+ post pipeline with content calendar", "status": "planned" },
+        { "id": "STORY-7.6", "title": "In-post table of contents", "status": "planned" },
+        { "id": "STORY-7.7", "title": "Estimated read time on blog list cards", "status": "done" }
+      ]
+    }
+  ],
+  "gaps": [
+    { "issue": "Posts with inline images", "current": 0, "target": 14 },
+    { "issue": "Image galleries used", "current": 0, "target": "4+ posts" },
+    { "issue": "Cover images on all posts", "current": 0, "target": 14 },
+    { "issue": "Total blog posts", "current": 14, "target": "50+" }
+  ],
+  "timeline": {
+    "phase0": { "what": "Fix existing: React error, schema, pipeline", "status": "done" },
+    "phase1": { "what": "Upload images via Studio for all posts", "status": "pending" },
+    "phase2": { "what": "Cover/OG images for all posts", "status": "pending" },
+    "phase3": { "what": "Category/tag filtering", "status": "pending" },
+    "phase4": { "what": "Social features (share, related posts)", "status": "planned" },
+    "phase5": { "what": "50+ post pipeline", "status": "planned" }
+  }
+}

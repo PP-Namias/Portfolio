@@ -66,8 +66,68 @@ export default defineType({
           name: 'caption',
           type: 'string',
           title: 'Caption',
-        }
-      ]
+        },
+        {
+          name: 'credit',
+          type: 'string',
+          title: 'Credit / Photographer',
+          description: 'Who took or created this image',
+        },
+        {
+          name: 'source',
+          type: 'url',
+          title: 'Source URL',
+          description: 'Link to original source (if applicable)',
+        },
+        {
+          name: 'license',
+          type: 'string',
+          title: 'License',
+          description: 'e.g. CC BY 4.0, Screenshot by author, MIT',
+        },
+      ],
+    }),
+    defineArrayMember({
+      name: 'imageGallery',
+      type: 'object',
+      title: 'Image Gallery',
+      fields: [
+        {
+          name: 'images',
+          type: 'array',
+          title: 'Images',
+          of: [
+            {
+              type: 'image',
+              options: {hotspot: true},
+              fields: [
+                {name: 'alt', type: 'string', title: 'Alt Text'},
+                {name: 'caption', type: 'string', title: 'Caption'},
+                {name: 'credit', type: 'string', title: 'Credit'},
+              ],
+            },
+          ],
+        },
+        {
+          name: 'layout',
+          type: 'string',
+          title: 'Layout',
+          options: {
+            list: [
+              {title: '2 Columns', value: '2col'},
+              {title: '3 Columns', value: '3col'},
+            ],
+          },
+        },
+      ],
+      preview: {
+        select: {images: 'images', layout: 'layout'},
+        prepare({images, layout}: {images?: Array<unknown>; layout?: string}) {
+          const count = images?.length ?? 0;
+          const cols = layout === '3col' ? '3' : '2';
+          return {title: `Image Gallery (${count} images, ${cols}-col)`};
+        },
+      },
     }),
   ],
 })

@@ -40,11 +40,14 @@ jobs:
 
       - name: Install Dependencies
         run: npm ci
+        working-directory: portfolio-v1
 
       - name: Run React Doctor
         id: doctor
+        working-directory: portfolio-v1
         run: |
           set -e
+          mkdir -p .react-doctor
           npm run doctor:json
           node -e "
             const r = require('./.react-doctor/report.json');
@@ -78,7 +81,7 @@ jobs:
               '## React Doctor — regression detected',
               '',
               '```',
-              '${{ steps.doctor.outputs.summary || "see action log" }}',
+              "${{ steps.doctor.outputs.summary || 'see action log' }}",
               '```',
               '',
               'Threshold: **' + process.env.THRESHOLD + '/100** (0 findings).',

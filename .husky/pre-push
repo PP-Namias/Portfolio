@@ -1,0 +1,45 @@
+#!/bin/sh
+echo "[hooks] Running pre-push checks..."
+
+# Resolve node/npx when PATH is stripped (VS Code Git UI, GitHub Desktop, IDE hooks)
+if ! command -v node >/dev/null 2>&1; then
+  for base in "/c/Program Files/nodejs" "$LOCALAPPDATA/Programs/nodejs" "/usr/local/bin"; do
+    [ -x "$base/node" ] && export PATH="$base:$PATH" && break
+  done
+fi
+
+# 1. TypeScript type checks (portfolio-v1, ai-service, studio; portfolio-v2 excluded)
+echo "[hooks] TypeScript type check (portfolio-v1)..."
+cd portfolio-v1 && npx tsc --noEmit
+if [ $? -ne 0 ]; then
+  echo "[hooks] portfolio-v1: TypeScript errors found. Fix type errors before pushing."
+  exit 1
+fi
+cd ..
+
+echo "[hooks] TypeScript type check (ai-service)..."
+cd ai-service && npm run typecheck
+if [ $? -ne 0 ]; then
+  echo "[hooks] ai-service: TypeScript errors found. Fix type errors before pushing."
+  exit 1
+fi
+cd ..
+
+echo "[hooks] TypeScript type check (studio)..."
+cd studio && npm run typecheck
+if [ $? -ne 0 ]; then
+  echo "[hooks] studio: TypeScript errors found. Fix type errors before pushing."
+  exit 1
+fi
+cd ..
+
+# 2. Full test suite (portfolio-v1, 1089 tests)
+echo "[hooks] Running test suite (vitest)..."
+cd portfolio-v1 && npx vitest run
+if [ $? -ne 0 ]; then
+  echo "[hooks] Tests failed. Fix failures before pushing."
+  exit 1
+fi
+cd ..
+
+echo "[hooks] All pre-push checks passed."

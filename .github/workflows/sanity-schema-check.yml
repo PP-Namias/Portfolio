@@ -27,6 +27,8 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+        working-directory: studio
 
       - name: Lint studio files
         run: npm run lint -- --quiet
+        working-directory: studio

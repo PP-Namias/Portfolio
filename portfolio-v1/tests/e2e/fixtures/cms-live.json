@@ -1,0 +1,132 @@
+{
+  "profile": {
+    "_id": "fixture-profile",
+    "_type": "profile",
+    "fullName": "E2E Hero Name",
+    "title": "Full Stack Engineer",
+    "email": "pp.namias@gmail.com",
+    "phone": "",
+    "location": "Caloocan City",
+    "github": "",
+    "linkedin": "",
+    "summary": "E2E profile summary",
+    "profileImageUrl": "",
+    "avatarUrl": "",
+    "resumeUrl": "",
+    "availabilityLabel": "",
+    "heroRoles": ["Full Stack Engineer", "AI Automation Specialist"],
+    "socialLinks": [
+      {
+        "platform": "message",
+        "icon": "discord",
+        "url": "https://discord.gg/pp-namias",
+        "placements": ["hero", "connect"]
+      },
+      {
+        "platform": "github",
+        "icon": "github",
+        "url": "https://github.com/PP-Namias",
+        "placements": ["hero", "connect"]
+      },
+      {
+        "platform": "linkedin",
+        "icon": "linkedin",
+        "url": "https://www.linkedin.com/in/pp-namias/",
+        "placements": ["connect"]
+      }
+    ],
+    "highlights": [],
+    "education": []
+  },
+  "aboutSection": {
+    "_id": "fixture-about",
+    "_type": "aboutSection",
+    "aboutContent": null,
+    "aboutParagraphs": ["E2E about paragraph"]
+  },
+  "techStack": {
+    "_id": "fixture-tech",
+    "_type": "techStack",
+    "technologies": []
+  },
+  "experience": [],
+  "project": [],
+  "certification": [],
+  "galleryImage": [],
+  "post": [
+    {
+      "_id": "e2e-post-1",
+      "_type": "post",
+      "title": "E2E Post One",
+      "slug": "e2e-post-one",
+      "excerpt": "First E2E post",
+      "body": [
+        {
+          "_type": "block",
+          "style": "normal",
+          "children": [
+            {
+              "_type": "span",
+              "text": "This is the E2E post body."
+            }
+          ]
+        }
+      ],
+      "tags": ["e2e"],
+      "publishedAt": "2026-01-01T00:00:00Z",
+      "readTime": "3 min read",
+      "published": true,
+      "featured": false,
+      "sourceId": "e2e-post-one",
+      "mainImageUrl": ""
+    },
+    {
+      "_id": "e2e-post-2",
+      "_type": "post",
+      "title": "E2E Post Two",
+      "slug": "e2e-post-two",
+      "excerpt": "Second E2E post",
+      "body": [],
+      "tags": [],
+      "publishedAt": "2026-02-01T00:00:00Z",
+      "readTime": "4 min read",
+      "published": true,
+      "featured": false,
+      "sourceId": "e2e-post-two",
+      "mainImageUrl": ""
+    }
+  ],
+  "membership": [],
+  "recommendation": [],
+  "siteSettings": {
+    "_id": "fixture-settings",
+    "_type": "siteSettings",
+    "siteName": "PP Namias",
+    "siteTagline": "Full Stack Engineer & AI Automation Specialist",
+    "ownerName": "Jhon Keneth Ryan Namias",
+    "ownerShortName": "PP Namias",
+    "contactEmail": "pp.namias@gmail.com",
+    "canonicalUrl": "https://namias.tech",
+    "themeColor": "#000000",
+    "defaultMetaTitle": "PP Namias - Full Stack Engineer",
+    "defaultMetaDescription": "E2E portfolio description",
+    "ogTitle": "PP Namias - E2E Title",
+    "ogDescription": "E2E og description",
+    "ogImageUrl": "",
+    "twitterImageUrl": "",
+    "robotsNoindex": false,
+    "robotsNofollow": false,
+    "blog": {
+      "title": "Blog",
+      "description": "E2E blog description",
+      "backLabel": "Back"
+    },
+    "footer": {
+      "leadText": "E2E footer lead",
+      "linkLabel": "Projects",
+      "copyright": "© 2026 PP Namias",
+      "backToPortfolioLabel": "Back to portfolio",
+      "contactPrompt": "Get in touch"
+    }
+  }
+}

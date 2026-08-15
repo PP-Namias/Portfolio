@@ -1,0 +1,481 @@
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import React from 'react';
+import { FloatingHub } from '@/components/ui/FloatingHub';
+
+// Mock framer-motion — must define forwardRef inside factory since vi.mock is hoisted
+vi.mock('framer-motion', () => {
+  const R = require('react');
+  const MockButton = R.forwardRef(function MockMotionButton(
+    { children, className, onClick, whileHover, whileTap, role, tabIndex, ...props }: Record<string, unknown>,
+    ref: React.Ref<HTMLButtonElement>
+  ) {
+    return R.createElement('button', { ref, className, onClick, role, tabIndex, ...props }, children);
+  });
+  const MockDiv = R.forwardRef(function MockMotionDiv(
+    { children, className, role, ...props }: Record<string, unknown>,
+    ref: React.Ref<HTMLDivElement>
+  ) {
+    return R.createElement('div', { ref, className, role, ...props }, children);
+  });
+  return {
+    motion: {
+      button: MockButton,
+      div: MockDiv,
+      a: ({ children, className, onClick, href, download, target, rel, role, tabIndex, ...props }: Record<string, unknown>) =>
+        R.createElement('a', { className, onClick, href, download, target, rel, role, tabIndex, ...props }, children),
+    },
+    AnimatePresence: ({ children }: { children: React.ReactNode }) => children,
+  };
+});
+
+vi.mock('@/lib/features', () => ({
+  IS_BLOG_VISIBLE: true,
+  IS_MAGIC_CURSOR_VISIBLE: true,
+  IS_PROJECTS_REVAMP_ENABLED: true,
+  IS_STREAMING_SSR_ENABLED: true,
+  IS_LANGGRAPH_ENABLED: false,
+  IS_CHAT_STREAMING_ENABLED: false,
+  IS_CHAT_THREADING_ENABLED: false,
+}));
+
+// Mock ChatMessage
+vi.mock('@/components/ui/ChatMessage', () => ({
+  ChatMessage: ({ message }: { message: { content: string; role: string } }) => (
+    <div data-testid={`message-${message.role}`}>{message.content}</div>
+  ),
+}));
+
+// Mock data modules
+vi.mock('@/data/socials', () => ({
+  socialLinks: [
+    { name: 'cal', icon: 'calendar', label: 'Schedule a Meeting', link: 'https://cal.com/pp-namias', featured: true },
+    { name: 'github', icon: 'github', label: 'PP-Namias', link: 'https://github.com/PP-Namias' },
+    { name: 'email', icon: 'mail', label: 'Gmail', link: 'mailto:pp.namias@gmail.com' },
+    { name: 'linkedin', icon: 'linkedin', label: 'LinkedIn', link: 'https://www.linkedin.com/in/pp-namias/' },
+    { name: 'x', icon: 'twitter', label: '@PP_Namias', link: 'https://x.com/PP_Namias' },
+    { name: 'instagram', icon: 'instagram', label: '@pp_namias', link: 'https://www.instagram.com/pp_namias/' },
+  ],
+}));
+
+vi.mock('@/data/profile', () => ({
+  profile: {
+    name: 'Jhon Keneth Ryan Namias',
+    email: 'pp.namias@gmail.com',
+  },
+}));
+
+// Mock useModal hook
+const mockOpenModal = vi.fn();
+vi.mock('@/hooks/useModal', () => ({
+  useModal: () => ({
+    openModal: mockOpenModal,
+    closeModal: vi.fn(),
+  }),
+}));
+
+vi.mock('@/hooks/useCmsContent', () => ({
+  useCmsContent: () => ({
+    profile: {
+      name: 'Jhon Keneth Ryan Namias',
+      title: 'Full Stack Engineer',
+      email: 'pp.namias@gmail.com',
+    },
+    hero: {
+      profileImageUrl: 'https://cdn.example.com/profile.jpg',
+    },
+    socialLinks: [
+      { name: 'cal', icon: 'calendar', label: 'Schedule a Meeting', link: 'https://cal.com/pp-namias', featured: true },
+      { name: 'github', icon: 'github', label: 'PP-Namias', link: 'https://github.com/PP-Namias' },
+      { name: 'email', icon: 'mail', label: 'Gmail', link: 'mailto:pp.namias@gmail.com' },
+      { name: 'linkedin', icon: 'linkedin', label: 'LinkedIn', link: 'https://www.linkedin.com/in/pp-namias/' },
+      { name: 'x', icon: 'twitter', label: '@PP_Namias', link: 'https://x.com/PP_Namias' },
+      { name: 'instagram', icon: 'instagram', label: '@pp_namias', link: 'https://www.instagram.com/pp_namias/' },
+    ],
+  }),
+}));
+
+// Mock fetch
+const mockFetch = vi.fn();
+globalThis.fetch = mockFetch;
+
+describe('FloatingHub', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    mockFetch.mockResolvedValue({
+      ok: true,
+      json: () => Promise.resolve({ message: 'AI response here' }),
+    });
+  });
+
+  it('renders the floating action button when closed', () => {
+    render(<FloatingHub />);
+    expect(screen.getByLabelText('Open quick actions')).toBeInTheDocument();
+  });
+
+  it('opens hub menu when FAB is clicked', () => {
+    render(<FloatingHub />);
+    fireEvent.click(screen.getByLabelText('Open quick actions'));
+    expect(screen.getByText('Quick Actions')).toBeInTheDocument();
+  });
+
+  it('displays all visible hub menu items', () => {
+    render(<FloatingHub />);
+    fireEvent.click(screen.getByLabelText('Open quick actions'));
+
+    expect(screen.getByText('Ask AI Assistant')).toBeInTheDocument();
+    expect(screen.getByText('View Resume')).toBeInTheDocument();
+    expect(screen.getByText('Schedule a Meeting')).toBeInTheDocument();
+    expect(screen.getByText('Send Email')).toBeInTheDocument();
+    expect(screen.getByText('Connect')).toBeInTheDocument();
+    expect(screen.getByText('Read Blog')).toBeInTheDocument();
+  });
+
+  it('opens chat panel when "Ask AI Assistant" is clicked', () => {
+    render(<FloatingHub />);
+    fireEvent.click(screen.getByLabelText('Open quick actions'));
+    fireEvent.click(screen.getByText('Ask AI Assistant'));
+
+    expect(screen.getByText('Jhon Keneth Ryan Namias')).toBeInTheDocument();
+    expect(screen.getByLabelText('Back to menu')).toBeInTheDocument();
+  });
+
+  it('opens resume modal when View Resume is clicked', () => {
+    render(<FloatingHub />);
+    fireEvent.click(screen.getByLabelText('Open quick actions'));
+    fireEvent.click(screen.getByText('View Resume'));
+
+    expect(mockOpenModal).toHaveBeenCalledWith('resume');
+  });
+
+  it('opens booking modal when Schedule a Meeting is clicked', () => {
+    render(<FloatingHub />);
+    fireEvent.click(screen.getByLabelText('Open quick actions'));
+    fireEvent.click(screen.getByText('Schedule a Meeting'));
+
+    expect(mockOpenModal).toHaveBeenCalledWith('booking');
+  });
+
+  it('opens mailto for email action', () => {
+    render(<FloatingHub />);
+    fireEvent.click(screen.getByLabelText('Open quick actions'));
+
+    fireEvent.click(screen.getByText('Send Email'));
+  });
+
+  it('shows the blog link when the blog feature is enabled', () => {
+    render(<FloatingHub />);
+    fireEvent.click(screen.getByLabelText('Open quick actions'));
+    expect(screen.getByText('Read Blog')).toBeInTheDocument();
+  });
+
+  it('expands Connect section to show social icons', () => {
+    render(<FloatingHub />);
+    fireEvent.click(screen.getByLabelText('Open quick actions'));
+    fireEvent.click(screen.getByText('Connect'));
+
+    expect(screen.getByLabelText('PP-Namias')).toBeInTheDocument();
+    expect(screen.getByLabelText('LinkedIn')).toBeInTheDocument();
+    expect(screen.getByLabelText('@PP_Namias')).toBeInTheDocument();
+  });
+
+  it('back button in chat returns to menu', () => {
+    render(<FloatingHub />);
+    fireEvent.click(screen.getByLabelText('Open quick actions'));
+    fireEvent.click(screen.getByText('Ask AI Assistant'));
+
+    expect(screen.getByText('Jhon Keneth Ryan Namias')).toBeInTheDocument();
+
+    fireEvent.click(screen.getByLabelText('Back to menu'));
+    expect(screen.getByText('Quick Actions')).toBeInTheDocument();
+  });
+
+  it('close button closes entire hub from menu', () => {
+    render(<FloatingHub />);
+    fireEvent.click(screen.getByLabelText('Open quick actions'));
+    expect(screen.getByText('Quick Actions')).toBeInTheDocument();
+
+    fireEvent.click(screen.getByLabelText('Close menu'));
+    expect(screen.getByLabelText('Open quick actions')).toBeInTheDocument();
+  });
+
+  it('close button closes entire hub from chat', () => {
+    render(<FloatingHub />);
+    fireEvent.click(screen.getByLabelText('Open quick actions'));
+    fireEvent.click(screen.getByText('Ask AI Assistant'));
+
+    fireEvent.click(screen.getByLabelText('Close chat'));
+    expect(screen.getByLabelText('Open quick actions')).toBeInTheDocument();
+  });
+
+  it('Escape key goes from chat → menu → closed', () => {
+    render(<FloatingHub />);
+    fireEvent.click(screen.getByLabelText('Open quick actions'));
+    fireEvent.click(screen.getByText('Ask AI Assistant'));
+
+    // chat → menu
+    fireEvent.keyDown(document, { key: 'Escape' });
+    expect(screen.getByText('Quick Actions')).toBeInTheDocument();
+
+    // menu → closed
+    fireEvent.keyDown(document, { key: 'Escape' });
+    expect(screen.getByLabelText('Open quick actions')).toBeInTheDocument();
+  });
+
+  it('chat messages persist when switching panels', async () => {
+    render(<FloatingHub />);
+
+    // Open chat
+    fireEvent.click(screen.getByLabelText('Open quick actions'));
+    fireEvent.click(screen.getByText('Ask AI Assistant'));
+
+    // Send a message
+    const input = screen.getByPlaceholderText('Ask about skills, projects...');
+    await userEvent.type(input, 'Hello');
+    fireEvent.click(screen.getByLabelText('Send message'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('message-user')).toHaveTextContent('Hello');
+    });
+
+    await waitFor(() => {
+      const assistantMsgs = screen.getAllByTestId('message-assistant');
+      expect(assistantMsgs.some((el) => el.textContent?.includes('AI response here'))).toBe(true);
+    });
+
+    // Go back to menu
+    fireEvent.click(screen.getByLabelText('Back to menu'));
+    expect(screen.getByText('Quick Actions')).toBeInTheDocument();
+
+    // Go back to chat — messages should still be there
+    fireEvent.click(screen.getByText('Ask AI Assistant'));
+    expect(screen.getByTestId('message-user')).toHaveTextContent('Hello');
+    const assistantMsgs = screen.getAllByTestId('message-assistant');
+    expect(assistantMsgs.some((el) => el.textContent?.includes('AI response here'))).toBe(true);
+  });
+
+  it('clears the conversation and starts fresh after an hour of inactivity', async () => {
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+    try {
+      render(<FloatingHub />);
+      fireEvent.click(screen.getByLabelText('Open quick actions'));
+      fireEvent.click(screen.getByText('Ask AI Assistant'));
+
+      const input = screen.getByPlaceholderText('Ask about skills, projects...');
+      fireEvent.change(input, { target: { value: 'Hello' } });
+      fireEvent.click(screen.getByLabelText('Send message'));
+
+      await waitFor(() => {
+        expect(screen.getByTestId('message-user')).toHaveTextContent('Hello');
+      });
+
+      act(() => {
+        vi.advanceTimersByTime(60 * 60 * 1000);
+      });
+
+      expect(screen.queryByTestId('message-user')).not.toBeInTheDocument();
+      expect(screen.getAllByTestId('message-assistant').some((el) => el.textContent?.includes("Keneth's AI assistant"))).toBe(true);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it('has accessible dialog attributes', () => {
+    render(<FloatingHub />);
+    fireEvent.click(screen.getByLabelText('Open quick actions'));
+
+    const dialog = screen.getByRole('dialog');
+    expect(dialog).toHaveAttribute('aria-modal', 'true');
+    expect(dialog).toHaveAttribute('aria-label', 'Quick Actions');
+  });
+
+  it('chat panel has correct aria-label', () => {
+    render(<FloatingHub />);
+    fireEvent.click(screen.getByLabelText('Open quick actions'));
+    fireEvent.click(screen.getByText('Ask AI Assistant'));
+
+    const dialog = screen.getByRole('dialog');
+    expect(dialog).toHaveAttribute('aria-label', "Chat with Keneth's AI");
+  });
+
+  it('shows pulse ring initially and hides after first click', () => {
+    sessionStorage.clear();
+    render(<FloatingHub />);
+
+    // Pulse ring visible
+    expect(screen.getByTestId('pulse-ring')).toBeInTheDocument();
+
+    // Click FAB
+    fireEvent.click(screen.getByLabelText('Open quick actions'));
+    expect(screen.getByText('Quick Actions')).toBeInTheDocument();
+
+    // Close menu
+    fireEvent.click(screen.getByLabelText('Close menu'));
+
+    // Pulse ring should be gone
+    expect(screen.queryByTestId('pulse-ring')).not.toBeInTheDocument();
+  });
+
+  it('hides pulse ring when sessionStorage flag is set', () => {
+    sessionStorage.setItem('hub_interacted', '1');
+    render(<FloatingHub />);
+    expect(screen.queryByTestId('pulse-ring')).not.toBeInTheDocument();
+  });
+
+  it('panel has tabIndex for programmatic focus', () => {
+    render(<FloatingHub />);
+    fireEvent.click(screen.getByLabelText('Open quick actions'));
+    const dialog = screen.getByRole('dialog');
+    expect(dialog).toHaveAttribute('tabindex', '-1');
+  });
+
+  it('menu has role="menu" with aria-label', () => {
+    render(<FloatingHub />);
+    fireEvent.click(screen.getByLabelText('Open quick actions'));
+    const menu = screen.getByRole('menu');
+    expect(menu).toHaveAttribute('aria-label', 'Quick actions menu');
+  });
+
+  it('all menu items have role="menuitem"', () => {
+    render(<FloatingHub />);
+    fireEvent.click(screen.getByLabelText('Open quick actions'));
+    const items = screen.getAllByRole('menuitem');
+    expect(items.length).toBe(6);
+  });
+
+  it('shows Book a meeting footer action in menu', () => {
+    render(<FloatingHub />);
+    fireEvent.click(screen.getByLabelText('Open quick actions'));
+    expect(screen.getByText('Book a meeting')).toBeInTheDocument();
+  });
+
+  it('connect section collapses on second click', () => {
+    render(<FloatingHub />);
+    fireEvent.click(screen.getByLabelText('Open quick actions'));
+
+    // Expand
+    fireEvent.click(screen.getByText('Connect'));
+    expect(screen.getByLabelText('PP-Namias')).toBeInTheDocument();
+
+    // Collapse
+    fireEvent.click(screen.getByText('Connect'));
+    expect(screen.queryByLabelText('PP-Namias')).not.toBeInTheDocument();
+  });
+
+  it('connect social links open in new tab', () => {
+    render(<FloatingHub />);
+    fireEvent.click(screen.getByLabelText('Open quick actions'));
+    fireEvent.click(screen.getByText('Connect'));
+
+    const github = screen.getByLabelText('PP-Namias');
+    expect(github).toHaveAttribute('target', '_blank');
+    expect(github).toHaveAttribute('rel', 'noopener noreferrer');
+  });
+
+  it('non-Escape keys do not change hub state', () => {
+    render(<FloatingHub />);
+    fireEvent.click(screen.getByLabelText('Open quick actions'));
+    expect(screen.getByText('Quick Actions')).toBeInTheDocument();
+
+    fireEvent.keyDown(document, { key: 'Enter' });
+    expect(screen.getByText('Quick Actions')).toBeInTheDocument();
+
+    fireEvent.keyDown(document, { key: 'a' });
+    expect(screen.getByText('Quick Actions')).toBeInTheDocument();
+  });
+
+  it('closes when clicking outside on desktop', () => {
+    Object.defineProperty(globalThis, 'innerWidth', {
+      configurable: true,
+      writable: true,
+      value: 1024,
+    });
+
+    render(<FloatingHub />);
+    fireEvent.click(screen.getByLabelText('Open quick actions'));
+    expect(screen.getByText('Quick Actions')).toBeInTheDocument();
+
+    fireEvent.mouseDown(document.body);
+    expect(screen.getByLabelText('Open quick actions')).toBeInTheDocument();
+  });
+
+  it('does not close on outside click on mobile widths', () => {
+    Object.defineProperty(globalThis, 'innerWidth', {
+      configurable: true,
+      writable: true,
+      value: 500,
+    });
+
+    render(<FloatingHub />);
+    fireEvent.click(screen.getByLabelText('Open quick actions'));
+    expect(screen.getByText('Quick Actions')).toBeInTheDocument();
+
+    fireEvent.mouseDown(document.body);
+    expect(screen.getByText('Quick Actions')).toBeInTheDocument();
+  });
+
+  it('traps focus within the open panel on Tab and Shift+Tab', () => {
+    render(<FloatingHub />);
+    fireEvent.click(screen.getByLabelText('Open quick actions'));
+
+    const dialog = screen.getByRole('dialog');
+    const focusables = dialog.querySelectorAll<HTMLElement>(
+      'a[href], button:not([disabled]), input:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+    );
+
+    expect(focusables.length).toBeGreaterThan(1);
+
+    const first = focusables[0];
+    const last = focusables[focusables.length - 1];
+
+    last.focus();
+    fireEvent.keyDown(document, { key: 'Tab' });
+    expect(document.activeElement).toBe(first);
+
+    first.focus();
+    fireEvent.keyDown(document, { key: 'Tab', shiftKey: true });
+    expect(document.activeElement).toBe(last);
+  });
+
+  it('does nothing in focus trap when no focusable elements are found', () => {
+    render(<FloatingHub />);
+    fireEvent.click(screen.getByLabelText('Open quick actions'));
+
+    const dialog = screen.getByRole('dialog');
+    const emptyList = document.querySelectorAll<HTMLElement>('.__no-focusables__');
+    const spy = vi.spyOn(dialog, 'querySelectorAll').mockReturnValue(
+      emptyList as unknown as NodeListOf<HTMLElement>
+    );
+
+    fireEvent.keyDown(document, { key: 'Tab' });
+    expect(screen.getByText('Quick Actions')).toBeInTheDocument();
+
+    spy.mockRestore();
+  });
+
+  it('maximizes and restores the chat panel, resetting on close', () => {
+    render(<FloatingHub />);
+    fireEvent.click(screen.getByLabelText('Open quick actions'));
+    fireEvent.click(screen.getByText('Ask AI Assistant'));
+
+    const dialog = screen.getByRole('dialog');
+    expect(dialog).toHaveClass('sm:rounded-2xl');
+    expect(dialog).not.toHaveClass('inset-0');
+
+    fireEvent.click(screen.getByLabelText('Maximize chat'));
+    expect(dialog).toHaveClass('inset-0');
+    expect(dialog).not.toHaveClass('sm:bottom-5');
+
+    fireEvent.click(screen.getByLabelText('Minimize chat'));
+    expect(dialog).not.toHaveClass('inset-0');
+    expect(dialog).toHaveClass('sm:rounded-2xl');
+  });
+
+  it('FAB has correct aria-label', () => {
+    render(<FloatingHub />);
+    const fab = screen.getByLabelText('Open quick actions');
+    expect(fab).toBeInTheDocument();
+    expect(fab.tagName).toBe('BUTTON');
+  });
+});

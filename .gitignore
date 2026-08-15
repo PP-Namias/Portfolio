@@ -69,6 +69,7 @@ web_modules/
 .env
 .env.*
 !.env.example
+!.env.docker.example
 .dev.vars
 
 # parcel-bundler cache (https://parceljs.org/)
@@ -87,9 +88,6 @@ dist
 
 # Gatsby files
 .cache/
-# Comment in the public line in if your project uses Gatsby and not Next.js
-# https://nextjs.org/blog/next-9-1#public-directory-support
-# public
 
 # vuepress build output
 .vuepress/dist
@@ -128,6 +126,9 @@ dist
 # Stores VSCode versions used for testing VSCode extensions
 .vscode-test
 
+# IDE settings (do not force on contributors)
+.vscode/
+
 # yarn v3
 .pnp.*
 .yarn/*
@@ -142,7 +143,6 @@ vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 
 # react-doctor working dir (transient reports, diff artifacts)
-# The canonical historical baseline lives in docs/react-doctor/baseline.{json,txt}
 .react-doctor/
 
 # PentestAgent cloned repo (not committed — use setup script)
@@ -150,10 +150,31 @@ vite.config.ts.timestamp-*
 .pentestagent/
 
 # PentestAgent transient findings and artifacts
-# The canonical findings live in docs/security/pentestagent/findings/
 docs/security/pentestagent/loot/
 docs/security/pentestagent/knowledge/
 
-# Sanity backups
-/studio/data_downloads/*
-!/studio/data_downloads/README.md
+# Sanity studio
+studio/node_modules/
+studio/.sanity/
+studio/data_downloads/
+studio/data/exports/
+studio/dist/
+
+# Husky internal directory
+.husky/_
+
+portfolio-v1/page-check.html
+portfolio-v1/page-prod.html
+
+# One-time script output
+portfolio-v1/scripts/import-report.json
+
+# Stale API cache
+docs/github-projects.json
+
+# Graphify knowledge graph output
+portfolio-v1/graphify-out/cost.json
+
+# Portfolio V2
+portfolio-v2/.mcp.json
+portfolio-v2/registry.json

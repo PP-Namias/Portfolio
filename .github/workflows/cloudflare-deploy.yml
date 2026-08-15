@@ -1,51 +1,63 @@
-name: Cloudflare and Sanity Deploy
+name: Cloudflare Deploy (V1)
 
 on:
   push:
     branches: [main]
+    paths:
+      - "portfolio-v1/**"
   workflow_dispatch:
+  workflow_call:
+    secrets:
+      CLOUDFLARE_API_TOKEN:
+        required: true
+      CLOUDFLARE_ACCOUNT_ID:
+        required: true
 
 concurrency:
-  group: deploy-${{ github.ref }}
+  group: deploy-v1-cf-${{ github.ref }}
   cancel-in-progress: true
 
 permissions:
   contents: read
 
 env:
-  NODE_VERSION: '22'
+  NODE_VERSION: "22"
 
 jobs:
-  deploy-worker:
-    name: Deploy Portfolio Worker
+  build-worker:
+    name: Build V1 for Cloudflare Workers
     runs-on: ubuntu-latest
-    timeout-minutes: 30
-    permissions:
-      contents: read
-      id-token: write
+    timeout-minutes: 20
     steps:
       - name: Checkout
-        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           persist-credentials: false
 
       - name: Setup Node.js
-        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
+          cache: "npm"
+          cache-dependency-path: portfolio-v1/package-lock.json
 
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --ignore-scripts
+        working-directory: portfolio-v1
+
+      - name: Rebuild native modules
+        run: npm rebuild
+        working-directory: portfolio-v1
 
       - name: Generate SBOM (CycloneDX)
         run: npx @cyclonedx/cyclonedx-npm --output-format JSON --output-file sbom.cdx.json --spec-version 1.5
+        working-directory: portfolio-v1
 
       - name: Upload SBOM
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: deploy-sbom-${{ github.run_id }}
-          path: sbom.cdx.json
+          path: portfolio-v1/sbom.cdx.json
           if-no-files-found: error
           retention-days: 90
 
@@ -59,6 +71,7 @@ jobs:
           WORKFLOW_REF: ${{ github.workflow_ref }}
           RUN_ID: ${{ github.run_id }}
           RUN_ATTEMPT: ${{ github.run_attempt }}
+        working-directory: portfolio-v1
         run: |
           cosign sign-blob \
             --output-certificate "$SBOM_PATH.cert" \
@@ -67,49 +80,70 @@ jobs:
             "$SBOM_PATH"
 
       - name: Upload signed SBOM bundle
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: deploy-sbom-signed-${{ github.run_id }}
           path: |
-            sbom.cdx.json
-            sbom.cdx.json.sig
-            sbom.cdx.json.cert
+            portfolio-v1/sbom.cdx.json
+            portfolio-v1/sbom.cdx.json.sig
+            portfolio-v1/sbom.cdx.json.cert
           if-no-files-found: error
           retention-days: 365
 
-      - name: Build and deploy to Cloudflare
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-        run: npm run cloudflare:deploy
+      - name: Build Next.js and OpenNext Cloudflare worker
+        run: npm run cloudflare:build
+        working-directory: portfolio-v1
 
-  deploy-studio:
-    name: Deploy Sanity Studio
+      - name: Upload OpenNext artifact
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: opennext-build-${{ github.run_id }}
+          path: portfolio-v1/.open-next
+          if-no-files-found: error
+          retention-days: 1
+
+  deploy-worker:
+    name: Deploy V1 to Cloudflare Workers
+    needs: build-worker
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      id-token: write
     steps:
       - name: Checkout
-        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           persist-credentials: false
 
       - name: Setup Node.js
-        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
+          cache: "npm"
+          cache-dependency-path: portfolio-v1/package-lock.json
 
-      - name: Install root dependencies
-        run: npm ci
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
+        working-directory: portfolio-v1
 
-      - name: Install studio dependencies
-        run: npm ci --prefix studio
+      - name: Download OpenNext artifact
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: opennext-build-${{ github.run_id }}
+          path: portfolio-v1/.open-next
 
-      - name: Deploy studio
+      - name: Deploy to Cloudflare
         env:
-          SANITY_STUDIO_DEPLOY_TOKEN: ${{ secrets.SANITY_STUDIO_DEPLOY_TOKEN }}
-          NEXT_PUBLIC_SANITY_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_SANITY_PROJECT_ID }}
-          NEXT_PUBLIC_SANITY_DATASET: ${{ secrets.NEXT_PUBLIC_SANITY_DATASET }}
-          SANITY_REVALIDATE_SECRET: ${{ secrets.SANITY_REVALIDATE_SECRET }}
-          NEXT_PUBLIC_SITE_URL: ${{ secrets.NEXT_PUBLIC_SITE_URL }}
-        run: npm --prefix studio run deploy
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: npx wrangler deploy
+        working-directory: portfolio-v1
+
+      - name: Create job summary
+        if: always()
+        run: |
+          echo "## V1 Cloudflare Deployment" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Status**: ${{ job.status }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Commit**: ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY

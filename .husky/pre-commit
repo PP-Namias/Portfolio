@@ -1,0 +1,33 @@
+#!/bin/sh
+echo "[hooks] Running pre-commit checks..."
+
+# Resolve node/npx when PATH is stripped (VS Code Git UI, GitHub Desktop, IDE hooks)
+if ! command -v node >/dev/null 2>&1; then
+  for base in "/c/Program Files/nodejs" "$LOCALAPPDATA/Programs/nodejs" "/usr/local/bin"; do
+    [ -x "$base/node" ] && export PATH="$base:$PATH" && break
+  done
+fi
+
+# 1. Lint + format staged files only (ESLint --fix + Prettier --write)
+#    Scoped strictly to staged files via lint-staged for fast commits.
+echo "[hooks] Running lint-staged..."
+cd portfolio-v1 && npx lint-staged
+if [ $? -ne 0 ]; then
+  echo "[hooks] lint-staged failed. Fix the issues above and try again."
+  exit 1
+fi
+cd ..
+
+# 2. Secret scanning with gitleaks (optional; only runs if installed)
+if command -v gitleaks >/dev/null 2>&1; then
+  echo "[hooks] Running gitleaks secret scan..."
+  gitleaks detect --source . --verbose --redact
+  if [ $? -ne 0 ]; then
+    echo "[hooks] gitleaks detected secrets! Remove them before committing."
+    exit 1
+  fi
+else
+  echo "[hooks] Skipping gitleaks (not installed). Install via: scoop install gitleaks"
+fi
+
+echo "[hooks] All pre-commit checks passed."

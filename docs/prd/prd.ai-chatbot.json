@@ -1,0 +1,419 @@
+{
+  "id": "PRD-AI-CHATBOT",
+  "title": "LangGraph Chatbot — Smart Portfolio AI Assistant (Portfolio v1)",
+  "version": "2.0.0",
+  "status": "draft",
+  "created": "2026-07-27",
+  "appliesTo": "portfolio-v1",
+  "description": "Upgrade the existing portfolio-v1 chat system with LangGraph.js workflow orchestration, threaded conversations with SQLite persistence, real-time SSE streaming, integrated tools (web search, calculator, stock price), and a smarter RAG pipeline — while preserving the existing tsundere personality, action tags, multi-provider fallback, and full chat UI. Inspired by tahirkorma/langgraph-chatbot.",
+
+  "objectives": [
+    "Replace the existing linear chat flow with a LangGraph.js state graph for intelligent multi-step orchestration (intent classification → RAG retrieval → generation → tool execution loop)",
+    "Add threaded conversation persistence via SQLite so users can create, revisit, and continue multiple chat threads (matching langgraph-chatbot's SqliteSaver pattern)",
+    "Implement real-time SSE streaming so tokens appear progressively in the UI instead of waiting for the full response",
+    "Add smart tools: web search (DuckDuckGo/Tavily), calculator, stock price (Alpha Vantage) — matching langgraph-chatbot's tool set — while adding portfolio-specific tools (portfolio query, contact/booking)",
+    "Preserve and integrate with the existing: tsundere personality and system prompt, ACTION tags ([ACTION:resume], [ACTION:booking], [ACTION:email]), multi-provider fallback (Gemini → OpenAI → rule-based), existing RAG pipeline (Upstash Vector), rate limiting, and full existing chat UI (FloatingHub, ChatPanel, ChatMessage)",
+    "Update the existing ChatPanel UI to support streaming display, thread management (sidebar with CRUD), and tool call indicators",
+    "Achieve <2s time-to-first-token streaming and <5s total response time for 95% of queries",
+    "Maintain 100/100 react-doctor score, pass tsc --noEmit, ESLint, and all existing tests"
+  ],
+
+  "architecture": {
+    "overview": "The existing linear POST /api/chat handler is augmented with a LangGraph.js state graph. The graph orchestrates flow: classifyIntent → retrieveContext (existing RAG) → generate (existing Gemini/OpenAI) → routeToTool (if LLM requests a tool). Threads are persisted via SQLite (better-sqlite3) with LangGraph's SqliteSaver checkpointing. The API route streams SSE events via ReadableStream. The existing ChatPanel is updated with a useChatStream SSE hook and thread management sidebar. All existing personality, action tags, and fallback logic remain intact — LangGraph wraps them in a smarter orchestration layer.",
+
+    "graphArchitecture": {
+      "framework": "@langchain/langgraph — state graph with typed state, SqliteSaver checkpointing, and .streamEvents()",
+      "integrationPoint": "The existing POST /api/chat handler is refactored. Instead of calling generateWithGemini() directly, it invokes the compiled LangGraph graph. The graph nodes call the existing provider functions (generateWithGemini, generateWithOpenAI, buildSmartFallback) internally.",
+      "newDependencies": [
+        "@langchain/langgraph @latest — state graph orchestration",
+        "@langchain/google-genai @latest — Gemini model + embeddings bindings",
+        "@langchain/core @latest — BaseMessage, AIMessage, HumanMessage, ToolMessage types",
+        "@langchain/community @latest — DuckDuckGo search, math tool",
+        "better-sqlite3 @latest — SQLite for threading + checkpoint persistence",
+        "@types/better-sqlite3 @latest — type definitions"
+      ],
+      "stateSchema": {
+        "messages": "Annotated list of BaseMessage with add_messages reducer — carries full conversation history",
+        "threadId": "string — unique thread identifier",
+        "chatDataContext": "ChatDataContext — portfolio data loaded once per request (existing type)",
+        "ragContext": "string — optional retrieved context from existing Upstash Vector RAG",
+        "ragChunks": "RetrievedChunk[] — raw chunks for tool/fallback use",
+        "intent": "string — classified intent: 'rag_query' | 'tool_call' | 'general' | 'greeting' | 'contact'",
+        "toolIterations": "number — counter to prevent infinite tool loops (max 5)",
+        "systemPrompt": "string — built by the existing buildSystemPrompt()",
+        "providerAttempts": "array — records for observability (existing pattern)"
+      },
+      "nodes": [
+        {
+          "name": "classifyIntent",
+          "description": "Call the existing intentClassifier + questionCatalog to detect intent. Route: greeting → skip RAG, tool_call → route to tools, rag_query → retrieveContext, general → generate directly."
+        },
+        {
+          "name": "loadContext",
+          "description": "Load CMS content via existing getCmsContent() + build ChatDataContext. Build system prompt via existing buildSystemPrompt(). Only runs once per thread (cached in state)."
+        },
+        {
+          "name": "retrieveContext",
+          "description": "Call existing retrieve() + formatContext() from retriever.ts. Store in ragContext and ragChunks state. Non-fatal if RAG fails."
+        },
+        {
+          "name": "generate",
+          "description": "Invoke existing generateWithGemini() with the system prompt + RAG context. Stream tokens via callback. If Gemini fails, try generateWithOpenAI(). If both fail, call existing buildSmartFallback(). Preserve all action tag behavior."
+        },
+        {
+          "name": "executeTool",
+          "description": "Run the requested tool (web_search, calculator, stock_price, portfolio_query, send_message). Return ToolMessage with result back to the graph."
+        },
+        {
+          "name": "routeToTool",
+          "description": "After generate, check if response has tool_calls. If yes and toolIterations < 5, route to executeTool. Otherwise, emit final response."
+        }
+      ],
+      "edges": [
+        "START → loadContext",
+        "loadContext → classifyIntent",
+        "classifyIntent → retrieveContext (if intent needs RAG)",
+        "classifyIntent → generate (greeting/general, skip RAG)",
+        "retrieveContext → generate",
+        "generate → routeToTool (check for tool calls)",
+        "routeToTool → executeTool (if tool requested, increment toolIterations)",
+        "routeToTool → END (final response)",
+        "executeTool → generate (feed tool result back to LLM)"
+      ],
+      "streaming": "The API route calls graph.streamEvents() and pipes events to the client as SSE. Token events from the generate node are forwarded as { type: 'token', content } events. Tool call events as { type: 'tool_call', name, args }. Status events as { type: 'status', step }."
+    },
+
+    "threading": {
+      "description": "LangGraph's SqliteSaver persists checkpoints (conversation state) per thread_id in SQLite. The existing chat API is extended with thread CRUD routes.",
+      "database": "better-sqlite3 with SqliteSaver (same pattern as langgraph-chatbot's SqliteSaver(conn=sqlite3.connect('chatbot.db')))",
+      "schema": {
+        "checkpoints": "thread_id, checkpoint_ns, checkpoint_id, checkpoint (BLOB), metadata (BLOB) — LangGraph internal",
+        "threads": "id TEXT PRIMARY KEY, title TEXT, created_at TEXT, updated_at TEXT, message_count INTEGER — custom metadata table",
+        "messages": "id INTEGER PRIMARY KEY AUTOINCREMENT, thread_id TEXT, role TEXT, content TEXT, tool_calls TEXT, created_at TEXT — for quick listing without deserializing checkpoints"
+      },
+      "userFlow": "User clicks 'New Thread' → new thread_id generated. User sends message → POST /api/chat with threadId. User switches thread → GET /api/chat/threads/:id loads history from checkpoints. User sees thread list → GET /api/chat/threads returns all threads. Max 50 threads, oldest auto-archived.",
+      "existingBehaviorPreserved": "When no threadId is provided, the existing stateless mode is used (no persistence, backward compatible)"
+    },
+
+    "tools": [
+      {
+        "name": "web_search",
+        "description": "Search the web for current information using DuckDuckGo. Same as langgraph-chatbot's DuckDuckGoSearchRun.",
+        "provider": "@langchain/community DuckDuckGoSearchRun",
+        "schema": { "query": "string" }
+      },
+      {
+        "name": "calculator",
+        "description": "Perform arithmetic operations (add, sub, mul, div) on two numbers. Same as langgraph-chatbot's @tool calculator.",
+        "provider": "Custom @tool via @langchain/core",
+        "schema": { "first_num": "number", "second_num": "number", "operation": "string (add|sub|mul|div)" }
+      },
+      {
+        "name": "stock_price",
+        "description": "Fetch latest stock price for a given symbol (e.g. AAPL, TSLA) using Alpha Vantage API. Same as langgraph-chatbot's get_stock_price tool.",
+        "provider": "Alpha Vantage API via fetch",
+        "schema": { "symbol": "string" },
+        "envVar": "ALPHA_VANTAGE_API_KEY"
+      },
+      {
+        "name": "portfolio_query",
+        "description": "Query portfolio data by category. Returns structured data from the CMS content already loaded in context.",
+        "schema": { "category": "string (projects|experience|skills|certifications|blog|testimonials|contact)" }
+      },
+      {
+        "name": "send_message",
+        "description": "Send a message or booking inquiry to Keneth. Uses the existing contact/booking modal flow.",
+        "schema": { "name": "string", "email": "string", "message": "string", "subject": "string" },
+        "requiresConfirmation": true
+      }
+    ],
+
+    "existingPreservation": {
+      "personality": "The full existing system prompt from promptBuilder.ts is preserved verbatim — tsundere personality, response format rules, ACTION tags, GWA not GPA, no markdown, etc.",
+      "actionTags": "[ACTION:resume], [ACTION:booking], [ACTION:email] continue to be parsed and rendered by ChatMessage.tsx. New LangGraph tool calls do not conflict with action tags.",
+      "multiProvider": "The generate node calls existing generateWithGemini() with fallback to generateWithOpenAI() and finally buildSmartFallback(). No changes to provider logic.",
+      "rag": "The existing Upstash Vector RAG pipeline (chunker, embedder, indexer, retriever, vector-store) is reused by the retrieveContext node. No changes needed.",
+      "rateLimiting": "The existing isRateLimited() check remains as the first gate in the POST handler, before graph invocation.",
+      "chatUi": "FloatingHub.tsx, ChatMessage.tsx remain unchanged. ChatPanel.tsx is updated to add: SSE streaming support, thread management UI, and tool call indicators."
+    }
+  },
+
+  "techStack": {
+    "framework": "Next.js 16.2.10 (App Router, Route Handlers)",
+    "language": "TypeScript ^5.7.3 (strict mode)",
+    "ui": "React ^18.3.1, Tailwind CSS ^3.4.17, Framer Motion ^11.15.0",
+    "llmOrchestration": "@langchain/langgraph @latest — LangGraph.js state graph",
+    "llmProvider": "@langchain/google-genai @latest (wraps existing @google/generative-ai v0.24.1)",
+    "existingProviders": "@google/generative-ai ^0.24.1 (existing), generateWithGemini, generateWithOpenAI, buildSmartFallback",
+    "rag": "Existing Upstash Vector pipeline (chunker.ts, embedder.ts, retriever.ts, vector-store.ts, indexer.ts)",
+    "vectorStore": "@upstash/vector (existing) — 768d, cosine similarity",
+    "persistence": "better-sqlite3 (new) — LangGraph SqliteSaver checkpointing + thread management",
+    "streaming": "Server-Sent Events via Next.js Route Handler ReadableStream + LangGraph .streamEvents()",
+    "tools": "@langchain/community DuckDuckGoSearchRun, custom @tools (calculator, stock_price, portfolio_query, send_message)",
+    "stateManagement": "jotai ^2.18.1 (existing) — chat UI state",
+    "dataFetching": "SWR ^2.4.2 (existing) — availability probe",
+    "testing": "Vitest ^4.1.10, React Testing Library",
+    "quality": "react-doctor 0.7.3 (100/100 gate), ESLint 9 flat config, Prettier",
+    "packageManager": "pnpm 11.5.3",
+    "node": ">=22.x"
+  },
+
+  "epics": [
+    {
+      "id": "EPIC-1",
+      "title": "LangGraph Graph Engine + API Integration",
+      "priority": "critical",
+      "stories": [
+        {
+          "id": "S1.1",
+          "title": "Install LangGraph.js and SQLite dependencies",
+          "description": "Add @langchain/langgraph, @langchain/google-genai, @langchain/core, @langchain/community, better-sqlite3, and @types/better-sqlite3 to portfolio-v1/package.json. Run pnpm install in the portfolio-v1 directory. Create src/lib/chat/ directory structure.",
+          "file": "portfolio-v1/package.json",
+          "status": "pending",
+          "dependencies": [],
+          "estimatedEffort": "30m"
+        },
+        {
+          "id": "S1.2",
+          "title": "Define LangGraph state schema and graph nodes",
+          "description": "Create src/lib/chat/graph.ts. Define ChatState TypedDict with messages (Annotated with add_messages), threadId, chatDataContext, ragContext, ragChunks, intent, toolIterations, systemPrompt, providerAttempts. Implement all nodes: classifyIntent, loadContext, retrieveContext, generate, executeTool, routeToTool. Wire edges with conditional routing for tools. Use SqliteSaver checkpointing with better-sqlite3 connection. Export compiled graph as 'chatbot'.",
+          "file": "portfolio-v1/src/lib/chat/graph.ts",
+          "status": "pending",
+          "dependencies": ["S1.1"],
+          "estimatedEffort": "4h"
+        },
+        {
+          "id": "S1.3",
+          "title": "Refactor POST /api/chat to use LangGraph graph with SSE streaming",
+          "description": "Modify portfolio-v1/src/app/api/chat/route.ts. Keep existing: input validation, rate limiting, request ID, error handling. Replace the linear provider-call flow with: create thread if needed → invoke graph.streamEvents() → pipe events as SSE → collect final response. Write SSE transform: token events become data chunks, tool_call events become metadata, done event signals completion. Fall back to existing behavior if graph invocation fails. Maintain backward compatibility (no threadId = stateless mode).",
+          "file": "portfolio-v1/src/app/api/chat/route.ts",
+          "status": "pending",
+          "dependencies": ["S1.2"],
+          "estimatedEffort": "3h"
+        },
+        {
+          "id": "S1.4",
+          "title": "Build thread management API routes",
+          "description": "Create portfolio-v1/src/app/api/chat/threads/route.ts — GET list all threads (id, title, updatedAt, messageCount), POST create new thread. Create portfolio-v1/src/app/api/chat/threads/[id]/route.ts — GET thread messages + history, PATCH rename thread, DELETE thread and its checkpoints. Use better-sqlite3 for all operations. Handle thread-level errors gracefully.",
+          "file": "portfolio-v1/src/app/api/chat/threads/",
+          "status": "pending",
+          "dependencies": ["S1.1"],
+          "estimatedEffort": "2h"
+        }
+      ]
+    },
+    {
+      "id": "EPIC-2",
+      "title": "Tool Integration (langgraph-chatbot compatible)",
+      "priority": "high",
+      "stories": [
+        {
+          "id": "S2.1",
+          "title": "Build web search tool via DuckDuckGo",
+          "description": "Create src/lib/chat/tools/web-search.ts. Use @langchain/community DuckDuckGoSearchRun (matching langgraph-chatbot's search_tool = DuckDuckGoSearchRun(region='us-en')). Wrap as a DynamicStructuredTool with input schema { query: string }. Handle rate limits and timeouts.",
+          "file": "portfolio-v1/src/lib/chat/tools/web-search.ts",
+          "status": "pending",
+          "dependencies": ["S1.1"],
+          "estimatedEffort": "1h"
+        },
+        {
+          "id": "S2.2",
+          "title": "Build calculator tool (langgraph-chatbot compatible)",
+          "description": "Create src/lib/chat/tools/calculator.ts. Implement the exact same calculator as langgraph-chatbot: @tool with first_num, second_num, operation (add/sub/mul/div). Return { first_num, second_num, operation, result }. Handle div by zero gracefully.",
+          "file": "portfolio-v1/src/lib/chat/tools/calculator.ts",
+          "status": "pending",
+          "dependencies": ["S1.1"],
+          "estimatedEffort": "30m"
+        },
+        {
+          "id": "S2.3",
+          "title": "Build stock price tool (langgraph-chatbot compatible)",
+          "description": "Create src/lib/chat/tools/stock-price.ts. Implement the exact same get_stock_price as langgraph-chatbot: fetch from Alpha Vantage API (GLOBAL_QUOTE) using the symbol parameter. Return the JSON response. Handle API errors and rate limits. Add ALPHA_VANTAGE_API_KEY to env vars.",
+          "file": "portfolio-v1/src/lib/chat/tools/stock-price.ts",
+          "status": "pending",
+          "dependencies": ["S1.1"],
+          "estimatedEffort": "1h"
+        },
+        {
+          "id": "S2.4",
+          "title": "Build portfolio-specific tools",
+          "description": "Create src/lib/chat/tools/portfolio-query.ts — reads CMS content from state by category, returns formatted summary. Create src/lib/chat/tools/send-message.ts — triggers contact/booking flow with confirmation. Create src/lib/chat/tools/index.ts — aggregates all tools for graph binding.",
+          "file": "portfolio-v1/src/lib/chat/tools/",
+          "status": "pending",
+          "dependencies": ["S1.1"],
+          "estimatedEffort": "1.5h"
+        },
+        {
+          "id": "S2.5",
+          "title": "Bind tools to Gemini and wire into graph executeTool node",
+          "description": "Bind all tools to the Gemini model via .bindTools([...]). Wire the executeTool node to dispatch tool calls to the correct handler. Implement the conditional edge: generate → routeToTool → executeTool → generate (max 5 iterations). Handle tool errors by returning error messages to the LLM. Test each tool individually.",
+          "file": "portfolio-v1/src/lib/chat/graph.ts",
+          "status": "pending",
+          "dependencies": ["S1.2", "S2.1", "S2.2", "S2.3", "S2.4"],
+          "estimatedEffort": "2h"
+        }
+      ]
+    },
+    {
+      "id": "EPIC-3",
+      "title": "Chat UI Upgrade: Streaming + Threading",
+      "priority": "high",
+      "stories": [
+        {
+          "id": "S3.1",
+          "title": "Build useChatStream SSE hook",
+          "description": "Create portfolio-v1/src/hooks/use-chat-stream.ts. Custom hook that POSTs to /api/chat with { message, threadId }, reads SSE via fetch + ReadableStream, parses event types: token → accumulate partial text, tool_call → show tool indicator, status → update step indicator, done → finalize message. Returns { streamedText, isStreaming, toolCalls, error, threadId }. Handle connection errors and reconnection.",
+          "file": "portfolio-v1/src/hooks/use-chat-stream.ts",
+          "status": "pending",
+          "dependencies": ["S1.3"],
+          "estimatedEffort": "2h"
+        },
+        {
+          "id": "S3.2",
+          "title": "Update ChatPanel to support streaming messages",
+          "description": "Modify portfolio-v1/src/components/ui/ChatPanel.tsx. Replace the existing sendMessage fetch() with the useChatStream hook. Display streamed text progressively (character-by-character with cursor). Show tool call indicators (spinner + tool name) during tool execution. Keep existing: welcome message, follow-up suggestions, error states, accessibility. Maintain backward compatibility with existing ChatMessage component and action tag parsing.",
+          "file": "portfolio-v1/src/components/ui/ChatPanel.tsx",
+          "status": "pending",
+          "dependencies": ["S3.1"],
+          "estimatedEffort": "3h"
+        },
+        {
+          "id": "S3.3",
+          "title": "Build thread management UI",
+          "description": "Create portfolio-v1/src/components/ui/ThreadSidebar.tsx — sidebar panel showing thread list with title, date, message count. New Thread button, delete button (with confirmation), inline rename. Create portfolio-v1/src/components/ui/ThreadToggle.tsx — button to toggle thread sidebar. Integrate into ChatPanel header area. Use jotai for thread state management. Follow Vercel Web Interface Guidelines for accessibility.",
+          "file": "portfolio-v1/src/components/ui/",
+          "status": "pending",
+          "dependencies": ["S1.4", "S3.2"],
+          "estimatedEffort": "2.5h"
+        },
+        {
+          "id": "S3.4",
+          "title": "Add thread selector to FloatingHub",
+          "description": "Modify portfolio-v1/src/components/ui/FloatingHub.tsx to show recent thread titles in the hub menu. Add a 'Recent Conversations' section with the 3 most recent threads. Clicking a thread opens ChatPanel with that thread loaded. Keep existing hub menu behavior intact.",
+          "file": "portfolio-v1/src/components/ui/FloatingHub.tsx",
+          "status": "pending",
+          "dependencies": ["S3.3"],
+          "estimatedEffort": "1h"
+        },
+        {
+          "id": "S3.5",
+          "title": "Add feature flags for new chat features",
+          "description": "Add IS_LANGGRAPH_ENABLED, IS_CHAT_STREAMING_ENABLED, IS_CHAT_THREADING_ENABLED to portfolio-v1/src/lib/features.ts. Gate the new graph invocation vs existing linear flow. Gate streaming UI vs existing request/response. Gate thread sidebar vs simple chat. Default: all true.",
+          "file": "portfolio-v1/src/lib/features.ts",
+          "status": "pending",
+          "dependencies": ["S3.2", "S3.3"],
+          "estimatedEffort": "30m"
+        }
+      ]
+    },
+    {
+      "id": "EPIC-4",
+      "title": "Testing & Quality Gate",
+      "priority": "high",
+      "stories": [
+        {
+          "id": "S4.1",
+          "title": "Write unit tests for LangGraph graph, tools, and streaming",
+          "description": "Vitest tests for: graph.ts (state transitions, node isolation with mocked dependencies), all 5 tools (web search mock DuckDuckGo, calculator edge cases, stock price mock Alpha Vantage, portfolio query mock data, send message mock fetch), useChatStream hook (SSE parsing, error handling, reconnection), thread API routes (CRUD operations, error cases). Minimum 85% coverage on src/lib/chat/ and src/hooks/use-chat-stream.ts.",
+          "file": "portfolio-v1/src/__tests__/chat/",
+          "status": "pending",
+          "dependencies": ["EPIC-1", "EPIC-2", "S3.1", "S3.2"],
+          "estimatedEffort": "3h"
+        },
+        {
+          "id": "S4.2",
+          "title": "Write integration test for the upgraded chat API",
+          "description": "Add tests to portfolio-v1/src/__tests__/api/chat.test.ts: SSE streaming response parsing, thread creation via API, tool call request/response cycle, backward compatibility (no threadId = stateless), feature flag gating (new vs old flow). All existing 600-line test suite must continue to pass.",
+          "file": "portfolio-v1/src/__tests__/api/chat.test.ts",
+          "status": "pending",
+          "dependencies": ["S4.1", "S1.3"],
+          "estimatedEffort": "2h"
+        },
+        {
+          "id": "S4.3",
+          "title": "Run quality gate and fix findings",
+          "description": "Run from portfolio-v1: tsc --noEmit (0 errors), ESLint (0 warnings), react-doctor check (100/100, 0 findings), vitest run (all tests pass). Fix all issues. Ensure no comments in code. Verify the full chat flow works end-to-end with streaming, threading, and tools.",
+          "file": "",
+          "status": "pending",
+          "dependencies": ["S4.2", "EPIC-3"],
+          "estimatedEffort": "1.5h"
+        }
+      ]
+    },
+    {
+      "id": "EPIC-5",
+      "title": "Polish, Documentation & Seed",
+      "priority": "medium",
+      "stories": [
+        {
+          "id": "S5.1",
+          "title": "Add loading, empty, error, and edge-case UI states",
+          "description": "Loading: typing indicator during non-streaming, skeleton for thread list, spinner for tool calls. Empty: welcome screen with suggested topics (existing). Error: inline error handling during streaming (partial message + retry), thread load failure (retry button), tool failure (show error to user). Edge cases: very long messages (truncate display), offline mode (detect and show cached welcome), rate limit (existing behavior).",
+          "file": "portfolio-v1/src/components/ui/",
+          "status": "pending",
+          "dependencies": ["EPIC-3"],
+          "estimatedEffort": "1.5h"
+        },
+        {
+          "id": "S5.2",
+          "title": "Write documentation and update AGENTS.md",
+          "description": "Create docs/chatbot/ with: architecture diagram (Mermaid state graph), API reference, tool catalog, env var reference, development guide. Add an 'ai-chatbot' skill to .agents/skills/ for maintenance. Update root AGENTS.md with chatbot workflows. Update docs/prd/README.md status to in-progress.",
+          "file": "docs/",
+          "status": "pending",
+          "dependencies": ["EPIC-4"],
+          "estimatedEffort": "2h"
+        },
+        {
+          "id": "S5.3",
+          "title": "Seed and test with representative queries",
+          "description": "Test 20 representative queries covering: portfolio questions ('Tell me about project X'), tool use ('What is the stock price of AAPL?', 'Calculate 15% of 340', 'Search the web for latest AI news'), follow-up threading ('Tell me more about that'), thread management (create multiple threads, switch between them, delete one), contact intent ('I want to hire Keneth'). Verify quality, latency, streaming UX, and fallback behavior.",
+          "file": "",
+          "status": "pending",
+          "dependencies": ["EPIC-4"],
+          "estimatedEffort": "1.5h"
+        }
+      ]
+    }
+  ],
+
+  "envVars": {
+    "new": [
+      "ALPHA_VANTAGE_API_KEY — API key for stock price tool (Alpha Vantage, langgraph-chatbot compatible)",
+      "LANGCHAIN_TRACING_V2 — enable LangSmith tracing (optional)",
+      "LANGCHAIN_ENDPOINT — LangSmith endpoint (optional)",
+      "LANGCHAIN_API_KEY — LangSmith API key (optional)"
+    ],
+    "existing": [
+      "GOOGLE_GEMINI_API_KEY — Gemini API key (existing, reused)",
+      "OPENAI_API_KEY — OpenAI API key (existing, optional multi-provider)",
+      "UPSTASH_VECTOR_URL — Upstash Vector URL (existing RAG)",
+      "UPSTASH_VECTOR_TOKEN — Upstash Vector token (existing RAG)",
+      "REINDEX_SECRET — RAG reindex secret (existing)",
+      "NEXT_PUBLIC_SANITY_PROJECT_ID — Sanity project (existing)",
+      "SANITY_API_READ_TOKEN — Sanity read token (existing)"
+    ]
+  },
+
+  "nonGoals": [
+    "Do NOT replace the existing provider system (generateWithGemini, generateWithOpenAI, buildSmartFallback) — the graph wraps them",
+    "Do NOT change the existing system prompt, personality, or action tag behavior",
+    "Do NOT replace the existing RAG pipeline (Upstash Vector) — the graph reuses it",
+    "Do NOT add user authentication or login — the chatbot remains a public portfolio feature",
+    "Do NOT build a separate chat page — the chat stays as a slide-over panel via FloatingHub",
+    "Do NOT migrate from Tailwind v3 to v4 or from Framer Motion 11 to motion 12 as part of this PRD",
+    "Do NOT remove or modify existing FloatingHub, HubMenu, HubMenuItem, ChatMessage, or test files — only update ChatPanel and add new files",
+    "Do NOT add image generation, file upload, or multi-language support"
+  ],
+
+  "successMetrics": {
+    "timeToFirstToken": "<2s p95 from message send to first streamed token",
+    "endToEndLatency": "<5s p95 for complete response (under 200 tokens)",
+    "toolSuccessRate": ">90% of tool calls succeed without error",
+    "threadPersistence": "Threads survive server restart (SQLite-backed), >99% reliability",
+    "existingPreservation": "All existing chat tests continue to pass, all action tags work, personality unchanged",
+    "testCoverage": ">85% on new src/lib/chat/* modules, all existing tests pass",
+    "qualityGate": "100/100 react-doctor, 0 tsc errors, 0 ESLint warnings",
+    "ragPreservation": "Existing RAG retrieval latency and relevance metrics unchanged",
+    "streamingAdoption": "All chat responses stream by default when IS_CHAT_STREAMING_ENABLED = true"
+  }
+}

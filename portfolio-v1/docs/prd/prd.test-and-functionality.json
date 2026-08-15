@@ -1,0 +1,1108 @@
+{
+  "project": "Namias Portfolio V1 — Complete Test Coverage & Functionality Completion",
+  "codeName": "v1-test-and-functionality",
+  "version": "1.0.0",
+  "owner": "Jhon Keneth Ryan Namias (PP Namias)",
+  "contact": "pp.namias@gmail.com",
+  "lastUpdated": "2026-07-28",
+  "branch": "feat/v1-test-and-functionality",
+  "links": {
+    "marketing": "https://namias.tech",
+    "studio": "https://namias-cms.sanity.studio",
+    "repo": "https://github.com/PP-Namias/Portfolio",
+    "v1TestDir": "portfolio-v1/src/__tests__"
+  },
+  "summary": "Complete all remaining test coverage and resolve functionality gaps in Portfolio V1. Covers 40+ untested files across sections, UI components, hooks, lib utilities, section data fetchers, app routes, middleware, canary tokens, sanity, chat internal, and RAG internals. Adds component tests, integration tests, unit tests, and functionality hardening for streaming SSR, chat threading, smooth scroll, magic cursor, error boundary, contact modal, and monolithic home layout.",
+  "narrative": "Portfolio V1 has 71 test files and strong coverage of API routes, chatbot core, RAG primitives, and the most complex UI components. However, a gap audit reveals 40+ files with zero test coverage. Some of these are trivial utilities (date.ts, constants.ts, utils.ts) but others are critical: the monolithic HomeContent layout, all 8 Skeleton components, the SectionProvider context, the Lenis smooth-scroll provider, MagicCursor cursor follower, ErrorBoundary, ContactModal, the SWR config, all 11 server-side section data fetchers, the root layout and providers, blog and project route pages, the request middleware, canary token routes, and the Sanity client. Several functionality gaps also exist: HomeContent is a monolithic file with no composable testing surface, streaming SSR has no dedicated test, chat threading UI (ThreadSidebar/ThreadToggle) lacks CRUD tests, Lenis and MagicCursor have no accessibility or behavior tests, ErrorBoundary and ContactModal lack error-state coverage, and none of the section data fetchers have unit tests for empty/error handling. This PRD defines a systematic plan to close every gap, organized by layer, with a verification phase that ensures tsc, eslint, vitest, and react-doctor all stay green.",
+  "principles": [
+    "Every source file in src/ must have at least one test exercising its primary behavior or render path.",
+    "No test file may exceed 400 lines — split large coverage into focused files per component/module.",
+    "Existing uncovered bulk test files (sections-uncovered, ui-uncovered, hooks-uncovered) must be kept and extended, not replaced — new tests can be added to them or split into individual files as appropriate.",
+    "Feature-flag-aware: tests must verify both flag-on and flag-off states where applicable.",
+    "Accessibility-first: all component tests must verify keyboard navigation, focus management, and aria attributes where the component uses them.",
+    "Type-safe and tested: tsc, eslint, vitest, and react-doctor must all stay green after every epic.",
+    "One story slice per commit — test additions, functionality fixes, and verification are separate commits.",
+    "No comments in code — the only documentation is the PRD, the component name, and any JSDoc the type demands."
+  ],
+  "personas": [
+    {
+      "id": "P-OWNER",
+      "label": "PP Namias (owner)",
+      "goals": [
+        "Achieve 100% file-level test coverage across src/",
+        "Ensure every UI interaction, data fetch, and route renders correctly",
+        "Ship with confidence — no untested production code"
+      ],
+      "painPointsToday": [
+        "HomeContent.tsx has zero tests despite being the central layout orchestrator",
+        "40+ files have no coverage — no way to know if a refactor breaks them",
+        "Skeletons, middleware, canary tokens, and sanity client are invisible to tests"
+      ]
+    },
+    {
+      "id": "P-VISITOR",
+      "label": "Portfolio visitor (hiring manager)",
+      "goals": [
+        "Experience a smooth, glitch-free page load with correct skeleton placeholders",
+        "Interact with forms (ContactModal), cursor effects (MagicCursor), and scroll (Lenis) without errors",
+        "See fallback UI when something goes wrong (ErrorBoundary)"
+      ],
+      "painPointsToday": [
+        "No test guarantees that skeletons render correctly during streaming SSR",
+        "No test guarantees that ErrorBoundary catches and displays a friendly message",
+        "No test guarantees that ContactModal validates input before submission"
+      ]
+    },
+    {
+      "id": "P-AGENT",
+      "label": "OpenCode / future coding agent",
+      "goals": [
+        "Find test files by naming convention matching the source file path",
+        "Understand coverage gaps from this PRD alone",
+        "Run the full suite and get immediate pass/fail feedback"
+      ],
+      "painPointsToday": [
+        "No single document listing all untested files",
+        "Uncovered test files are merged into bulk files that are hard to maintain",
+        "No explicit mapping between source files and their test files"
+      ]
+    }
+  ],
+  "successMetrics": {
+    "primary": [
+      "Every file in src/ is referenced by at least one test assertion",
+      "vitest suite grows from ~700 tests to ~900+ tests across all layers",
+      "react-doctor score remains at 100/100 (zero findings)",
+      "npx tsc --noEmit passes with zero errors",
+      "npm run lint passes with zero errors",
+      "No test file exceeds 400 lines (split if needed)"
+    ],
+    "secondary": [
+      "Each skeleton component renders the correct number of shimmer blocks matching its section structure",
+      "HomeContent and HomeContentStreaming render all child sections when the feature flags are on",
+      "ErrorBoundary renders fallback UI on thrown error and recovers on retry click",
+      "ContactModal validates email format and shows error messages for invalid input",
+      "ThreadSidebar renders thread list, supports create/select/delete, and syncs with URL search params",
+      "LenisProvider respects prefers-reduced-motion by disabling smooth scroll",
+      "MagicCursor toggles visibility based on device input type (touch vs mouse)",
+      "All 11 section data fetchers return fallback data when CMS fetch fails",
+      "SectionProvider correctly merges default and overridden section configurations",
+      "Middleware content-type check blocks requests with invalid content-type headers",
+      "Canary token routes return 200 with honeypot content without leaking real data"
+    ]
+  },
+  "nonGoals": [
+    "Achieve 100% branch/line coverage — this PRD targets file-level existence coverage",
+    "Refactor HomeContent into smaller components (that is a separate refactor PRD; this PRD adds tests around the existing structure)",
+    "Rewrite the streaming SSR architecture — only add tests for the existing implementation",
+    "Add end-to-end or Playwright tests — this PRD is limited to Vitest unit and integration tests",
+    "Change any production behavior — all changes are additive (new tests) unless fixing a verified bug",
+    "Cover portfolio-v2 — this PRD is scoped to portfolio-v1 only",
+    "Add Sanity schema or GROQ query tests — only the Sanity client utilities are in scope"
+  ],
+  "designDecisions": [
+    {
+      "id": "DD-1",
+      "topic": "Bulk vs individual test files",
+      "choice": "Add new tests to the existing uncovered bulk files when the component is small and shares mocks. Create dedicated test files for complex components (HomeContent, HomeContentStreaming, ThreadSidebar, ErrorBoundary, ContactModal, MagicCursor).",
+      "rationale": "Keeps PR diff small for trivial components while giving complex components their own test surface with focused mocks."
+    },
+    {
+      "id": "DD-2",
+      "topic": "Section data fetcher tests",
+      "choice": "Each of the 11 server.ts files gets a dedicated test file under src/__tests__/lib/sections/ that tests: (a) returns CMS data when fetch succeeds, (b) returns fallback data when fetch fails, (c) returns fallback data when CMS payload is empty.",
+      "rationale": "These fetchers are the data backbone for every section. A single shared test pattern reduces boilerplate while ensuring consistent coverage."
+    },
+    {
+      "id": "DD-3",
+      "topic": "App route tests",
+      "choice": "Test route pages as integration tests that render the page component with mocked child sections and data fetchers. Do NOT attempt full SSR rendering in Vitest (jsdom limitations).",
+      "rationale": "Integration tests catch composition errors (wrong props, missing providers, broken layout nesting) without the complexity of a full SSR environment."
+    },
+    {
+      "id": "DD-4",
+      "topic": "Lenis and MagicCursor tests",
+      "choice": "Test LenisProvider by mocking the lenis library and verifying children render and prefers-reduced-motion disables smooth scroll. Test MagicCursor by verifying mouse-move event handlers update position state and touch devices hide the cursor.",
+      "rationale": "These components wrap third-party libraries. Mock the library and test the React integration layer."
+    },
+    {
+      "id": "DD-5",
+      "topic": "ErrorBoundary test strategy",
+      "choice": "Use a test harness component that throws on render inside the ErrorBoundary. Verify fallback UI renders with error message and retry button. Simulate retry by toggling a key prop to remount children.",
+      "rationale": "ErrorBoundary cannot be tested with standard render + fireEvent because the error must be thrown during React commit phase. A dedicated harness is the standard React Testing Library pattern."
+    },
+    {
+      "id": "DD-6",
+      "topic": "ContactModal test strategy",
+      "choice": "Mock the form submission API call. Test: (a) renders form fields, (b) shows validation errors for empty fields, (c) shows validation error for invalid email, (d) calls onSubmit with form data on valid submission, (e) shows success message after submission, (f) shows error message on submission failure.",
+      "rationale": "Form components are high-risk for regressions. Cover the full happy path and all error states."
+    },
+    {
+      "id": "DD-7",
+      "topic": "ThreadSidebar test strategy",
+      "choice": "Mock the chat thread store. Test: (a) renders thread list from store, (b) clicking a thread selects it and updates URL, (c) create button dispatches create action, (d) delete button dispatches delete action with confirmation, (e) empty state shows 'No threads' message.",
+      "rationale": "ThreadSidebar is the primary navigation UI for the chat feature. URL sync and CRUD operations must be verified."
+    },
+    {
+      "id": "DD-8",
+      "topic": "Skeleton test pattern",
+      "choice": "All 8 skeleton components share a common test pattern in a single file (src/__tests__/components/skeletons.test.tsx). Each test verifies: (a) renders without crashing, (b) contains the correct number of shimmer/animated blocks, (c) respects dark mode if applicable.",
+      "rationale": "Skeletons are structurally simple. A shared test file with parameterized tests avoids 8 near-identical files."
+    },
+    {
+      "id": "DD-9",
+      "topic": "Middleware test pattern",
+      "choice": "Mock NextRequest and NextResponse. Test that the middleware: (a) blocks requests with invalid content-type headers, (b) passes through requests with valid content-type headers, (c) passes through requests with no content-type header.",
+      "rationale": "Middleware runs at the edge and is invisible to component tests. Unit tests with mocked request objects are the standard approach."
+    },
+    {
+      "id": "DD-10",
+      "topic": "Canary token route tests",
+      "choice": "Test canary route pages by: (a) verifying they render without crashing, (b) verifying they include the expected honeypot markers (hidden fields, decoy links), (c) verifying they do not leak any real application data or environment variables.",
+      "rationale": "Canary routes are security-critical. Tests must confirm they behave as honeypots without exposing real data."
+    },
+    {
+      "id": "DD-11",
+      "topic": "Sanity client tests",
+      "choice": "Mock the @sanity/client module. Test that client.ts creates a configured Sanity client with the correct project ID, dataset, and API version. Test that live.ts creates a live client with the right configuration.",
+      "rationale": "Sanity client configuration errors cause silent failures in production. Unit tests verify the configuration object matches expectations."
+    },
+    {
+      "id": "DD-12",
+      "topic": "Test organization",
+      "choice": "Mirror the source directory structure under src/__tests__/. New test files go into: src/__tests__/lib/sections/, src/__tests__/lib/chat/, src/__tests__/lib/rag/, src/__tests__/app/blog/, src/__tests__/app/projects/, src/__tests__/middleware/, src/__tests__/sanity/, src/__tests__/canary/.",
+      "rationale": "Mirroring the source structure makes it trivial to find the test file for any source file. This is the pattern already used by existing tests (src/__tests__/lib/, src/__tests__/hooks/, etc.)."
+    }
+  ],
+  "epics": [
+    {
+      "id": "EPIC-0",
+      "title": "Plan & gap audit",
+      "status": "completed",
+      "summary": "The gap audit was performed by reading every source directory, every existing test file, and cross-referencing source vs test files. The 40+ untested files and 11 functionality gaps are documented in this PRD.",
+      "value": "high",
+      "complexity": "low",
+      "stories": [
+        {
+          "id": "S-0.1",
+          "title": "Write PRD for test and functionality completion",
+          "done": true,
+          "details": "Author prd.test-and-functionality.json with epics, stories, success metrics, non-goals, and design decisions covering every untested file and functionality gap.",
+          "files": ["portfolio-v1/docs/prd/prd.test-and-functionality.json"]
+        }
+      ]
+    },
+    {
+      "id": "EPIC-1",
+      "title": "Untested UI components",
+      "status": "planned",
+      "summary": "Add test coverage for 10 UI components that currently have zero tests: LenisInner, LenisProvider, MagicCursor, OptimizedImage, ThreadSidebar, ThreadToggle, Analytics, ErrorBoundary, ContactModal, hacked-text, 3d-card.",
+      "value": "high",
+      "complexity": "medium",
+      "stories": [
+        {
+          "id": "S-1.1",
+          "title": "Test LenisProvider and LenisInner",
+          "done": false,
+          "details": "Mock the lenis library. Test LenisProvider wraps children in a div with the correct ref. Test LenisInner smooth-scroll behavior. Verify prefers-reduced-motion disables smooth scroll. Verify component unmounts cleanly (destroy call).",
+          "files": [
+            "src/components/ui/LenisProvider.tsx",
+            "src/components/ui/LenisInner.tsx",
+            "src/__tests__/components/LenisProvider.test.tsx"
+          ]
+        },
+        {
+          "id": "S-1.2",
+          "title": "Test MagicCursor",
+          "done": false,
+          "details": "Test that MagicCursor: (a) renders a follower element, (b) updates position on mousemove, (c) hides on touch devices, (d) shows on mouse enter after touch, (e) respects reduced-motion by disabling animation. Add to ui-uncovered.test.tsx or create dedicated file.",
+          "files": [
+            "src/components/ui/MagicCursor.tsx",
+            "src/__tests__/components/ui-uncovered.test.tsx"
+          ]
+        },
+        {
+          "id": "S-1.3",
+          "title": "Test OptimizedImage",
+          "done": false,
+          "details": "Test that OptimizedImage: (a) renders an img or next/image with the correct src and alt, (b) applies lazy loading by default, (c) accepts and forwards className and style props, (d) handles broken image src gracefully (onError fallback).",
+          "files": [
+            "src/components/ui/OptimizedImage.tsx",
+            "src/__tests__/components/ui-uncovered.test.tsx"
+          ]
+        },
+        {
+          "id": "S-1.4",
+          "title": "Test ThreadSidebar",
+          "done": false,
+          "details": "Mock the chat thread store. Test: (a) renders thread list, (b) click selects thread and updates URL search params, (c) create button dispatches createThread action, (d) delete button shows confirmation then dispatches deleteThread, (e) empty state renders 'No threads' message, (f) keyboard navigation (arrow keys, Enter) works.",
+          "files": [
+            "src/components/ui/ThreadSidebar.tsx",
+            "src/__tests__/components/ThreadSidebar.test.tsx"
+          ]
+        },
+        {
+          "id": "S-1.5",
+          "title": "Test ThreadToggle",
+          "done": false,
+          "details": "Test that ThreadToggle: (a) renders a button with accessible label, (b) calls onToggle when clicked, (c) shows correct icon based on isOpen prop, (d) has correct aria-expanded attribute.",
+          "files": [
+            "src/components/ui/ThreadToggle.tsx",
+            "src/__tests__/components/ThreadToggle.test.tsx"
+          ]
+        },
+        {
+          "id": "S-1.6",
+          "title": "Test Analytics",
+          "done": false,
+          "details": "Test that Analytics: (a) renders a script or noscript tag with the Umami tracking URL, (b) uses the correct data-website-id from config, (c) does not render when feature flag is off, (d) renders nothing visible (no layout shift).",
+          "files": [
+            "src/components/ui/Analytics.tsx",
+            "src/__tests__/components/Analytics.test.tsx"
+          ]
+        },
+        {
+          "id": "S-1.7",
+          "title": "Test ErrorBoundary",
+          "done": false,
+          "details": "Use a throwing test harness. Test: (a) renders children when no error, (b) catches thrown error and renders fallback UI with error message, (c) retry button remounts children, (d) logs error to console in development, (e) respects custom fallback prop.",
+          "files": [
+            "src/components/ui/ErrorBoundary.tsx",
+            "src/__tests__/components/ErrorBoundary.test.tsx"
+          ]
+        },
+        {
+          "id": "S-1.8",
+          "title": "Test ContactModal",
+          "done": false,
+          "details": "Mock form submission API. Test: (a) renders name, email, message fields and submit button, (b) shows validation errors for empty fields, (c) shows validation error for invalid email format, (d) submits form data on valid submission, (e) shows success message after submission, (f) shows error message on submission failure, (g) close button calls onClose, (h) Escape key calls onClose.",
+          "files": [
+            "src/components/ui/ContactModal.tsx",
+            "src/__tests__/components/ContactModal.test.tsx"
+          ]
+        },
+        {
+          "id": "S-1.9",
+          "title": "Test hacked-text",
+          "done": false,
+          "details": "Test that hacked-text: (a) renders the final text after animation completes, (b) applies the glitch/character-swap effect on hover or visibility, (c) cleans up animation on unmount, (d) respects reduced-motion by skipping animation.",
+          "files": [
+            "src/components/ui/hacked-text.tsx",
+            "src/__tests__/components/ui-uncovered.test.tsx"
+          ]
+        },
+        {
+          "id": "S-1.10",
+          "title": "Test 3d-card",
+          "done": false,
+          "details": "Test that 3d-card: (a) renders children inside the card container, (b) applies 3D tilt transform on mouse move, (c) resets transform on mouse leave, (d) respects reduced-motion by disabling tilt, (e) has correct perspective and transform-style CSS.",
+          "files": [
+            "src/components/ui/3d-card.tsx",
+            "src/__tests__/components/ui-uncovered.test.tsx"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "EPIC-2",
+      "title": "Untested sections, skeletons, SectionProvider",
+      "status": "planned",
+      "summary": "Add tests for SectionProvider context, HomeContent monolithic layout, HomeContentStreaming streaming layout, and all 8 Skeleton components.",
+      "value": "high",
+      "complexity": "medium",
+      "stories": [
+        {
+          "id": "S-2.1",
+          "title": "Test SectionProvider",
+          "done": false,
+          "details": "Test that SectionProvider: (a) renders children, (b) provides a context with default section order and visibility, (c) allows overriding section config via props, (d) useSectionContext hook returns the correct section data.",
+          "files": [
+            "src/components/sections/SectionProvider.tsx",
+            "src/__tests__/components/sections/SectionProvider.test.tsx"
+          ]
+        },
+        {
+          "id": "S-2.2",
+          "title": "Test HomeContent layout",
+          "done": false,
+          "details": "Mock all child section components. Test that HomeContent: (a) renders all sections in the correct order, (b) includes the SectionProvider wrapper, (c) renders GallerySection and Footer at the end, (d) respects feature flags by conditionally rendering BlogSection and ProjectsSectionRevamped, (e) renders skeleton fallbacks when section data is loading.",
+          "files": [
+            "src/components/sections/HomeContent.tsx",
+            "src/__tests__/components/sections/HomeContent.test.tsx"
+          ]
+        },
+        {
+          "id": "S-2.3",
+          "title": "Test HomeContentStreaming",
+          "done": false,
+          "details": "Mock Suspense boundaries and skeleton components. Test that HomeContentStreaming: (a) wraps each section in a Suspense boundary, (b) renders the correct skeleton component as fallback for each section, (c) renders all sections when data resolves, (d) respects feature flags, (e) matches the same section order as HomeContent.",
+          "files": [
+            "src/components/sections/HomeContentStreaming.tsx",
+            "src/__tests__/components/sections/HomeContentStreaming.test.tsx"
+          ]
+        },
+        {
+          "id": "S-2.4",
+          "title": "Test all Skeleton components",
+          "done": false,
+          "details": "Create a single parameterized test file. For each of the 8 skeleton components, test: (a) renders without crashing, (b) contains the correct number of shimmer/animated blocks matching the section structure, (c) applies dark mode classes if present, (d) has correct aria-label or role for accessibility.",
+          "files": [
+            "src/components/sections/skeletons/AboutSkeleton.tsx",
+            "src/components/sections/skeletons/BlogSkeleton.tsx",
+            "src/components/sections/skeletons/CertificationsSkeleton.tsx",
+            "src/components/sections/skeletons/ConnectSkeleton.tsx",
+            "src/components/sections/skeletons/ExperienceSkeleton.tsx",
+            "src/components/sections/skeletons/GallerySkeleton.tsx",
+            "src/components/sections/skeletons/ProjectsSkeleton.tsx",
+            "src/components/sections/skeletons/TechStackSkeleton.tsx",
+            "src/__tests__/components/sections/skeletons.test.tsx"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "EPIC-3",
+      "title": "Untested hooks (useCmsContent)",
+      "status": "planned",
+      "summary": "Add test coverage for the useCmsContent SWR hook that powers all section data on the client side.",
+      "value": "high",
+      "complexity": "medium",
+      "stories": [
+        {
+          "id": "S-3.1",
+          "title": "Test useCmsContent",
+          "done": false,
+          "details": "Mock SWR and the CMS fetcher. Test: (a) returns data when SWR resolves successfully, (b) returns undefined or empty state when SWR has no data yet, (c) returns error state when SWR fetch fails, (d) refetches when the refresh trigger is called, (e) returns all expected section keys (about, techStack, projects, etc.), (f) wraps SWR with the correct SWRConfig provider.",
+          "files": [
+            "src/hooks/useCmsContent.tsx",
+            "src/__tests__/hooks/useCmsContent.test.tsx"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "EPIC-4",
+      "title": "Untested lib utilities",
+      "status": "planned",
+      "summary": "Add unit tests for 10 lib utility files: admin, cms-data, constants, date, features, local-cache, media-constants, site-config, streaming-metrics, swr-config, utils.",
+      "value": "medium",
+      "complexity": "low",
+      "stories": [
+        {
+          "id": "S-4.1",
+          "title": "Test admin.ts",
+          "done": false,
+          "details": "Test admin utility functions: verify admin check logic, authorization helpers, or configuration constants.",
+          "files": ["src/lib/admin.ts", "src/__tests__/lib/admin.test.ts"]
+        },
+        {
+          "id": "S-4.2",
+          "title": "Test cms-data.ts",
+          "done": false,
+          "details": "Test CMS data transformation helpers: verify data mapping, field extraction, and type coercion functions.",
+          "files": ["src/lib/cms-data.ts", "src/__tests__/lib/cms-data.test.ts"]
+        },
+        {
+          "id": "S-4.3",
+          "title": "Test constants.ts",
+          "done": false,
+          "details": "Test that all exported constants have expected values and types. Verify no undefined or NaN values.",
+          "files": [
+            "src/lib/constants.ts",
+            "src/__tests__/lib/constants.test.ts"
+          ]
+        },
+        {
+          "id": "S-4.4",
+          "title": "Test date.ts",
+          "done": false,
+          "details": "Test date formatting, parsing, and comparison utilities. Verify correct output for known inputs across timezone-aware and timezone-naive cases.",
+          "files": ["src/lib/date.ts", "src/__tests__/lib/date.test.ts"]
+        },
+        {
+          "id": "S-4.5",
+          "title": "Test features.ts",
+          "done": false,
+          "details": "Test that every feature flag: (a) is a boolean, (b) has the expected default value (true or false), (c) can be imported and toggled programmatically. Verify the module exports all expected flag names.",
+          "files": [
+            "src/lib/features.ts",
+            "src/__tests__/lib/features.test.ts"
+          ]
+        },
+        {
+          "id": "S-4.6",
+          "title": "Test local-cache.ts",
+          "done": false,
+          "details": "Test local cache: (a) set stores a value, (b) get retrieves a stored value, (c) get returns null for expired keys, (d) delete removes a key, (e) clear empties all keys, (f) respects max size/ttl configuration.",
+          "files": [
+            "src/lib/local-cache.ts",
+            "src/__tests__/lib/local-cache.test.ts"
+          ]
+        },
+        {
+          "id": "S-4.7",
+          "title": "Test media-constants.ts",
+          "done": false,
+          "details": "Test media-related constants: verify image sizes, breakpoints, format preferences, and default values are correct.",
+          "files": [
+            "src/lib/media-constants.ts",
+            "src/__tests__/lib/media-constants.test.ts"
+          ]
+        },
+        {
+          "id": "S-4.8",
+          "title": "Test site-config.ts",
+          "done": false,
+          "details": "Test site configuration: verify site name, description, URL, social links, and other config values match expected values.",
+          "files": [
+            "src/lib/site-config.ts",
+            "src/__tests__/lib/site-config.test.ts"
+          ]
+        },
+        {
+          "id": "S-4.9",
+          "title": "Test streaming-metrics.ts",
+          "done": false,
+          "details": "Test streaming metrics utilities: verify metric collection, aggregation, and reporting functions work correctly for SSR streaming performance tracking.",
+          "files": [
+            "src/lib/streaming-metrics.ts",
+            "src/__tests__/lib/streaming-metrics.test.ts"
+          ]
+        },
+        {
+          "id": "S-4.10",
+          "title": "Test swr-config.tsx",
+          "done": false,
+          "details": "Test SWR config provider: (a) renders children, (b) provides the correct default SWR configuration (error retry count, dedup interval, revalidation settings), (c) exports the SWRConfig wrapper component.",
+          "files": [
+            "src/lib/swr-config.tsx",
+            "src/__tests__/lib/swr-config.test.tsx"
+          ]
+        },
+        {
+          "id": "S-4.11",
+          "title": "Test utils.ts",
+          "done": false,
+          "details": "Test general utility functions: verify cn() classname merging, type guards, null/undefined checks, and any other exported helpers produce correct output for known inputs and edge cases (empty string, null, undefined, special characters).",
+          "files": ["src/lib/utils.ts", "src/__tests__/lib/utils.test.ts"]
+        }
+      ]
+    },
+    {
+      "id": "EPIC-5",
+      "title": "Untested section data fetchers",
+      "status": "planned",
+      "summary": "Add unit tests for all 11 server-side section data fetchers in lib/sections/. Each fetcher gets a dedicated test file under src/__tests__/lib/sections/.",
+      "value": "high",
+      "complexity": "medium",
+      "stories": [
+        {
+          "id": "S-5.1",
+          "title": "Test about.server.ts",
+          "done": false,
+          "details": "Mock the CMS client. Test: (a) returns about data when CMS fetch succeeds, (b) returns fallback data when CMS fetch fails, (c) returns fallback data when CMS returns null/empty.",
+          "files": [
+            "src/lib/sections/about.server.ts",
+            "src/__tests__/lib/sections/about.server.test.ts"
+          ]
+        },
+        {
+          "id": "S-5.2",
+          "title": "Test blog.server.ts",
+          "done": false,
+          "details": "Mock the CMS client. Test: (a) returns blog posts when CMS fetch succeeds, (b) returns fallback posts when CMS fetch fails, (c) returns empty array when no posts exist.",
+          "files": [
+            "src/lib/sections/blog.server.ts",
+            "src/__tests__/lib/sections/blog.server.test.ts"
+          ]
+        },
+        {
+          "id": "S-5.3",
+          "title": "Test certifications.server.ts",
+          "done": false,
+          "details": "Mock the CMS client. Test: (a) returns certifications when CMS fetch succeeds, (b) returns fallback certs when CMS fetch fails, (c) returns empty array when no certs exist.",
+          "files": [
+            "src/lib/sections/certifications.server.ts",
+            "src/__tests__/lib/sections/certifications.server.test.ts"
+          ]
+        },
+        {
+          "id": "S-5.4",
+          "title": "Test connect.server.ts",
+          "done": false,
+          "details": "Mock the CMS client. Test: (a) returns connect/social data when CMS fetch succeeds, (b) returns fallback data when CMS fetch fails, (c) handles partial data gracefully.",
+          "files": [
+            "src/lib/sections/connect.server.ts",
+            "src/__tests__/lib/sections/connect.server.test.ts"
+          ]
+        },
+        {
+          "id": "S-5.5",
+          "title": "Test experience.server.ts",
+          "done": false,
+          "details": "Mock the CMS client. Test: (a) returns experience entries when CMS fetch succeeds, (b) returns fallback entries when CMS fetch fails, (c) returns empty array when no experience exists.",
+          "files": [
+            "src/lib/sections/experience.server.ts",
+            "src/__tests__/lib/sections/experience.server.test.ts"
+          ]
+        },
+        {
+          "id": "S-5.6",
+          "title": "Test gallery.server.ts",
+          "done": false,
+          "details": "Mock the CMS client. Test: (a) returns gallery images when CMS fetch succeeds, (b) returns fallback images when CMS fetch fails, (c) returns empty array when no images exist.",
+          "files": [
+            "src/lib/sections/gallery.server.ts",
+            "src/__tests__/lib/sections/gallery.server.test.ts"
+          ]
+        },
+        {
+          "id": "S-5.7",
+          "title": "Test hero.server.ts",
+          "done": false,
+          "details": "Mock the CMS client. Test: (a) returns hero data when CMS fetch succeeds, (b) returns fallback hero data when CMS fetch fails, (c) handles partial hero data gracefully.",
+          "files": [
+            "src/lib/sections/hero.server.ts",
+            "src/__tests__/lib/sections/hero.server.test.ts"
+          ]
+        },
+        {
+          "id": "S-5.8",
+          "title": "Test projects.server.ts",
+          "done": false,
+          "details": "Mock the CMS client. Test: (a) returns projects when CMS fetch succeeds, (b) returns fallback projects when CMS fetch fails, (c) returns empty array when no projects exist.",
+          "files": [
+            "src/lib/sections/projects.server.ts",
+            "src/__tests__/lib/sections/projects.server.test.ts"
+          ]
+        },
+        {
+          "id": "S-5.9",
+          "title": "Test seo.server.ts",
+          "done": false,
+          "details": "Mock the CMS client. Test: (a) returns SEO/default metadata when CMS fetch succeeds, (b) returns fallback metadata when CMS fetch fails, (c) correctly constructs meta tags from returned data.",
+          "files": [
+            "src/lib/sections/seo.server.ts",
+            "src/__tests__/lib/sections/seo.server.test.ts"
+          ]
+        },
+        {
+          "id": "S-5.10",
+          "title": "Test site-settings.server.ts",
+          "done": false,
+          "details": "Mock the CMS client. Test: (a) returns site settings when CMS fetch succeeds, (b) returns fallback settings when CMS fetch fails, (c) merges partial settings with defaults.",
+          "files": [
+            "src/lib/sections/site-settings.server.ts",
+            "src/__tests__/lib/sections/site-settings.server.test.ts"
+          ]
+        },
+        {
+          "id": "S-5.11",
+          "title": "Test tech-stack.server.ts",
+          "done": false,
+          "details": "Mock the CMS client. Test: (a) returns tech stack data when CMS fetch succeeds, (b) returns fallback data when CMS fetch fails, (c) returns empty array when no tech stack entries exist.",
+          "files": [
+            "src/lib/sections/tech-stack.server.ts",
+            "src/__tests__/lib/sections/tech-stack.server.test.ts"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "EPIC-6",
+      "title": "Untested app routes (home page, layout, providers, error pages, sitemap, OG images)",
+      "status": "planned",
+      "summary": "Add integration tests for the root layout, home page, providers, error/loading/not-found pages, sitemap, and Open Graph / Twitter image routes.",
+      "value": "high",
+      "complexity": "medium",
+      "stories": [
+        {
+          "id": "S-6.1",
+          "title": "Test root layout",
+          "done": false,
+          "details": "Mock all child providers and font imports. Test that app/layout.tsx: (a) renders children inside the correct HTML structure, (b) includes ThemeProvider, SectionProvider, LenisProvider, and SWRConfig, (c) sets correct lang and className attributes on html element, (d) includes Analytics component, (e) includes all required meta tags and links in head.",
+          "files": [
+            "src/app/layout.tsx",
+            "src/__tests__/app/layout.test.tsx"
+          ]
+        },
+        {
+          "id": "S-6.2",
+          "title": "Test providers.tsx",
+          "done": false,
+          "details": "Test that providers.tsx: (a) renders children wrapped in ThemeProvider, (b) renders children wrapped in accent color provider, (c) composes providers in the correct nested order.",
+          "files": [
+            "src/app/providers.tsx",
+            "src/__tests__/app/providers.test.tsx"
+          ]
+        },
+        {
+          "id": "S-6.3",
+          "title": "Test error.tsx",
+          "done": false,
+          "details": "Test that error.tsx: (a) renders error message and reset button, (b) calls reset when button is clicked, (c) displays different messages for different error types if applicable.",
+          "files": [
+            "src/app/error.tsx",
+            "src/__tests__/app/error.test.tsx"
+          ]
+        },
+        {
+          "id": "S-6.4",
+          "title": "Test loading.tsx",
+          "done": false,
+          "details": "Test that loading.tsx: (a) renders a loading indicator or skeleton, (b) has correct accessibility attributes (role status, aria-label).",
+          "files": [
+            "src/app/loading.tsx",
+            "src/__tests__/app/loading.test.tsx"
+          ]
+        },
+        {
+          "id": "S-6.5",
+          "title": "Test not-found.tsx",
+          "done": false,
+          "details": "Test that not-found.tsx: (a) renders 404 message, (b) includes a link back to home page, (c) has correct semantic HTML structure.",
+          "files": [
+            "src/app/not-found.tsx",
+            "src/__tests__/app/not-found.test.tsx"
+          ]
+        },
+        {
+          "id": "S-6.6",
+          "title": "Test sitemap.ts",
+          "done": false,
+          "details": "Test that sitemap.ts: (a) generates valid sitemap entries, (b) includes all expected routes (/, /blog, /projects, etc.), (c) uses correct base URL from config, (d) entries have correct lastModified dates.",
+          "files": [
+            "src/app/sitemap.ts",
+            "src/__tests__/app/sitemap.test.ts"
+          ]
+        },
+        {
+          "id": "S-6.7",
+          "title": "Test OG and Twitter image routes",
+          "done": false,
+          "details": "Test that opengraph-image.tsx and twitter-image.tsx: (a) generate ImageResponse with correct dimensions, (b) include the site name and default text, (c) handle custom title/text parameters if supported.",
+          "files": [
+            "src/app/opengraph-image.tsx",
+            "src/app/twitter-image.tsx",
+            "src/__tests__/app/og-image.test.ts"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "EPIC-7",
+      "title": "Untested blog and project routes",
+      "status": "planned",
+      "summary": "Add integration tests for blog route group (layout, list page, [slug] detail page) and project route group (layout, list page, [slug] detail page).",
+      "value": "high",
+      "complexity": "medium",
+      "stories": [
+        {
+          "id": "S-7.1",
+          "title": "Test blog layout",
+          "done": false,
+          "details": "Mock child components. Test that blog/layout.tsx: (a) renders children, (b) includes blog-specific header or navigation if present, (c) sets correct metadata.",
+          "files": [
+            "src/app/blog/layout.tsx",
+            "src/__tests__/app/blog/layout.test.tsx"
+          ]
+        },
+        {
+          "id": "S-7.2",
+          "title": "Test blog list page",
+          "done": false,
+          "details": "Mock BlogListClient and data fetcher. Test that blog/page.tsx: (a) renders BlogListClient with fetched posts, (b) handles empty posts array, (c) renders skeleton while loading.",
+          "files": [
+            "src/app/blog/page.tsx",
+            "src/__tests__/app/blog/page.test.tsx"
+          ]
+        },
+        {
+          "id": "S-7.3",
+          "title": "Test blog [slug] detail page",
+          "done": false,
+          "details": "Mock BlogPostContent and data fetchers. Test that blog/[slug]/page.tsx: (a) renders BlogPostContent with correct slug, (b) generates correct metadata from post data, (c) returns 404-style fallback for missing slugs, (d) handles generateStaticParams.",
+          "files": [
+            "src/app/blog/[slug]/page.tsx",
+            "src/__tests__/app/blog/slug-page.test.tsx"
+          ]
+        },
+        {
+          "id": "S-7.4",
+          "title": "Test projects layout",
+          "done": false,
+          "details": "Mock child components. Test that projects/layout.tsx: (a) renders children, (b) includes projects-specific header or navigation if present, (c) sets correct metadata.",
+          "files": [
+            "src/app/projects/layout.tsx",
+            "src/__tests__/app/projects/layout.test.tsx"
+          ]
+        },
+        {
+          "id": "S-7.5",
+          "title": "Test projects list page",
+          "done": false,
+          "details": "Mock ProjectsSectionRevamped and data fetcher. Test that projects/page.tsx: (a) renders ProjectsSectionRevamped with fetched projects, (b) handles empty projects array, (c) renders skeleton while loading.",
+          "files": [
+            "src/app/projects/page.tsx",
+            "src/__tests__/app/projects/page.test.tsx"
+          ]
+        },
+        {
+          "id": "S-7.6",
+          "title": "Test projects [slug] detail page",
+          "done": false,
+          "details": "Mock ProjectDetailPage and data fetchers. Test that projects/[slug]/page.tsx: (a) renders ProjectDetailPage with correct slug, (b) generates correct JSON-LD structured data and metadata, (c) returns 404-style fallback for missing slugs, (d) handles generateStaticParams, (e) sets correct ISR revalidation period.",
+          "files": [
+            "src/app/projects/[slug]/page.tsx",
+            "src/__tests__/app/projects/slug-page.test.tsx"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "EPIC-8",
+      "title": "Untested middleware, canary tokens, sanity",
+      "status": "planned",
+      "summary": "Add tests for the request middleware, all 4 canary token route groups, and the Sanity client configuration.",
+      "value": "medium",
+      "complexity": "low",
+      "stories": [
+        {
+          "id": "S-8.1",
+          "title": "Test middleware.ts",
+          "done": false,
+          "details": "Mock NextRequest and NextResponse. Test: (a) blocks requests with invalid content-type headers, (b) passes through requests with valid content-type headers, (c) passes through requests with no content-type header, (d) preserves URL and cookies for allowed requests.",
+          "files": [
+            "src/middleware.ts",
+            "src/__tests__/middleware/middleware.test.ts"
+          ]
+        },
+        {
+          "id": "S-8.2",
+          "title": "Test phpmyadmin canary route",
+          "done": false,
+          "details": "Test that phpmyadmin-canary page: (a) renders without crashing, (b) includes honeypot markers (hidden login form, decoy fields), (c) does not expose real credentials, server paths, or environment variables.",
+          "files": [
+            "src/app/phpmyadmin-canary/",
+            "src/__tests__/canary/phpmyadmin-canary.test.tsx"
+          ]
+        },
+        {
+          "id": "S-8.3",
+          "title": "Test wp-admin canary route",
+          "done": false,
+          "details": "Test that wp-admin-canary page: (a) renders without crashing, (b) includes honeypot markers (fake WordPress login form), (c) does not expose real credentials or server paths.",
+          "files": [
+            "src/app/wp-admin-canary/",
+            "src/__tests__/canary/wp-admin-canary.test.tsx"
+          ]
+        },
+        {
+          "id": "S-8.4",
+          "title": "Test robots canary route",
+          "done": false,
+          "details": "Test that robots-canary.txt: (a) serves a text file, (b) does not block legitimate crawlers from the real sitemap, (c) includes fake disallowed paths to attract scanners.",
+          "files": [
+            "src/app/robots-canary.txt/",
+            "src/__tests__/canary/robots-canary.test.ts"
+          ]
+        },
+        {
+          "id": "S-8.5",
+          "title": "Test sitemap canary route",
+          "done": false,
+          "details": "Test that sitemap-canary.xml: (a) serves an XML file, (b) includes fake URLs to attract scanners, (c) does not include any real application URLs.",
+          "files": [
+            "src/app/sitemap-canary.xml/",
+            "src/__tests__/canary/sitemap-canary.test.ts"
+          ]
+        },
+        {
+          "id": "S-8.6",
+          "title": "Test Sanity client configuration",
+          "done": false,
+          "details": "Mock @sanity/client. Test: (a) client.ts creates a client with correct project ID from env, (b) client.ts uses correct dataset name, (c) client.ts uses correct API version, (d) live.ts creates a live client with correct configuration, (e) client throws clear error if env vars are missing.",
+          "files": [
+            "src/sanity/lib/client.ts",
+            "src/sanity/lib/live.ts",
+            "src/__tests__/sanity/client.test.ts"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "EPIC-9",
+      "title": "Functionality gaps",
+      "status": "planned",
+      "summary": "Address 11 functionality gaps: HomeContent streaming SSR, chat threading, Lenis smooth scroll, MagicCursor, ErrorBoundary, ContactModal, SWR config, section data fetcher error handling, SectionProvider config merging, and skeleton structural fidelity.",
+      "value": "high",
+      "complexity": "high",
+      "stories": [
+        {
+          "id": "S-9.1",
+          "title": "Functionality: HomeContent section composition",
+          "done": false,
+          "details": "Verify that HomeContent renders all sections in the correct order and respects feature flags for conditional sections (BlogSection, ProjectsSectionRevamped). Already covered by test in S-2.2, but confirm the component actually handles all flag combinations correctly. If bugs are found during testing, fix them.",
+          "files": [
+            "src/components/sections/HomeContent.tsx",
+            "src/__tests__/components/sections/HomeContent.test.tsx"
+          ]
+        },
+        {
+          "id": "S-9.2",
+          "title": "Functionality: Streaming SSR Suspense boundaries",
+          "done": false,
+          "details": "Verify that HomeContentStreaming wraps each section in a Suspense boundary with the correct skeleton fallback. Test that all 5+ streaming sections have matching skeletons. If any section is missing its Suspense boundary or skeleton, add it.",
+          "files": [
+            "src/components/sections/HomeContentStreaming.tsx",
+            "src/__tests__/components/sections/HomeContentStreaming.test.tsx"
+          ]
+        },
+        {
+          "id": "S-9.3",
+          "title": "Functionality: Chat threading CRUD and persistence",
+          "done": false,
+          "details": "Verify ThreadSidebar creates, selects, and deletes threads correctly. Verify thread selection updates URL search params. Verify thread list persists across page navigation. If bugs are found (e.g., deleted thread still shows, URL not in sync), fix them.",
+          "files": [
+            "src/components/ui/ThreadSidebar.tsx",
+            "src/components/ui/ThreadToggle.tsx",
+            "src/__tests__/components/ThreadSidebar.test.tsx"
+          ]
+        },
+        {
+          "id": "S-9.4",
+          "title": "Functionality: Lenis smooth scroll prefers-reduced-motion",
+          "done": false,
+          "details": "Verify LenisProvider checks prefers-reduced-motion media query and disables smooth scroll when the user prefers reduced motion. If the check is missing, add it. Verify lenis.destroy() is called on unmount.",
+          "files": [
+            "src/components/ui/LenisProvider.tsx",
+            "src/components/ui/LenisInner.tsx",
+            "src/__tests__/components/LenisProvider.test.tsx"
+          ]
+        },
+        {
+          "id": "S-9.5",
+          "title": "Functionality: MagicCursor touch vs mouse detection",
+          "done": false,
+          "details": "Verify MagicCursor hides on touch devices and shows on mouse devices. Verify hover targets are correctly detected. Verify reduced-motion disables cursor animation. If touch detection is missing, add pointer media query check.",
+          "files": [
+            "src/components/ui/MagicCursor.tsx",
+            "src/__tests__/components/ui-uncovered.test.tsx"
+          ]
+        },
+        {
+          "id": "S-9.6",
+          "title": "Functionality: ErrorBoundary retry and logging",
+          "done": false,
+          "details": "Verify ErrorBoundary catches errors, renders fallback with error message, and retry button remounts children. If error logging is missing, add console.error in development. If retry does not reset error state, fix the key-based remount pattern.",
+          "files": [
+            "src/components/ui/ErrorBoundary.tsx",
+            "src/__tests__/components/ErrorBoundary.test.tsx"
+          ]
+        },
+        {
+          "id": "S-9.7",
+          "title": "Functionality: ContactModal form validation and submission",
+          "done": false,
+          "details": "Verify ContactModal validates email format, name (non-empty), and message (non-empty). Verify error messages display inline. Verify submission calls API and shows success/error states. If validation rules are missing, add them.",
+          "files": [
+            "src/components/ui/ContactModal.tsx",
+            "src/__tests__/components/ContactModal.test.tsx"
+          ]
+        },
+        {
+          "id": "S-9.8",
+          "title": "Functionality: SWR global config error handling",
+          "done": false,
+          "details": "Verify the SWR config provides error retry (max 3 attempts), dedup interval (2s+), and revalidate on focus. If any global config value is missing or incorrect, fix it.",
+          "files": [
+            "src/lib/swr-config.tsx",
+            "src/__tests__/lib/swr-config.test.tsx"
+          ]
+        },
+        {
+          "id": "S-9.9",
+          "title": "Functionality: Section data fetcher error resilience",
+          "done": false,
+          "details": "Verify all 11 section data fetchers return fallback data when CMS fetch fails or returns empty. Each fetcher must handle errors gracefully and never throw uncaught exceptions. If any fetcher lacks a try-catch or fallback, fix it.",
+          "files": [
+            "src/lib/sections/about.server.ts",
+            "src/lib/sections/blog.server.ts",
+            "src/lib/sections/certifications.server.ts",
+            "src/lib/sections/connect.server.ts",
+            "src/lib/sections/experience.server.ts",
+            "src/lib/sections/gallery.server.ts",
+            "src/lib/sections/hero.server.ts",
+            "src/lib/sections/projects.server.ts",
+            "src/lib/sections/seo.server.ts",
+            "src/lib/sections/site-settings.server.ts",
+            "src/lib/sections/tech-stack.server.ts"
+          ]
+        },
+        {
+          "id": "S-9.10",
+          "title": "Functionality: SectionProvider config merging",
+          "done": false,
+          "details": "Verify SectionProvider merges default section order and visibility with overridden props. If merge logic is missing or incorrect (e.g., override replaces instead of merges), fix it.",
+          "files": [
+            "src/components/sections/SectionProvider.tsx",
+            "src/__tests__/components/sections/SectionProvider.test.tsx"
+          ]
+        },
+        {
+          "id": "S-9.11",
+          "title": "Functionality: Skeleton structural fidelity",
+          "done": false,
+          "details": "Verify each skeleton component renders the correct number of shimmer blocks that match the structure of its real section. If any skeleton is missing blocks (e.g., CertificationsSkeleton has 2 cert cards but real section shows 4), fix the skeleton.",
+          "files": [
+            "src/components/sections/skeletons/AboutSkeleton.tsx",
+            "src/components/sections/skeletons/BlogSkeleton.tsx",
+            "src/components/sections/skeletons/CertificationsSkeleton.tsx",
+            "src/components/sections/skeletons/ConnectSkeleton.tsx",
+            "src/components/sections/skeletons/ExperienceSkeleton.tsx",
+            "src/components/sections/skeletons/GallerySkeleton.tsx",
+            "src/components/sections/skeletons/ProjectsSkeleton.tsx",
+            "src/components/sections/skeletons/TechStackSkeleton.tsx"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "EPIC-10",
+      "title": "Chat and RAG lib internals",
+      "status": "planned",
+      "summary": "Add or extend test coverage for Chat engine internals (graph, persistence, tools, types) and RAG internals (embedder, indexer, types). These are partially tested — close remaining gaps.",
+      "value": "high",
+      "complexity": "medium",
+      "stories": [
+        {
+          "id": "S-10.1",
+          "title": "Extend chat graph.test.ts for missing branches",
+          "done": false,
+          "details": "Review src/lib/chat/graph.ts and identify untested code paths. Add tests for: (a) edge case inputs (empty message, very long message, special characters), (b) error handling when LLM provider returns error, (c) fallback to fallbackResponder when primary provider fails, (d) tool call parsing edge cases.",
+          "files": [
+            "src/lib/chat/graph.ts",
+            "src/__tests__/chat/graph.test.ts"
+          ]
+        },
+        {
+          "id": "S-10.2",
+          "title": "Extend chat persistence.test.ts for edge cases",
+          "done": false,
+          "details": "Review src/lib/chat/persistence.ts. Add tests for: (a) persistence of empty threads, (b) persistence with maximum messages, (c) persistence error handling (Redis unavailable), (d) thread listing with pagination/sorting, (e) thread deletion cascading correctly.",
+          "files": [
+            "src/lib/chat/persistence.ts",
+            "src/__tests__/chat/persistence.test.ts"
+          ]
+        },
+        {
+          "id": "S-10.3",
+          "title": "Extend chat tools.test.ts for all tool functions",
+          "done": false,
+          "details": "Review src/lib/chat/tools/. Ensure every tool function has at least one test for: (a) successful execution, (b) error/edge case input, (c) return value shape matches the tool schema.",
+          "files": [
+            "src/lib/chat/tools/",
+            "src/__tests__/chat/tools.test.ts"
+          ]
+        },
+        {
+          "id": "S-10.4",
+          "title": "Test chat types.ts",
+          "done": false,
+          "details": "Review src/lib/chat/types.ts. Test that all TypeScript types and interfaces are valid and exported correctly. Test any runtime type guards or validation functions.",
+          "files": [
+            "src/lib/chat/types.ts",
+            "src/__tests__/chat/types.test.ts"
+          ]
+        },
+        {
+          "id": "S-10.5",
+          "title": "Test RAG embedder.ts",
+          "done": false,
+          "details": "Mock the embedding model. Test: (a) embedder creates embeddings for text input, (b) embedder handles empty strings, (c) embedder handles long text by truncating or chunking, (d) embedder returns correct vector dimensions, (e) embedder handles API errors gracefully.",
+          "files": [
+            "src/lib/rag/embedder.ts",
+            "src/__tests__/rag/embedder.test.ts"
+          ]
+        },
+        {
+          "id": "S-10.6",
+          "title": "Test RAG indexer.ts",
+          "done": false,
+          "details": "Test the indexer: (a) indexes documents with correct metadata, (b) handles duplicate documents (upsert vs skip), (c) handles batch indexing, (d) handles indexing errors gracefully (rollback or skip), (e) deletes documents from index correctly.",
+          "files": [
+            "src/lib/rag/indexer.ts",
+            "src/__tests__/rag/indexer.test.ts"
+          ]
+        },
+        {
+          "id": "S-10.7",
+          "title": "Test RAG types.ts",
+          "done": false,
+          "details": "Review src/lib/rag/types.ts. Test that all exported types and interfaces are valid. Test any runtime type guards or validation functions.",
+          "files": [
+            "src/lib/rag/types.ts",
+            "src/__tests__/rag/types.test.ts"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "EPIC-11",
+      "title": "Verification",
+      "status": "planned",
+      "summary": "Run the full quality gate: typecheck, lint, all vitest tests, react-doctor, and dev server smoke test.",
+      "value": "high",
+      "complexity": "low",
+      "stories": [
+        {
+          "id": "S-11.1",
+          "title": "Run tsc, eslint, vitest",
+          "done": false,
+          "details": "Run: npx tsc --noEmit, npm run lint, npm run test -- --run. All must pass with the new tests included. Fix any type errors, lint violations, or test failures.",
+          "files": []
+        },
+        {
+          "id": "S-11.2",
+          "title": "Run react-doctor",
+          "done": false,
+          "details": "Run npm run doctor. Score must stay at 100/100. If a finding lands, fix it following the fix-react-doctor-finding skill.",
+          "files": []
+        },
+        {
+          "id": "S-11.3",
+          "title": "Dev server smoke test",
+          "done": false,
+          "details": "Run npm run dev and curl http://localhost:3000/. Verify the home page renders all sections. Curl /blog, /projects, and a few [slug] pages. Verify no console errors or hydration warnings.",
+          "files": []
+        },
+        {
+          "id": "S-11.4",
+          "title": "Update test count documentation",
+          "done": false,
+          "details": "Update the test count in AGENTS.md if it mentions a specific number. Update the scoreboard or testing documentation if applicable.",
+          "files": ["AGENTS.md"]
+        }
+      ]
+    }
+  ],
+  "phases": [
+    { "id": "PHASE-0", "label": "Plan", "epics": ["EPIC-0"], "status": "completed" },
+    { "id": "PHASE-1", "label": "Core lib & hooks", "epics": ["EPIC-3", "EPIC-4"], "status": "planned" },
+    { "id": "PHASE-2", "label": "Sections & UI", "epics": ["EPIC-1", "EPIC-2"], "status": "planned" },
+    { "id": "PHASE-3", "label": "Section data fetchers", "epics": ["EPIC-5"], "status": "planned" },
+    { "id": "PHASE-4", "label": "App routes & middleware", "epics": ["EPIC-6", "EPIC-7", "EPIC-8"], "status": "planned" },
+    { "id": "PHASE-5", "label": "Functionality hardening", "epics": ["EPIC-9"], "status": "planned" },
+    { "id": "PHASE-6", "label": "Chat & RAG internals", "epics": ["EPIC-10"], "status": "planned" },
+    { "id": "PHASE-7", "label": "Verification", "epics": ["EPIC-11"], "status": "planned" }
+  ],
+  "openQuestions": [
+    "Should we split the existing sections-uncovered.test.tsx and ui-uncovered.test.tsx bulk files into individual per-component test files, or keep the bulk approach and just append new tests? The PRD currently plans to add to bulk files for small components and create dedicated files for complex ones.",
+    "Is there a way to reliably count 'files with test coverage' to track the primary success metric? Options: a custom vitest script, a find/grep approach, or a coverage report with file-level thresholds.",
+    "Should the canary token route tests be in the vite test suite (jsdom) or tested via a separate integration test? The PRD currently plans jsdom render tests since canary routes are simple React pages.",
+    "The legacy ProjectsSection (non-revamped) is tested through sections-uncovered.test.tsx but the revamped version has its own test file. Should we add a test that verifies IS_PROJECTS_REVAMP_ENABLED=false correctly falls back to the legacy ProjectsSection?",
+    "HomeContentStreaming uses Suspense boundaries that are difficult to test with jsdom + React 18. Should we add a note that these tests may need React 18's act() with fake timers, or defer to a future React 19 upgrade for better Suspense testing?",
+    "Some lib utilities (constants.ts, media-constants.ts, site-config.ts) are essentially static config files. Should their tests be simple snapshot tests or value-assertion tests? The PRD plans value-assertion tests for correctness.",
+    "Should we add a CI check that fails if the test count decreases? This would prevent regressions in coverage. Could be a GitHub Actions step that compares test count to a baseline."
+  ]
+}

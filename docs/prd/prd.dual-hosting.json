@@ -1,0 +1,572 @@
+{
+  "id": "PRD-DUAL-HOSTING",
+  "title": "Dual Hosting Strategy — V1 on Vercel + V2 on Cloudflare",
+  "version": "1.0.0",
+  "status": "planned",
+  "created": "2026-07-08",
+  "description": "Deploy portfolio-v1 to Vercel and portfolio-v2 to Cloudflare Workers. Single codebase, two production deployments, two domains. V1 becomes the stable legacy site on Vercel. V2 becomes the cutting-edge shadcn registry site on Cloudflare edge.",
+
+  "context": {
+    "currentV1": "Deployed to Cloudflare Workers via OpenNext (wrangler deploy)",
+    "currentV2": "No deployment config — runs locally on localhost:3000",
+    "goal": "V1 → Vercel (stable), V2 → Cloudflare (edge)",
+    "monorepo": "Root contains both portfolio-v1/ and portfolio-v2/ directories",
+    "v1Stack": "Next.js 16, React 18, Tailwind v3, npm, Node 22",
+    "v2Stack": "Next.js 16, React 19, Tailwind v4, pnpm, Node 24, Bun scripts",
+    "sharedCMS": "Sanity project nl0qw78w, dataset production",
+    "domains": {
+      "v1": "namias.tech (current)",
+      "v2": "v2.namias.tech or namias.tech (TBD)"
+    }
+  },
+
+  "architecture": {
+    "overview": "Two independent deployments from one monorepo. Each has its own CI/CD pipeline, domain, and deployment target.",
+    "v1-vercel": {
+      "target": "Vercel",
+      "method": "Vercel auto-detection (no config needed)",
+      "build": "npm run build (portfolio-v1)",
+      "node": "22",
+      "packageManager": "npm",
+      "features": ["ISR", "Edge Middleware", "Image Optimization", "Analytics"]
+    },
+    "v2-cloudflare": {
+      "target": "Cloudflare Workers",
+      "method": "OpenNext adapter (@opennextjs/cloudflare)",
+      "build": "pnpm build (portfolio-v2) + npx opennextjs-cloudflare build",
+      "node": "24",
+      "packageManager": "pnpm",
+      "features": ["Edge computing", "Workers KV", "R2 storage", "D1 database"]
+    },
+    "routing": {
+      "v1": "namias.tech — legacy portfolio, blog, experience",
+      "v2": "v2.namias.tech — shadcn registry, components, blocks, new blog"
+    }
+  },
+
+  "epics": [
+    {
+      "id": "EPIC-1",
+      "title": "Vercel Deployment — Portfolio V1",
+      "priority": "high",
+      "description": "Move portfolio-v1 from Cloudflare to Vercel. Create vercel.json, configure build settings, set up environment variables, and create CI/CD workflow.",
+      "stories": [
+        {
+          "id": "S1.1",
+          "title": "Create vercel.json for portfolio-v1",
+          "file": "portfolio-v1/vercel.json",
+          "description": "Configure Vercel build settings, output directory, install command, and framework detection",
+          "details": {
+            "buildCommand": "npm run build",
+            "outputDirectory": ".next",
+            "installCommand": "npm ci --ignore-scripts && npm rebuild",
+            "framework": "nextjs",
+            "regions": ["sin1"],
+            "headers": [
+              {
+                "source": "/(.*)",
+                "headers": [
+                  { "key": "X-Content-Type-Options", "value": "nosniff" },
+                  { "key": "X-Frame-Options", "value": "DENY" },
+                  { "key": "X-XSS-Protection", "value": "1; mode=block" },
+                  { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "id": "S1.2",
+          "title": "Create Vercel deploy workflow",
+          "file": ".github/workflows/vercel-deploy-v1.yml",
+          "description": "GitHub Actions workflow to deploy portfolio-v1 to Vercel on push to main",
+          "details": {
+            "trigger": "push to main (paths: portfolio-v1/**)",
+            "steps": ["checkout", "setup-node-22", "install", "build", "deploy-to-vercel"],
+            "secrets": ["VERCEL_TOKEN", "VERCEL_ORG_ID", "VERCEL_PROJECT_ID"],
+            "concurrency": "deploy-v1-${{ github.ref }}"
+          }
+        },
+        {
+          "id": "S1.3",
+          "title": "Configure Vercel environment variables",
+          "description": "Set Sanity, analytics, and other env vars in Vercel dashboard",
+          "envVars": [
+            "NEXT_PUBLIC_SANITY_PROJECT_ID",
+            "NEXT_PUBLIC_SANITY_DATASET",
+            "SANITY_API_READ_TOKEN",
+            "SANITY_REVALIDATE_SECRET",
+            "SANITY_MEDIA_GATEWAY_SECRET",
+            "NEXT_PUBLIC_UMAMI_WEBSITE_ID",
+            "NEXT_PUBLIC_UMAMI_DOMAINS"
+          ]
+        },
+        {
+          "id": "S1.4",
+          "title": "Configure Vercel custom domain",
+          "description": "Add namias.tech as primary domain in Vercel project settings",
+          "details": {
+            "domain": "namias.tech",
+            "redirects": ["www.namias.tech → namias.tech"],
+            "dns": "Cloudflare DNS with CNAME to cname.vercel-dns.com"
+          }
+        },
+        {
+          "id": "S1.5",
+          "title": "Remove Cloudflare deploy workflow for V1",
+          "file": ".github/workflows/cloudflare-deploy.yml",
+          "description": "Archive or remove the old Cloudflare deploy workflow since V1 moves to Vercel",
+          "details": {
+            "action": "rename to cloudflare-deploy-v1-archived.yml or delete",
+            "reason": "V1 no longer deploys to Cloudflare"
+          }
+        },
+        {
+          "id": "S1.6",
+          "title": "Test V1 deployment on Vercel",
+          "description": "Verify all V1 routes, Sanity integration, analytics, and redirects work on Vercel",
+          "checks": [
+            "Homepage loads correctly",
+            "Blog posts render with Sanity content",
+            "Sanity Studio accessible at /studio",
+            "RSS feeds work",
+            "OG images generate",
+            "Analytics tracking works",
+            "Security headers present",
+            "Performance acceptable (LCP < 2.5s)"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "EPIC-2",
+      "title": "Cloudflare Deployment — Portfolio V2",
+      "priority": "high",
+      "description": "Deploy portfolio-v2 to Cloudflare Workers using OpenNext adapter. Create wrangler config, open-next config, CI/CD workflow, and configure edge deployment.",
+      "stories": [
+        {
+          "id": "S2.1",
+          "title": "Install OpenNext Cloudflare adapter",
+          "command": "pnpm add -D @opennextjs/cloudflare wrangler",
+          "description": "Add OpenNext Cloudflare adapter and Wrangler CLI to portfolio-v2"
+        },
+        {
+          "id": "S2.2",
+          "title": "Create open-next.config.ts for V2",
+          "file": "portfolio-v2/open-next.config.ts",
+          "description": "Configure OpenNext for Cloudflare Workers deployment",
+          "details": {
+            "import": "@opennextjs/cloudflare",
+            "config": "defineCloudflareConfig({})"
+          }
+        },
+        {
+          "id": "S2.3",
+          "title": "Create wrangler.jsonc for V2",
+          "file": "portfolio-v2/wrangler.jsonc",
+          "description": "Cloudflare Workers configuration for portfolio-v2",
+          "details": {
+            "name": "namias-v2",
+            "main": ".open-next/worker.js",
+            "compatibilityDate": "2026-07-08",
+            "compatibilityFlags": ["nodejs_compat", "global_fetch_strictly_public"],
+            "build": "npx opennextjs-cloudflare build",
+            "assets": ".open-next/assets"
+          }
+        },
+        {
+          "id": "S2.4",
+          "title": "Update next.config.ts for Cloudflare",
+          "file": "portfolio-v2/next.config.ts",
+          "description": "Add Cloudflare-compatible settings to next.config.ts",
+          "details": {
+            "output": "standalone",
+            "notes": "OpenNext requires standalone output for Workers"
+          }
+        },
+        {
+          "id": "S2.5",
+          "title": "Create Cloudflare deploy workflow for V2",
+          "file": ".github/workflows/cloudflare-deploy-v2.yml",
+          "description": "GitHub Actions workflow to deploy portfolio-v2 to Cloudflare Workers",
+          "details": {
+            "trigger": "push to main (paths: portfolio-v2/**)",
+            "steps": ["checkout", "setup-pnpm", "setup-node-24", "install", "build", "deploy-to-cloudflare"],
+            "secrets": ["CLOUDFLARE_API_TOKEN", "CLOUDFLARE_ACCOUNT_ID"],
+            "concurrency": "deploy-v2-${{ github.ref }}"
+          }
+        },
+        {
+          "id": "S2.6",
+          "title": "Configure Cloudflare environment variables",
+          "description": "Set Sanity, analytics, and other env vars in Cloudflare Workers dashboard",
+          "envVars": [
+            "NEXT_PUBLIC_SANITY_PROJECT_ID",
+            "NEXT_PUBLIC_SANITY_DATASET",
+            "SANITY_API_READ_TOKEN",
+            "SANITY_REVALIDATE_SECRET",
+            "SANITY_MEDIA_GATEWAY_SECRET",
+            "NEXT_PUBLIC_POSTHOG_KEY",
+            "NEXT_PUBLIC_POSTHOG_HOST",
+            "NEXT_PUBLIC_OPENPANEL_CLIENT_ID"
+          ]
+        },
+        {
+          "id": "S2.7",
+          "title": "Configure Cloudflare custom domain",
+          "description": "Add v2.namias.tech as custom domain for the Cloudflare Worker",
+          "details": {
+            "domain": "v2.namias.tech",
+            "dns": "Cloudflare DNS (automatic with Workers route)",
+            "route": "v2.namias.tech/*"
+          }
+        },
+        {
+          "id": "S2.8",
+          "title": "Test V2 deployment on Cloudflare",
+          "description": "Verify all V2 routes, Sanity integration, and edge features work",
+          "checks": [
+            "Homepage loads correctly",
+            "Components registry works",
+            "Blog posts render",
+            "Sanity Studio accessible at /studio",
+            "RSS feeds work",
+            "OG images generate",
+            "Edge functions work",
+            "Performance acceptable (TTFB < 200ms)"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "EPIC-3",
+      "title": "DNS & Domain Configuration",
+      "priority": "high",
+      "description": "Configure DNS records to route traffic to the correct hosting provider for each subdomain/domain.",
+      "stories": [
+        {
+          "id": "S3.1",
+          "title": "Configure DNS for V1 (Vercel)",
+          "description": "Set up DNS records to route namias.tech to Vercel",
+          "details": {
+            "records": [
+              { "type": "CNAME", "name": "@", "value": "cname.vercel-dns.com", "proxied": false },
+              { "type": "CNAME", "name": "www", "value": "cname.vercel-dns.com", "proxied": false }
+            ],
+            "notes": "DNS managed in Cloudflare but not proxied (Vercel handles SSL)"
+          }
+        },
+        {
+          "id": "S3.2",
+          "title": "Configure DNS for V2 (Cloudflare)",
+          "description": "Set up DNS records to route v2.namias.tech to Cloudflare Worker",
+          "details": {
+            "records": [
+              { "type": "CNAME", "name": "v2", "value": "namias-v2.<account-id>.workers.dev", "proxied": true }
+            ],
+            "notes": "DNS managed in Cloudflare, proxied through Cloudflare edge"
+          }
+        },
+        {
+          "id": "S3.3",
+          "title": "Configure Sanity webhook URLs",
+          "description": "Update Sanity webhook endpoints to point to correct deployment for revalidation",
+          "details": {
+            "v1": "https://namias.tech/api/revalidate",
+            "v2": "https://v2.namias.tech/api/revalidate",
+            "notes": "Both share the same Sanity project, webhooks must target both"
+          }
+        }
+      ]
+    },
+    {
+      "id": "EPIC-4",
+      "title": "CI/CD Pipeline Updates",
+      "priority": "medium",
+      "description": "Update GitHub Actions workflows to support dual deployment. Add path-based triggers so changes to each portfolio deploy independently.",
+      "stories": [
+        {
+          "id": "S4.1",
+          "title": "Create unified deploy workflow",
+          "file": ".github/workflows/deploy.yml",
+          "description": "Single workflow file that handles both V1 (Vercel) and V2 (Cloudflare) deployments based on path changes",
+          "details": {
+            "trigger": "push to main",
+            "jobs": {
+              "deploy-v1": {
+                "if": "paths includes portfolio-v1/**",
+                "runs-on": "ubuntu-latest",
+                "steps": ["checkout", "setup-node-22", "install-v1", "build-v1", "deploy-vercel"]
+              },
+              "deploy-v2": {
+                "if": "paths includes portfolio-v2/**",
+                "runs-on": "ubuntu-latest",
+                "steps": ["checkout", "setup-pnpm", "setup-node-24", "install-v2", "build-v2", "deploy-cloudflare"]
+              }
+            }
+          }
+        },
+        {
+          "id": "S4.2",
+          "title": "Create PR validation workflow for both",
+          "file": ".github/workflows/pr-validation.yml",
+          "description": "Validate both portfolios on PRs — run tests, lint, typecheck for changed portfolio only",
+          "details": {
+            "trigger": "pull_request to main",
+            "jobs": {
+              "validate-v1": {
+                "if": "paths includes portfolio-v1/**",
+                "steps": ["lint-v1", "typecheck-v1", "test-v1", "build-v1"]
+              },
+              "validate-v2": {
+                "if": "paths includes portfolio-v2/**",
+                "steps": ["lint-v2", "typecheck-v2", "test-v2", "build-v2"]
+              }
+            }
+          }
+        },
+        {
+          "id": "S4.3",
+          "title": "Create preview deployment workflow",
+          "file": ".github/workflows/preview.yml",
+          "description": "Auto-deploy preview environments for PRs — Vercel preview for V1, Cloudflare preview for V2",
+          "details": {
+            "trigger": "pull_request to main",
+            "v1": "Vercel auto-creates preview URLs on PR",
+            "v2": "Cloudflare Workers preview URL on PR"
+          }
+        }
+      ]
+    },
+    {
+      "id": "EPIC-5",
+      "title": "Cross-Deployment Features",
+      "priority": "medium",
+      "description": "Implement features that work across both deployments — shared Sanity CMS, cross-links, and unified analytics.",
+      "stories": [
+        {
+          "id": "S5.1",
+          "title": "Shared Sanity CMS configuration",
+          "description": "Both V1 and V2 connect to the same Sanity project (nl0qw78w). Ensure schemas, data, and webhooks work for both deployments.",
+          "details": {
+            "project": "nl0qw78w",
+            "dataset": "production",
+            "webhooks": [
+              { "url": "https://namias.tech/api/revalidate", "trigger": "on publish" },
+              { "url": "https://v2.namias.tech/api/revalidate", "trigger": "on publish" }
+            ]
+          }
+        },
+        {
+          "id": "S5.2",
+          "title": "Cross-links between V1 and V2",
+          "description": "Add navigation links between the two deployments so users can switch between them",
+          "details": {
+            "v1Header": "Link to v2.namias.tech for new components",
+            "v2Header": "Link to namias.tech for legacy content",
+            "implementation": "Add banner or nav link in header"
+          }
+        },
+        {
+          "id": "S5.3",
+          "title": "Unified analytics tracking",
+          "description": "Track users across both deployments with consistent analytics",
+          "details": {
+            "v1": "Umami (existing)",
+            "v2": "PostHog + OpenPanel (existing)",
+            "notes": "Consider using same analytics tool for both, or keep separate"
+          }
+        },
+        {
+          "id": "S5.4",
+          "title": "Shared environment variables template",
+          "file": ".env.example",
+          "description": "Create a unified .env.example that documents all env vars for both deployments",
+          "details": {
+            "sections": ["Sanity (shared)", "V1-specific (Vercel)", "V2-specific (Cloudflare)"]
+          }
+        }
+      ]
+    },
+    {
+      "id": "EPIC-6",
+      "title": "Testing & Validation",
+      "priority": "high",
+      "description": "Comprehensive testing of both deployments to ensure everything works correctly in production.",
+      "stories": [
+        {
+          "id": "S6.1",
+          "title": "V1 Vercel deployment test suite",
+          "description": "Run Playwright tests against Vercel deployment",
+          "checks": [
+            "All static routes return 200",
+            "Dynamic routes (blog/[slug]) work",
+            "API routes return JSON",
+            "Sanity data loads correctly",
+            "Images optimize correctly",
+            "Security headers present",
+            "RSS feeds valid",
+            "OG images generate",
+            "Performance: LCP < 2.5s, CLS < 0.1"
+          ]
+        },
+        {
+          "id": "S6.2",
+          "title": "V2 Cloudflare deployment test suite",
+          "description": "Run Playwright tests against Cloudflare deployment",
+          "checks": [
+            "All static routes return 200",
+            "Components registry works",
+            "Dynamic routes work",
+            "API routes return JSON",
+            "Sanity data loads correctly",
+            "Edge functions execute",
+            "RSS feeds valid",
+            "OG images generate",
+            "Performance: TTFB < 200ms, CLS < 0.1"
+          ]
+        },
+        {
+          "id": "S6.3",
+          "title": "Cross-deployment smoke tests",
+          "description": "Verify both deployments are accessible and share data correctly",
+          "checks": [
+            "V1 accessible at namias.tech",
+            "V2 accessible at v2.namias.tech",
+            "Both show same Sanity content",
+            "Cross-links work between deployments",
+            "Webhooks trigger revalidation on both"
+          ]
+        },
+        {
+          "id": "S6.4",
+          "title": "Performance comparison tests",
+          "description": "Compare performance metrics between Vercel and Cloudflare deployments",
+          "metrics": [
+            "TTFB (Time to First Byte)",
+            "LCP (Largest Contentful Paint)",
+            "CLS (Cumulative Layout Shift)",
+            "TBT (Total Blocking Time)",
+            "Network requests count",
+            "Response sizes"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "EPIC-7",
+      "title": "Monitoring & Rollback",
+      "priority": "medium",
+      "description": "Set up monitoring for both deployments and create rollback procedures.",
+      "stories": [
+        {
+          "id": "S7.1",
+          "title": "Vercel monitoring for V1",
+          "description": "Configure Vercel Analytics and Speed Insights for V1",
+          "details": {
+            "features": ["Web Vitals", "Speed Insights", "Error Tracking", "Function Logs"]
+          }
+        },
+        {
+          "id": "S7.2",
+          "title": "Cloudflare monitoring for V2",
+          "description": "Configure Cloudflare Workers Analytics and Logging for V2",
+          "details": {
+            "features": ["Workers Analytics", "Logs", "Alerts", "Performance"]
+          }
+        },
+        {
+          "id": "S7.3",
+          "title": "Rollback procedures",
+          "description": "Document rollback steps for each deployment",
+          "details": {
+            "v1": "Vercel instant rollback via dashboard or CLI",
+            "v2": "Cloudflare rollback via wrangler rollback or dashboard",
+            "emergency": "Keep previous deployment artifacts for quick rollback"
+          }
+        }
+      ]
+    }
+  ],
+
+  "deploymentMatrix": {
+    "v1": {
+      "name": "Portfolio V1",
+      "hosting": "Vercel",
+      "domain": "namias.tech",
+      "build": "npm run build",
+      "packageManager": "npm",
+      "nodeVersion": "22",
+      "framework": "Next.js 16",
+      "features": ["ISR", "Edge Middleware", "Image Optimization", "Analytics"],
+      "ciCd": "GitHub Actions → Vercel",
+      "rollback": "Vercel instant rollback"
+    },
+    "v2": {
+      "name": "Portfolio V2",
+      "hosting": "Cloudflare Workers",
+      "domain": "v2.namias.tech",
+      "build": "pnpm build + opennextjs-cloudflare build",
+      "packageManager": "pnpm",
+      "nodeVersion": "24",
+      "framework": "Next.js 16 + OpenNext",
+      "features": ["Edge Computing", "Workers KV", "R2", "D1"],
+      "ciCd": "GitHub Actions → Cloudflare Workers",
+      "rollback": "Cloudflare rollback"
+    }
+  },
+
+  "risks": [
+    {
+      "risk": "OpenNext compatibility with Next.js 16",
+      "mitigation": "Use --dangerouslyUseUnsupportedNextVersion flag, test thoroughly",
+      "severity": "high"
+    },
+    {
+      "risk": "Shared Sanity project causing webhook conflicts",
+      "mitigation": "Use separate webhook endpoints, test revalidation independently",
+      "severity": "medium"
+    },
+    {
+      "risk": "DNS propagation delays during cutover",
+      "mitigation": "Lower TTL before changes, verify DNS records, test with dig/nslookup",
+      "severity": "low"
+    },
+    {
+      "risk": "Environment variable mismatches between deployments",
+      "mitigation": "Create unified .env.example, validate all vars before deploy",
+      "severity": "medium"
+    },
+    {
+      "risk": "V2 Cloudflare deployment failing due to Node.js 24 compatibility",
+      "mitigation": "Test locally with wrangler dev, use compatibility flags",
+      "severity": "medium"
+    }
+  ],
+
+  "successCriteria": {
+    "v1": [
+      "namias.tech loads V1 on Vercel",
+      "All routes return 200",
+      "Sanity content loads correctly",
+      "Performance: LCP < 2.5s",
+      "Security headers present",
+      "Analytics tracking works"
+    ],
+    "v2": [
+      "v2.namias.tech loads V2 on Cloudflare",
+      "All routes return 200",
+      "Components registry works",
+      "Sanity content loads correctly",
+      "Performance: TTFB < 200ms",
+      "Edge functions execute",
+      "Analytics tracking works"
+    ],
+    "both": [
+      "Both deployments accessible simultaneously",
+      "Shared Sanity data consistent",
+      "Cross-links work",
+      "Webhooks trigger revalidation on both"
+    ]
+  }
+}

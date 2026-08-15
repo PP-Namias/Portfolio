@@ -1,0 +1,319 @@
+{
+  "id": "PRD-REPO-CLEANUP",
+  "title": "Repository Cleanup — Clean, Organize, Optimize",
+  "version": "1.0.0",
+  "status": "planning",
+  "created": "2026-07-14",
+  "description": "Comprehensive repo cleanup: delete stale files, archive completed PRDs, consolidate 33 workflows to ~15, fix broken studio paths, remove duplicates, update v2 branding.",
+
+  "context": {
+    "workflowCount": 33,
+    "targetWorkflowCount": 15,
+    "completedPrds": 6,
+    "stalePrds": 4,
+    "duplicateFiles": 7,
+    "brokenPathRefs": 10
+  },
+
+  "epics": [
+    {
+      "id": "EPIC-1",
+      "title": "Delete Stale & Build Artifact Files",
+      "priority": "P0",
+      "description": "Remove build artifacts, completed PRDs, duplicate configs, and stale scripts.",
+      "stories": [
+        {
+          "id": "S1.1",
+          "title": "Delete tsconfig.tsbuildinfo files",
+          "files": ["portfolio-v1/tsconfig.tsbuildinfo", "studio/tsconfig.tsbuildinfo"],
+          "effort": "5m"
+        },
+        {
+          "id": "S1.2",
+          "title": "Delete page-output.txt",
+          "files": ["portfolio-v1/page-output.txt"],
+          "effort": "5m"
+        },
+        {
+          "id": "S1.3",
+          "title": "Delete completed PRDs",
+          "files": [
+            "docs/prd/prd.portfolio-v2-namias-rebrand.json",
+            "docs/prd/prd.github-contributions-fix.json",
+            "docs/prd/prd.loop-engineering.json"
+          ],
+          "effort": "5m"
+        },
+        {
+          "id": "S1.4",
+          "title": "Delete stale/superseded PRDs",
+          "files": [
+            "docs/prd/prd.portfolio-v2-commits.json",
+            "docs/prd/prd.monorepo-restructure.json",
+            "docs/prd/prd.portfolio-v2-sanity-schemas.json"
+          ],
+          "effort": "5m"
+        },
+        {
+          "id": "S1.5",
+          "title": "Delete duplicate portfolio-v1 files",
+          "files": [
+            "portfolio-v1/SECURITY.md",
+            "portfolio-v1/CONTRIBUTING.md",
+            "portfolio-v1/CHANGELOG.md",
+            "portfolio-v1/LICENSE",
+            "portfolio-v1/.gitleaks.toml",
+            "portfolio-v1/.trivyignore"
+          ],
+          "effort": "10m"
+        },
+        {
+          "id": "S1.6",
+          "title": "Delete stale portfolio-v1 scripts",
+          "files": [
+            "portfolio-v1/scripts/ocr-a.woff.b64",
+            "portfolio-v1/scripts/update-about-section.mjs"
+          ],
+          "effort": "5m"
+        },
+        {
+          "id": "S1.7",
+          "title": "Delete duplicate deploy-studio.yml workflow",
+          "files": [".github/workflows/deploy-studio.yml"],
+          "effort": "5m"
+        }
+      ]
+    },
+    {
+      "id": "EPIC-2",
+      "title": "Archive Completed PRDs",
+      "priority": "P1",
+      "description": "Move completed PRDs to docs/prd/archive/ and keep only active ones.",
+      "stories": [
+        {
+          "id": "S2.1",
+          "title": "Create archive directory",
+          "files": ["docs/prd/archive/"],
+          "effort": "5m"
+        },
+        {
+          "id": "S2.2",
+          "title": "Move completed PRDs to archive",
+          "files": ["docs/prd/archive/"],
+          "effort": "10m"
+        },
+        {
+          "id": "S2.3",
+          "title": "Update PRD statuses",
+          "description": "Mark prd.sanity-studio-root.json as completed, mark v2 sanity PRDs as cancelled",
+          "files": ["docs/prd/prd.sanity-studio-root.json", "docs/prd/prd.portfolio-v2-sanity-cms.json"],
+          "effort": "10m"
+        },
+        {
+          "id": "S2.4",
+          "title": "Create PRD index README",
+          "files": ["docs/prd/README.md"],
+          "effort": "15m"
+        }
+      ]
+    },
+    {
+      "id": "EPIC-3",
+      "title": "Fix Broken Path References",
+      "priority": "P0",
+      "description": "Update all files still referencing portfolio-v1/studio/ to point to root studio/.",
+      "stories": [
+        {
+          "id": "S3.1",
+          "title": "Fix docker-compose.yml studio path",
+          "files": ["docker-compose.yml"],
+          "effort": "10m"
+        },
+        {
+          "id": "S3.2",
+          "title": "Fix docs/docker-services.md studio path",
+          "files": ["docs/docker-services.md"],
+          "effort": "5m"
+        },
+        {
+          "id": "S3.3",
+          "title": "Fix sanity-schema-check.yml working directory",
+          "files": [".github/workflows/sanity-schema-check.yml"],
+          "effort": "5m"
+        },
+        {
+          "id": "S3.4",
+          "title": "Fix prd.multi-service-docker.json studio path",
+          "files": ["docs/prd/prd.multi-service-docker.json"],
+          "effort": "5m"
+        },
+        {
+          "id": "S3.5",
+          "title": "Fix portfolio-v1 VERCEL_DEPLOYMENT.md",
+          "files": ["portfolio-v1/docs/VERCEL_DEPLOYMENT.md"],
+          "effort": "5m"
+        }
+      ]
+    },
+    {
+      "id": "EPIC-4",
+      "title": "Aggressive Workflow Cleanup",
+      "priority": "P1",
+      "description": "Reduce 33 workflows to ~15 by removing duplicates and overlapping ones.",
+      "stories": [
+        {
+          "id": "S4.1",
+          "title": "Audit all workflows",
+          "description": "Categorize all 33 workflows into keep/delete/merge",
+          "files": [".github/workflows/"],
+          "effort": "30m"
+        },
+        {
+          "id": "S4.2",
+          "title": "Delete overlapping security workflows",
+          "description": "Consolidate 7 security workflows to 3-4 essential ones",
+          "files": [".github/workflows/"],
+          "effort": "15m"
+        },
+        {
+          "id": "S4.3",
+          "title": "Delete overlapping health monitoring workflows",
+          "description": "Consolidate 3 health workflows to 1",
+          "files": [".github/workflows/"],
+          "effort": "10m"
+        },
+        {
+          "id": "S4.4",
+          "title": "Delete overlapping deploy workflows",
+          "description": "Remove duplicate v1/v2 deploy workflows",
+          "files": [".github/workflows/"],
+          "effort": "15m"
+        },
+        {
+          "id": "S4.5",
+          "title": "Delete experimental/unused workflows",
+          "description": "Remove k8s-deploy.yml, docker-build.yml if not actively used",
+          "files": [".github/workflows/"],
+          "effort": "10m"
+        },
+        {
+          "id": "S4.6",
+          "title": "Update workflow trigger paths",
+          "description": "Ensure all workflows use correct paths after studio move",
+          "files": [".github/workflows/"],
+          "effort": "15m"
+        }
+      ]
+    },
+    {
+      "id": "EPIC-5",
+      "title": "Remove Duplicate Files & Update Branding",
+      "priority": "P2",
+      "description": "Remove duplicate AGENTS.md, update v2 branding, clean up gitignore.",
+      "stories": [
+        {
+          "id": "S5.1",
+          "title": "Delete portfolio-v1/AGENTS.md",
+          "description": "Root AGENTS.md is canonical",
+          "files": ["portfolio-v1/AGENTS.md"],
+          "effort": "5m"
+        },
+        {
+          "id": "S5.2",
+          "title": "Update portfolio-v2 branding",
+          "description": "Update package.json, README.md, DEVELOPMENT.md, AGENTS.md with PP Namias branding",
+          "files": [
+            "portfolio-v2/package.json",
+            "portfolio-v2/README.md",
+            "portfolio-v2/DEVELOPMENT.md",
+            "portfolio-v2/AGENTS.md"
+          ],
+          "effort": "30m"
+        },
+        {
+          "id": "S5.3",
+          "title": "Delete portless.json and registry.json from v2",
+          "description": "Leftover from chanhdai.com fork",
+          "files": [
+            "portfolio-v2/portless.json",
+            "portfolio-v2/registry.json"
+          ],
+          "effort": "5m"
+        },
+        {
+          "id": "S5.4",
+          "title": "Update .gitignore for new patterns",
+          "description": "Add portfolio-v2/.mcp.json, registry.json patterns",
+          "files": [".gitignore"],
+          "effort": "10m"
+        },
+        {
+          "id": "S5.5",
+          "title": "Update copilot-instructions.md",
+          "description": "Replace legacy v1-only guidance with current agent routing from AGENTS.md",
+          "files": [".github/copilot-instructions.md"],
+          "effort": "15m"
+        }
+      ]
+    },
+    {
+      "id": "EPIC-6",
+      "title": "Verification & Final Cleanup",
+      "priority": "P0",
+      "description": "Verify everything works after cleanup.",
+      "stories": [
+        {
+          "id": "S6.1",
+          "title": "Verify docker-compose.yml works",
+          "command": "docker-compose config",
+          "effort": "10m"
+        },
+        {
+          "id": "S6.2",
+          "title": "Verify studio builds",
+          "command": "cd studio && pnpm build",
+          "effort": "15m"
+        },
+        {
+          "id": "S6.3",
+          "title": "Verify v1 builds",
+          "command": "cd portfolio-v1 && pnpm build",
+          "effort": "30m"
+        },
+        {
+          "id": "S6.4",
+          "title": "Verify v2 builds",
+          "command": "cd portfolio-v2 && pnpm build",
+          "effort": "30m"
+        },
+        {
+          "id": "S6.5",
+          "title": "Verify GitHub Actions workflows",
+          "description": "Check no broken workflow references",
+          "effort": "15m"
+        }
+      ]
+    }
+  ],
+
+  "commitPlan": {
+    "strategy": "One commit per story slice",
+    "naming": "chore(scope): description",
+    "totalExpectedCommits": 25,
+    "examples": [
+      "chore(repo): delete build artifacts and stale files",
+      "chore(repo): archive completed PRDs",
+      "fix(repo): update studio path in docker-compose.yml",
+      "chore(ci): consolidate security workflows",
+      "chore(repo): remove duplicate files and update branding"
+    ]
+  },
+
+  "verification": {
+    "docker": "docker-compose config validates",
+    "studio": "cd studio && pnpm build succeeds",
+    "v1": "cd portfolio-v1 && pnpm build succeeds",
+    "v2": "cd portfolio-v2 && pnpm build succeeds",
+    "workflows": "No broken references in .github/workflows/"
+  }
+}

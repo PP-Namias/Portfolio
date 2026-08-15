@@ -1,0 +1,55 @@
+{
+  "name": "PP Namias — Portfolio",
+  "short_name": "JN Portfolio",
+  "description": "Portfolio of Jhon Keneth Ryan Namias — Full Stack Engineer & AI Automation Specialist",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#000000",
+  "theme_color": "#db2777",
+  "categories": ["portfolio", "technology", "development"],
+  "prefer_related_applications": false,
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "type": "image/svg+xml",
+      "sizes": "any"
+    },
+    {
+      "src": "/icons/icon-192x192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/icons/icon-256x256.png",
+      "type": "image/png",
+      "sizes": "256x256"
+    },
+    {
+      "src": "/icons/icon-384x384.png",
+      "type": "image/png",
+      "sizes": "384x384"
+    },
+    {
+      "src": "/icons/icon-512x512.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/apple-touch-icon-180x180.png",
+      "type": "image/png",
+      "sizes": "180x180"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/og-image.png",
+      "type": "image/png",
+      "sizes": "1200x630",
+      "form_factor": "wide",
+      "label": "PP Namias Portfolio — Full Stack Engineer & AI Specialist"
+    }
+  ]
+}

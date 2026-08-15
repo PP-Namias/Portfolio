@@ -1,0 +1,125 @@
+{
+  "project": "Namias Portfolio - Multi-Service Docker Setup",
+  "codeName": "multi-service-docker",
+  "version": "1.0.0",
+  "owner": "Jhon Keneth Ryan Namias (PP Namias)",
+  "contact": "pp.namias@gmail.com",
+  "lastUpdated": "2026-07-12",
+  "branch": "feature/multi-service-docker",
+  "summary": "Run Portfolio V1, Portfolio V2, and Sanity CMS Studio as separate Docker containers with a unified docker-compose.yml for easy local development and deployment.",
+  "narrative": "The portfolio repository contains two Next.js applications (V1 and V2) and a Sanity CMS Studio. Currently, running all three requires separate terminal windows, different package managers (npm for V1, pnpm for V2), and manual coordination. This PRD creates a unified Docker setup where each service runs in its own container, can be started/stopped independently, and shares the same Sanity backend. A root-level docker-compose.yml orchestrates all three with a single command.",
+  "principles": [
+    "Each service runs in its own isolated container",
+    "Services can be started individually or together",
+    "Shared Sanity backend with consistent environment variables",
+    "One command to start everything: docker-compose up",
+    "One command to start a specific service: docker-compose up portfolio-v1",
+    "Consistent port mapping across environments",
+    "Health checks for all services",
+    "Volume mounts for hot reload in development"
+  ],
+  "services": {
+    "portfolio-v1": {
+      "description": "Legacy portfolio (Next.js 16 + React 18)",
+      "dockerfile": "portfolio-v1/Dockerfile",
+      "port": 3001,
+      "packageManager": "npm",
+      "nodeVersion": "22",
+      "dependencies": ["studio (for dev mode only)"]
+    },
+    "portfolio-v2": {
+      "description": "Current portfolio (Next.js 16 + React 19 + Tailwind v4)",
+      "dockerfile": "portfolio-v2/Dockerfile",
+      "port": 3002,
+      "packageManager": "pnpm",
+      "nodeVersion": "24",
+      "dependencies": []
+    },
+    "sanity-studio": {
+      "description": "Sanity CMS Studio (Sanity v4)",
+      "dockerfile": "studio/Dockerfile",
+      "port": 3333,
+      "packageManager": "npm",
+      "nodeVersion": "22",
+      "dependencies": []
+    }
+  },
+  "ports": {
+    "3001": "Portfolio V1 (Next.js)",
+    "3002": "Portfolio V2 (Next.js)",
+    "3333": "Sanity Studio"
+  },
+  "environment": {
+    "shared": [
+      "NEXT_PUBLIC_SANITY_PROJECT_ID",
+      "NEXT_PUBLIC_SANITY_DATASET",
+      "SANITY_API_READ_TOKEN",
+      "SANITY_API_WRITE_TOKEN",
+      "SANITY_REVALIDATE_SECRET"
+    ],
+    "v1_specific": [
+      "NEXT_PUBLIC_SITE_URL",
+      "SANITY_STUDIO_PROJECT_ID",
+      "SANITY_STUDIO_DATASET",
+      "GOOGLE_GEMINI_API_KEY",
+      "ADMIN_API_KEY"
+    ],
+    "v2_specific": [
+      "NEXT_PUBLIC_APP_URL",
+      "GITHUB_CONTRIBUTIONS_API_URL"
+    ],
+    "studio_specific": [
+      "SANITY_STUDIO_PROJECT_ID",
+      "SANITY_STUDIO_DATASET"
+    ]
+  },
+  "epics": [
+    {
+      "id": "EPIC-1",
+      "title": "Portfolio V1 Dockerfile",
+      "status": "planned",
+      "summary": "Create Dockerfile for Portfolio V1 with npm, Node 22, and standalone output.",
+      "files": ["portfolio-v1/Dockerfile", "portfolio-v1/.dockerignore"]
+    },
+    {
+      "id": "EPIC-2",
+      "title": "Sanity Studio Dockerfile",
+      "status": "planned",
+      "summary": "Create Dockerfile for Sanity Studio with npm, Node 22, and port 3333.",
+      "files": ["studio/Dockerfile"]
+    },
+    {
+      "id": "EPIC-3",
+      "title": "Root docker-compose.yml",
+      "status": "planned",
+      "summary": "Create unified docker-compose.yml at repo root with all three services.",
+      "files": ["docker-compose.yml"]
+    },
+    {
+      "id": "EPIC-4",
+      "title": "Root .env.example",
+      "status": "planned",
+      "summary": "Create unified .env.example at repo root with all required variables.",
+      "files": [".env.docker.example"]
+    },
+    {
+      "id": "EPIC-5",
+      "title": "Makefile and Documentation",
+      "status": "planned",
+      "summary": "Create root Makefile and deployment documentation.",
+      "files": ["Makefile", "docs/docker-services.md"]
+    }
+  ],
+  "files": {
+    "created": [
+      "portfolio-v1/Dockerfile",
+      "portfolio-v1/.dockerignore",
+      "studio/Dockerfile",
+      "docker-compose.yml",
+      ".env.docker.example",
+      "Makefile",
+      "docs/docker-services.md"
+    ],
+    "modified": []
+  }
+}

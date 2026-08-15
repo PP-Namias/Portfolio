@@ -1,22 +1,26 @@
 {
-  "name": "namias-portfolio-cms-studio",
+  "name": "namias-cms-studio",
   "private": true,
   "version": "1.0.0",
   "main": "package.json",
   "license": "MIT",
   "scripts": {
-    "dev": "node ./scripts/run-with-root-env.mjs sanity dev",
-    "start": "node ./scripts/run-with-root-env.mjs sanity start",
+    "dev": "sanity dev",
+    "start": "sanity start",
     "lint": "eslint .",
-    "build": "node ./scripts/run-with-root-env.mjs sanity build",
-    "deploy": "node ./scripts/run-with-root-env.mjs sanity deploy",
-    "deploy-graphql": "node ./scripts/run-with-root-env.mjs sanity graphql deploy"
+    "build": "sanity build",
+    "deploy": "sanity deploy",
+    "deploy-graphql": "sanity graphql deploy",
+    "typecheck": "tsc --noEmit",
+    "seed:tech-stack": "node scripts/seed-tech-stack.mjs"
   },
   "keywords": [
     "sanity"
   ],
   "dependencies": {
     "@sanity/assist": "^4.4.8",
+    "@sanity/icons": "^3.8.0",
+    "@sanity/ui": "^3.5.2",
     "@sanity/vision": "^4.22.0",
     "marked": "^18.0.4",
     "react": "19.2.6",
@@ -27,6 +31,7 @@
   "devDependencies": {
     "@sanity/eslint-config-studio": "^5.0.2",
     "@types/react": "^19.1",
+    "@types/react-dom": "^19.2.4",
     "eslint": "^9.28",
     "prettier": "^3.5",
     "typescript": "^5.8"
@@ -40,21 +45,27 @@
   "pnpm": {
     "overrides": {
       "@isaacs/brace-expansion": "5.0.6",
-      "brace-expansion": "2.0.3",
+      "brace-expansion": "2.1.4",
       "@babel/plugin-transform-modules-systemjs": "7.29.4",
       "uuid": "11.1.1",
       "esbuild": "0.28.1",
       "prismjs": "1.30.0",
-      "js-yaml": "4.2.0"
+      "js-yaml": "4.3.1",
+      "adm-zip": "0.6.0",
+      "react": "19.2.6",
+      "react-dom": "19.2.6"
     }
   },
   "overrides": {
     "@isaacs/brace-expansion": "5.0.6",
-    "brace-expansion": "2.0.3",
+    "brace-expansion": "2.1.4",
     "@babel/plugin-transform-modules-systemjs": "7.29.4",
     "uuid": "11.1.1",
     "esbuild": "0.28.1",
     "prismjs": "1.30.0",
-    "js-yaml": "4.2.0"
+    "js-yaml": "4.3.1",
+    "adm-zip": "0.6.0",
+    "react": "19.2.6",
+    "react-dom": "19.2.6"
   }
 }

@@ -1,0 +1,464 @@
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { render, screen, fireEvent, act } from '@testing-library/react';
+import React from 'react';
+
+const openModalMock = vi.fn();
+const toggleThemeMock = vi.fn();
+
+let mockedTheme = {
+  isDark: true,
+  mounted: true,
+  toggleTheme: toggleThemeMock,
+};
+
+vi.mock('framer-motion', () => {
+  const R = require('react');
+
+  const motion = new Proxy(
+    {},
+    {
+      get: (_, tag: string) =>
+        R.forwardRef(function MotionTag(
+          {
+            children,
+            whileHover: _whileHover,
+            whileTap: _whileTap,
+            whileInView: _whileInView,
+            initial: _initial,
+            animate: _animate,
+            exit: _exit,
+            transition: _transition,
+            variants: _variants,
+            custom: _custom,
+            layout: _layout,
+            viewport: _viewport,
+            ...props
+          }: Record<string, unknown>,
+          ref: React.Ref<HTMLElement>
+        ) {
+          return R.createElement(tag, { ref, ...props }, children);
+        }),
+    }
+  );
+
+  return {
+    motion,
+    AnimatePresence: ({ children }: { children: React.ReactNode }) => children,
+    useScroll: () => ({ scrollYProgress: 0.5 }),
+    useSpring: (value: unknown) => value,
+    useReducedMotion: () => false,
+  };
+});
+
+vi.mock('next/image', () => ({
+  default: ({
+    alt = '',
+    src = '',
+    fill: _fill,
+    priority: _priority,
+    ...props
+  }: Record<string, unknown>) => (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      alt={typeof alt === 'string' ? alt : ''}
+      src={typeof src === 'string' ? src : ''}
+      {...props}
+    />
+  ),
+}));
+
+vi.mock('next/link', () => ({
+  default: ({ href, children, ...props }: { href: string; children: React.ReactNode }) => (
+    <a href={href} {...props}>{children}</a>
+  ),
+}));
+
+vi.mock('@/hooks/useTheme', () => ({
+  useTheme: () => mockedTheme,
+}));
+
+vi.mock('@/components/ui/Modal', () => ({
+  Modal: ({ open, title, children }: { open: boolean; title: string; children: React.ReactNode }) => (
+    open ? <div data-testid="mock-modal"><h2>{title}</h2>{children}</div> : null
+  ),
+}));
+
+vi.mock('@/hooks/useModal', () => ({
+  useModal: () => ({
+    openModal: openModalMock,
+    closeModal: vi.fn(),
+  }),
+}));
+
+vi.mock('@/hooks/useCmsContent', () => ({
+  useCmsContent: () => ({
+    profile: {
+      name: 'Jhon Keneth Ryan Namias',
+      title: 'Full Stack Engineer',
+      email: 'pp.namias@gmail.com',
+    },
+    hero: {
+      profileImageUrl: 'https://cdn.example.com/profile.jpg',
+    },
+    socialLinks: [
+      { name: 'github', icon: 'github', label: 'PP-Namias', link: 'https://github.com/PP-Namias' },
+      { name: 'linkedin', icon: 'linkedin', label: 'LinkedIn', link: 'https://www.linkedin.com/in/pp-namias/' },
+      { name: 'x', icon: 'twitter', label: '@PP_Namias', link: 'https://x.com/PP_Namias' },
+      { name: 'instagram', icon: 'instagram', label: '@pp_namias', link: 'https://www.instagram.com/pp_namias/' },
+    ],
+    experiences: [
+      {
+        position: 'Engineer',
+        company: 'Company A',
+        startedAt: '2024-01-01',
+        endedAt: null,
+        type: 'Full-time',
+        modality: 'Hybrid',
+        country: 'PH',
+        summary: 'Worked on automation.',
+        highlights: ['Built systems'],
+        achievements: ['Award'],
+        technologies: ['TypeScript'],
+        images: ['sample.png'],
+        relatedProjects: [],
+      },
+    ],
+  }),
+}));
+
+import { MagicCursor } from '@/components/ui/MagicCursor';
+import OptimizedImage from '@/components/ui/OptimizedImage';
+import { HackedText } from '@/components/ui/hacked-text';
+import { CardContainer, CardBody, CardItem } from '@/components/ui/3d-card';
+import { AccentColorProvider } from '@/hooks/useAccentColor';
+import { Button } from '@/components/ui/Button';
+import { Card } from '@/components/ui/Card';
+import { ThemeToggle } from '@/components/ui/ThemeToggle';
+import { ScrollToTop } from '@/components/ui/ScrollToTop';
+import { ReadingProgress } from '@/components/ui/ReadingProgress';
+import { VerifiedBadge } from '@/components/ui/VerifiedBadge';
+import { Footer } from '@/components/layout/Footer';
+import { ColorSchemePicker } from '@/components/ui/ColorSchemePicker';
+import { ProjectCard } from '@/components/ui/ProjectCard';
+import { TimelineItem } from '@/components/ui/TimelineItem';
+import { ExperienceModal } from '@/components/ui/ExperienceModal';
+
+describe('uncovered UI components', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    mockedTheme = {
+      isDark: true,
+      mounted: true,
+      toggleTheme: toggleThemeMock,
+    };
+
+    Object.defineProperty(globalThis, 'scrollTo', {
+      writable: true,
+      value: vi.fn(),
+    });
+  });
+
+  afterEach(() => {
+    document.body.style.overflow = '';
+  });
+
+  it('Button renders internal link, external link, and button variants', () => {
+    const { rerender } = render(<Button internal href="/blog">Open Blog</Button>);
+    expect(screen.getByText('Open Blog').closest('a')).toHaveAttribute('href', '/blog');
+
+    rerender(<Button href="https://example.com">External</Button>);
+    const external = screen.getByText('External').closest('a');
+    expect(external).toHaveAttribute('target', '_blank');
+
+    const onClick = vi.fn();
+    rerender(<Button onClick={onClick}>Click</Button>);
+    fireEvent.click(screen.getByText('Click'));
+    expect(onClick).toHaveBeenCalledTimes(1);
+  });
+
+  it('Card renders content and hover classes', () => {
+    render(<Card hover>Body</Card>);
+    expect(screen.getByText('Body')).toBeInTheDocument();
+    const cardEl = screen.getByText('Body').closest('div');
+    expect(cardEl?.className).toContain('hover:border-accent-pink');
+  });
+
+  it('ThemeToggle renders and triggers toggle', () => {
+    render(<ThemeToggle />);
+    const btn = screen.getByLabelText('Switch to light mode');
+    fireEvent.click(btn);
+    expect(toggleThemeMock).toHaveBeenCalledTimes(1);
+
+    mockedTheme = { ...mockedTheme, isDark: false, mounted: true };
+    render(<ThemeToggle />);
+    expect(screen.getByLabelText('Switch to dark mode')).toBeInTheDocument();
+  });
+
+  it('ThemeToggle renders placeholder when not mounted', () => {
+    mockedTheme = { ...mockedTheme, mounted: false };
+    render(<ThemeToggle />);
+    expect(screen.getByLabelText('Toggle theme')).toBeInTheDocument();
+  });
+
+  it('ScrollToTop appears after scrolling and scrolls to page top', () => {
+    render(<ScrollToTop />);
+    expect(screen.queryByLabelText('Scroll to top')).not.toBeInTheDocument();
+
+    Object.defineProperty(globalThis, 'scrollY', { value: 500, configurable: true });
+    fireEvent.scroll(globalThis as unknown as Window);
+
+    const button = screen.getByLabelText('Scroll to top');
+    fireEvent.click(button);
+    expect(globalThis.scrollTo).toHaveBeenCalledWith({ top: 0, behavior: 'smooth' });
+  });
+
+  it('ReadingProgress renders fixed top bar', () => {
+    render(<ReadingProgress />);
+    const progress = document.querySelector('.fixed.top-0.left-0.right-0');
+    expect(progress).toBeInTheDocument();
+  });
+
+  it('VerifiedBadge renders accessible icon', () => {
+    render(<VerifiedBadge />);
+    expect(screen.getByLabelText('Verified')).toBeInTheDocument();
+  });
+
+  it('Footer renders social links and copyright', () => {
+    render(<Footer />);
+    expect(screen.getByText(new RegExp(String(new Date().getFullYear())))).toBeInTheDocument();
+  });
+
+  it('ColorSchemePicker opens options and selects a scheme', async () => {
+    render(
+      <AccentColorProvider>
+        <ColorSchemePicker />
+      </AccentColorProvider>
+    );
+
+    await act(async () => {
+      await Promise.resolve();
+    });
+
+    fireEvent.click(screen.getByLabelText(/Select accent color/i));
+    expect(screen.getByRole('listbox')).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('option', { name: 'Blue' }));
+    expect(localStorage.getItem('accent-color')).toBe('blue');
+
+    fireEvent.keyDown(document, { key: 'Escape' });
+  });
+
+  it('ProjectCard renders metadata, tags and links', () => {
+    render(
+      <ProjectCard
+        index={0}
+        project={{
+          title: 'System X',
+          description: 'A modern app.',
+          year: 2026,
+          tags: ['React', 'TypeScript', 'AI'],
+          image: 'cover.png',
+          liveURL: 'https://example.com/live',
+          repositoryURL: 'https://example.com/repo',
+          processURL: null,
+        }}
+      />
+    );
+
+    expect(screen.getByText('System X')).toBeInTheDocument();
+    expect(screen.getByText('+1')).toBeInTheDocument();
+    expect(screen.getByText('Code').closest('a')).toHaveAttribute('href', 'https://example.com/repo');
+    expect(screen.getByText('Live').closest('a')).toHaveAttribute('href', 'https://example.com/live');
+  });
+
+  it('TimelineItem expands details when item has details', () => {
+    render(
+      <TimelineItem
+        index={0}
+        isLast={false}
+        item={{
+          position: 'Developer',
+          company: 'Acme',
+          startedAt: '2024-01-01',
+          endedAt: null,
+          type: 'Full-time',
+          modality: 'Hybrid',
+          country: 'PH',
+          summary: 'Did things',
+          highlights: ['Highlight 1'],
+          achievements: ['Achievement 1'],
+          technologies: ['React'],
+          images: [],
+          relatedProjects: [],
+        }}
+      />
+    );
+
+    fireEvent.click(screen.getByText('Developer'));
+    expect(screen.getByText('Did things')).toBeInTheDocument();
+    expect(screen.getByText('React')).toBeInTheDocument();
+    expect(screen.getByText('Achievement 1')).toBeInTheDocument();
+  });
+
+  it('ExperienceModal renders experience content when open', () => {
+    render(<ExperienceModal open onClose={vi.fn()} />);
+
+    expect(screen.getByTestId('mock-modal')).toBeInTheDocument();
+    expect(screen.getByText('Work Experience')).toBeInTheDocument();
+    expect(screen.getByText('Engineer')).toBeInTheDocument();
+    expect(screen.getByText('Company A')).toBeInTheDocument();
+    expect(screen.getByText('Built systems')).toBeInTheDocument();
+    expect(screen.getByText('Award')).toBeInTheDocument();
+    expect(screen.getByText('TypeScript')).toBeInTheDocument();
+  });
+
+  describe('OptimizedImage', () => {
+    it('renders an image with the correct src and alt', () => {
+      render(<OptimizedImage src="/test.jpg" alt="Test image" width={100} height={100} />);
+      const img = screen.getByAltText('Test image');
+      expect(img).toBeInTheDocument();
+      expect(img).toHaveAttribute('src', '/test.jpg');
+    });
+
+    it('shows placeholder on image load error', () => {
+      const { container } = render(<OptimizedImage src="/broken.jpg" alt="Broken" width={100} height={100} />);
+      const img = screen.getByAltText('Broken');
+      fireEvent.error(img);
+      const placeholder = container.querySelector('[aria-label="Broken"]');
+      expect(placeholder).toBeInTheDocument();
+    });
+  });
+
+  describe('MagicCursor', () => {
+    beforeEach(() => {
+      vi.useFakeTimers();
+    });
+
+    afterEach(() => {
+      vi.useRealTimers();
+    });
+
+    it('renders a fixed container with aria-hidden', () => {
+      const { container } = render(<MagicCursor />);
+      const el = container.firstChild as HTMLElement;
+      expect(el.getAttribute('aria-hidden')).toBe('true');
+      expect(el.style.position).toBe('fixed');
+      expect(el.style.pointerEvents).toBe('none');
+    });
+
+    it('attaches mousemove and touchmove event listeners on mount', () => {
+      const addEventListenerSpy = vi.spyOn(window, 'addEventListener');
+      render(<MagicCursor />);
+      expect(addEventListenerSpy).toHaveBeenCalledWith('mousemove', expect.any(Function));
+      expect(addEventListenerSpy).toHaveBeenCalledWith('touchmove', expect.any(Function), { passive: true });
+    });
+
+    it('cleans up event listeners on unmount', () => {
+      const removeEventListenerSpy = vi.spyOn(window, 'removeEventListener');
+      const { unmount } = render(<MagicCursor />);
+      unmount();
+      expect(removeEventListenerSpy).toHaveBeenCalledWith('mousemove', expect.any(Function));
+      expect(removeEventListenerSpy).toHaveBeenCalledWith('touchmove', expect.any(Function));
+    });
+
+    it('does not attach event listeners when prefers-reduced-motion matches', () => {
+      const addEventListenerSpy = vi.spyOn(window, 'addEventListener');
+      window.matchMedia = vi.fn().mockImplementation((query: string) => ({
+        matches: query === '(prefers-reduced-motion: reduce)',
+        media: query,
+        onchange: null,
+        addListener: vi.fn(),
+        removeListener: vi.fn(),
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+        dispatchEvent: vi.fn(),
+      }));
+      render(<MagicCursor />);
+      expect(addEventListenerSpy).not.toHaveBeenCalledWith('mousemove', expect.any(Function));
+    });
+  });
+
+  describe('HackedText', () => {
+    it('renders span with the provided text initially', () => {
+      render(<HackedText text="Hello" />);
+      expect(screen.getByText('Hello')).toBeInTheDocument();
+    });
+
+    it('has aria-label set to the original text', () => {
+      render(<HackedText text="Hello World" />);
+      expect(screen.getByLabelText('Hello World')).toBeInTheDocument();
+    });
+
+    it('has data-value attribute with original text', () => {
+      render(<HackedText text="Hello World" />);
+      const span = screen.getByLabelText('Hello World');
+      expect(span.getAttribute('data-value')).toBe('Hello World');
+    });
+
+    it('re-runs animation on mouseOver', () => {
+      render(<HackedText text="Hello" />);
+      const span = screen.getByLabelText('Hello');
+      fireEvent.mouseOver(span);
+      expect(span.getAttribute('data-value')).toBe('Hello');
+    });
+  });
+
+  describe('3d-card', () => {
+    it('CardContainer renders children', () => {
+      render(<CardContainer><div data-testid="child">Content</div></CardContainer>);
+      expect(screen.getByTestId('child')).toBeInTheDocument();
+    });
+
+    it('CardContainer sets perspective on wrapper', () => {
+      const { container } = render(<CardContainer><div>Content</div></CardContainer>);
+      const outer = container.firstChild as HTMLElement;
+      expect(outer.style.perspective).toBe('1000px');
+    });
+
+    it('CardContainer applies transform on mouse move and resets on leave', () => {
+      const { container } = render(<CardContainer><div>Content</div></CardContainer>);
+      const inner = container.firstChild?.firstChild as HTMLElement;
+
+      fireEvent.mouseEnter(inner);
+      fireEvent.mouseMove(inner, { clientX: 100, clientY: 100 });
+
+      expect(inner.style.transform).toContain('rotateY');
+      expect(inner.style.transform).toContain('rotateX');
+
+      fireEvent.mouseLeave(inner);
+      expect(inner.style.transform).toBe('rotateY(0deg) rotateX(0deg)');
+    });
+
+    it('CardBody renders children', () => {
+      render(<CardBody><div data-testid="child">Body</div></CardBody>);
+      expect(screen.getByTestId('child')).toBeInTheDocument();
+    });
+
+    it('CardItem renders with custom tag', () => {
+      render(
+        <CardContainer>
+          <CardItem as="a" href="/test" translateZ={50}>Link</CardItem>
+        </CardContainer>
+      );
+      const link = screen.getByText('Link');
+      expect(link.tagName).toBe('A');
+      expect(link).toHaveAttribute('href', '/test');
+    });
+
+    it('CardItem applies translateZ on mouse enter', () => {
+      const { container } = render(
+        <CardContainer>
+          <CardItem translateZ={50}>Item</CardItem>
+        </CardContainer>
+      );
+      const inner = container.firstChild?.firstChild as HTMLElement;
+      const cardItem = inner.firstChild as HTMLElement;
+
+      fireEvent.mouseEnter(inner);
+      expect(cardItem.style.transform).toContain('translateZ(50px)');
+
+      fireEvent.mouseLeave(inner);
+      expect(cardItem.style.transform).toContain('translateX(0px)');
+    });
+  });
+});

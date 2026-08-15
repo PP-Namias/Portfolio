@@ -1,0 +1,7 @@
+{
+  "src/**/*.{ts,tsx,js,jsx,mjs,cjs}": ["eslint --fix", "prettier --write"],
+  "src/**/*.{css,scss,json,md}": ["prettier --write"],
+  "*.{json,css,scss,md,mdx}": ["prettier --write"],
+  "next.config.js": ["prettier --write"],
+  "vitest.config.ts": ["prettier --write"]
+}

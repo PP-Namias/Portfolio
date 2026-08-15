@@ -1,0 +1,290 @@
+{
+  "id": "PRD-PORTFOLIO-COMPLETION",
+  "title": "Portfolio Completion Plan — Fix, Polish, 100% Coverage",
+  "version": "1.0.0",
+  "status": "in-progress",
+  "created": "2026-07-31",
+  "appliesTo": "portfolio-v1",
+  "description": "Complete the portfolio website with all fixes, polish, and validation to achieve 100% coverage across tests, linting, type checking, react-doctor, and accessibility. Ensure profile images from Sanity display correctly in all components including the chatbot UI (FloatingHub, HubMenu, ChatPanel).",
+
+  "objectives": [
+    "Fix streaming SSR data flow so FloatingHub/ChatPanel/HubMenu display profile image, name, and title from Sanity",
+    "Achieve 100/100 react-doctor score and maintain it across all changes",
+    "Ensure all TypeScript strict checks pass (tsc --noEmit)",
+    "Ensure all ESLint rules pass (npm run lint)",
+    "Ensure all 1004+ existing tests pass (npm run test -- --run)",
+    "Profile image renders correctly in HubMenu, ChatPanel header, empty state, and hero section",
+    "Name and title render correctly in all chatbot UI components",
+    "Verify Sanity content completeness for profile, hero, social links"
+  ],
+
+  "architecture": {
+    "overview": "The portfolio uses Next.js 16 App Router with two data-fetching modes: (1) Streaming SSR — individual sections fetch their own data via SectionProvider context, and (2) Full SSR — all data fetched via getCmsContent() at the layout level. The FloatingHub component lives in the layout and consumes the root CmsContent context. In streaming SSR mode, hero/profile data was missing from the root context, causing the chatbot UI to show empty fallback values. The fix adds fetchHeroData() to the layout's streaming SSR path and merges profile, hero, and socialLinks into the root context.",
+
+    "dataFlow": {
+      "before": "layout.tsx (streaming SSR) → streamingCmsContent (only seoSettings + fallback) → Providers → CmsContentProvider → FloatingHub → useCmsContent() → empty hero/profileImageUrl, name, title",
+      "after": "layout.tsx (streaming SSR) → fetchSeoData() + fetchHeroData() → streamingCmsContent (seoSettings + hero/profile/socialLinks + fallback) → Providers → CmsContentProvider → FloatingHub → useCmsContent() → real hero data with profileImageUrl, name, title",
+      "nonStreaming": "getCmsContent() already fetches everything — no change needed"
+    }
+  },
+
+  "epics": [
+    {
+      "id": "EPIC-1",
+      "title": "Profile Image & Identity in Chatbot UI",
+      "priority": "P0",
+      "description": "Ensure the profile image, name, and title from Sanity CMS display correctly in all chatbot UI components.",
+      "stories": [
+        {
+          "id": "S1.1",
+          "title": "Fix streaming SSR root context to include hero/profile data",
+          "status": "completed",
+          "files": ["portfolio-v1/src/app/layout.tsx"],
+          "description": "Add fetchHeroData() alongside fetchSeoData() in the streaming SSR layout path. Merge hero.profileImageUrl, profile.name/title/email/location, and socialLinks into streamingCmsContent so FloatingHub components receive real data.",
+          "verification": "FloatingHub shows profile image, name, and title in both streaming and non-streaming modes"
+        },
+        {
+          "id": "S1.2",
+          "title": "Verify HubMenu profile display",
+          "files": ["portfolio-v1/src/components/ui/HubMenu.tsx"],
+          "description": "HubMenu already uses resolveContentImageSrc(hero.profileImageUrl) for the avatar and profile.name / profile.title for text. Verify these render correctly with the fix applied.",
+          "verification": "HubMenu profile header shows image, name, and title from Sanity"
+        },
+        {
+          "id": "S1.3",
+          "title": "Verify ChatPanel profile display",
+          "files": ["portfolio-v1/src/components/ui/ChatPanel.tsx"],
+          "description": "ChatPanel shows profile image in 3 places: header (48px), empty state (64px), and context. Verify all three render with the fix.",
+          "verification": "ChatPanel header, empty state, and context all show profile image"
+        },
+        {
+          "id": "S1.4",
+          "title": "Test fallback states when no Sanity data available",
+          "files": ["portfolio-v1/src/components/ui/HubMenu.tsx", "portfolio-v1/src/components/ui/ChatPanel.tsx"],
+          "description": "Both HubMenu and ChatPanel have fallback UI (initials 'PN', gradient background) when profileImageSrc is falsy. Verify fallback renders correctly when Sanity is unavailable.",
+          "verification": "Fallback initials and gradient display when no image"
+        }
+      ]
+    },
+    {
+      "id": "EPIC-2",
+      "title": "React Quality — 100/100 react-doctor Score",
+      "priority": "P0",
+      "description": "Maintain the 100/100 react-doctor score across all changes. Run react-doctor before and after to validate.",
+      "stories": [
+        {
+          "id": "S2.1",
+          "title": "Run react-doctor baseline",
+          "command": "cd portfolio-v1 && npm run doctor:json",
+          "description": "Capture current score to ensure no regressions",
+          "verification": "Score remains 100/100 after all changes"
+        },
+        {
+          "id": "S2.2",
+          "title": "Fix any react-doctor findings",
+          "description": "If any findings appear, follow fix-react-doctor-finding workflow for each",
+          "verification": "Zero findings in react-doctor output"
+        }
+      ]
+    },
+    {
+      "id": "EPIC-3",
+      "title": "TypeScript & ESLint — Strict Clean Pass",
+      "priority": "P0",
+      "description": "Ensure TypeScript strict mode and ESLint pass with zero errors.",
+      "stories": [
+        {
+          "id": "S3.1",
+          "title": "Run TypeScript check",
+          "command": "cd portfolio-v1 && npx tsc --noEmit",
+          "description": "Verify strict TypeScript passes with zero errors",
+          "verification": "tsc --noEmit exits with code 0"
+        },
+        {
+          "id": "S3.2",
+          "title": "Run ESLint check",
+          "command": "cd portfolio-v1 && npm run lint",
+          "description": "Verify ESLint passes with zero errors",
+          "verification": "npm run lint exits with code 0"
+        },
+        {
+          "id": "S3.3",
+          "title": "Fix any type or lint errors",
+          "description": "Address all TypeScript and ESLint errors found",
+          "verification": "Both checks pass cleanly"
+        }
+      ]
+    },
+    {
+      "id": "EPIC-4",
+      "title": "Testing — All 1000+ Tests Green",
+      "priority": "P0",
+      "description": "Ensure all existing tests pass and add coverage for the streaming SSR fix.",
+      "stories": [
+        {
+          "id": "S4.1",
+          "title": "Run all existing tests",
+          "command": "cd portfolio-v1 && npm run test -- --run",
+          "description": "Verify all 1004+ tests pass",
+          "verification": "All tests pass with zero failures"
+        },
+        {
+          "id": "S4.2",
+          "title": "Add test for streaming SSR layout context",
+          "description": "Add a test verifying that streamingCmsContent includes hero/profile data when fetchHeroData resolves",
+          "verification": "New test passes"
+        },
+        {
+          "id": "S4.3",
+          "title": "Add test for HubMenu with hero data",
+          "description": "Test that HubMenu renders profile image, name, and title when hero data is provided",
+          "verification": "New test passes"
+        }
+      ]
+    },
+    {
+      "id": "EPIC-5",
+      "title": "Sanity Content Completeness",
+      "priority": "P1",
+      "description": "Ensure all Sanity content types are properly configured and data flows correctly.",
+      "stories": [
+        {
+          "id": "S5.1",
+          "title": "Verify profile document has profileImage with hotspot",
+          "files": ["studio/schemaTypes/profile.ts"],
+          "description": "Check profileImage field has hotspot enabled for smart cropping",
+          "verification": "profileImage schema has hotspot: true"
+        },
+        {
+          "id": "S5.2",
+          "title": "Verify GROQ queries resolve profileImageUrl",
+          "files": ["portfolio-v1/src/lib/cms-content.server.ts", "portfolio-v1/src/lib/sections/hero.server.ts"],
+          "description": "Both hero.server.ts and cms-content.server.ts use 'profileImage.asset->url' pattern",
+          "verification": "profileImageUrl resolves correctly in both queries"
+        },
+        {
+          "id": "S5.3",
+          "title": "Verify media gateway URL construction",
+          "files": ["portfolio-v1/src/lib/media-gateway.ts", "portfolio-v1/src/lib/media.ts"],
+          "description": "Ensure buildMediaGatewayUrl and resolveContentImageSrc work together correctly",
+          "verification": "Media gateway produces valid URLs for profile images"
+        }
+      ]
+    },
+    {
+      "id": "EPIC-6",
+      "title": "Accessibility & UX Polish",
+      "priority": "P1",
+      "description": "Verify WCAG 2.1 AA compliance and UX best practices.",
+      "stories": [
+        {
+          "id": "S6.1",
+          "title": "Verify keyboard navigation in FloatingHub",
+          "description": "FloatingHub, HubMenu, and ChatPanel should support full keyboard navigation",
+          "verification": "All interactive elements reachable and operable via keyboard"
+        },
+        {
+          "id": "S6.2",
+          "title": "Verify focus management in HubMenu",
+          "description": "Auto-focuses first menu item on open, ArrowUp/Down navigation, Escape closes",
+          "verification": "Focus management works correctly"
+        },
+        {
+          "id": "S6.3",
+          "title": "Verify reduced motion support",
+          "description": "All animations respect prefers-reduced-motion",
+          "verification": "No animations when reduced motion is preferred"
+        },
+        {
+          "id": "S6.4",
+          "title": "Verify touch targets meet minimum sizes",
+          "description": "All interactive elements in HubMenu/ChatPanel have 44x44px minimum touch targets on mobile",
+          "verification": "Touch targets meet WCAG 2.5.5 requirements"
+        }
+      ]
+    },
+    {
+      "id": "EPIC-7",
+      "title": "Performance Optimization",
+      "priority": "P2",
+      "description": "Optimize image loading, bundle size, and render performance.",
+      "stories": [
+        {
+          "id": "S7.1",
+          "title": "Verify OptimizedImage component usage",
+          "description": "All profile images use OptimizedImage with proper width/height, sizes, and quality",
+          "verification": "OptimizedImage used with explicit dimensions"
+        },
+        {
+          "id": "S7.2",
+          "title": "Verify image lazy loading",
+          "description": "Profile images below the fold should use lazy loading",
+          "verification": "Images have proper loading attribute"
+        },
+        {
+          "id": "S7.3",
+          "title": "Verify placeholder/fallback images",
+          "description": "Blur placeholders or gradient fallbacks for images while loading",
+          "verification": "Smooth transition from fallback to loaded image"
+        }
+      ]
+    },
+    {
+      "id": "EPIC-8",
+      "title": "Verification & Sign-off",
+      "priority": "P0",
+      "description": "Final verification that everything works together.",
+      "stories": [
+        {
+          "id": "S8.1",
+          "title": "Run full test suite",
+          "command": "cd portfolio-v1 && npm run test -- --run",
+          "verification": "All tests pass"
+        },
+        {
+          "id": "S8.2",
+          "title": "Run TypeScript check",
+          "command": "cd portfolio-v1 && npx tsc --noEmit",
+          "verification": "tsc passes"
+        },
+        {
+          "id": "S8.3",
+          "title": "Run ESLint",
+          "command": "cd portfolio-v1 && npm run lint",
+          "verification": "Lint passes"
+        },
+        {
+          "id": "S8.4",
+          "title": "Run react-doctor",
+          "command": "cd portfolio-v1 && npm run doctor:check",
+          "verification": "100/100 score maintained"
+        },
+        {
+          "id": "S8.5",
+          "title": "Start dev server and verify manually",
+          "command": "cd portfolio-v1 && npm run dev",
+          "verification": "App loads without errors, chatbot shows profile image"
+        }
+      ]
+    }
+  ],
+
+  "commitPlan": {
+    "strategy": "One commit per epic slice",
+    "naming": "type(scope): description",
+    "totalExpectedCommits": 5,
+    "examples": [
+      "fix(layout): include hero data in streaming SSR root context for FloatingHub",
+      "test(chat): add tests for HubMenu profile display with hero data",
+      "chore(repo): clean up and verify all quality gates"
+    ]
+  },
+
+  "verification": {
+    "tests": "npm run test -- --run — all pass",
+    "typescript": "npx tsc --noEmit — passes",
+    "lint": "npm run lint — passes",
+    "doctor": "npm run doctor:check — 100/100",
+    "dev": "npm run dev — app runs without errors"
+  }
+}

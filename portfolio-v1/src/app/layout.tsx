@@ -1,0 +1,255 @@
+import type { Metadata, Viewport } from 'next'
+import { Inter } from 'next/font/google'
+import { draftMode } from 'next/headers'
+import { VisualEditing } from 'next-sanity'
+import { Providers } from './providers'
+import { fallbackCmsContent, type CmsContent } from '@/lib/cms-content.shared'
+import { FloatingHubWithBoundary } from '@/components/ui/FloatingHub'
+import { ScrollToTop } from '@/components/ui/ScrollToTop'
+import { Analytics } from '@/components/ui/Analytics'
+import { MagicCursor } from '@/components/ui/MagicCursor'
+import { OfflineBanner } from '@/components/ui/OfflineBanner'
+import { ServiceWorkerManager } from '@/components/ui/ServiceWorkerManager'
+import { PathMemory } from '@/components/ui/PathMemory'
+import { SanityLiveRefreshBridge } from '@/hooks/useSanityLiveRefresh'
+import { JsonLd } from '@/components/seo/JsonLd'
+import { getCmsContent } from '@/lib/cms-content.server'
+import {
+  IS_MAGIC_CURSOR_VISIBLE,
+  IS_PWA_ENABLED,
+  IS_REALTIME_SANITY_ENABLED,
+  IS_STREAMING_SSR_ENABLED,
+} from '@/lib/features'
+import { buildPortfolioJsonLd, PERSON_IMAGE_ALT } from '@/lib/jsonld'
+import { SITE_URL } from '@/lib/site-config'
+import { fetchSeoData } from '@/lib/sections/seo.server'
+import { fetchHeroData } from '@/lib/sections/hero.server'
+import './globals.css'
+
+const inter = Inter({
+  subsets: ['latin'],
+  display: 'optional',
+  variable: '--font-inter',
+  fallback: ['system-ui', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
+})
+
+const fallbackSeo = fallbackCmsContent.seoSettings
+
+export const viewport: Viewport = {
+  themeColor: '#000000',
+}
+
+export async function generateMetadata(): Promise<Metadata> {
+  const seo = IS_STREAMING_SSR_ENABLED
+    ? await fetchSeoData()
+    : (await getCmsContent()).seoSettings || fallbackSeo
+
+  return {
+    title: seo.siteTitle,
+    description: seo.siteDescription,
+    metadataBase: new URL(seo.canonicalUrl || fallbackSeo.canonicalUrl),
+    alternates: {
+      canonical: seo.canonicalUrl || fallbackSeo.canonicalUrl,
+      types: {
+        'text/markdown': '/llms.txt',
+      },
+    },
+    robots: {
+      index: !seo.noindex,
+      follow: !seo.nofollow,
+    },
+    openGraph: {
+      title: seo.siteTitle,
+      description: seo.siteDescription,
+      siteName: 'Jhon Keneth Ryan B. Namias Portfolio',
+      type: 'website',
+      locale: 'en_US',
+      images: [
+        {
+          url: seo.ogImageUrl || '/og-image.png',
+          width: 1200,
+          height: 630,
+          alt: PERSON_IMAGE_ALT,
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      site: '@PP_Namias',
+      title: seo.siteTitle,
+      description: seo.siteDescription,
+      images: [seo.twitterImageUrl || seo.ogImageUrl || '/og-image.png'],
+    },
+    manifest: '/site.webmanifest',
+    appleWebApp: {
+      capable: true,
+      statusBarStyle: 'black-translucent',
+      title: 'JN Portfolio',
+    },
+    icons: {
+      icon: '/favicon.svg',
+      apple: '/apple-touch-icon.png',
+    },
+  }
+}
+
+const jsonLdImageFallback = `${SITE_URL}/og-image.png`
+
+export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  const isTest = process.env.VITEST === 'true' || process.env.NODE_ENV === 'test'
+
+  if (isTest) {
+    const cmsContent = fallbackCmsContent
+
+    return (
+      <html lang="en" suppressHydrationWarning className={inter.variable}>
+        <head>
+          <link rel="dns-prefetch" href="https://cdn.sanity.io" />
+          <link rel="preconnect" href="https://cdn.sanity.io" />
+          <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+          <link rel="preconnect" href="https://fonts.googleapis.com" />
+          <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+          <link rel="dns-prefetch" href="https://cloud.umami.is" />
+          <link rel="preconnect" href="https://cloud.umami.is" />
+          <style>{`body{font-family:system-ui,Segoe UI,Roboto,Helvetica Neue,Arial,sans-serif;}a:focus-visible{outline:2px solid #db2777;outline-offset:2px;border-radius:8px;}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border-width:0;}`}</style>
+          <JsonLd
+            data={buildPortfolioJsonLd(
+              fallbackCmsContent.hero.profileImageUrl || jsonLdImageFallback
+            )}
+            id="layout-jsonld-test"
+          />
+          <Analytics />
+        </head>
+        <body className="bg-background-light dark:bg-background-dark text-text-primary-light dark:text-text-primary-dark min-h-screen font-sans antialiased">
+          <a
+            href="#main-content"
+            className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:rounded-lg focus:bg-accent-pink focus:text-white focus:text-sm focus:font-medium focus:outline-none"
+          >
+            Skip to main content
+          </a>
+          <Providers cmsContent={cmsContent}>
+            <PathMemory />
+            {children}
+            <MagicCursor />
+            <FloatingHubWithBoundary />
+            <ScrollToTop />
+            <OfflineBanner />
+          </Providers>
+        </body>
+      </html>
+    )
+  }
+
+  const isDraftMode = await draftMode().then((d) => d.isEnabled)
+
+  if (IS_STREAMING_SSR_ENABLED) {
+    const [seoData, heroData] = await Promise.all([fetchSeoData(), fetchHeroData()])
+
+    const streamingCmsContent: CmsContent = {
+      ...fallbackCmsContent,
+      seoSettings: {
+        ...fallbackCmsContent.seoSettings,
+        siteTitle: seoData.siteTitle,
+        siteDescription: seoData.siteDescription,
+        canonicalUrl: seoData.canonicalUrl,
+        ogImageUrl: seoData.ogImageUrl,
+        twitterImageUrl: seoData.twitterImageUrl,
+        noindex: seoData.noindex,
+        nofollow: seoData.nofollow,
+      },
+      profile: {
+        ...fallbackCmsContent.profile,
+        name: heroData.profile.name || fallbackCmsContent.profile.name,
+        title: heroData.profile.title || fallbackCmsContent.profile.title,
+        email: heroData.profile.email || fallbackCmsContent.profile.email,
+        location: heroData.profile.location || fallbackCmsContent.profile.location,
+      },
+      hero: {
+        roles: heroData.hero.roles,
+        availabilityLabel: heroData.hero.availabilityLabel,
+        profileImageUrl: heroData.hero.profileImageUrl,
+      },
+      socialLinks: heroData.socialLinks,
+    }
+
+    return (
+      <html lang="en" suppressHydrationWarning className={inter.variable}>
+        <head>
+          <link rel="dns-prefetch" href="https://cdn.sanity.io" />
+          <link rel="preconnect" href="https://cdn.sanity.io" />
+          <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+          <link rel="preconnect" href="https://fonts.googleapis.com" />
+          <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+          <link rel="dns-prefetch" href="https://cloud.umami.is" />
+          <link rel="preconnect" href="https://cloud.umami.is" />
+          <style>{`body{font-family:system-ui,Segoe UI,Roboto,Helvetica Neue,Arial,sans-serif;}.font-inter{font-family:var(--font-inter),system-ui,Segoe UI,Roboto,Helvetica Neue,Arial,sans-serif;}a:focus-visible{outline:2px solid #db2777;outline-offset:2px;border-radius:8px;}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border-width:0;}`}</style>
+          <JsonLd
+            data={buildPortfolioJsonLd(heroData.hero.profileImageUrl || jsonLdImageFallback)}
+            id="layout-jsonld-streaming"
+          />
+          <Analytics />
+        </head>
+        <body className="bg-background-light dark:bg-background-dark text-text-primary-light dark:text-text-primary-dark min-h-screen font-sans antialiased">
+          <a
+            href="#main-content"
+            className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:rounded-lg focus:bg-accent-pink focus:text-white focus:text-sm focus:font-medium focus:outline-none"
+          >
+            Skip to main content
+          </a>
+          <Providers cmsContent={streamingCmsContent} isDraftMode={isDraftMode}>
+            <PathMemory />
+            {IS_MAGIC_CURSOR_VISIBLE ? <MagicCursor /> : null}
+            {children}
+            <FloatingHubWithBoundary />
+            <ScrollToTop />
+            <OfflineBanner />
+            {IS_PWA_ENABLED ? <ServiceWorkerManager /> : null}
+            {IS_REALTIME_SANITY_ENABLED && !isDraftMode ? <SanityLiveRefreshBridge /> : null}
+            {isDraftMode ? <VisualEditing /> : null}
+          </Providers>
+        </body>
+      </html>
+    )
+  }
+
+  const cmsContent = await getCmsContent()
+
+  return (
+    <html lang="en" suppressHydrationWarning className={inter.variable}>
+      <head>
+        <link rel="dns-prefetch" href="https://cdn.sanity.io" />
+        <link rel="preconnect" href="https://cdn.sanity.io" />
+        <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://cloud.umami.is" />
+        <link rel="preconnect" href="https://cloud.umami.is" />
+        <style>{`body{font-family:system-ui,Segoe UI,Roboto,Helvetica Neue,Arial,sans-serif;}a:focus-visible{outline:2px solid #db2777;outline-offset:2px;border-radius:8px;}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border-width:0;}`}</style>
+        <JsonLd
+          data={buildPortfolioJsonLd(cmsContent.hero.profileImageUrl || jsonLdImageFallback)}
+          id="layout-jsonld-runtime"
+        />
+        <Analytics />
+      </head>
+      <body className="bg-background-light dark:bg-background-dark text-text-primary-light dark:text-text-primary-dark min-h-screen font-sans antialiased">
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:rounded-lg focus:bg-accent-pink focus:text-white focus:text-sm focus:font-medium focus:outline-none"
+        >
+          Skip to main content
+        </a>
+        <Providers cmsContent={cmsContent} isDraftMode={isDraftMode}>
+          <PathMemory />
+          {IS_MAGIC_CURSOR_VISIBLE ? <MagicCursor /> : null}
+          {children}
+          <FloatingHubWithBoundary />
+          <ScrollToTop />
+          <OfflineBanner />
+          {IS_PWA_ENABLED ? <ServiceWorkerManager /> : null}
+          {IS_REALTIME_SANITY_ENABLED && !isDraftMode ? <SanityLiveRefreshBridge /> : null}
+          {isDraftMode ? <VisualEditing /> : null}
+        </Providers>
+      </body>
+    </html>
+  )
+}

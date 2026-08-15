@@ -1,0 +1,54 @@
+# CodeRabbit AI Code Review Configuration
+# Docs: https://docs.coderabbit.ai/guides/configure-coderabbit
+
+language: en-US
+early_access: true
+reviews:
+  profile: assertive
+  request_changes_workflow: true
+  high_level_summary: true
+  poem: false
+  review_status: true
+  collapse_walkthrough: false
+  path_filters:
+    - "!**/.next/**"
+    - "!**/node_modules/**"
+    - "!**/dist/**"
+    - "!**/.chat-data/**"
+  path_instructions:
+    - path: "portfolio-v1/src/**/*.tsx"
+      instructions: |
+        Review React components for: accessibility (WCAG 2.1 AA), proper TypeScript types, 
+        Framer Motion animation best practices, and Tailwind CSS conventions.
+        Check that all interactive elements have keyboard support and visible focus rings.
+    - path: "portfolio-v1/src/**/*.ts"
+      instructions: |
+        Review for strict TypeScript patterns, proper error handling, async/await usage,
+        and adherence to the project's coding standards.
+    - path: "portfolio-v1/src/lib/**/*.ts"
+      instructions: |
+        Review library code for: proper caching strategies, error boundaries, 
+        data validation, and security best practices.
+    - path: "studio/schemaTypes/**/*.ts"
+      instructions: |
+        Review Sanity schema definitions for proper validation, field types,
+        and consistency with existing schema patterns.
+  auto_review:
+    enabled: true
+    drafts: false
+    base_branches:
+      - main
+      - develop
+      - "feat/**"
+      - "fix/**"
+  abort_close_related: true
+chat:
+  auto_reply: true
+knowledge_base:
+  learnings:
+    scope: local
+  usage:
+    enabled: true
+  pull_request_qa: true
+  bugs: true
+  feature_requests: false

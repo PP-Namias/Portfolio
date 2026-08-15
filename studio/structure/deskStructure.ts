@@ -11,8 +11,9 @@ import {
   UsersIcon,
   BookIcon,
   EyeOpenIcon,
-      FilterIcon,
-      EditIcon,
+  FilterIcon,
+  EditIcon,
+  HeartIcon,
 } from '@sanity/icons'
 
 /**
@@ -37,6 +38,36 @@ export function deskStructure(S: StructureBuilder) {
   return S.list()
     .title('Content')
     .items([
+      // ─── Content Health ──────────────────────────────────────
+      S.listItem()
+        .title('Content Health')
+        .icon(HeartIcon)
+        .child(
+          S.list()
+            .title('Content Health')
+            .items([
+              S.listItem()
+                .title('All Documents')
+                .icon(DocumentsIcon)
+                .child(
+                  S.documentList()
+                    .title('All Documents')
+                    .filter('_type != "sanity.imageAsset" && _type != "sanity.fileAsset" && !(_id in path("drafts.**"))')
+                    .defaultOrdering([{field: '_updatedAt', direction: 'desc'}])
+                ),
+              S.listItem()
+                .title('Recently Updated')
+                .icon(EyeOpenIcon)
+                .child(
+                  S.documentList()
+                    .title('Recently Updated')
+                    .filter('_type != "sanity.imageAsset" && _type != "sanity.fileAsset" && !(_id in path("drafts.**"))')
+                    .defaultOrdering([{field: '_updatedAt', direction: 'desc'}])
+                    .menuItems(S.documentTypeList('post').getMenuItems())
+                ),
+            ]),
+        ),
+
       // ─── Homepage ────────────────────────────────────────────
       S.listItem()
         .title('Homepage')

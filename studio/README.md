@@ -1,48 +1,80 @@
-# Architecture notes
+# Namias CMS Studio
 
-The Sanity Studio at `namias-cms.sanity.studio` is the editorial surface for the portfolio. It is built with:
+Standalone Sanity CMS studio at the repo root. Serves both portfolio-v1 and portfolio-v2 from the same dataset.
 
-- **Sanity 4.22** with a custom structure, presentation tool, and vision tool.
-- **TypeScript** end-to-end, no `.js` files in `studio/` except eslint config and runner scripts.
-- **React 19** and **styled-components** for the studio shell.
+## Quick Start
 
-## Plugin stack
+```bash
+cd studio
+pnpm install
+pnpm dev
+```
 
-- `structureTool` - replaces the default navigation with a curated content map.
-- `presentationTool` - previews and Visual Editing on `namias.tech`.
-- `visionTool` - GROQ playground.
+Studio runs at `http://localhost:3333`.
 
-## Document actions
+## Configuration
 
-1. `perspectiveSwitcherAction` - cookie-based perspective switcher (published / drafts / previewDrafts).
-2. `createPublishAndRefreshAction` - wraps the default publish action to call the revalidation webhook.
+1. Copy `.env.example` to `.env.local`
+2. Fill in the required environment variables
+3. Run `pnpm dev`
 
-## Document badges
+See `.env.shared.example` for all available variables.
 
-- Draft / Live
-- Scheduled
-- Stale (30+ days untouched)
-- Expiring soon (certification within 90 days)
-- Featured
+## Consumer Setup
 
-## Validations
+### Portfolio V1
 
-Centralized in `studio/validation/rules.ts`:
-- `headlineLength` - SEO-friendly character bounds.
-- `httpsOnly` - url fields prefer https.
-- `dateOrder` - cross-field date validation.
-- `uniqueSlug` - slug shape and uniqueness.
-- `requireAltText` - 4+ char alt on every image.
-- `summaryLength` - tunable per type.
+Portfolio v1 reads from the same Sanity dataset. Ensure v1 has these env vars:
 
-## Sanity Functions
+```bash
+# portfolio-v1/.env.local
+NEXT_PUBLIC_SANITY_PROJECT_ID=nl0qw78w
+NEXT_PUBLIC_SANITY_DATASET=production
+SANITY_API_READ_TOKEN=
+SANITY_REVALIDATE_SECRET=
+```
 
-- `scheduled-publish/` - runs every 5 min, promotes posts/projects with `publishAt <= now`.
-- `broken-refs/` - runs every 6h, counts broken references per document.
-- `auto-tag-images/` - stubs an image-tagging pipeline triggered on `sanity.imageAsset.create`.
+### Portfolio V2
 
-## Real-time
+Portfolio v2 reads from the same Sanity dataset. Ensure v2 has these env vars:
 
-- Marketing site uses `next-sanity` Live Content API in `src/sanity/lib/live.ts`.
-- `<SanityField>` component tags every renderable field with `data-sanity="<docId>.<type>.<path>"` for Visual Editing overlay targeting.
-- `?sanity-edit=1` on the marketing site enables the popover and pop-in links to the studio.
+```bash
+# portfolio-v2/.env.local
+NEXT_PUBLIC_SANITY_PROJECT_ID=nl0qw78w
+NEXT_PUBLIC_SANITY_DATASET=production
+SANITY_API_READ_TOKEN=
+SANITY_REVALIDATE_SECRET=
+```
+
+## Schema Types
+
+- **Singletons**: profile, siteSettings, techStack, seoSettings, mediaSettings, aboutSection, resume
+- **Collections**: project, experience, certification, galleryImage, recommendation, membership, post
+- **References**: author, category, certificationCategory, certificationIssuer, galleryCategory
+
+## Studio Features
+
+- **Structure Tool** — curated content navigation
+- **Presentation Tool** — visual editing on namias.tech
+- **Vision Tool** — GROQ playground
+- **Sanity Assist** — AI-powered content suggestions
+- **Custom Badges** — draft/live, scheduled, stale, expiring, featured
+- **Custom Actions** — publish+refresh, perspective switcher, view on site
+- **Inspector Panels** — content health, SEO preview, JSON inspector, data consistency
+
+## Deployment
+
+```bash
+pnpm deploy
+```
+
+Deploys to Sanity Hosting at `namias-cms.sanity.studio`.
+
+## Development
+
+```bash
+pnpm dev          # Start dev server
+pnpm build        # Build for production
+pnpm lint         # Run ESLint
+pnpm typecheck    # Run TypeScript check
+```
