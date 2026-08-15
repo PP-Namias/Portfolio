@@ -41,6 +41,9 @@ jobs:
           cache: "npm"
           cache-dependency-path: portfolio-v1/package-lock.json
 
+      - name: Pin npm version
+        run: npm i -g npm@10.9.2
+
       - name: Install dependencies
         run: npm ci --ignore-scripts
         working-directory: portfolio-v1
@@ -50,7 +53,7 @@ jobs:
         working-directory: portfolio-v1
 
       - name: Generate SBOM (CycloneDX)
-        run: npx @cyclonedx/cyclonedx-npm --output-format JSON --output-file sbom.cdx.json --spec-version 1.5
+        run: npx @cyclonedx/cyclonedx-npm --ignore-npm-errors --output-format JSON --output-file sbom.cdx.json --spec-version 1.5
         working-directory: portfolio-v1
 
       - name: Upload SBOM

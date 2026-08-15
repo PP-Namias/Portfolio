@@ -50,6 +50,14 @@ jobs:
         working-directory: studio
         run: pnpm build
 
+      - name: Verify Sanity auth token
+        run: |
+          if [ -z "$SANITY_AUTH_TOKEN" ]; then
+            echo "::error::SANITY_AUTH_TOKEN secret is empty or missing. Add it under GitHub -> Settings -> Secrets and variables -> Actions."
+            exit 1
+          fi
+          echo "SANITY_AUTH_TOKEN is present"
+
       - name: Deploy to Sanity Hosting
         working-directory: studio
         run: pnpm run deploy
