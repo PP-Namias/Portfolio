@@ -85,6 +85,10 @@ This file is the entry point for any agent (opencode, future coding agents, or h
 - `fullstack-workflow` — end-to-end full-stack development workflow for Next.js
 - `typescript-advanced` — advanced TypeScript patterns and type safety
 
+### Knowledge Graph
+
+- `graphify` — queryable codebase knowledge graph. Maps code, docs, SQL schemas, and configs into a traversable graph (graphify-out/). Local deterministic tree-sitter AST parsing, no vector store, every edge tagged `EXTRACTED` or `INFERRED`. Use `graphify query`/`path`/`explain` before raw grep; run `graphify update .` after code changes. Files: `.agents/skills/graphify/`, `.opencode/skills/graphify/`.
+
 ## Subagents
 
 Specialized agents for different domains. Use the right agent for the task.
@@ -269,6 +273,7 @@ MCP servers give your AI agent access to browser DevTools, component libraries, 
 | **Testing**       | `testing-workflow`          | `code-review`, `react-doctor`                                 |
 | **Documentation** | `technical-writing`         | `content-review`                                              |
 | **Analytics**     | `analytics-integration`     | `feature-flags`                                               |
+| **Knowledge Graph** | `graphify`               | `code-review`, `debugging-error-tracking`                     |
 
 ### By Component Area
 
@@ -424,3 +429,16 @@ Repo-root git hooks enforce zero-defect commits. Tooling lives in the root `pack
 - **pre-push** — typecheck `tsc --noEmit` for `portfolio-v1`, `ai-service`, and `studio` + full `vitest run` (~1098 tests) run before code leaves the machine. (Root cause of the original pre-push failure: a zombie `next dev` process wrote truncated `.next/dev/types` files that `tsc` picked up via `include`; kill stale node/next processes and rebuild `.next` if you see TS1435/truncated-declaration errors.)
 - **Emergency bypass** — `git commit --no-verify` / `git push --no-verify` skips hooks; use only when a hook has a false positive or a broken dependency.
 - Hooks auto-skip deleted files and empty staged sets (no-op success).
+
+## graphify
+
+This project has a knowledge graph at graphify-out/ with god nodes, community structure, and cross-file relationships.
+
+When the user types `/graphify`, use the installed graphify skill or instructions before doing anything else.
+
+Rules:
+- For codebase questions, first run `graphify query "<question>"` when graphify-out/graph.json exists. Use `graphify path "<A>" "<B>"` for relationships and `graphify explain "<concept>"` for focused concepts. These return a scoped subgraph, usually much smaller than GRAPH_REPORT.md or raw grep output.
+- Dirty graphify-out/ files are expected after hooks or incremental updates; dirty graph files are not a reason to skip graphify. Only skip graphify if the task is about stale or incorrect graph output, or the user explicitly says not to use it.
+- If graphify-out/wiki/index.md exists, use it for broad navigation instead of raw source browsing.
+- Read graphify-out/GRAPH_REPORT.md only for broad architecture review or when query/path/explain do not surface enough context.
+- After modifying code, run `graphify update .` to keep the graph current (AST-only, no API cost).
