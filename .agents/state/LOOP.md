@@ -22,13 +22,21 @@ The goal is to move from ad-hoc agent prompting to designed loops that prompt ag
 - Phase: Assisted. Suggests fixes, no auto-merge.
 - Handoff: Human decides whether to apply suggested fixes.
 
-### Dependency Sweeper (L2 — patch-only)
+### Dependency Sweeper (L2 — patch-only, SOAKING with Renovate)
 
 - Cadence: 6h (`/.github/workflows/dependency-sweeper.yml`)
 - Skill: `dependency-audit`
 - State: `.agents/state/STATE.md` watch list for majors; PRs for patches
-- Phase: Patch-only auto-PR. Majors require human review.
+- Phase: **DEPRECATION SOAK** — 30-day parallel run with `renovatebot/renovate` (config at repo-root `renovate.json`). Workflow header carries a deprecation notice; delete this workflow once Renovate is validated.
 - Handoff: Human reviews PRs and merges.
+
+### Dependency Management (Renovate — replaces Dependency Sweeper)
+
+- Cadence: schedule-driven (`renovate.json`), off-peak Asia/Manila (weekday 22:00-05:00 + weekends)
+- Tool: `renovatebot/renovate` — GitHub App install required to activate (repo-level onboarding PR confirms config)
+- Policy: minor+patch grouped into one PR (`chore(deps):` semantic commits, commitlint-compliant); majors gated behind Dependency Dashboard approval; CVE/OSV alerts open PRs immediately regardless of schedule; GitHub Actions kept SHA-pinned via `github-actions` manager; core stack (next/react/sanity) never auto-merged
+- State: Renovate Dependency Dashboard issue tracks PR-eligible updates
+- Handoff: Human review of majors; automerge disabled for core stack
 
 ### Issue Triage (L2 — AI-informed classification)
 
@@ -76,7 +84,7 @@ cat .agents/state/loop-budget.md
 
 ## Evolution
 
-Target: solid L2 with excellent observability. Future loops: Changelog Drafter, Post-Merge Cleanup.
+Target: solid L2 with excellent observability. Future loops: Changelog Drafter, Post-Merge Cleanup. Dependency automation moving to Renovate; sweeper removal pending 30-day soak completion.
 
 ---
 

@@ -1,0 +1,50 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended"],
+  "timezone": "Asia/Manila",
+  "semanticCommits": "enabled",
+  "semanticCommitType": "chore",
+  "semanticCommitScope": "deps",
+  "labels": ["dependencies"],
+  "prConcurrentLimit": 3,
+  "prHourlyLimit": 2,
+  "branchConcurrentLimit": 3,
+  "schedule": ["after 10pm and before 5am every weekday", "every weekend"],
+  "separateMajorMinor": true,
+  "separateMinorPatch": false,
+  "osvVulnerabilityAlerts": true,
+  "vulnerabilityAlerts": {
+    "labels": ["security", "dependencies"],
+    "schedule": [],
+    "prCreation": "immediate"
+  },
+  "packageRules": [
+    {
+      "matchUpdateTypes": ["minor", "patch"],
+      "matchVulnerabilityAlerts": false,
+      "groupName": "all non-major dependencies",
+      "groupSlug": "all-minor-patch",
+      "minimumReleaseAge": "3 days"
+    },
+    {
+      "matchUpdateTypes": ["major"],
+      "dependencyDashboardApproval": true,
+      "labels": ["dependencies", "major"]
+    },
+    {
+      "matchPackagePatterns": ["^(next|react|react-dom|sanity|@sanity/|next-sanity)"],
+      "automerge": false,
+      "labels": ["dependencies", "core-stack"]
+    }
+  ],
+  "github-actions": {
+    "enabled": true,
+    "pinDigests": true
+  },
+  "docker-compose": {
+    "enabled": true
+  },
+  "dockerfile": {
+    "enabled": true
+  }
+}

@@ -327,6 +327,19 @@ All loop state lives in `.agents/state/`.
 | **PR Babysitter**      | on PR events | `.github/workflows/pr-babysitter.yml`      | L2    |
 | **Dependency Sweeper** | 6h           | `.github/workflows/dependency-sweeper.yml` | L2    |
 | **AI Triage**          | on issue/PR events | `.github/workflows/ai-triage.yml`    | L2    |
+| **Renovate**           | schedule     | `renovate.json` (repo root)                | L2    |
+
+### Renovate — automated dependency management
+
+Renovate (`renovatebot/renovate`) is the dependency-update engine, replacing the hand-rolled Dependency Sweeper (currently in a 30-day parallel soak; the sweeper workflow carries a deprecation notice and is deleted once Renovate is validated).
+
+- **Config**: `renovate.json` at the repo root — extends `config:recommended`; timezone `Asia/Manila`; off-peak schedule (weekday 22:00-05:00 + weekends) to avoid CI congestion; PR rate limits (`prHourlyLimit: 2`, `prConcurrentLimit: 3`).
+- **Grouping**: minor + patch updates are grouped into a single PR (`all-minor-patch`), reducing PR noise; vulnerabilities are excluded from grouping and open immediately.
+- **Vulnerabilities**: `osvVulnerabilityAlerts: true` + `vulnerabilityAlerts` with an empty schedule open CVE PRs immediately, overriding the off-peak window, labeled `security`.
+- **Action pinning**: the `github-actions` manager is enabled with `pinDigests: true`, so all SHA-pinned workflow actions are tracked and kept current.
+- **Semantic commits**: forced to `chore(deps): ...` (`semanticCommits: enabled`, type `chore`, scope `deps`) — commitlint-compliant with this repo's conventional-commit rules.
+- **Safety**: majors require human approval via the Renovate Dependency Dashboard; the core stack (`next`, `react`, `react-dom`, `sanity`, `@sanity/*`, `next-sanity`) has automerge disabled and carries the `core-stack` label.
+- **Activation**: the Renovate GitHub App must be installed from the GitHub Marketplace onto this repository (Settings → Integrations → GitHub Apps). Renovate then opens an onboarding PR that must be merged to activate the config.
 
 ### AI Triage — LLM-informed issue and PR triage loop
 
