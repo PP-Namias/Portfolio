@@ -89,6 +89,10 @@ This file is the entry point for any agent (opencode, future coding agents, or h
 
 - `graphify` — queryable codebase knowledge graph. Maps code, docs, SQL schemas, and configs into a traversable graph (graphify-out/). Local deterministic tree-sitter AST parsing, no vector store, every edge tagged `EXTRACTED` or `INFERRED`. Use `graphify query`/`path`/`explain` before raw grep; run `graphify update .` after code changes. Files: `.agents/skills/graphify/`, `.opencode/skills/graphify/`.
 
+### AI Documentation Retrieval
+
+- `context7` — fresh, version-specific library documentation via the Context7 MCP server (registered in `.opencode/opencode.json`, server key `context7`). Use the `resolve-library-id` and `get-library-docs` MCP tools to ground all framework API usage in current docs — Next.js 16 (`/vercel/next.js`), Sanity (`/sanity-io/sanity`), LangGraph (`/langchain-ai/langgraph`), Tailwind, Vitest, Framer Motion. Mandatory when the repo warns about training-data drift (e.g. the `nextjs-agent-rules` block in `portfolio-v1/AGENTS.md`): prefer fetched APIs over training-data memory to prevent hallucinated or deprecated API usage. Complements graphify (repo-local structure) with library truth (external docs). File: `.agents/skills/context7/SKILL.md`.
+
 ## Subagents
 
 Specialized agents for different domains. Use the right agent for the task.
@@ -237,6 +241,7 @@ MCP servers give your AI agent access to browser DevTools, component libraries, 
 | **SQLite**              | `sqlite`              | Local database for caching and analytics                               |
 | **Sanity CMS**          | `sanity-cms`          | Direct Sanity CMS operations                                           |
 | **Sentry**              | `sentry`              | Error tracking and performance monitoring                              |
+| **Context7**            | `context7`            | Fresh, version-specific library docs (Next.js 16, Sanity, LangGraph)  |
 | **Vercel**              | `vercel`              | Deployment, edge functions, and analytics                              |
 | **Docker**              | `docker`              | Container management                                                   |
 
