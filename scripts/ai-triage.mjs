@@ -4,12 +4,14 @@
  *
  * Classifies issues and pull requests, assigns a priority tier, flags
  * potential duplicates against open items, and applies GitHub labels.
- * Uses an OpenAI-compatible endpoint (OPENAI_API_KEY) or Anthropic
- * (ANTHROPIC_API_KEY). Falls back to a deterministic keyword classifier
- * when the LLM call fails so the loop never hard-fails.
+ * Uses an OpenAI-compatible endpoint (OPENAI_API_KEY), Anthropic
+ * (ANTHROPIC_API_KEY), or Google Gemini (GEMINI_API_KEY, free tier
+ * supported). Falls back to a deterministic keyword classifier when
+ * the LLM call fails so the loop never hard-fails.
  *
- * Env: GITHUB_EVENT_PATH, GH_TOKEN, OPENAI_API_KEY | ANTHROPIC_API_KEY,
- *      LLM_API_BASE (optional, OpenAI-compatible), LLM_MODEL (optional).
+ * Env: GITHUB_EVENT_PATH, GH_TOKEN, OPENAI_API_KEY | ANTHROPIC_API_KEY |
+ *      GEMINI_API_KEY | any combination, LLM_API_BASE (optional,
+ *      OpenAI-compatible), LLM_MODEL / GEMINI_MODEL (optional).
  */
 
 import { execFileSync } from 'node:child_process';
@@ -148,7 +150,31 @@ async function llmClassify(prompt) {
     return data.content[0].text;
   }
 
-  throw new Error('no LLM API key configured');
+  const geminiKey = process.env.GEMINI_API_KEY;
+  if (geminiKey) {
+    const model = process.env.GEMINI_MODEL || 'gemini-2.0-flash';
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${geminiKey}`;
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: [{ role: 'user', parts: [{ text: prompt }] }],
+        systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
+        generationConfig: {
+          temperature: 0.1,
+          maxOutputTokens: 400,
+          responseMimeType: 'application/json',
+        },
+      }),
+    });
+    if (!res.ok) throw new Error(`Gemini API ${res.status}: ${await res.text()}`);
+    const data = await res.json();
+    const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+    if (!text) throw new Error(`Gemini API returned no text; ${JSON.stringify(data).slice(0, 300)}`);
+    return text;
+  }
+
+  throw new Error('no LLM API key configured (expected OPENAI_API_KEY, ANTHROPIC_API_KEY, or GEMINI_API_KEY)');
 }
 
 function parseResult(raw) {
