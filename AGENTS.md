@@ -89,6 +89,10 @@ This file is the entry point for any agent (opencode, future coding agents, or h
 
 - `graphify` — queryable codebase knowledge graph. Maps code, docs, SQL schemas, and configs into a traversable graph (graphify-out/). Local deterministic tree-sitter AST parsing, no vector store, every edge tagged `EXTRACTED` or `INFERRED`. Use `graphify query`/`path`/`explain` before raw grep; run `graphify update .` after code changes. Files: `.agents/skills/graphify/`, `.opencode/skills/graphify/`.
 
+### AI Documentation Retrieval
+
+- `context7` — fresh, version-specific library documentation via the Context7 MCP server (registered in `.opencode/opencode.json`, server key `context7`). Use the `resolve-library-id` and `get-library-docs` MCP tools to ground all framework API usage in current docs — Next.js 16 (`/vercel/next.js`), Sanity (`/sanity-io/sanity`), LangGraph (`/langchain-ai/langgraph`), Tailwind, Vitest, Framer Motion. Mandatory when the repo warns about training-data drift (e.g. the `nextjs-agent-rules` block in `portfolio-v1/AGENTS.md`): prefer fetched APIs over training-data memory to prevent hallucinated or deprecated API usage. Complements graphify (repo-local structure) with library truth (external docs). File: `.agents/skills/context7/SKILL.md`.
+
 ## Subagents
 
 Specialized agents for different domains. Use the right agent for the task.
@@ -237,6 +241,7 @@ MCP servers give your AI agent access to browser DevTools, component libraries, 
 | **SQLite**              | `sqlite`              | Local database for caching and analytics                               |
 | **Sanity CMS**          | `sanity-cms`          | Direct Sanity CMS operations                                           |
 | **Sentry**              | `sentry`              | Error tracking and performance monitoring                              |
+| **Context7**            | `context7`            | Fresh, version-specific library docs (Next.js 16, Sanity, LangGraph)  |
 | **Vercel**              | `vercel`              | Deployment, edge functions, and analytics                              |
 | **Docker**              | `docker`              | Container management                                                   |
 
@@ -321,6 +326,30 @@ All loop state lives in `.agents/state/`.
 | **Daily Triage**       | 1d weekdays  | `.github/workflows/daily-triage.yml`       | L1    |
 | **PR Babysitter**      | on PR events | `.github/workflows/pr-babysitter.yml`      | L2    |
 | **Dependency Sweeper** | 6h           | `.github/workflows/dependency-sweeper.yml` | L2    |
+| **AI Triage**          | on issue/PR events | `.github/workflows/ai-triage.yml`    | L2    |
+| **Renovate**           | schedule     | `renovate.json` (repo root)                | L2    |
+
+### Renovate — automated dependency management
+
+Renovate (`renovatebot/renovate`) is the dependency-update engine, replacing the hand-rolled Dependency Sweeper (currently in a 30-day parallel soak; the sweeper workflow carries a deprecation notice and is deleted once Renovate is validated).
+
+- **Config**: `renovate.json` at the repo root — extends `config:recommended`; timezone `Asia/Manila`; off-peak schedule (weekday 22:00-05:00 + weekends) to avoid CI congestion; PR rate limits (`prHourlyLimit: 2`, `prConcurrentLimit: 3`).
+- **Grouping**: minor + patch updates are grouped into a single PR (`all-minor-patch`), reducing PR noise; vulnerabilities are excluded from grouping and open immediately.
+- **Vulnerabilities**: `osvVulnerabilityAlerts: true` + `vulnerabilityAlerts` with an empty schedule open CVE PRs immediately, overriding the off-peak window, labeled `security`.
+- **Action pinning**: the `github-actions` manager is enabled with `pinDigests: true`, so all SHA-pinned workflow actions are tracked and kept current.
+- **Semantic commits**: forced to `chore(deps): ...` (`semanticCommits: enabled`, type `chore`, scope `deps`) — commitlint-compliant with this repo's conventional-commit rules.
+- **Safety**: majors require human approval via the Renovate Dependency Dashboard; the core stack (`next`, `react`, `react-dom`, `sanity`, `@sanity/*`, `next-sanity`) has automerge disabled and carries the `core-stack` label.
+- **Activation**: the Renovate GitHub App must be installed from the GitHub Marketplace onto this repository (Settings → Integrations → GitHub Apps). Renovate then opens an onboarding PR that must be merged to activate the config.
+
+### AI Triage — LLM-informed issue and PR triage loop
+
+Automated first-pass triage of incoming issues and pull requests. Built as the "Issue Triage" roadmap loop.
+
+- **Triggers**: `issues` (opened, edited) and `pull_request` (opened, ready_for_review).
+- **Capabilities**: classifies each item (bug/feature/documentation/question), assigns a priority tier (p0-critical/p1-high/p2-medium/p3-low), detects potential duplicates against open items via title/body bigram similarity plus LLM judgement, applies allowlisted labels automatically, and posts a concise triage comment (skipped on edits to prevent spam).
+- **Engine**: `scripts/ai-triage.mjs` — Node 20, no dependencies, uses OpenAI-compatible API (`OPENAI_API_KEY`, endpoint overridable via `LLM_API_BASE`), Anthropic (`ANTHROPIC_API_KEY`), or Google Gemini (`GEMINI_API_KEY`, `GEMINI_MODEL`, default `gemini-2.0-flash`; free tier supported). Falls back to a deterministic keyword classifier if the LLM call fails. Bot actors (dependabot, renovate, github-actions) are skipped; already-triaged items are not re-processed on edits.
+- **Secrets required**: any one of `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, or `GEMINI_API_KEY`. **`GEMINI_API_KEY` is recommended** — free tier from Google AI Studio (`https://aistudio.google.com/app/apikey`). Optional: `LLM_API_BASE`, `LLM_MODEL`, `GEMINI_MODEL`. Without any key the workflow prints a notice and skips gracefully (same pattern as `pentestagent-ci.yml`); it never fails the run.
+- **Safety**: labels are clamped to the allowlist (`bug`, `feature`, `documentation`, `question`, `p0-critical`, `p1-high`, `p2-medium`, `p3-low`, `duplicate`); no auto-close, no auto-merge; human review still required.
 
 ### Kill switch
 

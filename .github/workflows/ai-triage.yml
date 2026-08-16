@@ -1,0 +1,58 @@
+name: AI Triage
+
+on:
+  issues:
+    types: [opened, edited]
+  pull_request:
+    types: [opened, ready_for_review]
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+
+concurrency:
+  group: ai-triage-${{ github.event.issue.number || github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  triage:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          persist-credentials: false
+
+      - name: Check LLM API key availability
+        id: keys
+        run: |
+          if [ -z "$OPENAI_API_KEY" ] && [ -z "$ANTHROPIC_API_KEY" ] && [ -z "$GEMINI_API_KEY" ]; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            echo "::notice::No OPENAI_API_KEY, ANTHROPIC_API_KEY, or GEMINI_API_KEY secret set; AI triage skipped. Labels must be applied manually."
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+
+      - name: Setup Node.js
+        if: steps.keys.outputs.skip != 'true'
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '20'
+
+      - name: Run AI triage
+        if: steps.keys.outputs.skip != 'true'
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          LLM_API_BASE: ${{ secrets.LLM_API_BASE }}
+          LLM_MODEL: ${{ secrets.LLM_MODEL }}
+          GEMINI_MODEL: ${{ secrets.GEMINI_MODEL }}
+        run: node scripts/ai-triage.mjs

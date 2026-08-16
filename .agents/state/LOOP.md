@@ -22,17 +22,35 @@ The goal is to move from ad-hoc agent prompting to designed loops that prompt ag
 - Phase: Assisted. Suggests fixes, no auto-merge.
 - Handoff: Human decides whether to apply suggested fixes.
 
-### Dependency Sweeper (L2 — patch-only)
+### Dependency Sweeper (L2 — patch-only, SOAKING with Renovate)
 
 - Cadence: 6h (`/.github/workflows/dependency-sweeper.yml`)
 - Skill: `dependency-audit`
 - State: `.agents/state/STATE.md` watch list for majors; PRs for patches
-- Phase: Patch-only auto-PR. Majors require human review.
+- Phase: **DEPRECATION SOAK** — 30-day parallel run with `renovatebot/renovate` (config at repo-root `renovate.json`). Workflow header carries a deprecation notice; delete this workflow once Renovate is validated.
 - Handoff: Human reviews PRs and merges.
+
+### Dependency Management (Renovate — replaces Dependency Sweeper)
+
+- Cadence: schedule-driven (`renovate.json`), off-peak Asia/Manila (weekday 22:00-05:00 + weekends)
+- Tool: `renovatebot/renovate` — GitHub App install required to activate (repo-level onboarding PR confirms config)
+- Policy: minor+patch grouped into one PR (`chore(deps):` semantic commits, commitlint-compliant); majors gated behind Dependency Dashboard approval; CVE/OSV alerts open PRs immediately regardless of schedule; GitHub Actions kept SHA-pinned via `github-actions` manager; core stack (next/react/sanity) never auto-merged
+- State: Renovate Dependency Dashboard issue tracks PR-eligible updates
+- Handoff: Human review of majors; automerge disabled for core stack
+
+### Issue Triage (L2 — AI-informed classification)
+
+- Cadence: on event (`issues.opened/edited`, `pull_request.opened/ready_for_review`)
+- Workflow: `/.github/workflows/ai-triage.yml`
+- Script: `scripts/ai-triage.mjs` (OpenAI-compatible, Anthropic, or Google Gemini; deterministic keyword fallback)
+- State: triage labels + comment on the item
+- Phase: Auto-classifies, prioritizes, flags duplicates, applies labels. No auto-response closure.
+- Handoff: Human reviews classification and acts.
+- Keys: any one of `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, or `GEMINI_API_KEY` (recommended free tier — Google AI Studio: https://aistudio.google.com/app/apikey). Optional `LLM_API_BASE`, `LLM_MODEL`, `GEMINI_MODEL`. Graceful skip if absent.
 
 ## Multi-loop coordination
 
-Priority: PR Babysitter (on PR event) → Dependency Sweeper (scheduled) → Daily Triage (report, off-peak).
+Priority: Issue Triage (on issue/PR event) → PR Babysitter (on PR event) → Dependency Sweeper (scheduled) → Daily Triage (report, off-peak).
 
 ## Worktrees
 
@@ -66,7 +84,7 @@ cat .agents/state/loop-budget.md
 
 ## Evolution
 
-Target: solid L2 with excellent observability. Future loops: Changelog Drafter, Post-Merge Cleanup, Issue Triage.
+Target: solid L2 with excellent observability. Future loops: Changelog Drafter, Post-Merge Cleanup. Dependency automation moving to Renovate; sweeper removal pending 30-day soak completion.
 
 ---
 

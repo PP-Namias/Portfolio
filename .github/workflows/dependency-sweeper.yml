@@ -1,3 +1,5 @@
+# DEPRECATION NOTICE: Currently in a 30-day parallel soak with Renovatebot. To be removed once Renovate is fully validated.
+# No auto-merge step exists in this workflow; soak risk is limited to PR creation, which overlaps Renovate PRs by design.
 name: Dependency Sweeper
 
 on:
