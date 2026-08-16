@@ -326,6 +326,17 @@ All loop state lives in `.agents/state/`.
 | **Daily Triage**       | 1d weekdays  | `.github/workflows/daily-triage.yml`       | L1    |
 | **PR Babysitter**      | on PR events | `.github/workflows/pr-babysitter.yml`      | L2    |
 | **Dependency Sweeper** | 6h           | `.github/workflows/dependency-sweeper.yml` | L2    |
+| **AI Triage**          | on issue/PR events | `.github/workflows/ai-triage.yml`    | L2    |
+
+### AI Triage — LLM-informed issue and PR triage loop
+
+Automated first-pass triage of incoming issues and pull requests. Built as the "Issue Triage" roadmap loop.
+
+- **Triggers**: `issues` (opened, edited) and `pull_request` (opened, ready_for_review).
+- **Capabilities**: classifies each item (bug/feature/documentation/question), assigns a priority tier (p0-critical/p1-high/p2-medium/p3-low), detects potential duplicates against open items via title/body bigram similarity plus LLM judgement, applies allowlisted labels automatically, and posts a concise triage comment (skipped on edits to prevent spam).
+- **Engine**: `scripts/ai-triage.mjs` — Node 20, no dependencies, uses OpenAI-compatible API (`OPENAI_API_KEY`, endpoint overridable via `LLM_API_BASE`) or Anthropic (`ANTHROPIC_API_KEY`). Falls back to a deterministic keyword classifier if the LLM call fails. Bot actors (dependabot, renovate, github-actions) are skipped; already-triaged items are not re-processed on edits.
+- **Secrets required**: either `OPENAI_API_KEY` or `ANTHROPIC_API_KEY`. Optional: `LLM_API_BASE`, `LLM_MODEL`. Without keys the workflow prints a notice and skips gracefully (same pattern as `pentestagent-ci.yml`); it never fails the run.
+- **Safety**: labels are clamped to the allowlist (`bug`, `feature`, `documentation`, `question`, `p0-critical`, `p1-high`, `p2-medium`, `p3-low`, `duplicate`); no auto-close, no auto-merge; human review still required.
 
 ### Kill switch
 

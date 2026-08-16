@@ -30,9 +30,19 @@ The goal is to move from ad-hoc agent prompting to designed loops that prompt ag
 - Phase: Patch-only auto-PR. Majors require human review.
 - Handoff: Human reviews PRs and merges.
 
+### Issue Triage (L2 — AI-informed classification)
+
+- Cadence: on event (`issues.opened/edited`, `pull_request.opened/ready_for_review`)
+- Workflow: `/.github/workflows/ai-triage.yml`
+- Script: `scripts/ai-triage.mjs` (OpenAI-compatible or Anthropic; deterministic keyword fallback)
+- State: triage labels + comment on the item
+- Phase: Auto-classifies, prioritizes, flags duplicates, applies labels. No auto-response closure.
+- Handoff: Human reviews classification and acts.
+- Keys: `OPENAI_API_KEY` or `ANTHROPIC_API_KEY` (optional `LLM_API_BASE`, `LLM_MODEL`). Graceful skip if absent.
+
 ## Multi-loop coordination
 
-Priority: PR Babysitter (on PR event) → Dependency Sweeper (scheduled) → Daily Triage (report, off-peak).
+Priority: Issue Triage (on issue/PR event) → PR Babysitter (on PR event) → Dependency Sweeper (scheduled) → Daily Triage (report, off-peak).
 
 ## Worktrees
 
@@ -66,7 +76,7 @@ cat .agents/state/loop-budget.md
 
 ## Evolution
 
-Target: solid L2 with excellent observability. Future loops: Changelog Drafter, Post-Merge Cleanup, Issue Triage.
+Target: solid L2 with excellent observability. Future loops: Changelog Drafter, Post-Merge Cleanup.
 
 ---
 
