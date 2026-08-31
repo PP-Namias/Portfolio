@@ -1,0 +1,149 @@
+name: System Audit
+
+on:
+  schedule:
+    # Mondays 03:00 UTC, ahead of the working week.
+    - cron: '0 3 * * 1'
+  push:
+    branches: [dev]
+  workflow_dispatch:
+    inputs:
+      fast:
+        description: 'Skip the slow quality gates (lint, typecheck, full test suite)'
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: system-audit-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  NODE_VERSION: '22'
+
+jobs:
+  audit:
+    name: Collect and analyze
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          persist-credentials: false
+
+      # Same kill switch as daily-triage.yml, so one label pauses every loop.
+      - name: Check kill switch
+        id: kill-switch
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if gh label list --search "loop-pause-all" --json name -q '.[].name' | grep -q "loop-pause-all"; then
+            echo "paused=true" >> "$GITHUB_OUTPUT"
+            echo "::notice::Kill switch active (loop-pause-all) — skipping system audit."
+          else
+            echo "paused=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Setup Node.js
+        if: steps.kill-switch.outputs.paused != 'true'
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install root dependencies
+        if: steps.kill-switch.outputs.paused != 'true'
+        run: npm ci --ignore-scripts
+
+      - name: Install portfolio-v1 dependencies
+        if: steps.kill-switch.outputs.paused != 'true'
+        working-directory: portfolio-v1
+        run: npm ci
+
+      - name: Run system audit
+        if: steps.kill-switch.outputs.paused != 'true'
+        id: audit
+        continue-on-error: true
+        env:
+          # Presence-only checks; the audit never prints secret values.
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GOOGLE_GEMINI_API_KEY: ${{ secrets.GOOGLE_GEMINI_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          CHAT_PROVIDER_ORDER: ${{ vars.CHAT_PROVIDER_ORDER }}
+          CHAT_MULTI_PROVIDER_ENABLED: ${{ vars.CHAT_MULTI_PROVIDER_ENABLED }}
+          UPSTASH_VECTOR_URL: ${{ secrets.UPSTASH_VECTOR_URL }}
+          UPSTASH_VECTOR_TOKEN: ${{ secrets.UPSTASH_VECTOR_TOKEN }}
+        # --expect-secrets makes missing chat/RAG credentials a hard failure.
+        # Only CI passes it: a developer laptop exports no keys, and treating
+        # that as a failure would make "fail" the default local outcome.
+        run: |
+          if [ "${{ inputs.fast }}" = "true" ]; then
+            node scripts/system-audit.mjs --fast --expect-secrets
+          else
+            node scripts/system-audit.mjs --expect-secrets
+          fi
+
+      - name: Claude analysis
+        if: steps.kill-switch.outputs.paused != 'true'
+        continue-on-error: true
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          AUDIT_ANALYSIS_MODEL: ${{ vars.AUDIT_ANALYSIS_MODEL }}
+        run: node scripts/audit-analyze.mjs
+
+      - name: Upload audit report
+        if: steps.kill-switch.outputs.paused != 'true'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: system-audit-${{ github.run_id }}
+          path: audit/
+          retention-days: 30
+          if-no-files-found: warn
+
+      # One rolling issue instead of a new one per run.
+      - name: Update tracking issue
+        if: steps.kill-switch.outputs.paused != 'true' && github.event_name == 'schedule'
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          set -euo pipefail
+
+          if [ ! -f audit/system-audit.json ]; then
+            echo "::notice::No audit report produced; skipping issue update."
+            exit 0
+          fi
+
+          SEVERITY=$(node -p "require('./audit/system-audit.json').severity")
+
+          {
+            echo "Automated system audit — severity: **${SEVERITY}**"
+            echo
+            echo "[Full run and artifacts](${RUN_URL})"
+            echo
+            if [ -f audit/audit-analysis.md ]; then
+              cat audit/audit-analysis.md
+            else
+              echo "_Claude analysis unavailable for this run._"
+            fi
+          } > audit/issue-body.md
+
+          ISSUE=$(gh issue list --repo "$REPO" --state open --label system-audit --limit 1 --json number -q '.[0].number' || echo "")
+
+          if [ -n "$ISSUE" ]; then
+            gh issue comment "$ISSUE" --repo "$REPO" --body-file audit/issue-body.md
+          else
+            gh label create system-audit --repo "$REPO" --color 0e8a16 --description "Automated system audit reports" 2>/dev/null || true
+            gh issue create --repo "$REPO" \
+              --title "System audit tracking" \
+              --label system-audit \
+              --body-file audit/issue-body.md
+          fi

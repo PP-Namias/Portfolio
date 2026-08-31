@@ -186,3 +186,6 @@ portfolio-v2/registry.json
 
 graphify-out/cache/
 # Graphify AST cache (regenerated on extract)
+
+# System audit output (scripts/system-audit.mjs)
+audit/
