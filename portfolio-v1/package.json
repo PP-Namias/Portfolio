@@ -52,6 +52,7 @@
     "doctor:diff": "react-doctor --diff"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.122.0",
     "@google/generative-ai": "^0.24.1",
     "@langchain/community": "^1.1.29",
     "@langchain/core": "^1.2.5",

@@ -1,77 +1,105 @@
-import { ChatDataContext, ExperienceData, ProjectData, TechnologyData } from './types';
+import { ChatDataContext, ExperienceData, ProjectData, TechnologyData } from './types'
+
+/**
+ * The system prompt split into a request-invariant half and a per-query half.
+ *
+ * `stable` is derived purely from CMS data and is byte-identical across every
+ * request, which lets Anthropic prompt caching serve it as a cached prefix.
+ * `volatile` is the retrieved RAG context, which changes per query and must
+ * therefore sit after the cache breakpoint.
+ */
+interface SystemPromptParts {
+  stable: string
+  volatile: string
+}
 
 function formatExperiences(experiences: ExperienceData[]): string {
   return experiences
     .map((exp) => {
-      const end = exp.endedAt || 'Present';
-      const achievements = Array.isArray(exp.achievements) && exp.achievements.length > 0
-        ? exp.achievements.join(', ')
-        : 'N/A';
-      const technologies = Array.isArray(exp.technologies) && exp.technologies.length > 0
-        ? exp.technologies.join(', ')
-        : 'N/A';
+      const end = exp.endedAt || 'Present'
+      const achievements =
+        Array.isArray(exp.achievements) && exp.achievements.length > 0
+          ? exp.achievements.join(', ')
+          : 'N/A'
+      const technologies =
+        Array.isArray(exp.technologies) && exp.technologies.length > 0
+          ? exp.technologies.join(', ')
+          : 'N/A'
 
       return `• ${exp.position || 'Role'} at ${exp.company || 'Company'} (${exp.startedAt || 'N/A'} – ${end}, ${exp.type || 'N/A'}, ${exp.modality || 'N/A'}, ${exp.country || 'N/A'})
   ${exp.summary || 'No summary available.'}
   Key achievements: ${achievements}
-  Technologies: ${technologies}`;
+  Technologies: ${technologies}`
     })
-    .join('\n\n');
+    .join('\n\n')
 }
 
 function formatProjects(projects: ProjectData[]): string {
   return projects
     .map((project) => {
-      const tags = Array.isArray(project.tags) ? project.tags : [];
+      const tags = Array.isArray(project.tags) ? project.tags : []
       const links = [
         project.liveURL ? `Live: ${project.liveURL}` : null,
         project.repositoryURL ? `GitHub: ${project.repositoryURL}` : null,
       ]
         .filter(Boolean)
-        .join(' | ');
+        .join(' | ')
 
-      const yearSegment = project.year ? ` (${project.year})` : '';
+      const yearSegment = project.year ? ` (${project.year})` : ''
       return `• ${project.title || 'Untitled Project'}${yearSegment}
   ${project.description || 'No description available.'}
   Tech: ${tags.slice(0, 8).join(', ') || 'N/A'}
-  ${links || 'No public links'}`;
+  ${links || 'No public links'}`
     })
-    .join('\n\n');
+    .join('\n\n')
 }
 
 function formatTechnologies(technologies: TechnologyData[]): string {
-  const byCategory: Record<string, Array<{ name: string; proficiency: number }>> = {};
+  const byCategory: Record<string, Array<{ name: string; proficiency: number }>> = {}
 
   technologies.forEach((tech) => {
-    const category = tech.category || 'General';
+    const category = tech.category || 'General'
     if (!byCategory[category]) {
-      byCategory[category] = [];
+      byCategory[category] = []
     }
-    byCategory[category].push({ name: tech.name || 'Unknown', proficiency: tech.proficiency ?? 0 });
-  });
+    byCategory[category].push({ name: tech.name || 'Unknown', proficiency: tech.proficiency ?? 0 })
+  })
 
   return Object.entries(byCategory)
     .map(([category, items]) => {
-      const list = items.map((item) => `${item.name} (${item.proficiency}%)`).join(', ');
-      return `${category}: ${list}`;
+      const list = items.map((item) => `${item.name} (${item.proficiency}%)`).join(', ')
+      return `${category}: ${list}`
     })
-    .join('\n');
+    .join('\n')
 }
 
-function formatCertifications(certifications: Array<{ title?: string; issuer?: string; issuedAt?: string }>): string {
+function formatCertifications(
+  certifications: Array<{ title?: string; issuer?: string; issuedAt?: string }>
+): string {
   return certifications
-    .map((cert) => `• ${cert.title || 'Certification'} — ${cert.issuer || 'Issuer'} (${cert.issuedAt || 'N/A'})`)
-    .join('\n');
+    .map(
+      (cert) =>
+        `• ${cert.title || 'Certification'} — ${cert.issuer || 'Issuer'} (${cert.issuedAt || 'N/A'})`
+    )
+    .join('\n')
 }
 
 function formatSocials(socials: Array<{ name?: string; link?: string }>): string {
-  return socials
-    .map((social) => `• ${social.name || 'Social'}: ${social.link || 'N/A'}`)
-    .join('\n');
+  return socials.map((social) => `• ${social.name || 'Social'}: ${social.link || 'N/A'}`).join('\n')
 }
 
-function buildSystemPrompt(data: ChatDataContext, ragContext?: string): string {
-  const { profile, highlights = {}, education, experiences, projects, technologies, certifications, memberships, socials } = {
+function buildSystemPromptParts(data: ChatDataContext, ragContext?: string): SystemPromptParts {
+  const {
+    profile,
+    highlights = {},
+    education,
+    experiences,
+    projects,
+    technologies,
+    certifications,
+    memberships,
+    socials,
+  } = {
     profile: data.profile,
     highlights: data.profile.highlights,
     education: Array.isArray(data.profile.education) ? data.profile.education[0] : undefined,
@@ -81,36 +109,43 @@ function buildSystemPrompt(data: ChatDataContext, ragContext?: string): string {
     certifications: data.certifications,
     memberships: data.memberships,
     socials: data.socials,
-  };
+  }
 
   const membershipLines = memberships
-    .map((membership) => `• ${membership.name || 'Membership'} (since ${membership.joinedAt || 'N/A'}) — ${membership.url || 'N/A'}`)
-    .join('\n');
+    .map(
+      (membership) =>
+        `• ${membership.name || 'Membership'} (since ${membership.joinedAt || 'N/A'}) — ${membership.url || 'N/A'}`
+    )
+    .join('\n')
 
-  const yearsExperience = highlights?.yearsExperience ?? 4;
-  const projectsCompleted = highlights?.projectsCompleted ?? projects.length;
-  const profileName = profile.name || 'Jhon Keneth Ryan Namias';
-  const profileTitle = profile.title || 'Full Stack Engineer & AI Automation Specialist';
-  const profileEmail = profile.email || 'pp.namias@gmail.com';
-  const profileLocation = profile.location || 'Manila, Philippines';
-  const profileGithub = profile.github || 'https://github.com/PP-Namias';
-  const profileLinkedIn = profile.linkedin || 'https://www.linkedin.com/in/pp-namias/';
-  const profileSummary = profile.summary || 'Full-stack engineer and AI automation specialist focused on high-impact systems.';
+  const yearsExperience = highlights?.yearsExperience ?? 4
+  const projectsCompleted = highlights?.projectsCompleted ?? projects.length
+  const profileName = profile.name || 'Jhon Keneth Ryan Namias'
+  const profileTitle = profile.title || 'Full Stack Engineer & AI Automation Specialist'
+  const profileEmail = profile.email || 'pp.namias@gmail.com'
+  const profileLocation = profile.location || 'Manila, Philippines'
+  const profileGithub = profile.github || 'https://github.com/PP-Namias'
+  const profileLinkedIn = profile.linkedin || 'https://www.linkedin.com/in/pp-namias/'
+  const profileSummary =
+    profile.summary ||
+    'Full-stack engineer and AI automation specialist focused on high-impact systems.'
   const primaryTechnologies =
     highlights?.primaryTechnologies && highlights.primaryTechnologies.length > 0
       ? highlights.primaryTechnologies
-      : ['React', 'TypeScript', 'Node.js', 'AI Automation'];
+      : ['React', 'TypeScript', 'Node.js', 'AI Automation']
 
-  const educationDegree = education?.degree || 'Bachelor of Science in Computer Science';
-  const educationInstitution = education?.institution || 'University of Caloocan City';
-  const educationLocation = education?.location || 'Caloocan City, Philippines';
-  const educationStarted = education?.startedAt || '2022-08';
-  const educationEnded = education?.endedAt || 'Currently enrolled';
-  const educationGwa = education?.gpa || '1.40';
-  const educationHonors = education?.honors?.length ? education.honors.join(', ') : 'N/A';
-  const educationCourses = education?.relevantCourses?.length ? education.relevantCourses.join(', ') : 'N/A';
+  const educationDegree = education?.degree || 'Bachelor of Science in Computer Science'
+  const educationInstitution = education?.institution || 'University of Caloocan City'
+  const educationLocation = education?.location || 'Caloocan City, Philippines'
+  const educationStarted = education?.startedAt || '2022-08'
+  const educationEnded = education?.endedAt || 'Currently enrolled'
+  const educationGwa = education?.gpa || '1.40'
+  const educationHonors = education?.honors?.length ? education.honors.join(', ') : 'N/A'
+  const educationCourses = education?.relevantCourses?.length
+    ? education.relevantCourses.join(', ')
+    : 'N/A'
 
-  return `You are Keneth's AI Portfolio Assistant on namias.tech. You answer questions using Keneth's full professional profile (loaded below) and any relevant retrieved context.
+  const stable = `You are Keneth's AI Portfolio Assistant on namias.tech. You answer questions using Keneth's full professional profile (loaded below) and any relevant retrieved context.
 
 IDENTITY:
 Your name is "Keneth's AI". You represent Jhon Keneth Ryan Namias (also known as PP Namias or Keneth). You are NOT Keneth — you are his AI assistant helping visitors learn about him.
@@ -238,14 +273,27 @@ This portfolio site (https://namias.tech) — Full Stack Engineer, 2025 – Pres
 • 2nd Place in university programming competition
 • Active in Philippine Software Industry Association and Analytics & AI Association of the Philippines
 
-${ragContext || ''}`;
+`
+
+  return { stable, volatile: ragContext || '' }
+}
+
+/**
+ * Backward-compatible single-string prompt. The concatenation order matches the
+ * previous template exactly, so Gemini and OpenAI receive byte-identical input.
+ */
+function buildSystemPrompt(data: ChatDataContext, ragContext?: string): string {
+  const { stable, volatile } = buildSystemPromptParts(data, ragContext)
+  return `${stable}${volatile}`
 }
 
 export {
   buildSystemPrompt,
+  buildSystemPromptParts,
   formatCertifications,
   formatExperiences,
   formatProjects,
   formatSocials,
   formatTechnologies,
-};
+}
+export type { SystemPromptParts }
