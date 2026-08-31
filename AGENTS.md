@@ -46,6 +46,13 @@ This file is the entry point for any agent (opencode, future coding agents, or h
 
 - `ai-chatbot` — LangGraph chatbot: graph engine, tools, SSE streaming, thread management, persistence. Core files in `src/lib/chat/`, `src/hooks/use-chat-stream.ts`, thread API routes, `ChatPanel`/`ThreadSidebar`/`FloatingHub` UI. Gate behind feature flags in `src/lib/features.ts`. Docs at `portfolio-v1/docs/chatbot/ARCHITECTURE.md`.
 
+**Providers.** Generation runs through an ordered failover chain — Claude → Gemini → OpenAI by default — resolved from `CHAT_PROVIDER_ORDER` and implemented once in `src/app/api/chat/lib/providers.ts` (`generateWithProviderChain` / `streamWithProviderChain`). Neither the route nor the graph reimplements failover; add a provider there and both paths pick it up.
+
+Two things to know before touching provider code:
+
+- **RAG embeddings are Gemini-only.** Anthropic ships no embeddings API, so `src/lib/rag/embedder.ts` stays on `gemini-embedding-001` and `GOOGLE_GEMINI_API_KEY` is required even when Claude answers. Changing the embedding model means reindexing Upstash.
+- **Claude rejects `temperature`, `top_p`, `top_k`, and `budget_tokens`** with a 400 on Sonnet 5 / Opus 5. Use `output_config.effort` (`CLAUDE_EFFORT`) instead. There is a regression test asserting those params are never sent.
+
 ### API & Backend
 
 - `api-design` — REST API patterns, validation, error handling, rate limiting
