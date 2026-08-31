@@ -4,24 +4,47 @@ on:
   pull_request:
     types: [opened, synchronize, reopened]
 
+# Declared per job. The job that executes pull-request code is read-only; the
+# job that holds a write token never checks that code out.
 permissions:
-  contents: write
-  pull-requests: write
+  contents: read
 
 jobs:
-  babysit:
+  # ---------------------------------------------------------------------------
+  # Runs pull-request-authored code and must therefore hold nothing worth
+  # stealing. `npm run lint`, `vitest` and `react-doctor` load eslint.config.mjs,
+  # vitest.config.ts, src/__tests__/setup.ts and every test file from the PR
+  # tree, so arbitrary code execution here is by design, not a bug. The only
+  # defence that matters is that this job has no write credential: a read-only
+  # GITHUB_TOKEN is all an attacker can reach.
+  # ---------------------------------------------------------------------------
+  checks:
+    name: Run checks
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
+    outputs:
+      paused: ${{ steps.kill-switch.outputs.paused }}
+      lint: ${{ steps.lint.outputs.status }}
+      typecheck: ${{ steps.typecheck.outputs.status }}
+      test: ${{ steps.test.outputs.status }}
+      doctor: ${{ steps.doctor.outputs.status }}
     steps:
       - name: Checkout
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
         with:
           ref: ${{ github.event.pull_request.head.ref }}
           repository: ${{ github.event.pull_request.head.repo.full_name }}
+          persist-credentials: false
 
       - name: Check kill switch
         id: kill-switch
         run: |
-          if gh label list --search "loop-pause-all" --json name -q '.[].name' | grep -q "loop-pause-all"; then
+          # -R pins the base repository: this job's checkout points origin at
+          # the pull request author's fork, and gh would otherwise read the
+          # fork's labels, letting a PR author switch off their own review.
+          if gh label list -R "$GITHUB_REPOSITORY" --search "loop-pause-all" --json name -q '.[].name' | grep -q "loop-pause-all"; then
             echo "paused=true" >> "$GITHUB_OUTPUT"
             echo "Kill switch active — skipping babysitter"
           else
@@ -39,7 +62,11 @@ jobs:
 
       - name: Install dependencies
         if: steps.kill-switch.outputs.paused != 'true'
-        run: npm ci
+        # Blocks the install-script vector, matching ci.yml and seven other
+        # workflows here. It does NOT make the steps below safe — they execute
+        # PR-authored config and test code regardless — which is why this job
+        # holds no write token.
+        run: npm ci --ignore-scripts
         working-directory: portfolio-v1
 
       - name: Run lint
@@ -74,15 +101,47 @@ jobs:
           OUTPUT=$(npm run doctor -- --json 2>&1) && echo "status=pass" >> "$GITHUB_OUTPUT" || echo "status=fail" >> "$GITHUB_OUTPUT"
           echo "$OUTPUT" > /tmp/doctor-output.txt
 
+  # ---------------------------------------------------------------------------
+  # Holds the write token, and for that reason never checks out or executes
+  # pull-request code. It checks out the base repository and consumes only the
+  # four status strings from the job above, so a malicious pull request has no
+  # way to plant a git hook, poison $GITHUB_ENV/$GITHUB_PATH, or shim `git` in
+  # this workspace.
+  # ---------------------------------------------------------------------------
+  report:
+    name: Report results
+    needs: checks
+    if: needs.checks.outputs.paused != 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Checkout base repository
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          # Pinned explicitly. A checkout with no `ref:` resolves github.ref,
+          # which on a pull_request event is refs/pull/<N>/merge — i.e. the pull
+          # request's own code, which must never enter this job. Pinning the
+          # base branch also avoids depending on the merge ref, which GitHub
+          # does not create for a PR with conflicts.
+          ref: ${{ github.event.pull_request.base.ref }}
+          persist-credentials: false
+
       - name: Build failure comment
-        if: steps.kill-switch.outputs.paused != 'true' && (steps.lint.outputs.status == 'fail' || steps.typecheck.outputs.status == 'fail' || steps.test.outputs.status == 'fail' || steps.doctor.outputs.status == 'fail')
+        if: needs.checks.outputs.lint == 'fail' || needs.checks.outputs.typecheck == 'fail' || needs.checks.outputs.test == 'fail' || needs.checks.outputs.doctor == 'fail'
         uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b
+        env:
+          LINT: ${{ needs.checks.outputs.lint }}
+          TYPECHECK: ${{ needs.checks.outputs.typecheck }}
+          TEST: ${{ needs.checks.outputs.test }}
+          DOCTOR: ${{ needs.checks.outputs.doctor }}
         with:
           script: |
-            const lint = '${{ steps.lint.outputs.status }}';
-            const typecheck = '${{ steps.typecheck.outputs.status }}';
-            const test = '${{ steps.test.outputs.status }}';
-            const doctor = '${{ steps.doctor.outputs.status }}';
+            const lint = process.env.LINT;
+            const typecheck = process.env.TYPECHECK;
+            const test = process.env.TEST;
+            const doctor = process.env.DOCTOR;
 
             let body = '## 🤖 PR Babysitter Report\n\n';
 
@@ -125,13 +184,14 @@ jobs:
             }
 
       - name: Append to run log
-        if: steps.kill-switch.outputs.paused != 'true'
+        env:
+          LINT: ${{ needs.checks.outputs.lint }}
+          TYPECHECK: ${{ needs.checks.outputs.typecheck }}
+          TEST: ${{ needs.checks.outputs.test }}
+          DOCTOR: ${{ needs.checks.outputs.doctor }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
           TIMESTAMP=$(date -u +"%Y-%m-%d")
-          LINT="${{ steps.lint.outputs.status }}"
-          TYPECHECK="${{ steps.typecheck.outputs.status }}"
-          TEST="${{ steps.test.outputs.status }}"
-          DOCTOR="${{ steps.doctor.outputs.status }}"
 
           if [ "$LINT" = "pass" ] && [ "$TYPECHECK" = "pass" ] && [ "$TEST" = "pass" ] && [ "$DOCTOR" = "pass" ]; then
             STATUS="pass"
@@ -143,7 +203,7 @@ jobs:
 
           cat >> .agents/state/loop-run-log.md << EOF
 
-          ## ${TIMESTAMP} — pr-babysitter (PR #${{ github.event.pull_request.number }})
+          ## ${TIMESTAMP} — pr-babysitter (PR #${PR_NUMBER})
           - **Status**: ${STATUS}
           - **Findings**: ${FINDINGS}
           - **Actions**: Comment posted on PR
@@ -151,10 +211,17 @@ jobs:
           EOF
 
       - name: Commit run log
-        if: steps.kill-switch.outputs.paused != 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add .agents/state/loop-run-log.md
           git diff --cached --quiet || git commit -m "chore(loop): pr babysitter run log [automated]"
-          git push origin HEAD:pr-babysitter-logs 2>/dev/null || git push --force origin HEAD:pr-babysitter-logs
+
+          # Target the base repository explicitly. Nothing in this job ran
+          # pull-request code, so no planted hook or PATH shim can intercept
+          # this credential.
+          AUTH_REMOTE="https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git push "$AUTH_REMOTE" HEAD:pr-babysitter-logs 2>/dev/null \
+            || git push --force "$AUTH_REMOTE" HEAD:pr-babysitter-logs

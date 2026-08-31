@@ -17,6 +17,12 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          # This job holds a contents:write token and installs freshly published
+          # upstream versions. Defence in depth alongside the --ignore-scripts
+          # below: keep the credential out of .git/config, and let the two push
+          # steps authenticate explicitly.
+          persist-credentials: false
 
       - name: Check kill switch
         id: kill-switch
@@ -39,7 +45,10 @@ jobs:
 
       - name: Install dependencies
         if: steps.kill-switch.outputs.paused != 'true'
-        run: npm ci
+        # This job only reads `npm outdated` / `npm audit` and edits the
+        # manifests, so it never needs a built tree — and it must not execute
+        # install scripts while holding a contents:write token.
+        run: npm ci --ignore-scripts
         working-directory: portfolio-v1
 
       - name: Check npm audit
@@ -95,7 +104,11 @@ jobs:
           echo "patches=$(cat /tmp/patches.json | node -e "console.log(JSON.parse(require('fs').readFileSync('/dev/stdin','utf8')).length)")" >> "$GITHUB_OUTPUT"
           echo "majors=$(cat /tmp/majors.json | node -e "console.log(JSON.parse(require('fs').readFileSync('/dev/stdin','utf8')).length)")" >> "$GITHUB_OUTPUT"
 
-      - name: Create patch PRs
+      # No GH_TOKEN in this step's env on purpose: it executes install scripts
+      # from newly published upstream versions, so it must not be able to read a
+      # credential out of the environment. Pushing and PR creation happen in the
+      # following step, after that code has finished running.
+      - name: Apply patch updates
         if: steps.kill-switch.outputs.paused != 'true' && steps.outdated.outputs.patches != '0'
         working-directory: portfolio-v1
         run: |
@@ -115,17 +128,39 @@ jobs:
           for PKG in $(cat /tmp/patches.json | node -e "const d=JSON.parse(require('fs').readFileSync('/dev/stdin','utf8')); d.forEach(p => console.log(p.pkg))"); do
             CURRENT=$(cat /tmp/patches.json | node -e "const d=JSON.parse(require('fs').readFileSync('/dev/stdin','utf8')); console.log(d.find(p => p.pkg === '$PKG').current)")
             LATEST=$(cat /tmp/patches.json | node -e "const d=JSON.parse(require('fs').readFileSync('/dev/stdin','utf8')); console.log(d.find(p => p.pkg === '$PKG').latest)")
-            npm install "$PKG@$LATEST" --save-exact 2>/dev/null || npm install "$PKG@$LATEST" --save-dev 2>/dev/null || true
+            # --ignore-scripts is load-bearing: this installs a version that
+            # was published since the last run, i.e. code from an author with no
+            # access to this repo, inside a job holding a write token.
+            npm install "$PKG@$LATEST" --save-exact --ignore-scripts 2>/dev/null \
+              || npm install "$PKG@$LATEST" --save-dev --ignore-scripts 2>/dev/null \
+              || true
           done
 
-          git add package.json package-lock.json
-          git diff --cached --quiet || git commit -m "chore(deps): patch updates via dependency sweeper"
-          git push -u origin "$BRANCH"
-
-          gh pr create --title "$TITLE" --body-file /tmp/pr-body.md --label "dependencies" --head "$BRANCH" || true
+      - name: Open patch PR
+        if: steps.kill-switch.outputs.paused != 'true' && steps.outdated.outputs.patches != '0'
+        working-directory: portfolio-v1
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TITLE: "chore(deps): patch updates via dependency sweeper"
+        run: |
+          # An author identity is required here because the commit moved into
+          # this step; the runner configures none by default.
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          # Read the branch back from the checkout rather than carrying it
+          # across steps in $GITHUB_ENV. That file is append-writable by every
+          # earlier step, so routing a push refspec through it would let the
+          # dependency-install step choose where this credential pushes.
+          BRANCH="$(git rev-parse --abbrev-ref HEAD)"
+
+          git add package.json package-lock.json
+          git diff --cached --quiet || git commit -m "chore(deps): patch updates via dependency sweeper"
+
+          AUTH_REMOTE="https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git push "$AUTH_REMOTE" "HEAD:refs/heads/${BRANCH}"
+
+          gh pr create --title "$TITLE" --body-file /tmp/pr-body.md --label "dependencies" --head "$BRANCH" || true
 
       - name: Update loop state watch list
         if: steps.kill-switch.outputs.paused != 'true' && steps.outdated.outputs.majors != '0'
@@ -181,10 +216,24 @@ jobs:
 
       - name: Commit loop state and run log
         if: steps.kill-switch.outputs.paused != 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git checkout main 2>/dev/null || true
           git add .agents/state/STATE.md .agents/state/loop-run-log.md
           git diff --cached --quiet || git commit -m "chore(loop): dependency sweeper update [automated]"
-          git push || true
+
+          # Push to the branch actually checked out: the `git checkout main`
+          # above is allowed to fail, and pushing HEAD to main regardless would
+          # publish dependency-branch commits to the default branch.
+          #
+          # The failure stays non-fatal to preserve existing behaviour on push
+          # races, but is surfaced as a warning — silently swallowing it would
+          # let a broken credential leave this loop permanently green while
+          # publishing nothing.
+          AUTH_REMOTE="https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          CURRENT_BRANCH="$(git rev-parse --abbrev-ref HEAD)"
+          git push "$AUTH_REMOTE" "HEAD:refs/heads/${CURRENT_BRANCH}" \
+            || echo "::warning::loop state push failed (non-fast-forward or insufficient permissions)"

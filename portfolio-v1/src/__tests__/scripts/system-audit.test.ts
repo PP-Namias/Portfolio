@@ -325,3 +325,45 @@ describe('renderMarkdown', () => {
     expect(markdown).not.toContain('## CI/workflow hardening')
   })
 })
+
+/**
+ * Regression guard for the hardening applied to the automation workflows.
+ *
+ * These two workflows both hold a `contents: write` token and then run
+ * third-party code — pr-babysitter installs dependencies from a pull request
+ * branch, dependency-sweeper installs freshly published upstream versions.
+ * Leaving the token in .git/config across those steps is the exfiltration path
+ * this asserts against, by running the real audit rule over the real files.
+ */
+describe('automation workflows are hardened against token exfiltration', () => {
+  const HARDENED_WORKFLOWS = ['pr-babysitter.yml', 'dependency-sweeper.yml']
+
+  for (const workflow of HARDENED_WORKFLOWS) {
+    it(`${workflow} does not leave credentials in .git/config`, async () => {
+      const { readFileSync } = await import('node:fs')
+      const path = await import('node:path')
+
+      const file = path.resolve(process.cwd(), '..', '.github', 'workflows', workflow)
+      const result = analyzeWorkflowSource(workflow, readFileSync(file, 'utf8'))
+
+      const persisted = result.findings.filter(
+        (finding) => finding.rule === 'checkout-persists-credentials'
+      )
+
+      expect(persisted).toEqual([])
+    })
+
+    it(`${workflow} still authenticates its pushes explicitly`, async () => {
+      const { readFileSync } = await import('node:fs')
+      const path = await import('node:path')
+
+      const file = path.resolve(process.cwd(), '..', '.github', 'workflows', workflow)
+      const source = readFileSync(file, 'utf8')
+
+      // Dropping persisted credentials without giving the pushing step a token
+      // would silently break the automation, so assert the replacement exists.
+      expect(source).toMatch(/^\s*git push/m)
+      expect(source).toContain('x-access-token')
+    })
+  }
+})
