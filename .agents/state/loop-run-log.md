@@ -32,3 +32,9 @@
 - **Findings**: All checks passing
 - **Actions**: Comment posted on PR
 - **Tokens**: ~10k (estimated)
+
+## 2026-10-07 — pr-babysitter (PR #333)
+- **Status**: fail
+- **Findings**: Lint: pass, Typecheck: pass, Tests: pass, Doctor: fail
+- **Actions**: Comment posted on PR
+- **Tokens**: ~10k (estimated)
